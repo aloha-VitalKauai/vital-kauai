@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medical Disclaimer — Vital Kauaʻi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --forest: #1C2B1E; --forest-dark: #141F15; --deep: #0E1A10;
+  --sage: #7A9E7E; --sage-light: #A8C5AC; --gold: #C8A96E;
+  --gold-light: #E2CFA0; --cream: #F5F0E8; --warm-white: #FDFBF7;
+  --stone: #8B8070; --text-dark: #1A1A18; --text-mid: #3D3D38; --ink: #12120F;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm-white); color: var(--text-dark); overflow-x: hidden; }
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 28px 60px; display: flex; justify-content: space-between; align-items: center; transition: all 0.5s ease; background: rgba(14,26,16,0.0); }
+nav.scrolled { background: rgba(14,26,16,0.96); backdrop-filter: blur(12px); padding: 18px 60px; }
+.nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; letter-spacing: 0.15em; color: var(--cream); text-decoration: none; text-transform: uppercase; }
+.nav-links { display: flex; gap: 40px; list-style: none; }
+.nav-links a { font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream); text-decoration: none; opacity: 0.85; transition: opacity 0.3s; }
+.nav-links a:hover { opacity: 1; }
+.nav-cta { font-size: 10px; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase; color: var(--forest); background: var(--gold); padding: 12px 28px; text-decoration: none; transition: background 0.3s; }
+.nav-cta:hover { background: var(--gold-light); }
+.page-hero { background: var(--deep); padding: 140px 60px 80px; position: relative; overflow: hidden; }
+.page-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(200,169,110,0.07) 0%, transparent 65%); }
+.hero-inner { position: relative; max-width: 760px; }
+.eyebrow { font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); margin-bottom: 18px; display: block; }
+.page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(38px, 5vw, 60px); font-weight: 300; color: var(--cream); line-height: 1.1; letter-spacing: 0.02em; margin-bottom: 22px; }
+.page-title em { font-style: italic; color: var(--gold-light); }
+.hero-rule { width: 44px; height: 1px; background: var(--gold); margin-bottom: 22px; }
+.hero-sub { font-size: 15px; font-weight: 300; color: rgba(245,240,232,0.92); line-height: 1.8; max-width: 560px; }
+.breadcrumb { background: var(--forest); padding: 13px 60px; display: flex; align-items: center; gap: 10px; }
+.breadcrumb a, .breadcrumb span { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,240,232,0.4); text-decoration: none; }
+.breadcrumb a:hover { color: var(--gold); }
+.breadcrumb .sep { color: rgba(245,240,232,0.18); font-size: 9px; }
+.breadcrumb .current { color: var(--gold); }
+.content-wrap { max-width: 860px; margin: 0 auto; padding: 80px 60px; }
+.content-wrap h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(24px, 3vw, 32px); font-weight: 300; color: var(--forest-dark); line-height: 1.25; letter-spacing: 0.02em; margin: 48px 0 16px; }
+.content-wrap h2:first-of-type { margin-top: 0; }
+.content-wrap h2 em { font-style: italic; }
+.content-wrap p { font-size: 15.5px; font-weight: 300; color: var(--text-mid); line-height: 1.9; margin-bottom: 18px; letter-spacing: 0.01em; }
+.content-wrap ul { margin: 12px 0 20px 0; list-style: none; }
+.content-wrap ul li { font-size: 15px; font-weight: 300; color: var(--text-mid); line-height: 1.8; padding-left: 22px; position: relative; margin-bottom: 8px; }
+.content-wrap ul li::before { content: '—'; position: absolute; left: 0; color: var(--gold); }
+.content-wrap a { color: var(--forest); text-decoration: underline; text-underline-offset: 3px; }
+.content-wrap a:hover { color: var(--gold); }
+.section-rule { width: 100%; height: 1px; background: linear-gradient(to right, rgba(200,169,110,0.25), transparent); margin: 40px 0; border: none; }
+.last-updated { font-size: 12px; color: var(--stone); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 48px; display: block; }
+.policy-nav { background: var(--cream); border-left: 3px solid var(--gold); padding: 28px 32px; margin-bottom: 48px; }
+.policy-nav p { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; font-weight: 400; }
+.policy-nav ul { list-style: none; margin: 0; }
+.policy-nav ul li { margin-bottom: 6px; }
+.policy-nav ul li::before { display: none; }
+.policy-nav ul a { font-size: 13px; color: var(--forest); letter-spacing: 0.05em; text-decoration: none; padding-left: 0; }
+.policy-nav ul a:hover { color: var(--gold); }
+.highlight-box { background: rgba(28,43,30,0.04); border: 1px solid rgba(28,43,30,0.1); border-left: 3px solid var(--sage); padding: 24px 28px; margin: 24px 0; }
+.highlight-box p { margin-bottom: 0; font-size: 14.5px; }
+.policies-bar { background: var(--forest-dark); padding: 48px 60px; }
+.policies-bar-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: flex-start; gap: 72px; }
+.policies-bar h4 { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); font-weight: 400; margin-bottom: 18px; }
+.policy-links { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+.policy-links a { font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(245,240,232,0.48); text-decoration: none; transition: color 0.3s; }
+.policy-links a:hover { color: var(--gold); }
+.policy-links a.active { color: var(--gold); }
+.policy-note { flex: 1; font-size: 13px; font-weight: 300; color: rgba(245,240,232,0.38); line-height: 1.8; max-width: 400px; margin-left: auto; }
+footer { background: var(--ink); padding: 64px 60px 36px; display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr; gap: 40px; }
+.footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400; letter-spacing: 0.1em; color: var(--cream); text-transform: uppercase; margin-bottom: 12px; }
+.footer-tagline { font-size: 13px; font-weight: 300; color: rgba(245,240,232,0.36); line-height: 1.8; max-width: 230px; }
+footer h4 { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); font-weight: 400; margin-bottom: 16px; }
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 9px; }
+.footer-links a { font-size: 13px; font-weight: 300; color: rgba(245,240,232,0.42); text-decoration: none; transition: color 0.3s; }
+.footer-links a:hover { color: var(--cream); }
+.footer-bottom { background: var(--ink); border-top: 1px solid rgba(245,240,232,0.06); padding: 18px 60px; display: flex; justify-content: space-between; }
+.footer-bottom p { font-size: 11px; color: rgba(245,240,232,0.22); letter-spacing: 0.08em; }
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
+.hero-inner .eyebrow { animation: fadeUp 0.9s ease 0.2s both; }
+.hero-inner .page-title { animation: fadeUp 0.9s ease 0.35s both; }
+.hero-inner .hero-rule { animation: fadeUp 0.9s ease 0.5s both; }
+.hero-inner .hero-sub { animation: fadeUp 0.9s ease 0.6s both; }
+@media (max-width: 768px) {
+  nav { padding: 20px 24px; } nav.scrolled { padding: 14px 24px; } .nav-links { display: none; }
+  .page-hero { padding: 110px 24px 60px; }
+  .content-wrap { padding: 56px 24px; }
+  .breadcrumb { padding: 13px 24px; }
+  .policies-bar { padding: 44px 24px; } .policies-bar-inner { flex-direction: column; gap: 36px; }
+  footer { grid-template-columns: 1fr 1fr; padding: 48px 24px 28px; }
+  .footer-bottom { padding: 14px 24px; flex-direction: column; gap: 6px; }
+}
+</style>
+</head>
+<body>
+<nav id="nav">
+  <a href="/" class="nav-logo">Vital Kauaʻi</a>
+  <ul class="nav-links">
+    <li><a href="/iboga-journey">Iboga Journey</a></li>
+    <li><a href="/sacred-intimacy">Sacred Intimacy</a></li>
+    <li><a href="/vitality">Vitality</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/stay">Stay</a></li>
+  </ul>
+  <a href="/portal" class="nav-cta">Begin Your Journey</a>
+</nav>
+<section class="page-hero">
+  <div class="hero-inner">
+    <span class="eyebrow">Sacred Policies</span>
+    <h1 class="page-title">Medical <em>Disclaimer</em></h1>
+    <div class="hero-rule"></div>
+    <p class="hero-sub">Safety and transparency are sacred values here. Please read this before engaging with our work.</p>
+  </div>
+</section>
+<div class="breadcrumb">
+  <a href="/">Home</a>
+  <span class="sep">›</span>
+  <a href="/church-information">Sacred Policies</a>
+  <span class="sep">›</span>
+  <span class="current">Medical Disclaimer</span>
+</div>
+<div class="content-wrap">
+  
+  
+<span class="last-updated">Last Updated: March 7, 2026</span>
+
+<p>Vital Kauai Church is a private, unincorporated religious organization operating as a Private Membership Association under the protection of the First Amendment to the U.S. Constitution, the Religious Freedom Restoration Act (RFRA), and the Universal Declaration of Human Rights. All ceremonies, practices, and sacramental work conducted within Vital Kauai Church take place within an ecclesiastical context, among consenting adult members of a sincerely held religious community.</p>
+
+<p>This page describes the nature of our sacramental work and the responsibility each member carries in relation to their own health and sovereign participation.</p>
+
+<hr class="section-rule">
+
+<h2><em>Nature</em> of Our Work</h2>
+<p>Nothing offered by Vital Kauai Church — on this website, in written materials, or in direct communication with our Stewards or practitioners — constitutes medical advice, psychiatric treatment, clinical diagnosis, or therapeutic intervention as defined by state or federal law. Vital Kauai Church does not practice medicine. Our Stewards and practitioners offer ceremony, sacred presence, somatic guidance, and spiritual support within a religious context. They are not all licensed medical professionals, and they do not hold themselves out as such.</p>
+
+<div class="highlight-box">
+  <p>All practices within Vital Kauai Church are sacramental and ecclesiastical in nature. They are expressions of sincere religious belief — not medical treatments, clinical therapies, or health interventions. Membership in this Church is a voluntary spiritual commitment, entered freely by consenting adults.</p>
+</div>
+
+<hr class="section-rule">
+
+<h2><em>Sacramental</em> Practice & Inherent Risk</h2>
+<p>Participation in sacred ceremony, sacramental practice, somatic inquiry, and psycho-spiritual processes involves inherent risks. As a member of Vital Kauai Church, you acknowledge and accept that these risks may include:</p>
+<ul>
+  <li>Physical discomfort, dizziness, nausea, or temporary fatigue</li>
+  <li>Physiological distress, emotional activation, or psychological intensity</li>
+  <li>Changes in perception, mood, or sense of identity</li>
+  <li>Temporary disorientation or heightened vulnerability</li>
+  <li>The surfacing of past experiences, memories, or unresolved material</li>
+  <li>Cardiovascular or other physiological effects in connection with sacramental plant ceremonies</li>
+  <li>In rare circumstances, serious physiological risk including death</li>
+</ul>
+<p>These risks vary significantly by individual and are influenced by personal health history, current medications, mental health status, and life circumstances. Full and truthful health disclosure to the Church is essential to your safety and is required of all members prior to ceremony.</p>
+
+<hr class="section-rule">
+
+<h2>Member <em>Responsibility</em></h2>
+<p>Every member of Vital Kauai Church enters sacramental work as a sovereign adult, fully responsible for their own health decisions and for the accuracy of the information they provide to the Church. This responsibility includes:</p>
+<ul>
+  <li>Disclosing all relevant medical conditions, psychiatric history, and current medications truthfully and completely in your intake and health screening</li>
+  <li>Consulting with a licensed healthcare provider before participation, particularly if you have a cardiovascular condition, liver condition, are taking prescribed medications, or have a history of psychosis or serious mental illness</li>
+  <li>Following all preparation protocols provided by the Church, including dietary guidelines and any medication guidance, in advance of ceremony</li>
+  <li>Communicating any changes in your health status to the Church care team promptly and before ceremony</li>
+  <li>Continuing to work with your own medical and mental health providers as appropriate before, during, and after your participation</li>
+</ul>
+
+<hr class="section-rule">
+
+<h2>The Iboga <em>Sacrament</em></h2>
+<p>The Iboga Journey at Vital Kauai Church is a sacramental ceremony rooted in sincere religious practice. Iboga — the root bark of <em>Tabernanthe iboga</em> — is a sacred plant sacrament used within our church as an act of worship, in accordance with our Statement of Belief and under the protections afforded to religious organizations by the First Amendment and the Religious Freedom Restoration Act.</p>
+
+<div class="highlight-box">
+  <p>The Iboga sacrament is not offered as a treatment for any medical or psychiatric condition. It is a sacred ceremony held within a private religious community among consenting adult members. Participation is an act of sincere spiritual practice, not a clinical or therapeutic intervention.</p>
+</div>
+
+<p>Vital Kauai Church takes the physiological seriousness of Iboga ceremony with the utmost gravity. The Iboga sacrament carries meaningful physical risk, particularly for individuals with cardiac conditions, liver conditions, or certain medication interactions — including but not limited to SSRIs, MAOIs, opioids, stimulants, and QT-prolonging medications. For this reason, Vital Kauai Church requires all members participating in the Iboga Journey to complete thorough medical screening prior to ceremony, including ECG/cardiac evaluation and comprehensive bloodwork. The Church care team reviews all health disclosures and screening results with care, and reserves the right to decline or postpone ceremony when member safety cannot be responsibly assured.</p>
+
+<p>Members are solely responsible for accurate disclosure of all health conditions and medications. The Church's preparation protocols, dietary guidelines, and medication guidance exist in service of member safety and must be followed completely.</p>
+
+<hr class="section-rule">
+
+<h2>Our <em>Ecclesiastical</em> Commitment to Safety</h2>
+<p>Vital Kauai Church holds safety as a sacred value. Within our ecclesiastical framework we maintain thorough member intake and screening, require appropriate health clearance prior to sacramental ceremony, establish and follow emergency response protocols, and ensure that experienced Stewards and practitioners hold all ceremonial space with care and presence.</p>
+
+<p>We are a private religious community — not a medical facility, retreat center, or clinical program. We are transparent about what we are and what we are not. We invite every member to enter sacramental work with full awareness, honest self-disclosure, clear consent, and the ongoing support of their own healthcare providers.</p>
+
+<hr class="section-rule">
+
+<h2><em>Questions</em></h2>
+<p>If you have questions about safety, health screening requirements, preparation protocols, or the sacramental nature of our work, please reach out before applying for membership.</p>
+<p>Vital Kauai Church<br>PO Box 932<br>Hanalei, HI 96714<br><a href="/#contact">contact form</a></p>
+
+<hr class="section-rule">
+
+<h2>Acknowledgment <em>&amp; Signature</em></h2>
+<p>By signing below, I confirm that I have read and understood this Medical Disclaimer in full. I acknowledge the sacramental nature of the work offered by Vital Kauai Church, accept personal responsibility for my health disclosures and sovereign participation, and enter this community as a consenting adult member of my own free will.</p>
+
+<div id="disclaimerForm">
+
+  <!-- Text fields -->
+  <div style="margin-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:28px 48px;">
+    <div>
+      <label style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;font-weight:400;">Full Legal Name <span style="color:var(--gold);">*</span></label>
+      <input id="dis_name" type="text" placeholder="Print your full legal name" style="width:100%;background:transparent;border:none;border-bottom:1px solid rgba(28,43,30,0.25);padding:10px 0;font-family:'Jost',sans-serif;font-size:14px;font-weight:300;color:var(--text-dark);outline:none;">
+    </div>
+    <div>
+      <label style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;font-weight:400;">Date <span style="color:var(--gold);">*</span></label>
+      <input id="dis_date" type="date" style="width:100%;background:transparent;border:none;border-bottom:1px solid rgba(28,43,30,0.25);padding:10px 0;font-family:'Jost',sans-serif;font-size:14px;font-weight:300;color:var(--text-dark);outline:none;">
+    </div>
+    <div style="grid-column:1/-1;">
+      <label style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;font-weight:400;">Location <span style="color:var(--stone);font-size:9px;letter-spacing:0.1em;">(City, State / Country)</span></label>
+      <input id="dis_location" type="text" placeholder="Where you are signing from" style="width:100%;background:transparent;border:none;border-bottom:1px solid rgba(28,43,30,0.25);padding:10px 0;font-family:'Jost',sans-serif;font-size:14px;font-weight:300;color:var(--text-dark);outline:none;">
+    </div>
+  </div>
+
+  <!-- Draw signature -->
+  <div style="margin-top:36px;">
+    <label style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:12px;font-weight:400;">Signature <span style="color:var(--gold);">*</span> <span style="color:var(--stone);font-size:9px;letter-spacing:0.1em;text-transform:none;">— draw with mouse or finger</span></label>
+    <div style="position:relative;border:1px solid rgba(28,43,30,0.15);border-bottom:2px solid rgba(28,43,30,0.3);background:rgba(28,43,30,0.02);">
+      <canvas id="sigCanvas" width="740" height="140" style="display:block;width:100%;height:140px;cursor:crosshair;touch-action:none;"></canvas>
+      <button onclick="clearSig()" style="position:absolute;top:10px;right:12px;background:none;border:none;font-family:'Jost',sans-serif;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--stone);cursor:pointer;opacity:0.7;">Clear</button>
+      <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:rgba(200,169,110,0.3);"></div>
+    </div>
+    <p style="font-size:11px;color:var(--stone);margin-top:6px;">Draw your signature in the box above</p>
+  </div>
+
+  <!-- Church acceptance -->
+  <div style="margin-top:48px;border-top:1px solid rgba(200,169,110,0.2);padding-top:32px;">
+    <p style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;font-weight:400;">Accepted on Behalf of Vital Kauai Church</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px 48px;">
+      <div>
+        <p style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--stone);margin-bottom:8px;">Founding Steward · Director</p>
+        <div style="border-bottom:1px solid rgba(28,43,30,0.2);padding-bottom:10px;margin-bottom:6px;">&nbsp;</div>
+        <p style="font-size:12px;color:var(--text-mid);">Joshua Perdue</p>
+      </div>
+      <div>
+        <p style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--stone);margin-bottom:8px;">Founding Steward · Co-Director</p>
+        <div style="border-bottom:1px solid rgba(28,43,30,0.2);padding-bottom:10px;margin-bottom:6px;">&nbsp;</div>
+        <p style="font-size:12px;color:var(--text-mid);">Rachel Nelson</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div style="text-align:center;margin-top:48px;">
+    <p style="font-size:13px;color:var(--stone);line-height:1.75;margin-bottom:24px;max-width:520px;margin-left:auto;margin-right:auto;">By submitting this form you confirm your agreement to the Medical Disclaimer above. A copy will be sent to your email and retained by Vital Kauai Church.</p>
+    <button onclick="submitDisclaimer()" style="font-size:11px;font-weight:400;letter-spacing:0.25em;text-transform:uppercase;color:var(--forest);background:var(--gold);padding:18px 56px;border:none;cursor:pointer;font-family:'Jost',sans-serif;transition:background 0.3s;">Submit & Sign →</button>
+    <p style="font-size:11px;color:var(--stone);margin-top:16px;">Questions? <a href="/#contact" style="color:var(--sage);text-decoration:none;">contact form</a></p>
+  </div>
+
+</div>
+
+<!-- Success -->
+<div id="dis_success" style="display:none;text-align:center;padding:60px 0;">
+  <span style="font-size:10px;letter-spacing:0.35em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:16px;">Received</span>
+  <h2 style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--forest-dark);margin-bottom:16px;">Thank you, <em id="dis_displayName"></em></h2>
+  <p style="font-size:15px;color:var(--stone);line-height:1.8;max-width:480px;margin:0 auto;">Your signed Medical Disclaimer has been received by Vital Kauai Church. We look forward to walking this path with you.</p>
+</div>
+
+<p style="text-align:center;font-style:italic;color:var(--stone);font-size:13px;margin-top:48px;letter-spacing:0.05em;">~ and so it is ~</p>
+
+</div>
+<div class="policies-bar">
+  <div class="policies-bar-inner">
+    <div>
+      <h4>Sacred Policies</h4>
+      <ul class="policy-links">
+        <li><a href="/privacy-policy" >Privacy Policy</a></li>
+        <li><a href="/terms-of-use" >Terms of Use</a></li>
+        <li><a href="/medical-disclaimer" class='active'>Medical Disclaimer</a></li>
+        <li><a href="/church-information">Church Information</a></li>
+      </ul>
+    </div>
+    <p class="policy-note">Questions about any of our policies? Write to us at <a href="/#contact" style="color:rgba(245,240,232,0.5);text-decoration:none;">contact form</a> — we are happy to clarify anything.</p>
+  </div>
+</div>
+<footer>
+  <div>
+    <p class="footer-brand">Vital Kauaʻi</p>
+    <p class="footer-tagline">A living sanctuary of transformation and awakening on Kauaʻi's sacred North Shore.</p>
+  </div>
+  <div>
+    <h4>Offerings</h4>
+    <ul class="footer-links">
+      <li><a href="/iboga-journey">The Iboga Journey</a></li>
+      <li><a href="/sacred-intimacy">Sacred Intimacy</a></li>
+      <li><a href="/vitality">Vitality &amp; Detox</a></li>
+      <li><a href="/stay">Stay With Us</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>The Church</h4>
+    <ul class="footer-links">
+      <li><a href="/church-information">Church Information</a></li>
+      <li><a href="/privacy-policy">Privacy Policy</a></li>
+      <li><a href="/terms-of-use">Terms of Use</a></li>
+      <li><a href="/medical-disclaimer">Medical Disclaimer</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Connect</h4>
+    <ul class="footer-links">
+      <li><a href="/about">About Us</a></li>
+      <li><a href="/healing-circle">Healing Circle</a></li>
+      <li><a href="/portal">Client Portal</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2026 Vital Kauai Church  ·  Kauaʻi's North Shore, Hawaiʻi  ·  All rights reserved.</p>
+  <p style="color:rgba(245,240,232,0.18);font-size:10px;letter-spacing:0.08em;">All original content, copy, frameworks, guides, and materials on this site are the intellectual property of Vital Kauai Church and are protec
+<script>
+// ── NAV ──
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
+
+// ── SIGNATURE CANVAS ──
+window.addEventListener('DOMContentLoaded', () => {
+  const canvas = document.getElementById('sigCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let drawing = false;
+  let hasSig = false;
+
+  function setupCtx() {
+    ctx.strokeStyle = '#1C2B1E';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+  }
+
+  function scaleCanvas() {
+    const ratio = window.devicePixelRatio || 1;
+    const w = canvas.offsetWidth;
+    canvas.width = w * ratio;
+    canvas.height = 140 * ratio;
+    canvas.style.height = '140px';
+    ctx.scale(ratio, ratio);
+    setupCtx();
+  }
+  scaleCanvas();
+  window.addEventListener('resize', scaleCanvas);
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    if (e.touches) return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }
+
+  canvas.addEventListener('mousedown', e => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
+  canvas.addEventListener('mousemove', e => { if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); hasSig = true; });
+  canvas.addEventListener('mouseup', () => drawing = false);
+  canvas.addEventListener('mouseleave', () => drawing = false);
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }, { passive: false });
+  canvas.addEventListener('touchmove', e => { e.preventDefault(); if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); hasSig = true; }, { passive: false });
+  canvas.addEventListener('touchend', () => drawing = false);
+
+  window.clearSig = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); hasSig = false; };
+
+  window.submitDisclaimer = async () => {
+    const name = document.getElementById('dis_name').value.trim();
+    const date = document.getElementById('dis_date').value;
+    const location = document.getElementById('dis_location').value.trim();
+    if (!name) { alert('Please enter your full legal name.'); return; }
+    if (!date) { alert('Please enter the date.'); return; }
+    if (!hasSig) { alert('Please draw your signature before submitting.'); return; }
+
+    const sigImage = canvas.toDataURL('image/png');
+    const btn = document.querySelector('button[onclick="submitDisclaimer()"]');
+    btn.textContent = 'Submitting...';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('https://formspree.io/f/mlgovdbv', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          'Full Legal Name': name,
+          'Date': date,
+          'Location': location,
+          'Signature Image': sigImage,
+          'Document': 'Medical Disclaimer — Vital Kauai Church',
+          'Submitted At': new Date().toISOString()
+        })
+      });
+      if (res.ok) {
+        document.getElementById('dis_displayName').textContent = name.split(' ')[0];
+        document.getElementById('disclaimerForm').style.display = 'none';
+        document.getElementById('dis_success').style.display = 'block';
+        window.scrollTo({ top: document.getElementById('dis_success').offsetTop - 100, behavior: 'smooth' });
+      } else {
+        const data = await res.json();
+        alert('Submission error: ' + (data.error || 'Please try again or contact hello@vitalkauai.com'));
+        btn.textContent = 'Submit & Sign →';
+        btn.disabled = false;
+      }
+    } catch (err) {
+      alert('Connection error. Please check your internet and try again, or contact hello@vitalkauai.com');
+      btn.textContent = 'Submit & Sign →';
+      btn.disabled = false;
+    }
+  };!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medical Disclaimer — Vital Kauaʻi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --forest: #1C2B1E; --forest-dark: #141F15; --deep: #0E1A10;
+  --sage: #7A9E7E; --sage-light: #A8C5AC; --gold: #C8A96E;
+  --gold-light: #E2CFA0; --cream: #F5F0E8; --warm-white: #FDFBF7;
+  --stone: #8B8070; --text-dark: #1A1A18; --text-mid: #3D3D38; --ink: #12120F;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm-white); color: var(--text-dark); overflow-x: hidden; }
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 28px 60px; display: flex; justify-content: space-between; align-items: center; transition: all 0.5s ease; background: rgba(14,26,16,0.0); }
+nav.scrolled { background: rgba(14,26,16,0.96); backdrop-filter: blur(12px); padding: 18px 60px; }
+.nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; letter-spacing: 0.15em; color: var(--cream); text-decoration: none; text-transform: uppercase; }
+.nav-links { display: flex; gap: 40px; list-style: none; }
+.nav-links a { font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream); text-decoration: none; opacity: 0.85; transition: opacity 0.3s; }
+.nav-links a:hover { opacity: 1; }
+.nav-cta { font-size: 10px; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase; color: var(--forest); background: var(--gold); padding: 12px 28px; text-decoration: none; transition: background 0.3s; }
+.nav-cta:hover { background: var(--gold-light); }
+.page-hero { background: var(--deep); padding: 140px 60px 80px; position: relative; overflow: hidden; }
+.page-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(200,169,110,0.07) 0%, transparent 65%); }
+.hero-inner { position: relative; max-width: 760px; }
+.eyebrow { font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); margin-bottom: 18px; display: block; }
+.page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(38px, 5vw, 60px); font-weight: 300; color: var(--cream); line-height: 1.1; letter-spacing: 0.02em; margin-bottom: 22px; }
+.page-title em { font-style: italic; color: var(--gold-light); }
+.hero-rule { width: 44px; height: 1px; background: var(--gold); margin-bottom: 22px; }
+.hero-sub { font-size: 15px; font-weight: 300; color: rgba(245,240,232,0.92); line-height: 1.8; max-width: 560px; }
+.breadcrumb { background: var(--forest); padding: 13px 60px; display: flex; align-items: center; gap: 10px; }
+.breadcrumb a, .breadcrumb span { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,240,232,0.4); text-decoration: none; }
+.breadcrumb a:hover { color: var(--gold); }
+.breadcrumb .sep { color: rgba(245,240,232,0.18); font-size: 9px; }
+.breadcrumb .current { color: var(--gold); }
+.content-wrap { max-width: 860px; margin: 0 auto; padding: 80px 60px; }
+.content-wrap h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(24px, 3vw, 32px); font-weight: 300; color: var(--forest-dark); line-height: 1.25; letter-spacing: 0.02em; margin: 48px 0 16px; }
+.content-wrap h2:first-of-type { margin-top: 0; }
+.content-wrap h2 em { font-style: italic; }
+.content-wrap p { font-size: 15.5px; font-weight: 300; color: var(--text-mid); line-height: 1.9; margin-bottom: 18px; letter-spacing: 0.01em; }
+.content-wrap ul { margin: 12px 0 20px 0; list-style: none; }
+.content-wrap ul li { font-size: 15px; font-weight: 300; color: var(--text-mid); line-height: 1.8; padding-left: 22px; position: relative; margin-bottom: 8px; }
+.content-wrap ul li::before { content: '—'; position: absolute; left: 0; color: var(--gold); }
+.content-wrap a { color: var(--forest); text-decoration: underline; text-underline-offset: 3px; }
+.content-wrap a:hover { color: var(--gold); }
+.section-rule { width: 100%; height: 1px; background: linear-gradient(to right, rgba(200,169,110,0.25), transparent); margin: 40px 0; border: none; }
+.last-updated { font-size: 12px; color: var(--stone); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 48px; display: block; }
+.policy-nav { background: var(--cream); border-left: 3px solid var(--gold); padding: 28px 32px; margin-bottom: 48px; }
+.policy-nav p { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; font-weight: 400; }
+.policy-nav ul { list-style: none; margin: 0; }
+.policy-nav ul li { margin-bottom: 6px; }
+.policy-nav ul li::before { display: none; }
+.policy-nav ul a { font-size: 13px; color: var(--forest); letter-spacing: 0.05em; text-decoration: none; padding-left: 0; }
+.policy-nav ul a:hover { color: var(--gold); }
+.highlight-box { background: rgba(28,43,30,0.04); border: 1px solid rgba(28,43,30,0.1); border-left: 3px solid var(--sage); padding: 24px 28px; margin: 24px 0; }
+.highlight-box p { margin-bottom: 0; font-size: 14.5px; }
+.policies-bar { background: var(--forest-dark); padding: 48px 60px; }
+.policies-bar-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: flex-start; gap: 72px; }
+.policies-bar h4 { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); font-weight: 400; margin-bottom: 18px; }
+.policy-links { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+.policy-links a { font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(245,240,232,0.48); text-decoration: none; transition: color 0.3s; }
+.policy-links a:hover { color: var(--gold); }
+.policy-links a.active { color: var(--gold); }
+.policy-note { flex: 1; font-size: 13px; font-weight: 300; color: rgba(245,240,232,0.38); line-height: 1.8; max-width: 400px; margin-left: auto; }
+footer { background: var(--ink); padding: 64px 60px 36px; display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr; gap: 40px; }
+.footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400; letter-spacing: 0.1em; color: var(--cream); text-transform: uppercase; margin-bottom: 12px; }
+.footer-tagline { font-size: 13px; font-weight: 300; color: rgba(245,240,232,0.36); line-height: 1.8; max-width: 230px; }
+footer h4 { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); font-weight: 400; margin-bottom: 16px; }
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 9px; }
+.footer-links a { font-size: 13px; font-weight: 300; color: rgba(245,240,232,0.42); text-decoration: none; transition: color 0.3s; }
+.footer-links a:hover { color: var(--cream); }
+.footer-bottom { background: var(--ink); border-top: 1px solid rgba(245,240,232,0.06); padding: 18px 60px; display: flex; justify-content: space-between; }
+.footer-bottom p { font-size: 11px; color: rgba(245,240,232,0.22); letter-spacing: 0.08em; }
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
+.hero-inner .eyebrow { animation: fadeUp 0.9s ease 0.2s both; }
+.hero-inner .page-title { animation: fadeUp 0.9s ease 0.35s both; }
+.hero-inner .hero-rule { animation: fadeUp 0.9s ease 0.5s both; }
+.hero-inner .hero-sub { animation: fadeUp 0.9s ease 0.6s both; }
+@media (max-width: 768px) {
+  nav { padding: 20px 24px; } nav.scrolled { padding: 14px 24px; } .nav-links { display: none; }
+  .page-hero { padding: 110px 24px 60px; }
+  .content-wrap { padding: 56px 24px; }
+  .breadcrumb { padding: 13px 24px; }
+  .policies-bar { padding: 44px 24px; } .policies-bar-inner { flex-direction: column; gap: 36px; }
+  footer { grid-template-columns: 1fr 1fr; padding: 48px 24px 28px; }
+  .footer-bottom { padding: 14px 24px; flex-direction: column; gap: 6px; }
+}
+</style>
+</head>
+<body>
+<nav id="nav">
+  <a href="/" class="nav-logo">Vital Kauaʻi</a>
+  <ul class="nav-links">
+    <li><a href="/iboga-journey">Iboga Journey</a></li>
+    <li><a href="/sacred-intimacy">Sacred Intimacy</a></li>
+    <li><a href="/vitality">Vitality</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/stay">Stay</a></li>
+  </ul>
+  <a href="/portal" class="nav-cta">Begin Your Journey</a>
+</nav>
+<section class="page-hero">
+  <div class="hero-inner">
+    <span class="eyebrow">Sacred Policies</span>
+    <h1 class="page-title">Medical <em>Disclaimer</em></h1>
+    <div class="hero-rule"></div>
+    <p class="hero-sub">Safety and transparency are sacred values here. Please read this before engaging with our work.</p>
+  </div>
+</section>
+<div class="breadcrumb">
+  <a href="/">Home</a>
+  <span class="sep">›</span>
+  <a href="/church-information">Sacred Policies</a>
+  <span class="sep">›</span>
+  <span class="current">Medical Disclaimer</span>
+</div>
+<div class="content-wrap">
+  
+  
+<span class="last-updated">Last Updated: March 7, 2026</span>
+
+<p>Vital Kauai Church is a private, unincorporated religious organization operating as a Private Membership Association under the protection of the First Amendment to the U.S. Constitution, the Religious Freedom Restoration Act (RFRA), and the Universal Declaration of Human Rights. All ceremonies, practices, and sacramental work conducted within Vital Kauai Church take place within an ecclesiastical context, among consenting adult members of a sincerely held religious community.</p>
+
+<p>This page describes the nature of our sacramental work and the responsibility each member carries in relation to their own health and sovereign participation.</p>
+
+<hr class="section-rule">
+
+<h2><em>Nature</em> of Our Work</h2>
+<p>Nothing offered by Vital Kauai Church — on this website, in written materials, or in direct communication with our Stewards or practitioners — constitutes medical advice, psychiatric treatment, clinical diagnosis, or therapeutic intervention as defined by state or federal law. Vital Kauai Church does not practice medicine. Our Stewards and practitioners offer ceremony, sacred presence, somatic guidance, and spiritual support within a religious context. They are not all licensed medical professionals, and they do not hold themselves out as such.</p>
+
+<div class="highlight-box">
+  <p>All practices within Vital Kauai Church are sacramental and ecclesiastical in nature. They are expressions of sincere religious belief — not medical treatments, clinical therapies, or health interventions. Membership in this Church is a voluntary spiritual commitment, entered freely by consenting adults.</p>
+</div>
+
+<hr class="section-rule">
+
+<h2><em>Sacramental</em> Practice & Inherent Risk</h2>
+<p>Participation in sacred ceremony, sacramental practice, somatic inquiry, and psycho-spiritual processes involves inherent risks. As a member of Vital Kauai Church, you acknowledge and accept that these risks may include:</p>
+<ul>
+  <li>Physical discomfort, dizziness, nausea, or temporary fatigue</li>
+  <li>Physiological distress, emotional activation, or psychological intensity</li>
+  <li>Changes in perception, mood, or sense of identity</li>
+  <li>Temporary disorientation or heightened vulnerability</li>
+  <li>The surfacing of past experiences, memories, or unresolved material</li>
+  <li>Cardiovascular or other physiological effects in connection with sacramental plant ceremonies</li>
+  <li>In rare circumstances, serious physiological risk including death</li>
+</ul>
+<p>These risks vary significantly by individual and are influenced by personal health history, current medications, mental health status, and life circumstances. Full and truthful health disclosure to the Church is essential to your safety and is required of all members prior to ceremony.</p>
+
+<hr class="section-rule">
+
+<h2>Member <em>Responsibility</em></h2>
+<p>Every member of Vital Kauai Church enters sacramental work as a sovereign adult, fully responsible for their own health decisions and for the accuracy of the information they provide to the Church. This responsibility includes:</p>
+<ul>
+  <li>Disclosing all relevant medical conditions, psychiatric history, and current medications truthfully and completely in your intake and health screening</li>
+  <li>Consulting with a licensed healthcare provider before participation, particularly if you have a cardiovascular condition, liver condition, are taking prescribed medications, or have a history of psychosis or serious mental illness</li>
+  <li>Following all preparation protocols provided by the Church, including dietary guidelines and any medication guidance, in advance of ceremony</li>
+  <li>Communicating any changes in your health status to the Church care team promptly and before ceremony</li>
+  <li>Continuing to work with your own medical and mental health providers as appropriate before, during, and after your participation</li>
+</ul>
+
+<hr class="section-rule">
+
+<h2>The Iboga <em>Sacrament</em></h2>
+<p>The Iboga Journey at Vital Kauai Church is a sacramental ceremony rooted in sincere religious practice. Iboga — the root bark of <em>Tabernanthe iboga</em> — is a sacred plant sacrament used within our church as an act of worship, in accordance with our Statement of Belief and under the protections afforded to religious organizations by the First Amendment and the Religious Freedom Restoration Act.</p>
+
+<div class="highlight-box">
+  <p>The Iboga sacrament is not offered as a treatment for any medical or psychiatric condition. It is a sacred ceremony held within a private religious community among consenting adult members. Participation is an act of sincere spiritual practice, not a clinical or therapeutic intervention.</p>
+</div>
+
+<p>Vital Kauai Church takes the physiological seriousness of Iboga ceremony with the utmost gravity. The Iboga sacrament carries meaningful physical risk, particularly for individuals with cardiac conditions, liver conditions, or certain medication interactions — including but not limited to SSRIs, MAOIs, opioids, stimulants, and QT-prolonging medications. For this reason, Vital Kauai Church requires all members participating in the Iboga Journey to complete thorough medical screening prior to ceremony, including ECG/cardiac evaluation and comprehensive bloodwork. The Church care team reviews all health disclosures and screening results with care, and reserves the right to decline or postpone ceremony when member safety cannot be responsibly assured.</p>
+
+<p>Members are solely responsible for accurate disclosure of all health conditions and medications. The Church's preparation protocols, dietary guidelines, and medication guidance exist in service of member safety and must be followed completely.</p>
+
+<hr class="section-rule">
+
+<h2>Our <em>Ecclesiastical</em> Commitment to Safety</h2>
+<p>Vital Kauai Church holds safety as a sacred value. Within our ecclesiastical framework we maintain thorough member intake and screening, require appropriate health clearance prior to sacramental ceremony, establish and follow emergency response protocols, and ensure that experienced Stewards and practitioners hold all ceremonial space with care and presence.</p>
+
+<p>We are a private religious community — not a medical facility, retreat center, or clinical program. We are transparent about what we are and what we are not. We invite every member to enter sacramental work with full awareness, honest self-disclosure, clear consent, and the ongoing support of their own healthcare providers.</p>
+
+<hr class="section-rule">
+
+<h2><em>Questions</em></h2>
+<p>If you have questions about safety, health screening requirements, preparation protocols, or the sacramental nature of our work, please reach out before applying for membership.</p>
+<p>Vital Kauai Church<br>PO Box 932<br>Hanalei, HI 96714<br><a href="/#contact">contact form</a></p>
+
+<hr class="section-rule">
+
+<h2>Acknowledgment <em>&amp; Signature</em></h2>
+<p>By signing below, I confirm that I have read and understood this Medical Disclaimer in full. I acknowledge the sacramental nature of the work offered by Vital Kauai Church, accept personal responsibility for my health disclosures and sovereign participation, and enter this community as a consenting adult member of my own free will.</p>
+
+<div id="disclaimerForm">
+
+  <!-- Text fields -->
+  <div style="margin-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:28px 48px;">
+    <div>
+      <label style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;font-weight:400;">Full Legal Name <span style="color:var(--gold);">*</span></label>
+      <input id="dis_name" type="text" placeholder="Print your full legal name" style="width:100%;background:transparent;border:none;border-bottom:1px solid rgba(28,43,30,0.25);padding:10px 0;font-family:'Jost',sans-serif;font-size:14px;font-weight:300;color:var(--text-dark);outline:none;">
+    </div>
+    <div>
+      <label style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;font-weight:400;">Date <span style="color:var(--gold);">*</span></label>
+      <input id="dis_date" type="date" style="width:100%;background:transparent;border:none;border-bottom:1px solid rgba(28,43,30,0.25);padding:10px 0;font-family:'Jost',sans-serif;font-size:14px;font-weight:300;color:var(--text-dark);outline:none;">
+    </div>
+    <div style="grid-column:1/-1;">
+      <label style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;font-weight:400;">Location <span style="color:var(--stone);font-size:9px;letter-spacing:0.1em;">(City, State / Country)</span></label>
+      <input id="dis_location" type="text" placeholder="Where you are signing from" style="width:100%;background:transparent;border:none;border-bottom:1px solid rgba(28,43,30,0.25);padding:10px 0;font-family:'Jost',sans-serif;font-size:14px;font-weight:300;color:var(--text-dark);outline:none;">
+    </div>
+  </div>
+
+  <!-- Draw signature -->
+  <div style="margin-top:36px;">
+    <label style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:12px;font-weight:400;">Signature <span style="color:var(--gold);">*</span> <span style="color:var(--stone);font-size:9px;letter-spacing:0.1em;text-transform:none;">— draw with mouse or finger</span></label>
+    <div style="position:relative;border:1px solid rgba(28,43,30,0.15);border-bottom:2px solid rgba(28,43,30,0.3);background:rgba(28,43,30,0.02);">
+      <canvas id="sigCanvas" width="740" height="140" style="display:block;width:100%;height:140px;cursor:crosshair;touch-action:none;"></canvas>
+      <button onclick="clearSig()" style="position:absolute;top:10px;right:12px;background:none;border:none;font-family:'Jost',sans-serif;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--stone);cursor:pointer;opacity:0.7;">Clear</button>
+      <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:rgba(200,169,110,0.3);"></div>
+    </div>
+    <p style="font-size:11px;color:var(--stone);margin-top:6px;">Draw your signature in the box above</p>
+  </div>
+
+  <!-- Church acceptance -->
+  <div style="margin-top:48px;border-top:1px solid rgba(200,169,110,0.2);padding-top:32px;">
+    <p style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;font-weight:400;">Accepted on Behalf of Vital Kauai Church</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px 48px;">
+      <div>
+        <p style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--stone);margin-bottom:8px;">Founding Steward · Director</p>
+        <div style="border-bottom:1px solid rgba(28,43,30,0.2);padding-bottom:10px;margin-bottom:6px;">&nbsp;</div>
+        <p style="font-size:12px;color:var(--text-mid);">Joshua Perdue</p>
+      </div>
+      <div>
+        <p style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--stone);margin-bottom:8px;">Founding Steward · Co-Director</p>
+        <div style="border-bottom:1px solid rgba(28,43,30,0.2);padding-bottom:10px;margin-bottom:6px;">&nbsp;</div>
+        <p style="font-size:12px;color:var(--text-mid);">Rachel Nelson</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div style="text-align:center;margin-top:48px;">
+    <p style="font-size:13px;color:var(--stone);line-height:1.75;margin-bottom:24px;max-width:520px;margin-left:auto;margin-right:auto;">By submitting this form you confirm your agreement to the Medical Disclaimer above. A copy will be sent to your email and retained by Vital Kauai Church.</p>
+    <button onclick="submitDisclaimer()" style="font-size:11px;font-weight:400;letter-spacing:0.25em;text-transform:uppercase;color:var(--forest);background:var(--gold);padding:18px 56px;border:none;cursor:pointer;font-family:'Jost',sans-serif;transition:background 0.3s;">Submit & Sign →</button>
+    <p style="font-size:11px;color:var(--stone);margin-top:16px;">Questions? <a href="/#contact" style="color:var(--sage);text-decoration:none;">contact form</a></p>
+  </div>
+
+</div>
+
+<!-- Success -->
+<div id="dis_success" style="display:none;text-align:center;padding:60px 0;">
+  <span style="font-size:10px;letter-spacing:0.35em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:16px;">Received</span>
+  <h2 style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--forest-dark);margin-bottom:16px;">Thank you, <em id="dis_displayName"></em></h2>
+  <p style="font-size:15px;color:var(--stone);line-height:1.8;max-width:480px;margin:0 auto;">Your signed Medical Disclaimer has been received by Vital Kauai Church. We look forward to walking this path with you.</p>
+</div>
+
+<p style="text-align:center;font-style:italic;color:var(--stone);font-size:13px;margin-top:48px;letter-spacing:0.05em;">~ and so it is ~</p>
+
+</div>
+<div class="policies-bar">
+  <div class="policies-bar-inner">
+    <div>
+      <h4>Sacred Policies</h4>
+      <ul class="policy-links">
+        <li><a href="/privacy-policy" >Privacy Policy</a></li>
+        <li><a href="/terms-of-use" >Terms of Use</a></li>
+        <li><a href="/medical-disclaimer" class='active'>Medical Disclaimer</a></li>
+        <li><a href="/church-information">Church Information</a></li>
+      </ul>
+    </div>
+    <p class="policy-note">Questions about any of our policies? Write to us at <a href="/#contact" style="color:rgba(245,240,232,0.5);text-decoration:none;">contact form</a> — we are happy to clarify anything.</p>
+  </div>
+</div>
+<footer>
+  <div>
+    <p class="footer-brand">Vital Kauaʻi</p>
+    <p class="footer-tagline">A living sanctuary of transformation and awakening on Kauaʻi's sacred North Shore.</p>
+  </div>
+  <div>
+    <h4>Offerings</h4>
+    <ul class="footer-links">
+      <li><a href="/iboga-journey">The Iboga Journey</a></li>
+      <li><a href="/sacred-intimacy">Sacred Intimacy</a></li>
+      <li><a href="/vitality">Vitality &amp; Detox</a></li>
+      <li><a href="/stay">Stay With Us</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>The Church</h4>
+    <ul class="footer-links">
+      <li><a href="/church-information">Church Information</a></li>
+      <li><a href="/privacy-policy">Privacy Policy</a></li>
+      <li><a href="/terms-of-use">Terms of Use</a></li>
+      <li><a href="/medical-disclaimer">Medical Disclaimer</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Connect</h4>
+    <ul class="footer-links">
+      <li><a href="/about">About Us</a></li>
+      <li><a href="/healing-circle">Healing Circle</a></li>
+      <li><a href="/portal">Client Portal</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2026 Vital Kauai Church  ·  Kauaʻi's North Shore, Hawaiʻi  ·  All rights reserved.</p>
+  <p style="color:rgba(245,240,232,0.18);font-size:10px;letter-spacing:0.08em;">All original content, copy, frameworks, guides, and materials on this site are the intellectual property of Vital Kauai Church and are protec
+<script>
+// ── NAV ──
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
+
+// ── SIGNATURE CANVAS ──
+window.addEventListener('DOMContentLoaded', () => {
+  const canvas = document.getElementById('sigCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let drawing = false;
+  let hasSig = false;
+
+  function setupCtx() {
+    ctx.strokeStyle = '#1C2B1E';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+  }
+
+  function scaleCanvas() {
+    const ratio = window.devicePixelRatio || 1;
+    const w = canvas.offsetWidth;
+    canvas.width = w * ratio;
+    canvas.height = 140 * ratio;
+    canvas.style.height = '140px';
+    ctx.scale(ratio, ratio);
+    setupCtx();
+  }
+  scaleCanvas();
+  window.addEventListener('resize', scaleCanvas);
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    if (e.touches) return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }
+
+  canvas.addEventListener('mousedown', e => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
+  canvas.addEventListener('mousemove', e => { if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); hasSig = true; });
+  canvas.addEventListener('mouseup', () => drawing = false);
+  canvas.addEventListener('mouseleave', () => drawing = false);
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }, { passive: false });
+  canvas.addEventListener('touchmove', e => { e.preventDefault(); if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); hasSig = true; }, { passive: false });
+  canvas.addEventListener('touchend', () => drawing = false);
+
+  window.clearSig = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); hasSig = false; };
+
+  window.submitDisclaimer = () => {
+    const name = document.getElementById('dis_name').value.trim();
+    const date = document.getElementById('dis_date').value;
+    if (!name) { alert('Please enter your full legal name.'); return; }
+    if (!date) { alert('Please enter the date.'); return; }
+    if (!hasSig) { alert('Please draw your signature before submitting.'); return; }
+    document.getElementById('dis_displayName').textContent = name.split(' ')[0];
+    document.getElementById('disc

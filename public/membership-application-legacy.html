@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Membership Application — Vital Kauaʻi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --forest: #1C2B1E;
+  --forest-dark: #141F15;
+  --deep: #0E1A10;
+  --sage: #7A9E7E;
+  --sage-light: #A8C5AC;
+  --gold: #C8A96E;
+  --gold-light: #E2CFA0;
+  --cream: #F5F0E8;
+  --warm-white: #FDFBF7;
+  --stone: #8B8070;
+  --text-dark: #1A1A18;
+  --text-mid: #3D3D38;
+  --border: rgba(28,43,30,0.10);
+  --error: #C4614A;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  background: var(--warm-white);
+  color: var(--text-dark);
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(14,26,16,0.97);
+  backdrop-filter: blur(14px);
+  padding: 0 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(200,169,110,0.08);
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  color: var(--cream);
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.nav-badge {
+  font-size: 8.5px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--sage);
+  border: 1px solid rgba(122,158,126,0.25);
+  padding: 5px 14px;
+}
+.nav-back {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.4);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.nav-back:hover { color: rgba(245,240,232,0.8); }
+
+/* ── PROGRESS BAR ── */
+.progress-bar {
+  height: 2px;
+  background: rgba(28,43,30,0.06);
+  position: relative;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--gold);
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* ── HERO ── */
+.hero {
+  background: var(--forest);
+  padding: 64px 60px 60px;
+}
+.hero-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--sage);
+  display: block;
+  margin-bottom: 16px;
+}
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 3.5vw, 52px);
+  font-weight: 300;
+  color: var(--cream);
+  line-height: 1.06;
+  margin-bottom: 14px;
+}
+.hero-title em { font-style: italic; color: var(--sage-light); }
+.hero-body {
+  font-size: 14px;
+  color: rgba(245,240,232,0.52);
+  line-height: 1.95;
+  max-width: 560px;
+}
+
+/* ── LAYOUT ── */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 0;
+  min-height: calc(100vh - 200px);
+}
+
+/* ── AGREEMENT PANEL ── */
+.agreement-panel {
+  padding: 52px 60px;
+  border-right: 1px solid var(--border);
+}
+.agreement-header {
+  margin-bottom: 36px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+.agreement-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+}
+.agreement-subtitle {
+  font-size: 11px;
+  color: var(--stone);
+  letter-spacing: 0.12em;
+}
+.agreement-text {
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 2;
+}
+.agreement-text p {
+  margin-bottom: 22px;
+}
+.clause {
+  display: flex;
+  gap: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(28,43,30,0.04);
+}
+.clause-num {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  flex-shrink: 0;
+  width: 28px;
+  padding-top: 2px;
+  font-weight: 400;
+}
+.clause-text {
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.85;
+}
+
+/* ── SIDEBAR / SIGNING PANEL ── */
+.signing-panel {
+  position: sticky;
+  top: 62px;
+  height: calc(100vh - 62px);
+  overflow-y: auto;
+  background: #F3EEE6;
+  border-left: 1px solid var(--border);
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.signing-section-label {
+  font-size: 8px;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 14px;
+}
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.field-label {
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  display: block;
+  margin-bottom: 6px;
+}
+.field-input {
+  width: 100%;
+  background: white;
+  border: 1px solid rgba(28,43,30,0.12);
+  padding: 13px 16px;
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text-dark);
+  outline: none;
+  transition: border-color 0.25s;
+  -webkit-appearance: none;
+}
+.field-input:focus { border-color: var(--sage); }
+.field-input.error { border-color: var(--error); }
+.field-input::placeholder { color: rgba(28,43,30,0.3); }
+.field-hint {
+  font-size: 11px;
+  color: var(--stone);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+.field-error {
+  font-size: 11px;
+  color: var(--error);
+  margin-top: 4px;
+  display: none;
+}
+.field-error.visible { display: block; }
+
+/* ── SIGNATURE FIELD ── */
+.signature-wrapper {
+  background: white;
+  border: 1px solid rgba(28,43,30,0.12);
+  padding: 20px 20px 14px;
+}
+.signature-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.signature-typed {
+  width: 100%;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--forest);
+  border: none;
+  border-bottom: 1px solid rgba(28,43,30,0.15);
+  padding: 6px 0;
+  outline: none;
+  background: transparent;
+  letter-spacing: 0.03em;
+}
+.signature-typed::placeholder {
+  color: rgba(28,43,30,0.2);
+  font-size: 22px;
+}
+.signature-typed:focus { border-bottom-color: var(--sage); }
+.signature-note {
+  font-size: 9.5px;
+  color: var(--stone);
+  letter-spacing: 0.08em;
+  margin-top: 8px;
+}
+
+/* ── DATE FIELD ── */
+.date-display {
+  background: white;
+  border: 1px solid rgba(28,43,30,0.08);
+  padding: 13px 16px;
+  font-size: 13px;
+  color: var(--text-mid);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.date-display span:last-child {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sage);
+}
+
+/* ── AGREEMENT CHECKBOX ── */
+.agree-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 18px;
+  background: white;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+.agree-row:hover { border-color: var(--sage); }
+.agree-row.checked { border-color: var(--sage); background: rgba(122,158,126,0.04); }
+.agree-checkbox {
+  width: 18px; height: 18px;
+  border: 1px solid rgba(28,43,30,0.2);
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  transition: all 0.2s;
+}
+.agree-checkbox.checked {
+  background: var(--sage);
+  border-color: var(--sage);
+}
+.agree-checkbox svg { display: none; }
+.agree-checkbox.checked svg { display: block; }
+.agree-text {
+  font-size: 12px;
+  color: var(--text-mid);
+  line-height: 1.7;
+}
+
+/* ── SUBMIT BUTTON ── */
+.submit-btn {
+  width: 100%;
+  background: var(--forest);
+  color: var(--cream);
+  border: none;
+  padding: 18px 24px;
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.submit-btn:hover { background: var(--deep); }
+.submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.submit-btn.loading { pointer-events: none; }
+.spinner {
+  width: 14px; height: 14px;
+  border: 1px solid rgba(245,240,232,0.3);
+  border-top-color: var(--cream);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: none;
+}
+.submit-btn.loading .spinner { display: block; }
+.submit-btn.loading .btn-text { opacity: 0.6; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.status-msg {
+  font-size: 11px;
+  color: var(--stone);
+  text-align: center;
+  line-height: 1.6;
+  min-height: 16px;
+}
+.status-msg.error { color: var(--error); }
+
+/* ── READ PROGRESS indicator ── */
+.read-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid var(--border);
+}
+.read-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(28,43,30,0.15);
+  flex-shrink: 0;
+  transition: background 0.4s;
+}
+.read-dot.active { background: var(--sage); }
+.read-text {
+  font-size: 10.5px;
+  color: var(--stone);
+  line-height: 1.5;
+}
+
+/* ── SUCCESS SCREEN ── */
+.success-screen {
+  display: none;
+  min-height: 60vh;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 80px 60px;
+  background: var(--forest);
+}
+.success-screen.visible { display: flex; }
+.success-icon {
+  width: 56px; height: 56px;
+  border: 1px solid rgba(122,158,126,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 28px;
+}
+.success-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40px;
+  font-weight: 300;
+  color: var(--cream);
+  margin-bottom: 14px;
+  line-height: 1.1;
+}
+.success-title em { font-style: italic; color: var(--sage-light); }
+.success-body {
+  font-size: 14px;
+  color: rgba(245,240,232,0.55);
+  line-height: 1.95;
+  max-width: 480px;
+  margin: 0 auto 36px;
+}
+.success-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-style: italic;
+  color: var(--gold-light);
+  margin-bottom: 32px;
+}
+.success-btn {
+  display: inline-block;
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--forest);
+  background: var(--gold);
+  padding: 16px 32px;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+.success-btn:hover { background: var(--gold-light); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--deep);
+  padding: 32px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(200,169,110,0.07);
+}
+.footer-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  letter-spacing: 0.15em;
+  color: var(--cream);
+  text-transform: uppercase;
+  font-weight: 300;
+}
+footer p { font-size: 10px; color: rgba(245,240,232,0.2); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .nav { padding: 0 24px; }
+  .hero { padding: 48px 24px 44px; }
+  .layout { grid-template-columns: 1fr; }
+  .agreement-panel { padding: 40px 24px; border-right: none; border-bottom: 1px solid var(--border); }
+  .signing-panel { position: relative; top: 0; height: auto; padding: 36px 24px; }
+  footer { padding: 28px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/portal" class="nav-logo">Vital Kauaʻi</a>
+  <span class="nav-badge">Membership Application</span>
+  <a href="/portal" class="nav-back">← Portal</a>
+</nav>
+
+<!-- PROGRESS -->
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="hero-eyebrow">Member Portal · Required Document</span>
+  <h1 class="hero-title">Vital Kauaʻi<br><em>Membership Agreement</em></h1>
+  <p class="hero-body">Please read the full agreement below, then complete and sign in the panel on the right. A copy will be sent to your email and held in your member record.</p>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="layout" id="mainLayout">
+
+  <!-- AGREEMENT -->
+  <div class="agreement-panel" id="agreementPanel">
+    <div class="agreement-header">
+      <p class="agreement-title">Vital Kauai · A Private Church Association</p>
+      <p class="agreement-subtitle">Membership Application & Agreement — Read in full before signing</p>
+    </div>
+
+    <div class="agreement-text">
+      <p>By becoming a member of Vital Kauai, I agree to the following terms and conditions:</p>
+
+      <div class="clause"><span class="clause-num">1</span><span class="clause-text">Vital Kauai's purpose is furthering the awakening, transformation, and vitality of people throughout the world, the betterment of life on planet Earth, and other spiritual, humanitarian, and beneficent purposes.</span></div>
+
+      <div class="clause"><span class="clause-num">2</span><span class="clause-text">Vital Kauai is a creation of free men and women to associate with each other in the private domain according to their church and talents.</span></div>
+
+      <div class="clause"><span class="clause-num">3</span><span class="clause-text">Vital Kauai is a platform on which members may, for Vital Kauai's good purpose, conduct all manner of private speech and business with Vital Kauai, members, and other associations – keeping all business in the private domain and utilizing the protections thereof.</span></div>
+
+      <div class="clause"><span class="clause-num">4</span><span class="clause-text">Vital Kauai is a private, unincorporated Church that operates outside the jurisdiction of government entities, agencies, officers, agents, contractors, and other representatives, as protected by law.</span></div>
+
+      <div class="clause"><span class="clause-num">5</span><span class="clause-text">Vital Kauai lawfully stands on the authority our Creator gives to free men and women as revealed in the holy Scriptures, the Constitution of the United States of America, and the constitutions of the several states of the union.</span></div>
+
+      <div class="clause"><span class="clause-num">6</span><span class="clause-text">Members claim the right to freedom of religion, free speech, petition, assembly, and the right to gather in association to assert our rights protected by those Constitutions, Charter, and Statutes.</span></div>
+
+      <div class="clause"><span class="clause-num">7</span><span class="clause-text">Members claim the right to be free from unreasonable search and seizure, the right to not incriminate ourselves, and the right to freely exercise all other unalienable rights as granted by our creator, our almighty God, and guaranteed by those Constitutions, Charter, and Statutes.</span></div>
+
+      <div class="clause"><span class="clause-num">8</span><span class="clause-text">Members decide for themselves which member(s) qualify to provide them counsel and advice concerning all matters, including but not limited to physical, mental, emotional, spiritual, healthcare, law, and any other matter, and may contract for counsel, advice, services, etc. they believe assist their ministry through Vital Kauai.</span></div>
+
+      <div class="clause"><span class="clause-num">9</span><span class="clause-text">Members have the freedom to choose and perform for ourselves the types of therapies and treatments we think best for diagnosing, treating, and preventing illness and disease and for achieving and maintaining optimum wellness, as well as the freedom to choose any types of assistance in lawful matters and any other private business activity.</span></div>
+
+      <div class="clause"><span class="clause-num">10</span><span class="clause-text">Vital Kauai will recognize as a member any person(s), natural or otherwise (irrespective of race, color, or religion) who has joined Vital Kauai or its social media groups and has agreed to the terms of membership, providing said person has not been sanctioned, exercised, or otherwise banned by Vital Kauai.</span></div>
+
+      <div class="clause"><span class="clause-num">11</span><span class="clause-text">Vital Kauai's stewards, or their designee, may at any time terminate my membership should they conclude I am interacting with them or other members in a way that is contrary or detrimental to the focus, principles, and betterment of Vital Kauai.</span></div>
+
+      <div class="clause"><span class="clause-num">12</span><span class="clause-text">Vital Kauai is protected by the First and Fourteenth Amendments to the U.S. Constitution and outside the jurisdiction and authority of Federal and State Agencies and Authorities concerning complaints or grievances against Vital Kauai, members, or other staff persons. All rights of complaints or grievances will be settled by a Vital Kauai designee, committee, or tribunal and will be waived by the member for the benefit of Vital Kauai and its members.</span></div>
+
+      <div class="clause"><span class="clause-num">13</span><span class="clause-text">Vital Kauai and member activity is under common law rather than statutory law or regulatory law, which are creations of public government for the public.</span></div>
+
+      <div class="clause"><span class="clause-num">14</span><span class="clause-text">In my relations as a member, I voluntarily change my capacity from that of a public person to that of a private member.</span></div>
+
+      <div class="clause"><span class="clause-num">15</span><span class="clause-text">My activities within Vital Kauai are matters of private contracts that I refuse to share with Local, State, or Federal investigative or enforcement agencies. I agree not to pursue legal action against a fellow member of Vital Kauai unless that member has exposed me to a clear and present danger of substantive harm and upon the recommendation and approval of Vital Kauai.</span></div>
+
+      <div class="clause"><span class="clause-num">16</span><span class="clause-text">I do not, and will not while a member, represent any Local, State or Federal agency whose purpose is to regulate and approve products or services or to conduct any mission of enforcement, entrapment, or investigation.</span></div>
+
+      <div class="clause"><span class="clause-num">17</span><span class="clause-text">I may, by written notice to Vital Kauai, withdraw from this agreement and terminate membership at any time. I will not misrepresent myself as being a member beyond the term of my membership.</span></div>
+
+      <div class="clause"><span class="clause-num">18</span><span class="clause-text">Vital Kauai may revoke my membership if I engage in abusive, violent, menacing, destructive or harassing behavior towards any other member of Vital Kauai.</span></div>
+
+      <div class="clause"><span class="clause-num">19</span><span class="clause-text">These pages consist of the entire agreement for membership in Vital Kauai.</span></div>
+
+      <div class="clause"><span class="clause-num">20</span><span class="clause-text">I enter into this agreement freely, without duress or coercion.</span></div>
+
+      <div class="clause"><span class="clause-num">21</span><span class="clause-text">I hereby exercise my right of "freedom of association" as guaranteed by the Universal Declaration of Human Rights (UDHR), the U.S. Constitution, and equivalent provisions of the various State Constitutions.</span></div>
+
+      <div class="clause"><span class="clause-num">22</span><span class="clause-text">I agree this contract began on the date of my joining Vital Kauai. I declare that by joining Vital Kauai and/or Vital Kauai's websites and/or social media group(s), I have carefully read this document and I understand and agree with it.</span></div>
+    </div>
+  </div>
+
+  <!-- SIGNING SIDEBAR -->
+  <div class="signing-panel" id="signingPanel">
+
+    <div class="read-indicator" id="readIndicator">
+      <div class="read-dot" id="readDot"></div>
+      <p class="read-text" id="readText">Scroll through the full agreement to unlock signing</p>
+    </div>
+
+    <div>
+      <span class="signing-section-label">Your Information</span>
+      <div class="field-group">
+        <div>
+          <label class="field-label" for="fullName">Full Legal Name</label>
+          <input class="field-input" id="fullName" type="text" placeholder="As it appears on your ID" autocomplete="name">
+          <p class="field-error" id="nameError">Please enter your full legal name</p>
+        </div>
+        <div>
+          <label class="field-label" for="email">Email Address</label>
+          <input class="field-input" id="email" type="email" placeholder="your@email.com" autocomplete="email">
+          <p class="field-error" id="emailError">Please enter a valid email address</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <span class="signing-section-label">Your Signature</span>
+      <div class="signature-wrapper">
+        <div class="signature-label-row">
+          <span style="font-size:8.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--stone);">Type your full name to sign</span>
+        </div>
+        <input class="signature-typed" id="signatureField" type="text" placeholder="Your signature" autocomplete="off" spellcheck="false">
+        <p class="signature-note">By typing your name above, you are providing a legally binding electronic signature</p>
+      </div>
+      <p class="field-error" id="sigError">Signature must match the full name above</p>
+    </div>
+
+    <div>
+      <span class="signing-section-label">Date</span>
+      <div class="date-display">
+        <span id="todayDate">—</span>
+        <span>Auto-filled</span>
+      </div>
+    </div>
+
+    <div id="agreeRow" class="agree-row" onclick="toggleAgree()">
+      <div class="agree-checkbox" id="agreeCheck">
+        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+          <path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <p class="agree-text">I have read the full agreement, understand its terms, and enter into this membership freely and without duress.</p>
+    </div>
+
+    <div>
+      <button class="submit-btn" id="submitBtn" onclick="handleSubmit()" disabled>
+        <div class="spinner"></div>
+        <span class="btn-text">Complete &amp; Sign Membership</span>
+      </button>
+      <p class="status-msg" id="statusMsg">Complete all fields above to submit</p>
+    </div>
+
+    <div style="border-top:1px solid var(--border);padding-top:20px;">
+      <p style="font-size:10.5px;color:var(--stone);line-height:1.7;">A confirmation copy will be sent to your email. Your signed agreement is stored securely in your Vital Kauaʻi member record.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- SUCCESS SCREEN -->
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">
+    <svg width="22" height="18" viewBox="0 0 22 18" fill="none">
+      <path d="M1 9L7.5 15.5L21 1" stroke="#7A9E7E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <h2 class="success-title">Welcome to<br><em>Vital Kauaʻi</em></h2>
+  <p class="success-name" id="successName"></p>
+  <p class="success-body">Your membership agreement has been signed and recorded. A confirmation has been sent to your email. You are now a member of the Vital Kauaʻi private association.</p>
+  <a href="/portal" class="success-btn">Return to Your Portal</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p class="footer-logo">Vital Kauaʻi</p>
+  <p>Private Church Association · Membership Agreement<br>aloha&#64;vitalkauai.com<br>© 2026 Vital Kauai Church · PO Box 932, Hanalei, HI 96714<br>All original content is protected by U.S. copyright law. Reproduction without written permission prohibited.</p>
+</footer>
+
+<script>
+// ── DATE ──
+const now = new Date();
+const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+document.getElementById('todayDate').textContent = dateStr;
+
+// ── READ PROGRESS ──
+let hasScrolled = false;
+const agreementPanel = document.getElementById('agreementPanel');
+const readDot = document.getElementById('readDot');
+const readText = document.getElementById('readText');
+const progressFill = document.getElementById('progressFill');
+
+window.addEventListener('scroll', () => {
+  const panel = agreementPanel;
+  const rect = panel.getBoundingClientRect();
+  const panelBottom = panel.offsetTop + panel.offsetHeight;
+  const scrolled = window.scrollY + window.innerHeight;
+  const progress = Math.min(100, Math.max(0, ((scrolled - panel.offsetTop) / panel.offsetHeight) * 100));
+  progressFill.style.width = progress + '%';
+
+  if (progress >= 92 && !hasScrolled) {
+    hasScrolled = true;
+    readDot.classList.add('active');
+    readText.textContent = 'Agreement read — ready to sign';
+    readText.style.color = 'var(--sage)';
+  }
+});
+
+// ── AGREE TOGGLE ──
+let agreed = false;
+function toggleAgree() {
+  agreed = !agreed;
+  document.getElementById('agreeRow').classList.toggle('checked', agreed);
+  document.getElementById('agreeCheck').classList.toggle('checked', agreed);
+  validateForm();
+}
+
+// ── VALIDATION ──
+function validateForm() {
+  const name = document.getElementById('fullName').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const sig = document.getElementById('signatureField').value.trim();
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const ready = name.length > 2 && emailOk && sig.length > 2 && agreed;
+  document.getElementById('submitBtn').disabled = !ready;
+  if (ready) {
+    document.getElementById('statusMsg').textContent = 'Ready to submit — click to sign';
+    document.getElementById('statusMsg').className = 'status-msg';
+  }
+}
+
+['fullName', 'email', 'signatureField'].forEach(id => {
+  document.getElementById(id).addEventListener('input', validateForm);
+});
+
+// ── SUBMIT ──
+async function handleSubmit() {
+  const fullName = document.getElementById('fullName').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const signature = document.getElementById('signatureField').value.trim();
+  const signedAt = new Date().toISOString();
+
+  // Basic validation
+  let valid = true;
+  if (fullName.length < 2) {
+    document.getElementById('fullName').classList.add('error');
+    document.getElementById('nameError').classList.add('visible');
+    valid = false;
+  }
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if (!emailOk) {
+    document.getElementById('email').classList.add('error');
+    document.getElementById('emailError').classList.add('visible');
+    valid = false;
+  }
+  if (!valid) return;
+
+  // Loading state
+  const btn = document.getElementById('submitBtn');
+  const status = document.getElementById('statusMsg');
+  btn.classList.add('loading');
+  btn.disabled = true;
+  status.textContent = 'Submitting your agreement…';
+
+  const payload = {
+    fullName,
+    email,
+    signature,
+    signedAt,
+    dateDisplay: dateStr,
+    agreementVersion: 'VK-MEMBERSHIP-V1',
+  };
+
+  try {
+    // ── AIRTABLE ──
+    // TO ACTIVATE: Replace YOUR_AIRTABLE_PAT and YOUR_BASE_ID and YOUR_TABLE_NAME
+    // const airtableRes = await fetch('https://api.airtable.com/v0/YOUR_BASE_ID/YOUR_TABLE_NAME', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Authorization': 'Bearer YOUR_AIRTABLE_PAT',
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify({
+    //     fields: {
+    //       'Full Name': fullName,
+    //       'Email': email,
+    //       'Signature': signature,
+    //       'Signed At': signedAt,
+    //       'Agreement Version': 'VK-MEMBERSHIP-V1',
+    //       'Status': 'Signed'
+    //     }
+    //   })
+    // });
+
+    // ── EMAIL via Netlify Function ──
+    // TO ACTIVATE: Deploy netlify/functions/send-confirmation.js (see companion file)
+    // const emailRes = await fetch('/.netlify/functions/send-confirmation', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(payload)
+    // });
+
+    // ── PROTOTYPE MODE: simulate success after 1.2s ──
+    await new Promise(r => setTimeout(r, 1200));
+
+    // Show success
+    document.getElementById('mainLayout').style.display = 'none';
+    document.getElementById('successName').textContent = signature;
+    document.getElementById('successScreen').classList.add('visible');
+    window.scrollTo(0, 0);
+
+  } catch (err) {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    status.textContent = 'Something went wrong — please try again or contact us directly.';
+    status.className = 'status-msg error';
+  }
+}
+
+// ── INPUT CLEANUP ──
+['fullName', 'email'].forEach(id => {
+  document.getElementById(id).add

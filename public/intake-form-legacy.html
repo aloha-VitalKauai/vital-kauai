@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iboga Journey Intake Form — Vital Kauaʻi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --forest: #1C2B1E;
+  --deep: #0E1A10;
+  --sage: #7A9E7E;
+  --sage-light: #A8C5AC;
+  --gold: #C8A96E;
+  --gold-light: #E2CFA0;
+  --cream: #F5F0E8;
+  --warm-white: #FDFBF7;
+  --stone: #8B8070;
+  --text-dark: #1A1A18;
+  --text-mid: #3D3D38;
+  --rose: #C4846A;
+  --border: rgba(28,43,30,0.1);
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm-white); color: var(--text-dark); overflow-x: hidden; }
+.nav { position: sticky; top: 0; z-index: 50; background: rgba(14,26,16,0.97); backdrop-filter: blur(14px); padding: 0 60px; height: 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(200,169,110,0.08); }
+.nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 300; letter-spacing: 0.2em; color: var(--cream); text-transform: uppercase; text-decoration: none; }
+.nav-badge { font-size: 8.5px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(200,169,110,0.22); padding: 5px 14px; }
+.nav-back { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,240,232,0.4); text-decoration: none; transition: color 0.3s; }
+.nav-back:hover { color: rgba(245,240,232,0.8); }
+.hero { background: var(--forest); padding: 72px 60px 68px; position: relative; overflow: hidden; }
+.hero::after { content: ''; position: absolute; top: 0; right: 0; width: 500px; height: 100%; background: radial-gradient(ellipse at right, rgba(122,158,126,0.07) 0%, transparent 70%); }
+.hero-inner { position: relative; z-index: 1; max-width: 780px; }
+.hero-eyebrow { font-size: 9px; letter-spacing: 0.42em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 16px; }
+.hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(34px, 4vw, 54px); font-weight: 300; color: var(--cream); line-height: 1.08; margin-bottom: 16px; }
+.hero-title em { font-style: italic; color: var(--sage-light); }
+.hero-body { font-size: 14.5px; color: rgba(245,240,232,0.58); line-height: 1.9; max-width: 600px; }
+.progress-bar { background: white; border-bottom: 1px solid var(--border); padding: 14px 60px; display: flex; align-items: center; gap: 16px; position: sticky; top: 60px; z-index: 40; }
+.progress-label { font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--stone); white-space: nowrap; }
+.progress-track { flex: 1; height: 2px; background: rgba(28,43,30,0.08); }
+.progress-fill { height: 100%; background: var(--sage); width: 0%; transition: width 0.4s ease; }
+.progress-pct { font-size: 9px; letter-spacing: 0.2em; color: var(--stone); white-space: nowrap; }
+.form-wrap { max-width: 840px; margin: 0 auto; padding: 0 60px 120px; }
+.form-section { padding: 64px 0; border-bottom: 1px solid var(--border); }
+.form-section:last-of-type { border-bottom: none; }
+.fs-eyebrow { font-size: 8.5px; letter-spacing: 0.44em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 10px; }
+.fs-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(26px, 3vw, 38px); font-weight: 300; color: var(--text-dark); line-height: 1.1; margin-bottom: 10px; }
+.fs-title em { font-style: italic; color: var(--sage); }
+.fs-desc { font-size: 13px; color: var(--stone); line-height: 1.85; max-width: 620px; margin-bottom: 36px; }
+.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.field-group { display: flex; flex-direction: column; gap: 7px; }
+.field-full { grid-column: 1 / -1; }
+.field-label { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dark); font-weight: 400; }
+.field-hint { font-size: 12px; color: var(--stone); line-height: 1.7; font-style: italic; margin-top: -2px; }
+.field-input { width: 100%; padding: 13px 15px; background: white; border: 1px solid var(--border); border-left: 2px solid var(--sage-light); font-family: 'Jost', sans-serif; font-size: 13.5px; font-weight: 300; color: var(--text-dark); outline: none; transition: border-color 0.3s; }
+.field-input:focus { border-color: var(--sage); border-left-color: var(--sage); }
+.field-textarea { width: 100%; min-height: 110px; padding: 13px 15px; background: white; border: 1px solid var(--border); border-left: 2px solid var(--sage-light); font-family: 'Jost', sans-serif; font-size: 13.5px; font-weight: 300; color: var(--text-dark); line-height: 1.8; resize: vertical; outline: none; transition: border-color 0.3s; }
+.field-textarea.tall { min-height: 160px; }
+.field-textarea:focus { border-color: var(--sage); border-left-color: var(--sage); }
+.field-input::placeholder, .field-textarea::placeholder { color: rgba(28,43,30,0.22); font-style: italic; }
+.choice-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid var(--border); cursor: pointer; transition: all 0.2s; user-select: none; }
+.choice-item:hover { border-color: rgba(122,158,126,0.3); background: rgba(122,158,126,0.03); }
+.choice-item.chosen { border-color: var(--sage); background: rgba(122,158,126,0.06); }
+.choice-dot { width: 14px; height: 14px; border: 1px solid rgba(28,43,30,0.2); flex-shrink: 0; transition: all 0.2s; }
+.choice-item.chosen .choice-dot { background: var(--sage); border-color: var(--sage); }
+.choice-text { font-size: 13px; color: var(--text-mid); }
+.safety-note { background: rgba(122,158,126,0.06); border: 1px solid rgba(122,158,126,0.15); border-left: 3px solid var(--sage); padding: 20px 24px; margin-bottom: 28px; font-size: 13px; color: var(--text-mid); line-height: 1.8; }
+.ack-block { background: #F3EEE6; padding: 40px 44px; margin-top: 8px; }
+.ack-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--text-dark); margin-bottom: 24px; }
+.ack-items { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+.ack-item { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; font-size: 13px; color: var(--text-mid); line-height: 1.7; padding: 4px 0; }
+.ack-box { width: 18px; height: 18px; border: 1px solid rgba(28,43,30,0.2); flex-shrink: 0; margin-top: 2px; transition: all 0.2s; }
+.ack-box.checked { background: var(--sage); border-color: var(--sage); }
+.ack-church { border: 1px solid rgba(200,169,110,0.22); background: rgba(200,169,110,0.05); padding: 16px; }
+.sig-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 32px; }
+.sig-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--stone); margin-bottom: 8px; }
+.sig-input { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-bottom: 2px solid var(--sage); background: white; font-family: 'Jost', sans-serif; font-size: 14px; font-weight: 300; color: var(--text-dark); outline: none; }
+.sig-input::placeholder { color: rgba(28,43,30,0.2); font-style: italic; }
+.submit-area { text-align: center; padding: 48px 0 0; }
+.submit-note { font-size: 13px; color: var(--stone); line-height: 1.8; margin-bottom: 24px; max-width: 500px; margin-left: auto; margin-right: auto; }
+.btn-submit { font-family: 'Jost', sans-serif; font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; padding: 18px 52px; background: var(--forest); color: var(--cream); border: none; cursor: pointer; transition: background 0.3s; }
+.btn-submit:hover { background: var(--deep); }
+#success-msg { display: none; text-align: center; padding: 80px 60px; }
+#success-msg h2 { font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 300; color: var(--text-dark); margin-bottom: 16px; }
+#success-msg h2 em { font-style: italic; color: var(--sage); }
+#success-msg p { font-size: 14px; color: var(--stone); line-height: 1.9; max-width: 480px; margin: 0 auto; }
+footer { background: var(--deep); padding: 40px 60px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(200,169,110,0.07); }
+.footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 17px; letter-spacing: 0.15em; color: var(--cream); text-transform: uppercase; font-weight: 300; }
+footer p { font-size: 11px; color: rgba(245,240,232,0.22); line-height: 1.7; text-align: right; }
+footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
+@media (max-width: 900px) {
+  .nav, .progress-bar { padding: 0 28px; }
+  .hero { padding: 56px 28px; }
+  .form-wrap { padding: 0 28px 80px; }
+  .field-grid { grid-template-columns: 1fr; }
+  .sig-grid { grid-template-columns: 1fr; }
+  footer { padding: 32px 28px; flex-direction: column; gap: 14px; }
+  footer p { text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/portal" class="nav-logo">Vital Kauaʻi</a>
+  <span class="nav-badge">Iboga Journey Intake</span>
+  <a href="/portal" class="nav-back">← Return to Portal</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <span class="hero-eyebrow">Client Portal · Iboga Journey</span>
+    <h1 class="hero-title">Participant Intake<br><em>& Readiness Form</em></h1>
+    <p class="hero-body">Please complete this form honestly and at your own pace. Every answer is welcome here — this is the beginning of us truly knowing you, so we can offer care that is attuned, ethical, and wholly responsive to who you are.</p>
+  </div>
+</div>
+
+<div class="progress-bar">
+  <span class="progress-label">Form completion</span>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <span class="progress-pct" id="progressPct">0%</span>
+</div>
+
+<div class="form-wrap">
+<form id="intakeForm" novalidate>
+
+<div class="form-section">
+  <span class="fs-eyebrow">Section 1</span>
+  <h2 class="fs-title">Basic <em>Information</em></h2>
+  <p class="fs-desc">All information shared here is held in strict confidence and used solely to support your care.</p>
+  <div class="field-grid">
+    <div class="field-group">
+      <label class="field-label">Full Legal Name <span style="color:var(--rose)">*</span></label>
+      <input type="text" class="field-input tracked" placeholder="As it appears on your ID">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Preferred Name / Pronouns</label>
+      <input type="text" class="field-input tracked" placeholder="What we call you, your pronouns">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Date of Birth <span style="color:var(--rose)">*</span></label>
+      <input type="date" class="field-input tracked">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Location <span style="color:var(--rose)">*</span></label>
+      <input type="text" class="field-input tracked" placeholder="City, Country">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Email Address <span style="color:var(--rose)">*</span></label>
+      <input type="email" class="field-input tracked" placeholder="Your email">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Phone Number <span style="color:var(--rose)">*</span></label>
+      <input type="tel" class="field-input tracked" placeholder="Including country code">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Emergency Contact Name <span style="color:var(--rose)">*</span></label>
+      <input type="text" class="field-input tracked" placeholder="Full name">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Emergency Contact Phone <span style="color:var(--rose)">*</span></label>
+      <input type="tel" class="field-input tracked" placeholder="Phone number + relationship">
+    </div>
+  </div>
+</div>
+
+<div class="form-section">
+  <span class="fs-eyebrow">Section 2</span>
+  <h2 class="fs-title">Intention & <em>Orientation</em></h2>
+  <p class="fs-desc">Take your time with these. They are the most important questions on this form — and the beginning of your preparation.</p>
+  <div class="field-grid">
+    <div class="field-group field-full">
+      <label class="field-label">What is calling you to this work at this time? <span style="color:var(--rose)">*</span></label>
+      <textarea class="field-textarea tall tracked" placeholder="What has brought you here — be as specific or as open as feels right..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">What qualities, changes, or capacities are you hoping to cultivate?</label>
+      <textarea class="field-textarea tracked" placeholder="What would you like to grow into, release, or come home to..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">If you had a magic wand and could create your ideal life — what would that look and feel like?</label>
+      <textarea class="field-textarea tracked" placeholder="Be generous with yourself here..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">What do you feel is your purpose or mission in life?</label>
+      <p class="field-hint">Even a partial or uncertain answer is welcome.</p>
+      <textarea class="field-textarea tracked" placeholder="As you understand it right now..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">How do you relate to sacred practice, ceremony, or spiritual inquiry?</label>
+      <p class="field-hint">What practices do you currently hold? What is your relationship with the unseen?</p>
+      <textarea class="field-textarea tracked" placeholder="Meditation, prayer, nature, movement — all are welcome..."></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="form-section">
+  <span class="fs-eyebrow">Section 3</span>
+  <h2 class="fs-title">Body & <em>Somatic Awareness</em></h2>
+  <p class="fs-desc">Your relationship with your body is foundational to the work we do together. Every answer is welcome here.</p>
+  <div class="field-grid">
+    <div class="field-group field-full">
+      <label class="field-label">How would you describe your current relationship with your body?</label>
+      <p class="field-hint">How do you care for it? How well do you listen to it?</p>
+      <textarea class="field-textarea tracked" placeholder="Comfortable, disconnected, in process — describe what is true..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">What current physical symptoms, sensitivities, or limitations do you experience?</label>
+      <textarea class="field-textarea tracked" placeholder="Chronic pain, fatigue, digestive issues, sensory sensitivities, anything relevant..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">What helps you feel safe, regulated, and grounded?</label>
+      <p class="field-hint">Movement, nature, music, breath, touch, solitude — whatever brings you back to yourself.</p>
+      <textarea class="field-textarea tracked" placeholder="What are your anchors?"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="form-section">
+  <span class="fs-eyebrow">Section 4</span>
+  <h2 class="fs-title">Emotional & <em>Psycho-Spiritual Context</em></h2>
+  <p class="fs-desc">This section asks for honest reflection. Everything you share here supports your safety and the quality of our care.</p>
+  <div class="field-grid">
+    <div class="field-group field-full">
+      <label class="field-label">What emotional patterns or experiences are most present in your life right now?</label>
+      <textarea class="field-textarea tracked" placeholder="Anxiety, grief, numbness, anger, joy, confusion — describe what is alive..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">What trauma — major or minor — have you experienced? What are your biggest stressors? Have you experienced significant loss?</label>
+      <p class="field-hint">Share only what feels right at this stage. You will have space to go deeper in conversation with us.</p>
+      <textarea class="field-textarea tall tracked" placeholder="Take your time with this one..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">Are you currently working with a therapist, coach, or healer?</label>
+      <textarea class="field-textarea tracked" placeholder="If yes, describe the modality and how long you have been working together..."></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="form-section">
+  <span class="fs-eyebrow">Section 5</span>
+  <h2 class="fs-title">Experience & <em>History</em></h2>
+  <p class="fs-desc">Understanding where you have been helps us meet you where you are.</p>
+  <div class="field-grid">
+    <div class="field-group field-full">
+      <label class="field-label">What personal growth, healing, or development work have you done?</label>
+      <p class="field-hint">Programs, trainings, certifications, therapy modalities, retreats, educational paths.</p>
+      <textarea class="field-textarea tracked" placeholder="Formal or informal — all of it counts..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">Have you participated in ceremony, plant medicine, or altered-state practices before? <span style="color:var(--rose)">*</span></label>
+      <p class="field-hint">Please be specific — substance, setting, number of times, your experience.</p>
+      <textarea class="field-textarea tall tracked" placeholder="Ayahuasca, psilocybin, iboga, cannabis ceremonies, breathwork, holotropic states, etc..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">Briefly describe your childhood and relationship with your primary caregivers.</label>
+      <p class="field-hint">Were you breastfed? Were your emotional needs generally met? Any significant early experiences worth noting?</p>
+      <textarea class="field-textarea tall tracked" placeholder="A few sentences is enough — this gives us important context..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">What has supported your integration after healing work in the past?</label>
+      <p class="field-hint">What helps you digest and ground new experiences?</p>
+      <textarea class="field-textarea tracked" placeholder="Nature, journaling, community, somatic practices, time alone..."></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="form-section">
+  <span class="fs-eyebrow">Section 6</span>
+  <h2 class="fs-title">Health & <em>Safety Disclosure</em></h2>
+  <p class="fs-desc">Complete and honest disclosure here is essential — for your safety and for the integrity of the work. Everything you share will be received with care, and nothing will end the conversation before it begins.</p>
+  <div class="safety-note">
+    Iboga is a powerful medicine with specific cardiac and drug interaction considerations. The more complete your disclosure here, the more precisely we can prepare with you and, where needed, coordinate with your physician before arrival.
+  </div>
+  <div class="field-grid">
+    <div class="field-group field-full">
+      <label class="field-label">Please list any relevant medical or health conditions, challenges, or concerns <span style="color:var(--rose)">*</span></label>
+      <p class="field-hint">Include physical, mental, and neurological. Include anything currently managed or historical.</p>
+      <textarea class="field-textarea tall tracked" placeholder="Cardiac conditions, seizure history, psychiatric diagnoses, autoimmune conditions, chronic illness, etc. Write 'none known' if applicable..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">Please list all medications and supplements you are currently taking <span style="color:var(--rose)">*</span></label>
+      <p class="field-hint">Include dose and frequency. SSRIs, MAOIs, antipsychotics, and psychiatric medications are particularly important to disclose for iboga work.</p>
+      <textarea class="field-textarea tall tracked" placeholder="Name, dose, frequency — write 'none' if not applicable..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">Are there any contraindications or health considerations specific to iboga we should know about? <span style="color:var(--rose)">*</span></label>
+      <p class="field-hint">Heart conditions, prolonged QT interval, liver concerns, history of psychosis, recent substance use — please be thorough.</p>
+      <textarea class="field-textarea tracked" placeholder="Share anything that feels relevant — more is always better here..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">How would you describe your current mental and emotional health?</label>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
+        <div class="choice-item" style="flex:1;min-width:140px;" onclick="toggleChoice(this,'radio','mental-health')">
+          <div class="choice-dot"></div><span class="choice-text">Stable and well</span>
+        </div>
+        <div class="choice-item" style="flex:1;min-width:140px;" onclick="toggleChoice(this,'radio','mental-health')">
+          <div class="choice-dot"></div><span class="choice-text">In process — some difficulty</span>
+        </div>
+        <div class="choice-item" style="flex:1;min-width:140px;" onclick="toggleChoice(this,'radio','mental-health')">
+          <div class="choice-dot"></div><span class="choice-text">Navigating something significant</span>
+        </div>
+        <div class="choice-item" style="flex:1;min-width:140px;" onclick="toggleChoice(this,'radio','mental-health')">
+          <div class="choice-dot"></div><span class="choice-text">In crisis or acute distress</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="form-section">
+  <span class="fs-eyebrow">Section 7</span>
+  <h2 class="fs-title">Support & <em>Environment</em></h2>
+  <p class="fs-desc">Integration happens in the context of your life. Understanding your environment helps us prepare you well.</p>
+  <div class="field-grid">
+    <div class="field-group field-full">
+      <label class="field-label">What support systems do you have in your life right now?</label>
+      <p class="field-hint">Friends, family, community, professional support — who is in your corner?</p>
+      <textarea class="field-textarea tracked" placeholder="Describe what is available to you..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">Who are the people in your life who will hold space for you when you return home?</label>
+      <p class="field-hint">Integration is richest when it happens in community. Even one person makes a real difference. If you are still identifying the right people, we love helping with that too.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;margin-bottom:16px;">
+        <div class="choice-item" style="flex:1;min-width:180px;" onclick="toggleChoice(this,'radio','support-person')">
+          <div class="choice-dot"></div><span class="choice-text">I have one person in mind</span>
+        </div>
+        <div class="choice-item" style="flex:1;min-width:180px;" onclick="toggleChoice(this,'radio','support-person')">
+          <div class="choice-dot"></div><span class="choice-text">I have a few people in mind</span>
+        </div>
+        <div class="choice-item" style="flex:1;min-width:180px;" onclick="toggleChoice(this,'radio','support-person')">
+          <div class="choice-dot"></div><span class="choice-text">I would love help identifying someone</span>
+        </div>
+      </div>
+      <textarea class="field-textarea tracked" placeholder="Tell us who you are thinking of — or tell us a little about your community and we will explore together..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">What would your ideal integration support look like after the journey?</label>
+      <textarea class="field-textarea tracked" placeholder="What do you know about what helps you land and integrate after deep work?"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="form-section">
+  <span class="fs-eyebrow">Section 8</span>
+  <h2 class="fs-title">Readiness & <em>Sovereignty</em></h2>
+  <p class="fs-desc">These questions help us understand how you navigate intensity and care for yourself when things get hard.</p>
+  <div class="field-grid">
+    <div class="field-group field-full">
+      <label class="field-label">What helps you know when you are ready for deep inner work?</label>
+      <textarea class="field-textarea tracked" placeholder="What internal signals, conditions, or preparations tell you the timing is right?"></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">How do you care for yourself when intensity or difficulty arises?</label>
+      <textarea class="field-textarea tracked" placeholder="What are your practices, go-to anchors, or sources of support when things get hard?"></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">What boundaries or needs would you like us to be aware of before we begin?</label>
+      <p class="field-hint">Physical, emotional, relational, communication style — anything that supports you feeling safe and met.</p>
+      <textarea class="field-textarea tracked" placeholder="Everything is welcome here..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">Is there anything else you would like your care team to know before your first preparation call?</label>
+      <textarea class="field-textarea tracked" placeholder="Anything that did not have a clear home in the form above..."></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="form-section">
+  <span class="fs-eyebrow">Section 9</span>
+  <h2 class="fs-title">Arrival & <em>Practical Needs</em></h2>
+  <p class="fs-desc">A few practical questions so we can prepare your stay with care and intention.</p>
+  <div class="field-grid">
+    <div class="field-group field-full">
+      <label class="field-label">Dietary Preferences & Restrictions</label>
+      <p class="field-hint">All meals are prepared fresh and tailored to your preparation protocol. Share anything we should know — allergies, intolerances, ethical choices, or preferences. Everything is relevant.</p>
+      <textarea class="field-textarea tall tracked" placeholder="e.g. gluten-free, nut allergy, vegan, no pork, intermittent fasting, specific dislikes..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">Accommodation Requests</label>
+      <p class="field-hint">Our accommodations are crafted for rest, privacy, and deep integration. Share any specific needs — physical, sensory, relational, or otherwise.</p>
+      <textarea class="field-textarea tracked" placeholder="e.g. ground-floor room, extra quiet space, preference for solitude, sharing with a partner..."></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="form-section" style="border-bottom:none;padding-bottom:0;">
+  <span class="fs-eyebrow">Acknowledgment & Agreement</span>
+  <h2 class="fs-title">Before You <em>Submit</em></h2>
+  <p class="fs-desc">Please read and confirm each of the following before submitting your form.</p>
+
+  <div class="ack-block">
+    <h3 class="ack-title">I acknowledge and agree:</h3>
+    <div class="ack-items">
+      <div class="ack-item" onclick="toggleAck(this)">
+        <div class="ack-box"></div>
+        <span>My participation is voluntary and fully sovereign — I may pause, ask questions, or step back at any time.</span>
+      </div>
+      <div class="ack-item" onclick="toggleAck(this)">
+        <div class="ack-box"></div>
+        <span>I am responsible for honest and complete disclosure. Withholding information that affects my health or safety could affect the care I receive.</span>
+      </div>
+      <div class="ack-item" onclick="toggleAck(this)">
+        <div class="ack-box"></div>
+        <span>This intake supports care and preparation — it is the beginning of a conversation, held alongside and in support of any medical advice I receive.</span>
+      </div>
+      <div class="ack-item" onclick="toggleAck(this)">
+        <div class="ack-box"></div>
+        <span>I understand the importance of medical preparation and will complete all required lab work and screenings before my arrival date.</span>
+      </div>
+      <div class="ack-item" onclick="toggleAck(this)">
+        <div class="ack-box"></div>
+        <span>I will disclose all medications and supplements, and will follow any discontinuation guidance provided by Rachel, Josh, and my own physician.</span>
+      </div>
+      <div class="ack-item" onclick="toggleAck(this)">
+        <div class="ack-box"></div>
+        <span>I understand that all information I share is held in confidence and used solely to support my care and preparation.</span>
+      </div>
+      <div class="ack-item ack-church" onclick="toggleAck(this)">
+        <div class="ack-box"></div>
+        <span><strong style="color:var(--gold);font-weight:400;">Church Membership Agreement:</strong> Iboga work takes place within a church context. As part of my journey, I will receive a Church Membership Agreement from Vital Kauaʻi. I agree to read it thoughtfully, sign it, and return it before my arrival date.</span>
+      </div>
+    </div>
+
+    <div class="sig-grid">
+      <div>
+        <p class="sig-label">Full Name <span style="color:var(--rose)">*</span></p>
+        <input type="text" class="sig-input tracked" placeholder="Type your full name">
+      </div>
+      <div>
+        <p class="sig-label">Signature (type to sign) <span style="color:var(--rose)">*</span></p>
+        <input type="text" class="sig-input tracked" placeholder="Type your name as your signature" style="font-style:italic;">
+      </div>
+      <div>
+        <p class="sig-label">Date <span style="color:var(--rose)">*</span></p>
+        <input type="date" class="sig-input tracked" id="sigDate">
+      </div>
+    </div>
+  </div>
+
+  <div class="submit-area">
+    <p class="submit-note">Once submitted, your form will be reviewed personally and we will reach out within 2–3 days to schedule your preparation call. Thank you for your honesty and trust.</p>
+    <button type="button" class="btn-submit" onclick="submitForm()">Submit Intake Form</button>
+    <p style="font-size:11px;color:var(--stone);margin-top:16px;">Questions before submitting? <a href="mailto:aloha@vitalkauai.com" style="color:var(--sage);text-decoration:none;">aloha@vitalkauai.com</a></p>
+  </div>
+</div>
+
+</form>
+
+<div id="success-msg">
+  <h2>Received with <em>Gratitude</em></h2>
+  <p>Thank you for the trust and care you brought to this form. Your care team will reach out within 2–3 days. In the meantime, return to your portal to continue your preparation.</p>
+  <br><br>
+  <a href="/portal" style="font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);text-decoration:none;">Return to Portal</a>
+</div>
+
+</div>
+
+<footer>
+  <p class="footer-logo">Vital Kauaʻi</p>
+  <p>© 2026 Vital Kauai Church · All original content protected by U.S. copyright law. Reproduction without written permission prohibited.<br><a href="/portal">Return to Portal</a></p>
+</footer>
+
+<script>
+function toggleChoice(el, type, group) {
+  if (type === 'radio') {
+    document.querySelectorAll('[onclick*="' + "'" + group + "'" + '"]').forEach(c => c.classList.remove('chosen'));
+  }
+  el.classList.toggle('chosen');
+  updateProgress();
+}
+function toggleAck(el) {
+  el.querySelector('.ack-box').classList.toggle('checked');
+  updateProgress();
+}
+function updateProgress() {
+  const tracked = document.querySelectorAll('.tracked');
+  let filled = 0;
+  tracked.forEach(el => { if (el.value && el.value.trim().length > 0) filled++; });
+  const pct = Math.round((filled / tracked.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+}
+document.querySelectorAll('.tracked').forEach(el => { el.addEventListener('input', updateProgress); });
+const sigDate = document.getElementById('sigDate');
+if (sigDate) sigDate.value = new Date().toISOString().split('T')[0];
+function submitForm() {
+  const acks = document.querySelectorAll('.ack-box');
+  let allChecked = true;
+  acks.forEach(a => { if (!a.classList.contains('checked')) allChecked = false; });
+  if (!allChecked) { alert('Please confirm all acknowledgment items before submitting.'); return; }
+  document.getElementById('intakeForm').style.display = 'none';
+  document.getElementById('success-msg').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

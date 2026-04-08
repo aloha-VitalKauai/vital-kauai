@@ -1,0 +1,233 @@
+export type MemberCategory =
+  | "founders"
+  | "somatic"
+  | "plant"
+  | "healers"
+  | "hidden";
+
+export type Member = {
+  id: string;
+  name: string;
+  role: string;
+  cat: MemberCategory;
+  photo: string;
+  shortBio: string;
+  bio: string;
+};
+
+export const categoryLabels: Record<Exclude<MemberCategory, "hidden">, string> = {
+  founders: "Founders",
+  somatic: "Somatic Integration Guides",
+  plant: "Plant Medicine",
+  healers: "Healers",
+};
+
+export const members: Member[] = [
+  {
+    id: "rachel",
+    name: "Rachel Nelson",
+    role: "Co-Founder",
+    cat: "founders",
+    photo: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300&q=80",
+    shortBio:
+      "Rachel Nelson is the co-founder of Vital Kauaʻi and the vision behind its emergence on the North Shore. Her path weaves Eastern wisdom traditions with evidence-based modern science into experiences that are both practically grounding and profoundly transformative. She holds masters-level training in Consciousness, Spirituality and Transpersonal Psychology through Alef Trust, and doctoral-level naturopathic medicine education. A student of Margot Anand's SkyDancing Tantra lineage and a devoted yogi for over 25 years, Rachel brings her full self — mother, healer, mystic, and community builder — to every container she holds.",
+    bio: "Rachel Nelson is the co-founder of Vital Kauaʻi and the vision behind its emergence on the North Shore. Her path weaves Eastern wisdom traditions with evidence-based modern science into experiences that are both practically grounding and profoundly transformative. She holds masters-level training in Consciousness, Spirituality and Transpersonal Psychology through Alef Trust, and doctoral-level naturopathic medicine education. A student of Margot Anand's SkyDancing Tantra lineage and a devoted yogi for over 25 years, Rachel brings her full self — mother, healer, mystic, and community builder — to every container she holds.",
+  },
+  {
+    id: "josh",
+    name: "Josh Perdue",
+    role: "Co-Founder",
+    cat: "founders",
+    photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80",
+    shortBio:
+      "Josh Perdue is the co-founder of Vital Kauaʻi and a devoted practitioner of somatic healing, relational transformation, and conscious business. He holds authentic Bwiti initiation in Gabon and ISTA training at Highden Temple in New Zealand. Josh is certified in PsychoNeuroEnergetics and EFT, and trained in somatic therapy with Judith Johnson. His Stanford Design School background informs how he builds healing containers with both beauty and precision. Josh is also the founder of The Mycelium Network and Best Life Ever.",
+    bio: "Josh Perdue is the co-founder of Vital Kauaʻi and a devoted practitioner of somatic healing, relational transformation, and conscious business. He holds authentic Bwiti initiation in Gabon, ISTA training at Highden Temple in New Zealand, somatic certification through PsychoNeuroEnergetics, and EFT certification. He is also the founder of The Mycelium Network and Best Life Ever.",
+  },
+  {
+    id: "judith",
+    name: "Judith Johnson",
+    role: "Director of Somatic Integration",
+    cat: "somatic",
+    photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&q=80",
+    shortBio:
+      "Judith Johnson is a pioneer of body-oriented healing and the founder of PsychoNeuroEnergetics (PNE). Her path spans Transactional Analysis, Gestalt, neo-Reichian work, and Somatic Experiencing with Peter Levine. PNE works through the vagus nerve to unwind traumatic imprints held deep in the nervous system. She has integrated Stephen Porges' Polyvagal Theory throughout her practice and teaching. Judith serves as Head Somatic Therapy Integration Director for Americans for Ibogaine.",
+    bio: "Judith Johnson is a pioneer of body-oriented healing and the founder of PsychoNeuroEnergetics (PNE). Her path spans Transactional Analysis, Gestalt, neo-Reichian work, Body Electronics with John Ray, and Somatic Experiencing with Peter Levine — giving her the foundation to develop something entirely her own: a modality that accesses the deepest layers of traumatic imprint held in the nervous system, using the healing power of the vagus nerve as its primary gateway. She has deeply integrated Stephen Porges' Polyvagal Theory and Social Engagement work into her teaching and practice. Judith serves as the Head Somatic Therapy Integration Director for Americans for Ibogaine, bringing her lifetime of nervous system expertise directly into the field of plant medicine integration. We are honored to have Judith as a cornerstone of the Vital Kauaʻi circle.",
+  },
+  {
+    id: "liz",
+    name: "Dr. Liz Esalen",
+    role: "Psychedelic Integration Psychologist",
+    cat: "somatic",
+    photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&q=80",
+    shortBio:
+      "Dr. Liz Esalen is a Doctor of Clinical Psychology with over 30 years of holistic, life-affirming care. She is the founder and CEO of Luminous Healing Center and The Lotus Collaborative in California. Her work bridges psychology, shamanic wisdom, MDMA-assisted therapy, and embodied healing. She is a lineage-initiated mesa carrier and shamanic energy medicine practitioner. At Vital Kauaʻi, Dr. Liz serves as both a pre-ceremony preparation guide and post-ceremony integration specialist.",
+    bio: "Dr. Liz Esalen is a Doctor of Clinical Psychology and the founder of Luminous Healing Center — one of only ten centers in the nation approved to offer MDMA-assisted therapy through MAPS. With over 30 years of holistic, life-affirming care, her work bridges clinical psychology, shamanic energy medicine, Internal Family Systems, the Enneagram, and embodied movement practices. She is a lineage-initiated mesa carrier and leads transformational dance journeys and feminine leadership retreats around the world. At Vital Kauaʻi, Dr. Liz serves as both a pre-ceremony preparation specialist and post-ceremony integration guide — holding guests with the full breadth of her clinical and ceremonial intelligence at every stage of their journey.",
+  },
+  {
+    id: "nafisseh",
+    name: "Dr. Nafisseh Soroudi",
+    role: "Somatic Psychotherapist",
+    cat: "hidden",
+    photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&q=80",
+    shortBio:
+      "Dr. Nafisseh Soroudi is a holistic psychotherapist rooted in the Kauaʻi community. Her approach blends trauma-informed, somatic, emotion-focused, and psychodynamic therapies with Eastern lifestyle wisdom. She works at the intersection of nervous system healing, self-sovereignty, and embodied transformation. Dr. Soroudi conducts sessions in English, French, Spanish, and Farsi. She is a true daughter of the North Shore — and her roots in this land deepen every container she holds.",
+    bio: "Dr. Nafisseh Soroudi is a holistic psychotherapist rooted in the Kauaʻi community. Her approach draws upon clients' own wisdom, courage, and resilience — blending trauma-informed, somatic, emotion-focused, cognitive behavioral, and psychodynamic therapies with Eastern lifestyle approaches to improve physical and mental health, life force, and vitality. Dr. Soroudi works at the intersection of self-discovery, self-love, and nervous system healing, helping clients reclaim a felt sense of self-agency and peace. She conducts sessions in English, French, Spanish, and Farsi. Her deep roots in this land make her an irreplaceable presence in the Vital Kauaʻi circle.",
+  },
+  {
+    id: "p_s1",
+    name: "Rebecca",
+    role: "Somatic Practitioner",
+    cat: "hidden",
+    photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&q=80",
+    shortBio: "Rebecca is a devoted somatic practitioner joining the Vital Kauaʻi circle.",
+    bio: "Rebecca is a devoted somatic practitioner joining the Vital Kauaʻi circle.",
+  },
+  {
+    id: "rachel_int",
+    name: "Rachel Nelson",
+    role: "Integration Guide",
+    cat: "somatic",
+    photo: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300&q=80",
+    shortBio:
+      "Rachel leads the morning-after integration container at Vital Kauaʻi — a sacred holding space where the insights, visions, and openings from ceremony begin to find their roots in daily life. Rachel understands that what surfaces in ceremony is only the beginning — integration is where the real transformation lives. She holds this space with warmth, depth, and the intuition of someone who has walked the path herself.",
+    bio: "Rachel leads the morning-after integration container at Vital Kauaʻi — a sacred holding space where the insights, visions, and openings from ceremony begin to find their roots in daily life. Rachel understands that what surfaces in ceremony is only the beginning — integration is where the real transformation lives. She holds this space with warmth, depth, and the intuition of someone who has walked the path herself.",
+  },
+  {
+    id: "josh_plant",
+    name: "Josh Perdue",
+    role: "Plant Medicine Guide · Bwiti Initiate",
+    cat: "plant",
+    photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80",
+    shortBio:
+      "Josh Perdue holds authentic Bwiti initiation from Gabon — one of the most rigorous and sacred plant medicine lineages in the world. His ceremonial work is rooted in years of personal practice, deep study, and a genuine reverence for the intelligence of plant consciousness. Josh brings a rare combination of ceremonial precision, somatic awareness, and heart-centered presence to every journey he guides. He is co-founder of Vital Kauaʻi and has dedicated his life to the responsible stewardship of transformational medicine. Every ceremony he holds is an act of devotion.",
+    bio: "Josh Perdue holds authentic Bwiti initiation from Gabon — one of the most rigorous and sacred plant medicine lineages in the world. His ceremonial work is rooted in years of personal practice, deep study, and a genuine reverence for the intelligence of plant consciousness. Josh brings a rare combination of ceremonial precision, somatic awareness, and heart-centered presence to every journey he guides. He is co-founder of Vital Kauaʻi and has dedicated his life to the responsible stewardship of transformational medicine. Every ceremony he holds is an act of devotion.",
+  },
+  {
+    id: "paul_plant",
+    name: "Paul Heffernan",
+    role: "Plant Medicine Guide",
+    cat: "plant",
+    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=80",
+    shortBio:
+      "Paul Heffernan is a devoted plant medicine guide bringing deep ceremonial experience and a grounded, heart-centered presence to every container he holds. His work is informed by years of practice, personal transformation, and a profound respect for the sacred intelligence of plant medicine.",
+    bio: "Paul Heffernan is a devoted plant medicine guide bringing deep ceremonial experience and a grounded, heart-centered presence to every container he holds. His work is informed by years of practice, personal transformation, and a profound respect for the sacred intelligence of plant medicine.",
+  },
+  {
+    id: "rachel_healer",
+    name: "Rachel Nelson",
+    role: "Breathwork · Yoga & Movement · Energy Healing",
+    cat: "healers",
+    photo: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300&q=80",
+    shortBio:
+      "Rachel Nelson is a devoted healer whose offerings draw from a rich and layered training in the healing arts. She holds master's training in Consciousness, Spirituality and Transpersonal Psychology through Alef Trust, and doctoral-level studies in the naturopathic medicine. She is also a certified life coach, hypnotherapist, and Mind Body Nutrition practitioner trained through Marc David's Institute for the Psychology of Eating. Her energy healing work is rooted in Reiki and Tantra, and a lifetime of somatic and devotional practice. Rachel weaves dynamic breathwork, yoga, and embodied movement into intimate, one-of-a-kind healing experiences — meeting each guest exactly where they are.",
+    bio: "Rachel Nelson is a devoted healer whose offerings draw from a rich and layered training in the healing arts. She holds master's training in Consciousness, Spirituality and Transpersonal Psychology through Alef Trust, and doctoral-level studies in the naturopathic medicine. She is also a certified life coach, hypnotherapist, and Mind Body Nutrition practitioner trained through Marc David's Institute for the Psychology of Eating. Her energy healing work is rooted in Reiki and Tantra, and a lifetime of somatic and devotional practice. Rachel weaves dynamic breathwork, yoga, and embodied movement into intimate, one-of-a-kind healing experiences — meeting each guest exactly where they are.",
+  },
+  {
+    id: "robyn",
+    name: "Robyn DeBonet",
+    role: "Shen Po · Seitai Shinpo Acupuncture",
+    cat: "healers",
+    photo: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&q=80",
+    shortBio:
+      "Robyn DeBonet is a certified Seitai Shinpo acupuncturist based on Kauaʻi, holding her Silver Certificate since 2006. Seitai Shinpo is a Japanese system of acupuncture rooted in restoring the body's natural alignment and flow of life force energy. Her practice, known as Shen Po, works at the intersection of structural balance, energetic harmony, and deep nervous system restoration. Robyn brings decades of island-rooted healing wisdom to every session. Her hands carry both precision and presence in equal measure.",
+    bio: "Robyn DeBonet is a certified Seitai Shinpo acupuncturist based on Kauaʻi, holding her Silver Certificate since 2006. Seitai Shinpo is a Japanese system of acupuncture rooted in restoring the body's natural alignment and flow of life force energy. Her practice, known as Shen Po, works at the intersection of structural balance, energetic harmony, and deep nervous system restoration. Robyn brings decades of island-rooted healing wisdom to every session. Her hands carry both precision and presence in equal measure.",
+  },
+  {
+    id: "lizzy",
+    name: "Lizzy Benson",
+    role: "Yoga · Somatic Bodywork · Lymphatic",
+    cat: "healers",
+    photo: "https://images.unsplash.com/photo-1583864697784-a0efc8379f70?w=300&q=80",
+    shortBio:
+      "Lizzy Benson's relationship with yoga reaches all the way back to childhood, deepening into a devoted healing path after a pivotal period of personal transformation. She holds over 800 hours of yoga training and is a licensed massage therapist, certified posture educator, and birth doula. Her offerings weave yoga, somatic bodywork, and lymphatic support into a holistic and fully embodied practice. Each session is a cocktail of self-inquiry, functional movement, and playful sequencing. Her teaching mantra is simple: teach to learn.",
+    bio: "Lizzy Benson's relationship with yoga reaches all the way back to childhood, deepening into a devoted healing path after a pivotal period of personal transformation. She holds over 800 hours of yoga training and is a licensed massage therapist, certified posture educator, and birth doula. Her offerings weave yoga, somatic bodywork, and lymphatic support into a holistic and fully embodied practice. Each session is a cocktail of self-inquiry, functional movement, and playful sequencing. Her teaching mantra is simple: teach to learn.",
+  },
+  {
+    id: "dorothea",
+    name: "Dorothea Barth-Jorgensen",
+    role: "Sound Healing · Breathwork · Cacao Ceremony",
+    cat: "healers",
+    photo: "https://images.unsplash.com/photo-1499996860823-5214fcc65f8f?w=300&q=80",
+    shortBio:
+      "Dorothea Barth-Jorgensen is deeply devoted to helping others remember their true nature — the wholesome, joyous, and creatively connected essence that flows from Source itself. She trained in Breathwork Levels 1–3 with David Elliott and is a certified Sound Healer through The Soul of Yoga in Encinitas. Her approach is gentle yet profound — rooted in compassion, curiosity, and the belief that true healing arises through surrender, not force. Since 2022 she has called Kauaʻi home, offering workshops, private sessions, and shamanic cacao ceremony. Her work has been shared at Soho House, The Mindry, and healing spaces across the world.",
+    bio: "Dorothea Barth-Jorgensen is deeply devoted to helping others remember their true nature — the wholesome, joyous, and creatively connected essence that flows from Source itself. She trained in Breathwork Levels 1–3 with David Elliott and is a certified Sound Healer through The Soul of Yoga in Encinitas. Her approach is gentle yet profound — rooted in compassion, curiosity, and the belief that true healing arises through surrender, not force. Since 2022 she has called Kauaʻi home, offering workshops, private sessions, and shamanic cacao ceremony. Her work has been shared at Soho House, The Mindry, and healing spaces across the world.",
+  },
+  {
+    id: "mary",
+    name: "Mary Mailhot",
+    role: "Kundalini · Hatha Yoga · Sound · Reiki",
+    cat: "healers",
+    photo: "https://images.unsplash.com/photo-1487309078313-fad80c3ec1e5?w=300&q=80",
+    shortBio:
+      "Born into a world of music and movement, Mary Mailhot grew up singing and dancing as a way of life. Now a trained musician, dancer, devoted yogi, and mother, she blends the sacred arts of Kundalini, Hatha, and Bhakti yoga with mantra, sound, and embodied flow. Her training includes a 220-hour Kundalini certification, 200-hour Kripalu Hatha, 100-hour Advanced Anusara, Yin Yoga, and Reiki Master. As a recording artist, she has released three albums including the Kundalini mantra album Angels and Space under the name MM'Honey. Her sessions are a living prayer — an invitation to radical self-love and inner radiance.",
+    bio: "Born into a world of music and movement, Mary Mailhot grew up singing and dancing as a way of life. Now a trained musician, dancer, devoted yogi, and mother, she blends the sacred arts of Kundalini, Hatha, and Bhakti yoga with mantra, sound, and embodied flow. Her training includes a 220-hour Kundalini certification, 200-hour Kripalu Hatha, 100-hour Advanced Anusara, Yin Yoga, and Reiki Master. As a recording artist, she has released three albums including the Kundalini mantra album Angels and Space under the name MM'Honey. Her sessions are a living prayer — an invitation to radical self-love and inner radiance.",
+  },
+  {
+    id: "samantha",
+    name: "Samantha Nordstrom",
+    role: "Sound Healing · Hatha Yoga · Reiki",
+    cat: "healers",
+    photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&q=80",
+    shortBio:
+      "Samantha Nordstrom's offering is intuitive and heart-led, born from her own deep healing journey. She draws on yoga, meditation, breathwork, Reiki, and the power of crystal sound bowls to bring guests into a deeply restorative, meditative state of being. Her offerings are a blend of nourishing movement and soothing sounds — each session a loving prayer and an invitation to joy. Sam is inspired by the power of each unique individual to access wholeness through ancient practices. She brings her gifts to Vital Kauaʻi as a devoted member of the healing circle.",
+    bio: "Samantha Nordstrom's teaching is intuitive and heart-led, born from her own deep healing journey. She draws on yoga, meditation, breathwork, Reiki, and the power of crystal sound bowls to bring guests into a deeply restorative, meditative state of being. Her offerings are a blend of nourishing movement and soothing sounds — each session a loving prayer and an invitation to joy. Sam is inspired by the power of each unique individual to access wholeness through ancient practices. She brings her gifts to Vital Kauaʻi as a devoted member of the healing circle.",
+  },
+  {
+    id: "jenny_z",
+    name: "Jenny Zoberg",
+    role: "Breathwork · Yoga · Sound Healing",
+    cat: "healers",
+    photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&q=80",
+    shortBio:
+      "Jenny Zoberg is a breathwork, yoga, and sound healing facilitator who guides practices that reconnect guests with their inner world. She trained as a breathwork facilitator with David Elliott, deepened her yoga studies with Bhavani Silvia Maki, and became certified in Sound Healing through her sensitivity to vibration and harmony. In 2022 she sat a 10-day Vipassana meditation in South Africa — an experience that continues to inform how she holds space. Her sessions are breath-led and music-connected, encouraging guests to move beyond the surface into a felt experience of body, mind, and soul. She brings her full gifts to the intimate containers of Vital Kauaʻi.",
+    bio: "Jenny Zoberg is a breathwork, yoga, and sound healing facilitator who guides practices that reconnect guests with their inner world. She trained as a breathwork facilitator with David Elliott, deepened her yoga studies with Bhavani Silvia Maki, and became certified in Sound Healing through her sensitivity to vibration and harmony. In 2022 she sat a 10-day Vipassana meditation in South Africa — an experience that continues to inform how she holds space. Her sessions are breath-led and music-connected, encouraging guests to move beyond the surface into a felt experience of body, mind, and soul. She brings her full gifts to the intimate containers of Vital Kauaʻi.",
+  },
+  {
+    id: "jenny_h",
+    name: "Jenny Harris",
+    role: "Deep Tissue · Thai Massage · CranioSacral",
+    cat: "healers",
+    photo: "https://images.unsplash.com/photo-1526510747491-58f928ec870f?w=300&q=80",
+    shortBio:
+      "Jenny Harris is a massage therapist with 15+ years of experience and a personal trainer with a Bachelor's in Exercise Physiology from the University of Florida. She specializes in deep tissue, Thai massage, and CranioSacral therapy — bringing both anatomical precision and uplifting energy to every session. Her work is as therapeutic as it is joyful, grounded in a deep understanding of how the body moves, holds tension, and releases. She is a radiant, high-energy presence on the North Shore whose work transforms every container she enters.",
+    bio: "Jenny Harris is a massage therapist with 15+ years of experience and a personal trainer with a Bachelor's in Exercise Physiology from the University of Florida. She specializes in deep tissue, Thai massage, and CranioSacral therapy — bringing both anatomical precision and uplifting energy to every session. Her work is as therapeutic as it is joyful, grounded in a deep understanding of how the body moves, holds tension, and releases. She is a radiant, high-energy presence on the North Shore whose work transforms every container she enters.",
+  },
+  {
+    id: "paul",
+    name: "Paul Heffernan",
+    role: "BodyTalk Practitioner",
+    cat: "healers",
+    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=80",
+    shortBio:
+      "Paul is a certified BodyTalk practitioner bringing a subtle yet profoundly effective system of whole-body healing to the Vital Kauaʻi circle. BodyTalk works by identifying and reestablishing disrupted communication pathways within the body-mind complex, allowing the innate wisdom of the body to restore balance and function. His sessions are quiet, non-invasive, and often surprising in the depth of shift they produce.",
+    bio: "Paul is a certified BodyTalk practitioner bringing a subtle yet profoundly effective system of whole-body healing to the Vital Kauaʻi circle. BodyTalk works by identifying and reestablishing disrupted communication pathways within the body-mind complex, allowing the innate wisdom of the body to restore balance and function. His sessions are quiet, non-invasive, and often surprising in the depth of shift they produce.",
+  },
+  {
+    id: "kurtis",
+    name: "Kurtis Kunesh",
+    role: "Deep Tissue Massage",
+    cat: "healers",
+    photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80",
+    shortBio:
+      "Kurtis Kunesh brings skilled, therapeutic deep tissue massage to the Vital Kauaʻi circle. His work goes beneath surface tension to address the deeper layers of muscle and connective tissue, releasing chronic holding patterns and restoring ease of movement throughout the body. Kurtis combines strong technique with attentive presence, meeting each client exactly where they are.",
+    bio: "Kurtis Kunesh brings skilled, therapeutic deep tissue massage to the Vital Kauaʻi circle. His work goes beneath surface tension to address the deeper layers of muscle and connective tissue, releasing chronic holding patterns and restoring ease of movement throughout the body. Kurtis combines strong technique with attentive presence, meeting each client exactly where they are.",
+  },
+  {
+    id: "ariana",
+    name: "Ariana Beil",
+    role: "BioGeometry Balancing",
+    cat: "healers",
+    photo: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300&q=80",
+    shortBio:
+      "Ariana Beil brings the revolutionary science of BioGeometry to the Vital Kauaʻi circle — a practice that uses the subtle energy principles of shape, color, and form to restore natural balance within biological systems and living environments. Founded by Egyptian scholar Dr. Ibrahim Karim, BioGeometry works to harmonize the body's energy interactions with its surroundings, addressing geopathic stress, EMF, and energetic imbalance at a foundational level. Ariana's sessions support the body's own intelligence in returning to harmony, ease, and coherence. Her work is a quietly powerful complement to every healing journey at Vital Kauaʻi.",
+    bio: "Ariana Beil brings the revolutionary science of BioGeometry to the Vital Kauaʻi circle — a practice that uses the subtle energy principles of shape, color, and form to restore natural balance within biological systems and living environments. Founded by Egyptian scholar Dr. Ibrahim Karim, BioGeometry works to harmonize the body's energy interactions with its surroundings, addressing geopathic stress, EMF, and energetic imbalance at a foundational level. Ariana's sessions support the body's own intelligence in returning to harmony, ease, and coherence. Her work is a quietly powerful complement to every healing journey at Vital Kauaʻi.",
+  },
+];
+
+export const filterTabs = [
+  { value: "all", label: "All" },
+  { value: "founders", label: "Founders" },
+  { value: "somatic", label: "Somatic Integration Guides" },
+  { value: "plant", label: "Plant Medicine" },
+  { value: "healers", label: "Healers" },
+] as const;

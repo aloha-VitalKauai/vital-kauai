@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Healing Circle — Vital Kauaʻi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+--forest: #1C2B1E;
+--forest-dark: #141F15;
+--deep: #0E1A10;
+--sage: #7A9E7E;
+--sage-light: #A8C5AC;
+--gold: #C8A96E;
+--gold-light: #E2CFA0;
+--cream: #F5F0E8;
+--warm-white: #FDFBF7;
+--stone: #8B8070;
+--text-dark: #1A1A18;
+--text-mid: #3D3D38;
+}
+
+html { scroll-behavior: smooth; }
+body {
+font-family: 'Jost', sans-serif;
+font-weight: 300;
+background: var(--warm-white);
+color: var(--text-dark);
+overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+position: fixed;
+top: 0; left: 0; right: 0;
+z-index: 100;
+padding: 28px 60px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+transition: all 0.5s ease;
+}
+nav.scrolled {
+background: rgba(14, 26, 16, 0.96);
+backdrop-filter: blur(12px);
+padding: 18px 60px;
+}
+.nav-logo {
+font-family: 'Cormorant Garamond', serif;
+font-size: 22px;
+font-weight: 400;
+letter-spacing: 0.15em;
+color: var(--cream);
+text-decoration: none;
+text-transform: uppercase;
+}
+.nav-links {
+display: flex;
+gap: 40px;
+list-style: none;
+}
+.nav-links a {
+font-size: 11px;
+font-weight: 400;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+color: var(--cream);
+text-decoration: none;
+opacity: 0.85;
+transition: opacity 0.3s;
+}
+.nav-links a:hover { opacity: 1; }
+.nav-cta {
+font-size: 10px;
+font-weight: 400;
+letter-spacing: 0.25em;
+text-transform: uppercase;
+color: var(--forest);
+background: var(--gold);
+padding: 12px 28px;
+text-decoration: none;
+transition: background 0.3s;
+}
+.nav-cta:hover { background: var(--gold-light); }
+
+/* ── HERO ── */
+#hero {
+position: relative;
+height: 80vh;
+min-height: 580px;
+display: flex;
+align-items: flex-end;
+justify-content: center;
+overflow: hidden;
+background: var(--deep);
+}
+.hero-img {
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+object-fit: cover;
+object-position: center 40%;
+opacity: 0.5;
+filter: saturate(0.65);
+}
+.hero-overlay {
+position: absolute;
+inset: 0;
+background: linear-gradient(
+to bottom,
+rgba(10,20,12,0.2) 0%,
+rgba(10,20,12,0.1) 30%,
+rgba(10,20,12,0.7) 75%,
+rgba(10,20,12,0.97) 100%
+);
+}
+.hero-content {
+position: relative;
+z-index: 2;
+text-align: center;
+padding: 0 40px 80px;
+}
+.hero-eyebrow {
+font-size: 10px;
+letter-spacing: 0.45em;
+text-transform: uppercase;
+color: var(--gold);
+margin-bottom: 24px;
+opacity: 0;
+animation: fadeUp 1s ease 0.3s forwards;
+}
+.hero-title {
+font-family: 'Cormorant Garamond', serif;
+font-size: clamp(48px, 7vw, 96px);
+font-weight: 300;
+line-height: 1.0;
+color: var(--cream);
+letter-spacing: 0.04em;
+margin-bottom: 24px;
+opacity: 0;
+animation: fadeUp 1s ease 0.6s forwards;
+}
+.hero-title em {
+font-style: italic;
+color: var(--sage-light);
+}
+.hero-sub {
+font-size: 15px;
+color: rgba(245,240,232,0.7);
+max-width: 500px;
+margin: 0 auto;
+line-height: 1.85;
+opacity: 0;
+animation: fadeUp 1s ease 0.9s forwards;
+}
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(22px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── INTRO ── */
+#intro {
+background: var(--forest);
+padding: 96px 60px;
+text-align: center;
+}
+.intro-text {
+font-family: 'Cormorant Garamond', serif;
+font-size: clamp(20px, 2.5vw, 30px);
+font-weight: 300;
+font-style: italic;
+color: var(--cream);
+max-width: 780px;
+margin: 0 auto 40px;
+line-height: 1.7;
+}
+.intro-rule {
+width: 1px;
+height: 56px;
+background: linear-gradient(to bottom, var(--gold), transparent);
+margin: 0 auto;
+}
+
+/* ── FEATURED PRACTITIONER ── */
+#featured {
+background: var(--cream);
+padding: 0;
+overflow: hidden;
+}
+.featured-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+min-height: 85vh;
+}
+.featured-photo {
+position: relative;
+overflow: hidden;
+min-height: 580px;
+background: var(--forest-dark);
+}
+.featured-photo img {
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+object-fit: cover;
+object-position: center top;
+filter: grayscale(20%) brightness(0.85);
+transition: transform 9s ease;
+}
+.featured-photo:hover img { transform: scale(1.04); }
+.featured-photo-tag {
+position: absolute;
+bottom: 40px;
+left: 44px;
+z-index: 2;
+}
+.featured-photo-tag span {
+font-size: 9px;
+letter-spacing: 0.4em;
+text-transform: uppercase;
+color: var(--gold);
+display: block;
+margin-bottom: 8px;
+}
+.featured-photo-tag h2 {
+font-family: 'Cormorant Garamond', serif;
+font-size: 44px;
+font-weight: 300;
+color: var(--cream);
+line-height: 1.05;
+}
+
+.featured-text {
+padding: 96px 80px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+.section-label {
+font-size: 10px;
+letter-spacing: 0.4em;
+text-transform: uppercase;
+color: var(--gold);
+margin-bottom: 18px;
+display: block;
+}
+.featured-name {
+font-family: 'Cormorant Garamond', serif;
+font-size: clamp(36px, 4vw, 58px);
+font-weight: 300;
+color: var(--text-dark);
+line-height: 1.1;
+margin-bottom: 6px;
+}
+.featured-name em {
+font-style: italic;
+color: var(--sage);
+}
+.featured-role {
+font-size: 11px;
+letter-spacing: 0.25em;
+text-transform: uppercase;
+color: var(--stone);
+margin-bottom: 36px;
+}
+.featured-lead {
+font-size: 16px;
+color: var(--text-dark);
+line-height: 1.9;
+margin-bottom: 22px;
+font-weight: 300;
+}
+.featured-body {
+font-size: 15px;
+color: var(--text-mid);
+line-height: 1.95;
+margin-bottom: 18px;
+font-weight: 300;
+}
+.featured-pull {
+margin: 32px 0;
+padding: 26px 30px;
+border-left: 2px solid var(--sage);
+background: rgba(122,158,126,0.07);
+}
+.featured-pull p {
+font-family: 'Cormorant Garamond', serif;
+font-size: 17px;
+font-style: italic;
+color: var(--forest);
+line-height: 1.75;
+}
+.modality-pills {
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+margin-top: 32px;
+}
+.pill {
+font-size: 10px;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+color: var(--sage);
+border: 1px solid rgba(122,158,126,0.4);
+padding: 8px 16px;
+}
+.featured-link {
+margin-top: 36px;
+font-size: 10px;
+letter-spacing: 0.3em;
+text-transform: uppercase;
+color: var(--gold);
+text-decoration: none;
+display: inline-flex;
+align-items: center;
+gap: 10px;
+border-bottom: 1px solid rgba(200,169,110,0.3);
+padding-bottom: 4px;
+transition: gap 0.3s, border-color 0.3s;
+width: fit-content;
+}
+.featured-link:hover { gap: 16px; border-color: var(--gold); }
+
+/* ── CONSTELLATION GRID ── */
+#circle {
+background: var(--forest-dark);
+padding: 100px 60px 100px;
+}
+
+/* Filter tabs */
+.filter-tabs {
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+justify-content: center;
+margin-bottom: 72px;
+}
+.filter-tab {
+font-family: 'Jost', sans-serif;
+font-size: 10px;
+letter-spacing: 0.28em;
+text-transform: uppercase;
+color: rgba(245,240,232,0.45);
+background: none;
+border: 1px solid rgba(245,240,232,0.12);
+padding: 10px 22px;
+cursor: pointer;
+transition: color 0.3s, border-color 0.3s, background 0.3s;
+}
+.filter-tab:hover {
+color: var(--cream);
+border-color: rgba(245,240,232,0.3);
+}
+.filter-tab.active {
+color: var(--forest);
+background: var(--gold);
+border-color: var(--gold);
+}
+
+/* Constellation grid */
+.constellation {
+display: grid;
+grid-template-columns: repeat(5, 1fr);
+gap: 36px 24px;
+max-width: 1000px;
+margin: 0 auto;
+}
+.c-card {
+display: flex;
+flex-direction: column;
+align-items: center;
+cursor: pointer;
+transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.c-card.hidden {
+opacity: 0;
+pointer-events: none;
+transform: scale(0.92);
+position: absolute;
+}
+.c-photo-ring {
+width: 110px;
+height: 110px;
+border-radius: 50%;
+overflow: hidden;
+border: 1.5px solid rgba(200,169,110,0.25);
+position: relative;
+transition: border-color 0.3s, transform 0.4s ease;
+flex-shrink: 0;
+}
+.c-photo-ring img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+filter: grayscale(25%) brightness(0.82);
+transition: filter 0.4s, transform 0.5s ease;
+}
+.c-card:hover .c-photo-ring {
+border-color: var(--gold);
+transform: scale(1.06);
+}
+.c-card:hover .c-photo-ring img {
+filter: grayscale(0%) brightness(0.9);
+}
+.c-card.active .c-photo-ring {
+border-color: var(--gold);
+border-width: 2px;
+box-shadow: 0 0 0 4px rgba(200,169,110,0.12);
+}
+.c-name {
+font-family: 'Cormorant Garamond', serif;
+font-size: 16px;
+font-weight: 300;
+color: var(--cream);
+text-align: center;
+margin-top: 14px;
+line-height: 1.25;
+}
+.c-role {
+font-size: 9px;
+letter-spacing: 0.22em;
+text-transform: uppercase;
+color: var(--gold);
+text-align: center;
+margin-top: 5px;
+opacity: 0.8;
+}
+
+/* Inline bio panel */
+.bio-row {
+grid-column: 1 / -1;
+overflow: hidden;
+max-height: 0;
+opacity: 0;
+transition: max-height 0.65s ease, opacity 0.45s ease;
+}
+.bio-row.open {
+max-height: 1000px;
+opacity: 1;
+}
+.bio-row-inner {
+background: rgba(14,26,16,0.97);
+border: 1px solid rgba(200,169,110,0.2);
+border-top: 2px solid rgba(200,169,110,0.5);
+padding: 44px 52px;
+display: grid;
+grid-template-columns: 130px 1fr;
+gap: 44px;
+align-items: start;
+position: relative;
+margin-top: 8px;
+}
+.bio-row-photo {
+width: 130px;
+height: 130px;
+border-radius: 50%;
+overflow: hidden;
+border: 1px solid rgba(200,169,110,0.3);
+}
+.bio-row-photo img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+filter: grayscale(15%) brightness(0.88);
+}
+.bio-row-cat {
+font-size: 9px;
+letter-spacing: 0.4em;
+text-transform: uppercase;
+color: var(--gold);
+display: block;
+margin-bottom: 10px;
+}
+.bio-row-name {
+font-family: 'Cormorant Garamond', serif;
+font-size: 32px;
+font-weight: 300;
+color: var(--cream);
+line-height: 1.1;
+margin-bottom: 8px;
+}
+.bio-row-role {
+font-size: 10px;
+letter-spacing: 0.22em;
+text-transform: uppercase;
+color: var(--stone);
+display: block;
+margin-bottom: 20px;
+}
+.bio-row-body {
+font-size: 14px;
+color: rgba(245,240,232,0.65);
+line-height: 1.95;
+}
+.bio-close-btn {
+position: absolute;
+top: 16px;
+right: 20px;
+background: none;
+border: none;
+color: rgba(245,240,232,0.3);
+font-size: 18px;
+cursor: pointer;
+padding: 6px;
+transition: color 0.3s;
+line-height: 1;
+}
+.bio-close-btn:hover { color: var(--cream); }
+
+@media (max-width: 900px) {
+.constellation { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 680px) {
+.constellation { grid-template-columns: repeat(3, 1fr); gap: 28px 16px; }
+#circle { padding: 80px 28px; }
+.filter-tabs { gap: 8px; }
+.bio-row-inner { grid-template-columns: 1fr; padding: 32px 24px; }
+.bio-row-photo { margin: 0 auto; }
+}
+@media (max-width: 480px) {
+.constellation { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── CLOSING CTA ── */
+#cta {
+background: var(--deep);
+padding: 120px 60px;
+text-align: center;
+position: relative;
+overflow: hidden;
+}
+#cta::before {
+content: '';
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 600px;
+height: 600px;
+background: radial-gradient(circle, rgba(122,158,126,0.06) 0%, transparent 70%);
+pointer-events: none;
+}
+.cta-inner {
+max-width: 680px;
+margin: 0 auto;
+position: relative;
+z-index: 1;
+}
+.cta-label {
+font-size: 10px;
+letter-spacing: 0.4em;
+text-transform: uppercase;
+color: var(--gold);
+margin-bottom: 28px;
+display: block;
+}
+.cta-title {
+font-family: 'Cormorant Garamond', serif;
+font-size: clamp(32px, 4vw, 52px);
+font-weight: 300;
+color: var(--cream);
+line-height: 1.2;
+margin-bottom: 24px;
+}
+.cta-title em { font-style: italic; color: var(--sage-light); }
+.cta-body {
+font-size: 14px;
+color: rgba(245,240,232,0.6);
+line-height: 1.9;
+margin-bottom: 48px;
+}
+.btn-primary {
+display: inline-block;
+font-size: 10px;
+font-weight: 400;
+letter-spacing: 0.3em;
+text-transform: uppercase;
+color: var(--forest);
+background: var(--gold);
+padding: 18px 44px;
+text-decoration: none;
+transition: all 0.3s;
+}
+.btn-primary:hover {
+background: var(--gold-light);
+transform: translateY(-2px);
+}
+
+/* ── FOOTER ── */
+footer {
+background: var(--deep);
+border-top: 1px solid rgba(200,169,110,0.1);
+padding: 60px;
+display: grid;
+grid-template-columns: 1.5fr 1fr 1fr 1fr;
+gap: 60px;
+}
+.footer-brand {
+font-family: 'Cormorant Garamond', serif;
+font-size: 24px;
+font-weight: 300;
+letter-spacing: 0.15em;
+color: var(--cream);
+text-transform: uppercase;
+margin-bottom: 16px;
+}
+.footer-tagline {
+font-size: 12px;
+color: rgba(245,240,232,0.4);
+line-height: 1.8;
+max-width: 240px;
+}
+.footer-col h4 {
+font-size: 10px;
+letter-spacing: 0.3em;
+text-transform: uppercase;
+color: var(--gold);
+margin-bottom: 24px;
+}
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.footer-links a {
+font-size: 13px;
+color: rgba(245,240,232,0.5);
+text-decoration: none;
+transition: color 0.3s;
+}
+.footer-links a:hover { color: var(--cream); }
+.footer-bottom {
+background: var(--deep);
+border-top: 1px solid rgba(255,255,255,0.05);
+padding: 24px 60px;
+display: flex;
+justify-content: space-between;
+}
+.footer-bottom p { font-size: 11px; color: rgba(245,240,232,0.3); }
+
+/* ── REVEAL ── */
+.reveal {
+opacity: 0;
+transform: translateY(26px);
+transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.15s; }
+.reveal-delay-2 { transition-delay: 0.3s; }
+.reveal-delay-3 { transition-delay: 0.45s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+.featured-grid { grid-template-columns: 1fr; }
+.featured-photo { min-height: 480px; }
+.featured-text { padding: 72px 48px; }
+.circle-grid { grid-template-columns: 1fr 1fr; }
+nav { padding: 24px 32px; }
+.nav-links { display: none; }
+footer { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+.circle-grid { grid-template-columns: 1fr; }
+#intro, #circle, #cta { padding: 80px 28px; }
+.featured-text { padding: 60px 28px; }
+footer { grid-template-columns: 1fr; padding: 60px 28px; }
+.footer-bottom { padding: 24px 28px; flex-direction: column; gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Vital Kauaʻi</a>
+  <ul class="nav-links">
+    <li><a href="index.html#rivers">Our Work</a></li>
+    <li><a href="index.html#offerings">Offerings</a></li>
+    <li><a href="index.html#reciprocity">Reciprocity</a></li>
+    <li><a href="index.html#stay">Stay With Us</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="healing-circle.html" style="opacity:1;">Our Circle</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <a href="index.html#contact" class="nav-cta">Begin Your Journey</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <img class="hero-img"
+    src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1800&q=85"
+    alt="Healing Circle — Vital Kauaʻi">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Practitioners & Wisdom Keepers</p>
+    <h1 class="hero-title">The Healing<br><em>Circle</em></h1>
+    <p class="hero-sub">Every practitioner in our circle is a devoted healer in their own right — drawn here by devotion, shaped by the land, and honored to walk this path with you.</p>
+  </div>
+</section>
+
+<!-- INTRO -->
+<section id="intro">
+  <p class="intro-text reveal">"Behind every journey at Vital Kauaʻi stands a circle of extraordinary human beings — healers, teachers, and wisdom keepers who bring their full life's work to every container we hold."</p>
+  <div class="intro-rule reveal reveal-delay-1"></div>
+</section>
+
+
+
+<!-- THE CIRCLE -->
+<section id="circle">
+
+  <!-- Filter Tabs -->
+  <div class="filter-tabs" id="filterTabs">
+    <button class="filter-tab active" data-filter="all">All</button>
+    <button class="filter-tab" data-filter="founders">Founders</button>
+    <button class="filter-tab" data-filter="somatic">Somatic Integration Guides</button>
+    <button class="filter-tab" data-filter="plant">Plant Medicine</button>
+    <button class="filter-tab" data-filter="healers">Healers</button>
+    <!-- HIDDEN TABS — restore when ready: culinary, hospitality, cultural, legal -->
+  </div>
+
+  <!-- Constellation Grid -->
+  <div class="constellation" id="constellation"></div>
+
+</section>
+
+<!-- CLOSING CTA -->
+<section id="cta">
+  <div class="cta-inner">
+    <span class="cta-label reveal">Ready to Begin?</span>
+    <h2 class="cta-title reveal">Every Journey<br><em>Is Held</em></h2>
+    <p class="cta-body reveal">When you arrive at Vital Kauaʻi, you are held by an entire lineage of healing intelligence — woven together with care, and activated by the land herself.</p>
+    <a href="index.html#contact" class="btn-primary reveal reveal-delay-1">Begin Your Journey</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <p class="footer-brand">Vital Kauaʻi</p>
+    <p class="footer-tagline">A living sanctuary of transformation and awakening on Kauaʻi's sacred North Shore.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Explore</h4>
+    <ul class="footer-links">
+      <li><a href="index.html#rivers">Our Work</a></li>
+      <li><a href="index.html#offerings">Offerings</a></li>
+      <li><a href="index.html#medicine">Iboga Medicine</a></li>
+      <li><a href="index.html#stay">Stay With Us</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Connect</h4>
+    <ul class="footer-links">
+      <li><a href="about.html">About Rachel & Josh</a></li>
+      <li><a href="healing-circle.html">The Healing Circle</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+      <li><a href="index.html#portal">Client Portal</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Sacred Policies</h4>
+    <ul class="footer-links">
+      <li><a href="#">Privacy</a></li>
+      <li><a href="#">Terms</a></li>
+      <li><a href="#">Medical Disclaimer</a></li>
+      <li><a href="#">Church Information</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2026 Vital Kauai Church · PO Box 932, Hanalei, HI 96714 · <a href="/cdn-cgi/l/email-protection#fc9d9093949dbc8a95889d90979d899d95d29f9391" style="color:inherit;"><span class="__cf_email__" data-cfemail="ccada0a3a4ad8cbaa5b8ada0a7adb9ada5e2afa3a1">[email&#160;protected]</span></a></p>
+  <p>All original content on this site is protected by U.S. copyright law. Reproduction without written permission prohibited.</p>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+reveals.forEach(r => observer.observe(r));
+
+// ── CONSTELLATION ──
+(function() {
+  const CAT_LABELS = {
+    founders:    'Founders',
+    somatic:     'Somatic Integration Guides',
+    plant:       'Plant Medicine',
+    healers:     'Healers',
+    culinary:    'Culinary',
+    hospitality: 'Hospitality',
+    cultural:    'Cultural',
+    legal:       'Legal'
+  };
+
+  const members = [
+    { id:'rachel', name:'Rachel Nelson', role:'Co-Founder', cat:'founders',
+      photo:'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300&q=80',
+      shortBio:`Rachel Nelson is the co-founder of Vital Kauaʻi and the vision behind its emergence on the North Shore. Her path weaves Eastern wisdom traditions with evidence-based modern science into experiences that are both practically grounding and profoundly transformative. She holds masters-level training in Consciousness, Spirituality and Transpersonal Psychology through Alef Trust, and doctoral-level naturopathic medicine education. A student of Margot Anand's SkyDancing Tantra lineage and a devoted yogi for over 25 years, Rachel brings her full self — mother, healer, mystic, and community builder — to every container she holds.`,
+      bio:`Rachel Nelson is the co-founder of Vital Kauaʻi and the vision behind its emergence on the North Shore. Her path weaves Eastern wisdom traditions with evidence-based modern science into experiences that are both practically grounding and profoundly transformative. She holds masters-level training in Consciousness, Spirituality and Transpersonal Psychology through Alef Trust, and doctoral-level naturopathic medicine education. A student of Margot Anand's SkyDancing Tantra lineage and a devoted yogi for over 25 years, Rachel brings her full self — mother, healer, mystic, and community builder — to every container she holds.` },
+    { id:'josh', name:'Josh Perdue', role:'Co-Founder', cat:'founders',
+      photo:'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80',
+      shortBio:`Josh Perdue is the co-founder of Vital Kauaʻi and a devoted practitioner of somatic healing, relational transformation, and conscious business. He holds authentic Bwiti initiation in Gabon and ISTA training at Highden Temple in New Zealand. Josh is certified in PsychoNeuroEnergetics and EFT, and trained in somatic therapy with Judith Johnson. His Stanford Design School background informs how he builds healing containers with both beauty and precision. Josh is also the founder of The Mycelium Network and Best Life Ever.`,
+      bio:`Josh Perdue is the co-founder of Vital Kauaʻi and a devoted practitioner of somatic healing, relational transformation, and conscious business. He holds authentic Bwiti initiation in Gabon, ISTA training at Highden Temple in New Zealand, somatic certification through PsychoNeuroEnergetics, and EFT certification. He is also the founder of The Mycelium Network and Best Life Ever.` },
+    { id:'judith', name:'Judith Johnson', role:'Director of Somatic Integration', cat:'somatic',
+      photo:'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&q=80',
+      shortBio:`Judith Johnson is a pioneer of body-oriented healing and the founder of PsychoNeuroEnergetics (PNE). Her path spans Transactional Analysis, Gestalt, neo-Reichian work, and Somatic Experiencing with Peter Levine. PNE works through the vagus nerve to unwind traumatic imprints held deep in the nervous system. She has integrated Stephen Porges' Polyvagal Theory throughout her practice and teaching. Judith serves as Head Somatic Therapy Integration Director for Americans for Ibogaine.`,
+      bio:`Judith Johnson is a pioneer of body-oriented healing and the founder of PsychoNeuroEnergetics (PNE). Her path spans Transactional Analysis, Gestalt, neo-Reichian work, Body Electronics with John Ray, and Somatic Experiencing with Peter Levine — giving her the foundation to develop something entirely her own: a modality that accesses the deepest layers of traumatic imprint held in the nervous system, using the healing power of the vagus nerve as its primary gateway. She has deeply integrated Stephen Porges' Polyvagal Theory and Social Engagement work into her teaching and practice. Judith serves as the Head Somatic Therapy Integration Director for Americans for Ibogaine, bringing her lifetime of nervous system expertise directly into the field of plant medicine integration. We are honored to have Judith as a cornerstone of the Vital Kauaʻi circle.` },
+    { id:'liz', name:'Dr. Liz Esalen', role:'Psychedelic Integration Psychologist', cat:'somatic',
+      photo:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&q=80',
+      shortBio:`Dr. Liz Esalen is a Doctor of Clinical Psychology with over 30 years of holistic, life-affirming care. She is the founder and CEO of Luminous Healing Center and The Lotus Collaborative in California. Her work bridges psychology, shamanic wisdom, MDMA-assisted therapy, and embodied healing. She is a lineage-initiated mesa carrier and shamanic energy medicine practitioner. At Vital Kauaʻi, Dr. Liz serves as both a pre-ceremony preparation guide and post-ceremony integration specialist.`,
+      bio:`Dr. Liz Esalen is a Doctor of Clinical Psychology and the founder of Luminous Healing Center — one of only ten centers in the nation approved to offer MDMA-assisted therapy through MAPS. With over 30 years of holistic, life-affirming care, her work bridges clinical psychology, shamanic energy medicine, Internal Family Systems, the Enneagram, and embodied movement practices. She is a lineage-initiated mesa carrier and leads transformational dance journeys and feminine leadership retreats around the world. At Vital Kauaʻi, Dr. Liz serves as both a pre-ceremony preparation specialist and post-ceremony integration guide — holding guests with the full breadth of her clinical and ceremonial intelligence at every stage of their journey.` },
+    { id:'nafisseh', name:'Dr. Nafisseh Soroudi', role:'Somatic Psychotherapist', cat:'hidden',
+      photo:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&q=80',
+      shortBio:`Dr. Nafisseh Soroudi is a holistic psychotherapist rooted in the Kauaʻi community. Her approach blends trauma-informed, somatic, emotion-focused, and psychodynamic therapies with Eastern lifestyle wisdom. She works at the intersection of nervous system healing, self-sovereignty, and embodied transformation. Dr. Soroudi conducts sessions in English, French, Spanish, and Farsi. She is a true daughter of the North Shore — and her roots in this land deepen every container she holds.`,
+      bio:`Dr. Nafisseh Soroudi is a holistic psychotherapist rooted in the Kauaʻi community. Her approach draws upon clients' own wisdom, courage, and resilience — blending trauma-informed, somatic, emotion-focused, cognitive behavioral, and psychodynamic therapies with Eastern lifestyle approaches to improve physical and mental health, life force, and vitality. Dr. Soroudi works at the intersection of self-discovery, self-love, and nervous system healing, helping clients reclaim a felt sense of self-agency and peace. She conducts sessions in English, French, Spanish, and Farsi. Her deep roots in this land make her an irreplaceable presence in the Vital Kauaʻi circle.` },
+    { id:'p_s1', name:'Rebecca', role:'Somatic Practitioner', cat:'hidden',
+      photo:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&q=80',
+      shortBio:`Rebecca is a devoted somatic practitioner joining the Vital Kauaʻi circle.`,
+      bio:`Rebecca is a devoted somatic practitioner joining the Vital Kauaʻi circle.` },
+    { id:'rachel_int', name:'Rachel Nelson', role:'Integration Guide', cat:'somatic',
+      photo:'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300&q=80',
+      shortBio:`Rachel leads the morning-after integration container at Vital Kauaʻi — a sacred holding space where the insights, visions, and openings from ceremony begin to find their roots in daily life. Rachel understands that what surfaces in ceremony is only the beginning — integration is where the real transformation lives. She holds this space with warmth, depth, and the intuition of someone who has walked the path herself.`,
+      bio:`Rachel leads the morning-after integration container at Vital Kauaʻi — a sacred holding space where the insights, visions, and openings from ceremony begin to find their roots in daily life. Rachel understands that what surfaces in ceremony is only the beginning — integration is where the real transformation lives. She holds this space with warmth, depth, and the intuition of someone who has walked the path herself.` },
+    { id:'josh_plant', name:'Josh Perdue', role:'Plant Medicine Guide · Bwiti Initiate', cat:'plant',
+      photo:'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80',
+      shortBio:`Josh Perdue holds authentic Bwiti initiation from Gabon — one of the most rigorous and sacred plant medicine lineages in the world. His ceremonial work is rooted in years of personal practice, deep study, and a genuine reverence for the intelligence of plant consciousness. Josh brings a rare combination of ceremonial precision, somatic awareness, and heart-centered presence to every journey he guides. He is co-founder of Vital Kauaʻi and has dedicated his life to the responsible stewardship of transformational medicine. Every ceremony he holds is an act of devotion.`,
+      bio:`Josh Perdue holds authentic Bwiti initiation from Gabon — one of the most rigorous and sacred plant medicine lineages in the world. His ceremonial work is rooted in years of personal practice, deep study, and a genuine reverence for the intelligence of plant consciousness. Josh brings a rare combination of ceremonial precision, somatic awareness, and heart-centered presence to every journey he guides. He is co-founder of Vital Kauaʻi and has dedicated his life to the responsible stewardship of transformational medicine. Every ceremony he holds is an act of devotion.` },
+    { id:'paul_plant', name:'Paul Heffernan', role:'Plant Medicine Guide', cat:'plant',
+      photo:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=80',
+      shortBio:`Paul Heffernan is a devoted plant medicine guide bringing deep ceremonial experience and a grounded, heart-centered presence to every container he holds. His work is informed by years of practice, personal transformation, and a profound respect for the sacred intelligence of plant medicine.`,
+      bio:`Paul Heffernan is a devoted plant medicine guide bringing deep ceremonial experience and a grounded, heart-centered presence to every container he holds. His work is informed by years of practice, personal transformation, and a profound respect for the sacred intelligence of plant medicine.` },
+    { id:'rachel_healer', name:'Rachel Nelson', role:'Breathwork · Yoga & Movement · Energy Healing', cat:'healers',
+      photo:'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300&q=80',
+      shortBio:`Rachel Nelson is a devoted healer whose offerings draw from a rich and layered training in the healing arts. She holds master's training in Consciousness, Spirituality and Transpersonal Psychology through Alef Trust, and doctoral-level studies in the naturopathic medicine. She is also a certified life coach, hypnotherapist, and Mind Body Nutrition practitioner trained through Marc David's Institute for the Psychology of Eating. Her energy healing work is rooted in Reiki and Tantra, and a lifetime of somatic and devotional practice. Rachel weaves dynamic breathwork, yoga, and embodied movement into intimate, one-of-a-kind healing experiences — meeting each guest exactly where they are.`,
+      bio:`Rachel Nelson is a devoted healer whose offerings draw from a rich and layered training in the healing arts. She holds master's training in Consciousness, Spirituality and Transpersonal Psychology through Alef Trust, and doctoral-level studies in the naturopathic medicine. She is also a certified life coach, hypnotherapist, and Mind Body Nutrition practitioner trained through Marc David's Institute for the Psychology of Eating. Her energy healing work is rooted in Reiki and Tantra, and a lifetime of somatic and devotional practice. Rachel weaves dynamic breathwork, yoga, and embodied movement into intimate, one-of-a-kind healing experiences — meeting each guest exactly where they are.` },
+    { id:'robyn', name:'Robyn DeBonet', role:'Shen Po · Seitai Shinpo Acupuncture', cat:'healers',
+      photo:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&q=80',
+      shortBio:`Robyn DeBonet is a certified Seitai Shinpo acupuncturist based on Kauaʻi, holding her Silver Certificate since 2006. Seitai Shinpo is a Japanese system of acupuncture rooted in restoring the body's natural alignment and flow of life force energy. Her practice, known as Shen Po, works at the intersection of structural balance, energetic harmony, and deep nervous system restoration. Robyn brings decades of island-rooted healing wisdom to every session. Her hands carry both precision and presence in equal measure.`,
+      bio:`Robyn DeBonet is a certified Seitai Shinpo acupuncturist based on Kauaʻi, holding her Silver Certificate since 2006. Seitai Shinpo is a Japanese system of acupuncture rooted in restoring the body's natural alignment and flow of life force energy. Her practice, known as Shen Po, works at the intersection of structural balance, energetic harmony, and deep nervous system restoration. Robyn brings decades of island-rooted healing wisdom to every session. Her hands carry both precision and presence in equal measure.` },
+    { id:'lizzy', name:'Lizzy Benson', role:'Yoga · Somatic Bodywork · Lymphatic', cat:'healers',
+      photo:'https://images.unsplash.com/photo-1583864697784-a0efc8379f70?w=300&q=80',
+      shortBio:`Lizzy Benson's relationship with yoga reaches all the way back to childhood, deepening into a devoted healing path after a pivotal period of personal transformation. She holds over 800 hours of yoga training and is a licensed massage therapist, certified posture educator, and birth doula. Her offerings weave yoga, somatic bodywork, and lymphatic support into a holistic and fully embodied practice. Each session is a cocktail of self-inquiry, functional movement, and playful sequencing. Her teaching mantra is simple: teach to learn.`,
+      bio:`Lizzy Benson's relationship with yoga reaches all the way back to childhood, deepening into a devoted healing path after a pivotal period of personal transformation. She holds over 800 hours of yoga training and is a licensed massage therapist, certified posture educator, and birth doula. Her offerings weave yoga, somatic bodywork, and lymphatic support into a holistic and fully embodied practice. Each session is a cocktail of self-inquiry, functional movement, and playful sequencing. Her teaching mantra is simple: teach to learn.` },
+    { id:'dorothea', name:'Dorothea Barth-Jorgensen', role:'Sound Healing · Breathwork · Cacao Ceremony', cat:'healers',
+      photo:'https://images.unsplash.com/photo-1499996860823-5214fcc65f8f?w=300&q=80',
+      shortBio:`Dorothea Barth-Jorgensen is deeply devoted to helping others remember their true nature — the wholesome, joyous, and creatively connected essence that flows from Source itself. She trained in Breathwork Levels 1–3 with David Elliott and is a certified Sound Healer through The Soul of Yoga in Encinitas. Her approach is gentle yet profound — rooted in compassion, curiosity, and the belief that true healing arises through surrender, not force. Since 2022 she has called Kauaʻi home, offering workshops, private sessions, and shamanic cacao ceremony. Her work has been shared at Soho House, The Mindry, and healing spaces across the world.`,
+      bio:`Dorothea Barth-Jorgensen is deeply devoted to helping others remember their true nature — the wholesome, joyous, and creatively connected essence that flows from Source itself. She trained in Breathwork Levels 1–3 with David Elliott and is a certified Sound Healer through The Soul of Yoga in Encinitas. Her approach is gentle yet profound — rooted in compassion, curiosity, and the belief that true healing arises through surrender, not force. Since 2022 she has called Kauaʻi home, offering workshops, private sessions, and shamanic cacao ceremony. Her work has been shared at Soho House, The Mindry, and healing spaces across the world.` },
+    { id:'mary', name:'Mary Mailhot', role:'Kundalini · Hatha Yoga · Sound · Reiki', cat:'healers',
+      photo:'https://images.unsplash.com/photo-1487309078313-fad80c3ec1e5?w=300&q=80',
+      shortBio:`Born into a world of music and movement, Mary Mailhot grew up singing and dancing as a way of life. Now a trained musician, dancer, devoted yogi, and mother, she blends the sacred arts of Kundalini, Hatha, and Bhakti yoga with mantra, sound, and embodied flow. Her training includes a 220-hour Kundalini certification, 200-hour Kripalu Hatha, 100-hour Advanced Anusara, Yin Yoga, and Reiki Master. As a recording artist, she has released three albums including the Kundalini mantra album Angels and Space under the name MM'Honey. Her sessions are a living prayer — an invitation to radical self-love and inner radiance.`,
+      bio:`Born into a world of music and movement, Mary Mailhot grew up singing and dancing as a way of life. Now a trained musician, dancer, devoted yogi, and mother, she blends the sacred arts of Kundalini, Hatha, and Bhakti yoga with mantra, sound, and embodied flow. Her training includes a 220-hour Kundalini certification, 200-hour Kripalu Hatha, 100-hour Advanced Anusara, Yin Yoga, and Reiki Master. As a recording artist, she has released three albums including the Kundalini mantra album Angels and Space under the name MM'Honey. Her sessions are a living prayer — an invitation to radical self-love and inner radiance.` },
+    { id:'samantha', name:'Samantha Nordstrom', role:'Sound Healing · Hatha Yoga · Reiki', cat:'healers',
+      photo:'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&q=80',
+      shortBio:`Samantha Nordstrom's offering is intuitive and heart-led, born from her own deep healing journey. She draws on yoga, meditation, breathwork, Reiki, and the power of crystal sound bowls to bring guests into a deeply restorative, meditative state of being. Her offerings are a blend of nourishing movement and soothing sounds — each session a loving prayer and an invitation to joy. Sam is inspired by the power of each unique individual to access wholeness through ancient practices. She brings her gifts to Vital Kauaʻi as a devoted member of the healing circle.`,
+      bio:`Samantha Nordstrom's teaching is intuitive and heart-led, born from her own deep healing journey. She draws on yoga, meditation, breathwork, Reiki, and the power of crystal sound bowls to bring guests into a deeply restorative, meditative state of being. Her offerings are a blend of nourishing movement and soothing sounds — each session a loving prayer and an invitation to joy. Sam is inspired by the power of each unique individual to access wholeness through ancient practices. She brings her gifts to Vital Kauaʻi as a devoted member of the healing circle.` },
+    { id:'jenny_z', name:'Jenny Zoberg', role:'Breathwork · Yoga · Sound Healing', cat:'healers',
+      photo:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&q=80',
+      shortBio:`Jenny Zoberg is a breathwork, yoga, and sound healing facilitator who guides practices that reconnect guests with their inner world. She trained as a breathwork facilitator with David Elliott, deepened her yoga studies with Bhavani Silvia Maki, and became certified in Sound Healing through her sensitivity to vibration and harmony. In 2022 she sat a 10-day Vipassana meditation in South Africa — an experience that continues to inform how she holds space. Her sessions are breath-led and music-connected, encouraging guests to move beyond the surface into a felt experience of body, mind, and soul. She brings her full gifts to the intimate containers of Vital Kauaʻi.`,
+      bio:`Jenny Zoberg is a breathwork, yoga, and sound healing facilitator who guides practices that reconnect guests with their inner world. She trained as a breathwork facilitator with David Elliott, deepened her yoga studies with Bhavani Silvia Maki, and became certified in Sound Healing through her sensitivity to vibration and harmony. In 2022 she sat a 10-day Vipassana meditation in South Africa — an experience that continues to inform how she holds space. Her sessions are breath-led and music-connected, encouraging guests to move beyond the surface into a felt experience of body, mind, and soul. She brings her full gifts to the intimate containers of Vital Kauaʻi.` },
+    { id:'jenny_h', name:'Jenny Harris', role:'Deep Tissue · Thai Massage · CranioSacral', cat:'healers',
+      photo:'https://images.unsplash.com/photo-1526510747491-58f928ec870f?w=300&q=80',
+      shortBio:`Jenny Harris is a massage therapist with 15+ years of experience and a personal trainer with a Bachelor's in Exercise Physiology from the University of Florida. She specializes in deep tissue, Thai massage, and CranioSacral therapy — bringing both anatomical precision and uplifting energy to every session. Her work is as therapeutic as it is joyful, grounded in a deep understanding of how the body moves, holds tension, and releases. She is a radiant, high-energy presence on the North Shore whose work transforms every container she enters.`,
+      bio:`Jenny Harris is a massage therapist with 15+ years of experience and a personal trainer with a Bachelor's in Exercise Physiology from the University of Florida. She specializes in deep tissue, Thai massage, and CranioSacral therapy — bringing both anatomical precision and uplifting energy to every session. Her work is as therapeutic as it is joyful, grounded in a deep understanding of how the body moves, holds tension, and releases. She is a radiant, high-energy presence on the North Shore whose work transforms every container she enters.` },
+    { id:'paul', name:'Paul Heffernan', role:'BodyTalk Practitioner', cat:'healers',
+      photo:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=80',
+      shortBio:`Paul is a certified BodyTalk practitioner bringing a subtle yet profoundly effective system of whole-body healing to the Vital Kauaʻi circle. BodyTalk works by identifying and reestablishing disrupted communication pathways within the body-mind complex, allowing the innate wisdom of the body to restore balance and function. His sessions are quiet, non-invasive, and often surprising in the depth of shift they produce.`,
+      bio:`Paul is a certified BodyTalk practitioner bringing a subtle yet profoundly effective system of whole-body healing to the Vital Kauaʻi circle. BodyTalk works by identifying and reestablishing disrupted communication pathways within the body-mind complex, allowing the innate wisdom of the body to restore balance and function. His sessions are quiet, non-invasive, and often surprising in the depth of shift they produce.` },
+    { id:'kurtis', name:'Kurtis Kunesh', role:'Deep Tissue Massage', cat:'healers',
+      photo:'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80',
+      shortBio:`Kurtis Kunesh brings skilled, therapeutic deep tissue massage to the Vital Kauaʻi circle. His work goes beneath surface tension to address the deeper layers of muscle and connective tissue, releasing chronic holding patterns and restoring ease of movement throughout the body. Kurtis combines strong technique with attentive presence, meeting each client exactly where they are.`,
+      bio:`Kurtis Kunesh brings skilled, therapeutic deep tissue massage to the Vital Kauaʻi circle. His work goes beneath surface tension to address the deeper layers of muscle and connective tissue, releasing chronic holding patterns and restoring ease of movement throughout the body. Kurtis combines strong technique with attentive presence, meeting each client exactly where they are.` },
+    { id:'ariana', name:'Ariana Beil', role:'BioGeometry Balancing', cat:'healers',
+      photo:'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300&q=80',
+      shortBio:`Ariana Beil brings the revolutionary science of BioGeometry to the Vital Kauaʻi circle — a practice that uses the subtle energy principles of shape, color, and form to restore natural balance within biological systems and living environments. Founded by Egyptian scholar Dr. Ibrahim Karim, BioGeometry works to harmonize the body's energy interactions with its surroundings, addressing geopathic stress, EMF, and energetic imbalance at a foundational level. Ariana's sessions support the body's own intelligence in returning to harmony, ease, and coherence. Her work is a quietly powerful complement to every healing journey at Vital Kauaʻi.`,
+      bio:`Ariana Beil brings the revolutionary science of BioGeometry to the Vital Kauaʻi circle — a practice that uses the subtle energy principles of shape, color, and form to restore natural balance within biological systems and living environments. Founded by Egyptian scholar Dr. Ibrahim Karim, BioGeometry works to harmonize the body's energy interactions with its surroundings, addressing geopathic stress, EMF, and energetic imbalance at a foundational level. Ariana's sessions support the body's own intelligence in returning to harmony, ease, and coherence. Her work is a quietly powerful complement to every healing journey at Vital Kauaʻi.` },
+    { id:'p8', name:'Coming Soon', role:'Chef', cat:'hidden',
+      photo:'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&q=80',
+      shortBio:`Our culinary team nourishes every guest with food grown in love and prepared with intention.`,
+      bio:`Our culinary team nourishes every guest with food grown in love and prepared with intention.` },
+    { id:'p9', name:'Coming Soon', role:'Hospitality Coordinator', cat:'hidden',
+      photo:'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&q=80',
+      shortBio:`Our hospitality team ensures every arrival, transition, and departure is held with warmth and care.`,
+      bio:`Our hospitality team ensures every arrival, transition, and departure is held with warmth and care.` },
+    { id:'p10', name:'Coming Soon', role:'Cultural Guide', cat:'hidden',
+      photo:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&q=80',
+      shortBio:`Our cultural guides carry the living wisdom of Hawaiʻi and connect guests to the spirit of the land.`,
+      bio:`Our cultural guides carry the living wisdom of Hawaiʻi and connect guests to the spirit of the land.` },
+    { id:'p11', name:'Coming Soon', role:'Legal Counsel', cat:'hidden',
+      photo:'https://images.unsplash.com/photo-1556157382-97eda2f9e2bf?w=300&q=80',
+      shortBio:`Our legal team ensures Vital Kauaʻi operates with integrity, clarity, and full protection for every guest and practitioner.`,
+      bio:`Our legal team ensures Vital Kauaʻi operates with integrity, clarity, and full protection for every guest and practitioner.` },
+  ];
+
+  const grid = document.getElementById('constellation');
+  if (!grid) return;
+
+  let activeId = null;
+  let activeBioRow = null;
+  const cardEls = {};
+
+  // Build cards
+  members.forEach((m, i) => {
+    const card = document.createElement('div');
+    card.className = 'c-card';
+    card.dataset.cat = m.cat;
+    card.dataset.id = m.id;
+    if (m.cat === 'hidden') {
+      card.classList.add('hidden');
+      card.style.position = 'absolute';
+      card.style.pointerEvents = 'none';
+    }
+    card.innerHTML = `
+      <div class="c-photo-ring">
+        <img src="${m.photo}" alt="${m.name}" loading="lazy">
+      </div>
+      <p class="c-name">${m.name}</p>
+      <p class="c-role">${m.role}</p>
+    `;
+    grid.appendChild(card);
+    cardEls[m.id] = card;
+
+    card.addEventListener('click', () => {
+      const isActive = activeId === m.id;
+
+      // Close any open bio row
+      if (activeBioRow) {
+        activeBioRow.classList.remove('open');
+        setTimeout(() => { if (activeBioRow) { activeBioRow.remove(); activeBioRow = null; } }, 620);
+      }
+      // Deactivate previous card
+      if (activeId && cardEls[activeId]) cardEls[activeId].classList.remove('active');
+      activeId = null;
+
+      if (isActive) return;
+
+      // Figure out which row this card is in
+      const allVisible = [...grid.querySelectorAll('.c-card:not(.hidden)')];
+      const cardIndex = allVisible.indexOf(card);
+      const cols = getComputedColumns();
+      const rowEnd = Math.ceil((cardIndex + 1) / cols) * cols;
+      const insertAfter = allVisible[Math.min(rowEnd, allVisible.length) - 1];
+
+      // Build bio row
+      const row = document.createElement('div');
+      row.className = 'bio-row';
+      row.innerHTML = `
+        <div class="bio-row-inner">
+          <button class="bio-close-btn" aria-label="Close">✕</button>
+          <div class="bio-row-photo"><img src="${m.photo}" alt="${m.name}"></div>
+          <div>
+            <span class="bio-row-cat">${CAT_LABELS[m.cat] || ''}</span>
+            <h3 class="bio-row-name">${m.name}</h3>
+            <span class="bio-row-role">${m.role}</span>
+            <p class="bio-row-body">${m.bio}</p>
+          </div>
+        </div>
+      `;
+      insertAfter.insertAdjacentElement('afterend', row);
+      activeBioRow = row;
+      activeId = m.id;
+      card.classList.add('active');
+      requestAnimationFrame(() => {
+        row.classList.add('open');
+        setTimeout(() => row.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+      });
+
+      row.querySelector('.bio-close-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        row.classList.remove('open');
+        card.classList.remove('active');
+        activeId = null;
+        setTimeout(() => { row.remove(); activeBioRow = null; }, 620);
+      });
+    });
+  });
+
+  // Filter tabs
+  document.getElementById('filterTabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('.filter-tab');
+    if (!btn) return;
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+
+    // Close open bio
+    if (activeBioRow) { activeBioRow.remove(); activeBioRow = null; }
+    if (activeId && cardEls[activeId]) cardEls[activeId].classList.remove('active');
+    activeId = null;
+
+    Object.values(cardEls).forEach(c => {
+      const match = filter === 'all' ? c.dataset.cat !== 'hidden' : c.dataset.cat === filter;
+      c.classList.toggle('hidden', !match);
+      c.style.position = match ? '' : 'absolute';
+      c.style.pointerEvents = match ? '' : 'none';
+    });
+  });
+
+  function getComputedColumns() {
+    const w = grid.offsetWidth;
+    if (w >= 900) return 5;
+    if (w >= 680) return 4;
+    if (w >= 480) return 3;
+    return 2;
+  }
+})();
+</script>
+
+</body>
+</html>

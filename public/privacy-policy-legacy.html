@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Vital Kauaʻi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --forest: #1C2B1E; --forest-dark: #141F15; --deep: #0E1A10;
+  --sage: #7A9E7E; --sage-light: #A8C5AC; --gold: #C8A96E;
+  --gold-light: #E2CFA0; --cream: #F5F0E8; --warm-white: #FDFBF7;
+  --stone: #8B8070; --text-dark: #1A1A18; --text-mid: #3D3D38; --ink: #12120F;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm-white); color: var(--text-dark); overflow-x: hidden; }
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 28px 60px; display: flex; justify-content: space-between; align-items: center; transition: all 0.5s ease; background: rgba(14,26,16,0.0); }
+nav.scrolled { background: rgba(14,26,16,0.96); backdrop-filter: blur(12px); padding: 18px 60px; }
+.nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; letter-spacing: 0.15em; color: var(--cream); text-decoration: none; text-transform: uppercase; }
+.nav-links { display: flex; gap: 40px; list-style: none; }
+.nav-links a { font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream); text-decoration: none; opacity: 0.85; transition: opacity 0.3s; }
+.nav-links a:hover { opacity: 1; }
+.nav-cta { font-size: 10px; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase; color: var(--forest); background: var(--gold); padding: 12px 28px; text-decoration: none; transition: background 0.3s; }
+.nav-cta:hover { background: var(--gold-light); }
+.page-hero { background: var(--deep); padding: 140px 60px 80px; position: relative; overflow: hidden; }
+.page-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(200,169,110,0.07) 0%, transparent 65%); }
+.hero-inner { position: relative; max-width: 760px; }
+.eyebrow { font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); margin-bottom: 18px; display: block; }
+.page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(38px, 5vw, 60px); font-weight: 300; color: var(--cream); line-height: 1.1; letter-spacing: 0.02em; margin-bottom: 22px; }
+.page-title em { font-style: italic; color: var(--gold-light); }
+.hero-rule { width: 44px; height: 1px; background: var(--gold); margin-bottom: 22px; }
+.hero-sub { font-size: 15px; font-weight: 300; color: rgba(245,240,232,0.92); line-height: 1.8; max-width: 560px; }
+.breadcrumb { background: var(--forest); padding: 13px 60px; display: flex; align-items: center; gap: 10px; }
+.breadcrumb a, .breadcrumb span { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,240,232,0.4); text-decoration: none; }
+.breadcrumb a:hover { color: var(--gold); }
+.breadcrumb .sep { color: rgba(245,240,232,0.18); font-size: 9px; }
+.breadcrumb .current { color: var(--gold); }
+.content-wrap { max-width: 860px; margin: 0 auto; padding: 80px 60px; }
+.content-wrap h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(24px, 3vw, 32px); font-weight: 300; color: var(--forest-dark); line-height: 1.25; letter-spacing: 0.02em; margin: 48px 0 16px; }
+.content-wrap h2:first-of-type { margin-top: 0; }
+.content-wrap h2 em { font-style: italic; }
+.content-wrap p { font-size: 15.5px; font-weight: 300; color: var(--text-mid); line-height: 1.9; margin-bottom: 18px; letter-spacing: 0.01em; }
+.content-wrap ul { margin: 12px 0 20px 0; list-style: none; }
+.content-wrap ul li { font-size: 15px; font-weight: 300; color: var(--text-mid); line-height: 1.8; padding-left: 22px; position: relative; margin-bottom: 8px; }
+.content-wrap ul li::before { content: '—'; position: absolute; left: 0; color: var(--gold); }
+.content-wrap a { color: var(--forest); text-decoration: underline; text-underline-offset: 3px; }
+.content-wrap a:hover { color: var(--gold); }
+.section-rule { width: 100%; height: 1px; background: linear-gradient(to right, rgba(200,169,110,0.25), transparent); margin: 40px 0; border: none; }
+.last-updated { font-size: 12px; color: var(--stone); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 48px; display: block; }
+.policy-nav { background: var(--cream); border-left: 3px solid var(--gold); padding: 28px 32px; margin-bottom: 48px; }
+.policy-nav p { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; font-weight: 400; }
+.policy-nav ul { list-style: none; margin: 0; }
+.policy-nav ul li { margin-bottom: 6px; }
+.policy-nav ul li::before { display: none; }
+.policy-nav ul a { font-size: 13px; color: var(--forest); letter-spacing: 0.05em; text-decoration: none; padding-left: 0; }
+.policy-nav ul a:hover { color: var(--gold); }
+.highlight-box { background: rgba(28,43,30,0.04); border: 1px solid rgba(28,43,30,0.1); border-left: 3px solid var(--sage); padding: 24px 28px; margin: 24px 0; }
+.highlight-box p { margin-bottom: 0; font-size: 14.5px; }
+.policies-bar { background: var(--forest-dark); padding: 48px 60px; }
+.policies-bar-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: flex-start; gap: 72px; }
+.policies-bar h4 { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); font-weight: 400; margin-bottom: 18px; }
+.policy-links { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+.policy-links a { font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(245,240,232,0.48); text-decoration: none; transition: color 0.3s; }
+.policy-links a:hover { color: var(--gold); }
+.policy-links a.active { color: var(--gold); }
+.policy-note { flex: 1; font-size: 13px; font-weight: 300; color: rgba(245,240,232,0.38); line-height: 1.8; max-width: 400px; margin-left: auto; }
+footer { background: var(--ink); padding: 64px 60px 36px; display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr; gap: 40px; }
+.footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400; letter-spacing: 0.1em; color: var(--cream); text-transform: uppercase; margin-bottom: 12px; }
+.footer-tagline { font-size: 13px; font-weight: 300; color: rgba(245,240,232,0.36); line-height: 1.8; max-width: 230px; }
+footer h4 { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); font-weight: 400; margin-bottom: 16px; }
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 9px; }
+.footer-links a { font-size: 13px; font-weight: 300; color: rgba(245,240,232,0.42); text-decoration: none; transition: color 0.3s; }
+.footer-links a:hover { color: var(--cream); }
+.footer-bottom { background: var(--ink); border-top: 1px solid rgba(245,240,232,0.06); padding: 18px 60px; display: flex; justify-content: space-between; }
+.footer-bottom p { font-size: 11px; color: rgba(245,240,232,0.22); letter-spacing: 0.08em; }
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
+.hero-inner .eyebrow { animation: fadeUp 0.9s ease 0.2s both; }
+.hero-inner .page-title { animation: fadeUp 0.9s ease 0.35s both; }
+.hero-inner .hero-rule { animation: fadeUp 0.9s ease 0.5s both; }
+.hero-inner .hero-sub { animation: fadeUp 0.9s ease 0.6s both; }
+@media (max-width: 768px) {
+  nav { padding: 20px 24px; } nav.scrolled { padding: 14px 24px; } .nav-links { display: none; }
+  .page-hero { padding: 110px 24px 60px; }
+  .content-wrap { padding: 56px 24px; }
+  .breadcrumb { padding: 13px 24px; }
+  .policies-bar { padding: 44px 24px; } .policies-bar-inner { flex-direction: column; gap: 36px; }
+  footer { grid-template-columns: 1fr 1fr; padding: 48px 24px 28px; }
+  .footer-bottom { padding: 14px 24px; flex-direction: column; gap: 6px; }
+}
+</style>
+</head>
+<body>
+<nav id="nav">
+  <a href="/" class="nav-logo">Vital Kauaʻi</a>
+  <ul class="nav-links">
+    <li><a href="/iboga-journey">Iboga Journey</a></li>
+    <li><a href="/sacred-intimacy">Sacred Intimacy</a></li>
+    <li><a href="/vitality">Vitality</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/stay">Stay</a></li>
+  </ul>
+  <a href="/portal" class="nav-cta">Begin Your Journey</a>
+</nav>
+<section class="page-hero">
+  <div class="hero-inner">
+    <span class="eyebrow">Sacred Policies</span>
+    <h1 class="page-title">Privacy <em>Policy</em></h1>
+    <div class="hero-rule"></div>
+    <p class="hero-sub">Your information is held as sacred — with care, discretion, and the full weight of our commitment to your trust.</p>
+  </div>
+</section>
+<div class="breadcrumb">
+  <a href="/">Home</a>
+  <span class="sep">›</span>
+  <a href="/church-information">Sacred Policies</a>
+  <span class="sep">›</span>
+  <span class="current">Privacy Policy</span>
+</div>
+<div class="content-wrap">
+  <div class="policy-nav"><p>Contents</p><ul><li><a href="#what-we-collect">Information We Collect</a></li><li><a href="#how-we-use">How We Use Your Information</a></li><li><a href="#how-we-protect">How We Protect Your Information</a></li><li><a href="#sharing">Sharing &amp; Disclosure</a></li><li><a href="#ecclesiastical">Ecclesiastical Privilege</a></li><li><a href="#cookies">Cookies &amp; Website Data</a></li><li><a href="#your-rights">Member Rights</a></li><li><a href="#retention">Data Retention</a></li><li><a href="#children">Adult Membership Only</a></li><li><a href="#contact">Contact</a></li></ul></div>
+  
+<span class="last-updated">Last Updated: March 7, 2026</span>
+
+<p>Vital Kauai Church is a private, unincorporated religious organization operating as a Private Membership Association. We are protected under the First Amendment to the U.S. Constitution, the Religious Freedom Restoration Act (RFRA), and the Universal Declaration of Human Rights. All activities, ceremonies, and communications within Vital Kauai Church take place within a private ecclesiastical domain among consenting adult members.</p>
+
+<p>Privacy is not merely a legal obligation for us — it is a sacred value, rooted in our Covenant of Silence and our deepest commitment to the dignity of every member. The information you share with us is held as confidential, used with care, and never exploited. This Privacy Policy describes how Vital Kauai Church ("we," "us," "our," or "the Church") collects, uses, and protects information when you visit our website at vitalkauai.com, complete our membership or intake forms, or participate in our sacramental ceremonies and church activities.</p>
+
+<div class="highlight-box">
+  <p>By becoming a member of Vital Kauai Church, all information you share with the Church enters the private domain of a religious organization. It is protected by the Church's Covenant of Silence, our ecclesiastical obligations, and applicable religious freedom law — not merely by standard data protection frameworks.</p>
+</div>
+
+<hr class="section-rule">
+
+<h2 id="what-we-collect"><em>Information</em> We Collect</h2>
+<p>We collect information you provide directly to us as part of the membership and sacramental preparation process, including:</p>
+<ul>
+  <li>Full legal name, contact information, and location provided through membership applications and inquiry forms</li>
+  <li>Health history, medical information, current medications, and psycho-spiritual background shared through our member intake process</li>
+  <li>Church membership applications, signed agreements, and ecclesiastical documents</li>
+  <li>Signed documents including the Medical Disclaimer and Risk Acknowledgment & Sovereignty Agreement</li>
+  <li>Payment information processed securely through third-party payment processors</li>
+  <li>Communications you send to the Church via email or through our website</li>
+</ul>
+<p>We also collect limited technical information automatically when you visit our website, including IP address, browser type, and pages visited. This information is used solely for website security and functionality.</p>
+
+<hr class="section-rule">
+
+<h2 id="how-we-use"><em>How We Use</em> Your Information</h2>
+<p>All information collected by Vital Kauai Church is used exclusively within the private ecclesiastical domain of the Church. We use member information solely to:</p>
+<ul>
+  <li>Assess membership eligibility and prepare for your sacramental participation</li>
+  <li>Communicate with you about your journey, preparation, ceremony, and integration</li>
+  <li>Maintain Church membership records as required by our Articles of Association and Bylaws</li>
+  <li>Process offerings and maintain financial records as required by our governing documents</li>
+  <li>Ensure the safety and wellbeing of all members participating in sacramental ceremony</li>
+  <li>Fulfill our ecclesiastical obligations and, where unavoidable, comply with legal requirements</li>
+</ul>
+<p>We never use member information for marketing to third parties, advertising, sale of data, or any commercial purpose unrelated to your direct participation in the life of the Church.</p>
+
+<hr class="section-rule">
+
+<h2 id="how-we-protect"><em>How We Protect</em> Your Information</h2>
+<p>Member information — particularly health disclosures, personal history, and sacramental communications — is treated as confidential, sacred, and protected by multiple overlapping frameworks.</p>
+<div class="highlight-box">
+  <p>Information shared with Vital Kauai Church in the context of sacramental preparation, religious counsel, or church membership is protected by the Covenant of Silence established in our Church Charter. This is a binding ecclesiastical obligation on all Stewards, practitioners, and staff — not merely an internal policy. Health and personal disclosures made in the context of religious practice may additionally carry ecclesiastical privilege protections under applicable law.</p>
+</div>
+<p>Health and personal information shared through our intake and membership process is accessible only to the Stewards and practitioners directly involved in your care and ceremony. It is never shared with other members, staff unrelated to your program, or any third parties except as described below.</p>
+<p>We implement appropriate technical and organizational measures to protect all member data against unauthorized access, alteration, disclosure, or destruction.</p>
+
+<hr class="section-rule">
+
+<h2 id="sharing">Sharing <em>&amp; Disclosure</em></h2>
+<p>Vital Kauai Church does not sell, rent, trade, or otherwise disclose member information to outside parties. The Church's position, consistent with our ecclesiastical framework, is that all member information exists within the private domain of a religious organization and is not subject to public disclosure. We share member information only in the following strictly limited circumstances:</p>
+<ul>
+  <li><strong style="font-weight:400;">With your explicit consent</strong> — when you directly authorize specific disclosure in writing</li>
+  <li><strong style="font-weight:400;">With your care providers</strong> — when coordination with a licensed medical professional is necessary to protect your safety, and only with your knowledge</li>
+  <li><strong style="font-weight:400;">With bound service providers</strong> — limited technical vendors such as payment processors and scheduling tools, all of whom are contractually bound to confidentiality obligations consistent with our ecclesiastical standards</li>
+  <li><strong style="font-weight:400;">When legally compelled</strong> — only when disclosure is required by a court of competent jurisdiction and after the Church has exhausted all available ecclesiastical and legal protections against compelled disclosure. The Church will notify affected members of any such compelled disclosure to the extent legally permitted</li>
+</ul>
+
+<hr class="section-rule">
+
+<h2 id="ecclesiastical">Ecclesiastical <em>Privilege</em></h2>
+<p>Vital Kauai Church operates as a sincerely held private religious organization. Communications between members and Stewards in the context of spiritual counsel, sacramental preparation, and church membership may be protected by ecclesiastical privilege under applicable state and federal law. The Church asserts this privilege on behalf of its members and will resist compelled disclosure of ecclesiastically privileged communications to the fullest extent permitted by law.</p>
+<p>All Stewards and practitioners of Vital Kauai Church are bound by the Covenant of Silence established in our Church Charter — a sacred and contractual obligation of confidentiality that exists independently of, and in addition to, any legal protections.</p>
+
+<hr class="section-rule">
+
+<h2 id="cookies">Cookies <em>&amp; Website Data</em></h2>
+<p>Our website uses minimal cookies for basic functionality only. We do not use tracking cookies, behavioral advertising, or third-party analytics services that share your data with external parties. You may disable cookies in your browser settings; this will not affect your ability to access our content.</p>
+
+<hr class="section-rule">
+
+<h2 id="your-rights">Member <em>Rights</em></h2>
+<p>As a member of Vital Kauai Church, you have the right to:</p>
+<ul>
+  <li>Request access to the personal information the Church holds about you</li>
+  <li>Request correction of any inaccurate information in your membership record</li>
+  <li>Request deletion of your information, subject to the Church's ecclesiastical record-keeping obligations and member safety requirements</li>
+  <li>Withdraw consent for future communications at any time by notifying the Church in writing</li>
+  <li>Know the basis on which any of your information has been shared outside the Church</li>
+</ul>
+<p>To exercise any of these rights, contact us at <a href="mailto:hello@vitalkauai.com">hello@vitalkauai.com</a>.</p>
+
+<hr class="section-rule">
+
+<h2 id="retention">Data <em>Retention</em></h2>
+<p>Vital Kauai Church retains member information for as long as necessary to fulfill the purposes described in this policy and to comply with our ecclesiastical and legal obligations. Health information, membership records, and signed ecclesiastical documents are retained for a minimum of seven years following the conclusion of a member's participation. You may request deletion of your information at any time; we will honor such requests to the extent permitted by our ecclesiastical obligations and member safety requirements.</p>
+
+<hr class="section-rule">
+
+<h2 id="children">Adult <em>Membership Only</em></h2>
+<p>All sacramental participation within Vital Kauai Church is limited to adults 18 years of age and older. The Church does not knowingly collect personal information from individuals under the age of 18. If you believe the Church has inadvertently collected information from a minor, please contact us immediately at <a href="mailto:hello@vitalkauai.com">hello@vitalkauai.com</a>.</p>
+
+<hr class="section-rule">
+
+<h2 id="contact"><em>Contact</em></h2>
+<p>Questions about this Privacy Policy, your membership information, or how the Church stewards your data are always welcome.</p>
+<p>Vital Kauai Church<br>PO Box 932<br>Hanalei, HI 96714<br><a href="mailto:hello@vitalkauai.com">hello@vitalkauai.com</a></p>
+
+</div>
+<div class="policies-bar">
+  <div class="policies-bar-inner">
+    <div>
+      <h4>Sacred Policies</h4>
+      <ul class="policy-links">
+        <li><a href="/privacy-policy" class='active'>Privacy Policy</a></li>
+        <li><a href="/terms-of-use" >Terms of Use</a></li>
+        <li><a href="/medical-disclaimer" >Medical Disclaimer</a></li>
+        <li><a href="/church-information">Church Information</a></li>
+      </ul>
+    </div>
+    <p class="policy-note">Questions about any of our policies? Write to us at <a href="/#contact" style="color:rgba(245,240,232,0.5);text-decoration:none;">contact form</a> — we are happy to clarify anything.</p>
+  </div>
+</div>
+<footer>
+  <div>
+    <p class="footer-brand">Vital Kauaʻi</p>
+    <p class="footer-tagline">A living sanctuary of transformation and awakening on Kauaʻi's sacred North Shore.</p>
+  </div>
+  <div>
+    <h4>Explore</h4>
+    <ul class="footer-links">
+      <li><a href="/#rivers">Our Work</a></li>
+      <li><a href="/iboga-journey">Iboga Journey</a></li>
+      <li><a href="/#medicine">Iboga Medicine</a></li>
+      <li><a href="/stay">Stay With Us</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Connect</h4>
+    <ul class="footer-links">
+      <li><a href="/about">About Us</a></li>
+      <li><a href="/healing-circle">Our Team</a></li>
+      <li><a href="/#contact">Contact</a></li>
+      <li><a href="/portal">Client Portal</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Sacred Policies</h4>
+    <ul class="footer-links">
+      <li><a href="/privacy-policy">Privacy</a></li>
+      <li><a href="/terms-of-use">Terms</a></li>
+      <li><a href="/medical-disclaimer">Medical Disclaimer</a></li>
+      <li><a href="/church-information">Church Information</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2026 Vital Kauai Church  ·  Kauaʻi's North Shore, Hawaiʻi  ·  All rights reserved.</p>
+  <p style="color:rgba(245,240,232,0.18);font-size:10px;letter-spacing:0.08em;">All original content, copy, frameworks, guides, and materials on this site are the intellectual property of Vital Kauai Church and are protected by U.S. copyright law. Reproduction or use without written permission is prohibited.</p>
+</div>
+<script data-cfasync="false" src="/cd
