@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { MedicalDisclaimerPage } from "@/components/medical-disclaimer-page";
 
-export default function MedicalDisclaimerPage() {
-  redirect("/medical-disclaimer-legacy.html");
+export default function MedicalDisclaimerRoute() {
+  return <MedicalDisclaimerPage />;
 }

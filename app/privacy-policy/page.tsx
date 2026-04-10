@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { PrivacyPolicyPage } from "@/components/privacy-policy-page";
 
-export default function PrivacyPolicyPage() {
-  redirect("/privacy-policy-legacy.html");
+export default function PrivacyPolicyRoute() {
+  return <PrivacyPolicyPage />;
 }

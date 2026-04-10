@@ -86,6 +86,80 @@
   opacity: 1;
 }
 
+.navDropdown {
+  position: relative;
+}
+
+.navDropdownLabel {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: 0.85;
+  cursor: default;
+  transition: opacity 0.3s;
+}
+
+.navDropdown:hover .navDropdownLabel {
+  opacity: 1;
+}
+
+.navDropdownMenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 16px 0 0;
+  margin: 0;
+  list-style: none;
+}
+
+.navDropdown:hover .navDropdownMenu {
+  display: block;
+}
+
+.navDropdownMenu::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 16px;
+}
+
+.navDropdownMenu li {
+  background: var(--forest);
+  border-bottom: 1px solid rgb(245 240 232 / 0.08);
+}
+
+.navDropdownMenu li:first-child {
+  border-radius: 4px 4px 0 0;
+}
+
+.navDropdownMenu li:last-child {
+  border-radius: 0 0 4px 4px;
+  border-bottom: none;
+}
+
+.navDropdownMenu a {
+  display: block;
+  white-space: nowrap;
+  padding: 14px 28px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cream);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.navDropdownMenu a:hover {
+  opacity: 1;
+}
+
 .navCta,
 .btnPrimary,
 .btnSubmit {

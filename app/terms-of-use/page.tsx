@@ -1,10 +1,5 @@
-import { ShellPage } from "@/components/shell-page";
+import { TermsOfUsePage } from "@/components/terms-of-use-page";
 
-export default function TermsOfUsePage() {
-  return (
-    <ShellPage
-      title="Terms of Use"
-      description="The full terms page is being prepared and will be published shortly. In the meantime, contact us directly with any terms or usage questions."
-    />
-  );
+export default function TermsOfUseRoute() {
+  return <TermsOfUsePage />;
 }

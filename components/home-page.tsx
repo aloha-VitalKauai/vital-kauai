@@ -48,7 +48,7 @@ const faqs = [
   {
     question: "Where are you located?",
     answer:
-      "Kauaʻi's North Shore — Hanalei. One of the most pristine healing landscapes on Earth. Specific addresses are shared once you are enrolled.",
+      "Kauaʻi's North Shore — Hanalei. One of the most pristine healing landscapes on Earth. Specific addresses are shared once you become a member.",
   },
   {
     question: "How do I get to Kauaʻi?",
@@ -169,13 +169,21 @@ export function HomePage() {
         </Link>
         <ul className={styles.navLinks}>
           <li>
-            <a href="#rivers">The Work</a>
+            <Link href="/iboga-journey">The Iboga Journey</Link>
           </li>
           <li>
-            <Link href="/stay">Stay</Link>
+            <Link href="/stay">Stay With Us</Link>
           </li>
-          <li>
-            <Link href="/about">About</Link>
+          <li className={styles.navDropdown}>
+            <span className={styles.navDropdownLabel}>About</span>
+            <ul className={styles.navDropdownMenu}>
+              <li>
+                <Link href="/about">About the Founders</Link>
+              </li>
+              <li>
+                <Link href="/church-information">About Vital Kauaʻi Church</Link>
+              </li>
+            </ul>
           </li>
           <li>
             <a href="#contact">Contact</a>
@@ -195,20 +203,20 @@ export function HomePage() {
         >
           ✕
         </button>
-        <a href="#rivers" onClick={() => setIsMobileNavOpen(false)}>
-          The Work
-        </a>
-        <a href="#medicine" onClick={() => setIsMobileNavOpen(false)}>
-          Iboga
-        </a>
+        <Link href="/iboga-journey" onClick={() => setIsMobileNavOpen(false)}>
+          The Iboga Journey
+        </Link>
         <Link href="/stay" onClick={() => setIsMobileNavOpen(false)}>
-          Stay
+          Stay With Us
         </Link>
         <Link href="/about" onClick={() => setIsMobileNavOpen(false)}>
-          About
+          About the Founders
+        </Link>
+        <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>
+          About Vital Kauaʻi Church
         </Link>
         <a href="#team" onClick={() => setIsMobileNavOpen(false)}>
-          Meet Our Healing Circle
+          Our Healing Circle
         </a>
         <a href="#portal" onClick={() => setIsMobileNavOpen(false)}>
           Member Portal
@@ -401,11 +409,9 @@ export function HomePage() {
             className={styles.riverFeatureImage}
           />
           <div className={styles.riverFeatureOverlay}>
-            <span className={styles.riverFeatureEyebrow}>The Root</span>
+            <span className={styles.riverFeatureEyebrow}>The Healing Power of Iboga</span>
             <h3 className={styles.riverFeatureTitle}>
-              Nature&apos;s Most Ancient Medicine:
-              <br />
-              <em>Iboga</em>
+              Nature&apos;s Most Ancient Medicine
             </h3>
             <p className={styles.riverFeatureBody}>
               Iboga goes deep — interrupting long-held patterns and unconscious conditioning. Many
@@ -413,9 +419,9 @@ export function HomePage() {
               with a clarity of purpose, a freedom from patterns that once felt permanent, and a
               felt sense of themselves they had forgotten was possible.
             </p>
-            <a href="#medicine" className={styles.riverFeatureLink}>
+            <Link href="/iboga-journey" className={styles.riverFeatureLink}>
               The Medicine →
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -649,9 +655,9 @@ export function HomePage() {
             home, centering aloha ʻāina in everything we do and returning a portion of every
             offering to the regeneration of this place.
           </p>
-          <a href="#contact" className={`${styles.storyLink} ${styles.reveal}`}>
+          <Link href="/stay#community" className={`${styles.storyLink} ${styles.reveal}`}>
             The Stewards We Walk Alongside →
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -668,7 +674,7 @@ export function HomePage() {
           </div>
           <div className={styles.contactDetail}>
             <span className={styles.contactDetailLabel}>Email</span>
-            <span className={styles.contactDetailValue}>hello@vitalkauai.com</span>
+            <span className={styles.contactDetailValue}>aloha@vitalkauai.com</span>
           </div>
           <div className={styles.contactDetail}>
             <span className={styles.contactDetailLabel}>Response Time</span>
@@ -714,22 +720,22 @@ export function HomePage() {
           <p className={styles.footerTagline}>
             A living sanctuary of transformation and awakening on Kauaʻi&apos;s North Shore.
           </p>
-          <p className={styles.footerAddress}>PO Box 932, Hanalei, HI 96714{"\n"}hello@vitalkauai.com</p>
+          <p className={styles.footerAddress}>PO Box 932, Hanalei, HI 96714{"\n"}aloha@vitalkauai.com</p>
         </div>
         <div className={styles.footerCol}>
           <h4>Explore</h4>
           <ul className={styles.footerLinks}>
             <li>
-              <a href="#rivers">The Work</a>
+              <Link href="/iboga-journey">The Iboga Journey</Link>
             </li>
             <li>
-              <a href="#medicine">Iboga Medicine</a>
+              <Link href="/about">Josh & Rachel</Link>
+            </li>
+            <li>
+              <Link href="/healing-circle">Our Healing Circle</Link>
             </li>
             <li>
               <Link href="/stay">Stay With Us</Link>
-            </li>
-            <li>
-              <a href="#portal">Member Portal</a>
             </li>
           </ul>
         </div>
@@ -737,13 +743,10 @@ export function HomePage() {
           <h4>Connect</h4>
           <ul className={styles.footerLinks}>
             <li>
-              <Link href="/about">Josh & Rachel</Link>
-            </li>
-            <li>
-              <Link href="/healing-circle">The Healing Circle</Link>
-            </li>
-            <li>
               <a href="#contact">Begin Your Journey</a>
+            </li>
+            <li>
+              <a href="#portal">Member Portal</a>
             </li>
           </ul>
         </div>
@@ -751,16 +754,16 @@ export function HomePage() {
           <h4>Our Policies</h4>
           <ul className={styles.footerLinks}>
             <li>
-              <a href="#">Privacy Policy</a>
+              <Link href="/privacy-policy">Privacy Policy</Link>
             </li>
             <li>
-              <a href="#">Terms of Use</a>
+              <Link href="/terms-of-use">Terms of Use</Link>
             </li>
             <li>
-              <a href="#">Medical Disclaimer</a>
+              <Link href="/medical-disclaimer">Medical Disclaimer</Link>
             </li>
             <li>
-              <a href="#">Church Information</a>
+              <Link href="/church-information">Church Information</Link>
             </li>
           </ul>
         </div>

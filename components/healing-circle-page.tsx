@@ -25,6 +25,7 @@ export function HealingCirclePage() {
   const [activeFilter, setActiveFilter] = useState<FilterValue>("all");
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [columns, setColumns] = useState(5);
   const revealRefs = useRef<HTMLElement[]>([]);
 
@@ -85,29 +86,36 @@ export function HealingCirclePage() {
   return (
     <main className={styles.page}>
       <nav className={`${styles.nav} ${isScrolled ? styles.navScrolled : ""}`}>
+        <button
+          className={styles.hamburger}
+          type="button"
+          aria-label="Menu"
+          onClick={() => setIsMobileNavOpen(true)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
         <Link href="/" className={styles.navLogo}>
           Vital Kauaʻi
         </Link>
         <ul className={styles.navLinks}>
           <li>
-            <Link href="/#rivers">Our Work</Link>
-          </li>
-          <li>
-            <Link href="/#offerings">Offerings</Link>
-          </li>
-          <li>
-            <Link href="/#reciprocity">Reciprocity</Link>
+            <Link href="/iboga-journey">The Iboga Journey</Link>
           </li>
           <li>
             <Link href="/stay">Stay With Us</Link>
           </li>
-          <li>
-            <Link href="/about">About</Link>
-          </li>
-          <li>
-            <Link href="/healing-circle" style={{ opacity: 1 }}>
-              Our Circle
-            </Link>
+          <li className={styles.navDropdown}>
+            <span className={styles.navDropdownLabel}>About</span>
+            <ul className={styles.navDropdownMenu}>
+              <li>
+                <Link href="/about">About the Founders</Link>
+              </li>
+              <li>
+                <Link href="/church-information">About Vital Kauaʻi Church</Link>
+              </li>
+            </ul>
           </li>
           <li>
             <Link href="/#contact">Contact</Link>
@@ -117,6 +125,38 @@ export function HealingCirclePage() {
           Begin Your Journey
         </Link>
       </nav>
+
+      <div className={`${styles.navMobile} ${isMobileNavOpen ? styles.navMobileOpen : ""}`}>
+        <button
+          className={styles.navMobileClose}
+          type="button"
+          aria-label="Close menu"
+          onClick={() => setIsMobileNavOpen(false)}
+        >
+          ✕
+        </button>
+        <Link href="/iboga-journey" onClick={() => setIsMobileNavOpen(false)}>
+          The Iboga Journey
+        </Link>
+        <Link href="/stay" onClick={() => setIsMobileNavOpen(false)}>
+          Stay With Us
+        </Link>
+        <Link href="/about" onClick={() => setIsMobileNavOpen(false)}>
+          About the Founders
+        </Link>
+        <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>
+          About Vital Kauaʻi Church
+        </Link>
+        <Link href="/healing-circle" onClick={() => setIsMobileNavOpen(false)}>
+          Our Healing Circle
+        </Link>
+        <Link href="/#portal" onClick={() => setIsMobileNavOpen(false)}>
+          Member Portal
+        </Link>
+        <Link href="/#contact" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
+          Begin Your Journey
+        </Link>
+      </div>
 
       <section className={styles.hero}>
         <Image
@@ -277,20 +317,21 @@ export function HealingCirclePage() {
         <div>
           <p className={styles.footerBrand}>Vital Kauaʻi</p>
           <p className={styles.footerTagline}>
-            A living sanctuary of transformation and awakening on Kauaʻi&apos;s sacred North Shore.
+            A living sanctuary of transformation and awakening on Kauaʻi&apos;s North Shore.
           </p>
+          <p className={styles.footerAddress}>PO Box 932, Hanalei, HI 96714{"\n"}aloha@vitalkauai.com</p>
         </div>
         <div className={styles.footerCol}>
           <h4>Explore</h4>
           <ul className={styles.footerLinks}>
             <li>
-              <Link href="/#rivers">Our Work</Link>
+              <Link href="/iboga-journey">The Iboga Journey</Link>
             </li>
             <li>
-              <Link href="/#offerings">Offerings</Link>
+              <Link href="/about">Josh & Rachel</Link>
             </li>
             <li>
-              <Link href="/#medicine">Iboga Medicine</Link>
+              <Link href="/healing-circle">Our Healing Circle</Link>
             </li>
             <li>
               <Link href="/stay">Stay With Us</Link>
@@ -301,43 +342,36 @@ export function HealingCirclePage() {
           <h4>Connect</h4>
           <ul className={styles.footerLinks}>
             <li>
-              <Link href="/about">About Rachel & Josh</Link>
+              <Link href="/#contact">Begin Your Journey</Link>
             </li>
             <li>
-              <Link href="/healing-circle">The Healing Circle</Link>
-            </li>
-            <li>
-              <Link href="/#contact">Contact</Link>
-            </li>
-            <li>
-              <Link href="/#portal">Client Portal</Link>
+              <Link href="/#portal">Member Portal</Link>
             </li>
           </ul>
         </div>
         <div className={styles.footerCol}>
-          <h4>Sacred Policies</h4>
+          <h4>Our Policies</h4>
           <ul className={styles.footerLinks}>
             <li>
-              <a href="#">Privacy</a>
+              <Link href="/privacy-policy">Privacy Policy</Link>
             </li>
             <li>
-              <a href="#">Terms</a>
+              <Link href="/terms-of-use">Terms of Use</Link>
             </li>
             <li>
-              <a href="#">Medical Disclaimer</a>
+              <Link href="/medical-disclaimer">Medical Disclaimer</Link>
             </li>
             <li>
-              <a href="#">Church Information</a>
+              <Link href="/church-information">Church Information</Link>
             </li>
           </ul>
         </div>
       </footer>
 
       <div className={styles.footerBottom}>
-        <p>© 2026 Vital Kauai Church · PO Box 932, Hanalei, HI 96714 · [email protected]</p>
         <p>
-          All original content on this site is protected by U.S. copyright law. Reproduction
-          without written permission prohibited.
+          © 2026 Vital Kauai Church · All original content on this site is protected by U.S.
+          copyright law. Reproduction without written permission prohibited.
         </p>
       </div>
     </main>
