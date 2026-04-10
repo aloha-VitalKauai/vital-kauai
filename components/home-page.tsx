@@ -259,7 +259,7 @@ export function HomePage() {
             </p>
             <div className={styles.heroActions}>
               <a href="#rivers" className={styles.btnPrimary}>
-                Explore the Work
+                explore the Iboga Journey
               </a>
             </div>
           </div>
