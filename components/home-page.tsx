@@ -331,65 +331,6 @@ export function HomePage() {
         </div>
       </section>
 
-      <section id="rivers" className={styles.rivers}>
-        <div className={`${styles.riverFeature} ${styles.reveal}`}>
-          <Image
-            src="https://images.unsplash.com/photo-1518291344630-4857135fb581?w=1600&q=80"
-            alt="Iboga Medicine"
-            fill
-            sizes="100vw"
-            className={styles.riverFeatureImage}
-          />
-          <div className={styles.riverFeatureOverlay}>
-            <span className={styles.riverFeatureEyebrow}>The Root</span>
-            <h3 className={styles.riverFeatureTitle}>
-              Nature&apos;s Most Ancient Medicine:
-              <br />
-              <em>Iboga</em>
-            </h3>
-            <p className={styles.riverFeatureBody}>
-              Iboga goes deep — interrupting long-held patterns and unconscious conditioning. Many
-              describe it as fifty years of therapy in a single night. Those who journey emerge
-              with a clarity of purpose, a freedom from patterns that once felt permanent, and a
-              felt sense of themselves they had forgotten was possible.
-            </p>
-            <a href="#medicine" className={styles.riverFeatureLink}>
-              The Medicine →
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <section id="offerings" className={styles.offerings}>
-        <p className={`${styles.sectionLabel} ${styles.reveal}`}>In Support of the Medicine</p>
-        <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>
-          What Supports
-          <br />
-          <em>the Work?</em>
-        </h2>
-        <p className={`${styles.sectionSub} ${styles.reveal} ${styles.revealDelay1}`}>
-          We offer support at every level. Internal cleansing, detoxification, and deep restoration
-          prepare the body to receive. Somatic therapy draws out and integrates what the medicine
-          reveals. Breathwork, movement, sound, and energetic practice open presence and aliveness
-          across every dimension of the experience.
-        </p>
-
-        <div className={`${styles.offeringTags} ${styles.reveal}`}>
-          {["Somatics", "Cleansing", "Breathwork", "Sound Healing", "Bodywork", "Movement", "Energetics", "ʻĀina", "Integration", "Ceremony"].map(
-            (tag, index) => (
-              <span key={tag} className={index % 2 === 0 ? styles.tagSage : styles.tagGold}>
-                {tag}
-              </span>
-            ),
-          )}
-        </div>
-
-        <p className={`${styles.offeringQuote} ${styles.reveal}`}>
-          The land and water of Kauaʻi herself — the rivers, the ocean, the red earth, the rain —
-          holding and amplifying everything.
-        </p>
-      </section>
-
       <section id="medicine" className={styles.medicine}>
         <div className={styles.medicineIntro}>
           <p className={styles.medicineIntroQuote}>
@@ -448,6 +389,65 @@ export function HomePage() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section id="rivers" className={styles.rivers}>
+        <div className={`${styles.riverFeature} ${styles.reveal}`}>
+          <Image
+            src="https://images.unsplash.com/photo-1518291344630-4857135fb581?w=1600&q=80"
+            alt="Iboga Medicine"
+            fill
+            sizes="100vw"
+            className={styles.riverFeatureImage}
+          />
+          <div className={styles.riverFeatureOverlay}>
+            <span className={styles.riverFeatureEyebrow}>The Root</span>
+            <h3 className={styles.riverFeatureTitle}>
+              Nature&apos;s Most Ancient Medicine:
+              <br />
+              <em>Iboga</em>
+            </h3>
+            <p className={styles.riverFeatureBody}>
+              Iboga goes deep — interrupting long-held patterns and unconscious conditioning. Many
+              describe it as fifty years of therapy in a single night. Those who journey emerge
+              with a clarity of purpose, a freedom from patterns that once felt permanent, and a
+              felt sense of themselves they had forgotten was possible.
+            </p>
+            <a href="#medicine" className={styles.riverFeatureLink}>
+              The Medicine →
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="offerings" className={styles.offerings}>
+        <p className={`${styles.sectionLabel} ${styles.reveal}`}>In Support of the Medicine</p>
+        <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>
+          What Supports
+          <br />
+          <em>the Work?</em>
+        </h2>
+        <p className={`${styles.sectionSub} ${styles.reveal} ${styles.revealDelay1}`}>
+          We offer support at every level. Internal cleansing, detoxification, and deep restoration
+          prepare the body to receive. Somatic therapy draws out and integrates what the medicine
+          reveals. Breathwork, movement, sound, and energetic practice open presence and aliveness
+          across every dimension of the experience.
+        </p>
+
+        <div className={`${styles.offeringTags} ${styles.reveal}`}>
+          {["Somatics", "Cleansing", "Breathwork", "Sound Healing", "Bodywork", "Movement", "Energetics", "ʻĀina", "Integration", "Ceremony"].map(
+            (tag, index) => (
+              <span key={tag} className={index % 2 === 0 ? styles.tagSage : styles.tagGold}>
+                {tag}
+              </span>
+            ),
+          )}
+        </div>
+
+        <p className={`${styles.offeringQuote} ${styles.reveal}`}>
+          The land and water of Kauaʻi herself — the rivers, the ocean, the red earth, the rain —
+          holding and amplifying everything.
+        </p>
       </section>
 
       <section id="stay" className={styles.stay}>
