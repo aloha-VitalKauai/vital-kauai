@@ -322,7 +322,7 @@ export function HomePage() {
                 We came to this medicine through our own searching — through years of therapy,
                 practice, study, and healing that touched the surface but could not fully reach what
                 was underneath. Iboga could. It showed us what was actually there — the patterns
-                carried since childhood, the stories built into identity, the places where we had
+                carried since childhood, the stories built into identity, and the places where we had
                 drifted from ourselves.
               </p>
               <p className={styles.storyBody}>
