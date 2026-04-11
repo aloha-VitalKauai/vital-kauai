@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import SignOutButton from "./SignOutButton";
+import DashboardTabs from "./DashboardTabs";
 
 export const metadata = { title: "Dashboard — Vital Kauaʻi" };
 
@@ -82,7 +83,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <SignOutButton />
         </div>
       </header>
-      <main style={{ padding: "2rem", maxWidth: 1200, margin: "0 auto" }}>{children}</main>
+      <DashboardTabs />
+      <main style={{ padding: "1.75rem 2rem", maxWidth: 1300, margin: "0 auto" }}>{children}</main>
     </div>
   );
 }
