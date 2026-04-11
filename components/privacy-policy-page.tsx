@@ -81,7 +81,7 @@ export function PrivacyPolicyPage() {
         <Link href="/healing-circle" onClick={() => setIsMobileNavOpen(false)}>
           Our Healing Circle
         </Link>
-        <Link href="/#portal" onClick={() => setIsMobileNavOpen(false)}>
+        <Link href="/portal" onClick={() => setIsMobileNavOpen(false)}>
           Member Portal
         </Link>
         <Link href="/begin-your-journey" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
@@ -457,7 +457,7 @@ export function PrivacyPolicyPage() {
               <Link href="/begin-your-journey">Begin Your Journey</Link>
             </li>
             <li>
-              <Link href="/#portal">Member Portal</Link>
+              <Link href="/portal">Member Portal</Link>
             </li>
           </ul>
         </div>

@@ -114,7 +114,7 @@ export function ChurchInformationPage() {
         <Link href="/healing-circle" onClick={() => setIsMobileNavOpen(false)}>
           Our Healing Circle
         </Link>
-        <Link href="/#portal" onClick={() => setIsMobileNavOpen(false)}>
+        <Link href="/portal" onClick={() => setIsMobileNavOpen(false)}>
           Member Portal
         </Link>
         <Link href="/begin-your-journey" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
@@ -326,7 +326,7 @@ export function ChurchInformationPage() {
           <h4>Connect</h4>
           <ul className={styles.footerLinks}>
             <li><Link href="/begin-your-journey">Begin Your Journey</Link></li>
-            <li><Link href="/#portal">Member Portal</Link></li>
+            <li><Link href="/portal">Member Portal</Link></li>
           </ul>
         </div>
         <div className={styles.footerCol}>

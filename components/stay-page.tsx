@@ -162,7 +162,7 @@ export function StayPage() {
         <Link href="/healing-circle" onClick={() => setIsMobileNavOpen(false)}>
           Our Healing Circle
         </Link>
-        <Link href="/#portal" onClick={() => setIsMobileNavOpen(false)}>
+        <Link href="/portal" onClick={() => setIsMobileNavOpen(false)}>
           Member Portal
         </Link>
         <Link
@@ -902,7 +902,7 @@ export function StayPage() {
               <Link href="/begin-your-journey">Begin Your Journey</Link>
             </li>
             <li>
-              <Link href="/#portal">Member Portal</Link>
+              <Link href="/portal">Member Portal</Link>
             </li>
           </ul>
         </div>

@@ -218,7 +218,7 @@ export function HomePage() {
         <a href="#team" onClick={() => setIsMobileNavOpen(false)}>
           Our Healing Circle
         </a>
-        <a href="#portal" onClick={() => setIsMobileNavOpen(false)}>
+        <a href="/portal" onClick={() => setIsMobileNavOpen(false)}>
           Member Portal
         </a>
         <Link href="/begin-your-journey" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
@@ -746,7 +746,7 @@ export function HomePage() {
               <Link href="/begin-your-journey">Begin Your Journey</Link>
             </li>
             <li>
-              <a href="#portal">Member Portal</a>
+              <a href="/portal">Member Portal</a>
             </li>
           </ul>
         </div>
