@@ -51,18 +51,13 @@ export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) 
         return;
       }
 
-      // Check role and route accordingly
-      const { data: roleRow, error: roleError } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", user.id)
-        .maybeSingle();
+      // Founder IDs — hardcoded for reliability
+      const FOUNDER_IDS = [
+        "d6e824e3-69ab-447c-b046-afecfe4b7028", // aloha@vitalkauai.com
+        "268f721a-9c7c-4bb2-82b7-3c29178281b1", // joshuaperdue2@gmail.com
+      ];
 
-      console.log("Role check:", { roleRow, roleError, userId: user.id });
-
-      const destination = roleRow?.role === "founder" ? "/dashboard" : nextPath;
-      console.log("Redirecting to:", destination);
-
+      const destination = FOUNDER_IDS.includes(user.id) ? "/dashboard" : nextPath;
       window.location.href = destination;
     } catch {
       setStatus({

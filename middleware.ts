@@ -34,28 +34,26 @@ export async function middleware(request: NextRequest) {
   }
 
   if (user) {
-    const { data: roleRow, error: roleError } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .maybeSingle();
+    // Founder IDs — hardcoded for reliability (no DB query needed)
+    const FOUNDER_IDS = [
+      "d6e824e3-69ab-447c-b046-afecfe4b7028", // aloha@vitalkauai.com
+      "268f721a-9c7c-4bb2-82b7-3c29178281b1", // joshuaperdue2@gmail.com
+    ];
 
-    console.log("Middleware role check:", { userId: user.id, roleRow, roleError, path });
-
-    const role = roleRow?.role ?? "member";
+    const isFounder = FOUNDER_IDS.includes(user.id);
 
     // Protect /dashboard — founders only, send members back to portal
-    if (path.startsWith("/dashboard") && role !== "founder") {
+    if (path.startsWith("/dashboard") && !isFounder) {
       return NextResponse.redirect(new URL("/portal", request.url));
     }
 
     // If founder is on /login, send them to dashboard
-    if (path === "/login" && role === "founder") {
+    if (path === "/login" && isFounder) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
     // If founder hits /portal, redirect to dashboard
-    if (path.startsWith("/portal") && role === "founder") {
+    if (path.startsWith("/portal") && isFounder) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
   }
