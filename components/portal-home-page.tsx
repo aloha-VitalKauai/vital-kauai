@@ -75,7 +75,7 @@ const MEDICAL_DISCLAIMER = [
 ];
 
 const PREP_ITEMS = [
-  { text: "Sign all three required documents (Donation, Membership Agreement, Medical Disclaimer)" },
+  { text: "Sign all three required documents (Intake Form, Membership Agreement, Medical Disclaimer)" },
   { text: "Share the Support Person Guide with your home circle" },
   { text: "Confirm required lab work with your physician and submit results" },
   { text: "Begin dietary preparation protocol (6\u20138 weeks before arrival for Iboga)" },
@@ -347,7 +347,7 @@ export function PortalHomePage({
           <div className={styles.requiredInner}>
             <div className={styles.requiredDot} />
             <p className={styles.requiredText}>
-              <strong>Action Required &mdash;</strong> Three documents require your completion
+              <strong>Action Required &mdash;</strong> Three documents require your signature
               before your journey begins.
             </p>
             <div className={styles.requiredLinks}>
@@ -356,7 +356,7 @@ export function PortalHomePage({
                 onClick={() => !donationDone && setModal("donation")}
                 disabled={donationDone}
               >
-                Donation{donationDone ? " \u2713" : ""}
+                Intake Form{donationDone ? " \u2713" : ""}
               </button>
               <button
                 className={`${styles.reqLink} ${agreementDone ? styles.reqLinkSigned : ""}`}
@@ -386,7 +386,7 @@ export function PortalHomePage({
               <p className={styles.lockedIcon}>&#128274;</p>
               <h2>Complete Your Required Documents</h2>
               <p>
-                Finish your Donation, Membership Agreement, and Medical Disclaimer above to unlock
+                Finish your Intake Form, Membership Agreement, and Medical Disclaimer above to unlock
                 your full member portal.
               </p>
               <p className={styles.lockedProgress}>
@@ -412,7 +412,8 @@ export function PortalHomePage({
             <p className={styles.videoText}>
               Before you move through any documents or guides, we invite you to receive this
               message from us. In it, we share what this portal holds for you, how to move through
-              it, and what to reach out about as you prepare.
+              it, and what to reach out about as you prepare. Our doors are always open &mdash; and
+              so are our hearts.
             </p>
             <p className={styles.videoSignature}>&mdash; Rachel &amp; Josh</p>
           </div>
@@ -448,18 +449,20 @@ export function PortalHomePage({
                 onClick={() => !donationDone && setModal("donation")}
               >
                 <div className={styles.docTitle}>
-                  Membership <em>Donation</em>
+                  Participant <em>Intake Form</em>
                 </div>
                 <div className={styles.docDesc}>
-                  Secure your membership with a love offering. Applied toward your first month or
-                  returned upon cancellation.
+                  A thorough and intimate overview of who you are and what you are bringing to this
+                  work &mdash; your intentions, personal history, somatic awareness, psycho-spiritual
+                  context, growth work you&apos;ve done, health disclosure, and informed consent.
+                  Complete this first. It opens the conversation and shapes how we hold you.
                 </div>
                 <div className={styles.docFooter}>
                   <span className={`${styles.docTag} ${styles.tagRequired}`}>
-                    {donationDone ? "Complete" : "Required"}
+                    {donationDone ? "Complete" : "Signature Required"}
                   </span>
                   <span className={`${styles.docAction} ${donationDone ? styles.docActionSigned : ""}`}>
-                    {donationDone ? "\u2713 Paid" : "Pay \u2192"}
+                    {donationDone ? "\u2713 Complete" : "Complete \u2192"}
                   </span>
                 </div>
               </button>
@@ -473,7 +476,7 @@ export function PortalHomePage({
                 </div>
                 <div className={styles.docDesc}>
                   Your membership agreement with Vital Kaua&#699;i Church &mdash; the private
-                  religious context within which all ceremonial work is held.
+                  religious context within which all ceremonial work is held. Required for all members.
                 </div>
                 <div className={styles.docFooter}>
                   <span className={`${styles.docTag} ${styles.tagRequired}`}>
@@ -512,14 +515,14 @@ export function PortalHomePage({
           <div className={`${styles.phasePanel} ${activePhase === 1 ? styles.phasePanelActive : ""}`}>
             <div className={styles.docGrid}>
               {[
-                { title: "Iboga", em: "Preparedness Guide", desc: "Your complete guide to the medicine, the process, and how to arrive ready.", tag: "Preparation", tagClass: styles.tagPrep },
-                { title: "Dietary", em: "Preparation Protocol", desc: "What to eat, what to eliminate, and how to prepare your body in the weeks before arrival.", tag: "Preparation", tagClass: styles.tagPrep },
-                { title: "What to Bring", em: "& Leave Behind", desc: "An interactive packing checklist for island life.", tag: "Packing", tagClass: styles.tagPrep },
-                { title: "Nervous System", em: "Safety Guide", desc: "Polyvagal theory, somatic self-regulation, breathwork practices.", tag: "Self-Regulation", tagClass: styles.tagGuide },
-                { title: "Lab Requirements", em: "& Medical Prep", desc: "Required labs, screening criteria, medication considerations.", tag: "Medical", tagClass: styles.tagPrep },
-                { title: "Support Person", em: "Guide", desc: "For the people at home who love you \u2014 what to expect and how to hold space.", tag: "For Your Circle", tagClass: styles.tagGuide },
-                { title: "Your Iboga", em: "Journey Journal", desc: "Guided prompts to help you track what is moving through you.", tag: "Preparation", tagClass: styles.tagJournal },
-                { title: "Questions for", em: "the Medicine", desc: "A space to get clear on what you most want to ask the medicine.", tag: "Reflection", tagClass: styles.tagPrep },
+                { title: "Iboga", em: "Preparedness Guide", desc: "Your complete guide to the medicine, the process, and how to arrive ready \u2014 physically, mentally, and spiritually.", tag: "Preparation", tagClass: styles.tagPrep },
+                { title: "Dietary", em: "Preparation Protocol", desc: "What to eat, what to eliminate, and how to prepare your body as a clear vessel in the weeks and days before your arrival.", tag: "Preparation", tagClass: styles.tagPrep },
+                { title: "What to Bring", em: "& Leave Behind", desc: "An interactive packing checklist for island life \u2014 organized by what to carry and what to leave at home for the integrity of your work.", tag: "Packing", tagClass: styles.tagPrep },
+                { title: "Nervous System", em: "Safety Guide", desc: "Polyvagal theory, somatic self-regulation, breathwork practices, and how to establish safety from the inside out \u2014 before, during, and after.", tag: "Self-Regulation", tagClass: styles.tagGuide },
+                { title: "Lab Requirements", em: "& Medical Prep", desc: "Everything your doctor needs \u2014 required labs, screening criteria, medication considerations, and contraindication information to share before you arrive.", tag: "Medical", tagClass: styles.tagPrep },
+                { title: "Support Person", em: "Guide", desc: "For the people at home who love you \u2014 what to expect, how to hold space from a distance, and how to support your integration when you return.", tag: "For Your Circle", tagClass: styles.tagGuide },
+                { title: "Your Iboga", em: "Journey Journal", desc: "Guided prompts to help you track and articulate what is moving through you \u2014 before ceremony, during your stay, and through integration. Return to it as often as you need.", tag: "Preparation \u00B7 Ceremony \u00B7 Integration", tagClass: styles.tagJournal },
+                { title: "Questions for", em: "the Medicine", desc: "A space to get clear on what you most want to ask the medicine \u2014 held without attachment, because the medicine will ultimately give you what you need. Your questions become prompts we use during ceremony and a practice that begins preparing your psyche long before you arrive.", tag: "Reflection", tagClass: styles.tagPrep },
               ].map((doc, i) => (
                 <div key={i} className={`${styles.docCard} ${styles.fadeIn}`}>
                   <div className={styles.docTitle}>
@@ -539,9 +542,9 @@ export function PortalHomePage({
           <div className={`${styles.phasePanel} ${activePhase === 2 ? styles.phasePanelActive : ""}`}>
             <div className={styles.docGrid}>
               {[
-                { title: "Ceremony", em: "Guidelines", desc: "Sacred agreements, space etiquette, facilitator roles, and confidentiality.", tag: "Sacred Container", tagClass: styles.tagGuide },
-                { title: "Safety in", em: "the Body", desc: "How to orient within intense somatic experience during ceremony.", tag: "During Ceremony", tagClass: styles.tagGuide },
-                { title: "Pre-Arrival", em: "Protocol", desc: "Your supplement and wellness protocol in the days before arrival.", tag: "Pre-Arrival", tagClass: styles.tagPrep },
+                { title: "Ceremony", em: "Guidelines", desc: "Sacred agreements, space etiquette, facilitator roles, confidentiality, and everything that holds the container for your ceremony to go deep.", tag: "Sacred Container", tagClass: styles.tagGuide },
+                { title: "Safety in", em: "the Body", desc: "How to orient within intense somatic experience during ceremony \u2014 what you may feel, how to work with it, and what our team is here to support.", tag: "During Ceremony", tagClass: styles.tagGuide },
+                { title: "Pre-Arrival", em: "Protocol", desc: "Your supplement and wellness protocol in the days before arrival \u2014 what to take, when, and how to arrive in peak physiological readiness.", tag: "Pre-Arrival", tagClass: styles.tagPrep },
               ].map((doc, i) => (
                 <div key={i} className={`${styles.docCard} ${styles.fadeIn}`}>
                   <div className={styles.docTitle}>
@@ -559,7 +562,8 @@ export function PortalHomePage({
                   Ceremony <em>Day Guide</em>
                 </div>
                 <div className={styles.docDesc}>
-                  A moment-by-moment orientation for your ceremony day.
+                  A moment-by-moment orientation for your ceremony day &mdash; what to expect from
+                  arrival through the full arc of the night and morning after.
                 </div>
                 <div className={styles.docFooter}>
                   <span className={`${styles.docTag} ${styles.tagLocked}`}>Unlocks on Arrival</span>
@@ -577,8 +581,8 @@ export function PortalHomePage({
                   Integration <em>Manual</em>
                 </div>
                 <div className={styles.docDesc}>
-                  Your complete post-ceremony guide &mdash; neuroplasticity, supplements, somatic
-                  practices, dream work.
+                  Your complete post-ceremony guide &mdash; working with neuroplasticity, supplement
+                  protocol, somatic practices, dream work, and the daily rhythms of integration.
                 </div>
                 <div className={styles.docFooter}>
                   <span className={`${styles.docTag} ${styles.tagLocked}`}>Unlocks Post-Ceremony</span>
@@ -586,10 +590,10 @@ export function PortalHomePage({
                 </div>
               </div>
               {[
-                { title: "Book Your", em: "Integration Call", desc: "Schedule your post-ceremony integration sessions.", tag: "Integration Support", tagClass: styles.tagIntegration },
-                { title: "Post-Ceremony", em: "Supplement Protocol", desc: "Niacin, GABA, DHA/EPA, and full noribogaine-phase support protocol.", tag: "Post-Ceremony", tagClass: styles.tagIntegration },
-                { title: "Dream", em: "Log", desc: "The medicine often continues to speak through dreams.", tag: "Dream Work", tagClass: styles.tagIntegration },
-                { title: "Community", em: "Check-In", desc: "30-day and 90-day check-in portal for sharing milestones.", tag: "Community", tagClass: styles.tagIntegration },
+                { title: "Book Your", em: "Integration Call", desc: "Schedule your post-ceremony integration sessions with Rachel and Josh \u2014 and connect with your assigned integration specialist if applicable.", tag: "Integration Support", tagClass: styles.tagIntegration },
+                { title: "Post-Ceremony", em: "Supplement Protocol", desc: "Niacin, GABA, DHA/EPA, and a full noribogaine-phase support protocol \u2014 what to take, when, and why in the critical neuroplasticity window.", tag: "Post-Ceremony", tagClass: styles.tagIntegration },
+                { title: "Dream", em: "Log", desc: "The medicine often continues to speak through dreams. This daily log holds your dreams, images, and nighttime transmissions through the integration window.", tag: "Dream Work", tagClass: styles.tagIntegration },
+                { title: "Community", em: "Check-In", desc: "A 30-day and 90-day check-in portal for sharing your integration milestones, your challenges, and staying in reciprocal relationship with Vital Kaua\u02BBi.", tag: "Community", tagClass: styles.tagIntegration },
               ].map((doc, i) => (
                 <div key={i} className={`${styles.docCard} ${styles.fadeIn}`}>
                   <div className={styles.docTitle}>
@@ -650,7 +654,8 @@ export function PortalHomePage({
               <p className={styles.teamBio}>
                 Rachel is with you from your very first conversation &mdash; answering questions,
                 holding space through preparation, guiding the onset of ceremony, and returning for
-                early integration work.
+                early integration work. She stays present through the full arc of your journey and
+                continues to check in long after you&apos;ve returned home.
               </p>
               <a href="mailto:aloha@vitalkauai.com" className={styles.teamCta}>
                 Reach Rachel
@@ -661,7 +666,9 @@ export function PortalHomePage({
               <p className={styles.teamName}>Josh Perdue</p>
               <p className={styles.teamBio}>
                 Josh is the primary sitter and space holder through the full ceremony &mdash;
-                steady, present, and trained to meet whatever arises in the night.
+                steady, present, and trained to meet whatever arises in the night. He is with you
+                in preparation and integration as well, and like Rachel, remains in your corner long
+                after the ceremony is complete.
               </p>
               <a href="mailto:aloha@vitalkauai.com" className={styles.teamCta}>
                 Reach Josh
@@ -675,7 +682,7 @@ export function PortalHomePage({
               <p className={styles.teamBio}>
                 Your integration specialist walks with you as guide, facilitator, coach, and
                 teammate &mdash; meeting you in preparation, within the 48 hours after ceremony,
-                and ongoing.
+                and ongoing as you return home and carry the work forward.
               </p>
               <a href="#" className={styles.teamCta}>
                 Book a Session
@@ -691,7 +698,8 @@ export function PortalHomePage({
             <p className={styles.emergencyTitle}>We Are Here for You</p>
             <p className={styles.emergencyDetails}>
               You are never alone in this. Rachel and Josh are present throughout your stay and
-              reachable for whatever arises.
+              reachable for whatever arises. For urgent medical support, please also call 911 or
+              reach Wilcox Medical Center.
             </p>
           </div>
           <div>
