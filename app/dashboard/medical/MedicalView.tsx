@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 /* ── Types ─────────────────────────────────────────────────────── */
 type MedMember = {
@@ -33,7 +34,31 @@ type MedMember = {
     previous_psychedelic_experience: string | null;
     submission_date: string | null;
   } | null;
+  labs: LabDoc[];
 };
+
+type LabDoc = {
+  id: string;
+  lab_type: string;
+  file_name: string;
+  file_path: string;
+  status: string;
+  ai_extracted_data: any;
+  ai_summary: string | null;
+  founder_notes: string | null;
+  reviewed_at: string | null;
+  uploaded_at: string;
+};
+
+const LAB_TYPES = [
+  { key: "ekg", label: "EKG / QTc" },
+  { key: "thyroid", label: "Thyroid Panel" },
+  { key: "liver", label: "Liver Panel" },
+  { key: "magnesium", label: "Magnesium" },
+  { key: "stress_test", label: "Cardiac Stress Test" },
+  { key: "cyp450", label: "CYP450" },
+  { key: "cmp", label: "CMP" },
+];
 
 /* ── Helpers ───────────────────────────────────────────────────── */
 function fmtDate(d: string | null | undefined) {
@@ -452,6 +477,138 @@ function DetailPanel({ member: m, onClose }: { member: MedMember; onClose: () =>
             {m.medical_notes ?? "No medical notes recorded"}
           </div>
         </div>
+
+        {/* Lab Documents */}
+        <LabDocumentsSection labs={m.labs} memberId={m.id} />
+      </div>
+    </div>
+  );
+}
+
+/* ── Lab Documents Section ─────────────────────────────────────── */
+function LabDocumentsSection({ labs, memberId }: { labs: LabDoc[]; memberId: string }) {
+  const supabase = createClient();
+  const [loading, setLoading] = useState<Record<string, boolean>>({});
+  const [noteInputs, setNoteInputs] = useState<Record<string, string>>({});
+
+  const labByType: Record<string, LabDoc> = {};
+  for (const l of labs) {
+    if (!labByType[l.lab_type] || new Date(l.uploaded_at) > new Date(labByType[l.lab_type].uploaded_at)) {
+      labByType[l.lab_type] = l;
+    }
+  }
+
+  const approvedCount = LAB_TYPES.filter((t) => labByType[t.key]?.status === "approved").length;
+
+  async function viewFile(filePath: string) {
+    const { data } = await supabase.storage.from("lab-documents").createSignedUrl(filePath, 300);
+    if (data?.signedUrl) window.open(data.signedUrl, "_blank");
+  }
+
+  async function updateLabStatus(docId: string, status: "approved" | "flagged" | "reviewed", notes?: string) {
+    setLoading((l) => ({ ...l, [docId]: true }));
+    await supabase
+      .from("lab_documents")
+      .update({
+        status,
+        founder_notes: notes || null,
+        reviewed_at: new Date().toISOString(),
+      })
+      .eq("id", docId);
+    window.location.reload();
+  }
+
+  const SEC_TITLE: React.CSSProperties = { fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: "#6B6B67", fontWeight: 500, marginBottom: 8 };
+
+  return (
+    <div style={{ marginBottom: "1.25rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+        <p style={{ ...SEC_TITLE, margin: 0 }}>Lab Documents</p>
+        <span style={{
+          fontSize: 11, padding: "2px 8px", borderRadius: 99,
+          background: approvedCount === 7 ? "#E1F5EE" : "#FAEEDA",
+          color: approvedCount === 7 ? "#085041" : "#633806",
+        }}>
+          {approvedCount}/7 approved{approvedCount === 7 ? " — fully cleared" : ""}
+        </span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        {LAB_TYPES.map(({ key, label }) => {
+          const doc = labByType[key];
+          const isLoading = doc && loading[doc.id];
+          const statusDot = !doc ? "#C5C5C2" : doc.status === "approved" ? "#1D9E75" : doc.status === "flagged" ? "#A32D2D" : doc.status === "processing" ? "#EF9F27" : "#378ADD";
+          const statusLabel = !doc ? "Not submitted" : doc.status === "approved" ? "Approved" : doc.status === "flagged" ? "Flagged" : doc.status === "processing" ? "Processing" : doc.status === "reviewed" ? "AI Reviewed" : "Uploaded";
+
+          return (
+            <div key={key}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: "#FAFAF8", borderRadius: 7 }}>
+                <span style={{ width: 8, height: 8, borderRadius: "50%", background: statusDot, flexShrink: 0 }} />
+                <span style={{ flex: 1, fontSize: 13, fontWeight: 500, color: "#1A1A18" }}>{label}</span>
+                <span style={{ fontSize: 11, color: statusDot }}>{statusLabel}</span>
+                {doc && (
+                  <>
+                    <span style={{ fontSize: 10, color: "#9E9E9A" }}>{fmtDate(doc.uploaded_at)}</span>
+                    <button
+                      onClick={() => viewFile(doc.file_path)}
+                      style={{ fontSize: 11, color: "#1D6B4A", background: "none", border: "0.5px solid #1D6B4A", borderRadius: 5, padding: "3px 8px", cursor: "pointer" }}
+                    >
+                      View
+                    </button>
+                    {(doc.status === "uploaded" || doc.status === "reviewed") && (
+                      <>
+                        <button
+                          onClick={() => updateLabStatus(doc.id, "approved")}
+                          disabled={isLoading}
+                          style={{ fontSize: 11, color: "#fff", background: "#1D9E75", border: "none", borderRadius: 5, padding: "3px 8px", cursor: "pointer" }}
+                        >
+                          {isLoading ? "..." : "Approve"}
+                        </button>
+                        <button
+                          onClick={() => {
+                            const note = noteInputs[doc.id]?.trim();
+                            if (!note) { alert("Add a note before flagging."); return; }
+                            updateLabStatus(doc.id, "flagged", note);
+                          }}
+                          disabled={isLoading}
+                          style={{ fontSize: 11, color: "#A32D2D", background: "#FCEBEB", border: "none", borderRadius: 5, padding: "3px 8px", cursor: "pointer" }}
+                        >
+                          Flag
+                        </button>
+                      </>
+                    )}
+                  </>
+                )}
+              </div>
+
+              {/* AI extraction summary */}
+              {doc && doc.ai_extracted_data && (doc.status === "reviewed" || doc.status === "approved") && (
+                <div style={{ margin: "4px 0 0 18px", padding: "8px 12px", background: "#0E1A10", borderRadius: 6, fontSize: 12, color: "#A8C5AC", lineHeight: 1.5 }}>
+                  {doc.ai_summary && <p style={{ margin: "0 0 4px" }}>{doc.ai_summary}</p>}
+                  {doc.ai_extracted_data.flagged_values?.length > 0 && (
+                    <p style={{ margin: 0, color: "#FF9E8C" }}>Flagged: {doc.ai_extracted_data.flagged_values.join(" · ")}</p>
+                  )}
+                </div>
+              )}
+
+              {/* Flag note for founder */}
+              {doc && doc.status === "flagged" && doc.founder_notes && (
+                <div style={{ margin: "4px 0 0 18px", padding: "8px 12px", background: "#FCEBEB", borderRadius: 6, fontSize: 12, color: "#A32D2D" }}>
+                  Note: {doc.founder_notes}
+                </div>
+              )}
+
+              {/* Note input for flagging */}
+              {doc && (doc.status === "uploaded" || doc.status === "reviewed") && (
+                <input
+                  placeholder="Note (required to flag)..."
+                  value={noteInputs[doc.id] ?? ""}
+                  onChange={(e) => setNoteInputs((n) => ({ ...n, [doc.id]: e.target.value }))}
+                  style={{ margin: "4px 0 0 18px", width: "calc(100% - 18px)", padding: "6px 10px", fontSize: 12, border: "0.5px solid rgba(0,0,0,0.1)", borderRadius: 5, background: "#fff", color: "#1A1A18", outline: "none" }}
+                />
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

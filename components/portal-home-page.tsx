@@ -110,6 +110,12 @@ export function PortalHomePage({
   const [modalLoading, setModalLoading] = useState(false);
   const [modalMsg, setModalMsg] = useState<{ type: string; text: string } | null>(null);
 
+  // Lab upload state
+  const [showLabUpload, setShowLabUpload] = useState(false);
+  const [memberId, setMemberId] = useState<string | null>(null);
+  const [labDocs, setLabDocs] = useState<Record<string, { id: string; file_name: string; status: string; uploaded_at: string }>>({});
+  const [labUploading, setLabUploading] = useState<string | null>(null);
+
   const fetchProfile = useCallback(async () => {
     const { data } = await supabase
       .from("member_profiles")
@@ -121,10 +127,23 @@ export function PortalHomePage({
     // Also try to get member data for ceremony date
     const { data: mData } = await supabase
       .from("members")
-      .select("ceremony_date, assigned_partner, status")
+      .select("id, ceremony_date, assigned_partner, status")
       .eq("email", userEmail)
       .single();
-    if (mData) setMemberData(mData as MemberData);
+    if (mData) {
+      setMemberData(mData as MemberData);
+      setMemberId(mData.id);
+      // Fetch lab documents for this member
+      const { data: labs } = await supabase
+        .from("lab_documents")
+        .select("id, lab_type, file_name, status, uploaded_at")
+        .eq("member_id", mData.id);
+      if (labs) {
+        const map: Record<string, { id: string; file_name: string; status: string; uploaded_at: string }> = {};
+        for (const l of labs) map[l.lab_type] = l;
+        setLabDocs(map);
+      }
+    }
 
     setLoading(false);
   }, [supabase, userId, userEmail]);
@@ -262,6 +281,52 @@ export function PortalHomePage({
     }
     setModal(null);
     setModalChecked(false);
+  }
+
+  async function handleLabUpload(labType: string, file: File) {
+    if (!memberId) return;
+    setLabUploading(labType);
+    const ext = file.name.split(".").pop() ?? "pdf";
+    const path = `${memberId}/${labType}.${ext}`;
+    const { error: uploadErr } = await supabase.storage
+      .from("lab-documents")
+      .upload(path, file, { upsert: true });
+    if (uploadErr) {
+      alert("Upload failed: " + uploadErr.message);
+      setLabUploading(null);
+      return;
+    }
+    // Delete old record if re-uploading
+    if (labDocs[labType]) {
+      await supabase.from("lab_documents").delete().eq("id", labDocs[labType].id);
+    }
+    const { data: row, error: insertErr } = await supabase
+      .from("lab_documents")
+      .insert({
+        member_id: memberId,
+        lab_type: labType,
+        file_name: file.name,
+        file_path: path,
+        status: "uploaded",
+      })
+      .select("id, lab_type, file_name, status, uploaded_at")
+      .single();
+    if (insertErr) {
+      alert("Failed to save: " + insertErr.message);
+    } else if (row) {
+      setLabDocs((prev) => ({ ...prev, [labType]: row }));
+      // Trigger AI extraction edge function (fire and forget)
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      if (token) {
+        fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/process-lab-upload`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+          body: JSON.stringify({ record: row }),
+        }).catch(() => {}); // Non-blocking
+      }
+    }
+    setLabUploading(null);
   }
 
   // After each sign, check if all 3 are done
@@ -519,22 +584,142 @@ export function PortalHomePage({
                 { title: "Dietary", em: "Preparation Protocol", desc: "What to eat, what to eliminate, and how to prepare your body as a clear vessel in the weeks and days before your arrival.", tag: "Preparation", tagClass: styles.tagPrep },
                 { title: "What to Bring", em: "& Leave Behind", desc: "An interactive packing checklist for island life \u2014 organized by what to carry and what to leave at home for the integrity of your work.", tag: "Packing", tagClass: styles.tagPrep },
                 { title: "Nervous System", em: "Safety Guide", desc: "Polyvagal theory, somatic self-regulation, breathwork practices, and how to establish safety from the inside out \u2014 before, during, and after.", tag: "Self-Regulation", tagClass: styles.tagGuide },
-                { title: "Lab Requirements", em: "& Medical Prep", desc: "Everything your doctor needs \u2014 required labs, screening criteria, medication considerations, and contraindication information to share before you arrive.", tag: "Medical", tagClass: styles.tagPrep },
+                { title: "Lab Requirements", em: "& Medical Prep", desc: "Upload your required lab results \u2014 EKG, thyroid panel, liver panel, and more. Your results are reviewed by our medical team before your arrival.", tag: "Medical", tagClass: styles.tagPrep, isLab: true },
                 { title: "Support Person", em: "Guide", desc: "For the people at home who love you \u2014 what to expect, how to hold space from a distance, and how to support your integration when you return.", tag: "For Your Circle", tagClass: styles.tagGuide },
                 { title: "Your Iboga", em: "Journey Journal", desc: "Guided prompts to help you track and articulate what is moving through you \u2014 before ceremony, during your stay, and through integration. Return to it as often as you need.", tag: "Preparation \u00B7 Ceremony \u00B7 Integration", tagClass: styles.tagJournal },
                 { title: "Questions for", em: "the Medicine", desc: "A space to get clear on what you most want to ask the medicine \u2014 held without attachment, because the medicine will ultimately give you what you need. Your questions become prompts we use during ceremony and a practice that begins preparing your psyche long before you arrive.", tag: "Reflection", tagClass: styles.tagPrep },
-              ].map((doc, i) => (
-                <div key={i} className={`${styles.docCard} ${styles.fadeIn}`}>
+              ].map((doc: any, i: number) => (
+                <div
+                  key={i}
+                  className={`${styles.docCard} ${styles.fadeIn}`}
+                  onClick={doc.isLab ? () => setShowLabUpload(!showLabUpload) : undefined}
+                  style={doc.isLab ? { cursor: "pointer" } : undefined}
+                >
                   <div className={styles.docTitle}>
                     {doc.title} <em>{doc.em}</em>
                   </div>
                   <div className={styles.docDesc}>{doc.desc}</div>
                   <div className={styles.docFooter}>
                     <span className={`${styles.docTag} ${doc.tagClass}`}>{doc.tag}</span>
-                    <span className={styles.docAction}>Open &rarr;</span>
+                    <span className={styles.docAction}>
+                      {doc.isLab
+                        ? `${Object.keys(labDocs).length}/7 Uploaded ${showLabUpload ? "▾" : "▸"}`
+                        : "Open \u2192"}
+                    </span>
                   </div>
                 </div>
               ))}
+
+              {/* Lab Upload Panel */}
+              {showLabUpload && (
+                <div
+                  className={styles.fadeIn}
+                  style={{
+                    gridColumn: "1 / -1",
+                    background: "#1A2A1C",
+                    border: "0.5px solid rgba(168,197,172,0.15)",
+                    borderRadius: 12,
+                    padding: "1.5rem",
+                  }}
+                >
+                  <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: "#A8C5AC", marginBottom: 16, fontWeight: 500 }}>
+                    Required Lab Documents
+                  </p>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {[
+                      { key: "ekg", label: "EKG / QTc" },
+                      { key: "thyroid", label: "Thyroid Panel" },
+                      { key: "liver", label: "Liver Panel" },
+                      { key: "magnesium", label: "Magnesium" },
+                      { key: "stress_test", label: "Cardiac Stress Test" },
+                      { key: "cyp450", label: "CYP450" },
+                      { key: "cmp", label: "CMP (Comprehensive Metabolic Panel)" },
+                    ].map((lab) => {
+                      const doc = labDocs[lab.key];
+                      const isUploading = labUploading === lab.key;
+                      const statusColor = !doc
+                        ? "#6B6B67"
+                        : doc.status === "approved"
+                          ? "#1D9E75"
+                          : doc.status === "flagged"
+                            ? "#A32D2D"
+                            : doc.status === "processing"
+                              ? "#EF9F27"
+                              : "#378ADD";
+                      const statusLabel = !doc
+                        ? "Not uploaded"
+                        : doc.status === "approved"
+                          ? "Approved"
+                          : doc.status === "flagged"
+                            ? "Needs attention"
+                            : doc.status === "processing"
+                              ? "Processing..."
+                              : "Uploaded";
+                      return (
+                        <div
+                          key={lab.key}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 12,
+                            background: "rgba(255,255,255,0.04)",
+                            borderRadius: 8,
+                            padding: "12px 16px",
+                          }}
+                        >
+                          <span
+                            style={{
+                              width: 9,
+                              height: 9,
+                              borderRadius: "50%",
+                              background: statusColor,
+                              flexShrink: 0,
+                            }}
+                          />
+                          <span style={{ flex: 1, fontSize: 14, color: "#F5F0E8", fontWeight: 500 }}>
+                            {lab.label}
+                          </span>
+                          <span style={{ fontSize: 12, color: statusColor, marginRight: 12 }}>
+                            {isUploading ? "Uploading..." : statusLabel}
+                          </span>
+                          {doc && (
+                            <span style={{ fontSize: 11, color: "#6B6B67", marginRight: 8 }}>
+                              {doc.file_name}
+                            </span>
+                          )}
+                          <label
+                            style={{
+                              fontSize: 12,
+                              color: "#A8C5AC",
+                              border: "0.5px solid rgba(168,197,172,0.3)",
+                              borderRadius: 6,
+                              padding: "5px 12px",
+                              cursor: isUploading ? "not-allowed" : "pointer",
+                              opacity: isUploading ? 0.5 : 1,
+                            }}
+                          >
+                            {doc ? "Replace" : "Upload"}
+                            <input
+                              type="file"
+                              accept=".pdf,.jpg,.jpeg,.png,.webp"
+                              style={{ display: "none" }}
+                              disabled={isUploading}
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) handleLabUpload(lab.key, file);
+                                e.target.value = "";
+                              }}
+                            />
+                          </label>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <p style={{ fontSize: 11, color: "#6B6B67", marginTop: 14, lineHeight: 1.5 }}>
+                    Upload PDF or image files of your lab results. Each document is reviewed by our medical team and you will be notified of any follow-up needed.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
