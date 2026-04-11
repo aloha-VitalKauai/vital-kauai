@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iboga Preparedness & Integration Guide — Vital Kauaʻi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --forest: #1C2B1E;
+  --forest-dark: #141F15;
+  --deep: #0E1A10;
+  --sage: #7A9E7E;
+  --sage-light: #A8C5AC;
+  --gold: #C8A96E;
+  --gold-light: #E2CFA0;
+  --cream: #F5F0E8;
+  --warm-white: #FDFBF7;
+  --stone: #8B8070;
+  --text-dark: #1A1A18;
+  --text-mid: #3D3D38;
+  --border: rgba(28,43,30,0.09);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  background: var(--warm-white);
+  color: var(--text-dark);
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(14,26,16,0.97);
+  backdrop-filter: blur(14px);
+  padding: 0 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(200,169,110,0.08);
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  color: var(--cream);
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.nav-badge {
+  font-size: 8.5px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--sage);
+  border: 1px solid rgba(122,158,126,0.25);
+  padding: 5px 14px;
+}
+.nav-back {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.4);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.nav-back:hover { color: rgba(245,240,232,0.8); }
+
+/* ── HERO ── */
+.hero {
+  background: var(--forest);
+  padding: 80px 60px 76px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 500px; height: 100%;
+  background: radial-gradient(ellipse at right, rgba(122,158,126,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 780px; }
+.hero-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--sage);
+  display: block;
+  margin-bottom: 18px;
+}
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 4vw, 58px);
+  font-weight: 300;
+  color: var(--cream);
+  line-height: 1.06;
+  margin-bottom: 18px;
+}
+.hero-title em { font-style: italic; color: var(--sage-light); }
+.hero-body {
+  font-size: 15px;
+  color: rgba(245,240,232,0.58);
+  line-height: 1.95;
+  max-width: 580px;
+}
+
+/* ── TOC / JUMP NAV ── */
+.toc {
+  background: #F3EEE6;
+  padding: 40px 60px;
+  border-bottom: 1px solid var(--border);
+}
+.toc-label {
+  font-size: 8.5px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 18px;
+}
+.toc-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  list-style: none;
+}
+.toc-links a {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  text-decoration: none;
+  border: 1px solid rgba(28,43,30,0.12);
+  padding: 8px 16px;
+  background: white;
+  transition: all 0.25s;
+}
+.toc-links a:hover { border-color: var(--sage); color: var(--forest); }
+
+/* ── SHARED SECTION ── */
+.section {
+  padding: 76px 60px;
+  border-bottom: 1px solid var(--border);
+}
+.section-warm { background: var(--warm-white); }
+.section-cream { background: #F3EEE6; }
+.section-forest { background: var(--forest); border-bottom-color: rgba(255,255,255,0.04); }
+.section-deep { background: var(--deep); border-bottom-color: rgba(255,255,255,0.03); }
+
+.eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 14px;
+}
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 8px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--sage);
+  border: 1px solid rgba(122,158,126,0.25);
+  padding: 6px 14px;
+  margin-bottom: 16px;
+}
+
+.section-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 3vw, 44px);
+  font-weight: 300;
+  color: var(--text-dark);
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+.section-heading em { font-style: italic; color: var(--sage); }
+.section-forest .section-heading,
+.section-deep .section-heading { color: var(--cream); }
+.section-forest .section-heading em,
+.section-deep .section-heading em { color: var(--sage-light); }
+
+.section-intro {
+  font-size: 15px;
+  color: var(--text-mid);
+  line-height: 1.95;
+  max-width: 720px;
+  margin-bottom: 52px;
+}
+.section-forest .section-intro,
+.section-deep .section-intro { color: rgba(245,240,232,0.58); }
+
+/* ── WHAT IBOGA WORKS ON — CARDS ── */
+.effects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.effect-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--sage);
+  padding: 28px 24px;
+}
+.effect-card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.effect-card-body {
+  font-size: 13px;
+  color: var(--stone);
+  line-height: 1.8;
+}
+
+/* ── MEDICINE FORMS ── */
+.medicine-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--border);
+}
+.medicine-col {
+  padding: 36px 30px;
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+.medicine-col:last-child { border-right: none; }
+.medicine-col.featured {
+  background: rgba(122,158,126,0.05);
+  border-top: 2px solid var(--sage);
+}
+.medicine-badge {
+  font-size: 7.5px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--sage);
+  display: block;
+  margin-bottom: 10px;
+}
+.medicine-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 14px;
+  line-height: 1.1;
+}
+.medicine-desc {
+  font-size: 13px;
+  color: var(--stone);
+  line-height: 1.85;
+  margin-bottom: 20px;
+}
+.medicine-specs { display: flex; flex-direction: column; gap: 8px; }
+.medicine-spec {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-mid);
+  line-height: 1.5;
+}
+.medicine-spec-label {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  flex-shrink: 0;
+  width: 80px;
+  padding-top: 2px;
+}
+
+/* ── SAFETY / CHECKLIST ── */
+.safety-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+}
+.checklist-block { display: flex; flex-direction: column; gap: 0; }
+.checklist-group-label {
+  font-size: 8.5px;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--gold);
+  padding: 16px 0 10px;
+  border-bottom: 1px solid rgba(28,43,30,0.08);
+  margin-bottom: 2px;
+}
+.check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(28,43,30,0.04);
+}
+.check-sq {
+  width: 16px; height: 16px;
+  border: 1px solid rgba(28,43,30,0.18);
+  flex-shrink: 0;
+  margin-top: 2px;
+  background: white;
+}
+.check-text { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+
+.contraindication-block {
+  background: var(--forest);
+  padding: 36px 32px;
+}
+.contra-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--cream);
+  margin-bottom: 8px;
+}
+.contra-sub {
+  font-size: 11px;
+  color: rgba(245,240,232,0.4);
+  margin-bottom: 22px;
+  line-height: 1.6;
+}
+.contra-list { display: flex; flex-direction: column; gap: 0; }
+.contra-item {
+  display: flex;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 12.5px;
+  color: rgba(245,240,232,0.6);
+  line-height: 1.6;
+}
+.contra-item::before {
+  content: '—';
+  color: rgba(122,158,126,0.5);
+  flex-shrink: 0;
+  font-size: 11px;
+  margin-top: 1px;
+}
+.contra-item.hard {
+  color: rgba(220,168,152,0.85);
+}
+.contra-item.hard::before { color: rgba(220,168,152,0.4); }
+
+.caution-block {
+  background: rgba(122,158,126,0.06);
+  border: 1px solid rgba(122,158,126,0.18);
+  padding: 24px 28px;
+  margin-top: 20px;
+}
+.caution-label {
+  font-size: 8px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin-bottom: 8px;
+  display: block;
+}
+.caution-text { font-size: 13px; color: var(--text-mid); line-height: 1.8; }
+
+/* ── PREPARATION PHASES ── */
+.phase-block {
+  border: 1px solid var(--border);
+  background: white;
+  margin-bottom: 16px;
+}
+.phase-header {
+  padding: 28px 32px;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  border-bottom: 1px solid var(--border);
+}
+.phase-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px;
+  font-weight: 300;
+  color: rgba(122,158,126,0.2);
+  line-height: 1;
+  flex-shrink: 0;
+}
+.phase-meta { flex: 1; }
+.phase-timing {
+  font-size: 8.5px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin-bottom: 6px;
+  display: block;
+}
+.phase-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--text-dark);
+  line-height: 1.1;
+}
+.phase-title em { font-style: italic; color: var(--sage); }
+.phase-body-area {
+  padding: 28px 32px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+.phase-col-title {
+  font-size: 8.5px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+  display: block;
+}
+.phase-item {
+  display: flex;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(28,43,30,0.05);
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.6;
+}
+.phase-item::before {
+  content: '—';
+  color: rgba(122,158,126,0.5);
+  flex-shrink: 0;
+  font-size: 11px;
+  margin-top: 1px;
+}
+
+/* ── CEREMONY DAY TIMELINE ── */
+.ceremony-arc {
+  position: relative;
+  max-width: 800px;
+}
+.ceremony-arc::before {
+  content: '';
+  position: absolute;
+  left: 22px; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--sage), rgba(122,158,126,0.06));
+}
+.ceremony-item {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+.ceremony-marker {
+  width: 46px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.ceremony-dot {
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  background: var(--sage);
+  border: 2px solid var(--warm-white);
+  box-shadow: 0 0 0 3px rgba(122,158,126,0.18);
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.ceremony-dot.dim { background: rgba(122,158,126,0.3); }
+.ceremony-time {
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  color: var(--sage);
+  text-transform: uppercase;
+  white-space: nowrap;
+  writing-mode: unset;
+}
+.ceremony-content { flex: 1; }
+.ceremony-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 21px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+.ceremony-text { font-size: 13px; color: var(--stone); line-height: 1.85; }
+
+/* ── INTEGRATION ── */
+.integration-cols {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 8px;
+}
+.integration-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(200,169,110,0.12);
+  padding: 28px 26px;
+}
+.integration-card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--cream);
+  margin-bottom: 10px;
+}
+.integration-card-body { font-size: 13px; color: rgba(245,240,232,0.55); line-height: 1.85; }
+
+/* ── CLOSING ── */
+.closing {
+  background: var(--forest);
+  padding: 72px 60px;
+  text-align: center;
+  border-bottom: none;
+}
+.closing-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 3vw, 44px);
+  font-weight: 300;
+  color: var(--cream);
+  margin-bottom: 16px;
+  line-height: 1.1;
+}
+.closing-title em { font-style: italic; color: var(--sage-light); }
+.closing-body {
+  font-size: 15px;
+  color: rgba(245,240,232,0.55);
+  line-height: 1.95;
+  max-width: 560px;
+  margin: 0 auto 36px;
+}
+.closing-sig {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-style: italic;
+  color: rgba(245,240,232,0.35);
+  letter-spacing: 0.08em;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--deep);
+  padding: 40px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(200,169,110,0.07);
+}
+.footer-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  letter-spacing: 0.15em;
+  color: var(--cream);
+  text-transform: uppercase;
+  font-weight: 300;
+}
+footer p { font-size: 11px; color: rgba(245,240,232,0.22); line-height: 1.7; text-align: right; }
+footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
+
+/* ── REVEAL ── */
+.reveal { opacity: 1; transform: translateY(0); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── PRINT ── */
+@media print {
+  html, body { background: #F3EEE6; margin: 0; padding: 0; }
+  .hero { page-break-after: always; }
+  .toc { display: none; }
+  nav { display: none; }
+  .section { page-break-before: auto; padding-top: 36px !important; padding-bottom: 36px !important; }
+  .section-warm { background: var(--warm-white) !important; }
+  .section-cream { background: #F3EEE6 !important; }
+  .section-forest { background: var(--forest) !important; }
+
+  /* Force all grids to proper columns */
+  .two-col, .comparison-two-col { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 32px !important; }
+  .effects-grid { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 10px !important; }
+  .medicine-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; }
+  .phase-body-area { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 24px !important; padding: 16px 20px !important; }
+  .safety-layout { display: grid !important; grid-template-columns: 1fr 1fr !important; }
+  .integration-cols { display: grid !important; grid-template-columns: 1fr 1fr !important; }
+
+  /* Tighten phase blocks — the biggest gap culprit */
+  .phase-block { margin-bottom: 10px !important; page-break-inside: avoid; }
+  .phase-header { padding: 14px 20px !important; gap: 14px !important; }
+  .phase-num { font-size: 32px !important; }
+  .phase-title { font-size: 22px !important; }
+  .phase-col-title { margin-bottom: 8px !important; }
+  .phase-item { padding: 6px 0 !important; font-size: 12px !important; }
+
+  /* Tighten effect cards */
+  .effect-card { padding: 16px !important; page-break-inside: avoid; }
+  .effect-card-title { font-size: 17px !important; margin-bottom: 6px !important; }
+  .effect-card-body { font-size: 12px !important; line-height: 1.65 !important; }
+
+  /* Tighten section headings and intros */
+  .section-heading { font-size: 32px !important; margin-bottom: 8px !important; }
+  .section-intro { font-size: 14px !important; margin-bottom: 20px !important; }
+
+  /* Medicine cards */
+  .medicine-col { padding: 20px !important; page-break-inside: avoid; }
+
+  /* Ceremony arc */
+  .ceremony-item { padding: 14px 0 !important; }
+  .ceremony-title { font-size: 16px !important; }
+  .ceremony-text { font-size: 12px !important; line-height: 1.65 !important; }
+
+  /* Integration cards */
+  .integration-card { padding: 16px 20px !important; page-break-inside: avoid; }
+  .integration-card-title { font-size: 17px !important; margin-bottom: 6px !important; }
+  .integration-card-body { font-size: 12px !important; line-height: 1.65 !important; }
+
+  footer, .closing { page-break-before: auto; }
+  .research-cards { display: flex !important; flex-direction: column !important; gap: 8px !important; }
+  .research-cards > div { display: grid !important; grid-template-columns: 160px 1fr !important; gap: 16px !important; align-items: start !important; border-top: none !important; border-left: 3px solid #7A9E7E !important; padding: 12px 16px !important; }
+  .research-cards .rc-header h4 { font-size: 15px !important; margin-bottom: 0 !important; }
+  .research-cards .rc-body { font-size: 12px !important; line-height: 1.7 !important; margin: 0 !important; }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  .nav { padding: 0 28px; }
+  .hero, .section, .toc, .closing, footer { padding-left: 28px; padding-right: 28px; }
+  .effects-grid { grid-template-columns: 1fr 1fr; }
+  .medicine-grid { grid-template-columns: 1fr; }
+  .medicine-col { border-right: none; border-bottom: 1px solid var(--border); }
+  .medicine-col:last-child { border-bottom: none; }
+  .safety-layout { grid-template-columns: 1fr; }
+  .phase-body-area { grid-template-columns: 1fr; }
+  .integration-cols { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .effects-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/portal" class="nav-logo">Vital Kauaʻi</a>
+  <span class="nav-badge">Iboga Preparedness Guide</span>
+  <a href="/portal" class="nav-back">← Return to Portal</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <span class="hero-eyebrow">Member Portal · Iboga Journey · Confidential</span>
+    <h1 class="hero-title">Preparedness &<br><em>Integration Guide</em></h1>
+    <p class="hero-body">Everything you need to know before, during, and after your Iboga Journey — held in one place for you to read deeply, return to often, and carry into the work. This document lives and grows alongside you.</p>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <span class="toc-label">Contents</span>
+  <ul class="toc-links">
+    <li><a href="#iboga">Understanding Iboga</a></li>
+    <li><a href="#what-iboga-does">What Iboga Works On</a></li>
+    <li><a href="#medicine-forms">The Medicine</a></li>
+    <li><a href="#comparison">Iboga vs. Other Medicines</a></li>
+    <li><a href="#safety">Safety & Medical Prep</a></li>
+    <li><a href="#preparation">Before Your Ceremony</a></li>
+    <li><a href="#ceremony-day">Ceremony Day</a></li>
+    <li><a href="#after">The Days After</a></li>
+    <li><a href="#integration">Integration</a></li>
+  </ul>
+</div>
+
+<!-- ── UNDERSTANDING IBOGA ── -->
+<section id="iboga" class="section section-warm">
+  <span class="eyebrow">The Medicine</span>
+  <h2 class="section-heading">Understanding <em>Iboga</em></h2>
+  <p class="section-intro">Iboga is among the most ancient plant allies available to humanity. Its home is Gabon — a small nation on the equatorial west coast of Africa whose forests hold a biodiversity and spiritual intelligence the modern world is only beginning to understand. The plant was first discovered by the Pygmy peoples of Gabon, among the oldest continuous human lineages on earth, who observed its effects on forest animals long before history was written. Its use almost certainly predates any tradition that has named it — carried forward through tens of thousands of years of forest life, passed from the Pygmies to the Bantu peoples, and eventually woven into the living initiatory tradition known as Bwiti.</p>
+
+  <p style="font-size:15px;color:var(--text-mid);line-height:1.95;max-width:720px;margin-bottom:40px;padding: 0 60px 0 0;">Bwiti is a way of life — a deep forest practice of initiation, ancestral communion, healing, and spiritual sight, held for thousands of years by the peoples of Gabon. Iboga remains its central sacrament: the teacher, the ancestor, the guide. We carry deep reverence for this tradition and for the knowledge keepers who have safeguarded this plant across generations.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;" class="reveal">
+    <div>
+      <p style="font-size:15px;color:var(--text-mid);line-height:1.95;margin-bottom:24px;">Iboga is uniquely articulate. It works across multiple receptor systems simultaneously — in the brain, the gut, and the heart — and speaks to you in your own language: your own symbols, your own memories, your own body's held history. It is at once a profound spiritual psychotherapy, a neurological reset, and a full defragmentation of the mind.</p>
+      <p style="font-size:15px;color:var(--text-mid);line-height:1.95;">A single journey can produce shifts that unfold over months. Iboga reorganizes the mind, opens the heart, and creates the conditions for a fundamentally new relationship with yourself. It is a medicine of total commitment — and it offers everything in return.</p>
+    </div>
+    <div style="background:var(--forest);padding:36px 32px;">
+      <span style="font-size:8.5px;letter-spacing:0.35em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:16px;">Our Approach</span>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--cream);line-height:1.4;margin-bottom:16px;">Nature-based. Somatic. Psycho-spiritual.</p>
+      <p style="font-size:13px;color:rgba(245,240,232,0.58);line-height:1.9;margin-bottom:16px;">Your ceremony is held in living relationship with the land, water, and forest of Kauaʻi's North Shore — nature as active participant. We work exclusively with whole-plant iboga root bark, titrated consciously and in continuous dialogue with your body.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHAT IBOGA WORKS ON ── -->
+<section id="what-iboga-does" class="section section-cream">
+  <span class="eyebrow">The Work</span>
+  <h2 class="section-heading">What Iboga <em>Works On</em></h2>
+  <p class="section-intro">Iboga works across the full architecture of the self — neural, somatic, emotional, and spiritual. These are the primary domains where people experience the most profound and lasting change.</p>
+
+  <div class="effects-grid reveal">
+
+    <div class="effect-card">
+      <h3 class="effect-card-title">The Nervous System</h3>
+      <p class="effect-card-body">Iboga induces a surge of BDNF and GDNF — the brain's primary growth factors — triggering new neural connections and a profound reset of the nervous system. The residual metabolite noribogaine continues this work for weeks after ceremony.</p>
+    </div>
+
+    <div class="effect-card">
+      <h3 class="effect-card-title">The Default Mode Network</h3>
+      <p class="effect-card-body">Iboga temporarily alters communication in the brain's default mode network — the system responsible for the self-referential loops, rumination, and fixed narratives that keep us contracted. The loosening of this network is where psychological flexibility is born.</p>
+    </div>
+
+    <div class="effect-card">
+      <h3 class="effect-card-title">Memory & Life Review</h3>
+      <p class="effect-card-body">Iboga appears to facilitate memory reconsolidation — the neurological process by which memories, when re-accessed, become briefly malleable and can be restructured. This is why the experience frequently surfaces buried memories in a way that is vivid and yet somehow more workable than before — allowing genuine processing and integration to occur at depth. The memory integrates fully; it loses its charge.</p>
+    </div>
+
+    <div class="effect-card">
+      <h3 class="effect-card-title">Patterns &amp; Compulsion</h3>
+      <p class="effect-card-body">Research suggests iboga works at the neurological level to reduce the grip of compulsive patterns and habitual behaviors. Many participants describe a felt sense of freedom from cycles that had seemed immovable — sometimes after a single ceremony.</p>
+    </div>
+
+    <div class="effect-card">
+      <h3 class="effect-card-title">The Learning Window</h3>
+      <p class="effect-card-body">In the weeks following ceremony, iboga opens a critical window of heightened neuroplasticity — a period when the brain is exceptionally receptive to new patterns, habits, and deep integration work. This window is everything.</p>
+    </div>
+
+    <div class="effect-card">
+      <h3 class="effect-card-title">The Body</h3>
+      <p class="effect-card-body">Anti-inflammatory, analgesic, and deeply cleansing at the physical level, iboga works through the gut-brain axis and across multiple receptor systems simultaneously. People often report relief from chronic pain, fatigue, and systemic dysregulation.</p>
+    </div>
+
+    <div class="effect-card">
+      <h3 class="effect-card-title">Emotional &amp; Somatic Holding</h3>
+      <p class="effect-card-body">Iboga reaches into the somatic layer — where unprocessed experience lives in the body — and supports the release of long-held emotional and energetic imprints. This is why we weave somatic support throughout every phase of your journey.</p>
+    </div>
+
+    <div class="effect-card">
+      <h3 class="effect-card-title">Spiritual Reconnection</h3>
+      <p class="effect-card-body">Many people describe iboga as a return to something they always knew but had forgotten — a reconnection to purpose, to the sacred, to a felt sense of meaning. This dimension of the medicine is its most ancient and enduring gift.</p>
+    </div>
+
+    <div class="effect-card">
+      <h3 class="effect-card-title">Cognitive Vitality</h3>
+      <p class="effect-card-body">Research points to rapid improvements in executive function, memory, and concentration following iboga work. Some studies suggest a de-aging effect on the brain — a renewal of cognitive clarity and creative capacity.</p>
+    </div>
+
+  </div>
+
+  <p style="font-size:12px;color:var(--stone);margin-top:28px;font-style:italic;line-height:1.7;">The majority of published research to date has focused on ibogaine, the isolated alkaloid. We honor this research while recognizing that whole-plant iboga carries a broader intelligence that science is still in the early stages of understanding. Nothing here constitutes medical advice.</p>
+</section>
+
+<!-- ── COMPARISON ── -->
+<section id="comparison" class="section section-cream">
+  <span class="eyebrow">How Iboga Differs</span>
+  <h2 class="section-heading">Iboga, Ayahuasca, Psilocybin<br>&amp; <em>Ketamine</em></h2>
+  <p class="section-intro">You may have experience with other plant medicines or expanded states of consciousness. Understanding how iboga compares — and how it differs — will help you arrive with accurate expectations and genuine readiness.</p>
+
+  <div style="overflow-x:auto;margin-bottom:40px;">
+    <table style="width:100%;border-collapse:collapse;font-family:'Jost',sans-serif;font-size:12.5px;">
+      <thead>
+        <tr style="border-bottom:2px solid rgba(28,43,30,0.12);">
+          <th style="text-align:left;padding:12px 16px;font-size:8.5px;letter-spacing:0.32em;text-transform:uppercase;color:var(--stone);font-weight:400;width:16%;"></th>
+          <th style="text-align:left;padding:12px 16px;font-size:8.5px;letter-spacing:0.32em;text-transform:uppercase;color:var(--gold);font-weight:400;width:22%;">Iboga</th>
+          <th style="text-align:left;padding:12px 16px;font-size:8.5px;letter-spacing:0.32em;text-transform:uppercase;color:var(--stone);font-weight:400;width:20%;">Ayahuasca</th>
+          <th style="text-align:left;padding:12px 16px;font-size:8.5px;letter-spacing:0.32em;text-transform:uppercase;color:var(--stone);font-weight:400;width:20%;">Psilocybin</th>
+          <th style="text-align:left;padding:12px 16px;font-size:8.5px;letter-spacing:0.32em;text-transform:uppercase;color:var(--stone);font-weight:400;width:20%;">Ketamine</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid rgba(28,43,30,0.06);">
+          <td style="padding:12px 16px;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--stone);">Origin</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Root bark · Central West Africa</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Vine brew · Amazon Basin</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Mushroom · Global</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Synthetic · Lab-derived</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(28,43,30,0.06);background:rgba(28,43,30,0.02);">
+          <td style="padding:12px 16px;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--stone);">Duration</td>
+          <td style="padding:12px 16px;color:var(--text-mid);font-weight:400;">12 – 36 hours</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">4 – 8 hours</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">4 – 6 hours</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">1 – 2 hours</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(28,43,30,0.06);">
+          <td style="padding:12px 16px;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--stone);">Mechanism</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Multiple receptor systems simultaneously — serotonin, NMDA, opioid, sigma, dopamine</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Serotonin (5-HT2A) via DMT + MAO inhibition</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Serotonin (5-HT2A)</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">NMDA antagonist · dissociative anesthetic</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(28,43,30,0.06);background:rgba(28,43,30,0.02);">
+          <td style="padding:12px 16px;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--stone);">Consciousness</td>
+          <td style="padding:12px 16px;color:var(--text-dark);font-weight:400;">Fully awake · you remain yourself throughout</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">The medicine takes you where it chooses — often intense and surrendered</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Ego dissolves — reality reshapes around you</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Dissociative — you leave ordinary awareness</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(28,43,30,0.06);">
+          <td style="padding:12px 16px;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--stone);">Inner Experience</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">You are the observer — vivid memories and life review seen with full clarity and presence</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Vivid visions, emotional purging, often symbolic and non-personal</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Perceptual distortion, mystical states, identity dissolution</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Detached from self — dreamlike, floating</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(28,43,30,0.06);background:rgba(28,43,30,0.02);">
+          <td style="padding:12px 16px;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--stone);">Neuroplasticity</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Deep and extended — weeks of heightened neural growth following ceremony</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Present — shorter window</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Present — multiple sessions often needed</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Short-lived — requires ongoing infusions to sustain</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(28,43,30,0.06);background:rgba(28,43,30,0.02);">
+          <td style="padding:12px 16px;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--stone);">Physical Experience</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Ataxia (loss of coordination) and dizziness common; nausea and vomiting possible; lying still is essential throughout — movement worsens symptoms significantly</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Nausea, vomiting, and diarrhea ("the purge") are a defining feature; participants can generally sit and move</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Mild nausea possible early on; generally physically mobile throughout</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Dizziness; reclined but mobile; repeated use can affect the bladder</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(28,43,30,0.06);">
+          <td style="padding:12px 16px;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--stone);">Ceremony Count</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Typically one ceremony holds the full arc</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Multiple ceremonies over weeks or months</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Multiple sessions typically recommended</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">Ongoing infusions required to maintain effects</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="background:var(--forest);padding:40px 44px;">
+    <span style="font-size:8.5px;letter-spacing:0.38em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:14px;">The Most Important Distinction</span>
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--cream);line-height:1.15;margin-bottom:14px;">With iboga, <em style="font-style:italic;color:var(--sage-light);">you remain yourself.</em></h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;">
+      <div>
+        <p style="font-size:13.5px;color:rgba(245,240,232,0.68);line-height:1.95;margin-bottom:14px;">Ayahuasca, psilocybin, and ketamine each move you away from ordinary consciousness — dissolving the ego, reshaping perception, or carrying you somewhere else entirely. You surrender the wheel. The medicine decides where you go. Some people describe being swept through worlds and images with little ability to guide or pause the experience.</p>
+        <p style="font-size:13.5px;color:rgba(245,240,232,0.68);line-height:1.95;">Iboga is classified by researchers as an <strong style="color:var(--sage-light);font-weight:400;">oneirogen</strong> — producing vivid dream-like states while the person remains fully awake and coherent. EEG studies confirm this: iboga generates REM sleep brainwave signatures in waking participants — a neurological phenomenon not found in other medicines. Psychiatrist Claudio Naranjo, who studied ibogaine in psychotherapy in the 1960s, coined the term <em style="color:rgba(245,240,232,0.82);">oneirophrenic state</em> — a conscious dreamy state where participants remain open, lucid, and remember everything with clarity.</p>
+      </div>
+      <div>
+        <p style="font-size:13.5px;color:rgba(245,240,232,0.68);line-height:1.95;margin-bottom:14px;">With iboga, you close your eyes and visions arise. Memories surface. You may witness your own life unfolding before you — scenes, patterns, truths long held inside. But throughout all of it, you remain present and coherent. Your identity stays intact. You are the observer.</p>
+        <p style="font-size:13.5px;color:rgba(245,240,232,0.68);line-height:1.95;margin-bottom:14px;">A 2017 phenomenological study in the <em>Journal of Psychedelic Studies</em> captured participants' own descriptions: <em style="color:rgba(245,240,232,0.82);">"You become completely lucid. Millions of thoughts solved. It is a life in 24 hours."</em></p>
+        <p style="font-size:13.5px;color:rgba(245,240,232,0.68);line-height:1.95;">A 2022 systematic review of 24 studies and 705 participants confirmed iboga's depth of effect — and in 2025, the state of Texas allocated $50 million to fund dedicated clinical ibogaine research. The science is catching up to what the Pygmy peoples of Gabon always knew.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="research-cards" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px;">
+    <div style="background:white;border:1px solid var(--border);border-top:2px solid var(--sage);padding:24px 22px;">
+      <div class="rc-header">
+        <span style="font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;">Noribogaine</span>
+        <h4 style="font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:400;color:var(--text-dark);margin-bottom:10px;line-height:1.2;">The Medicine That Keeps Working</h4>
+      </div>
+      <p class="rc-body" style="font-size:12.5px;color:var(--stone);line-height:1.8;">Iboga's primary metabolite, noribogaine, remains detectable in body tissue for 2–3 months post-ceremony — continuing its neurological repair and mood-stabilizing work throughout. It stands singular among plant medicines in this sustained residual mechanism of duration and depth.</p>
+    </div>
+    <div style="background:white;border:1px solid var(--border);border-top:2px solid var(--sage);padding:24px 22px;">
+      <div class="rc-header">
+        <span style="font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;">Brain States</span>
+        <h4 style="font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:400;color:var(--text-dark);margin-bottom:10px;line-height:1.2;">The Fetal Brain State</h4>
+      </div>
+      <p class="rc-body" style="font-size:12.5px;color:var(--stone);line-height:1.8;">EEG research has documented that iboga produces brainwave patterns characteristic of fetal sleep — the most neuroplastic state the brain ever occupies. Researchers describe this as a recreation of fetal brain states in waking adults, opening a window of neurological possibility unprecedented in any known medicine.</p>
+    </div>
+    <div style="background:white;border:1px solid var(--border);border-top:2px solid var(--sage);padding:24px 22px;">
+      <div class="rc-header">
+        <span style="font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;">Durability · Schenberg 2014</span>
+        <h4 style="font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:400;color:var(--text-dark);margin-bottom:10px;line-height:1.2;">Single-Dose, Lasting Change</h4>
+      </div>
+      <p class="rc-body" style="font-size:12.5px;color:var(--stone);line-height:1.8;">A clinical study of 75 participants found that a single iboga ceremony shifted the average time free of unwanted patterns from 88 days before ceremony to 299 days after — and 419 days across all sessions. From one experience.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── THE MEDICINE FORMS ── -->
+<section id="medicine-forms" class="section section-warm">
+  <span class="eyebrow">The Medicine</span>
+  <h2 class="section-heading">Iboga &amp; <em>Ibogaine</em></h2>
+  <p class="section-intro">Iboga comes in different forms, each with distinct properties and depth of experience. Understanding the differences matters — for safety, for the depth of what is possible, and for what you can expect. At Vital Kauaʻi, we work exclusively with whole-plant iboga root bark.</p>
+
+  <div class="medicine-grid reveal">
+
+    <div class="medicine-col featured">
+      <span class="medicine-badge">What We Work With</span>
+      <h3 class="medicine-name">Whole Root Bark</h3>
+      <p class="medicine-desc">The unprocessed inner bark of Tabernanthe iboga contains over 12 identified indole alkaloids — ibogaine, noribogaine, ibogamine, tabernanthine, ibogaline, and others — each with distinct pharmacological activity. Together, they create an entourage effect that no isolated compound can replicate. The plant's full intelligence remains intact. We finely grind the root bark to improve bioavailability and ease of metabolism, allowing for a gradual, titrated release that the body can receive more smoothly.</p>
+      <div class="medicine-specs">
+        <div class="medicine-spec"><span class="medicine-spec-label">Onset</span>Slow, titrated — gradual and conscious unfolding</div>
+        <div class="medicine-spec"><span class="medicine-spec-label">Cardiac Risk</span>Lowest — buffered by the full alkaloid spectrum</div>
+        <div class="medicine-spec"><span class="medicine-spec-label">Experience</span>Deep somatic, visionary, and autobiographical</div>
+        <div class="medicine-spec"><span class="medicine-spec-label">Plant Spirit</span>Full — the medicine arrives as teacher and ancestor</div>
+        <div class="medicine-spec"><span class="medicine-spec-label">Best For</span>Whole-being transformation, psycho-spiritual healing</div>
+      </div>
+    </div>
+
+    <div class="medicine-col">
+      <span class="medicine-badge">Clinical Contexts · Western Medicine</span>
+      <h3 class="medicine-name">Ibogaine</h3>
+      <p class="medicine-desc">Ibogaine is the single primary alkaloid, isolated from the root bark. It carries significant published research and is the compound used in Western clinical and research settings in countries where it is legal. As an isolated molecule, its onset is rapid and intense, and its cardiac profile requires the highest level of medical monitoring. At Vital Kauaʻi, we work exclusively with whole-plant root bark, which carries the full alkaloid spectrum and the living intelligence of the plant.</p>
+      <div class="medicine-specs">
+        <div class="medicine-spec"><span class="medicine-spec-label">Onset</span>Rapid, intense</div>
+        <div class="medicine-spec"><span class="medicine-spec-label">Cardiac Profile</span>Requires highest level of medical monitoring</div>
+        <div class="medicine-spec"><span class="medicine-spec-label">Experience</span>Focused, physically demanding</div>
+        <div class="medicine-spec"><span class="medicine-spec-label">Plant Spirit</span>Single alkaloid in isolation</div>
+        <div class="medicine-spec"><span class="medicine-spec-label">Context</span>Western research and clinical settings</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── SAFETY & MEDICAL PREP ── -->
+<section id="safety" class="section section-cream">
+  <span class="eyebrow">Safety First</span>
+  <h2 class="section-heading">Medical Preparation &amp; <em>Contraindications</em></h2>
+  <p class="section-intro">Iboga is a powerful medicine and approaches its full power when the body is properly prepared and screened. Thorough medical preparation is one of the most important gifts you can give yourself and your journey. We take this with complete seriousness, and we ask you to as well.</p>
+
+  <div class="safety-layout reveal">
+
+    <div>
+      <div class="checklist-block">
+        <span class="checklist-group-label">Required</span>
+        <div class="check-row"><div class="check-sq"></div><span class="check-text">EKG — cardiac function and QT interval assessment</span></div>
+        <div class="check-row"><div class="check-sq"></div><span class="check-text">Electrolyte panel — potassium and magnesium levels, both cardiac-critical for iboga</span></div>
+        <div class="check-row"><div class="check-sq"></div><span class="check-text">Full medical review with your physician prior to arrival</span></div>
+        <span class="checklist-group-label" style="margin-top:14px;">Suggested — as advised by your physician</span>
+        <div class="check-row"><div class="check-sq"></div><span class="check-text">Cardiac stress test</span></div>
+        <div class="check-row"><div class="check-sq"></div><span class="check-text">Complete metabolic panel (CMP)</span></div>
+        <div class="check-row"><div class="check-sq"></div><span class="check-text">Liver function panel</span></div>
+        <div class="check-row"><div class="check-sq"></div><span class="check-text">Thyroid function panel</span></div>
+        <div class="check-row"><div class="check-sq"></div><span class="check-text">Serum magnesium level</span></div>
+        <div class="check-row"><div class="check-sq"></div><span class="check-text">CYP450 genotype — metabolic enzyme profile</span></div>
+        <div class="check-row"><div class="check-sq"></div><span class="check-text">Any additional tests your physician recommends</span></div>
+        <div class="check-row"><div class="check-sq"></div><span class="check-text">Discuss sleep support — iboga's residual stimulation can affect sleep in the weeks following ceremony. Ask your physician about gentle sleep aids you can bring with you, so you have them on hand if needed during integration</span></div>
+      </div>
+
+      <div class="caution-block" style="margin-top:28px;">
+        <span class="caution-label">After Your Ceremony — Important</span>
+        <p class="caution-text">Iboga resets substance tolerance. A full month of sobriety after ceremony supports the medicine's work and gives your nervous system the space it needs to integrate fully — three months is what we most often recommend, as this protects the noribogaine window and allows the deepest healing to continue.</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="contraindication-block">
+        <h3 class="contra-title">Contraindications</h3>
+        <p class="contra-sub">Share this list with your care team and physician. Review all substances and conditions with us before your ceremony date.</p>
+        <div class="contra-list">
+          <div class="contra-item hard">History of heart disease or long QT syndrome</div>
+          <div class="contra-item hard">Pregnancy</div>
+          <div class="contra-item hard">Active psychosis, schizophrenia, or bipolar disorder</div>
+          <div class="contra-item hard">Borderline personality disorder</div>
+          <div class="contra-item">Cannabis — clear fully 1–4 weeks before ceremony</div>
+          <div class="contra-item">Grapefruit and turmeric — clear 1–2 weeks before ceremony</div>
+          <div class="contra-item">Antifungals: ketoconazole, itraconazole</div>
+          <div class="contra-item">Antibiotics: erythromycin, clarithromycin</div>
+          <div class="contra-item">SSRIs and antidepressants — clearance timelines vary by medication: some clear in 5–14 days, while others (particularly fluoxetine) require 4–8 weeks. Your physician will advise based on your specific prescription</div>
+          <div class="contra-item">HIV protease inhibitors: ritonavir</div>
+          <div class="contra-item">Calcium channel blockers: diltiazem, verapamil</div>
+          <div class="contra-item">Amiodarone</div>
+          <div class="contra-item">Psychiatric medications — taper under physician supervision only; some require up to one year to clear fully</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── BEFORE YOUR CEREMONY ── -->
+<section id="preparation" class="section section-warm">
+  <span class="eyebrow">Phase 1 · Minimum 4 Weeks Prior</span>
+  <h2 class="section-heading">Before Your <em>Ceremony</em></h2>
+  <p class="section-intro">Your preparation is the foundation everything else rests on. Iboga works most powerfully when the body is already clear, the nervous system is regulated, and the inner landscape has been consciously tended. Give this phase the attention it deserves.</p>
+
+  <div style="background:rgba(122,158,126,0.06);border-left:2px solid var(--sage);padding:22px 28px;max-width:760px;margin-bottom:36px;">
+    <span style="font-size:8.5px;letter-spacing:0.32em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:8px;">A Note on Diet</span>
+    <p style="font-size:14px;color:var(--text-mid);line-height:1.9;">Iboga's preparation is gentler in its dietary demands than many plant medicines. We ask that you begin moving toward cleaner, simpler eating — whole foods, lighter meals, less alcohol and processed food — in the weeks before you arrive. Think of it as tending the vessel. Your body will thank you, and the medicine will meet you more clearly.</p>
+  </div>
+
+  <div class="phase-block reveal">
+    <div class="phase-header">
+      <p class="phase-num">01</p>
+      <div class="phase-meta">
+        <span class="phase-timing">Body Preparation · 4 Weeks Prior</span>
+        <h3 class="phase-title">Preparing the <em>Body</em></h3>
+      </div>
+    </div>
+    <div class="phase-body-area">
+      <div>
+        <span class="phase-col-title">Physical Preparation</span>
+        <div class="phase-item">Begin the dietary preparation protocol — clean, anti-inflammatory, nutrient-dense. Your full dietary guide is available in your member portal.</div>
+        <div class="phase-item">Support your gut microbiome and liver health throughout. If you are interested in deeper gut healing protocols — including liver and gallbladder cleanse or extended fasting — reach out to us directly and we can guide you.</div>
+        <div class="phase-item">Complete all necessary medical labs (see Safety section above)</div>
+        <div class="phase-item">Clear all contraindicated medications and supplements per protocol timeline, under physician guidance</div>
+        <div class="phase-item"><span style="display:block;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:3px;">Cannabis · 2 weeks prior</span>Clear completely. Cannabis can intensify disorientation and confusion during ceremony.</div>
+        <div class="phase-item"><span style="display:block;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:3px;">Caffeine · taper from 7 days prior</span>Reduce by half at 5–6 days out and eliminate fully by 3 days before ceremony. Withdrawal headaches are best behind you before you arrive.</div>
+      </div>
+      <div>
+        <span class="phase-col-title">Supplementation to Begin</span>
+        <div class="phase-item">DHA + EPA and magnesium glycinate daily — supports new synaptic connection formation, neuronal signaling, and nervous system regulation. Continue through and after ceremony.</div>
+        <div class="phase-item">Any additional supplements confirmed with your care team</div>
+        <div class="phase-item">Consider acupuncture, massage, reiki, or craniosacral sessions during this phase</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-block reveal">
+    <div class="phase-header">
+      <p class="phase-num">02</p>
+      <div class="phase-meta">
+        <span class="phase-timing">Inner Preparation · Ongoing</span>
+        <h3 class="phase-title">Preparing the <em>Inner Landscape</em></h3>
+      </div>
+    </div>
+    <div class="phase-body-area">
+      <div>
+        <span class="phase-col-title">Daily Practices</span>
+        <div class="phase-item">Coherent Heart Breath — 10 minutes each morning, daily. Full practice instructions are in your Nervous System Guide in the member portal.</div>
+        <div class="phase-item">Daily journaling — 10 minutes each morning, stream of consciousness. Use the journal prompts in your member portal to deepen your intentions.</div>
+        <div class="phase-item">Prepare your specific questions for the medicine — what you are seeking, what you are ready to meet, what you are asking to be shown.</div>
+        <div class="phase-item">Visualization — see and feel your healed, whole self vividly and often</div>
+        <div class="phase-item">Arrive with openness and presence, ahead of any fixed expectation. The most useful posture is simply: <em>I am willing to see the truth.</em></div>
+        <div class="phase-item" style="border-left:2px solid var(--sage);padding-left:14px;background:rgba(122,158,126,0.05);color:var(--text-dark);">As you move through your preparation, emotions may surface with greater intensity — old memories, unexpected heaviness, dreams that arrive more vividly. This is the medicine already in relationship with you. Iboga is intelligent and relational; it begins its work the moment you say yes. Meet what arises with gentleness and curiosity. The intensity is part of the opening.</div>
+      </div>
+      <div>
+        <span class="phase-col-title">Somatic &amp; Relational Prep</span>
+        <div class="phase-item">Learn to identify, access, and safely process emotions and somatic imprints — your Integration Guide will support this</div>
+        <div class="phase-item">Practice self-sourcing safety — the felt sense of regulation in the body</div>
+        <div class="phase-item">Identify your personal support team and share the Support Person Guide with them — available in your member portal</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-block reveal">
+    <div class="phase-header">
+      <p class="phase-num">03</p>
+      <div class="phase-meta">
+        <span class="phase-timing">Preparation Calls · Scheduled with Your Care Team</span>
+        <h3 class="phase-title">Your Care Team <em>Preparation</em></h3>
+      </div>
+    </div>
+    <div class="phase-body-area">
+      <div>
+        <div class="phase-item">Your care team will schedule preparation calls with you throughout this phase. Bring your questions and whatever is arising.</div>
+      </div>
+      <div>
+        <span class="phase-col-title">With Your Integration Guide</span>
+        <div class="phase-item">Somatic and therapeutic preparation — learning to access and move through what arises in the body</div>
+        <div class="phase-item">Deepening your intentions and clarifying the specific questions you are bringing to the medicine</div>
+        <div class="phase-item">Refining your inner landscape — identifying what most needs attention in the weeks before arrival</div>
+        <div class="phase-item">Building the somatic foundation for integration before ceremony begins</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- collapsible styles for countdown -->
+
+<section id="final-seven" class="section section-cream" style="padding-top:0;border-top:none;">
+  <span class="eyebrow">Reference · The Final 7 Days</span>
+  <h2 class="section-heading">The Final <em>7 Days</em></h2>
+
+  <div class="phase-block reveal">
+    <div class="phase-header">
+      <p class="phase-num" style="font-size:28px;">7</p>
+      <div class="phase-meta">
+        <span class="phase-timing">7 Days Before</span>
+        <h3 class="phase-title">Substances &amp; <em>Hydration</em></h3>
+      </div>
+    </div>
+    <div class="phase-body-area">
+      <div>
+        <div class="phase-item">Stop all high-risk substances: alcohol, recreational drugs, stimulants (cocaine, amphetamines), MDMA, microdosing psychedelics</div>
+        <div class="phase-item">Clear all contraindicated medications under physician guidance — SSRI clearance timelines vary by medication: some clear in 5–14 days, while others (particularly fluoxetine) require 4–8 weeks. Your physician will advise based on your specific prescription</div>
+        <div class="phase-item">Begin active hydration: electrolytes, coconut water, mineral water</div>
+        <div class="phase-item">Begin reducing caffeine</div>
+        <div class="phase-item">Begin tapering nicotine if applicable — ideally clear by ceremony day</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-block reveal">
+    <div class="phase-header">
+      <p class="phase-num" style="font-size:28px;">5–6</p>
+      <div class="phase-meta">
+        <span class="phase-timing">5–6 Days Before</span>
+        <h3 class="phase-title">Clean Diet <em>Begins</em></h3>
+      </div>
+    </div>
+    <div class="phase-body-area">
+      <div>
+        <div class="phase-item">Reduce caffeine by half — if you drink 2–3 coffees daily, move to 1. Energy drinks stop now.</div>
+        <div class="phase-item">Begin clean diet: fresh vegetables, fruit, simple proteins (fish, eggs, legumes), rice, quinoa, root vegetables</div>
+        <div class="phase-item">Reduce processed foods, heavy fried foods, and excess sugar</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-block reveal">
+    <div class="phase-header">
+      <p class="phase-num" style="font-size:28px;">4</p>
+      <div class="phase-meta">
+        <span class="phase-timing">4 Days Before</span>
+        <h3 class="phase-title">Lighten <em>Digestion</em></h3>
+      </div>
+    </div>
+    <div class="phase-body-area">
+      <div>
+        <div class="phase-item">Lighten digestion: soups, steamed vegetables, rice or quinoa, fruit, light protein</div>
+        <div class="phase-item">Reduce fatty meals, large portions, red meat</div>
+        <div class="phase-item">Many traditions view this as clearing energetic density in the body — the physical and the subtle are connected here</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-block reveal">
+    <div class="phase-header">
+      <p class="phase-num" style="font-size:28px;">3</p>
+      <div class="phase-meta">
+        <span class="phase-timing">3 Days Before</span>
+        <h3 class="phase-title">Slow Down &amp; <em>Go Inward</em></h3>
+      </div>
+    </div>
+    <div class="phase-body-area">
+      <div>
+        <div class="phase-item">Eliminate caffeine completely — coffee, espresso, energy drinks, pre-workout stimulants. Mild green tea is sometimes tolerated earlier but ideally stop all caffeine by now.</div>
+        <div class="phase-item">Slow down. This is preparation. Minimize devices — phones, screens, social media. Step back from demanding social obligations. Let the rhythm of your life quiet down.</div>
+        <div class="phase-item">Spend time in nature daily — walking, sitting by water, barefoot on the earth. Let the outer stillness support the inner one.</div>
+        <div class="phase-item">Turn toward self-inquiry: journal, sit quietly, revisit your questions for the medicine. The more settled you arrive, the more clearly the medicine can speak.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-block reveal">
+    <div class="phase-header">
+      <p class="phase-num" style="font-size:24px;">48h</p>
+      <div class="phase-meta">
+        <span class="phase-timing">48 Hours Before</span>
+        <h3 class="phase-title">Very Clean <em>Diet</em></h3>
+      </div>
+    </div>
+    <div class="phase-body-area">
+      <div>
+        <div class="phase-item">Very clean diet: vegetables, fruit, rice, light soups, small portions</div>
+        <div class="phase-item">Continue electrolytes, coconut water, mineral water, light herbal teas</div>
+        <div class="phase-item">Keep meals light — heavy fats, fried food, and processed sugar stay off the plate</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-block reveal">
+    <div class="phase-header">
+      <p class="phase-num" style="font-size:24px;">24h</p>
+      <div class="phase-meta">
+        <span class="phase-timing">24 Hours Before</span>
+        <h3 class="phase-title">Rest &amp; <em>Simplify</em></h3>
+      </div>
+    </div>
+    <div class="phase-body-area">
+      <div>
+        <div class="phase-item">Morning and midday: fruit, soup, steamed vegetables — light and easy to digest</div>
+        <div class="phase-item">After late afternoon: lean protein, steamed vegetables, or light soup — keep it simple and easy to digest</div>
+        <div class="phase-item">Keep the body clear: heavy meals, meat, oils, dairy, and stimulants rest here</div>
+        <div class="phase-item">Rest as much as possible. Sleep is preparation.</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+<section id="ceremony-day" class="section section-cream">
+  <span class="eyebrow">Phase 2 · 12–36 Hours</span>
+  <h2 class="section-heading">Ceremony <em>Day</em></h2>
+  <p class="section-intro">Your journey will last between 12 and 36 hours. What follows is a map. Iboga arrives in its own way, in its own time. The arc below is a guide for orienting — trust it loosely and follow what your body knows.</p>
+
+  <div class="ceremony-arc reveal">
+
+    <div class="ceremony-item">
+      <div class="ceremony-marker"><div class="ceremony-dot"></div><span class="ceremony-time">Morning</span></div>
+      <div class="ceremony-content">
+        <h3 class="ceremony-title">Physical Support & Preparation</h3>
+        <p class="ceremony-text">Morning nourishment if needed: banana, eggs, coconut water, electrolyte drink, fresh ginger root tea. Minimal food after midday — your system clears for the medicine. Food and drink pause fully in the six hours before ceremony begins. Arrive rested and open.</p>
+      </div>
+    </div>
+
+    <div class="ceremony-item">
+      <div class="ceremony-marker"><div class="ceremony-dot dim"></div><span class="ceremony-time">Early Afternoon</span></div>
+      <div class="ceremony-content">
+        <h3 class="ceremony-title">Parasympathetic Support</h3>
+        <p class="ceremony-text">Treatment such as massage, acupuncture, or sound healing to support the parasympathetic nervous system — settling and opening the body in preparation for the work ahead.</p>
+      </div>
+    </div>
+
+    <div class="ceremony-item">
+      <div class="ceremony-marker"><div class="ceremony-dot"></div><span class="ceremony-time">Late Afternoon</span></div>
+      <div class="ceremony-content">
+        <h3 class="ceremony-title">Opening &amp; Fire Ceremony</h3>
+        <p class="ceremony-text">Dress in all white — the traditional color of ceremony, clarity, and openness.</p>
+        <p class="ceremony-text" style="margin-top:10px;">Arrive at the fire. Speak what you are releasing, your intentions, and your prayers.</p>
+      </div>
+    </div>
+
+    <div class="ceremony-item">
+      <div class="ceremony-marker"><div class="ceremony-dot"></div><span class="ceremony-time">Hours 1–3</span></div>
+      <div class="ceremony-content">
+        <h3 class="ceremony-title">Onset</h3>
+        <p class="ceremony-text">Return to the ceremony space, which has been prepared and held for you.</p>
+        <p class="ceremony-text" style="margin-top:10px;">Dosing begins here, titrated gradually over the first several hours of your journey. Your ceremony guides will open the space with invocation — creating a protected, sacred container for what is to come.</p>
+        <p class="ceremony-text" style="margin-top:10px;">Bwiti music begins. You are invited to move with it however feels true — rattle, dance, shake, sound, tone, sing, or remain in stillness. Follow what your body asks.</p>
+        <p class="ceremony-text" style="margin-top:10px;">As onset arrives, you may be guided to lie down and receive an eye mask. Body heaviness, buzzing or vibration, and the beginning of visual patterns are natural signs the medicine is moving. Your facilitators are present throughout — attentive, grounded, respectful of your process.</p>
+      </div>
+    </div>
+
+    <div class="ceremony-item">
+      <div class="ceremony-marker"><div class="ceremony-dot"></div><span class="ceremony-time">Hours 4–8</span></div>
+      <div class="ceremony-content">
+        <h3 class="ceremony-title">The Deepest Phase</h3>
+        <p class="ceremony-text">Often the most immersive portion of the journey. Vivid life review, archetypal visions, guidance and insight, dream-like sequences. Many people remain eyes-closed and turned inward during this phase. Your facilitators offer reassurance, grounding touch when appropriate, and simple presence.</p>
+        <p class="ceremony-text" style="margin-top:10px;">You may hear voices or whispers, encounter presences, or sense that vision is moving even behind the eye mask — iboga opens dimensions of experience that can be vast and unexpected. Whatever arises, your facilitators are with you. If you feel called to open your eyes, you may do so gently.</p>
+      </div>
+    </div>
+
+    <div class="ceremony-item">
+      <div class="ceremony-marker"><div class="ceremony-dot"></div><span class="ceremony-time">Hours 8–20</span></div>
+      <div class="ceremony-content">
+        <h3 class="ceremony-title">Psycho-Spiritual Processing</h3>
+        <p class="ceremony-text">This is where meaning-making often begins — life narrative integration, inner child work, ancestral and belief system processing, and discussing the insights surfacing from the visions.</p>
+      </div>
+    </div>
+
+    <div class="ceremony-item">
+      <div class="ceremony-marker"><div class="ceremony-dot dim"></div><span class="ceremony-time">After 20 hrs</span></div>
+      <div class="ceremony-content">
+        <h3 class="ceremony-title">Emergence & Grounding</h3>
+        <p class="ceremony-text">The journey moves into its closing arc. Sleep is the greatest medicine available to you at this point — if your body calls for it, follow it fully. You may feel physically tired and emotionally wide open.</p>
+        <p class="ceremony-text" style="margin-top:10px;">Move slowly and accept assistance as you orient. Dizziness, visual trails, and shifts in perception are a natural part of emergence — the medicine is still working. Your facilitator's presence and gentle breathwork meet you here. Light will feel brighter than usual — sunglasses are your friend. Receive what arises with curiosity and trust.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── THE DAYS AFTER ── -->
+<section id="after" class="section section-warm">
+  <span class="eyebrow">Phase 3 · Days 2–4 · Still on Kauaʻi</span>
+  <h2 class="section-heading">The Days <em>After</em></h2>
+  <p class="section-intro">The days immediately following ceremony are as important as the ceremony itself. You are still on the land, still held by your care team. Move slowly — the medicine is still working. Honor this.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;" class="reveal">
+
+    <div style="background:white;border:1px solid var(--border);padding:24px 22px;">
+      <span style="font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;">Day 2</span>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text-dark);margin-bottom:8px;line-height:1.2;">Nature &amp; Offering</h3>
+      <p style="font-size:12.5px;color:var(--stone);line-height:1.8;">Time in nature — barefoot on the land, in the ocean, in the forest. Iboga illuminates where apology wants to move. Hoʻoponopono offers a container for this — <em>I'm sorry. Please forgive me. Thank you. I love you.</em></p>
+    </div>
+
+    <div style="background:white;border:1px solid var(--border);padding:24px 22px;">
+      <span style="font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;">Days 2–4</span>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text-dark);margin-bottom:8px;line-height:1.2;">Rest &amp; Somatic Care</h3>
+      <p style="font-size:12.5px;color:var(--stone);line-height:1.8;">Bodywork, gentle movement, ocean swims, rest. Sleep as much as you can. You will have one integration session with your Integration Guide during this time — space to begin making meaning of what arose.</p>
+    </div>
+
+    <div style="background:white;border:1px solid var(--border);padding:24px 22px;">
+      <span style="font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;">As Needed</span>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text-dark);margin-bottom:8px;line-height:1.2;">Supplemental Dosing</h3>
+      <p style="font-size:12.5px;color:var(--stone);line-height:1.8;">Partial or booster dosing is available when appropriate — to deepen, anchor, or complete what arose. Your care team guides this in full dialogue with your body.</p>
+    </div>
+
+    <div style="background:white;border:1px solid var(--border);padding:24px 22px;">
+      <span style="font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;">1 Week After</span>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text-dark);margin-bottom:8px;line-height:1.2;">Sexual Abstinence</h3>
+      <p style="font-size:12.5px;color:var(--stone);line-height:1.8;">Sexual abstinence supports the body's integration in the week following ceremony — the system is actively reorganizing.</p>
+    </div>
+
+  </div>
+
+  <!-- 48-hour neuroplasticity callout -->
+  <div style="max-width:860px;margin:20px 0 0;background:var(--forest);padding:32px 36px;display:flex;gap:28px;align-items:flex-start;" class="reveal">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;color:rgba(200,169,110,0.22);line-height:1;flex-shrink:0;">48</div>
+    <div>
+      <p style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">The Critical Window</p>
+      <p style="font-size:14px;color:rgba(245,240,232,0.75);line-height:1.9;">The 48 hours after ceremony are neurologically extraordinary. The brain is unusually plastic — exceptionally capable of rewiring habits, patterns, and perspectives. Simple choices in this window — nature, journaling, meaningful conversation, rest — have an outsized effect on your long-term outcome. The Integration section below carries this window forward.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ── INTEGRATION ── -->
+<section id="integration" class="section section-forest">
+  <span class="eyebrow">Phase 4 · Back Home · The Critical Window</span>
+  <h2 class="section-heading">Integration — <em>The Real Work</em></h2>
+  <p class="section-intro">In the weeks and months after you return home, your brain remains in an extraordinary window of neuroplasticity — driven by noribogaine, iboga's primary metabolite. What you practice, embody, and repeat during this time becomes your new foundation. This window is a gift. Meet it with intention.</p>
+
+  <div class="integration-cols reveal">
+
+    <div class="integration-card">
+      <h3 class="integration-card-title">Daily Practices</h3>
+      <p class="integration-card-body">Journaling — revisit your visions, your insights, the questions you brought to the medicine, and how they are continuing to unfold. Gratitude, compassion, and forgiveness as daily practices. Consciously reinforce the new ways of being that emerged during your journey — repeated embodiment is what makes the shift permanent.</p>
+    </div>
+
+    <div class="integration-card">
+      <h3 class="integration-card-title">Your Integration Guide</h3>
+      <p class="integration-card-body">Ongoing calls and sessions with your Integration Guide continue after you return home — somatic coaching, inner work, and dedicated support through the neuroplasticity window. Your guide holds the thread of what arose in ceremony and helps you weave it into daily life.</p>
+    </div>
+
+    <div class="integration-card">
+      <h3 class="integration-card-title">Your Support Community</h3>
+      <p class="integration-card-body">The people you identified and prepared before your journey are ready to hold you. Lean into them. Let them witness your process, celebrate your shifts, and help anchor your highest vision back in your home environment. Integration is a relational practice.</p>
+    </div>
+
+    <div class="integration-card">
+      <h3 class="integration-card-title">Body & Nourishment</h3>
+      <p class="integration-card-body">A whole-food, nourishing diet continues to support the body's repair and the brain's rewiring. Continue the supplements your physician recommends — typically DHA + EPA, magnesium glycinate, and others as indicated. Regular movement, rest, and time in nature remain the simplest and most powerful integration tools available.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── CLOSING ── -->
+<div class="closing">
+  <h2 class="closing-title">The medicine shows you the door.<br><em>We walk through it beside you.</em></h2>
+  <p class="closing-body">The depth of your transformation will be equal to the devotion you bring to your preparation and integration. We have seen what becomes possible when someone arrives fully committed, fully prepared, and fully held. It is an honor to walk beside you in this.</p>
+  <p class="closing-sig">With aloha — your Vital Kauaʻi team</p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p class="footer-logo">Vital Kauaʻi</p>
+  <p>Iboga Preparedness Guide · Confidential<br><a href="/portal">← Return to Portal</a> · aloha&#64;vitalkauai.com<br>© 2026 Vital Kauai Church · PO Box 932, Hanalei, HI 96714<br>All original content is protected by U.S. copyright law. Reproduction without written permission prohibited.</p>
+</footer>
+
+<script>
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObser

@@ -580,7 +580,7 @@ export function PortalHomePage({
           <div className={`${styles.phasePanel} ${activePhase === 1 ? styles.phasePanelActive : ""}`}>
             <div className={styles.docGrid}>
               {[
-                { title: "Iboga", em: "Preparedness Guide", desc: "Your complete guide to the medicine, the process, and how to arrive ready \u2014 physically, mentally, and spiritually.", tag: "Preparation", tagClass: styles.tagPrep },
+                { title: "Iboga", em: "Preparedness Guide", desc: "Your complete guide to the medicine, the process, and how to arrive ready \u2014 physically, mentally, and spiritually.", tag: "Preparation", tagClass: styles.tagPrep, link: "/iboga-preparedness-guide.html" },
                 { title: "Dietary", em: "Preparation Protocol", desc: "What to eat, what to eliminate, and how to prepare your body as a clear vessel in the weeks and days before your arrival.", tag: "Preparation", tagClass: styles.tagPrep },
                 { title: "What to Bring", em: "& Leave Behind", desc: "An interactive packing checklist for island life \u2014 organized by what to carry and what to leave at home for the integrity of your work.", tag: "Packing", tagClass: styles.tagPrep },
                 { title: "Nervous System", em: "Safety Guide", desc: "Polyvagal theory, somatic self-regulation, breathwork practices, and how to establish safety from the inside out \u2014 before, during, and after.", tag: "Self-Regulation", tagClass: styles.tagGuide },
@@ -592,8 +592,8 @@ export function PortalHomePage({
                 <div
                   key={i}
                   className={`${styles.docCard} ${styles.fadeIn}`}
-                  onClick={doc.isLab ? () => setShowLabUpload(!showLabUpload) : undefined}
-                  style={doc.isLab ? { cursor: "pointer" } : undefined}
+                  onClick={doc.isLab ? () => setShowLabUpload(!showLabUpload) : doc.link ? () => window.open(doc.link, "_blank") : undefined}
+                  style={doc.isLab || doc.link ? { cursor: "pointer" } : undefined}
                 >
                   <div className={styles.docTitle}>
                     {doc.title} <em>{doc.em}</em>
