@@ -113,8 +113,8 @@ export function PortalHomePage({
   // Lab upload state
   const [showLabUpload, setShowLabUpload] = useState(false);
   const [memberId, setMemberId] = useState<string | null>(null);
-  const [labDocs, setLabDocs] = useState<Record<string, { id: string; file_name: string; status: string; uploaded_at: string }>>({});
-  const [labUploading, setLabUploading] = useState<string | null>(null);
+  const [labDoc, setLabDoc] = useState<{ id: string; file_name: string; status: string; uploaded_at: string } | null>(null);
+  const [labUploading, setLabUploading] = useState(false);
 
   const fetchProfile = useCallback(async () => {
     const { data } = await supabase
@@ -133,16 +133,14 @@ export function PortalHomePage({
     if (mData) {
       setMemberData(mData as MemberData);
       setMemberId(mData.id);
-      // Fetch lab documents for this member
+      // Fetch lab document for this member (single upload)
       const { data: labs } = await supabase
         .from("lab_documents")
-        .select("id, lab_type, file_name, status, uploaded_at")
-        .eq("member_id", mData.id);
-      if (labs) {
-        const map: Record<string, { id: string; file_name: string; status: string; uploaded_at: string }> = {};
-        for (const l of labs) map[l.lab_type] = l;
-        setLabDocs(map);
-      }
+        .select("id, file_name, status, uploaded_at")
+        .eq("member_id", mData.id)
+        .order("uploaded_at", { ascending: false })
+        .limit(1);
+      if (labs && labs.length > 0) setLabDoc(labs[0]);
     }
 
     setLoading(false);
@@ -283,38 +281,38 @@ export function PortalHomePage({
     setModalChecked(false);
   }
 
-  async function handleLabUpload(labType: string, file: File) {
+  async function handleLabUpload(file: File) {
     if (!memberId) return;
-    setLabUploading(labType);
+    setLabUploading(true);
     const ext = file.name.split(".").pop() ?? "pdf";
-    const path = `${memberId}/${labType}.${ext}`;
+    const path = `${memberId}/lab_results.${ext}`;
     const { error: uploadErr } = await supabase.storage
       .from("lab-documents")
       .upload(path, file, { upsert: true });
     if (uploadErr) {
       alert("Upload failed: " + uploadErr.message);
-      setLabUploading(null);
+      setLabUploading(false);
       return;
     }
     // Delete old record if re-uploading
-    if (labDocs[labType]) {
-      await supabase.from("lab_documents").delete().eq("id", labDocs[labType].id);
+    if (labDoc) {
+      await supabase.from("lab_documents").delete().eq("id", labDoc.id);
     }
     const { data: row, error: insertErr } = await supabase
       .from("lab_documents")
       .insert({
         member_id: memberId,
-        lab_type: labType,
+        lab_type: "full_panel",
         file_name: file.name,
         file_path: path,
         status: "uploaded",
       })
-      .select("id, lab_type, file_name, status, uploaded_at")
+      .select("id, file_name, status, uploaded_at")
       .single();
     if (insertErr) {
       alert("Failed to save: " + insertErr.message);
     } else if (row) {
-      setLabDocs((prev) => ({ ...prev, [labType]: row }));
+      setLabDoc(row);
       // Trigger AI extraction edge function (fire and forget)
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData?.session?.access_token;
@@ -322,11 +320,11 @@ export function PortalHomePage({
         fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/process-lab-upload`, {
           method: "POST",
           headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-          body: JSON.stringify({ record: row }),
-        }).catch(() => {}); // Non-blocking
+          body: JSON.stringify({ record: { ...row, file_path: path, file_name: file.name, lab_type: "full_panel" } }),
+        }).catch(() => {});
       }
     }
-    setLabUploading(null);
+    setLabUploading(false);
   }
 
   // After each sign, check if all 3 are done
@@ -603,7 +601,9 @@ export function PortalHomePage({
                     <span className={`${styles.docTag} ${doc.tagClass}`}>{doc.tag}</span>
                     <span className={styles.docAction}>
                       {doc.isLab
-                        ? `${Object.keys(labDocs).length}/7 Uploaded ${showLabUpload ? "▾" : "▸"}`
+                        ? labDoc
+                          ? `Uploaded ${showLabUpload ? "▾" : "▸"}`
+                          : `Upload ${showLabUpload ? "▾" : "▸"}`
                         : "Open \u2192"}
                     </span>
                   </div>
@@ -623,100 +623,64 @@ export function PortalHomePage({
                   }}
                 >
                   <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: "#A8C5AC", marginBottom: 16, fontWeight: 500 }}>
-                    Required Lab Documents
+                    Upload Your Lab Results
                   </p>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                    {[
-                      { key: "ekg", label: "EKG / QTc" },
-                      { key: "thyroid", label: "Thyroid Panel" },
-                      { key: "liver", label: "Liver Panel" },
-                      { key: "magnesium", label: "Magnesium" },
-                      { key: "stress_test", label: "Cardiac Stress Test" },
-                      { key: "cyp450", label: "CYP450" },
-                      { key: "cmp", label: "CMP (Comprehensive Metabolic Panel)" },
-                    ].map((lab) => {
-                      const doc = labDocs[lab.key];
-                      const isUploading = labUploading === lab.key;
-                      const statusColor = !doc
-                        ? "#6B6B67"
-                        : doc.status === "approved"
-                          ? "#1D9E75"
-                          : doc.status === "flagged"
-                            ? "#A32D2D"
-                            : doc.status === "processing"
-                              ? "#EF9F27"
-                              : "#378ADD";
-                      const statusLabel = !doc
-                        ? "Not uploaded"
-                        : doc.status === "approved"
-                          ? "Approved"
-                          : doc.status === "flagged"
-                            ? "Needs attention"
-                            : doc.status === "processing"
-                              ? "Processing..."
-                              : "Uploaded";
-                      return (
-                        <div
-                          key={lab.key}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 12,
-                            background: "rgba(255,255,255,0.04)",
-                            borderRadius: 8,
-                            padding: "12px 16px",
-                          }}
-                        >
-                          <span
-                            style={{
-                              width: 9,
-                              height: 9,
-                              borderRadius: "50%",
-                              background: statusColor,
-                              flexShrink: 0,
-                            }}
-                          />
-                          <span style={{ flex: 1, fontSize: 14, color: "#F5F0E8", fontWeight: 500 }}>
-                            {lab.label}
-                          </span>
-                          <span style={{ fontSize: 12, color: statusColor, marginRight: 12 }}>
-                            {isUploading ? "Uploading..." : statusLabel}
-                          </span>
-                          {doc && (
-                            <span style={{ fontSize: 11, color: "#6B6B67", marginRight: 8 }}>
-                              {doc.file_name}
-                            </span>
-                          )}
-                          <label
-                            style={{
-                              fontSize: 12,
-                              color: "#A8C5AC",
-                              border: "0.5px solid rgba(168,197,172,0.3)",
-                              borderRadius: 6,
-                              padding: "5px 12px",
-                              cursor: isUploading ? "not-allowed" : "pointer",
-                              opacity: isUploading ? 0.5 : 1,
-                            }}
-                          >
-                            {doc ? "Replace" : "Upload"}
-                            <input
-                              type="file"
-                              accept=".pdf,.jpg,.jpeg,.png,.webp"
-                              style={{ display: "none" }}
-                              disabled={isUploading}
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) handleLabUpload(lab.key, file);
-                                e.target.value = "";
-                              }}
-                            />
-                          </label>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <p style={{ fontSize: 11, color: "#6B6B67", marginTop: 14, lineHeight: 1.5 }}>
-                    Upload PDF or image files of your lab results. Each document is reviewed by our medical team and you will be notified of any follow-up needed.
+
+                  {labDoc ? (
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.04)", borderRadius: 8, padding: "14px 16px", marginBottom: 12 }}>
+                      <span style={{
+                        width: 10, height: 10, borderRadius: "50%", flexShrink: 0,
+                        background: labDoc.status === "approved" ? "#1D9E75" : labDoc.status === "flagged" ? "#A32D2D" : labDoc.status === "processing" ? "#EF9F27" : "#378ADD",
+                      }} />
+                      <div style={{ flex: 1 }}>
+                        <p style={{ fontSize: 14, color: "#F5F0E8", fontWeight: 500, margin: 0 }}>{labDoc.file_name}</p>
+                        <p style={{ fontSize: 11, color: "#6B6B67", margin: "2px 0 0" }}>
+                          Uploaded {new Date(labDoc.uploaded_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                        </p>
+                      </div>
+                      <span style={{
+                        fontSize: 12, padding: "3px 10px", borderRadius: 99,
+                        background: labDoc.status === "approved" ? "rgba(29,158,117,0.15)" : labDoc.status === "flagged" ? "rgba(163,45,45,0.15)" : "rgba(55,138,221,0.15)",
+                        color: labDoc.status === "approved" ? "#1D9E75" : labDoc.status === "flagged" ? "#FF9E8C" : "#378ADD",
+                      }}>
+                        {labDoc.status === "approved" ? "Approved" : labDoc.status === "flagged" ? "Needs attention" : labDoc.status === "processing" ? "Processing..." : "Under review"}
+                      </span>
+                    </div>
+                  ) : null}
+
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8,
+                      background: labUploading ? "rgba(255,255,255,0.02)" : "rgba(168,197,172,0.08)",
+                      border: "1px dashed rgba(168,197,172,0.25)",
+                      borderRadius: 8,
+                      padding: "20px",
+                      cursor: labUploading ? "not-allowed" : "pointer",
+                      opacity: labUploading ? 0.5 : 1,
+                      transition: "all 0.15s",
+                    }}
+                  >
+                    <span style={{ fontSize: 14, color: "#A8C5AC", fontWeight: 500 }}>
+                      {labUploading ? "Uploading..." : labDoc ? "Replace with new document" : "Choose file to upload"}
+                    </span>
+                    <input
+                      type="file"
+                      accept=".pdf,.jpg,.jpeg,.png,.webp"
+                      style={{ display: "none" }}
+                      disabled={labUploading}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleLabUpload(file);
+                        e.target.value = "";
+                      }}
+                    />
+                  </label>
+
+                  <p style={{ fontSize: 11, color: "#6B6B67", marginTop: 14, lineHeight: 1.6 }}>
+                    Upload the lab results document from your doctor as a single PDF or image. Our medical team will review the results and extract the required values (EKG, thyroid, liver, magnesium, cardiac, CYP450, CMP) internally.
                   </p>
                 </div>
               )}
