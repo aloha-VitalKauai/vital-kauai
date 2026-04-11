@@ -1,0 +1,700 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+
+/* ── Status colours (same as dashboard) ────────────────────────── */
+const STATUS_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
+  "Signed — Awaiting Intake": { bg: "#E6F1FB", text: "#0C447C", dot: "#378ADD" },
+  "Intake Complete": { bg: "#EAF3DE", text: "#27500A", dot: "#639922" },
+  "Ceremony Scheduled": { bg: "#FAEEDA", text: "#633806", dot: "#EF9F27" },
+  "Ceremony Complete": { bg: "#E1F5EE", text: "#085041", dot: "#1D9E75" },
+  "Integration Phase": { bg: "#EEEDFE", text: "#3C3489", dot: "#7F77DD" },
+  Alumni: { bg: "#F1EFE8", text: "#444441", dot: "#888780" },
+};
+const fallbackColor = { bg: "#F1EFE8", text: "#444441", dot: "#888780" };
+const STATUSES = Object.keys(STATUS_COLORS);
+
+/* ── Types ─────────────────────────────────────────────────────── */
+type Member = Record<string, any>;
+type Profile = Record<string, any> | null;
+type Intake = Record<string, any> | null;
+type Document = Record<string, any>;
+type Ceremony = Record<string, any>;
+type ChecklistItem = Record<string, any>;
+
+/* ── Helpers ───────────────────────────────────────────────────── */
+function fmt(n: number | null | undefined, prefix = "") {
+  if (n == null) return "—";
+  return prefix + Number(n).toLocaleString("en-US", { maximumFractionDigits: 0 });
+}
+
+function fmtDate(d: string | null | undefined) {
+  if (!d) return "—";
+  return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+function fmtDatetime(d: string | null | undefined) {
+  if (!d) return "—";
+  return new Date(d).toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
+/* ── Shared style constants ────────────────────────────────────── */
+const LABEL: React.CSSProperties = {
+  fontSize: 11,
+  textTransform: "uppercase",
+  letterSpacing: "0.06em",
+  color: "#6B6B67",
+  marginBottom: 6,
+};
+
+const CARD: React.CSSProperties = {
+  background: "#fff",
+  border: "0.5px solid rgba(0,0,0,0.1)",
+  borderRadius: 10,
+  padding: "1.25rem",
+};
+
+const INPUT: React.CSSProperties = {
+  width: "100%",
+  padding: "8px 10px",
+  border: "0.5px solid rgba(0,0,0,0.15)",
+  borderRadius: 6,
+  fontSize: 14,
+  fontFamily: "var(--font-body, sans-serif)",
+  color: "#1A1A18",
+  background: "#fff",
+  outline: "none",
+};
+
+const SELECT: React.CSSProperties = {
+  ...INPUT,
+  appearance: "none" as const,
+  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%236B6B67' stroke-width='1.5'/%3E%3C/svg%3E")`,
+  backgroundRepeat: "no-repeat",
+  backgroundPosition: "right 10px center",
+  paddingRight: 30,
+};
+
+const TEXTAREA: React.CSSProperties = {
+  ...INPUT,
+  minHeight: 80,
+  resize: "vertical" as const,
+};
+
+/* ── Component ─────────────────────────────────────────────────── */
+export default function MemberProfileEditor({
+  member,
+  profile,
+  intake,
+  documents,
+  ceremonies,
+  checklist,
+}: {
+  member: Member;
+  profile: Profile;
+  intake: Intake;
+  documents: Document[];
+  ceremonies: Ceremony[];
+  checklist: ChecklistItem[];
+}) {
+  const router = useRouter();
+  const supabase = createClient();
+  const [isPending, startTransition] = useTransition();
+
+  /* Editable member fields */
+  const [status, setStatus] = useState(member.status ?? "");
+  const [assignedPartner, setAssignedPartner] = useState(member.assigned_partner ?? "");
+  const [membershipTier, setMembershipTier] = useState(member.membership_tier ?? "");
+  const [programPrice, setProgramPrice] = useState(member.program_price?.toString() ?? "");
+  const [costOfService, setCostOfService] = useState(member.cost_of_service?.toString() ?? "");
+  const [ceremonyDate, setCeremonyDate] = useState(member.ceremony_date ?? "");
+  const [arrivalDate, setArrivalDate] = useState(member.arrival_date ?? "");
+  const [journeyFocus, setJourneyFocus] = useState(member.journey_focus ?? "");
+  const [integrationGuide, setIntegrationGuide] = useState(member.integration_guide ?? "");
+  const [notes, setNotes] = useState(member.notes ?? "");
+  const [medicalCleared, setMedicalCleared] = useState(member.medical_cleared ?? false);
+  const [portalUnlocked, setPortalUnlocked] = useState(member.portal_unlocked ?? false);
+  const [integrationUnlocked, setIntegrationUnlocked] = useState(member.integration_unlocked ?? false);
+
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  async function handleSave() {
+    setSaving(true);
+    setSaved(false);
+    const { error } = await supabase
+      .from("members")
+      .update({
+        status,
+        assigned_partner: assignedPartner || null,
+        membership_tier: membershipTier || null,
+        program_price: programPrice ? Number(programPrice) : null,
+        cost_of_service: costOfService ? Number(costOfService) : null,
+        ceremony_date: ceremonyDate || null,
+        arrival_date: arrivalDate || null,
+        journey_focus: journeyFocus || null,
+        integration_guide: integrationGuide || null,
+        notes: notes || null,
+        medical_cleared: medicalCleared,
+        portal_unlocked: portalUnlocked,
+        integration_unlocked: integrationUnlocked,
+      })
+      .eq("id", member.id);
+
+    setSaving(false);
+    if (!error) {
+      setSaved(true);
+      startTransition(() => router.refresh());
+      setTimeout(() => setSaved(false), 2000);
+    }
+  }
+
+  const sc = STATUS_COLORS[status] ?? fallbackColor;
+  const price = programPrice ? Number(programPrice) : null;
+  const cost = costOfService ? Number(costOfService) : null;
+  const profit = price != null && cost != null ? price - cost : null;
+
+  return (
+    <div style={{ fontFamily: "var(--font-body, sans-serif)" }}>
+      {/* Back link + header */}
+      <div style={{ marginBottom: "1.5rem" }}>
+        <a
+          href="/dashboard"
+          style={{
+            fontSize: 12,
+            color: "#6B6B67",
+            textDecoration: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
+            marginBottom: 12,
+          }}
+        >
+          &larr; Back to overview
+        </a>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+          <div>
+            <h1
+              style={{
+                fontFamily: "var(--font-display, serif)",
+                fontSize: 32,
+                fontWeight: 400,
+                letterSpacing: "-0.02em",
+                color: "#1A1A18",
+                margin: 0,
+              }}
+            >
+              {member.full_name}
+            </h1>
+            <p style={{ fontSize: 14, color: "#6B6B67", margin: "4px 0 0" }}>{member.email}</p>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                background: sc.bg,
+                color: sc.text,
+                fontSize: 13,
+                fontWeight: 500,
+                padding: "5px 12px",
+                borderRadius: 99,
+              }}
+            >
+              <span
+                style={{
+                  width: 7,
+                  height: 7,
+                  borderRadius: "50%",
+                  background: sc.dot,
+                  display: "inline-block",
+                  flexShrink: 0,
+                }}
+              />
+              {status || "Unknown"}
+            </span>
+            <span style={{ fontSize: 12, color: "#9E9E9A" }}>
+              Joined {fmtDate(member.created_at)}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick stats row */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+          gap: 12,
+          marginBottom: "1.5rem",
+        }}
+      >
+        {[
+          { label: "Program price", value: fmt(price, "$") },
+          { label: "Cost of service", value: fmt(cost, "$") },
+          {
+            label: "Profit",
+            value: fmt(profit, "$"),
+            color: profit == null ? "#9E9E9A" : profit >= 0 ? "#085041" : "#A32D2D",
+          },
+          { label: "Deposit", value: fmt(profile?.deposit_amount, "$") },
+        ].map((c) => (
+          <div key={c.label} style={CARD}>
+            <p style={LABEL}>{c.label}</p>
+            <p
+              style={{
+                fontSize: 22,
+                fontWeight: 500,
+                letterSpacing: "-0.02em",
+                lineHeight: 1,
+                color: c.color ?? "#1A1A18",
+                margin: 0,
+              }}
+            >
+              {c.value}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* Main two‑column grid */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(380px, 1fr))",
+          gap: 16,
+          marginBottom: "1.5rem",
+        }}
+      >
+        {/* ── Left column: Editable details ─────────────────── */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {/* Member details card */}
+          <div style={CARD}>
+            <p style={{ ...LABEL, marginBottom: 16 }}>Member details</p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <div>
+                <label style={LABEL}>Status</label>
+                <select style={SELECT} value={status} onChange={(e) => setStatus(e.target.value)}>
+                  {STATUSES.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label style={LABEL}>Assigned partner</label>
+                <input
+                  style={INPUT}
+                  value={assignedPartner}
+                  onChange={(e) => setAssignedPartner(e.target.value)}
+                  placeholder="e.g. Josh"
+                />
+              </div>
+              <div>
+                <label style={LABEL}>Membership tier</label>
+                <input
+                  style={INPUT}
+                  value={membershipTier}
+                  onChange={(e) => setMembershipTier(e.target.value)}
+                  placeholder="e.g. Premium"
+                />
+              </div>
+              <div>
+                <label style={LABEL}>Journey focus</label>
+                <input
+                  style={INPUT}
+                  value={journeyFocus}
+                  onChange={(e) => setJourneyFocus(e.target.value)}
+                  placeholder="e.g. Personal growth"
+                />
+              </div>
+              <div>
+                <label style={LABEL}>Program price ($)</label>
+                <input
+                  style={INPUT}
+                  type="number"
+                  value={programPrice}
+                  onChange={(e) => setProgramPrice(e.target.value)}
+                  placeholder="0"
+                />
+              </div>
+              <div>
+                <label style={LABEL}>Cost of service ($)</label>
+                <input
+                  style={INPUT}
+                  type="number"
+                  value={costOfService}
+                  onChange={(e) => setCostOfService(e.target.value)}
+                  placeholder="0"
+                />
+              </div>
+              <div>
+                <label style={LABEL}>Ceremony date</label>
+                <input
+                  style={INPUT}
+                  type="date"
+                  value={ceremonyDate}
+                  onChange={(e) => setCeremonyDate(e.target.value)}
+                />
+              </div>
+              <div>
+                <label style={LABEL}>Arrival date</label>
+                <input
+                  style={INPUT}
+                  type="date"
+                  value={arrivalDate}
+                  onChange={(e) => setArrivalDate(e.target.value)}
+                />
+              </div>
+              <div>
+                <label style={LABEL}>Integration guide</label>
+                <input
+                  style={INPUT}
+                  value={integrationGuide}
+                  onChange={(e) => setIntegrationGuide(e.target.value)}
+                  placeholder="Guide name"
+                />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 6 }}>
+                <label style={{ ...LABEL, marginBottom: 0 }}>Toggles</label>
+                {[
+                  { label: "Medical cleared", checked: medicalCleared, set: setMedicalCleared },
+                  { label: "Portal unlocked", checked: portalUnlocked, set: setPortalUnlocked },
+                  { label: "Integration unlocked", checked: integrationUnlocked, set: setIntegrationUnlocked },
+                ].map((t) => (
+                  <label
+                    key={t.label}
+                    style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#1A1A18", cursor: "pointer" }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={t.checked}
+                      onChange={(e) => t.set(e.target.checked)}
+                      style={{ accentColor: "#085041" }}
+                    />
+                    {t.label}
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Notes card */}
+          <div style={CARD}>
+            <p style={{ ...LABEL, marginBottom: 12 }}>Notes</p>
+            <textarea
+              style={TEXTAREA}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Internal notes about this member..."
+            />
+          </div>
+
+          {/* Save button */}
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            style={{
+              background: saving ? "#9E9E9A" : "#085041",
+              color: "#fff",
+              border: "none",
+              borderRadius: 8,
+              padding: "12px 24px",
+              fontSize: 14,
+              fontWeight: 500,
+              fontFamily: "var(--font-body, sans-serif)",
+              cursor: saving ? "not-allowed" : "pointer",
+              width: "100%",
+              transition: "background 0.15s",
+            }}
+          >
+            {saving ? "Saving..." : saved ? "Saved" : "Save changes"}
+          </button>
+        </div>
+
+        {/* ── Right column: Read-only data ──────────────────── */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {/* Document signing status */}
+          <div style={CARD}>
+            <p style={{ ...LABEL, marginBottom: 12 }}>Documents signed</p>
+            {documents.length === 0 ? (
+              <p style={{ fontSize: 13, color: "#9E9E9A" }}>No documents signed yet</p>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {documents.map((doc) => (
+                  <div
+                    key={doc.id}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "8px 12px",
+                      background: "#FAFAF8",
+                      borderRadius: 6,
+                    }}
+                  >
+                    <div>
+                      <p style={{ fontSize: 13, fontWeight: 500, color: "#1A1A18", margin: 0 }}>
+                        {doc.document_name}
+                      </p>
+                      {doc.document_version && (
+                        <p style={{ fontSize: 11, color: "#9E9E9A", margin: "2px 0 0" }}>
+                          v{doc.document_version}
+                        </p>
+                      )}
+                    </div>
+                    <span style={{ fontSize: 12, color: "#085041" }}>
+                      {fmtDate(doc.signed_at)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Membership agreement & medical disclaimer from profile */}
+            {profile && (
+              <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 6 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      background: profile.membership_agreement_signed ? "#639922" : "#D4D4D0",
+                      display: "inline-block",
+                    }}
+                  />
+                  <span style={{ fontSize: 13, color: "#1A1A18" }}>
+                    Membership agreement
+                    {profile.membership_agreement_signed_at && (
+                      <span style={{ color: "#9E9E9A", marginLeft: 8, fontSize: 11 }}>
+                        {fmtDate(profile.membership_agreement_signed_at)}
+                      </span>
+                    )}
+                  </span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      background: profile.medical_disclaimer_signed ? "#639922" : "#D4D4D0",
+                      display: "inline-block",
+                    }}
+                  />
+                  <span style={{ fontSize: 13, color: "#1A1A18" }}>
+                    Medical disclaimer
+                    {profile.medical_disclaimer_signed_at && (
+                      <span style={{ color: "#9E9E9A", marginLeft: 8, fontSize: 11 }}>
+                        {fmtDate(profile.medical_disclaimer_signed_at)}
+                      </span>
+                    )}
+                  </span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      background: profile.deposit_paid ? "#639922" : "#D4D4D0",
+                      display: "inline-block",
+                    }}
+                  />
+                  <span style={{ fontSize: 13, color: "#1A1A18" }}>
+                    Deposit paid
+                    {profile.deposit_paid && profile.deposit_amount && (
+                      <span style={{ color: "#9E9E9A", marginLeft: 8, fontSize: 11 }}>
+                        {fmt(profile.deposit_amount, "$")}
+                      </span>
+                    )}
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Ceremony records */}
+          <div style={CARD}>
+            <p style={{ ...LABEL, marginBottom: 12 }}>Ceremony records</p>
+            {ceremonies.length === 0 ? (
+              <p style={{ fontSize: 13, color: "#9E9E9A" }}>No ceremony records yet</p>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {ceremonies.map((cer) => (
+                  <div
+                    key={cer.id}
+                    style={{
+                      padding: "12px",
+                      background: "#FAFAF8",
+                      borderRadius: 8,
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginBottom: 8,
+                      }}
+                    >
+                      <span style={{ fontSize: 14, fontWeight: 500, color: "#1A1A18" }}>
+                        {fmtDate(cer.ceremony_date)}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: 11,
+                          padding: "2px 8px",
+                          borderRadius: 99,
+                          background: cer.status === "Complete" ? "#E1F5EE" : "#FAEEDA",
+                          color: cer.status === "Complete" ? "#085041" : "#633806",
+                          fontWeight: 500,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.04em",
+                        }}
+                      >
+                        {cer.status}
+                      </span>
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, fontSize: 13 }}>
+                      <div>
+                        <span style={{ color: "#6B6B67" }}>Medicine: </span>
+                        <span style={{ color: "#1A1A18" }}>{cer.medicine_form ?? "—"}</span>
+                      </div>
+                      <div>
+                        <span style={{ color: "#6B6B67" }}>Guides: </span>
+                        <span style={{ color: "#1A1A18" }}>{cer.guides_present ?? "—"}</span>
+                      </div>
+                      <div>
+                        <span style={{ color: "#6B6B67" }}>Integration calls: </span>
+                        <span style={{ color: "#1A1A18" }}>{cer.integration_calls ?? 0}</span>
+                      </div>
+                    </div>
+                    {(cer.pre_notes || cer.ceremony_notes || cer.post_notes) && (
+                      <div style={{ marginTop: 8, fontSize: 13 }}>
+                        {cer.pre_notes && (
+                          <p style={{ color: "#1A1A18", margin: "4px 0" }}>
+                            <span style={{ color: "#6B6B67" }}>Pre: </span>
+                            {cer.pre_notes}
+                          </p>
+                        )}
+                        {cer.ceremony_notes && (
+                          <p style={{ color: "#1A1A18", margin: "4px 0" }}>
+                            <span style={{ color: "#6B6B67" }}>During: </span>
+                            {cer.ceremony_notes}
+                          </p>
+                        )}
+                        {cer.post_notes && (
+                          <p style={{ color: "#1A1A18", margin: "4px 0" }}>
+                            <span style={{ color: "#6B6B67" }}>Post: </span>
+                            {cer.post_notes}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Intake form summary */}
+          <div style={CARD}>
+            <p style={{ ...LABEL, marginBottom: 12 }}>Intake form</p>
+            {!intake ? (
+              <p style={{ fontSize: 13, color: "#9E9E9A" }}>No intake form submitted</p>
+            ) : (
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, fontSize: 13 }}>
+                {[
+                  { label: "Phone", value: intake.phone },
+                  { label: "Date of birth", value: fmtDate(intake.date_of_birth) },
+                  { label: "Emergency contact", value: intake.emergency_contact },
+                  { label: "Emergency phone", value: intake.emergency_phone },
+                  { label: "Dietary restrictions", value: intake.dietary_restrictions },
+                  { label: "Accommodation", value: intake.accommodation_requests },
+                ].map((f) => (
+                  <div key={f.label}>
+                    <p style={{ color: "#6B6B67", margin: "0 0 2px" }}>{f.label}</p>
+                    <p style={{ color: f.value ? "#1A1A18" : "#9E9E9A", margin: 0 }}>{f.value || "—"}</p>
+                  </div>
+                ))}
+                {[
+                  { label: "Primary intention", value: intake.primary_intention },
+                  { label: "What brings you here", value: intake.what_brings_you_here },
+                  { label: "Health history", value: intake.health_history },
+                  { label: "Current medications", value: intake.current_medications },
+                  { label: "Psychiatric history", value: intake.psychiatric_history },
+                  { label: "Substance history", value: intake.substance_history },
+                ].map((f) => (
+                  <div key={f.label} style={{ gridColumn: "1 / -1" }}>
+                    <p style={{ color: "#6B6B67", margin: "0 0 2px" }}>{f.label}</p>
+                    <p
+                      style={{
+                        color: f.value ? "#1A1A18" : "#9E9E9A",
+                        margin: 0,
+                        whiteSpace: "pre-wrap",
+                      }}
+                    >
+                      {f.value || "—"}
+                    </p>
+                  </div>
+                ))}
+                <div style={{ gridColumn: "1 / -1", fontSize: 11, color: "#9E9E9A", marginTop: 4 }}>
+                  Submitted {fmtDatetime(intake.submission_date)}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Preparation checklist */}
+          <div style={CARD}>
+            <p style={{ ...LABEL, marginBottom: 12 }}>Preparation checklist</p>
+            {checklist.length === 0 ? (
+              <p style={{ fontSize: 13, color: "#9E9E9A" }}>No checklist items</p>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {checklist.map((item) => (
+                  <div key={item.id} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        background: item.completed ? "#639922" : "#D4D4D0",
+                        display: "inline-block",
+                        flexShrink: 0,
+                      }}
+                    />
+                    <span
+                      style={{
+                        fontSize: 13,
+                        color: item.completed ? "#1A1A18" : "#6B6B67",
+                        textDecoration: item.completed ? "line-through" : "none",
+                      }}
+                    >
+                      {item.item_key.replace(/_/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase())}
+                    </span>
+                    {item.completed_at && (
+                      <span style={{ fontSize: 11, color: "#9E9E9A", marginLeft: "auto" }}>
+                        {fmtDate(item.completed_at)}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

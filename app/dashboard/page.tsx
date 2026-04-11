@@ -300,14 +300,22 @@ export default async function DashboardPage() {
                 rows.map((r) => {
                   const c = STATUS_COLORS[r.status ?? ""] ?? fallback;
                   return (
-                    <tr key={r.id} style={{ borderBottom: "0.5px solid rgba(0,0,0,0.06)" }}>
+                    <tr
+                      key={r.id}
+                      style={{ borderBottom: "0.5px solid rgba(0,0,0,0.06)" }}
+                    >
                       <td style={{ padding: "11px 14px" }}>
-                        <p style={{ fontWeight: 500, fontSize: 14, margin: 0, color: "#1A1A18" }}>
-                          {r.full_name}
-                        </p>
-                        <p style={{ fontSize: 12, color: "#9E9E9A", margin: "2px 0 0" }}>
-                          {r.email}
-                        </p>
+                        <a
+                          href={`/dashboard/${r.id}`}
+                          style={{ textDecoration: "none", color: "inherit", display: "block" }}
+                        >
+                          <p style={{ fontWeight: 500, fontSize: 14, margin: 0, color: "#1A1A18" }}>
+                            {r.full_name}
+                          </p>
+                          <p style={{ fontSize: 12, color: "#9E9E9A", margin: "2px 0 0" }}>
+                            {r.email}
+                          </p>
+                        </a>
                       </td>
                       <td
                         style={{
