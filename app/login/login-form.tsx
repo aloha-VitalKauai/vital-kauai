@@ -41,17 +41,29 @@ export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) 
     try {
       const supabase = createClient();
 
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data: { user }, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) {
-        setStatus({ type: "error", message: error.message });
+      if (error || !user) {
+        setStatus({ type: "error", message: error?.message ?? "Unable to sign in." });
         return;
       }
 
-      router.push(nextPath);
+      // Check role and route accordingly
+      const { data: roleRow } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .single();
+
+      if (roleRow?.role === "founder") {
+        router.push("/dashboard");
+      } else {
+        router.push(nextPath);
+      }
+      router.refresh();
     } catch {
       setStatus({
         type: "error",
