@@ -1,0 +1,805 @@
+/* ── NAV ── */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(14,26,16,0.97);
+  backdrop-filter: blur(14px);
+  padding: 0 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(200,169,110,0.08);
+}
+.navLogo {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  color: #F5F0E8;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.navBadge {
+  font-size: 8.5px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #7A9E7E;
+  border: 1px solid rgba(122,158,126,0.25);
+  padding: 5px 14px;
+}
+.navBack {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.4);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.navBack:hover { color: rgba(245,240,232,0.8); }
+
+/* ── HERO ── */
+.hero {
+  background: #1C2B1E;
+  padding: 80px 60px 76px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 500px; height: 100%;
+  background: radial-gradient(ellipse at right, rgba(122,158,126,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.heroInner { position: relative; z-index: 1; max-width: 780px; }
+.heroEyebrow {
+  font-size: 9px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: #7A9E7E;
+  display: block;
+  margin-bottom: 18px;
+}
+.heroTitle {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 4vw, 58px);
+  font-weight: 300;
+  color: #F5F0E8;
+  line-height: 1.06;
+  margin-bottom: 18px;
+}
+.heroTitle em { font-style: italic; color: #A8C5AC; }
+.heroBody {
+  font-size: 15px;
+  color: rgba(245,240,232,0.58);
+  line-height: 1.95;
+  max-width: 580px;
+}
+
+/* ── TOC ── */
+.toc {
+  background: #F3EEE6;
+  padding: 40px 60px;
+  border-bottom: 1px solid rgba(28,43,30,0.09);
+}
+.tocLabel {
+  font-size: 8.5px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: #C8A96E;
+  display: block;
+  margin-bottom: 18px;
+}
+.tocLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.tocLinks a {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3D3D38;
+  text-decoration: none;
+  border: 1px solid rgba(28,43,30,0.12);
+  padding: 8px 16px;
+  background: white;
+  transition: all 0.25s;
+}
+.tocLinks a:hover { border-color: #7A9E7E; color: #1C2B1E; }
+
+/* ── SHARED SECTION ── */
+.section {
+  padding: 76px 60px;
+  border-bottom: 1px solid rgba(28,43,30,0.09);
+}
+.sectionWarm { background: #FDFBF7; }
+.sectionCream { background: #F3EEE6; }
+.sectionForest { background: #1C2B1E; border-bottom-color: rgba(255,255,255,0.04); }
+.sectionDeep { background: #0E1A10; border-bottom-color: rgba(255,255,255,0.03); }
+
+.eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: #C8A96E;
+  display: block;
+  margin-bottom: 14px;
+}
+
+.sectionHeading {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 3vw, 44px);
+  font-weight: 300;
+  color: #1A1A18;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+.sectionHeading em { font-style: italic; color: #7A9E7E; }
+.sectionForest .sectionHeading,
+.sectionDeep .sectionHeading { color: #F5F0E8; }
+.sectionForest .sectionHeading em,
+.sectionDeep .sectionHeading em { color: #A8C5AC; }
+
+.sectionIntro {
+  font-size: 15px;
+  color: #3D3D38;
+  line-height: 1.95;
+  max-width: 720px;
+  margin-bottom: 52px;
+}
+.sectionForest .sectionIntro,
+.sectionDeep .sectionIntro { color: rgba(245,240,232,0.58); }
+
+/* ── EFFECTS GRID ── */
+.effectsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.effectCard {
+  background: white;
+  border: 1px solid rgba(28,43,30,0.09);
+  border-left: 2px solid #7A9E7E;
+  padding: 28px 24px;
+}
+.effectCardTitle {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #1A1A18;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.effectCardBody {
+  font-size: 13px;
+  color: #8B8070;
+  line-height: 1.8;
+}
+
+/* ── MEDICINE GRID ── */
+.medicineGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border: 1px solid rgba(28,43,30,0.09);
+}
+.medicineCol {
+  padding: 36px 30px;
+  border-right: 1px solid rgba(28,43,30,0.09);
+}
+.medicineCol:last-child { border-right: none; }
+.medicineFeatured {
+  background: rgba(122,158,126,0.05);
+  border-top: 2px solid #7A9E7E;
+}
+.medicineBadge {
+  font-size: 7.5px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #7A9E7E;
+  display: block;
+  margin-bottom: 10px;
+}
+.medicineName {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #1A1A18;
+  margin-bottom: 14px;
+  line-height: 1.1;
+}
+.medicineDesc {
+  font-size: 13px;
+  color: #8B8070;
+  line-height: 1.85;
+  margin-bottom: 20px;
+}
+.medicineSpecs { display: flex; flex-direction: column; gap: 8px; }
+.medicineSpec {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+  color: #3D3D38;
+  line-height: 1.5;
+}
+.medicineSpecLabel {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #C8A96E;
+  flex-shrink: 0;
+  width: 80px;
+  padding-top: 2px;
+}
+
+/* ── SAFETY ── */
+.safetyLayout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+}
+.checklistGroupLabel {
+  font-size: 8.5px;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: #C8A96E;
+  padding: 16px 0 10px;
+  border-bottom: 1px solid rgba(28,43,30,0.08);
+  margin-bottom: 2px;
+}
+.checkRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(28,43,30,0.04);
+}
+.checkSq {
+  width: 16px; height: 16px;
+  border: 1px solid rgba(28,43,30,0.18);
+  flex-shrink: 0;
+  margin-top: 2px;
+  background: white;
+}
+.checkText { font-size: 13px; color: #3D3D38; line-height: 1.6; }
+
+.contraBlock {
+  background: #1C2B1E;
+  padding: 36px 32px;
+}
+.contraTitle {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 300;
+  color: #F5F0E8;
+  margin-bottom: 8px;
+}
+.contraSub {
+  font-size: 11px;
+  color: rgba(245,240,232,0.4);
+  margin-bottom: 22px;
+  line-height: 1.6;
+}
+.contraItem {
+  display: flex;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 12.5px;
+  color: rgba(245,240,232,0.6);
+  line-height: 1.6;
+}
+.contraItem::before {
+  content: '—';
+  color: rgba(122,158,126,0.5);
+  flex-shrink: 0;
+  font-size: 11px;
+  margin-top: 1px;
+}
+.contraHard {
+  color: rgba(220,168,152,0.85);
+}
+.contraHard::before { color: rgba(220,168,152,0.4); }
+
+.cautionBlock {
+  background: rgba(122,158,126,0.06);
+  border: 1px solid rgba(122,158,126,0.18);
+  padding: 24px 28px;
+  margin-top: 20px;
+}
+.cautionLabel {
+  font-size: 8px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #7A9E7E;
+  margin-bottom: 8px;
+  display: block;
+}
+.cautionText { font-size: 13px; color: #3D3D38; line-height: 1.8; }
+
+/* ── PHASE BLOCKS ── */
+.phaseBlock {
+  border: 1px solid rgba(28,43,30,0.09);
+  background: white;
+  margin-bottom: 16px;
+}
+.phaseHeader {
+  padding: 28px 32px;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  border-bottom: 1px solid rgba(28,43,30,0.09);
+}
+.phaseNum {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: 52px;
+  font-weight: 300;
+  color: rgba(122,158,126,0.2);
+  line-height: 1;
+  flex-shrink: 0;
+}
+.phaseNumSmall { font-size: 28px; }
+.phaseNumXSmall { font-size: 24px; }
+.phaseTiming {
+  font-size: 8.5px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #7A9E7E;
+  margin-bottom: 6px;
+  display: block;
+}
+.phaseTitle {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 300;
+  color: #1A1A18;
+  line-height: 1.1;
+}
+.phaseTitle em { font-style: italic; color: #7A9E7E; }
+.phaseBodyArea {
+  padding: 28px 32px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+.phaseBodySingle {
+  padding: 28px 32px;
+}
+.phaseColTitle {
+  font-size: 8.5px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #C8A96E;
+  margin-bottom: 14px;
+  display: block;
+}
+.phaseItem {
+  display: flex;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(28,43,30,0.05);
+  font-size: 13px;
+  color: #3D3D38;
+  line-height: 1.6;
+}
+.phaseItem::before {
+  content: '—';
+  color: rgba(122,158,126,0.5);
+  flex-shrink: 0;
+  font-size: 11px;
+  margin-top: 1px;
+}
+.phaseItemHighlight {
+  border-left: 2px solid #7A9E7E;
+  padding-left: 14px;
+  background: rgba(122,158,126,0.05);
+  color: #1A1A18;
+}
+.phaseItemLabel {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #C8A96E;
+  margin-bottom: 3px;
+}
+
+/* ── CEREMONY TIMELINE ── */
+.ceremonyArc {
+  position: relative;
+  max-width: 800px;
+}
+.ceremonyArc::before {
+  content: '';
+  position: absolute;
+  left: 22px; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, #7A9E7E, rgba(122,158,126,0.06));
+}
+.ceremonyItem {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+.ceremonyMarker {
+  width: 46px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.ceremonyDot {
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  background: #7A9E7E;
+  border: 2px solid #FDFBF7;
+  box-shadow: 0 0 0 3px rgba(122,158,126,0.18);
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.ceremonyDotDim { background: rgba(122,158,126,0.3); }
+.ceremonyTime {
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  color: #7A9E7E;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.ceremonyTitle {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: 21px;
+  font-weight: 400;
+  color: #1A1A18;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+.ceremonyText { font-size: 13px; color: #8B8070; line-height: 1.85; }
+
+/* ── INTEGRATION ── */
+.integrationCols {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 8px;
+}
+.integrationCard {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(200,169,110,0.12);
+  padding: 28px 26px;
+}
+.integrationCardTitle {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #F5F0E8;
+  margin-bottom: 10px;
+}
+.integrationCardBody { font-size: 13px; color: rgba(245,240,232,0.55); line-height: 1.85; }
+
+/* ── COMPARISON TABLE ── */
+.comparisonTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.comparisonTable thead tr { border-bottom: 2px solid rgba(28,43,30,0.12); }
+.comparisonTable th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 8.5px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #8B8070;
+  font-weight: 400;
+}
+.comparisonTable th.thGold { color: #C8A96E; }
+.comparisonTable td {
+  padding: 12px 16px;
+  color: #3D3D38;
+}
+.comparisonTable tr { border-bottom: 1px solid rgba(28,43,30,0.06); }
+.comparisonTable tr:nth-child(even) { background: rgba(28,43,30,0.02); }
+.comparisonTable td.tdBold { color: #1A1A18; font-weight: 400; }
+.comparisonTable td.tdLabel {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8B8070;
+}
+
+/* ── APPROACH BOX ── */
+.approachBox {
+  background: #1C2B1E;
+  padding: 36px 32px;
+}
+.approachLabel {
+  font-size: 8.5px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #7A9E7E;
+  display: block;
+  margin-bottom: 16px;
+}
+.approachTitle {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 300;
+  color: #F5F0E8;
+  line-height: 1.4;
+  margin-bottom: 16px;
+}
+.approachBody {
+  font-size: 13px;
+  color: rgba(245,240,232,0.58);
+  line-height: 1.9;
+  margin-bottom: 16px;
+}
+
+/* ── DISTINCTION BOX ── */
+.distinctionBox {
+  background: #1C2B1E;
+  padding: 40px 44px;
+}
+.distinctionEyebrow {
+  font-size: 8.5px;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: #C8A96E;
+  display: block;
+  margin-bottom: 14px;
+}
+.distinctionTitle {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 300;
+  color: #F5F0E8;
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+.distinctionTitle em { font-style: italic; color: #A8C5AC; }
+.distinctionCols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+.distinctionText {
+  font-size: 13.5px;
+  color: rgba(245,240,232,0.68);
+  line-height: 1.95;
+  margin-bottom: 14px;
+}
+
+/* ── RESEARCH CARDS ── */
+.researchCards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 28px;
+}
+.researchCard {
+  background: white;
+  border: 1px solid rgba(28,43,30,0.09);
+  border-top: 2px solid #7A9E7E;
+  padding: 24px 22px;
+}
+.rcLabel {
+  font-size: 8px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #C8A96E;
+  display: block;
+  margin-bottom: 8px;
+}
+.rcTitle {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: 19px;
+  font-weight: 400;
+  color: #1A1A18;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+.rcBody {
+  font-size: 12.5px;
+  color: #8B8070;
+  line-height: 1.8;
+}
+
+/* ── AFTER CEREMONY CARDS ── */
+.afterGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.afterCard {
+  background: white;
+  border: 1px solid rgba(28,43,30,0.09);
+  padding: 24px 22px;
+}
+.afterLabel {
+  font-size: 8px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #C8A96E;
+  display: block;
+  margin-bottom: 8px;
+}
+.afterCardTitle {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #1A1A18;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.afterCardBody {
+  font-size: 12.5px;
+  color: #8B8070;
+  line-height: 1.8;
+}
+
+/* ── 48h CALLOUT ── */
+.criticalWindow {
+  max-width: 860px;
+  margin: 20px 0 0;
+  background: #1C2B1E;
+  padding: 32px 36px;
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+.criticalNum {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: 44px;
+  font-weight: 300;
+  color: rgba(200,169,110,0.22);
+  line-height: 1;
+  flex-shrink: 0;
+}
+.criticalLabel {
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #C8A96E;
+  margin-bottom: 8px;
+}
+.criticalBody {
+  font-size: 14px;
+  color: rgba(245,240,232,0.75);
+  line-height: 1.9;
+}
+
+/* ── DIET NOTE ── */
+.dietNote {
+  background: rgba(122,158,126,0.06);
+  border-left: 2px solid #7A9E7E;
+  padding: 22px 28px;
+  max-width: 760px;
+  margin-bottom: 36px;
+}
+.dietNoteLabel {
+  font-size: 8.5px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #7A9E7E;
+  display: block;
+  margin-bottom: 8px;
+}
+.dietNoteText {
+  font-size: 14px;
+  color: #3D3D38;
+  line-height: 1.9;
+}
+
+/* ── BODY TEXT ── */
+.bodyText {
+  font-size: 15px;
+  color: #3D3D38;
+  line-height: 1.95;
+  max-width: 720px;
+  margin-bottom: 24px;
+}
+.bodyTextLast { margin-bottom: 40px; }
+
+/* ── TWO COL ── */
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+/* ── RESEARCH DISCLAIMER ── */
+.disclaimer {
+  font-size: 12px;
+  color: #8B8070;
+  margin-top: 28px;
+  font-style: italic;
+  line-height: 1.7;
+}
+
+/* ── CLOSING ── */
+.closing {
+  background: #1C2B1E;
+  padding: 72px 60px;
+  text-align: center;
+  border-bottom: none;
+}
+.closingTitle {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 3vw, 44px);
+  font-weight: 300;
+  color: #F5F0E8;
+  margin-bottom: 16px;
+  line-height: 1.1;
+}
+.closingTitle em { font-style: italic; color: #A8C5AC; }
+.closingBody {
+  font-size: 15px;
+  color: rgba(245,240,232,0.55);
+  line-height: 1.95;
+  max-width: 560px;
+  margin: 0 auto 36px;
+}
+.closingSig {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-style: italic;
+  color: rgba(245,240,232,0.35);
+  letter-spacing: 0.08em;
+}
+
+/* ── FOOTER ── */
+.footer {
+  background: #0E1A10;
+  padding: 40px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(200,169,110,0.07);
+}
+.footerLogo {
+  font-family: var(--font-display), 'Cormorant Garamond', serif;
+  font-size: 17px;
+  letter-spacing: 0.15em;
+  color: #F5F0E8;
+  text-transform: uppercase;
+  font-weight: 300;
+}
+.footerInfo {
+  font-size: 11px;
+  color: rgba(245,240,232,0.22);
+  line-height: 1.7;
+  text-align: right;
+}
+.footerInfo a {
+  color: rgba(200,169,110,0.38);
+  text-decoration: none;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  .nav { padding: 0 28px; }
+  .hero, .section, .toc, .closing, .footer { padding-left: 28px; padding-right: 28px; }
+  .effectsGrid { grid-template-columns: 1fr 1fr; }
+  .medicineGrid { grid-template-columns: 1fr; }
+  .medicineCol { border-right: none; border-bottom: 1px solid rgba(28,43,30,0.09); }
+  .medicineCol:last-child { border-bottom: none; }
+  .safetyLayout { grid-template-columns: 1fr; }
+  .phaseBodyArea { grid-template-columns: 1fr; }
+  .integrationCols { grid-template-columns: 1fr; }
+  .twoCol { grid-template-columns: 1fr; }
+  .distinctionCols { grid-template-columns: 1fr; }
+  .researchCards { grid-template-columns: 1fr; }
+  .afterGrid { grid-template-columns: 1fr; }
+  .distinctionBox { padding: 28px; }
+}
+@media (max-width: 600px) {
+  .effectsGrid { grid-template-columns: 1fr; }
+  .navBadge { display: none; }
+}
