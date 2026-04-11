@@ -52,10 +52,8 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
-    // If founder hits /portal, redirect to dashboard
-    if (path.startsWith("/portal") && isFounder) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
-    }
+    // Founders can access /portal directly — no redirect
+    // They land on /dashboard by default from login, but can navigate to /portal
   }
 
   return supabaseResponse;

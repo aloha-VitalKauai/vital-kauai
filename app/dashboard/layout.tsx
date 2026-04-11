@@ -54,6 +54,22 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <a
+            href="/portal"
+            style={{
+              fontSize: 11,
+              color: "#6B6B67",
+              textDecoration: "none",
+              border: "0.5px solid rgba(0,0,0,0.15)",
+              borderRadius: 6,
+              padding: "5px 12px",
+              fontFamily: "var(--font-body, sans-serif)",
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+            }}
+          >
+            Member Portal
+          </a>
           <span
             style={{
               fontSize: 13,
