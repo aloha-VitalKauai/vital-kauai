@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { AboutPage } from "@/components/about-page";
 
-export default function AboutPage() {
-  redirect("/about-legacy.html");
+export default function AboutRoute() {
+  return <AboutPage />;
 }

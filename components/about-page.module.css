@@ -1,0 +1,988 @@
+.page {
+  --forest: #1c2b1e;
+  --forest-dark: #141f15;
+  --deep: #0e1a10;
+  --sage: #7a9e7e;
+  --sage-light: #a8c5ac;
+  --gold: #c8a96e;
+  --gold-light: #e2cfa0;
+  --cream: #f5f0e8;
+  --warm-white: #fdfbf7;
+  --stone: #8b8070;
+  --text-dark: #1a1a18;
+  --text-mid: #3d3d38;
+  --ink: #12120f;
+  background: var(--warm-white);
+  color: var(--text-dark);
+  overflow-x: hidden;
+}
+
+/* ───────────── Nav ───────────── */
+
+.nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 60px;
+  transition: all 0.5s ease;
+}
+
+.navScrolled {
+  background: rgb(14 26 16 / 0.96);
+  backdrop-filter: blur(12px);
+  padding: 18px 60px;
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 4px;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  z-index: 101;
+}
+
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--cream);
+  opacity: 0.8;
+  transition: all 0.3s;
+}
+
+.navLogo {
+  font-family: var(--font-display), serif;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  color: var(--cream);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.navLinks {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navLinks a {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cream);
+  text-decoration: none;
+  opacity: 0.85;
+  transition: opacity 0.3s;
+}
+
+.navLinks a:hover {
+  opacity: 1;
+}
+
+.navDropdown {
+  position: relative;
+}
+
+.navDropdownLabel {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: 0.85;
+  cursor: default;
+  transition: opacity 0.3s;
+}
+
+.navDropdownLabel:hover {
+  opacity: 1;
+}
+
+.navDropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgb(14 26 16 / 0.96);
+  backdrop-filter: blur(12px);
+  list-style: none;
+  padding: 14px 24px;
+  margin: 10px 0 0;
+  min-width: 200px;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.navDropdown:hover .navDropdownMenu {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.navDropdownMenu li + li {
+  margin-top: 10px;
+}
+
+.navDropdownMenu a {
+  white-space: nowrap;
+}
+
+.navCta {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--forest);
+  background: var(--gold);
+  padding: 12px 28px;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.navCta:hover {
+  background: var(--gold-light);
+}
+
+/* ───────────── Mobile Nav ───────────── */
+
+.navMobile {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  background: var(--deep);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+
+.navMobileOpen {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.navMobile a {
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cream);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+.navMobile a:hover {
+  opacity: 1;
+}
+
+.navMobileClose {
+  position: absolute;
+  top: 28px;
+  right: 32px;
+  background: none;
+  border: 0;
+  color: var(--cream);
+  font-size: 28px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.navMobileClose:hover {
+  opacity: 1;
+}
+
+.mobileAccentLink {
+  color: var(--gold) !important;
+  opacity: 1 !important;
+}
+
+/* ───────────── Hero ───────────── */
+
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.heroImg {
+  object-fit: cover;
+  object-position: center 20%;
+  opacity: 0.88;
+  filter: saturate(0.92) brightness(1.08);
+}
+
+.meetingImg {
+  object-fit: cover;
+  object-position: center 8%;
+}
+
+.storyImg {
+  object-fit: cover;
+  object-position: center 5%;
+}
+
+.storyPhotoRachel .storyImg {
+  object-position: center 30%;
+}
+
+.africaImg {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+}
+
+.familyImg {
+  object-fit: cover;
+  object-position: center 28%;
+  filter: saturate(0.85) brightness(0.92);
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 30%,
+    rgb(14 26 16 / 0.35) 60%,
+    rgb(14 26 16 / 0.85) 100%
+  );
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding-bottom: 90px;
+  animation: fadeUp 1.2s ease both;
+}
+
+.heroEyebrow {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 18px;
+  animation: fadeIn 1s ease both 0.2s;
+}
+
+.heroTitle {
+  font-family: var(--font-display), serif;
+  font-size: clamp(58px, 8vw, 112px);
+  font-weight: 300;
+  line-height: 1.05;
+  color: var(--cream);
+  margin: 0;
+  animation: fadeUp 1.2s ease both 0.3s;
+}
+
+.heroTitle em {
+  font-style: italic;
+  color: var(--sage-light);
+}
+
+.heroScroll {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.heroScroll span {
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: 0.5;
+}
+
+.scrollLine {
+  width: 1px;
+  height: 40px;
+  background: var(--cream);
+  opacity: 0.3;
+  animation: scrollPulse 2.4s ease-in-out infinite;
+}
+
+/* ───────────── Bridge ───────────── */
+
+.bridge {
+  background: var(--forest);
+  padding: 120px 60px;
+  text-align: center;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 32px;
+}
+
+.bridgeQuote {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(22px, 3vw, 36px);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--cream);
+  max-width: 720px;
+  margin: 0 auto 48px;
+}
+
+.rule {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  margin: 0 auto;
+}
+
+/* ───────────── Meeting ───────────── */
+
+.meeting {
+  background: var(--deep);
+}
+
+.meetingGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 90vh;
+}
+
+.meetingPhoto {
+  position: relative;
+  overflow: hidden;
+}
+
+.meetingPhoto .imgPlaceholder {
+  position: absolute;
+  inset: 0;
+  background: var(--forest-dark);
+}
+
+.meetingText {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 100px 80px;
+}
+
+.meetingText .eyebrow {
+  color: var(--gold);
+}
+
+.meetingTitle {
+  font-family: var(--font-display), serif;
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 300;
+  line-height: 1.15;
+  color: var(--cream);
+  margin: 0 0 40px;
+}
+
+.meetingTitle em {
+  font-style: italic;
+  color: var(--sage-light);
+}
+
+.meetingPara {
+  font-size: 15px;
+  line-height: 2;
+  color: var(--cream);
+  opacity: 0.85;
+  margin: 0 0 22px;
+  max-width: 540px;
+}
+
+/* ───────────── Divider ───────────── */
+
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 60px 40px;
+  background: var(--forest-dark);
+}
+
+.divLine {
+  flex: 1;
+  max-width: 160px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  opacity: 0.4;
+}
+
+.divMark {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--gold);
+  opacity: 0.7;
+  white-space: nowrap;
+  min-height: 1em;
+}
+
+/* ───────────── Story (Josh / Rachel) ───────────── */
+
+.storySection {
+  background: var(--forest-dark);
+  color: var(--cream);
+}
+
+.storySectionLight {
+  background: var(--warm-white);
+  color: var(--text-dark);
+}
+
+.storyContent {
+  padding: 100px 80px;
+  max-width: 960px;
+  margin: 0 auto;
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+.storyPhotoFloat {
+  float: left;
+  width: 280px;
+  margin: 0 40px 24px 0;
+  position: relative;
+}
+
+.storyPhotoFloatRight {
+  float: right;
+  margin: 0 0 24px 48px;
+}
+
+.storyPhotoFloat .storyImg,
+.storyPhotoFloat .storyImgRachel {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: saturate(0.92) brightness(0.95);
+}
+
+.storyImgRachel {
+  object-position: center 30%;
+}
+
+.storyPhoto .imgPlaceholder {
+  position: absolute;
+  inset: 0;
+  background: var(--deep);
+}
+
+.photoGrad {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgb(14 26 16 / 0.7) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+}
+
+.photoTag {
+  position: absolute;
+  bottom: 48px;
+  left: 48px;
+}
+
+.photoTagRight {
+  left: auto;
+  right: 48px;
+  text-align: right;
+}
+
+.photoTagInline {
+  padding: 16px 0 8px;
+}
+
+.photoTagInline .tagRole {
+  display: block;
+}
+
+.photoTagInline h2 {
+  font-family: var(--font-display), serif;
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--cream);
+  margin: 4px 0 0;
+}
+
+.storySectionLight .photoTagInline h2 {
+  color: var(--text-dark);
+}
+
+.tagRole {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.photoTag h2 {
+  font-family: var(--font-display), serif;
+  font-size: 36px;
+  font-weight: 300;
+  color: var(--cream);
+  margin: 0;
+}
+
+.storyText {
+  padding: 100px 80px;
+  overflow-y: auto;
+}
+
+.storyTextLight {
+  background: var(--cream);
+  color: var(--text-dark);
+}
+
+.storyRole {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+
+.storyName {
+  font-family: var(--font-display), serif;
+  font-size: clamp(44px, 5vw, 72px);
+  font-weight: 300;
+  line-height: 1.1;
+  margin: 0 0 40px;
+}
+
+.storySection .storyName em {
+  font-style: italic;
+  color: var(--sage-light);
+}
+
+.storySectionLight .storyName em {
+  font-style: italic;
+  color: var(--sage);
+}
+
+.storyPara {
+  font-size: 14px;
+  line-height: 1.85;
+  margin: 0 0 20px;
+  opacity: 0.88;
+}
+
+.storyParaLead {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 20px;
+  font-style: italic;
+  line-height: 1.8;
+  opacity: 0.92;
+}
+
+/* ── Pull Quote ── */
+
+.pull {
+  border-left: 2px solid var(--sage);
+  background: rgb(122 158 126 / 0.06);
+  padding: 28px 32px;
+  margin: 36px 0;
+  max-width: 560px;
+}
+
+.pull p {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 20px;
+  font-style: italic;
+  line-height: 1.7;
+  margin: 0;
+  color: var(--sage-light);
+}
+
+.pullPlaceholder {
+  border-left: 2px solid var(--gold);
+  background: rgb(200 169 110 / 0.06);
+  padding: 28px 32px;
+  margin: 36px 0;
+  max-width: 560px;
+}
+
+.pullPlaceholder p {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 18px;
+  font-style: italic;
+  line-height: 1.7;
+  margin: 0 0 12px;
+  color: var(--stone);
+}
+
+.pullPlaceholder span {
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  color: var(--stone);
+  opacity: 0.7;
+}
+
+/* ── Africa Pair ── */
+
+.africaPair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 36px 0;
+  max-width: 560px;
+}
+
+.africaPair .imgPlaceholder {
+  aspect-ratio: 3 / 4;
+  background: var(--forest-dark);
+  border-radius: 2px;
+}
+
+/* ───────────── Family ───────────── */
+
+.family {
+  background: var(--forest);
+  height: 72vh;
+}
+
+.familyWrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.familyWrap .imgPlaceholder {
+  position: absolute;
+  inset: 0;
+  background: var(--deep);
+}
+
+/* ───────────── Close ───────────── */
+
+.close {
+  position: relative;
+  background: var(--deep);
+  padding: 140px 60px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.close::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    rgb(122 158 126 / 0.08) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.closeEyebrow {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 36px;
+  position: relative;
+}
+
+.closeQuote {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(26px, 3.6vw, 46px);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--cream);
+  max-width: 800px;
+  margin: 0 auto 40px;
+  position: relative;
+}
+
+.closeBody {
+  font-size: 15px;
+  line-height: 2;
+  color: var(--cream);
+  opacity: 0.75;
+  max-width: 640px;
+  margin: 0 auto 52px;
+  position: relative;
+}
+
+.closeCta {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--forest);
+  background: var(--gold);
+  padding: 18px 48px;
+  text-decoration: none;
+  transition: background 0.3s;
+  position: relative;
+}
+
+.closeCta:hover {
+  background: var(--gold-light);
+}
+
+/* ───────────── Reveal Animations ───────────── */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.95s ease, transform 0.95s ease;
+}
+
+.revealVisible {
+  opacity: 1;
+  transform: none;
+}
+
+.d1 { transition-delay: 0.12s; }
+.d2 { transition-delay: 0.24s; }
+.d3 { transition-delay: 0.36s; }
+
+/* ───────────── Footer ───────────── */
+
+.footer {
+  background: var(--ink);
+  padding: 80px 60px 60px;
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1fr 1fr;
+  gap: 40px;
+  color: var(--cream);
+}
+
+.footerBrand {
+  font-family: var(--font-display), serif;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin: 0 0 14px;
+}
+
+.footerTagline {
+  font-size: 13px;
+  line-height: 1.7;
+  opacity: 0.55;
+  max-width: 280px;
+  margin: 0 0 18px;
+}
+
+.footerAddress {
+  font-size: 12px;
+  line-height: 1.8;
+  opacity: 0.4;
+  white-space: pre-line;
+  margin: 0;
+}
+
+.footerCol h4 {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 20px;
+}
+
+.footerLinks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footerLinks li + li {
+  margin-top: 12px;
+}
+
+.footerLinks a {
+  font-size: 13px;
+  color: var(--cream);
+  text-decoration: none;
+  opacity: 0.55;
+  transition: opacity 0.3s;
+}
+
+.footerLinks a:hover {
+  opacity: 1;
+}
+
+.footerBottom {
+  background: var(--ink);
+  padding: 24px 60px 32px;
+  border-top: 1px solid rgb(245 240 232 / 0.06);
+  text-align: center;
+}
+
+.footerBottom p {
+  font-size: 11px;
+  color: var(--cream);
+  opacity: 0.3;
+  margin: 0;
+}
+
+/* ───────────── Placeholder Images ───────────── */
+
+.imgPlaceholder {
+  background: var(--deep);
+  width: 100%;
+  height: 100%;
+}
+
+/* ───────────── Keyframes ───────────── */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scrollPulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scaleY(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scaleY(1.4);
+  }
+}
+
+/* ───────────── Responsive ───────────── */
+
+@media (max-width: 1100px) {
+  .meetingGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .storyPhotoFloat,
+  .storyPhotoFloatRight {
+    width: 260px;
+  }
+
+  .storyContent {
+    padding: 72px 48px;
+  }
+
+  .nav {
+    padding: 22px 32px;
+  }
+
+  .navScrolled {
+    padding: 14px 32px;
+  }
+
+  .navLinks {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .footer {
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+  }
+
+  .meetingText,
+  .storyText {
+    padding: 72px 48px;
+  }
+}
+
+@media (max-width: 768px) {
+  .bridge {
+    padding: 80px 28px;
+  }
+
+  .close {
+    padding: 90px 28px;
+  }
+
+  .meetingText {
+    padding: 56px 24px;
+  }
+
+  .storyContent {
+    padding: 56px 24px;
+  }
+
+  .storyPhotoFloat,
+  .storyPhotoFloatRight {
+    float: none;
+    width: 220px;
+    margin: 0 auto 24px;
+  }
+
+  .footer {
+    grid-template-columns: 1fr;
+    padding: 56px 28px 40px;
+  }
+
+  .footerBottom {
+    padding: 20px 28px 28px;
+  }
+
+  .family {
+    height: 50vh;
+  }
+
+  .heroContent {
+    padding-bottom: 60px;
+  }
+
+  .africaPair {
+    grid-template-columns: 1fr;
+  }
+}
