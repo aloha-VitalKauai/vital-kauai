@@ -76,18 +76,18 @@ const MEDICAL_DISCLAIMER = [
 
 const PREP_ITEMS = [
   { text: "Sign all three required documents (Intake Form, Membership Agreement, Medical Disclaimer)" },
-  { text: "Share the Support Person Guide with your home circle" },
+  { text: "Submit your remaining love offering" },
+  { text: "Read and complete Iboga Preparedness Guide" },
+  { text: "Book your preparation calls with your integration guide" },
+  { text: "Discuss all medications and supplements with Rachel and Josh \u2014 confirm any required washout periods" },
   { text: "Confirm required lab work with your physician and submit results" },
   { text: "Begin dietary preparation protocol (6\u20138 weeks before arrival for Iboga)" },
-  { text: "Discuss all medications and supplements with Rachel and Josh \u2014 confirm any required washout periods" },
-  { text: "Begin nervous system preparation practices (breathwork, somatic self-regulation)" },
-  { text: "Read and complete Iboga Preparedness Guide" },
+  { text: "Begin journaling (prompts available in your member portal journal)" },
   { text: "Prepare your questions for the medicine" },
-  { text: "Book your preparation calls with your integration guide" },
-  { text: "Submit your remaining love offering" },
-  { text: "Pack using the interactive packing guide" },
-  { text: "Begin your pre-journey journal practice (at least two weeks before arrival)" },
+  { text: "Begin nervous system preparation practices (breathwork, somatic self-regulation)" },
+  { text: "Share the Support Person Guide with your home circle" },
   { text: "Confirm travel arrangements and send arrival details to aloha@vitalkauai.com" },
+  { text: "Pack using the interactive packing guide" },
 ];
 
 export function PortalHomePage({
