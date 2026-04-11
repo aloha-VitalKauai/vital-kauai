@@ -257,7 +257,7 @@ export function AboutPage() {
       {/* ── Divider ── */}
       <div className={styles.divider}>
         <div className={styles.divLine} />
-        <p className={styles.divMark} />
+        <p className={styles.divMark}>&nbsp;</p>
         <div className={styles.divLine} />
       </div>
 

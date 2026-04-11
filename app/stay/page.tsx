@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { StayPage } from "@/components/stay-page";
 
-export default function StayPage() {
-  redirect("/stay-legacy.html");
+export default function StayRoute() {
+  return <StayPage />;
 }
