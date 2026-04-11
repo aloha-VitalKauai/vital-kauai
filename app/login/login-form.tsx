@@ -41,18 +41,18 @@ export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) 
     try {
       const supabase = createClient();
 
-      const { data: { user }, error } = await supabase.auth.signInWithPassword({
+      const { data: { user, session }, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error || !user) {
+      if (error || !user || !session) {
         setStatus({ type: "error", message: error?.message ?? "Unable to sign in." });
         return;
       }
 
-      // Check role and route accordingly
-      const { data: roleRow } = await supabase
+      // Wait for session to be fully established, then check role
+      const { data: roleRow, error: roleError } = await supabase
         .from("user_roles")
         .select("role")
         .eq("user_id", user.id)
