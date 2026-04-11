@@ -34,17 +34,29 @@ export async function middleware(request: NextRequest) {
   }
 
   if (user) {
-    const { data: roleRow } = await supabase
+    const { data: roleRow, error: roleError } = await supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
+
+    console.log("Middleware role check:", { userId: user.id, roleRow, roleError, path });
 
     const role = roleRow?.role ?? "member";
 
     // Protect /dashboard — founders only, send members back to portal
     if (path.startsWith("/dashboard") && role !== "founder") {
       return NextResponse.redirect(new URL("/portal", request.url));
+    }
+
+    // If founder is on /login, send them to dashboard
+    if (path === "/login" && role === "founder") {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+
+    // If founder hits /portal, redirect to dashboard
+    if (path.startsWith("/portal") && role === "founder") {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
     }
   }
 
