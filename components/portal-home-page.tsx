@@ -1,0 +1,852 @@
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+import { createClient } from "@/lib/supabase/client";
+import styles from "./portal-home-page.module.css";
+
+type Profile = {
+  id: string;
+  email: string;
+  full_name: string | null;
+  membership_agreement_signed: boolean;
+  medical_disclaimer_signed: boolean;
+  deposit_paid: boolean;
+  onboarding_complete: boolean;
+  membership_agreement_signed_at: string | null;
+  medical_disclaimer_signed_at: string | null;
+  deposit_paid_at: string | null;
+  deposit_amount: number | null;
+};
+
+type MemberData = {
+  ceremony_date: string | null;
+  assigned_partner: string | null;
+  status: string | null;
+};
+
+const MEMBERSHIP_AGREEMENT = [
+  {
+    h: "Membership Overview",
+    p: "This Membership Agreement is entered into between Vital Kauai Church and the individual identified in the sign-up process. By accepting this Agreement, you agree to the terms and conditions set forth herein governing your membership and access to the Vital Kauai wellness community and its associated services.",
+  },
+  {
+    h: "Membership Term & Commitment",
+    p: "Membership is offered on a month-to-month or annual basis, as elected at enrollment. All memberships automatically renew at the close of each billing period unless cancelled in writing with a minimum of thirty (30) days prior notice.",
+  },
+  {
+    h: "Member Responsibilities",
+    p: "Members agree to (a) use all Vital Kauai facilities, programs, and resources responsibly and in accordance with posted guidelines; (b) treat all staff, practitioners, and fellow members with respect; (c) disclose any changes to health status that may affect participation; (d) maintain timely payment of all membership fees.",
+  },
+  {
+    h: "Confidentiality & Privacy",
+    p: "Vital Kauai is committed to protecting your personal health and wellness information in accordance with applicable privacy laws. Member information will not be shared with third parties without explicit written consent except as required by law.",
+  },
+  {
+    h: "Cancellation Policy",
+    p: "Members may cancel at any time with thirty (30) days written notice. Deposits are non-refundable. Prepaid membership dues will be prorated and refunded if cancellation is received before the next billing cycle, minus any applicable processing fees.",
+  },
+  {
+    h: "Amendments",
+    p: "Vital Kauai reserves the right to amend membership terms, pricing, and services with thirty (30) days notice to active members. Continued membership following notice of amendment constitutes acceptance of revised terms.",
+  },
+];
+
+const MEDICAL_DISCLAIMER = [
+  {
+    h: "Medical Information Disclaimer",
+    p: "The services, programs, and information provided by Vital Kauai are intended for general wellness support and are not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.",
+  },
+  {
+    h: "Health Screening & Disclosure",
+    p: "Member acknowledges that participation in any wellness or movement program involves inherent physical risks. Member represents that they are in satisfactory physical condition, have no known medical conditions that would prevent participation, and will immediately notify Vital Kauai staff of any health changes during membership.",
+  },
+  {
+    h: "Release of Liability for Health Outcomes",
+    p: "Member agrees that Vital Kauai, its owners, employees, contractors, and associated practitioners shall not be held liable for any injury, illness, adverse reaction, or health outcome arising from participation in wellness programming, functional movement, nutrition guidance, or other services offered through the membership.",
+  },
+  {
+    h: "Assumption of Risk",
+    p: "Member voluntarily assumes all risks associated with participation in Vital Kauai programs and services, whether such risks are known or unknown. Member acknowledges that they have had the opportunity to ask questions and have received satisfactory answers before signing this disclaimer.",
+  },
+  {
+    h: "Emergency Medical Authorization",
+    p: "In the event of an emergency, Vital Kauai staff is authorized to contact emergency medical services on the Member\u2019s behalf. Member acknowledges that Vital Kauai staff are not licensed medical professionals and emergency care decisions remain with the Member and qualified medical personnel.",
+  },
+];
+
+const PREP_ITEMS = [
+  { text: "Sign all three required documents (Donation, Membership Agreement, Medical Disclaimer)" },
+  { text: "Share the Support Person Guide with your home circle" },
+  { text: "Confirm required lab work with your physician and submit results" },
+  { text: "Begin dietary preparation protocol (6\u20138 weeks before arrival for Iboga)" },
+  { text: "Discuss all medications and supplements with Rachel and Josh \u2014 confirm any required washout periods" },
+  { text: "Begin nervous system preparation practices (breathwork, somatic self-regulation)" },
+  { text: "Read and complete Iboga Preparedness Guide" },
+  { text: "Prepare your questions for the medicine" },
+  { text: "Book your preparation calls with your integration guide" },
+  { text: "Submit your remaining love offering" },
+  { text: "Pack using the interactive packing guide" },
+  { text: "Begin your pre-journey journal practice (at least two weeks before arrival)" },
+  { text: "Confirm travel arrangements and send arrival details to aloha@vitalkauai.com" },
+];
+
+export function PortalHomePage({
+  userEmail,
+  userId,
+}: {
+  userEmail: string;
+  userId: string;
+}) {
+  const supabase = createClient();
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [memberData, setMemberData] = useState<MemberData | null>(null);
+  const [activePhase, setActivePhase] = useState(0);
+  const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Modal state for signing documents
+  const [modal, setModal] = useState<"donation" | "agreement" | "medical" | null>(null);
+  const [modalChecked, setModalChecked] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
+  const [modalMsg, setModalMsg] = useState<{ type: string; text: string } | null>(null);
+
+  const fetchProfile = useCallback(async () => {
+    const { data } = await supabase
+      .from("member_profiles")
+      .select("*")
+      .eq("id", userId)
+      .single();
+    if (data) setProfile(data as Profile);
+
+    // Also try to get member data for ceremony date
+    const { data: mData } = await supabase
+      .from("members")
+      .select("ceremony_date, assigned_partner, status")
+      .eq("email", userEmail)
+      .single();
+    if (mData) setMemberData(mData as MemberData);
+
+    setLoading(false);
+  }, [supabase, userId, userEmail]);
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
+  // Load checklist from localStorage
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("vk-prep-checks") || "[]");
+      if (saved.length === PREP_ITEMS.length) {
+        setCheckedItems(saved);
+      } else {
+        setCheckedItems(new Array(PREP_ITEMS.length).fill(false));
+      }
+    } catch {
+      setCheckedItems(new Array(PREP_ITEMS.length).fill(false));
+    }
+  }, []);
+
+  function toggleCheck(idx: number) {
+    setCheckedItems((prev) => {
+      const next = [...prev];
+      next[idx] = !next[idx];
+      try {
+        localStorage.setItem("vk-prep-checks", JSON.stringify(next));
+      } catch { /* ignore */ }
+      return next;
+    });
+  }
+
+  const checkedCount = checkedItems.filter(Boolean).length;
+  const checkPct = PREP_ITEMS.length > 0 ? Math.round((checkedCount / PREP_ITEMS.length) * 100) : 0;
+
+  // Required docs status
+  const donationDone = profile?.deposit_paid ?? false;
+  const agreementDone = profile?.membership_agreement_signed ?? false;
+  const medicalDone = profile?.medical_disclaimer_signed ?? false;
+  const allRequiredDone = donationDone && agreementDone && medicalDone;
+  const requiredCount = [donationDone, agreementDone, medicalDone].filter(Boolean).length;
+
+  // Countdown
+  const daysUntil = memberData?.ceremony_date
+    ? Math.max(0, Math.ceil((new Date(memberData.ceremony_date).getTime() - Date.now()) / 86400000))
+    : null;
+
+  const firstName = profile?.full_name?.split(" ")[0] || userEmail.split("@")[0];
+  const initials = profile?.full_name
+    ? profile.full_name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : userEmail[0].toUpperCase();
+
+  async function handleSignAgreement() {
+    setModalLoading(true);
+    setModalMsg(null);
+    const { error } = await supabase
+      .from("member_profiles")
+      .update({
+        membership_agreement_signed: true,
+        membership_agreement_signed_at: new Date().toISOString(),
+      })
+      .eq("id", userId);
+    setModalLoading(false);
+    if (error) {
+      setModalMsg({ type: "error", text: error.message });
+      return;
+    }
+    await fetchProfile();
+    setModal(null);
+    setModalChecked(false);
+  }
+
+  async function handleSignMedical() {
+    setModalLoading(true);
+    setModalMsg(null);
+    const { error } = await supabase
+      .from("member_profiles")
+      .update({
+        medical_disclaimer_signed: true,
+        medical_disclaimer_signed_at: new Date().toISOString(),
+      })
+      .eq("id", userId);
+    setModalLoading(false);
+    if (error) {
+      setModalMsg({ type: "error", text: error.message });
+      return;
+    }
+    await fetchProfile();
+    setModal(null);
+    setModalChecked(false);
+  }
+
+  async function handleDonation() {
+    // Simulate payment for now
+    setModalLoading(true);
+    setModalMsg(null);
+    await new Promise((r) => setTimeout(r, 1500));
+    const { error } = await supabase
+      .from("member_profiles")
+      .update({
+        deposit_paid: true,
+        deposit_paid_at: new Date().toISOString(),
+        deposit_amount: 250.0,
+      })
+      .eq("id", userId);
+    setModalLoading(false);
+    if (error) {
+      setModalMsg({ type: "error", text: error.message });
+      return;
+    }
+    // Check if all complete now
+    const { data } = await supabase
+      .from("member_profiles")
+      .select("*")
+      .eq("id", userId)
+      .single();
+    if (data) {
+      setProfile(data as Profile);
+      if (data.membership_agreement_signed && data.medical_disclaimer_signed && data.deposit_paid) {
+        await supabase
+          .from("member_profiles")
+          .update({
+            onboarding_complete: true,
+            onboarding_completed_at: new Date().toISOString(),
+          })
+          .eq("id", userId);
+        setProfile((prev) => prev ? { ...prev, onboarding_complete: true } : prev);
+      }
+    }
+    setModal(null);
+    setModalChecked(false);
+  }
+
+  // After each sign, check if all 3 are done
+  useEffect(() => {
+    if (profile && allRequiredDone && !profile.onboarding_complete) {
+      supabase
+        .from("member_profiles")
+        .update({
+          onboarding_complete: true,
+          onboarding_completed_at: new Date().toISOString(),
+        })
+        .eq("id", userId)
+        .then(() => {
+          setProfile((prev) => prev ? { ...prev, onboarding_complete: true } : prev);
+        });
+    }
+  }, [allRequiredDone, profile, supabase, userId]);
+
+  if (loading) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.loadingWrap}>Loading your sanctuary&hellip;</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.page}>
+      {/* ── NAV ── */}
+      <nav className={styles.portalNav}>
+        <a className={styles.navLogo} href="/">
+          Vital <span>Kaua&#699;i</span>
+        </a>
+        <div className={styles.navMember}>
+          <span className={styles.navMemberName}>Aloha, {firstName}</span>
+          <div className={styles.navAvatar}>{initials}</div>
+          <form action="/auth/logout" method="post">
+            <button type="submit" className={styles.navLogout}>
+              Sign Out
+            </button>
+          </form>
+        </div>
+      </nav>
+
+      {/* ── HERO ── */}
+      <section className={styles.portalHero}>
+        <div className={styles.heroInner}>
+          <div>
+            <p className={styles.heroEyebrow}>Your Member Portal</p>
+            <h1 className={styles.heroTitle}>
+              Welcome <em>Home,</em>
+              <br />
+              {firstName}.
+            </h1>
+            <p className={styles.heroSub}>
+              This is your private sanctuary within Vital Kaua&#699;i &mdash; a living guide
+              through every phase of your journey. Everything you need lives here, organized by
+              where you are in the arc of your transformation.
+            </p>
+          </div>
+          <div className={styles.heroCard}>
+            <p className={styles.heroCardLabel}>Your Journey</p>
+            <p className={styles.heroCardDate}>
+              {memberData?.ceremony_date
+                ? new Date(memberData.ceremony_date).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })
+                : "Date TBD"}
+            </p>
+            <p className={styles.heroCardOffering}>Iboga Journey</p>
+            <hr className={styles.heroCardDivider} />
+            <p className={styles.heroCardDays}>{daysUntil ?? "\u2014"}</p>
+            <p className={styles.heroCardDaysLabel}>Days Until Arrival</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── REQUIRED DOCUMENTS BANNER ── */}
+      {!allRequiredDone && (
+        <div className={styles.requiredBanner}>
+          <div className={styles.requiredInner}>
+            <div className={styles.requiredDot} />
+            <p className={styles.requiredText}>
+              <strong>Action Required &mdash;</strong> Three documents require your completion
+              before your journey begins.
+            </p>
+            <div className={styles.requiredLinks}>
+              <button
+                className={`${styles.reqLink} ${donationDone ? styles.reqLinkSigned : ""}`}
+                onClick={() => !donationDone && setModal("donation")}
+                disabled={donationDone}
+              >
+                Donation{donationDone ? " \u2713" : ""}
+              </button>
+              <button
+                className={`${styles.reqLink} ${agreementDone ? styles.reqLinkSigned : ""}`}
+                onClick={() => !agreementDone && setModal("agreement")}
+                disabled={agreementDone}
+              >
+                Membership Agreement{agreementDone ? " \u2713" : ""}
+              </button>
+              <button
+                className={`${styles.reqLink} ${medicalDone ? styles.reqLinkSigned : ""}`}
+                onClick={() => !medicalDone && setModal("medical")}
+                disabled={medicalDone}
+              >
+                Medical Disclaimer{medicalDone ? " \u2713" : ""}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── MAIN PORTAL BODY ── */}
+      <main className={`${styles.portalBody} ${!allRequiredDone ? styles.portalBodyLocked : ""}`}>
+        {/* Locked overlay */}
+        {!allRequiredDone && (
+          <div className={styles.lockedOverlay}>
+            <div className={styles.lockedMessage}>
+              <p className={styles.lockedIcon}>&#128274;</p>
+              <h2>Complete Your Required Documents</h2>
+              <p>
+                Finish your Donation, Membership Agreement, and Medical Disclaimer above to unlock
+                your full member portal.
+              </p>
+              <p className={styles.lockedProgress}>
+                {requiredCount} of 3 completed
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* WELCOME VIDEO */}
+        <div className={styles.videoBlock}>
+          <div className={styles.videoWrap}>
+            <div className={styles.videoPlay}>&#9654;</div>
+            <span className={styles.videoLabel}>A Message from Rachel &amp; Josh</span>
+          </div>
+          <div className={styles.videoContent}>
+            <p className={styles.videoEyebrow}>You Are Welcome Here</p>
+            <h2 className={styles.videoTitle}>
+              A Personal <em>Welcome</em>
+              <br />
+              from Your Guides
+            </h2>
+            <p className={styles.videoText}>
+              Before you move through any documents or guides, we invite you to receive this
+              message from us. In it, we share what this portal holds for you, how to move through
+              it, and what to reach out about as you prepare.
+            </p>
+            <p className={styles.videoSignature}>&mdash; Rachel &amp; Josh</p>
+          </div>
+        </div>
+
+        {/* PHASE NAVIGATION */}
+        <div className={styles.phases}>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionEyebrow}>Your Journey Arc</span>
+            <h2 className={styles.sectionTitle}>
+              Everything, <em>Organized</em>
+            </h2>
+          </div>
+
+          <div className={styles.phaseTabs}>
+            {["Required Documents", "Prepare", "Ceremony", "Integration"].map((label, i) => (
+              <button
+                key={i}
+                className={`${styles.phaseTab} ${activePhase === i ? styles.phaseTabActive : ""}`}
+                onClick={() => setActivePhase(i)}
+              >
+                <span className={styles.phaseNum}>0{i + 1}</span>
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* PHASE 0: REQUIRED DOCUMENTS */}
+          <div className={`${styles.phasePanel} ${activePhase === 0 ? styles.phasePanelActive : ""}`}>
+            <div className={styles.docGrid}>
+              <button
+                className={`${styles.docCard} ${donationDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
+                onClick={() => !donationDone && setModal("donation")}
+              >
+                <div className={styles.docTitle}>
+                  Membership <em>Donation</em>
+                </div>
+                <div className={styles.docDesc}>
+                  Secure your membership with a love offering. Applied toward your first month or
+                  returned upon cancellation.
+                </div>
+                <div className={styles.docFooter}>
+                  <span className={`${styles.docTag} ${styles.tagRequired}`}>
+                    {donationDone ? "Complete" : "Required"}
+                  </span>
+                  <span className={`${styles.docAction} ${donationDone ? styles.docActionSigned : ""}`}>
+                    {donationDone ? "\u2713 Paid" : "Pay \u2192"}
+                  </span>
+                </div>
+              </button>
+
+              <button
+                className={`${styles.docCard} ${agreementDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
+                onClick={() => !agreementDone && setModal("agreement")}
+              >
+                <div className={styles.docTitle}>
+                  Church Membership <em>Agreement</em>
+                </div>
+                <div className={styles.docDesc}>
+                  Your membership agreement with Vital Kaua&#699;i Church &mdash; the private
+                  religious context within which all ceremonial work is held.
+                </div>
+                <div className={styles.docFooter}>
+                  <span className={`${styles.docTag} ${styles.tagRequired}`}>
+                    {agreementDone ? "Signed" : "Signature Required"}
+                  </span>
+                  <span className={`${styles.docAction} ${agreementDone ? styles.docActionSigned : ""}`}>
+                    {agreementDone ? "\u2713 Signed" : "Sign \u2192"}
+                  </span>
+                </div>
+              </button>
+
+              <button
+                className={`${styles.docCard} ${medicalDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
+                onClick={() => !medicalDone && setModal("medical")}
+              >
+                <div className={styles.docTitle}>
+                  Medical Disclaimer <em>&amp; Risk Acknowledgment</em>
+                </div>
+                <div className={styles.docDesc}>
+                  A clear acknowledgment of the nature of plant medicine work, your informed
+                  consent, and the inherent risks you understand and voluntarily accept.
+                </div>
+                <div className={styles.docFooter}>
+                  <span className={`${styles.docTag} ${styles.tagRequired}`}>
+                    {medicalDone ? "Signed" : "Signature Required"}
+                  </span>
+                  <span className={`${styles.docAction} ${medicalDone ? styles.docActionSigned : ""}`}>
+                    {medicalDone ? "\u2713 Signed" : "Sign \u2192"}
+                  </span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          {/* PHASE 1: PREPARE */}
+          <div className={`${styles.phasePanel} ${activePhase === 1 ? styles.phasePanelActive : ""}`}>
+            <div className={styles.docGrid}>
+              {[
+                { title: "Iboga", em: "Preparedness Guide", desc: "Your complete guide to the medicine, the process, and how to arrive ready.", tag: "Preparation", tagClass: styles.tagPrep },
+                { title: "Dietary", em: "Preparation Protocol", desc: "What to eat, what to eliminate, and how to prepare your body in the weeks before arrival.", tag: "Preparation", tagClass: styles.tagPrep },
+                { title: "What to Bring", em: "& Leave Behind", desc: "An interactive packing checklist for island life.", tag: "Packing", tagClass: styles.tagPrep },
+                { title: "Nervous System", em: "Safety Guide", desc: "Polyvagal theory, somatic self-regulation, breathwork practices.", tag: "Self-Regulation", tagClass: styles.tagGuide },
+                { title: "Lab Requirements", em: "& Medical Prep", desc: "Required labs, screening criteria, medication considerations.", tag: "Medical", tagClass: styles.tagPrep },
+                { title: "Support Person", em: "Guide", desc: "For the people at home who love you \u2014 what to expect and how to hold space.", tag: "For Your Circle", tagClass: styles.tagGuide },
+                { title: "Your Iboga", em: "Journey Journal", desc: "Guided prompts to help you track what is moving through you.", tag: "Preparation", tagClass: styles.tagJournal },
+                { title: "Questions for", em: "the Medicine", desc: "A space to get clear on what you most want to ask the medicine.", tag: "Reflection", tagClass: styles.tagPrep },
+              ].map((doc, i) => (
+                <div key={i} className={`${styles.docCard} ${styles.fadeIn}`}>
+                  <div className={styles.docTitle}>
+                    {doc.title} <em>{doc.em}</em>
+                  </div>
+                  <div className={styles.docDesc}>{doc.desc}</div>
+                  <div className={styles.docFooter}>
+                    <span className={`${styles.docTag} ${doc.tagClass}`}>{doc.tag}</span>
+                    <span className={styles.docAction}>Open &rarr;</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* PHASE 2: CEREMONY */}
+          <div className={`${styles.phasePanel} ${activePhase === 2 ? styles.phasePanelActive : ""}`}>
+            <div className={styles.docGrid}>
+              {[
+                { title: "Ceremony", em: "Guidelines", desc: "Sacred agreements, space etiquette, facilitator roles, and confidentiality.", tag: "Sacred Container", tagClass: styles.tagGuide },
+                { title: "Safety in", em: "the Body", desc: "How to orient within intense somatic experience during ceremony.", tag: "During Ceremony", tagClass: styles.tagGuide },
+                { title: "Pre-Arrival", em: "Protocol", desc: "Your supplement and wellness protocol in the days before arrival.", tag: "Pre-Arrival", tagClass: styles.tagPrep },
+              ].map((doc, i) => (
+                <div key={i} className={`${styles.docCard} ${styles.fadeIn}`}>
+                  <div className={styles.docTitle}>
+                    {doc.title} <em>{doc.em}</em>
+                  </div>
+                  <div className={styles.docDesc}>{doc.desc}</div>
+                  <div className={styles.docFooter}>
+                    <span className={`${styles.docTag} ${doc.tagClass}`}>{doc.tag}</span>
+                    <span className={styles.docAction}>Open &rarr;</span>
+                  </div>
+                </div>
+              ))}
+              <div className={`${styles.docCard} ${styles.docCardLocked} ${styles.fadeIn}`}>
+                <div className={styles.docTitle}>
+                  Ceremony <em>Day Guide</em>
+                </div>
+                <div className={styles.docDesc}>
+                  A moment-by-moment orientation for your ceremony day.
+                </div>
+                <div className={styles.docFooter}>
+                  <span className={`${styles.docTag} ${styles.tagLocked}`}>Unlocks on Arrival</span>
+                  <span className={`${styles.docAction} ${styles.docActionLocked}`}>Locked</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* PHASE 3: INTEGRATION */}
+          <div className={`${styles.phasePanel} ${activePhase === 3 ? styles.phasePanelActive : ""}`}>
+            <div className={styles.docGrid}>
+              <div className={`${styles.docCard} ${styles.docCardLocked} ${styles.fadeIn}`}>
+                <div className={styles.docTitle}>
+                  Integration <em>Manual</em>
+                </div>
+                <div className={styles.docDesc}>
+                  Your complete post-ceremony guide &mdash; neuroplasticity, supplements, somatic
+                  practices, dream work.
+                </div>
+                <div className={styles.docFooter}>
+                  <span className={`${styles.docTag} ${styles.tagLocked}`}>Unlocks Post-Ceremony</span>
+                  <span className={`${styles.docAction} ${styles.docActionLocked}`}>Locked</span>
+                </div>
+              </div>
+              {[
+                { title: "Book Your", em: "Integration Call", desc: "Schedule your post-ceremony integration sessions.", tag: "Integration Support", tagClass: styles.tagIntegration },
+                { title: "Post-Ceremony", em: "Supplement Protocol", desc: "Niacin, GABA, DHA/EPA, and full noribogaine-phase support protocol.", tag: "Post-Ceremony", tagClass: styles.tagIntegration },
+                { title: "Dream", em: "Log", desc: "The medicine often continues to speak through dreams.", tag: "Dream Work", tagClass: styles.tagIntegration },
+                { title: "Community", em: "Check-In", desc: "30-day and 90-day check-in portal for sharing milestones.", tag: "Community", tagClass: styles.tagIntegration },
+              ].map((doc, i) => (
+                <div key={i} className={`${styles.docCard} ${styles.fadeIn}`}>
+                  <div className={styles.docTitle}>
+                    {doc.title} <em>{doc.em}</em>
+                  </div>
+                  <div className={styles.docDesc}>{doc.desc}</div>
+                  <div className={styles.docFooter}>
+                    <span className={`${styles.docTag} ${doc.tagClass}`}>{doc.tag}</span>
+                    <span className={styles.docAction}>Open &rarr;</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* PREPARATION CHECKLIST */}
+        <div className={styles.checklistBlock}>
+          <div className={styles.checklistHead}>
+            <p className={styles.checklistEyebrow}>Before You Arrive</p>
+            <h2 className={styles.checklistTitle}>
+              Your Preparation <em>Checklist</em>
+            </h2>
+            <p className={styles.checklistSub}>
+              Track your readiness as you move through each preparation step. This checklist saves
+              automatically.
+            </p>
+          </div>
+          <div className={styles.checklistProgress}>
+            <div className={styles.checklistBar} style={{ width: `${checkPct}%` }} />
+          </div>
+          <div className={styles.checklistItems}>
+            {PREP_ITEMS.map((item, i) => (
+              <div
+                key={i}
+                className={`${styles.checkItem} ${checkedItems[i] ? styles.checkItemDone : ""}`}
+                onClick={() => toggleCheck(i)}
+              >
+                <div className={styles.ciBox} />
+                <p className={styles.ciText}>{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* JOURNEY TEAM */}
+        <div className={styles.teamSection}>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionEyebrow}>Your Team</span>
+            <h2 className={styles.sectionTitle}>
+              The People <em>Holding You</em>
+            </h2>
+          </div>
+          <div className={styles.teamGrid}>
+            <div className={styles.teamCard}>
+              <p className={styles.teamRole}>Somatic Integration Guide, Co-Creatress</p>
+              <p className={styles.teamName}>Rachel Nelson</p>
+              <p className={styles.teamBio}>
+                Rachel is with you from your very first conversation &mdash; answering questions,
+                holding space through preparation, guiding the onset of ceremony, and returning for
+                early integration work.
+              </p>
+              <a href="mailto:aloha@vitalkauai.com" className={styles.teamCta}>
+                Reach Rachel
+              </a>
+            </div>
+            <div className={styles.teamCard}>
+              <p className={styles.teamRole}>Medicine Guide, Co-Creator</p>
+              <p className={styles.teamName}>Josh Perdue</p>
+              <p className={styles.teamBio}>
+                Josh is the primary sitter and space holder through the full ceremony &mdash;
+                steady, present, and trained to meet whatever arises in the night.
+              </p>
+              <a href="mailto:aloha@vitalkauai.com" className={styles.teamCta}>
+                Reach Josh
+              </a>
+            </div>
+            <div className={styles.teamCard}>
+              <p className={styles.teamRole}>Integration Specialist</p>
+              <p className={styles.teamName}>
+                {memberData?.assigned_partner || "Your Integration Guide"}
+              </p>
+              <p className={styles.teamBio}>
+                Your integration specialist walks with you as guide, facilitator, coach, and
+                teammate &mdash; meeting you in preparation, within the 48 hours after ceremony,
+                and ongoing.
+              </p>
+              <a href="#" className={styles.teamCta}>
+                Book a Session
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* EMERGENCY CARD */}
+        <div className={styles.emergencyCard}>
+          <div className={styles.emergencyText}>
+            <p className={styles.emergencyLabel}>During Your Stay &mdash; Always Reach Out</p>
+            <p className={styles.emergencyTitle}>We Are Here for You</p>
+            <p className={styles.emergencyDetails}>
+              You are never alone in this. Rachel and Josh are present throughout your stay and
+              reachable for whatever arises.
+            </p>
+          </div>
+          <div>
+            <p className={styles.emergencyLabel}>Direct Contact</p>
+            <p className={styles.emergencyNum}>
+              Rachel&ensp;
+              <a href="tel:8088555033">808-855-5033</a>
+            </p>
+            <p className={styles.emergencyNum}>
+              Josh&ensp;
+              <a href="tel:6233308017">623-330-8017</a>
+            </p>
+            <p className={styles.emergencyEmail}>aloha@vitalkauai.com</p>
+          </div>
+        </div>
+      </main>
+
+      {/* ── FOOTER ── */}
+      <footer className={styles.portalFooter}>
+        <p className={styles.footerLogo}>Vital Kaua&#699;i Church</p>
+        <p className={styles.footerCopy}>
+          &copy; 2026 Vital Kauai Church &middot; PO Box 932, Hanalei, HI 96714 &middot;
+          aloha@vitalkauai.com
+          <br />
+          All original content on this portal is protected by U.S. copyright law.
+        </p>
+      </footer>
+
+      {/* ── MODALS ── */}
+      {modal && (
+        <div className={styles.modalOverlay} onClick={() => { setModal(null); setModalChecked(false); setModalMsg(null); }}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            {modal === "agreement" && (
+              <>
+                <div className={styles.modalBanner}>
+                  <p className={styles.modalEyebrow}>Required Document</p>
+                  <h2 className={styles.modalTitle}>Membership Agreement</h2>
+                </div>
+                <div className={styles.modalBody}>
+                  {MEMBERSHIP_AGREEMENT.map((block, i) => (
+                    <div key={i}>
+                      <h3>{block.h}</h3>
+                      <p>{block.p}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className={styles.modalFooter}>
+                  <div className={styles.signConfirm}>
+                    <input
+                      type="checkbox"
+                      id="sign-chk"
+                      checked={modalChecked}
+                      onChange={(e) => setModalChecked(e.target.checked)}
+                    />
+                    <label htmlFor="sign-chk">
+                      I have read and agree to the Vital Kauai Membership Agreement.
+                    </label>
+                  </div>
+                  {modalMsg && <div className={`${styles.alert} ${styles[`alert${modalMsg.type.charAt(0).toUpperCase() + modalMsg.type.slice(1)}`]}`}>{modalMsg.text}</div>}
+                  <button
+                    className={styles.btnSign}
+                    disabled={!modalChecked || modalLoading}
+                    onClick={handleSignAgreement}
+                  >
+                    {modalLoading ? "Signing\u2026" : "Sign & Continue"}
+                  </button>
+                </div>
+              </>
+            )}
+
+            {modal === "medical" && (
+              <>
+                <div className={styles.modalBanner}>
+                  <p className={styles.modalEyebrow}>Required Document</p>
+                  <h2 className={styles.modalTitle}>Medical Disclaimer</h2>
+                </div>
+                <div className={styles.modalBody}>
+                  {MEDICAL_DISCLAIMER.map((block, i) => (
+                    <div key={i}>
+                      <h3>{block.h}</h3>
+                      <p>{block.p}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className={styles.modalFooter}>
+                  <div className={styles.signConfirm}>
+                    <input
+                      type="checkbox"
+                      id="sign-chk-med"
+                      checked={modalChecked}
+                      onChange={(e) => setModalChecked(e.target.checked)}
+                    />
+                    <label htmlFor="sign-chk-med">
+                      I have read and understand this Medical Disclaimer. I acknowledge the risks
+                      and agree to the terms.
+                    </label>
+                  </div>
+                  {modalMsg && <div className={`${styles.alert} ${styles.alertError}`}>{modalMsg.text}</div>}
+                  <button
+                    className={styles.btnSign}
+                    disabled={!modalChecked || modalLoading}
+                    onClick={handleSignMedical}
+                  >
+                    {modalLoading ? "Signing\u2026" : "Sign & Continue"}
+                  </button>
+                </div>
+              </>
+            )}
+
+            {modal === "donation" && (
+              <>
+                <div className={styles.modalBannerGold}>
+                  <p className={styles.modalEyebrow}>Required</p>
+                  <h2 className={styles.depositAmount}>
+                    <span>$</span>250
+                  </h2>
+                  <p className={styles.depositNote}>
+                    Refundable membership donation &middot; Applied toward first month
+                  </p>
+                </div>
+                <div className={styles.depositBody}>
+                  <div className={styles.depositFeatures}>
+                    {[
+                      ["\uD83D\uDD12", "Fully Refundable", "Applied to month one or returned upon cancellation"],
+                      ["\u2728", "Immediate Activation", "Portal unlocks the moment payment is confirmed"],
+                      ["\uD83D\uDCC5", "Flexible Billing", "Month-to-month or annual options available"],
+                      ["\uD83C\uDF3F", "Member Benefits Begin", "Full access to all programs from day one"],
+                    ].map(([icon, label, desc], i) => (
+                      <div key={i} className={styles.depositFeature}>
+                        <div className={styles.depositFeatureIcon}>{icon}</div>
+                        <p className={styles.depositFeatureLabel}>{label}</p>
+                        <p className={styles.depositFeatureDesc}>{desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                  {modalMsg && <div className={`${styles.alert} ${styles.alertError}`}>{modalMsg.text}</div>}
+                  <div className={styles.stripePlaceholder}>
+                    <p>
+                      &#128179; Stripe payment integration goes here. Connect your Stripe account
+                      and replace this with Stripe Elements or a Checkout Session redirect.
+                    </p>
+                    <button
+                      className={styles.btnStripe}
+                      onClick={handleDonation}
+                      disabled={modalLoading}
+                    >
+                      {modalLoading ? "Processing\u2026" : "\uD83D\uDCB3 Simulate Payment \u2014 $250"}
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

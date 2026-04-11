@@ -1,0 +1,835 @@
+/* ───────────────────────────────────────────
+   Onboarding Page — CSS Module
+   ─────────────────────────────────────────── */
+
+/* 1. Page */
+.page {
+  --green-deep: #0d1f16;
+  --green-dark: #152e1f;
+  --green-mid: #1e4530;
+  --green-soft: #2d6447;
+  --green-muted: #4a8a62;
+  --green-light: #e8f2ec;
+  --cream: #f8f4ec;
+  --cream-warm: #f2ece0;
+  --gold: #b8974a;
+  --gold-light: #d4b06a;
+  --gold-pale: #f5eed8;
+  --text-dark: #0d1f16;
+  --text-mid: #3a5045;
+  --text-muted: #7a9587;
+  --border: rgba(13, 31, 22, 0.12);
+  --border-gold: rgba(184, 151, 74, 0.3);
+  --radius: 12px;
+  --radius-lg: 20px;
+  --shadow: 0 4px 32px rgba(13, 31, 22, 0.08);
+  --shadow-card: 0 2px 16px rgba(13, 31, 22, 0.06);
+
+  min-height: 100vh;
+  background: var(--cream);
+  font-family: var(--font-body), 'DM Sans', 'Jost', sans-serif;
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+/* ───────────────────────────────────────────
+   2. Nav
+   ─────────────────────────────────────────── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 24px;
+  background: var(--green-deep);
+}
+
+.navLogo {
+  font-family: var(--font-display), serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--cream);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.navUser {
+  font-size: 13px;
+  color: rgba(248, 244, 236, 0.7);
+}
+
+.btnNav {
+  font-size: 13px;
+  color: var(--cream);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btnNav:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* ───────────────────────────────────────────
+   3. Main Content
+   ─────────────────────────────────────────── */
+.mainContent {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+/* ───────────────────────────────────────────
+   4. Auth Page
+   ─────────────────────────────────────────── */
+.authPage {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.authLeft {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 3rem;
+  background: var(--green-dark);
+  color: var(--cream);
+  overflow: hidden;
+}
+
+.authLeft::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: rgba(184, 151, 74, 0.06);
+  pointer-events: none;
+}
+
+.authLeft::after {
+  content: '';
+  position: absolute;
+  bottom: -120px;
+  left: -60px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: rgba(45, 100, 71, 0.12);
+  pointer-events: none;
+}
+
+.authBrand {
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+
+.authHeadline {
+  font-family: var(--font-display), serif;
+  font-size: 3.2rem;
+  font-weight: 300;
+  line-height: 1.1;
+  text-align: center;
+  margin: 0 0 16px;
+}
+
+.authSub {
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(248, 244, 236, 0.7);
+  text-align: center;
+  max-width: 360px;
+}
+
+.authDivider {
+  width: 48px;
+  height: 1px;
+  background: var(--border-gold);
+  margin: 28px auto;
+}
+
+.authRight {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  background: var(--cream);
+}
+
+.authCard {
+  width: 100%;
+  max-width: 420px;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 3rem;
+}
+
+.authCardTitle {
+  font-family: var(--font-display), serif;
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin: 0 0 6px;
+}
+
+.authCardSub {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 28px;
+}
+
+.authNotice {
+  background: var(--green-light);
+  border: 1px solid rgba(74, 138, 98, 0.15);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-mid);
+  margin-bottom: 24px;
+}
+
+/* ───────────────────────────────────────────
+   5. Tab Row
+   ─────────────────────────────────────────── */
+.tabRow {
+  display: flex;
+  background: var(--cream-warm);
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 28px;
+}
+
+.tabBtn {
+  flex: 1;
+  padding: 10px 0;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tabBtn:hover {
+  color: var(--text-mid);
+}
+
+.tabBtnActive {
+  composes: tabBtn;
+  background: #fff;
+  color: var(--text-dark);
+  box-shadow: 0 1px 4px rgba(13, 31, 22, 0.08);
+}
+
+/* ───────────────────────────────────────────
+   6. Form Elements
+   ─────────────────────────────────────────── */
+.fieldGroup {
+  margin-bottom: 20px;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-mid);
+  margin-bottom: 6px;
+}
+
+.fieldInput {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--text-dark);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.fieldInput::placeholder {
+  color: var(--text-muted);
+}
+
+.fieldInput:focus {
+  border-color: var(--green-soft);
+  box-shadow: 0 0 0 3px rgba(45, 100, 71, 0.1);
+}
+
+/* ───────────────────────────────────────────
+   7. Buttons
+   ─────────────────────────────────────────── */
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  color: #fff;
+  background: var(--green-mid);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btnPrimary:hover {
+  background: var(--green-soft);
+}
+
+.btnPrimary:active {
+  transform: scale(0.98);
+}
+
+.btnPrimary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnGold {
+  composes: btnPrimary;
+  background: var(--gold);
+  color: #fff;
+}
+
+.btnGold:hover {
+  background: var(--gold-light);
+}
+
+.btnSign {
+  composes: btnPrimary;
+  background: var(--green-mid);
+  padding: 16px 32px;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+}
+
+.btnSign:hover {
+  background: var(--green-soft);
+}
+
+/* ───────────────────────────────────────────
+   8. Onboarding Dashboard
+   ─────────────────────────────────────────── */
+.onboardHeader {
+  margin-bottom: 2rem;
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 10px;
+}
+
+.pageTitle {
+  font-family: var(--font-display), serif;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 300;
+  line-height: 1.15;
+  color: var(--text-dark);
+  margin: 0 0 8px;
+}
+
+.pageSubtitle {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Progress Bar */
+.progressBarWrap {
+  width: 100%;
+  height: 6px;
+  background: var(--cream-warm);
+  border-radius: 3px;
+  margin: 24px 0 32px;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 3px;
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Steps Grid */
+.stepsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Step Card */
+.stepCard {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.stepCard:hover {
+  box-shadow: var(--shadow-card);
+  border-color: rgba(13, 31, 22, 0.18);
+}
+
+.stepCardDone {
+  composes: stepCard;
+  border-color: rgba(74, 138, 98, 0.2);
+  background: rgba(232, 242, 236, 0.3);
+}
+
+.stepCardDone:hover {
+  border-color: rgba(74, 138, 98, 0.3);
+}
+
+.stepCardLocked {
+  composes: stepCard;
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Step Icon */
+.stepIcon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.stepIconPending {
+  composes: stepIcon;
+  background: var(--cream-warm);
+  color: var(--text-muted);
+}
+
+.stepIconDone {
+  composes: stepIcon;
+  background: var(--green-light);
+  color: var(--green-soft);
+}
+
+.stepIconActive {
+  composes: stepIcon;
+  background: var(--gold-pale);
+  color: var(--gold);
+}
+
+/* Step Info */
+.stepInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.stepNumber {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.stepName {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0 0 2px;
+}
+
+.stepDesc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Step Badges */
+.stepBadge {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.stepBadgeDone {
+  composes: stepBadge;
+  background: var(--green-light);
+  color: var(--green-soft);
+}
+
+.stepBadgePending {
+  composes: stepBadge;
+  background: var(--cream-warm);
+  color: var(--text-muted);
+}
+
+.stepBadgeAction {
+  composes: stepBadge;
+  background: var(--gold-pale);
+  color: var(--gold);
+}
+
+/* Unlock Notice */
+.unlockNotice {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+
+/* ───────────────────────────────────────────
+   9. Agreement Pages
+   ─────────────────────────────────────────── */
+.agreementWrap {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.agreementBanner {
+  background: var(--green-dark);
+  color: var(--cream);
+  padding: 28px 32px;
+}
+
+.agreementBanner h2 {
+  font-family: var(--font-display), serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  margin: 0 0 4px;
+}
+
+.agreementBanner p {
+  font-size: 14px;
+  color: rgba(248, 244, 236, 0.7);
+  margin: 0;
+}
+
+.agreementBody {
+  max-height: 420px;
+  overflow-y: auto;
+  padding: 28px 32px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-mid);
+}
+
+.agreementBody h3 {
+  font-family: var(--font-display), serif;
+  font-size: 1.1rem;
+  color: var(--text-dark);
+  margin: 24px 0 8px;
+}
+
+.agreementBody h3:first-child {
+  margin-top: 0;
+}
+
+.agreementBody ul {
+  padding-left: 20px;
+  margin: 8px 0;
+}
+
+.agreementBody li {
+  margin-bottom: 6px;
+}
+
+.agreementFooter {
+  padding: 24px 32px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.signConfirm {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 1.5;
+}
+
+.signConfirm input[type='checkbox'] {
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--green-mid);
+  flex-shrink: 0;
+}
+
+.signConfirm label {
+  cursor: pointer;
+}
+
+/* ───────────────────────────────────────────
+   10. Deposit Page
+   ─────────────────────────────────────────── */
+.depositCard {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.depositBanner {
+  background: var(--green-dark);
+  color: var(--cream);
+  padding: 32px;
+  text-align: center;
+}
+
+.depositAmount {
+  font-family: var(--font-display), serif;
+  font-size: 2.8rem;
+  font-weight: 300;
+  color: var(--gold-light);
+  margin: 8px 0 4px;
+}
+
+.depositNote {
+  font-size: 13px;
+  color: rgba(248, 244, 236, 0.6);
+  margin: 0;
+}
+
+.depositBody {
+  padding: 32px;
+}
+
+.depositFeatures {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.depositFeature {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 1.5;
+}
+
+.stripePlaceholder {
+  background: var(--cream-warm);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 40px 24px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.btnStripe {
+  composes: btnPrimary;
+  background: #635bff;
+}
+
+.btnStripe:hover {
+  background: #7a73ff;
+}
+
+/* ───────────────────────────────────────────
+   11. Success Screen
+   ─────────────────────────────────────────── */
+.successWrap {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.successIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--green-light);
+  color: var(--green-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  margin: 0 auto 24px;
+}
+
+/* ───────────────────────────────────────────
+   12. Alerts
+   ─────────────────────────────────────────── */
+.alert {
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.alertSuccess {
+  composes: alert;
+  background: var(--green-light);
+  color: var(--green-mid);
+  border: 1px solid rgba(74, 138, 98, 0.2);
+}
+
+.alertError {
+  composes: alert;
+  background: #fef2f0;
+  color: #8b2500;
+  border: 1px solid rgba(139, 37, 0, 0.15);
+}
+
+.alertInfo {
+  composes: alert;
+  background: var(--gold-pale);
+  color: #7a6628;
+  border: 1px solid var(--border-gold);
+}
+
+/* ───────────────────────────────────────────
+   13. Spinner
+   ─────────────────────────────────────────── */
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ───────────────────────────────────────────
+   14. Back Link
+   ─────────────────────────────────────────── */
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text-muted);
+  text-decoration: none;
+  margin-bottom: 24px;
+  transition: color 0.2s;
+}
+
+.backLink:hover {
+  color: var(--text-dark);
+}
+
+/* ───────────────────────────────────────────
+   15. Responsive
+   ─────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .authPage {
+    grid-template-columns: 1fr;
+  }
+
+  .authLeft {
+    padding: 3rem 2rem 2rem;
+  }
+
+  .authHeadline {
+    font-size: 2rem;
+  }
+
+  .authCard {
+    padding: 2rem;
+  }
+
+  .mainContent {
+    padding: 2rem 1rem;
+  }
+
+  .stepCard {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .stepBadge {
+    align-self: flex-start;
+  }
+
+  .depositFeatures {
+    grid-template-columns: 1fr;
+  }
+
+  .agreementBanner,
+  .agreementBody,
+  .agreementFooter {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .depositBanner,
+  .depositBody {
+    padding: 24px 20px;
+  }
+
+  .nav {
+    padding: 0 16px;
+  }
+
+  .navUser {
+    display: none;
+  }
+}
