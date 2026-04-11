@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import styles from "./login-form.module.css";
 
@@ -24,8 +25,10 @@ type LoginFormProps = {
 
 export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [status, setStatus] = useState<Status>({ type: "idle", message: "" });
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const nextPath = sanitizeNextPath(nextPathParam ?? null);
   const errorMessage = errorMessageParam ?? null;
@@ -37,14 +40,10 @@ export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) 
 
     try {
       const supabase = createClient();
-      const origin =
-        typeof window !== "undefined" ? window.location.origin : process.env.NEXT_PUBLIC_SITE_URL;
 
-      const { error } = await supabase.auth.signInWithOtp({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
-        options: {
-          emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
-        },
+        password,
       });
 
       if (error) {
@@ -52,15 +51,11 @@ export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) 
         return;
       }
 
-      setStatus({
-        type: "success",
-        message: "Check your email for the magic link to access your member portal.",
-      });
-      setEmail("");
+      router.push(nextPath);
     } catch {
       setStatus({
         type: "error",
-        message: "Unable to start sign in right now. Please try again in a moment.",
+        message: "Unable to sign in right now. Please try again in a moment.",
       });
     } finally {
       setLoading(false);
@@ -73,7 +68,7 @@ export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) 
         <p className={styles.eyebrow}>Member Portal</p>
         <h1 className={styles.title}>Sign In</h1>
         <p className={styles.description}>
-          Enter your email and we will send a secure magic link to continue to your portal.
+          Enter the email and password sent to you after your discovery call.
         </p>
 
         {errorMessage ? (
@@ -104,15 +99,33 @@ export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) 
             required
             autoComplete="email"
           />
+          <label className={styles.fieldLabel} htmlFor="password">
+            Password
+          </label>
+          <input
+            className={styles.input}
+            id="password"
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder="Your password"
+            required
+            autoComplete="current-password"
+          />
           <div className={styles.actions}>
             <button className={`${styles.button} ${styles.buttonPrimary}`} type="submit" disabled={loading}>
-              {loading ? "Sending Link..." : "Send Magic Link"}
+              {loading ? "Signing In..." : "Sign In"}
             </button>
             <Link href="/" className={`${styles.button} ${styles.buttonSecondary}`}>
               Return Home
             </Link>
           </div>
         </form>
+
+        <p className={styles.notice}>
+          Access is invitation-only. After your discovery call, you&apos;ll receive login
+          credentials from the Vital Kaua&#699;i team.
+        </p>
       </section>
     </main>
   );
