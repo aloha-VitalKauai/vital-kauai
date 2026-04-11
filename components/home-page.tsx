@@ -626,7 +626,7 @@ export function HomePage() {
           </p>
 
           <div className={`${styles.portalCardWrap} ${styles.reveal}`}>
-            <a href="#contact" className={`${styles.gatewayCard} ${styles.gatewayCardAccess}`}>
+            <Link href="/portal" className={`${styles.gatewayCard} ${styles.gatewayCardAccess}`}>
               <span className={styles.gatewayCardEyebrow}>Enrolled Members</span>
               <h3 className={styles.gatewayCardTitle}>
                 Access Your <em>Member Portal</em>
@@ -636,7 +636,7 @@ export function HomePage() {
                 resources, and care team access are waiting inside.
               </p>
               <span className={styles.gatewayCardCta}>Enter the Portal →</span>
-            </a>
+            </Link>
           </div>
         </div>
       </section>
