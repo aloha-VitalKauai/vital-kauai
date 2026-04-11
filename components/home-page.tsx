@@ -189,9 +189,9 @@ export function HomePage() {
             <a href="#contact">Contact</a>
           </li>
         </ul>
-        <a href="#contact" className={styles.navCta}>
+        <Link href="/begin-your-journey" className={styles.navCta}>
           Begin Your Journey
-        </a>
+        </Link>
       </nav>
 
       <div className={`${styles.navMobile} ${isMobileNavOpen ? styles.navMobileOpen : ""}`}>
@@ -221,9 +221,9 @@ export function HomePage() {
         <a href="#portal" onClick={() => setIsMobileNavOpen(false)}>
           Member Portal
         </a>
-        <a href="#contact" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
+        <Link href="/begin-your-journey" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
           Begin Your Journey
-        </a>
+        </Link>
       </div>
 
       <div className={styles.heroWrap}>
@@ -266,9 +266,9 @@ export function HomePage() {
               Iboga ceremony in service of whole-being transformation on Kauaʻi&apos;s North Shore.
             </p>
             <div className={styles.heroActions}>
-              <a href="#rivers" className={styles.btnPrimary}>
+              <Link href="/iboga-journey" className={styles.btnPrimary}>
                 explore the Iboga Journey
-              </a>
+              </Link>
             </div>
           </div>
           <div className={styles.scrollIndicator}>
@@ -331,9 +331,9 @@ export function HomePage() {
                 that support the root of our work — exists to serve the depth of what Iboga makes
                 possible.
               </p>
-              <a href="#medicine" className={styles.storyLink}>
+              <Link href="/iboga-journey" className={styles.storyLink}>
                 Explore the Iboga Journey →
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -743,7 +743,7 @@ export function HomePage() {
           <h4>Connect</h4>
           <ul className={styles.footerLinks}>
             <li>
-              <a href="#contact">Begin Your Journey</a>
+              <Link href="/begin-your-journey">Begin Your Journey</Link>
             </li>
             <li>
               <a href="#portal">Member Portal</a>

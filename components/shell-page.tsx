@@ -50,7 +50,7 @@ export function ShellPage({ title, description }: ShellPageProps) {
             <Link href="/#contact">Contact</Link>
           </li>
         </ul>
-        <Link href="/#contact" className={styles.navCta}>
+        <Link href="/begin-your-journey" className={styles.navCta}>
           Begin Your Journey
         </Link>
       </nav>
@@ -82,7 +82,7 @@ export function ShellPage({ title, description }: ShellPageProps) {
         <Link href="/#portal" onClick={() => setIsMobileNavOpen(false)}>
           Member Portal
         </Link>
-        <Link href="/#contact" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
+        <Link href="/begin-your-journey" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
           Begin Your Journey
         </Link>
       </div>
@@ -92,7 +92,7 @@ export function ShellPage({ title, description }: ShellPageProps) {
         <h1 className={styles.title}>{title}</h1>
         <p className={styles.description}>{description}</p>
         <div className={styles.actions}>
-          <Link href="/#contact" className={styles.action}>
+          <Link href="/begin-your-journey" className={styles.action}>
             Begin Your Journey
           </Link>
           <Link href="/" className={`${styles.action} ${styles.actionSecondary}`}>
@@ -130,7 +130,7 @@ export function ShellPage({ title, description }: ShellPageProps) {
           <h4>Connect</h4>
           <ul className={styles.footerLinks}>
             <li>
-              <Link href="/#contact">Begin Your Journey</Link>
+              <Link href="/begin-your-journey">Begin Your Journey</Link>
             </li>
             <li>
               <Link href="/#portal">Member Portal</Link>

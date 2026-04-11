@@ -132,7 +132,7 @@ export function StayPage() {
             <Link href="/#contact">Contact</Link>
           </li>
         </ul>
-        <Link href="/#contact" className={styles.navCta}>
+        <Link href="/begin-your-journey" className={styles.navCta}>
           Begin Your Journey
         </Link>
       </nav>
@@ -166,7 +166,7 @@ export function StayPage() {
           Member Portal
         </Link>
         <Link
-          href="/#contact"
+          href="/begin-your-journey"
           onClick={() => setIsMobileNavOpen(false)}
           className={styles.mobileAccentLink}
         >
@@ -899,7 +899,7 @@ export function StayPage() {
           <h4>Connect</h4>
           <ul className={styles.footerLinks}>
             <li>
-              <Link href="/#contact">Begin Your Journey</Link>
+              <Link href="/begin-your-journey">Begin Your Journey</Link>
             </li>
             <li>
               <Link href="/#portal">Member Portal</Link>
