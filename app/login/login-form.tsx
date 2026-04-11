@@ -51,19 +51,19 @@ export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) 
         return;
       }
 
-      // Wait for session to be fully established, then check role
+      // Check role and route accordingly
       const { data: roleRow, error: roleError } = await supabase
         .from("user_roles")
         .select("role")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
-      if (roleRow?.role === "founder") {
-        router.push("/dashboard");
-      } else {
-        router.push(nextPath);
-      }
-      router.refresh();
+      console.log("Role check:", { roleRow, roleError, userId: user.id });
+
+      const destination = roleRow?.role === "founder" ? "/dashboard" : nextPath;
+      console.log("Redirecting to:", destination);
+
+      window.location.href = destination;
     } catch {
       setStatus({
         type: "error",
