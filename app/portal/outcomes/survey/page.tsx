@@ -94,6 +94,7 @@ function SurveyContent() {
 
   return (
     <div style={{ maxWidth: 600, margin: "0 auto", padding: "2rem", fontFamily: "var(--font-body, sans-serif)" }}>
+      <a href="/portal" style={{ fontSize: 12, color: "#6B6B67", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4, marginBottom: 20 }}>&larr; Return to Portal</a>
       <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: "#9E9E9A", marginBottom: 8 }}>
         Check-in &middot; Step {step + 1} of 3
       </p>

@@ -37,6 +37,12 @@ function DietaryContent() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#F7F3ED", fontFamily: "'Jost', sans-serif", color: ink, fontSize: 15, lineHeight: 1.75 }}>
+      {/* Nav */}
+      <nav style={{ background: "#0E1A10", padding: "20px 48px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <a href="/portal" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 300, color: "#F5F0E8", letterSpacing: "0.08em", textDecoration: "none" }}>Vital Kaua&#699;i</a>
+        <span style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: "#C8A96E" }}>Dietary Preparation</span>
+        <a href="/portal" style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(245,240,232,0.4)", textDecoration: "none" }}>&larr; Return to Portal</a>
+      </nav>
       {/* Header */}
       <div style={{ background: ink, color: "#F7F3ED", padding: "70px 40px 60px", textAlign: "center" }}>
         <p style={{ fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(247,243,237,0.4)", marginBottom: 18 }}>Vital Kaua&#699;i — Client Portal</p>

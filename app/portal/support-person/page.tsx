@@ -31,6 +31,7 @@ export default async function SupportPersonPage() {
       <header style={{ padding: "28px 40px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid ${border}`, position: "sticky", top: 0, background: cream, zIndex: 100 }}>
         <a href="/portal" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 17, fontWeight: 400, letterSpacing: "0.12em", color: ink, textDecoration: "none" }}>Vital Kaua<span style={{ color: sage }}>&#699;</span>i</a>
         <span style={{ fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color: textLight }}>Support Person Guide</span>
+        <a href="/portal" style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: textLight, textDecoration: "none" }}>&larr; Return to Portal</a>
       </header>
 
       {/* Hero */}
