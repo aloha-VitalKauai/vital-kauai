@@ -203,6 +203,9 @@ export function HomePage() {
         >
           ✕
         </button>
+        <Link href="/begin-your-journey" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
+          Begin the Journey
+        </Link>
         <Link href="/iboga-journey" onClick={() => setIsMobileNavOpen(false)}>
           The Iboga Journey
         </Link>
@@ -224,9 +227,7 @@ export function HomePage() {
         <a href="/portal" onClick={() => setIsMobileNavOpen(false)}>
           Member Portal
         </a>
-        <Link href="/begin-your-journey" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
-          Begin the Journey
-        </Link>
+        
       </div>
 
       <div className={styles.heroWrap}>

@@ -64,6 +64,9 @@ export function ShellPage({ title, description }: ShellPageProps) {
         >
           ✕
         </button>
+        <Link href="/begin-your-journey" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
+          Begin the Journey
+        </Link>
         <Link href="/iboga-journey" onClick={() => setIsMobileNavOpen(false)}>
           The Iboga Journey
         </Link>
@@ -85,9 +88,7 @@ export function ShellPage({ title, description }: ShellPageProps) {
         <Link href="/portal" onClick={() => setIsMobileNavOpen(false)}>
           Member Portal
         </Link>
-        <Link href="/begin-your-journey" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
-          Begin the Journey
-        </Link>
+        
       </div>
 
       <section className={styles.card}>

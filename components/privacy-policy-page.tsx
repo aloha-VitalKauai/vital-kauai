@@ -66,6 +66,9 @@ export function PrivacyPolicyPage() {
         >
           ✕
         </button>
+        <Link href="/begin-your-journey" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
+          Begin the Journey
+        </Link>
         <Link href="/iboga-journey" onClick={() => setIsMobileNavOpen(false)}>
           The Iboga Journey
         </Link>
@@ -87,9 +90,7 @@ export function PrivacyPolicyPage() {
         <Link href="/portal" onClick={() => setIsMobileNavOpen(false)}>
           Member Portal
         </Link>
-        <Link href="/begin-your-journey" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
-          Begin the Journey
-        </Link>
+        
       </div>
 
       <section className={styles.hero}>
