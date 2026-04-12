@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import DosingEntryForm from "./DosingEntryForm";
 import BatchForm from "./BatchForm";
 
@@ -27,9 +28,19 @@ const RANGE_COLORS: Record<string, { bg: string; color: string }> = {
 export default function DosingClient({ dosing, batches, members, ceremonies }: { dosing: any[]; batches: any[]; members: any[]; ceremonies: any[] }) {
   const [showDoseForm, setShowDoseForm] = useState(false);
   const [showBatchForm, setShowBatchForm] = useState(false);
+  const [editingDose, setEditingDose] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState<"records" | "batches">("records");
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const supabase = createClient();
 
-  function onSaved() { setShowDoseForm(false); setShowBatchForm(false); window.location.reload(); }
+  function onSaved() { setShowDoseForm(false); setShowBatchForm(false); setEditingDose(null); window.location.reload(); }
+
+  async function deleteDose(id: string) {
+    if (!confirm("Delete this dosing record?")) return;
+    setDeleting(id);
+    await supabase.from("dosing_records").delete().eq("id", id);
+    window.location.reload();
+  }
 
   const memberMap = Object.fromEntries(members.map((m) => [m.id, m.full_name ?? m.email]));
 
@@ -53,6 +64,7 @@ export default function DosingClient({ dosing, batches, members, ceremonies }: {
       </div>
 
       {showDoseForm && <DosingEntryForm members={members} ceremonies={ceremonies} batches={batches} onSaved={onSaved} onCancel={() => setShowDoseForm(false)} />}
+      {editingDose && <DosingEntryForm members={members} ceremonies={ceremonies} batches={batches} onSaved={onSaved} onCancel={() => setEditingDose(null)} editRecord={editingDose} />}
       {showBatchForm && <BatchForm onSaved={onSaved} onCancel={() => setShowBatchForm(false)} />}
 
       {activeTab === "records" && (
@@ -67,7 +79,7 @@ export default function DosingClient({ dosing, batches, members, ceremonies }: {
             ) : (
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead><tr>
-                  {["Member", "Date", "Weight", "Dose (g)", "g/kg", "Protocol", "Range", "Batch", "QTc peak", "Ibogaine g", "Adverse"].map((h) => <th key={h} style={s.th}>{h}</th>)}
+                  {["Member", "Date", "Weight", "Dose (g)", "g/kg", "Protocol", "Range", "Batch", "QTc peak", "Ibogaine g", "Adverse", ""].map((h) => <th key={h} style={s.th}>{h}</th>)}
                 </tr></thead>
                 <tbody>
                   {dosing.map((r) => {
@@ -104,6 +116,10 @@ export default function DosingClient({ dosing, batches, members, ceremonies }: {
                         </td>
                         <td style={s.td}>
                           {r.adverse_events ? <span style={{ color: "#A32D2D", fontSize: 12 }}>{r.adverse_events}</span> : <span style={{ color: "#9E9E9A" }}>None</span>}
+                        </td>
+                        <td style={{ ...s.td, whiteSpace: "nowrap" }}>
+                          <button onClick={() => setEditingDose(r)} style={{ fontSize: 11, color: "#1D6B4A", background: "none", border: "0.5px solid #1D6B4A", borderRadius: 5, padding: "3px 8px", cursor: "pointer", marginRight: 4, fontFamily: "inherit" }}>Edit</button>
+                          <button onClick={() => deleteDose(r.id)} disabled={deleting === r.id} style={{ fontSize: 11, color: "#A32D2D", background: "none", border: "0.5px solid #A32D2D", borderRadius: 5, padding: "3px 8px", cursor: "pointer", fontFamily: "inherit", opacity: deleting === r.id ? 0.5 : 1 }}>{deleting === r.id ? "..." : "Delete"}</button>
                         </td>
                       </tr>
                     );

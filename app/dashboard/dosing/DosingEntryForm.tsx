@@ -29,22 +29,23 @@ const modal: React.CSSProperties = { background: "#fff", borderRadius: 12, width
 const fieldStyle: React.CSSProperties = { width: "100%", border: "0.5px solid rgba(0,0,0,0.15)", borderRadius: 7, padding: "9px 12px", fontSize: 14, fontFamily: "inherit", outline: "none" };
 const labelStyle: React.CSSProperties = { fontSize: 12, color: "#6B6B67", display: "block", marginBottom: 5, fontWeight: 500 };
 
-export default function DosingEntryForm({ members, ceremonies, batches, onSaved, onCancel }: {
-  members: any[]; ceremonies: any[]; batches: any[]; onSaved: () => void; onCancel: () => void;
+export default function DosingEntryForm({ members, ceremonies, batches, onSaved, onCancel, editRecord }: {
+  members: any[]; ceremonies: any[]; batches: any[]; onSaved: () => void; onCancel: () => void; editRecord?: any;
 }) {
   const supabase = createClient();
-  const [memberId, setMemberId] = useState("");
-  const [ceremonyId, setCeremonyId] = useState("");
-  const [batchId, setBatchId] = useState("");
-  const [weightLbs, setWeightLbs] = useState("");
-  const [doseG, setDoseG] = useState("");
-  const [protocol, setProtocol] = useState("Flood");
-  const [adminAt, setAdminAt] = useState(new Date().toISOString().slice(0, 16));
-  const [qtcPre, setQtcPre] = useState("");
-  const [qtcPeak, setQtcPeak] = useState("");
-  const [adminBy, setAdminBy] = useState("");
-  const [notes, setNotes] = useState("");
-  const [adverse, setAdverse] = useState("");
+  const isEdit = !!editRecord;
+  const [memberId, setMemberId] = useState(editRecord?.member_id ?? "");
+  const [ceremonyId, setCeremonyId] = useState(editRecord?.ceremony_id ?? "");
+  const [batchId, setBatchId] = useState(editRecord?.batch_id ?? "");
+  const [weightLbs, setWeightLbs] = useState(editRecord?.member_weight_lbs?.toString() ?? "");
+  const [doseG, setDoseG] = useState(editRecord?.dose_g?.toString() ?? "");
+  const [protocol, setProtocol] = useState(editRecord?.protocol_type ?? "Flood");
+  const [adminAt, setAdminAt] = useState(editRecord?.administered_at ? new Date(editRecord.administered_at).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16));
+  const [qtcPre, setQtcPre] = useState(editRecord?.qtc_pre_dose?.toString() ?? "");
+  const [qtcPeak, setQtcPeak] = useState(editRecord?.qtc_peak?.toString() ?? "");
+  const [adminBy, setAdminBy] = useState(editRecord?.administered_by ?? "");
+  const [notes, setNotes] = useState(editRecord?.notes ?? "");
+  const [adverse, setAdverse] = useState(editRecord?.adverse_events ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,14 +63,16 @@ export default function DosingEntryForm({ members, ceremonies, batches, onSaved,
   async function save() {
     setSaving(true); setError(null);
     if (!memberId) { setError("Please select a member"); setSaving(false); return; }
-    // memberId is the auth user UUID (from member.auth_uid), which is what dosing_records.member_id FK expects
-    const { error: err } = await supabase.from("dosing_records").insert({
+    const payload = {
       member_id: memberId, ceremony_id: ceremonyId || null, batch_id: batchId || null,
       member_weight_lbs: lbs || null, dose_g: doseNum || null, protocol_type: protocol,
       dose_sequence: 1, administered_at: adminAt,
       qtc_pre_dose: qtcPre ? parseInt(qtcPre) : null, qtc_peak: qtcPeak ? parseInt(qtcPeak) : null,
       administered_by: adminBy || null, notes: notes || null, adverse_events: adverse || null,
-    });
+    };
+    const { error: err } = isEdit
+      ? await supabase.from("dosing_records").update(payload).eq("id", editRecord.id)
+      : await supabase.from("dosing_records").insert(payload);
     setSaving(false);
     if (err) { setError(err.message); return; }
     onSaved();
@@ -80,7 +83,7 @@ export default function DosingEntryForm({ members, ceremonies, batches, onSaved,
       <div style={modal}>
         <div style={{ padding: "1.25rem 1.5rem", borderBottom: "0.5px solid rgba(0,0,0,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
-            <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.07em", color: "#9E9E9A", margin: "0 0 2px" }}>Log ceremony</p>
+            <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.07em", color: "#9E9E9A", margin: "0 0 2px" }}>{isEdit ? "Edit record" : "Log ceremony"}</p>
             <h2 style={{ fontFamily: "var(--font-display, serif)", fontSize: 22, fontWeight: 400, margin: 0 }}>Dosing record</h2>
           </div>
           <button onClick={onCancel} style={{ background: "none", border: "none", fontSize: 22, cursor: "pointer", color: "#9E9E9A" }}>&times;</button>
@@ -213,7 +216,7 @@ export default function DosingEntryForm({ members, ceremonies, batches, onSaved,
           <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, paddingTop: 4 }}>
             <button onClick={onCancel} style={{ padding: "10px 20px", borderRadius: 7, border: "0.5px solid rgba(0,0,0,0.15)", background: "#fff", color: "#6B6B67", fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Cancel</button>
             <button onClick={save} disabled={saving || !doseNum || !memberId} style={{ padding: "10px 24px", borderRadius: 7, border: "none", background: saving || !doseNum || !memberId ? "#8B8070" : "#1C2B1E", color: "#F5F0E8", fontSize: 13, cursor: saving || !doseNum || !memberId ? "default" : "pointer", fontFamily: "inherit" }}>
-              {saving ? "Saving..." : "Save dosing record"}
+              {saving ? "Saving..." : isEdit ? "Update record" : "Save dosing record"}
             </button>
           </div>
         </div>
