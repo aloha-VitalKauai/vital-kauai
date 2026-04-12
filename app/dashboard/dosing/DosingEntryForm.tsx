@@ -62,6 +62,7 @@ export default function DosingEntryForm({ members, ceremonies, batches, onSaved,
   async function save() {
     setSaving(true); setError(null);
     if (!memberId) { setError("Please select a member"); setSaving(false); return; }
+    // memberId is the auth user UUID (from member.auth_uid), which is what dosing_records.member_id FK expects
     const { error: err } = await supabase.from("dosing_records").insert({
       member_id: memberId, ceremony_id: ceremonyId || null, batch_id: batchId || null,
       member_weight_lbs: lbs || null, dose_g: doseNum || null, protocol_type: protocol,
