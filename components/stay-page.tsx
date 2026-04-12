@@ -994,7 +994,7 @@ const BODY_CONTENT = `
   <a href="/" class="nav-logo">Vital Kauaʻi</a>
   <ul class="nav-links">
     <li><a href="/iboga-journey">The Iboga Journey</a></li>
-    <li><a href="/stay" style="opacity:1;">Stay With Us</a></li>
+    <li class="nav-dropdown-wrap"><a href="/stay" style="opacity:1;">Stay With Us</a><span class="nav-dropdown"><a href="#local">Work With Us</a></span></li>
     <li><a href="/about">About</a></li>
     <li><a href="/begin-your-journey">Contact</a></li>
   </ul>
