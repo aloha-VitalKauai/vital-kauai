@@ -48,13 +48,19 @@ export default async function SupportPersonPage() {
 
       {/* Section Nav */}
       <nav style={{ maxWidth: 900, margin: "0 auto", padding: "0 40px 72px", display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
-        {["Understanding Iboga", "Before They Leave", "During the Ceremony", "When They Return", "Caring for Yourself"].map((label) => (
-          <span key={label} style={{ display: "inline-block", padding: "10px 22px", border: `1px solid ${borderWarm}`, borderRadius: 40, fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: textMid }}>{label}</span>
+        {[
+          { label: "Understanding Iboga", id: "understanding" },
+          { label: "Before They Leave", id: "before" },
+          { label: "During the Ceremony", id: "during" },
+          { label: "When They Return", id: "return" },
+          { label: "Caring for Yourself", id: "yourself" },
+        ].map((item) => (
+          <a key={item.id} href={`#${item.id}`} style={{ display: "inline-block", padding: "10px 22px", border: `1px solid ${borderWarm}`, borderRadius: 40, fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: textMid, textDecoration: "none", transition: "all 0.25s" }}>{item.label}</a>
         ))}
       </nav>
 
       {/* Section 1: Understanding Iboga */}
-      <Section num="01" label="The Foundation" title="Understanding" titleEm="Iboga" rose={rose} border={border} sage={sage}>
+      <Section id="understanding" num="01" label="The Foundation" title="Understanding" titleEm="Iboga" rose={rose} border={border} sage={sage}>
         <p style={prose}>Iboga is a sacred root medicine from the Bwiti tradition of Central Africa. At Vital Kaua&#699;i, ceremonies are held with deep reverence &mdash; rooted in lineage, conducted by trained guides, within a carefully prepared container on the North Shore of Kaua&#699;i.</p>
         <p style={prose}>Iboga works on a profound level &mdash; moving through the nervous system, the emotional body, and the unconscious over a ceremony that typically spans 24 to 36 hours. People come for many reasons: to release addiction, to metabolize grief or trauma, to step into a new chapter.</p>
         <p style={prose}>The medicine&rsquo;s work does not end with ceremony. In the days and weeks that follow, it continues &mdash; reorganizing how a person relates to themselves and the world. This is called integration, and your role during this time matters enormously.</p>
@@ -63,7 +69,7 @@ export default async function SupportPersonPage() {
       <Divider />
 
       {/* Section 2: Before They Leave */}
-      <Section num="02" label="Preparation" title="Before" titleEm="They Leave" rose={rose} border={border} sage={sage}>
+      <Section id="before" num="02" label="Preparation" title="Before" titleEm="They Leave" rose={rose} border={border} sage={sage}>
         <p style={prose}>Your person is following a rigorous preparation protocol &mdash; dietary changes, emotional introspection, physical preparation. They may already feel quieter or more inward than usual. A steady, calm presence from you is one of the most meaningful things you can offer.</p>
         <Callout color={sage} bg={sageLt} label="How You Might Support">
           Lighten their logistical load where you can. If they want to talk, listen without needing to fix anything. If they are pulling inward, let that be okay. Your genuine send-off &mdash; a simple expression of love and support as they leave &mdash; becomes part of the container they carry into ceremony.
@@ -73,7 +79,7 @@ export default async function SupportPersonPage() {
       <Divider />
 
       {/* Section 3: During the Ceremony */}
-      <Section num="03" label="The Ceremony Days" title="While They Are" titleEm="in Ceremony" rose={rose} border={border} sage={sage}>
+      <Section id="during" num="03" label="The Ceremony Days" title="While They Are" titleEm="in Ceremony" rose={rose} border={border} sage={sage}>
         <p style={prose}>Ceremony typically begins in the evening and continues through the night and into the following day. During this time, your person will have no access to their phone and will be in a fully darkened ceremonial space. You will hear nothing from them &mdash; and that silence is by design.</p>
         <Callout color={rose} bg={roseLt} label="For You, While You Wait">
           The waiting is its own experience. You may feel restless, concerned, or simply aware of an open space. This is a meaningful time to hold them in your heart, to pray or set an intention for their wellbeing, or simply to go about your life knowing they are cared for.
@@ -84,7 +90,7 @@ export default async function SupportPersonPage() {
       <Divider />
 
       {/* Section 4: When They Return */}
-      <Section num="04" label="Integration" title="When They" titleEm="Return Home" rose={rose} border={border} sage={sage}>
+      <Section id="return" num="04" label="Integration" title="When They" titleEm="Return Home" rose={rose} border={border} sage={sage}>
         <p style={prose}>This is the phase that calls most upon your patience and understanding. In the days and weeks after ceremony, the person who returns is genuinely tender &mdash; rebuilding from a more honest foundation. They may seem slower, quieter, and less available for ordinary connection.</p>
         <Callout color={gold} bg={goldLt} label="The Most Important Thing to Know">
           If your person seems unreachable or less relational than usual, that is not a reflection of their love for you, or of something going wrong. It is temporary, and it is not personal.
@@ -121,7 +127,7 @@ export default async function SupportPersonPage() {
       <Divider />
 
       {/* Section 5: Caring for Yourself */}
-      <Section num="05" label="Your Inner Experience" title="Caring for" titleEm="Yourself" rose={rose} border={border} sage={sage}>
+      <Section id="yourself" num="05" label="Your Inner Experience" title="Caring for" titleEm="Yourself" rose={rose} border={border} sage={sage}>
         <p style={prose}>Supporting someone through this process is its own journey. You may feel proud and nervous and quietly left out all at once. When your person returns and is not yet available in the ways you are used to, confusion, disconnection, or even resentment can surface. These feelings are real, valid, and human.</p>
         <Callout color={rose} bg={roseLt} label="This Is Worth Naming">
           Tending to your own needs during this time is not a distraction from supporting them &mdash; it is what makes sustained support possible. Stay close to the people and practices that help you feel grounded.
@@ -173,9 +179,9 @@ export default async function SupportPersonPage() {
 }
 
 /* ── Helper Components ── */
-function Section({ num, label, title, titleEm, rose, border, sage, children }: { num: string; label: string; title: string; titleEm: string; rose: string; border: string; sage: string; children: React.ReactNode }) {
+function Section({ id, num, label, title, titleEm, rose, border, sage, children }: { id?: string; num: string; label: string; title: string; titleEm: string; rose: string; border: string; sage: string; children: React.ReactNode }) {
   return (
-    <section style={{ maxWidth: 820, margin: "0 auto", padding: "0 40px 96px" }}>
+    <section id={id} style={{ maxWidth: 820, margin: "0 auto", padding: "0 40px 96px", scrollMarginTop: 80 }}>
       <div style={{ display: "flex", alignItems: "flex-start", gap: 28, marginBottom: 48, paddingBottom: 32, borderBottom: `1px solid ${border}` }}>
         <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 56, fontWeight: 300, lineHeight: 1, color: "rgba(184,151,74,0.18)", flexShrink: 0, marginTop: -6 }}>{num}</div>
         <div style={{ flex: 1 }}>
