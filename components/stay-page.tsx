@@ -996,7 +996,7 @@ const BODY_CONTENT = `
     <li><a href="/#rivers">Our Work</a></li>
     <li><a href="/#offerings">Offerings</a></li>
     <li><a href="/#reciprocity">Reciprocity</a></li>
-    <li><a href="/stay" style="opacity:1;">Stay With Us</a></li>
+    <li><a href="/stay" style="opacity:1;">Stay With Us</a> / <a href="#local" style="opacity:0.85;">Work With Us</a></li>
     <li><a href="/about">About</a></li>
     <li><a href="/healing-circle">Our Circle</a></li>
     <li><a href="/begin-your-journey">Contact</a></li>
@@ -1543,7 +1543,7 @@ const BODY_CONTENT = `
     <ul class="footer-links">
       <li><a href="/">Home</a></li>
       <li><a href="iboga-journey.html">Iboga Journey</a></li>
-      <li><a href="/stay">Stay With Us</a></li>
+      <li><a href="/stay">Stay With Us</a> / <a href="/stay#local">Work With Us</a></li>
       <li><a href="/healing-circle">Our Circle</a></li>
     </ul>
   </div>
