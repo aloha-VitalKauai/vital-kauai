@@ -998,7 +998,7 @@ const BODY_CONTENT = `
     <li><a href="/about">About</a></li>
     <li><a href="/begin-your-journey">Contact</a></li>
   </ul>
-  <a href="/begin-your-journey" class="nav-cta">Begin Your Journey</a>
+  <a href="/begin-your-journey" class="nav-cta">Begin the Journey</a>
 </nav>
 
 <!-- HERO -->

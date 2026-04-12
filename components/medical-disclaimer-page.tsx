@@ -53,7 +53,7 @@ export function MedicalDisclaimerPage() {
           </li>
         </ul>
         <Link href="/begin-your-journey" className={styles.navCta}>
-          Begin Your Journey
+          Begin the Journey
         </Link>
       </nav>
 
@@ -88,7 +88,7 @@ export function MedicalDisclaimerPage() {
           Member Portal
         </Link>
         <Link href="/begin-your-journey" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
-          Begin Your Journey
+          Begin the Journey
         </Link>
       </div>
 
@@ -372,7 +372,7 @@ export function MedicalDisclaimerPage() {
           <h4>Connect</h4>
           <ul className={styles.footerLinks}>
             <li>
-              <Link href="/begin-your-journey">Begin Your Journey</Link>
+              <Link href="/begin-your-journey">Begin the Journey</Link>
             </li>
             <li>
               <Link href="/portal">Member Portal</Link>

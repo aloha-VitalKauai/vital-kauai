@@ -55,7 +55,7 @@ export function BeginYourJourneyPage() {
           </li>
         </ul>
         <Link href="/begin-your-journey" className={styles.navCta}>
-          Begin Your Journey
+          Begin the Journey
         </Link>
       </nav>
 
@@ -91,14 +91,14 @@ export function BeginYourJourneyPage() {
           Member Portal
         </Link>
         <Link href="/begin-your-journey" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
-          Begin Your Journey
+          Begin the Journey
         </Link>
       </div>
 
       {/* ── Hero ── */}
       <section className={styles.hero}>
         <div className={styles.heroGlow} />
-        <span className={styles.heroEyebrow}>Begin Your Journey</span>
+        <span className={styles.heroEyebrow}>Begin the Journey</span>
         <h1 className={styles.heroTitle}>
           The Medicine Shows You the Door.
           <em>We Walk Through It With You.</em>
@@ -195,7 +195,7 @@ export function BeginYourJourneyPage() {
           <h4>Connect</h4>
           <ul className={styles.footerLinks}>
             <li>
-              <Link href="/begin-your-journey">Begin Your Journey</Link>
+              <Link href="/begin-your-journey">Begin the Journey</Link>
             </li>
             <li>
               <Link href="/portal">Member Portal</Link>
@@ -250,7 +250,7 @@ function LeadForm() {
         body: JSON.stringify({
           fullName: firstName,
           email,
-          source: "Begin Your Journey",
+          source: "Begin the Journey",
           submittedAt: new Date().toISOString(),
         }),
       });

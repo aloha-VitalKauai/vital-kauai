@@ -80,7 +80,7 @@ export function AboutPage() {
           </li>
         </ul>
         <Link href="/begin-your-journey" className={styles.navCta}>
-          Begin Your Journey
+          Begin the Journey
         </Link>
       </nav>
 
@@ -120,7 +120,7 @@ export function AboutPage() {
           onClick={() => setIsMobileNavOpen(false)}
           className={styles.mobileAccentLink}
         >
-          Begin Your Journey
+          Begin the Journey
         </Link>
       </div>
 
@@ -328,7 +328,7 @@ export function AboutPage() {
           natural expression of the life we are living.
         </p>
         <Link href="/#contact" className={`${styles.closeCta} ${styles.reveal}`}>
-          Begin Your Journey
+          Begin the Journey
         </Link>
       </section>
 
@@ -364,7 +364,7 @@ export function AboutPage() {
           <h4>Connect</h4>
           <ul className={styles.footerLinks}>
             <li>
-              <Link href="/begin-your-journey">Begin Your Journey</Link>
+              <Link href="/begin-your-journey">Begin the Journey</Link>
             </li>
             <li>
               <Link href="/portal">Member Portal</Link>

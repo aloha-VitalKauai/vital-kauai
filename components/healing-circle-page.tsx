@@ -122,7 +122,7 @@ export function HealingCirclePage() {
           </li>
         </ul>
         <Link href="/begin-your-journey" className={styles.navCta}>
-          Begin Your Journey
+          Begin the Journey
         </Link>
       </nav>
 
@@ -157,7 +157,7 @@ export function HealingCirclePage() {
           Member Portal
         </Link>
         <Link href="/begin-your-journey" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
-          Begin Your Journey
+          Begin the Journey
         </Link>
       </div>
 
@@ -311,7 +311,7 @@ export function HealingCirclePage() {
             intelligence — woven together with care, and activated by the land herself.
           </p>
           <Link href="/#contact" className={`${styles.btnPrimary} ${styles.reveal} ${styles.revealDelay1}`}>
-            Begin Your Journey
+            Begin the Journey
           </Link>
         </div>
       </section>
@@ -345,7 +345,7 @@ export function HealingCirclePage() {
           <h4>Connect</h4>
           <ul className={styles.footerLinks}>
             <li>
-              <Link href="/begin-your-journey">Begin Your Journey</Link>
+              <Link href="/begin-your-journey">Begin the Journey</Link>
             </li>
             <li>
               <Link href="/portal">Member Portal</Link>

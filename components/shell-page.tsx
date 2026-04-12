@@ -51,7 +51,7 @@ export function ShellPage({ title, description }: ShellPageProps) {
           </li>
         </ul>
         <Link href="/begin-your-journey" className={styles.navCta}>
-          Begin Your Journey
+          Begin the Journey
         </Link>
       </nav>
 
@@ -86,7 +86,7 @@ export function ShellPage({ title, description }: ShellPageProps) {
           Member Portal
         </Link>
         <Link href="/begin-your-journey" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
-          Begin Your Journey
+          Begin the Journey
         </Link>
       </div>
 
@@ -96,7 +96,7 @@ export function ShellPage({ title, description }: ShellPageProps) {
         <p className={styles.description}>{description}</p>
         <div className={styles.actions}>
           <Link href="/begin-your-journey" className={styles.action}>
-            Begin Your Journey
+            Begin the Journey
           </Link>
           <Link href="/" className={`${styles.action} ${styles.actionSecondary}`}>
             Return Home
@@ -133,7 +133,7 @@ export function ShellPage({ title, description }: ShellPageProps) {
           <h4>Connect</h4>
           <ul className={styles.footerLinks}>
             <li>
-              <Link href="/begin-your-journey">Begin Your Journey</Link>
+              <Link href="/begin-your-journey">Begin the Journey</Link>
             </li>
             <li>
               <Link href="/portal">Member Portal</Link>

@@ -86,7 +86,7 @@ export function ChurchInformationPage() {
           </li>
         </ul>
         <Link href="/begin-your-journey" className={styles.navCta}>
-          Begin Your Journey
+          Begin the Journey
         </Link>
       </nav>
 
@@ -121,7 +121,7 @@ export function ChurchInformationPage() {
           Member Portal
         </Link>
         <Link href="/begin-your-journey" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
-          Begin Your Journey
+          Begin the Journey
         </Link>
       </div>
 
@@ -269,7 +269,7 @@ export function ChurchInformationPage() {
           guides you through each step with care.
         </p>
         <Link href="/#contact" className={styles.btnPrimary}>
-          Begin Your Journey
+          Begin the Journey
         </Link>
         <a href="mailto:aloha@vitalkauai.com" className={styles.btnGhost}>
           Ask a Question
@@ -328,7 +328,7 @@ export function ChurchInformationPage() {
         <div className={styles.footerCol}>
           <h4>Connect</h4>
           <ul className={styles.footerLinks}>
-            <li><Link href="/begin-your-journey">Begin Your Journey</Link></li>
+            <li><Link href="/begin-your-journey">Begin the Journey</Link></li>
             <li><Link href="/portal">Member Portal</Link></li>
           </ul>
         </div>

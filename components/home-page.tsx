@@ -190,7 +190,7 @@ export function HomePage() {
           </li>
         </ul>
         <Link href="/begin-your-journey" className={styles.navCta}>
-          Begin Your Journey
+          Begin the Journey
         </Link>
       </nav>
 
@@ -225,7 +225,7 @@ export function HomePage() {
           Member Portal
         </a>
         <Link href="/begin-your-journey" onClick={() => setIsMobileNavOpen(false)} className={styles.mobileAccentLink}>
-          Begin Your Journey
+          Begin the Journey
         </Link>
       </div>
 
@@ -666,7 +666,7 @@ export function HomePage() {
 
       <section id="contact" className={styles.contact}>
         <div className={styles.contactLeft}>
-          <p className={`${styles.sectionLabel} ${styles.reveal}`}>Begin Your Journey</p>
+          <p className={`${styles.sectionLabel} ${styles.reveal}`}>Begin the Journey</p>
           <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>Let&apos;s Connect</h2>
           <p className={styles.contactCopy}>
             Every inquiry is read personally by Rachel and Josh. Tell us what&apos;s calling you.
@@ -746,7 +746,7 @@ export function HomePage() {
           <h4>Connect</h4>
           <ul className={styles.footerLinks}>
             <li>
-              <Link href="/begin-your-journey">Begin Your Journey</Link>
+              <Link href="/begin-your-journey">Begin the Journey</Link>
             </li>
             <li>
               <a href="/portal">Member Portal</a>
