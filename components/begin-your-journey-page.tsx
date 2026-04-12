@@ -37,7 +37,7 @@ export function BeginYourJourneyPage() {
             <Link href="/iboga-journey">The Iboga Journey</Link>
           </li>
           <li>
-            <Link href="/stay">Stay With Us</Link>
+            <span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/stay#local">Work With Us</Link></span></span>
           </li>
           <li className={styles.navDropdown}>
             <span className={styles.navDropdownLabel}>About</span>
@@ -187,7 +187,7 @@ export function BeginYourJourneyPage() {
               <Link href="/healing-circle">Our Healing Circle</Link>
             </li>
             <li>
-              <Link href="/stay">Stay With Us</Link>
+              <span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/stay#local">Work With Us</Link></span></span>
             </li>
           </ul>
         </div>
