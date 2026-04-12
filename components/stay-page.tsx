@@ -993,12 +993,9 @@ const BODY_CONTENT = `
 <nav id="nav">
   <a href="/" class="nav-logo">Vital Kauaʻi</a>
   <ul class="nav-links">
-    <li><a href="/#rivers">Our Work</a></li>
-    <li><a href="/#offerings">Offerings</a></li>
-    <li><a href="/#reciprocity">Reciprocity</a></li>
+    <li><a href="/iboga-journey">The Iboga Journey</a></li>
     <li><a href="/stay" style="opacity:1;">Stay With Us</a></li>
     <li><a href="/about">About</a></li>
-    <li><a href="/healing-circle">Our Circle</a></li>
     <li><a href="/begin-your-journey">Contact</a></li>
   </ul>
   <a href="/begin-your-journey" class="nav-cta">Begin Your Journey</a>
