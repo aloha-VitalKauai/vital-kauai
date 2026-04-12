@@ -38,7 +38,7 @@ export function IbogaJourneyPage() {
             <Link href="/iboga-journey">The Iboga Journey</Link>
           </li>
           <li>
-            <Link href="/stay">Stay With Us</Link> / <Link href="/stay#local">Work With Us</Link>
+            <span className="nav-dropdown-wrap" style={{ position: "relative" }}><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/stay#local">Work With Us</Link></span></span>
           </li>
           <li className={styles.navDropdown}>
             <span className={styles.navDropdownLabel}>About</span>
@@ -74,7 +74,7 @@ export function IbogaJourneyPage() {
           The Iboga Journey
         </Link>
         <Link href="/stay" onClick={() => setIsMobileNavOpen(false)}>
-          Stay With Us / Work With Us
+          Stay With Us
         </Link>
         <Link href="/about" onClick={() => setIsMobileNavOpen(false)}>
           About the Founders
@@ -501,7 +501,7 @@ export function IbogaJourneyPage() {
               <Link href="/healing-circle">Our Healing Circle</Link>
             </li>
             <li>
-              <Link href="/stay">Stay With Us</Link> / <Link href="/stay#local">Work With Us</Link>
+              <span className="nav-dropdown-wrap" style={{ position: "relative" }}><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/stay#local">Work With Us</Link></span></span>
             </li>
           </ul>
         </div>

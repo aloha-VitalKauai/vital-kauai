@@ -19,3 +19,41 @@ a {
 img {
   max-width: 100%;
 }
+
+/* Nav dropdown for Stay With Us / Work With Us */
+.nav-dropdown-wrap {
+  position: relative;
+  cursor: pointer;
+}
+.nav-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding-top: 10px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.nav-dropdown-wrap:hover .nav-dropdown {
+  opacity: 1;
+  pointer-events: auto;
+}
+.nav-dropdown a {
+  display: block;
+  white-space: nowrap;
+  background: rgba(14, 26, 16, 0.95);
+  backdrop-filter: blur(8px);
+  padding: 10px 20px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: rgba(245, 240, 232, 0.75);
+  border: 1px solid rgba(200, 169, 110, 0.15);
+  transition: color 0.2s, background 0.2s;
+}
+.nav-dropdown a:hover {
+  color: #F5F0E8;
+  background: rgba(28, 43, 30, 0.98);
+}
