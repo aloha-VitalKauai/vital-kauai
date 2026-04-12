@@ -61,8 +61,9 @@ export default function DosingEntryForm({ members, ceremonies, batches, onSaved,
 
   async function save() {
     setSaving(true); setError(null);
+    if (!memberId) { setError("Please select a member"); setSaving(false); return; }
     const { error: err } = await supabase.from("dosing_records").insert({
-      member_id: memberId || null, ceremony_id: ceremonyId || null, batch_id: batchId || null,
+      member_id: memberId, ceremony_id: ceremonyId || null, batch_id: batchId || null,
       member_weight_lbs: lbs || null, dose_g: doseNum || null, protocol_type: protocol,
       dose_sequence: 1, administered_at: adminAt,
       qtc_pre_dose: qtcPre ? parseInt(qtcPre) : null, qtc_peak: qtcPeak ? parseInt(qtcPeak) : null,
@@ -210,7 +211,7 @@ export default function DosingEntryForm({ members, ceremonies, batches, onSaved,
 
           <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, paddingTop: 4 }}>
             <button onClick={onCancel} style={{ padding: "10px 20px", borderRadius: 7, border: "0.5px solid rgba(0,0,0,0.15)", background: "#fff", color: "#6B6B67", fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Cancel</button>
-            <button onClick={save} disabled={saving || !doseNum} style={{ padding: "10px 24px", borderRadius: 7, border: "none", background: saving || !doseNum ? "#8B8070" : "#1C2B1E", color: "#F5F0E8", fontSize: 13, cursor: saving || !doseNum ? "default" : "pointer", fontFamily: "inherit" }}>
+            <button onClick={save} disabled={saving || !doseNum || !memberId} style={{ padding: "10px 24px", borderRadius: 7, border: "none", background: saving || !doseNum || !memberId ? "#8B8070" : "#1C2B1E", color: "#F5F0E8", fontSize: 13, cursor: saving || !doseNum || !memberId ? "default" : "pointer", fontFamily: "inherit" }}>
               {saving ? "Saving..." : "Save dosing record"}
             </button>
           </div>
