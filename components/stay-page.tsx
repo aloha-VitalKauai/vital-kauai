@@ -996,7 +996,7 @@ const BODY_CONTENT = `
     <li><a href="/#rivers">Our Work</a></li>
     <li><a href="/#offerings">Offerings</a></li>
     <li><a href="/#reciprocity">Reciprocity</a></li>
-    <li><span class="nav-dropdown-wrap"><a href="/stay" style="opacity:1;">Stay With Us</a><span class="nav-dropdown"><a href="#local">Work With Us</a></span></span></li>
+    <li><a href="/stay" style="opacity:1;">Stay With Us</a></li>
     <li><a href="/about">About</a></li>
     <li><a href="/healing-circle">Our Circle</a></li>
     <li><a href="/begin-your-journey">Contact</a></li>

@@ -62,7 +62,7 @@ export function AboutPage() {
             <Link href="/iboga-journey">The Iboga Journey</Link>
           </li>
           <li>
-            <span className="nav-dropdown-wrap" style={{ position: "relative" }}><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/stay#local">Work With Us</Link></span></span>
+            <Link href="/stay">Stay With Us</Link>
           </li>
           <li className={styles.navDropdown}>
             <span className={styles.navDropdownLabel}>About</span>
@@ -99,6 +99,9 @@ export function AboutPage() {
         </Link>
         <Link href="/stay" onClick={() => setIsMobileNavOpen(false)}>
           Stay With Us
+        </Link>
+        <Link href="/stay#local" onClick={() => setIsMobileNavOpen(false)}>
+          Work With Us
         </Link>
         <Link href="/about" onClick={() => setIsMobileNavOpen(false)}>
           About the Founders
@@ -353,7 +356,7 @@ export function AboutPage() {
               <Link href="/healing-circle">Our Healing Circle</Link>
             </li>
             <li>
-              <span className="nav-dropdown-wrap" style={{ position: "relative" }}><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/stay#local">Work With Us</Link></span></span>
+              <Link href="/stay">Stay With Us</Link>
             </li>
           </ul>
         </div>
