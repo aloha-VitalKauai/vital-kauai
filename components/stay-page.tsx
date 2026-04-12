@@ -1,936 +1,1610 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import styles from "./stay-page.module.css";
-
-const FAQ_ITEMS = [
-  {
-    question: "How long is a typical stay?",
-    answer: [
-      "Most guests stay an average of 10 days, though stays vary depending on the depth of the work they are here to do. During your intake, we will discuss what length of container feels right for what you are moving through.",
-    ],
-  },
-  {
-    question: "What does the discovery call look like?",
-    answer: [
-      "The first step is a discovery call \u2014 a real conversation with Rachel and/or Josh, bookable directly through our Calendly. We want to understand what brings you here, what you are carrying, your health history, and what support will serve you best. This is how we begin to know you, so that the container we hold for you is built for who you actually are.",
-      "Depending on the nature of your journey, there may also be medical forms and protocol preparation materials shared in advance of arrival.",
-    ],
-  },
-  {
-    question: "Can I bring a partner or travel companion?",
-    answer: [
-      "Yes. We work with couples and close companions who wish to move through a journey together. Co-journeying can be deeply powerful \u2014 and it does require its own kind of preparation and intentionality. Let us know during intake that you are coming with someone, and we will discuss whether shared or separate containers will serve you both best. We also welcome groups \u2014 intimate gatherings of friends, family, or community who feel called to transform together. Reach out and we will shape something worthy of the occasion.",
-    ],
-  },
-  {
-    question: "What should I pack?",
-    answer: [
-      "Light, natural fabrics that can get wet and get dirty. Layers for cool mornings and evenings. Good walking shoes and flip flops. A journal. Anything that helps you feel at home in your body. Your full packing and preparation guide is available in your member portal once your journey is confirmed.",
-    ],
-  },
-  {
-    question: "How is the food handled?",
-    answer: [
-      "Meals are prepared with the same intentionality as everything else at Vital Kaua\u02BBi. We source locally and seasonally \u2014 farms, farmers\u2019 markets, and the ocean contribute to what ends up on your plate. All dietary needs, allergies, and protocol-specific requirements are gathered during intake and honored throughout your stay. Whether you are on a full cleanse, a gentle whole-foods protocol, or simply eating in alignment with the work, your nutrition is held with care.",
-    ],
-  },
-  {
-    question: "How far is the airport from Hanalei?",
-    answer: [
-      "L\u012Bhu\u02BBe Airport (LIH) is approximately one hour from Hanalei along Kaua\u02BBi\u2019s scenic North Shore highway. Ground transportation can be arranged through us \u2014 simply let us know during intake and we will have everything coordinated. Guests are also welcome to arrange their own transportation and make their own way north.",
-    ],
-  },
-  {
-    question: "Is there WiFi? What is the connectivity like?",
-    answer: [
-      "Yes, WiFi is available in the homes. Many guests find that their relationship with devices naturally shifts once they are here \u2014 Hanalei has a way of drawing you fully into the present. Your relationship with devices is yours to navigate, and we fully support a digital reset if that is something you want to explore as part of your journey.",
-    ],
-  },
-  {
-    question: "What is your cancellation policy?",
-    answer: [
-      "We understand that life moves and plans shift. Our cancellation terms are shared in full at the time of booking. Cancellations made within 30 days of arrival are eligible for a full transfer. Reach out to us directly and we will find a path forward together.",
-    ],
-  },
-];
+import { useEffect } from "react";
 
 export function StayPage() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const pageRef = useRef<HTMLElement | null>(null);
-  const observedRef = useRef<HTMLElement[]>([]);
-
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 60);
-
-    onScroll();
+    // Scroll-based nav
+    const nav = document.getElementById("nav");
+    function onScroll() {
+      if (nav) nav.classList.toggle("scrolled", window.scrollY > 80);
+    }
     window.addEventListener("scroll", onScroll);
+    onScroll();
 
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    const nodes = pageRef.current?.querySelectorAll<HTMLElement>(`.${styles.reveal}`) ?? [];
+    // Reveal on scroll
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add(styles.revealVisible);
-            observer.unobserve(entry.target);
+            entry.target.classList.remove("hidden");
+            entry.target.classList.add("visible");
           }
         });
       },
-      { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
+      { threshold: 0.12 }
     );
+    document.querySelectorAll(".reveal").forEach((el) => {
+      el.classList.add("hidden");
+      observer.observe(el);
+    });
 
-    observedRef.current = Array.from(nodes);
-    observedRef.current.forEach((node) => observer.observe(node));
+    // FAQ accordion
+    document.querySelectorAll(".faq-question").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const item = btn.parentElement;
+        if (item) item.classList.toggle("open");
+      });
+    });
 
-    return () => observer.disconnect();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      observer.disconnect();
+    };
   }, []);
 
   return (
-    <main ref={pageRef} className={styles.page}>
-      {/* ── Nav ── */}
-      <nav className={`${styles.nav} ${isScrolled ? styles.navScrolled : ""}`} id="nav">
-        <button
-          className={styles.hamburger}
-          aria-label="Menu"
-          type="button"
-          onClick={() => setIsMobileNavOpen(true)}
-        >
-          <span />
-          <span />
-          <span />
-        </button>
-        <Link href="/" className={styles.navLogo}>
-          Vital Kaua&#699;i
-        </Link>
-        <ul className={styles.navLinks}>
-          <li>
-            <Link href="/iboga-journey">The Iboga Journey</Link>
-          </li>
-          <li>
-            <Link href="/stay">Stay With Us</Link>
-          </li>
-          <li className={styles.navDropdown}>
-            <span className={styles.navDropdownLabel}>About</span>
-            <ul className={styles.navDropdownMenu}>
-              <li>
-                <Link href="/about">About the Founders</Link>
-              </li>
-              <li>
-                <Link href="/church-information">About Vital Kaua&#699;i Church</Link>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <Link href="/#contact">Contact</Link>
-          </li>
-        </ul>
-        <Link href="/begin-your-journey" className={styles.navCta}>
-          Begin Your Journey
-        </Link>
-      </nav>
-
-      {/* ── Mobile Nav ── */}
-      <div className={`${styles.navMobile} ${isMobileNavOpen ? styles.navMobileOpen : ""}`}>
-        <button
-          className={styles.navMobileClose}
-          type="button"
-          aria-label="Close menu"
-          onClick={() => setIsMobileNavOpen(false)}
-        >
-          &#10005;
-        </button>
-        <Link href="/iboga-journey" onClick={() => setIsMobileNavOpen(false)}>
-          The Iboga Journey
-        </Link>
-        <Link href="/stay" onClick={() => setIsMobileNavOpen(false)}>
-          Stay With Us
-        </Link>
-        <Link href="/about" onClick={() => setIsMobileNavOpen(false)}>
-          About the Founders
-        </Link>
-        <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>
-          About Vital Kaua&#699;i Church
-        </Link>
-        <Link href="/healing-circle" onClick={() => setIsMobileNavOpen(false)}>
-          Our Healing Circle
-        </Link>
-        <Link href="/portal" onClick={() => setIsMobileNavOpen(false)}>
-          Member Portal
-        </Link>
-        <Link
-          href="/begin-your-journey"
-          onClick={() => setIsMobileNavOpen(false)}
-          className={styles.mobileAccentLink}
-        >
-          Begin Your Journey
-        </Link>
-      </div>
-
-      {/* ── Hero ── */}
-      <section className={styles.hero} id="hero">
-        <Image
-          src="https://images.unsplash.com/photo-1542640244-8a927d20bfec?w=1800&q=85"
-          alt="Hanalei Bay, Kaua&#699;i North Shore"
-          fill
-          sizes="100vw"
-          className={styles.heroImg}
-          priority
-        />
-        <div className={styles.heroOverlay} />
-        <div className={styles.heroContent}>
-          <p className={styles.heroEyebrow}>Hanalei, Kaua&#699;i&apos;s North Shore</p>
-          <h1 className={styles.heroTitle}>
-            Come,
-            <br />
-            <em>Stay &amp; Transform</em>
-          </h1>
-          <p className={styles.heroSub}>
-            Iboga ceremony and whole-being transformation on Kaua&#699;i&apos;s North Shore &mdash;
-            held in a home, in community, by the land itself.
-          </p>
-        </div>
-      </section>
-
-      {/* ── Intro ── */}
-      <section className={styles.intro} id="intro">
-        <p className={`${styles.introQuote} ${styles.reveal}`}>
-          &ldquo;When you arrive, you are being welcomed into a living community &mdash; held by
-          people who have chosen to open their homes because they believe in this work.&rdquo;
-        </p>
-        <div className={`${styles.introRule} ${styles.reveal} ${styles.d1}`} />
-      </section>
-
-      {/* ── Homes ── */}
-      <section className={styles.homes} id="homes">
-        <div className={styles.homesGrid}>
-          <div className={`${styles.homesImages} ${styles.reveal}`}>
-            <Image
-              src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85"
-              alt="Private bedroom with Na Pali mountain views, Hanalei"
-              fill
-              sizes="50vw"
-              className={styles.homesImgMain}
-            />
-            <Image
-              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=85"
-              alt="Lanai with valley and mountain views, Hanalei"
-              fill
-              sizes="30vw"
-              className={styles.homesImgAccent}
-            />
-          </div>
-          <div className={styles.homesText}>
-            <span className={`${styles.sectionLabel} ${styles.reveal}`}>Community-Held Homes</span>
-            <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>
-              Rooted in
-              <br />
-              <em>Aloha</em>
-            </h2>
-            <p className={`${styles.homesBody} ${styles.homesBodyLead} ${styles.reveal}`}>
-              Something rare happens when people who deeply love a place open their doors. The homes
-              that hold our guests in Hanalei are offerings &mdash; chosen by members of our community
-              who know this work, trust this mission, and want to play a part in the healing that
-              happens here.
-            </p>
-            <p className={`${styles.homesBody} ${styles.reveal} ${styles.d1}`}>
-              Each home sits in Hanalei &mdash; steps from the bay, cradled by the N&#257; Pali
-              mountains, brushed by the mist of waterfalls. You wake up here and the land is already
-              working.
-            </p>
-            <div className={`${styles.homesPull} ${styles.reveal} ${styles.d2}`}>
-              <p>
-                &ldquo;These homes are the first layer of the medicine &mdash; arriving somewhere that
-                was prepared for you with love, in a sacred place.&rdquo;
-              </p>
-            </div>
-            <p className={`${styles.homesBody} ${styles.reveal}`}>
-              Each guest placement is thoughtful. During your intake, we ask about any special needs,
-              preferences, or considerations so we can match you with the space that fits you best.
-            </p>
-            <p className={`${styles.homesBody} ${styles.reveal} ${styles.d1}`}>
-              Guests share a spacious, welcoming home with other participants &mdash; or, for groups
-              of three or more arriving together, the home is yours as a private container for your
-              group. We host small, intimate gatherings of five or fewer at a time, so the space and
-              the care remain deeply personal.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Hanalei Bay Photo Strip ── */}
-      <div className={styles.photoStrip}>
-        <Image
-          src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1800&q=85"
-          alt="Hanalei Bay, Kaua&#699;i"
-          fill
-          sizes="100vw"
-          className={styles.photoStripImg}
-        />
-        <div className={styles.photoStripOverlay} />
-        <div className={styles.photoStripText}>
-          <p className={styles.photoStripEyebrow}>
-            Hanalei Bay &middot; North Shore, Kaua&#699;i
-          </p>
-          <p className={styles.photoStripTitle}>Steps from where you&apos;ll wake up.</p>
-        </div>
-      </div>
-
-      {/* ── Gallery ── */}
-      <section className={styles.gallery} id="gallery">
-        <div className={styles.galleryHeader}>
-          <span className={`${styles.sectionLabel} ${styles.reveal}`}>A Glimpse Inside</span>
-          <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>
-            The
-            <br />
-            <em>Spaces</em>
-          </h2>
-          <p className={`${styles.galleryDesc} ${styles.reveal}`}>
-            Light-filled rooms, open l&#257;nais, kitchens that overflow with local abundance. The
-            homes that hold our guests were chosen for one reason: you feel it the moment you step
-            inside.
-          </p>
-        </div>
-        <div className={`${styles.galleryGrid} ${styles.reveal}`}>
-          <div className={`${styles.galleryItem} ${styles.galleryTall}`}>
-            <Image
-              src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85"
-              alt="Private bedroom, Hanalei home"
-              fill
-              sizes="40vw"
-              className={styles.galleryItemImg}
-            />
-            <div className={styles.galleryCaption}>
-              <p>Private Bedroom &middot; Mountain Views</p>
-            </div>
-          </div>
-          <div className={styles.galleryItem}>
-            <Image
-              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=85"
-              alt="Lanai with valley views"
-              fill
-              sizes="30vw"
-              className={styles.galleryItemImg}
-            />
-            <div className={styles.galleryCaption}>
-              <p>L&#257;nai &middot; Valley &amp; River Views</p>
-            </div>
-          </div>
-          <div className={styles.galleryItem}>
-            <Image
-              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=85"
-              alt="Open living space"
-              fill
-              sizes="30vw"
-              className={styles.galleryItemImg}
-            />
-            <div className={styles.galleryCaption}>
-              <p>Open Living &middot; Hanalei Home</p>
-            </div>
-          </div>
-          <div className={styles.galleryItem}>
-            <Image
-              src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85"
-              alt="Kitchen and living space"
-              fill
-              sizes="30vw"
-              className={styles.galleryItemImg}
-            />
-            <div className={styles.galleryCaption}>
-              <p>Kitchen &middot; Farm-to-Table Nourishment</p>
-            </div>
-          </div>
-          <div className={styles.galleryItem}>
-            <Image
-              src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=900&q=85"
-              alt="Hanalei Bay steps away"
-              fill
-              sizes="30vw"
-              className={styles.galleryItemImg}
-            />
-            <div className={styles.galleryCaption}>
-              <p>Hanalei Bay &middot; Steps Away</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── What's Included ── */}
-      <section className={styles.included} id="included">
-        <span className={`${styles.sectionLabel} ${styles.reveal}`}>Everything Is Held</span>
-        <h2 className={`${styles.sectionTitle} ${styles.includedTitle} ${styles.reveal}`}>
-          What&apos;s
-          <br />
-          <em>Included</em>
-        </h2>
-        <div className={styles.includedGrid}>
-          <div className={`${styles.includedCard} ${styles.reveal}`}>
-            <div className={styles.includedRule} />
-            <h3 className={styles.includedCardTitle}>Your Private Sanctuary</h3>
-            <p className={styles.includedBody}>
-              A private room or suite within a community-held North Shore home &mdash; clean,
-              nature-integrated, and prepared with care. Your own space to rest, reflect, and
-              integrate between sessions.
-            </p>
-          </div>
-          <div className={`${styles.includedCard} ${styles.reveal} ${styles.d1}`}>
-            <div className={styles.includedRule} />
-            <h3 className={styles.includedCardTitle}>&#699;&#256;ina Nourishment</h3>
-            <p className={styles.includedBody}>
-              Farm-to-table meals sourced from Kaua&#699;i&apos;s living land. High-vibration,
-              deeply nourishing, and aligned with your protocol &mdash; whether that is a full detox
-              cleanse, gentle whole foods, or ceremonial fasting support.
-            </p>
-          </div>
-          <div className={`${styles.includedCard} ${styles.reveal} ${styles.d2}`}>
-            <div className={styles.includedRule} />
-            <h3 className={styles.includedCardTitle}>Arrival &amp; Departure</h3>
-            <p className={styles.includedBody}>
-              Arrival pickup and departure drop-off are available through us &mdash; simply let us
-              know during intake and we will have everything coordinated. Guests are also welcome to
-              arrange their own transportation.
-            </p>
-          </div>
-          <div className={`${styles.includedCard} ${styles.reveal}`}>
-            <div className={styles.includedRule} />
-            <h3 className={styles.includedCardTitle}>Private Sessions &amp; Ceremonies</h3>
-            <p className={styles.includedBody}>
-              Iboga ceremony, breathwork, somatic sessions, sound healing, and integration work
-              &mdash; held privately in our dedicated space or in nature itself. The container is
-              yours. The land is the temple.
-            </p>
-          </div>
-          <div className={`${styles.includedCard} ${styles.reveal} ${styles.d1}`}>
-            <div className={styles.includedRule} />
-            <h3 className={styles.includedCardTitle}>Nature Immersion Daily</h3>
-            <p className={styles.includedBody}>
-              Ocean swims, river floats, waterfall hikes, grounding practices &mdash; woven into
-              your days with intention. Kaua&#699;i&apos;s wild North Shore is the primary medicine.
-            </p>
-          </div>
-          <div className={`${styles.includedCard} ${styles.reveal} ${styles.d2}`}>
-            <div className={styles.includedRule} />
-            <h3 className={styles.includedCardTitle}>Full-Spectrum Support</h3>
-            <p className={styles.includedBody}>
-              Our team is with you across the arc of your journey. Text support, check-ins, and the
-              quiet reassurance of knowing someone who genuinely cares is always close.
-            </p>
-          </div>
-        </div>
-        <p className={`${styles.includedNote} ${styles.reveal}`}>
-          Guests are also welcome to arrange their own accommodations and meals in Hanalei &mdash;
-          we are glad to offer recommendations.
-        </p>
-      </section>
-
-      {/* ── Setting ── */}
-      <section className={styles.setting} id="setting">
-        <div className={styles.settingGrid}>
-          <div className={styles.settingPhoto}>
-            <Image
-              src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85"
-              alt="Open kitchen and living space, Hanalei home"
-              fill
-              sizes="50vw"
-              className={styles.settingPhotoImg}
-            />
-          </div>
-          <div className={styles.settingText}>
-            <span className={`${styles.sectionLabel} ${styles.reveal}`}>The Land</span>
-            <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>
-              Hanalei &mdash;
-              <br />
-              <em>Where the World Slows</em>
-            </h2>
-            <div className={`${styles.settingFeatures} ${styles.reveal} ${styles.d2}`}>
-              <div className={styles.settingFeature}>
-                <div className={styles.settingFeatureLine} />
-                <div>
-                  <p className={styles.settingFeatureName}>Hanalei Bay</p>
-                  <p className={styles.settingFeatureDesc}>
-                    Steps from one of the most beautiful bays in all of Hawai&#699;i &mdash; warm,
-                    clear, and deeply restorative
-                  </p>
-                </div>
-              </div>
-              <div className={styles.settingFeature}>
-                <div className={styles.settingFeatureLine} />
-                <div>
-                  <p className={styles.settingFeatureName}>N&#257; Pali Mountains</p>
-                  <p className={styles.settingFeatureDesc}>
-                    Ancient volcanic peaks hold you in every ceremony
-                  </p>
-                </div>
-              </div>
-              <div className={styles.settingFeature}>
-                <div className={styles.settingFeatureLine} />
-                <div>
-                  <p className={styles.settingFeatureName}>Living Rivers &amp; Waterfalls</p>
-                  <p className={styles.settingFeatureDesc}>
-                    Cold plunges, quiet floats, elemental baptisms
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Guest Experience ── */}
-      <section className={styles.experience} id="experience">
-        <div className={styles.experienceInner}>
-          <div className={styles.experienceHeader}>
-            <span className={`${styles.sectionLabel} ${styles.reveal}`}>What to Expect</span>
-            <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>
-              The Arc of
-              <br />
-              <em>Your Stay</em>
-            </h2>
-            <p className={`${styles.experienceDesc} ${styles.reveal}`}>
-              Every journey takes its own shape. There is a rhythm to arriving here, moving through
-              the work, and transitioning back home changed. Here is the shape of what most guests
-              experience.
-            </p>
-          </div>
-          <div className={styles.experienceDays}>
-            <div className={styles.experienceDay}>
-              <div className={styles.dayNumber}>01</div>
-              <span className={styles.dayLabel}>Arrival</span>
-              <h3 className={styles.dayTitle}>Landing &amp; Settling In</h3>
-              <p className={styles.dayBody}>
-                Your pickup is arranged in advance &mdash; or you are welcome to make your own way
-                north. Your home is ready when you arrive &mdash; clean, quiet, and waiting. A
-                nourishing meal, an orientation, and the chance to simply feel what it is like to be
-                here.
-              </p>
-            </div>
-            <div className={styles.experienceDay}>
-              <div className={styles.dayNumber}>02</div>
-              <span className={styles.dayLabel}>Opening</span>
-              <h3 className={styles.dayTitle}>Time on the Land &amp; in the Water</h3>
-              <p className={styles.dayBody}>
-                Mornings in nature, your discovery conversation, and the days of sacred preparation
-                before ceremony. Your protocol and your nervous system shape what unfolds.
-              </p>
-            </div>
-            <div className={styles.experienceDay}>
-              <div className={styles.dayNumber}>03</div>
-              <span className={styles.dayLabel}>The Middle Days</span>
-              <h3 className={styles.dayTitle}>Ceremony &amp; Presence</h3>
-              <p className={styles.dayBody}>
-                The heart of the journey &mdash; Iboga ceremony, somatic sessions, nature immersion,
-                and the quiet between where the deepest transformation moves through you. We hold you
-                close across every moment of it.
-              </p>
-            </div>
-            <div className={styles.experienceDay}>
-              <div className={styles.dayNumber}>04</div>
-              <span className={styles.dayLabel}>Return</span>
-              <h3 className={styles.dayTitle}>Integration &amp; Closing</h3>
-              <p className={styles.dayBody}>
-                The final days are for consolidating what Iboga has opened in you &mdash; integration
-                sessions, a closing ceremony, and a clear path forward. You leave as someone who has
-                been met by the medicine and changed by it.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Community ── */}
-      <section className={styles.community} id="community">
-        <div className={styles.communityInner}>
-          <div className={styles.communityText}>
-            <span className={`${styles.sectionLabel} ${styles.reveal}`}>Optional Weaving</span>
-            <h2 className={`${styles.sectionTitle} ${styles.communityTitle} ${styles.reveal}`}>
-              Private Container.
-              <br />
-              <em>Living Community.</em>
-            </h2>
-            <p className={`${styles.communityBody} ${styles.communityBodyLead} ${styles.reveal}`}>
-              Your journey at Vital Kaua&#699;i is held privately, at your pace, in your own sacred
-              container. That is the foundation.
-            </p>
-            <p className={`${styles.communityBody} ${styles.reveal} ${styles.d1}`}>
-              And yet Hanalei has something rare and genuine: a real, living community of
-              practitioners, teachers, surfers, farmers, and healers who chose this place for the
-              same reasons you did. When you feel ready, that world is right outside the door.
-            </p>
-            <p className={`${styles.communityBody} ${styles.reveal} ${styles.d2}`}>
-              For those who feel called, we offer the option to step beyond the private container and
-              move through our community &mdash; attending a class, sitting in a ceremony circle,
-              sharing a meal, or simply feeling what it is like to belong somewhere for a few days.
-              Integration happens in relationship, and this community has a way of receiving people
-              exactly as they are.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Local Residents ── */}
-      <section className={styles.local} id="local">
-        <div className={styles.localInner}>
-          <div className={styles.localLabelCol}>
-            <span className={`${styles.sectionLabel} ${styles.reveal}`}>On-Island Work</span>
-            <h2 className={`${styles.localTitle} ${styles.reveal}`}>
-              Already
-              <br />
-              <em>Home</em>
-            </h2>
-            <div className={`${styles.localRule} ${styles.reveal}`} />
-          </div>
-          <div>
-            <p className={`${styles.localBody} ${styles.localBodyLead} ${styles.reveal}`}>
-              Transformation arrives right where you are. If you live on Kaua&#699;i and feel the
-              pull of this work &mdash; the medicine, somatic healing, energy work, or simply a reset
-              &mdash; we are here, and we come to you.
-            </p>
-            <p className={`${styles.localBody} ${styles.reveal} ${styles.d1}`}>
-              Rachel and Josh work with a quiet circle of island residents who seek the depth of a
-              Vital Kaua&#699;i journey without leaving home. Sessions happen in your space, in ours,
-              or out in the land itself. The container is just as held. The medicine is the same.
-            </p>
-            <p className={`${styles.localBody} ${styles.reveal} ${styles.d2}`}>
-              If you are local and something in you is ready, reach out. The conversation is always
-              the beginning.
-            </p>
-            <Link href="/#contact" className={`${styles.localCta} ${styles.reveal} ${styles.d3}`}>
-              Reach Out &rarr;
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Explore the Land ── */}
-      <section className={styles.exploreLand} id="explore-land">
-        <div className={styles.exploreLandInner}>
-          <div className={styles.exploreLandHeader}>
-            <div>
-              <span className={`${styles.sectionLabel} ${styles.reveal}`}>
-                The Living &#699;&#256;ina
-              </span>
-              <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>
-                Become One
-                <br />
-                <em>With the Land</em>
-              </h2>
-            </div>
-            <p className={`${styles.exploreLandDesc} ${styles.reveal}`}>
-              The North Shore carries a living tradition of people who have loved and tended this
-              land for generations. These are the stewards, gardens, and community anchors that make
-              this place sacred &mdash; and they welcome those who arrive with open hands. We weave
-              these experiences into your stay for those who feel called to go deeper into the
-              &#699;&#257;ina.
-            </p>
-          </div>
-
-          <div className={styles.stewardGrid}>
-            {/* Waipa */}
-            <div className={`${styles.stewardCard} ${styles.reveal}`}>
-              <div className={styles.stewardImgWrap}>
-                <Image
-                  src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=900&q=85"
-                  alt="Waipa Foundation taro fields, Hanalei"
-                  fill
-                  sizes="50vw"
-                  className={styles.stewardImg}
-                />
-                <div className={styles.stewardImgOverlay} />
-                <p className={styles.stewardLocation}>Hanalei Bay &middot; North Shore</p>
-              </div>
-              <div className={styles.stewardContent}>
-                <div className={styles.stewardRule} />
-                <h3 className={styles.stewardName}>Waip&#257; Foundation</h3>
-                <p className={styles.stewardSubtitle}>
-                  Living Ahupua&#699;a &middot; Hanalei Bay
-                </p>
-                <p className={styles.stewardDesc}>
-                  A 1,600-acre living ahupua&#699;a along Hanalei Bay &mdash; wetland taro fields,
-                  orchards, canoes, and a weekly poi day keep ancient Hawaiian values alive and
-                  practiced.
-                </p>
-                <a
-                  href="https://waipafoundation.org"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.stewardLink}
-                >
-                  Visit Waip&#257; &rarr;
-                </a>
-              </div>
-            </div>
-
-            {/* Limahuli */}
-            <div className={`${styles.stewardCard} ${styles.reveal} ${styles.d1}`}>
-              <div className={styles.stewardImgWrap}>
-                <Image
-                  src="https://images.unsplash.com/photo-1598135753163-6167c1a1ad65?w=900&q=85"
-                  alt="Limahuli Garden and valley, North Shore Kauai"
-                  fill
-                  sizes="50vw"
-                  className={styles.stewardImg}
-                />
-                <div className={styles.stewardImgOverlay} />
-                <p className={styles.stewardLocation}>H&#257;&#699;ena &middot; North Shore</p>
-              </div>
-              <div className={styles.stewardContent}>
-                <div className={styles.stewardRule} />
-                <h3 className={styles.stewardName}>Limahuli Garden</h3>
-                <p className={styles.stewardSubtitle}>
-                  National Tropical Botanical Garden &middot; H&#257;&#699;ena
-                </p>
-                <p className={styles.stewardDesc}>
-                  A pu&#699;uhonua &mdash; place of refuge &mdash; in one of the most biodiverse
-                  valleys in Hawai&#699;i. Ancient taro terraces, native forest, and rare plants
-                  tended for over 1,500 years.
-                </p>
-                <a
-                  href="https://ntbg.org/gardens/limahuli"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.stewardLink}
-                >
-                  Visit Limahuli &rarr;
-                </a>
-              </div>
-            </div>
-
-            {/* Hui Makaainana */}
-            <div className={`${styles.stewardCard} ${styles.reveal}`}>
-              <div className={styles.stewardImgWrap}>
-                <Image
-                  src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=900&q=85"
-                  alt="Haena coast, North Shore Kauai"
-                  fill
-                  sizes="50vw"
-                  className={styles.stewardImg}
-                  style={{ objectPosition: "center 40%" }}
-                />
-                <div className={styles.stewardImgOverlay} />
-                <p className={styles.stewardLocation}>H&#257;&#699;ena &middot; North Shore</p>
-              </div>
-              <div className={styles.stewardContent}>
-                <div className={styles.stewardRule} />
-                <h3 className={styles.stewardName}>Hui Maka&#699;&#257;inana o Makana</h3>
-                <p className={styles.stewardSubtitle}>
-                  Community Stewards &middot; H&#257;&#699;ena
-                </p>
-                <p className={styles.stewardDesc}>
-                  A family-based community in H&#257;&#699;ena stewarding the reef, watershed, and
-                  cultural memory of this place &mdash; and established Hawai&#699;i&apos;s first
-                  Community-Based Subsistence Fishing Area.
-                </p>
-                <a
-                  href="https://www.huimakaainanaomakana.org"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.stewardLink}
-                >
-                  Visit Hui Maka&#699;&#257;inana &rarr;
-                </a>
-              </div>
-            </div>
-
-            {/* Haena State Park */}
-            <div className={`${styles.stewardCard} ${styles.reveal} ${styles.d1}`}>
-              <div className={styles.stewardImgWrap}>
-                <Image
-                  src="https://images.unsplash.com/photo-1542640244-8a927d20bfec?w=900&q=85"
-                  alt="Haena State Park and Na Pali Coast, Kauai"
-                  fill
-                  sizes="50vw"
-                  className={styles.stewardImg}
-                  style={{ objectPosition: "center 60%" }}
-                />
-                <div className={styles.stewardImgOverlay} />
-                <p className={styles.stewardLocation}>
-                  H&#257;&#699;ena &middot; End of the Road
-                </p>
-              </div>
-              <div className={styles.stewardContent}>
-                <div className={styles.stewardRule} />
-                <h3 className={styles.stewardName}>H&#257;&#699;ena State Park</h3>
-                <p className={styles.stewardSubtitle}>
-                  K&#275;&#699;&#275; Beach &middot; Kalalau Trailhead &middot; North Shore
-                </p>
-                <p className={styles.stewardDesc}>
-                  K&#275;&#699;&#275; Beach, ancient sea caves, and the Kalalau Trailhead along the
-                  N&#257; Pali Coast. Sacred archaeological sites and restored lo&#699;i kalo await.
-                  Reservations open 30 days in advance.
-                </p>
-                <a
-                  href="https://gohaena.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.stewardLink}
-                >
-                  Reserve at H&#257;&#699;ena &rarr;
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FAQ ── */}
-      <section className={styles.faq} id="faq">
-        <div className={styles.faqInner}>
-          <div className={styles.faqHeader}>
-            <div>
-              <span className={`${styles.sectionLabel} ${styles.reveal}`}>Before You Ask</span>
-              <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>
-                Common
-                <br />
-                <em>Questions</em>
-              </h2>
-            </div>
-            <p className={`${styles.faqHeaderDesc} ${styles.reveal}`}>
-              If something specific is on your mind, bring it. Reach out &mdash; every question
-              matters when you are preparing to do real work.
-            </p>
-          </div>
-          <div className={`${styles.faqList} ${styles.reveal}`}>
-            {FAQ_ITEMS.map((item, i) => (
-              <div
-                key={i}
-                className={`${styles.faqItem} ${openFaq === i ? styles.faqItemOpen : ""}`}
-              >
-                <button
-                  className={styles.faqQuestion}
-                  type="button"
-                  aria-expanded={openFaq === i}
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                >
-                  <span className={styles.faqQText}>{item.question}</span>
-                  <span className={styles.faqIcon} aria-hidden="true" />
-                </button>
-                <div className={styles.faqAnswer}>
-                  {item.answer.map((p, j) => (
-                    <p key={j}>{p}</p>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Intake ── */}
-      <section className={styles.intake} id="intake">
-        <div className={styles.intakeInner}>
-          <span className={`${styles.sectionLabel} ${styles.reveal}`}>Before You Arrive</span>
-          <h2 className={`${styles.intakeTitle} ${styles.reveal}`}>
-            Your Needs
-            <br />
-            <em>Are Heard</em>
-          </h2>
-          <p className={`${styles.intakeBody} ${styles.reveal}`}>
-            Every guest who joins us completes an intake process before arrival. This is where we
-            listen &mdash; to what you need, what supports you, and what will make this container
-            feel most like home. Your accommodations are matched with care and intention.
-          </p>
-          <div className={`${styles.intakeFeatures} ${styles.reveal}`}>
-            <div className={styles.intakeFeature}>
-              <div className={styles.intakeRule} />
-              <p className={styles.intakeFeatureTitle}>Space Needs</p>
-              <p className={styles.intakeFeatureDesc}>
-                Private room, accessibility requirements, sleep preferences, sensitivities or
-                allergies
-              </p>
-            </div>
-            <div className={styles.intakeFeature}>
-              <div className={styles.intakeRule} />
-              <p className={styles.intakeFeatureTitle}>Dietary Needs</p>
-              <p className={styles.intakeFeatureDesc}>
-                Allergies, protocol-based nutrition, fasting support, cultural considerations
-              </p>
-            </div>
-            <div className={styles.intakeFeature}>
-              <div className={styles.intakeRule} />
-              <p className={styles.intakeFeatureTitle}>Anything Else</p>
-              <p className={styles.intakeFeatureDesc}>
-                Sensitivities, co-journeying with a partner, children, timing &mdash; we listen to
-                all of it
-              </p>
-            </div>
-          </div>
-          <Link href="/#contact" className={`${styles.btnPrimary} ${styles.reveal}`}>
-            Begin Your Inquiry
-          </Link>
-        </div>
-      </section>
-
-      {/* ── Footer ── */}
-      <footer className={styles.footer}>
-        <div>
-          <p className={styles.footerBrand}>Vital Kaua&#699;i</p>
-          <p className={styles.footerTagline}>
-            A living sanctuary of transformation and awakening on Kaua&#699;i&apos;s North Shore.
-          </p>
-          <p className={styles.footerAddress}>
-            PO Box 932, Hanalei, HI 96714{"\n"}aloha@vitalkauai.com
-          </p>
-        </div>
-        <div className={styles.footerCol}>
-          <h4>Explore</h4>
-          <ul className={styles.footerLinks}>
-            <li>
-              <Link href="/iboga-journey">The Iboga Journey</Link>
-            </li>
-            <li>
-              <Link href="/about">Josh &amp; Rachel</Link>
-            </li>
-            <li>
-              <Link href="/healing-circle">Our Healing Circle</Link>
-            </li>
-            <li>
-              <Link href="/stay">Stay With Us</Link>
-            </li>
-          </ul>
-        </div>
-        <div className={styles.footerCol}>
-          <h4>Connect</h4>
-          <ul className={styles.footerLinks}>
-            <li>
-              <Link href="/begin-your-journey">Begin Your Journey</Link>
-            </li>
-            <li>
-              <Link href="/portal">Member Portal</Link>
-            </li>
-          </ul>
-        </div>
-        <div className={styles.footerCol}>
-          <h4>Our Policies</h4>
-          <ul className={styles.footerLinks}>
-            <li>
-              <Link href="/privacy-policy">Privacy Policy</Link>
-            </li>
-            <li>
-              <Link href="/terms-of-use">Terms of Use</Link>
-            </li>
-            <li>
-              <Link href="/medical-disclaimer">Medical Disclaimer</Link>
-            </li>
-            <li>
-              <Link href="/church-information">Church Information</Link>
-            </li>
-          </ul>
-        </div>
-      </footer>
-
-      <div className={styles.footerBottom}>
-        <p>
-          &copy; 2026 Vital Kauai Church &middot; All original content on this site is protected by
-          U.S. copyright law. Reproduction without written permission prohibited.
-        </p>
-      </div>
-    </main>
+    <>
+      <style dangerouslySetInnerHTML={{ __html: CSS_CONTENT }} />
+      <div dangerouslySetInnerHTML={{ __html: BODY_CONTENT }} />
+    </>
   );
 }
+
+const CSS_CONTENT = `
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --forest: #1C2B1E;
+  --forest-dark: #141F15;
+  --deep: #0E1A10;
+  --terra: #B8694A;
+  --terra-light: #D4917A;
+  --terra-pale: #E8C9BC;
+  --sand: #E8D4C0;
+  --sand-light: #F2E6D8;
+  --gold: #C8A96E;
+  --gold-light: #E2CFA0;
+  --cream: #F5F0E8;
+  --warm-white: #FDFBF7;
+  --stone: #5A5248;
+  --text-dark: #111110;
+  --text-mid: #2C2C28;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  background: var(--warm-white);
+  color: var(--text-dark);
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 28px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.5s ease;
+}
+nav.scrolled {
+  background: rgba(14, 26, 16, 0.96);
+  backdrop-filter: blur(12px);
+  padding: 18px 60px;
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  color: var(--cream);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.nav-links {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cream);
+  text-decoration: none;
+  opacity: 0.85;
+  transition: opacity 0.3s;
+}
+.nav-links a:hover { opacity: 1; }
+.nav-cta {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--forest);
+  background: var(--gold);
+  padding: 12px 28px;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+.nav-cta:hover { background: var(--gold-light); }
+
+/* ── HERO ── */
+#hero {
+  position: relative;
+  height: 92vh;
+  min-height: 600px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--deep);
+}
+.hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 55%;
+  opacity: 0.6;
+  filter: saturate(0.75);
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(10,20,12,0.1) 0%,
+    rgba(10,20,12,0.05) 35%,
+    rgba(10,20,12,0.65) 72%,
+    rgba(10,20,12,0.97) 100%
+  );
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 40px 88px;
+}
+.hero-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--terra-pale);
+  margin-bottom: 22px;
+  opacity: 0;
+  animation: fadeUp 1s ease 0.3s forwards;
+}
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(50px, 7vw, 100px);
+  font-weight: 300;
+  line-height: 1.0;
+  color: var(--cream);
+  letter-spacing: 0.04em;
+  margin-bottom: 26px;
+  opacity: 0;
+  animation: fadeUp 1s ease 0.6s forwards;
+}
+.hero-title em { font-style: italic; color: var(--terra-pale); }
+.hero-sub {
+  font-size: 15px;
+  color: rgba(245,240,232,0.72);
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.85;
+  opacity: 0;
+  animation: fadeUp 1s ease 0.9s forwards;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── INTRO STATEMENT ── */
+#intro {
+  background: var(--forest);
+  padding: 100px 60px;
+  text-align: center;
+}
+.intro-quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(20px, 2.5vw, 30px);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--cream);
+  max-width: 820px;
+  margin: 0 auto 40px;
+  line-height: 1.72;
+}
+.intro-rule {
+  width: 1px;
+  height: 56px;
+  background: linear-gradient(to bottom, var(--terra), transparent);
+  margin: 0 auto;
+}
+
+/* ── SECTION LABELS ── */
+.section-label {
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 18px;
+  display: block;
+}
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 4vw, 58px);
+  font-weight: 300;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+.section-title em { font-style: italic; color: var(--terra); }
+
+/* ── THE HOMES ── */
+#homes {
+  background: var(--cream);
+  padding: 120px 60px;
+}
+.homes-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 100px;
+  align-items: start;
+}
+.homes-images {
+  position: relative;
+  height: 640px;
+}
+.homes-img-main {
+  position: absolute;
+  top: 0; left: 0;
+  width: 72%;
+  height: 78%;
+  object-fit: cover;
+}
+.homes-img-accent {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 54%;
+  height: 52%;
+  object-fit: cover;
+  border: 6px solid var(--cream);
+}
+.homes-text .section-title { color: var(--text-dark); }
+.homes-body {
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 2.0;
+  margin-bottom: 20px;
+  font-weight: 300;
+}
+.homes-body:first-of-type {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 19px;
+  font-style: italic;
+  color: var(--text-dark);
+  line-height: 1.8;
+}
+.homes-pull {
+  margin: 32px 0;
+  padding: 26px 30px;
+  border-left: 2px solid var(--terra);
+  background: rgba(184,105,74,0.06);
+}
+.homes-pull p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-style: italic;
+  color: var(--forest);
+  line-height: 1.75;
+}
+
+/* ── GALLERY ── */
+#gallery {
+  background: var(--warm-white);
+  padding: 80px 60px 120px;
+}
+.gallery-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+  margin-bottom: 40px;
+}
+.gallery-header-left .section-title { color: var(--text-dark); }
+.gallery-header-right {
+  padding-bottom: 8px;
+}
+.gallery-header-right p {
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 2.0;
+  font-weight: 300;
+}
+.gallery-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-rows: 340px 260px;
+  gap: 10px;
+}
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  background: var(--forest-dark);
+}
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.88) brightness(0.92);
+  transition: transform 8s ease, filter 0.6s ease;
+}
+.gallery-item:hover img {
+  transform: scale(1.04);
+  filter: saturate(1.0) brightness(1.0);
+}
+.gallery-item.tall { grid-row: span 2; }
+.gallery-caption {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 24px 20px 18px;
+  background: linear-gradient(to top, rgba(10,20,12,0.75) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.gallery-item:hover .gallery-caption { opacity: 1; }
+.gallery-caption p {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.8);
+}
+
+/* ── WHAT'S INCLUDED ── */
+#included {
+  background: var(--forest-dark);
+  padding: 120px 60px;
+}
+#included .section-title { color: var(--cream); }
+#included .section-label { color: var(--terra); }
+.included-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-top: 64px;
+}
+.included-card {
+  background: rgba(28,43,30,0.6);
+  padding: 48px 40px;
+  border-top: 1px solid rgba(184,105,74,0.15);
+  transition: background 0.4s;
+}
+.included-card:hover {
+  background: rgba(28,43,30,0.9);
+}
+.included-rule {
+  width: 32px;
+  height: 1px;
+  background: var(--terra);
+  margin-bottom: 24px;
+}
+.included-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--cream);
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+.included-body {
+  font-size: 13px;
+  color: rgba(245,240,232,0.6);
+  line-height: 1.9;
+}
+
+/* ── THE SETTING ── */
+#setting {
+  background: var(--cream);
+  padding: 0;
+  overflow: hidden;
+}
+.setting-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 75vh;
+}
+.setting-photo {
+  position: relative;
+  overflow: hidden;
+  min-height: 500px;
+  background: var(--forest-dark);
+}
+.setting-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.85) brightness(0.85);
+  transition: transform 9s ease;
+}
+.setting-photo:hover img { transform: scale(1.04); }
+.setting-text {
+  padding: 96px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--cream);
+}
+.setting-text .section-title { color: var(--text-dark); }
+.setting-body {
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 2.0;
+  margin-bottom: 18px;
+  font-weight: 300;
+}
+.setting-features {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.setting-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+.setting-feature-line {
+  width: 28px;
+  height: 1px;
+  background: var(--terra);
+  margin-top: 10px;
+  flex-shrink: 0;
+}
+.setting-feature-name {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--forest);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+.setting-feature-desc {
+  font-size: 13px;
+  color: var(--stone);
+  line-height: 1.7;
+}
+
+/* ── GUEST EXPERIENCE ── */
+#experience {
+  background: var(--sand-light);
+  padding: 80px 40px;
+}
+.experience-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+}
+.experience-header {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 80px;
+  align-items: end;
+  margin-bottom: 80px;
+}
+.experience-header .section-title { color: var(--text-dark); }
+.experience-header p {
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 2.0;
+  font-weight: 300;
+  padding-bottom: 8px;
+}
+.experience-days {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid rgba(184,105,74,0.2);
+}
+.experience-day {
+  padding: 32px 36px 32px 0;
+  border-right: 1px solid rgba(184,105,74,0.15);
+  padding-right: 36px;
+}
+.experience-day:last-child { border-right: none; padding-right: 0; padding-left: 36px; }
+.experience-day:not(:first-child) { padding-left: 36px; }
+.day-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 48px;
+  font-weight: 300;
+  color: rgba(184,105,74,0.2);
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.day-label {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 8px;
+  display: block;
+}
+.day-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+  line-height: 1.25;
+}
+.day-body {
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.9;
+}
+
+/* ── COMMUNITY THREAD ── */
+#community {
+  background: var(--forest);
+  padding: 120px 60px;
+}
+.community-inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+  max-width: 800px;
+}
+.community-text .section-title { color: var(--cream); }
+.community-text .section-title em { color: var(--terra-pale); }
+.community-body {
+  font-size: 14px;
+  color: rgba(245,240,232,0.68);
+  line-height: 2.0;
+  margin-bottom: 18px;
+  font-weight: 300;
+}
+.community-body:first-of-type {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-style: italic;
+  color: rgba(245,240,232,0.88);
+  line-height: 1.8;
+}
+.community-note {
+  margin-top: 32px;
+  padding: 24px 28px;
+  border-left: 2px solid rgba(184,105,74,0.45);
+  background: rgba(184,105,74,0.06);
+}
+.community-note p {
+  font-size: 13px;
+  color: rgba(245,240,232,0.6);
+  line-height: 1.85;
+}
+.community-note p strong {
+  color: var(--terra-pale);
+  font-weight: 400;
+}
+.black-coral-block {
+  background: rgba(14,26,16,0.7);
+  border: 1px solid rgba(200,169,110,0.15);
+  padding: 48px 44px;
+}
+.bc-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  display: block;
+}
+.bc-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 300;
+  color: var(--cream);
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+.bc-subtitle {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--terra-pale);
+  margin-bottom: 24px;
+}
+.bc-body {
+  font-size: 13px;
+  color: rgba(245,240,232,0.62);
+  line-height: 1.9;
+  margin-bottom: 28px;
+}
+.bc-offerings {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+.bc-offering {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 12px;
+  color: rgba(245,240,232,0.55);
+  letter-spacing: 0.05em;
+}
+.bc-offering::before {
+  content: '';
+  width: 18px;
+  height: 1px;
+  background: var(--terra);
+  flex-shrink: 0;
+}
+.bc-link {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(200,169,110,0.3);
+  padding-bottom: 3px;
+  transition: gap 0.3s, border-color 0.3s;
+}
+.bc-link:hover { gap: 16px; border-color: var(--gold); }
+
+/* ── LOCAL RESIDENTS ── */
+#local {
+  background: var(--warm-white);
+  padding: 120px 60px;
+}
+.local-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 80px;
+  align-items: center;
+}
+.local-label-col .section-label { color: var(--terra); }
+.local-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(40px, 4vw, 60px);
+  font-weight: 300;
+  color: var(--text-dark);
+  line-height: 1.1;
+}
+.local-title em { font-style: italic; color: var(--terra); }
+.local-rule {
+  width: 40px;
+  height: 1px;
+  background: var(--terra);
+  margin-top: 32px;
+}
+.local-body {
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 2.0;
+  margin-bottom: 20px;
+  font-weight: 300;
+}
+.local-body:first-of-type {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-style: italic;
+  color: var(--text-dark);
+  line-height: 1.8;
+}
+.local-cta {
+  margin-top: 32px;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--forest);
+  background: transparent;
+  border: 1px solid rgba(28,43,30,0.3);
+  padding: 16px 32px;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s;
+}
+.local-cta:hover {
+  background: var(--forest);
+  border-color: var(--forest);
+  color: var(--cream);
+}
+
+/* ── FAQ ── */
+#faq {
+  background: var(--cream);
+  padding: 120px 60px;
+}
+.faq-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.faq-header {
+  display: grid;
+  grid-template-columns: 1fr 1.8fr;
+  gap: 80px;
+  align-items: start;
+  margin-bottom: 72px;
+}
+.faq-header .section-title { color: var(--text-dark); }
+.faq-header p {
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 2.0;
+  font-weight: 300;
+  padding-top: 8px;
+}
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(184,105,74,0.2);
+}
+.faq-item {
+  border-bottom: 1px solid rgba(184,105,74,0.2);
+}
+.faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 30px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+  text-align: left;
+}
+.faq-q-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text-dark);
+  line-height: 1.3;
+}
+.faq-icon {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  position: relative;
+}
+.faq-icon::before,
+.faq-icon::after {
+  content: '';
+  position: absolute;
+  background: var(--terra);
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+.faq-icon::before {
+  width: 20px; height: 1px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+.faq-icon::after {
+  width: 1px; height: 20px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+.faq-item.open .faq-icon::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+  opacity: 0;
+}
+.faq-answer {
+  display: none;
+  padding: 0 0 30px;
+  max-width: 780px;
+}
+.faq-item.open .faq-answer { display: block; }
+.faq-answer p {
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 2.0;
+  font-weight: 300;
+}
+.faq-answer p + p { margin-top: 14px; }
+
+/* ── INTAKE NOTE ── */
+#intake {
+  background: var(--forest-dark);
+  padding: 100px 60px;
+  text-align: center;
+}
+.intake-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.intake-inner .section-label { color: var(--terra); }
+.intake-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 3.5vw, 50px);
+  font-weight: 300;
+  color: var(--cream);
+  line-height: 1.2;
+  margin-bottom: 28px;
+}
+.intake-title em { font-style: italic; color: var(--terra-pale); }
+.intake-body {
+  font-size: 14px;
+  color: rgba(245,240,232,0.62);
+  line-height: 1.95;
+  margin-bottom: 44px;
+}
+.intake-features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-bottom: 56px;
+  text-align: left;
+}
+.intake-feature {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.intake-rule {
+  width: 24px;
+  height: 1px;
+  background: var(--terra);
+}
+.intake-feature-title {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--cream);
+  text-transform: uppercase;
+}
+.intake-feature-desc {
+  font-size: 12px;
+  color: rgba(245,240,232,0.5);
+  line-height: 1.7;
+}
+.btn-primary {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--forest);
+  background: var(--gold);
+  padding: 18px 44px;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+.btn-primary:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--deep);
+  border-top: 1px solid rgba(200,169,110,0.1);
+  padding: 60px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 60px;
+}
+.footer-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  color: var(--cream);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.footer-tagline {
+  font-size: 12px;
+  color: rgba(245,240,232,0.4);
+  line-height: 1.8;
+  max-width: 240px;
+}
+.footer-col h4 {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+}
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.footer-links a {
+  font-size: 13px;
+  color: rgba(245,240,232,0.5);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.footer-links a:hover { color: var(--cream); }
+.footer-bottom {
+  background: var(--deep);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding: 24px 60px;
+  display: flex;
+  justify-content: space-between;
+}
+.footer-bottom p { font-size: 11px; color: rgba(245,240,232,0.3); }
+
+/* ── REVEAL ── */
+.reveal {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.reveal.hidden {
+  opacity: 0;
+  transform: translateY(26px);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.15s; }
+.reveal-delay-2 { transition-delay: 0.3s; }
+.reveal-delay-3 { transition-delay: 0.45s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .homes-grid, .community-inner, .setting-grid,
+  .experience-header, .faq-header, .gallery-header { grid-template-columns: 1fr; }
+  .homes-images { height: 420px; }
+  .setting-photo { min-height: 420px; }
+  .setting-text { padding: 72px 48px; }
+  .included-grid { grid-template-columns: 1fr 1fr; }
+  .experience-days { grid-template-columns: 1fr 1fr; }
+  .local-inner { grid-template-columns: 1fr; gap: 40px; }
+  .gallery-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+  }
+  .gallery-item.tall { grid-row: span 1; height: 280px; }
+  nav { padding: 24px 32px; }
+  .nav-links { display: none; }
+  footer { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  #intro, #homes, #included, #gallery, #experience,
+  #setting, #community, #local, #faq, #intake { padding: 80px 28px; }
+  .included-grid, .intake-features,
+  .experience-days { grid-template-columns: 1fr; }
+  .setting-text { padding: 60px 28px; }
+  .gallery-grid { grid-template-columns: 1fr; }
+  .gallery-item { height: 260px; }
+  .gallery-item.tall { height: 260px; }
+  footer { grid-template-columns: 1fr; padding: 60px 28px; }
+  .footer-bottom { padding: 24px 28px; flex-direction: column; gap: 8px; }
+  .experience-day:last-child { padding-left: 0; }
+  .experience-day:not(:first-child) { padding-left: 0; }
+}
+`;
+
+const BODY_CONTENT = `
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="/" class="nav-logo">Vital Kauaʻi</a>
+  <ul class="nav-links">
+    <li><a href="/#rivers">Our Work</a></li>
+    <li><a href="/#offerings">Offerings</a></li>
+    <li><a href="/#reciprocity">Reciprocity</a></li>
+    <li><a href="/stay" style="opacity:1;">Stay With Us</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/healing-circle">Our Circle</a></li>
+    <li><a href="/begin-your-journey">Contact</a></li>
+  </ul>
+  <a href="/begin-your-journey" class="nav-cta">Begin Your Journey</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <img class="hero-img"
+    src="https://images.unsplash.com/photo-1542640244-8a927d20bfec?w=1800&q=85"
+    alt="Hanalei Bay, Kauaʻi North Shore">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Hanalei, Kauaʻi's North Shore</p>
+    <h1 class="hero-title">Come,<br><em>Stay & Transform</em></h1>
+    <p class="hero-sub">Iboga ceremony in service of whole-being transformation — held in a private home on Kauaʻi's North Shore, by the land itself.</p>
+  </div>
+</section>
+
+<!-- CEREMONY CALL TO ACTION -->
+<div style="background:var(--forest);padding:64px 60px;text-align:center;border-top:1px solid rgba(200,169,110,0.12);border-bottom:1px solid rgba(200,169,110,0.08);">
+  <p style="font-size:10px;letter-spacing:0.45em;text-transform:uppercase;color:var(--terra-pale);margin-bottom:18px;">A Sacred Gathering</p>
+  <p style="font-family:'Cormorant Garamond',serif;font-size:clamp(22px,3vw,36px);font-weight:300;font-style:italic;color:var(--cream);line-height:1.5;max-width:680px;margin:0 auto 10px;">There are those who feel the call before they understand it.</p>
+  <p style="font-size:16px;color:rgba(245,240,232,0.7);letter-spacing:0.08em;margin-bottom:36px;">Next Group Ceremony · September 6 – 13, 2026 · Hanalei, Kauaʻi</p>
+  <a href="https://calendly.com/vitalkauai" target="_blank" style="display:inline-block;font-size:10px;font-weight:400;letter-spacing:0.3em;text-transform:uppercase;color:var(--forest);background:var(--gold);padding:18px 44px;text-decoration:none;transition:background 0.3s;">Join Our Next Group Ceremony</a>
+  <div style="margin-top:48px;padding-top:40px;border-top:1px solid rgba(200,169,110,0.1);max-width:820px;margin-left:auto;margin-right:auto;">
+    <p style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:rgba(245,240,232,0.75);line-height:1.9;">We come together as a church — a small circle, deep transformation, a sacred plant, and this land. People arrive carrying something. They leave lighter. That is the work. You are welcome here.</p>
+  </div>
+</div>
+
+<!-- INTRO -->
+<section id="intro">
+  <p class="intro-quote reveal">"When you arrive, you are stepping into something that has been prepared for you — a private home in Hanalei, a circle of fellow church members, and a land that has been holding people through transformation for a very long time."</p>
+  <div class="intro-rule reveal reveal-delay-1"></div>
+</section>
+
+<!-- THE HOME -->
+<section id="homes">
+  <div class="homes-grid">
+    <div class="reveal" style="display:flex;flex-direction:column;gap:10px;position:relative;">
+      <div style="height:320px;overflow:hidden;background:var(--forest-dark);">
+        <img src="Bedroom_1_2.jpg" alt="Private bedroom with Nā Pali mountain views" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="height:200px;overflow:hidden;background:var(--forest-dark);">
+          <img src="Kitchen_1_1.jpg" alt="Open kitchen and living space" style="width:100%;height:100%;object-fit:cover;object-position:center 30%;">
+        </div>
+        <div style="height:200px;overflow:hidden;background:var(--forest-dark);">
+          <img src="Bathroom_1_1.jpg" alt="Bathroom with stone sink and mountain views" style="width:100%;height:100%;object-fit:cover;object-position:center 20%;">
+        </div>
+      </div>
+      <p style="font-size:10px;color:rgba(26,26,24,0.32);letter-spacing:0.05em;font-style:italic;text-align:center;margin-top:6px;">Photos of your private sanctuary shared personally after your discovery call.</p>
+    </div>
+    <div class="homes-text">
+      <span class="section-label reveal">Where You Will Stay</span>
+      <h2 class="section-title reveal">A Private Home<br><em>in Hanalei</em></h2>
+      <p class="homes-body reveal">You will be staying in a private home in Hanalei — carefully selected for comfort, space, and proximity to the land and the bay. Each home sits within walking distance of the water, cradled by the Nā Pali mountains, and prepared with intention for the people who will move through it.</p>
+      <p class="homes-body reveal reveal-delay-1">The specific home for your ceremony date will be shared with you personally after our discovery call.</p>
+      <div class="homes-pull reveal reveal-delay-2">
+        <p>"The home is the first layer of the medicine — arriving somewhere clean, quiet, and prepared for you, in a place that holds."</p>
+      </div>
+      <p class="homes-body reveal">Members share a spacious, welcoming home — a private, intimate container of up to six members at a time, so the space and the care remain deeply personal.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HANALEI BAY PHOTO STRIP -->
+<div style="height:55vh;min-height:380px;overflow:hidden;position:relative;">
+  <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1800&q=85"
+    alt="Hanalei Bay, Kauaʻi"
+    style="width:100%;height:100%;object-fit:cover;object-position:center 60%;filter:saturate(0.9) brightness(0.88);">
+  <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,20,12,0.15) 0%,rgba(10,20,12,0.0) 40%,rgba(10,20,12,0.45) 100%);"></div>
+  <div style="position:absolute;bottom:40px;left:60px;">
+    <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:var(--terra-pale);margin-bottom:8px;">Hanalei Bay · North Shore, Kauaʻi</p>
+    <p style="font-family:'Cormorant Garamond',serif;font-size:clamp(22px,3vw,36px);font-weight:300;font-style:italic;color:var(--cream);line-height:1.3;">Steps from where you'll wake up.</p>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div style="margin-bottom:48px;">
+    <span class="section-label reveal">The Setting</span>
+    <h2 class="section-title reveal" style="color:var(--text-dark);">Hanalei —<br><em>Your Backyard</em></h2>
+    <p class="reveal" style="font-size:14px;color:var(--text-mid);line-height:2.0;font-weight:300;max-width:640px;margin-top:16px;">This is where you will wake up. The bay, the mountains, the rivers — all of it within walking distance, woven into every day of your stay.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+    <div class="gallery-item" style="height:360px;grid-row:span 2;" >
+      <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=900&q=85" alt="Hanalei Bay, North Shore Kauai" style="width:100%;height:100%;object-fit:cover;filter:saturate(0.88) brightness(0.92);">
+      <div class="gallery-caption"><p>Hanalei Bay · Steps Away</p></div>
+    </div>
+    <div class="gallery-item" style="height:240px;">
+      <img src="https://images.unsplash.com/photo-1542640244-8a927d20bfec?w=900&q=85" alt="Nā Pali Mountains, Kauai" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:saturate(0.88) brightness(0.92);">
+      <div class="gallery-caption"><p>Nā Pali Mountains · Behind Every Ceremony</p></div>
+    </div>
+    <div class="gallery-item" style="height:240px;">
+      <img src="https://images.unsplash.com/photo-1598135753163-6167c1a1ad65?w=900&q=85" alt="Hanalei Valley, Kauai" style="width:100%;height:100%;object-fit:cover;filter:saturate(0.88) brightness(0.92);">
+      <div class="gallery-caption"><p>Hanalei Valley · Living ʻĀina</p></div>
+    </div>
+    <div class="gallery-item" style="height:240px;">
+      <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=900&q=85" alt="Hanalei River, Kauai" style="width:100%;height:100%;object-fit:cover;filter:saturate(0.88) brightness(0.92);">
+      <div class="gallery-caption"><p>Hanalei River · Cold Plunges & Quiet Floats</p></div>
+    </div>
+    <div class="gallery-item" style="height:240px;">
+      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&q=85" alt="North Shore Kauai coastline" style="width:100%;height:100%;object-fit:cover;object-position:center 30%;filter:saturate(0.88) brightness(0.92);">
+      <div class="gallery-caption"><p>North Shore · Ocean Immersion Daily</p></div>
+    </div>
+  </div>
+  <p style="margin-top:20px;font-size:11px;color:rgba(26,26,24,0.35);letter-spacing:0.05em;font-style:italic;text-align:center;">Accommodation photos and home details are shared personally after your discovery call.</p>
+</section>
+
+<!-- WHAT'S INCLUDED -->
+<section id="included">
+  <span class="section-label reveal">Everything Is Held</span>
+  <h2 class="section-title reveal" style="color:var(--cream);">What's<br><em style="color:var(--terra-pale);">Included</em></h2>
+  <div class="included-grid">
+    <div class="included-card reveal">
+      <div class="included-rule"></div>
+      <h3 class="included-title">Private Sessions & Ceremonies</h3>
+      <p class="included-body">Iboga ceremony, yoga, breathwork, two massages, one nervous system support session (acupuncture, biogeometry, bodytalk, and more), one sound healing ceremony, and integration work — held in our dedicated space or in nature itself.</p>
+    </div>
+    <div class="included-card reveal reveal-delay-1">
+      <div class="included-rule"></div>
+      <h3 class="included-title">Your Private Sanctuary</h3>
+      <p class="included-body">A private room within a carefully selected home in Hanalei — clean, nature-integrated, and prepared with care. Your own space to rest, reflect, and integrate between sessions.</p>
+    </div>
+    <div class="included-card reveal reveal-delay-2">
+      <div class="included-rule"></div>
+      <h3 class="included-title">ʻĀina Nourishment</h3>
+      <p class="included-body">Farm-to-table meals sourced from Kauaʻi's living land. High-vibration, deeply nourishing, and aligned with your protocol.</p>
+    </div>
+    <div class="included-card reveal">
+      <div class="included-rule"></div>
+      <h3 class="included-title">Nature Immersion Daily</h3>
+      <p class="included-body">Ocean swims, river floats, grounding practices — woven into your days with intention. An optional intention-setting hike along the Nā Pali Coast is available for those who feel called. Kauaʻi's wild North Shore is the primary medicine.</p>
+    </div>
+    <div class="included-card reveal reveal-delay-1">
+      <div class="included-rule"></div>
+      <h3 class="included-title">Full-Spectrum Support</h3>
+      <p class="included-body">Our team is with you across the arc of your journey. Text support, check-ins, and the quiet reassurance of knowing someone who genuinely cares is always close.</p>
+    </div>
+    <div class="included-card reveal reveal-delay-2">
+      <div class="included-rule"></div>
+      <h3 class="included-title">Arrival & Departure</h3>
+      <p class="included-body">Arrival pickup and departure drop-off are available through us — simply let us know during intake and we will have everything coordinated. Members are also welcome to arrange their own transportation.</p>
+    </div>
+  </div>
+
+</section>
+<section id="setting">
+  <div class="setting-grid">
+    <div class="setting-photo">
+      <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85" alt="Open kitchen and living space, Hanalei home">
+    </div>
+    <div class="setting-text">
+      <span class="section-label reveal">The Land</span>
+      <h2 class="section-title reveal">Hanalei —<br><em>Where the World Slows</em></h2>
+
+      <div class="setting-features reveal reveal-delay-2">
+        <div class="setting-feature">
+          <div class="setting-feature-line"></div>
+          <div class="setting-feature-text">
+            <p class="setting-feature-name">Hanalei Bay</p>
+            <p class="setting-feature-desc">Steps from one of the most beautiful bays in all of Hawaiʻi — warm, clear, and deeply restorative</p>
+          </div>
+        </div>
+        <div class="setting-feature">
+          <div class="setting-feature-line"></div>
+          <div class="setting-feature-text">
+            <p class="setting-feature-name">Nā Pali Mountains</p>
+            <p class="setting-feature-desc">Ancient volcanic peaks hold you in every ceremony</p>
+          </div>
+        </div>
+        <div class="setting-feature">
+          <div class="setting-feature-line"></div>
+          <div class="setting-feature-text">
+            <p class="setting-feature-name">Living Rivers & Waterfalls</p>
+            <p class="setting-feature-desc">Cold plunges, quiet floats, elemental baptisms</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GUEST EXPERIENCE -->
+<section id="experience" style="background:var(--sand-light);padding:100px 60px;">
+  <div style="max-width:900px;margin:0 auto;">
+    <div style="margin-bottom:64px;">
+      <span class="section-label reveal">What to Expect</span>
+      <h2 class="section-title reveal" style="color:var(--text-dark);">Seven Days.<br><em>One Arc.</em></h2>
+      <p class="reveal" style="font-size:14px;color:var(--text-mid);line-height:2.0;font-weight:300;max-width:560px;margin-top:16px;">Two days of preparation, one day of ceremony, three days of integration, and a closing. Each phase has its own rhythm.</p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;position:relative;">
+
+      <!-- Vertical line -->
+      <div style="position:absolute;left:38px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,rgba(184,105,74,0.3),rgba(184,105,74,0.05));"></div>
+
+      <!-- Day 01 -->
+      <div class="reveal" style="display:grid;grid-template-columns:80px 1fr;gap:32px;align-items:start;margin-bottom:36px;">
+        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;">
+          <div style="width:16px;height:16px;border-radius:50%;background:rgba(184,105,74,0.25);border:1px solid rgba(184,105,74,0.4);position:relative;z-index:1;flex-shrink:0;"></div>
+        </div>
+        <div style="padding-bottom:36px;border-bottom:1px solid rgba(184,105,74,0.1);">
+          <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px;">
+            <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:rgba(184,105,74,0.5);letter-spacing:0.1em;">01</span>
+            <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Arrival</span>
+          </div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Arriving & Settling In</h3>
+          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">Your home is ready. A nourishing meal, an orientation, and the chance to feel what it is like to be here.</p>
+        </div>
+      </div>
+
+      <!-- Day 02 -->
+      <div class="reveal" style="display:grid;grid-template-columns:80px 1fr;gap:32px;align-items:start;margin-bottom:36px;">
+        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;">
+          <div style="width:16px;height:16px;border-radius:50%;background:rgba(184,105,74,0.25);border:1px solid rgba(184,105,74,0.4);position:relative;z-index:1;flex-shrink:0;"></div>
+        </div>
+        <div style="padding-bottom:36px;border-bottom:1px solid rgba(184,105,74,0.1);">
+          <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px;">
+            <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:rgba(184,105,74,0.5);letter-spacing:0.1em;">02</span>
+            <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Preparation</span>
+          </div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Time on the Land & in the Water</h3>
+          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">Time in nature, on the bay, in the rivers. Body and spirit readied for what follows.</p>
+        </div>
+      </div>
+
+      <!-- Day 03 — CEREMONY (highlighted) -->
+      <div class="reveal" style="display:grid;grid-template-columns:80px 1fr;gap:32px;align-items:start;margin-bottom:36px;">
+        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;">
+          <div style="width:22px;height:22px;border-radius:50%;background:var(--terra);border:2px solid var(--terra-light);position:relative;z-index:1;flex-shrink:0;margin-left:-3px;"></div>
+        </div>
+        <div style="padding:24px 28px;background:rgba(184,105,74,0.07);border-left:2px solid var(--terra);margin-bottom:36px;">
+          <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px;">
+            <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:var(--terra);letter-spacing:0.1em;">03</span>
+            <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Ceremony</span>
+          </div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">The Iboga Ceremony</h3>
+          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">The heart of the journey. You enter with intention. You leave having been met by the medicine — changed at the root.</p>
+        </div>
+      </div>
+
+      <!-- Day 04 -->
+      <div class="reveal" style="display:grid;grid-template-columns:80px 1fr;gap:32px;align-items:start;margin-bottom:36px;">
+        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;">
+          <div style="width:16px;height:16px;border-radius:50%;background:rgba(184,105,74,0.25);border:1px solid rgba(184,105,74,0.4);position:relative;z-index:1;flex-shrink:0;"></div>
+        </div>
+        <div style="padding-bottom:36px;border-bottom:1px solid rgba(184,105,74,0.1);">
+          <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px;">
+            <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:rgba(184,105,74,0.5);letter-spacing:0.1em;">04</span>
+            <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Integration</span>
+          </div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Rest & Receiving</h3>
+          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">The day after ceremony is for rest. The medicine is still moving. We hold you close.</p>
+        </div>
+      </div>
+
+      <!-- Day 05 -->
+      <div class="reveal" style="display:grid;grid-template-columns:80px 1fr;gap:32px;align-items:start;margin-bottom:36px;">
+        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;">
+          <div style="width:16px;height:16px;border-radius:50%;background:rgba(184,105,74,0.25);border:1px solid rgba(184,105,74,0.4);position:relative;z-index:1;flex-shrink:0;"></div>
+        </div>
+        <div style="padding-bottom:36px;border-bottom:1px solid rgba(184,105,74,0.1);">
+          <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px;">
+            <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:rgba(184,105,74,0.5);letter-spacing:0.1em;">05</span>
+            <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Integration</span>
+          </div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Land & Reflection</h3>
+          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">Nature, sessions, and the quiet where the deeper layers begin to settle and clarify.</p>
+        </div>
+      </div>
+
+      <!-- Day 06 -->
+      <div class="reveal" style="display:grid;grid-template-columns:80px 1fr;gap:32px;align-items:start;margin-bottom:36px;">
+        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;">
+          <div style="width:16px;height:16px;border-radius:50%;background:rgba(184,105,74,0.25);border:1px solid rgba(184,105,74,0.4);position:relative;z-index:1;flex-shrink:0;"></div>
+        </div>
+        <div style="padding-bottom:36px;border-bottom:1px solid rgba(184,105,74,0.1);">
+          <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px;">
+            <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:rgba(184,105,74,0.5);letter-spacing:0.1em;">06</span>
+            <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Integration</span>
+          </div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Embodying the Shift</h3>
+          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">Movement, community, and mapping the path forward into the life waiting for you.</p>
+        </div>
+      </div>
+
+      <!-- Day 07 -->
+      <div class="reveal" style="display:grid;grid-template-columns:80px 1fr;gap:32px;align-items:start;">
+        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;">
+          <div style="width:16px;height:16px;border-radius:50%;background:rgba(184,105,74,0.25);border:1px solid rgba(184,105,74,0.4);position:relative;z-index:1;flex-shrink:0;"></div>
+        </div>
+        <div>
+          <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px;">
+            <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:rgba(184,105,74,0.5);letter-spacing:0.1em;">07</span>
+            <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Return</span>
+          </div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Closing & Going Home</h3>
+          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">A closing ceremony and a gentle transition — carried by what Iboga opened in you and what Kauaʻi gave you.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- LOCAL RESIDENTS -->
+<section id="local">
+  <div class="local-inner">
+    <div class="local-label-col">
+      <span class="section-label reveal">On-Island Work</span>
+      <h2 class="local-title reveal">Already<br><em>Home</em></h2>
+      <div class="local-rule reveal"></div>
+    </div>
+    <div>
+      <p class="local-body reveal">Transformation arrives right where you are. If you live on Kauaʻi and feel the pull of this work — the medicine, somatic healing, energy work, or simply a reset — we are here, and we come to you.</p>
+      <p class="local-body reveal reveal-delay-1">Rachel and Josh work with a quiet circle of island residents who seek the depth of a Vital Kauaʻi journey without leaving home. Sessions happen in your space, in ours, or out in the land itself. The container is just as held. The medicine is the same.</p>
+      <p class="local-body reveal reveal-delay-2">If you are local and something in you is ready, reach out. The conversation is always the beginning.</p>
+      <a href="/begin-your-journey" class="local-cta reveal reveal-delay-3">Reach Out →</a>
+    </div>
+  </div>
+</section>
+
+<!-- EXPLORE THE LAND -->
+<section id="explore-land" style="background:var(--cream);padding:60px 40px;overflow:hidden;">
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <div style="margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid rgba(184,105,74,0.15);">
+      <span class="section-label reveal" style="margin-bottom:6px;">Regenerative Visitorship</span>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(22px,2.5vw,34px);font-weight:300;color:var(--text-dark);line-height:1.15;margin-bottom:14px;" class="reveal">The Living <em style="font-style:italic;color:var(--terra);">ʻĀina</em></h2>
+      <p class="reveal" style="font-size:13px;color:var(--stone);line-height:1.85;max-width:680px;font-weight:300;">For those who feel called, there is an option to volunteer at one of these places and give back to the land that holds you. These organizations welcome hands and open hearts.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(184,105,74,0.1);overflow:hidden;" class="reveal">
+
+      <div style="padding:20px;background:var(--cream);">
+        <div style="height:120px;overflow:hidden;margin-bottom:14px;background:var(--forest-dark);">
+          <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&q=80" alt="Waipā Foundation" style="width:100%;height:100%;object-fit:cover;filter:saturate(0.85) brightness(0.88);">
+        </div>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--text-dark);margin-bottom:3px;">Waipā Foundation</h3>
+        <p style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;">Hanalei Bay</p>
+        <p style="font-size:12px;color:var(--stone);line-height:1.7;">Living ahupuaʻa — taro fields, canoes, and weekly poi day.</p>
+        <a href="https://waipafoundation.org" target="_blank" style="display:inline-block;margin-top:10px;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--terra);text-decoration:none;border-bottom:1px solid rgba(184,105,74,0.3);padding-bottom:2px;">Visit →</a>
+      </div>
+
+      <div style="padding:20px;background:var(--cream);">
+        <div style="height:120px;overflow:hidden;margin-bottom:14px;background:var(--forest-dark);">
+          <img src="https://images.unsplash.com/photo-1598135753163-6167c1a1ad65?w=600&q=80" alt="Limahuli Garden" style="width:100%;height:100%;object-fit:cover;filter:saturate(0.85) brightness(0.88);">
+        </div>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--text-dark);margin-bottom:3px;">Limahuli Garden</h3>
+        <p style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;">Hāʻena</p>
+        <p style="font-size:12px;color:var(--stone);line-height:1.7;">Ancient taro terraces and native forest. A puʻuhonua — place of refuge.</p>
+        <a href="https://ntbg.org/gardens/limahuli" target="_blank" style="display:inline-block;margin-top:10px;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--terra);text-decoration:none;border-bottom:1px solid rgba(184,105,74,0.3);padding-bottom:2px;">Visit →</a>
+      </div>
+
+      <div style="padding:20px;background:var(--cream);">
+        <div style="height:120px;overflow:hidden;margin-bottom:14px;background:var(--forest-dark);">
+          <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" alt="Hui Makaainana" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:saturate(0.85) brightness(0.88);">
+        </div>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--text-dark);margin-bottom:3px;">Hui Makaʻāinana</h3>
+        <p style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;">Hāʻena</p>
+        <p style="font-size:12px;color:var(--stone);line-height:1.7;">Community stewards of the reef, watershed, and cultural memory.</p>
+        <a href="https://www.huimakaainanaomakana.org" target="_blank" style="display:inline-block;margin-top:10px;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--terra);text-decoration:none;border-bottom:1px solid rgba(184,105,74,0.3);padding-bottom:2px;">Visit →</a>
+      </div>
+
+      <div style="padding:20px;background:var(--cream);">
+        <div style="height:120px;overflow:hidden;margin-bottom:14px;background:var(--forest-dark);">
+          <img src="https://images.unsplash.com/photo-1542640244-8a927d20bfec?w=600&q=80" alt="Haena State Park" style="width:100%;height:100%;object-fit:cover;object-position:center 60%;filter:saturate(0.85) brightness(0.88);">
+        </div>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--text-dark);margin-bottom:3px;">Hāʻena State Park</h3>
+        <p style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;">Kēʻē Beach · Kalalau Trail</p>
+        <p style="font-size:12px;color:var(--stone);line-height:1.7;">Ancient sea caves, sacred sites, and the Nā Pali Coast.</p>
+        <a href="https://gohaena.com" target="_blank" style="display:inline-block;margin-top:10px;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--terra);text-decoration:none;border-bottom:1px solid rgba(184,105,74,0.3);padding-bottom:2px;">Reserve →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- UPCOMING DATES -->
+<section style="background:var(--forest-dark);padding:80px 60px;text-align:center;">
+  <div style="max-width:860px;margin:0 auto;">
+    <span class="section-label reveal" style="color:var(--terra);">Come As You Are</span>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,52px);font-weight:300;color:var(--cream);line-height:1.1;margin-bottom:16px;" class="reveal">Upcoming<br><em style="font-style:italic;color:var(--terra-pale);">Ceremonies</em></h2>
+    <p class="reveal" style="font-size:14px;color:rgba(245,240,232,0.6);line-height:1.95;margin-bottom:48px;max-width:600px;margin-left:auto;margin-right:auto;">Each ceremony is a small, held gathering — six members, seven days, one sacred arc. Book a discovery call to learn about the next available date.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-bottom:44px;" class="reveal">
+      <div style="background:rgba(28,43,30,0.8);padding:28px 20px;">
+        <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:var(--terra);margin-bottom:10px;">Next Ceremony</p>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--cream);margin-bottom:4px;">Sept 6 – 13</p>
+        <p style="font-size:11px;color:rgba(245,240,232,0.4);letter-spacing:0.08em;">2026 · Hanalei, Kauaʻi</p>
+        <p style="font-size:10px;color:var(--terra-light);margin-top:12px;letter-spacing:0.05em;">Filling Now</p>
+      </div>
+      <div style="background:rgba(28,43,30,0.5);padding:28px 20px;">
+        <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.35);margin-bottom:10px;">Upcoming</p>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.35);margin-bottom:4px;">TBA</p>
+        <p style="font-size:11px;color:rgba(245,240,232,0.2);letter-spacing:0.08em;">2026 · Hanalei, Kauaʻi</p>
+        <p style="font-size:10px;color:rgba(245,240,232,0.2);margin-top:12px;">Dates Coming</p>
+      </div>
+      <div style="background:rgba(28,43,30,0.5);padding:28px 20px;">
+        <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.35);margin-bottom:10px;">Upcoming</p>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.35);margin-bottom:4px;">TBA</p>
+        <p style="font-size:11px;color:rgba(245,240,232,0.2);letter-spacing:0.08em;">2026 · Hanalei, Kauaʻi</p>
+        <p style="font-size:10px;color:rgba(245,240,232,0.2);margin-top:12px;">Dates Coming</p>
+      </div>
+    </div>
+    <a href="https://calendly.com/vitalkauai" target="_blank" style="display:inline-block;font-size:10px;font-weight:400;letter-spacing:0.3em;text-transform:uppercase;color:var(--forest);background:var(--gold);padding:18px 44px;text-decoration:none;">Join Our Next Group Ceremony</a>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="faq-inner">
+    <div class="faq-header">
+      <div>
+        <span class="section-label reveal">Before You Ask</span>
+        <h2 class="section-title reveal">Common<br><em>Questions</em></h2>
+      </div>
+      <p class="reveal">If something specific is on your mind, bring it. Reach out — every question matters when you are preparing to do real work.</p>
+    </div>
+    <div class="faq-list reveal">
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-q-text">How long is a typical stay?</span>
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-answer">
+          <p>Our group ceremony is a seven-day arc — arriving on Day 1, two days of preparation, ceremony on Day 3, three days of integration, and a closing on Day 7. We discuss your specific journey and any additional support you may need on your discovery call.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-q-text">What does the discovery call look like?</span>
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-answer">
+          <p>The first step is a discovery call — a real conversation with Rachel and/or Josh, bookable directly through our Calendly. We want to understand what brings you here, what you are carrying, your health history, and what support will serve you best. This is how we begin to know you, so that the container we hold for you is built for who you actually are.</p>
+          <p>Depending on the nature of your journey, there may also be medical forms and protocol preparation materials shared in advance of arrival.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-q-text">Can I bring a partner or travel companion?</span>
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-answer">
+          <p>Yes. We work with couples and close companions who wish to move through a journey together. Co-journeying can be deeply powerful — and it does require its own kind of preparation and intentionality. Let us know on your discovery call that you are coming with someone, and we will discuss what serves you both best. We also welcome groups — intimate gatherings of friends, family, or community who feel called to transform together. Reach out and we will shape something worthy of the occasion.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-q-text">What should I pack?</span>
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-answer">
+          <p>Light, natural fabrics that can get wet and get dirty. Layers for cool mornings and evenings. Good walking shoes and flip flops. A journal. Anything that helps you feel at home in your body. Your full packing and preparation guide is available in your member portal once your journey is confirmed.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-q-text">How is the food handled?</span>
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-answer">
+          <p>Meals are prepared with the same intentionality as everything else at Vital Kauaʻi. We source locally and seasonally — farms, farmers' markets, and the ocean. All dietary needs, allergies, and protocol-specific requirements are gathered on your discovery call and honored throughout your stay. Your nutrition is held with care across all seven days.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-q-text">How far is the airport from Hanalei?</span>
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-answer">
+          <p>Līhuʻe Airport (LIH) is approximately one hour from Hanalei along Kauaʻi's scenic North Shore highway. Ground transportation can be arranged through us — simply let us know on your discovery call and we will have everything coordinated. Members are also welcome to arrange their own transportation and make their own way north.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-q-text">Is there WiFi? What is the connectivity like?</span>
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-answer">
+          <p>Yes, WiFi is available in the homes. Many members find that their relationship with devices naturally shifts once they are here — Hanalei has a way of drawing you fully into the present. Your relationship with devices is yours to navigate, and we fully support a digital reset if that is something you want to explore as part of your journey.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span class="faq-q-text">What is your cancellation policy?</span>
+          <span class="faq-icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-answer">
+          <p>We understand that life moves and plans shift. Our cancellation terms are shared in full at the time of booking. Cancellations made within 30 days of arrival are eligible for a full transfer. Reach out to us directly and we will find a path forward together.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- INTAKE NOTE -->
+<section id="intake">
+  <div class="intake-inner">
+    <span class="section-label reveal">Before You Arrive</span>
+    <h2 class="intake-title reveal">Your Needs<br><em>Are Heard</em></h2>
+    <p class="intake-body reveal">Every member who joins us completes a discovery call before arrival. This is where we listen — to what you need, what supports you, and what will make this container feel most like home. Your accommodations are matched with care and intention.</p>
+    <div class="intake-features reveal">
+      <div class="intake-feature">
+        <div class="intake-rule"></div>
+        <p class="intake-feature-title">Space Needs</p>
+        <p class="intake-feature-desc">Private room, accessibility requirements, sleep preferences, sensitivities or allergies</p>
+      </div>
+      <div class="intake-feature">
+        <div class="intake-rule"></div>
+        <p class="intake-feature-title">Dietary Needs</p>
+        <p class="intake-feature-desc">Allergies, protocol-based nutrition, fasting support, cultural considerations</p>
+      </div>
+      <div class="intake-feature">
+        <div class="intake-rule"></div>
+        <p class="intake-feature-title">Anything Else</p>
+        <p class="intake-feature-desc">Sensitivities, co-journeying with a partner, children, timing — we listen to all of it</p>
+      </div>
+    </div>
+    <a href="/begin-your-journey" class="btn-primary reveal">Begin Your Inquiry</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <p class="footer-brand">Vital Kauaʻi</p>
+    <p class="footer-tagline">A living sanctuary of transformation and awakening on Kauaʻi's sacred North Shore.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Explore</h4>
+    <ul class="footer-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="iboga-journey.html">Iboga Journey</a></li>
+      <li><a href="/stay">Stay With Us</a></li>
+      <li><a href="/healing-circle">Our Circle</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Connect</h4>
+    <ul class="footer-links">
+      <li><a href="/about">About Rachel & Josh</a></li>
+      <li><a href="/begin-your-journey">Contact</a></li>
+      <li><a href="portal.html">Member Portal</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Sacred Policies</h4>
+    <ul class="footer-links">
+      <li><a href="privacy.html">Privacy</a></li>
+      <li><a href="terms.html">Terms</a></li>
+      <li><a href="medical-disclaimer.html">Medical Disclaimer</a></li>
+      <li><a href="church-information.html">Church Information</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2026 Vital Kauai Church · PO Box 932, Hanalei, HI 96714 · aloha@vitalkauai.com</p>
+  <p>All original content on this site is protected by U.S. copyright law. Reproduction without written permission prohibited.</p>
+</div>
+
+<script>
+// Nav scroll
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+reveals.forEach(el => el.classList.add('hidden'));
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.remove('hidden');
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+reveals.forEach(el => observer.observe(el));
+
+// FAQ accordion
+document.querySelectorAll('.faq-question').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
+</script>
+`;
