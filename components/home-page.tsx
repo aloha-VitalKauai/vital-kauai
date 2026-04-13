@@ -432,15 +432,15 @@ export function HomePage() {
           <div className={`${styles.stayImageStack} ${styles.reveal}`}>
             <Image
               className={styles.stayImgMain}
-              src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=80"
-              alt="North Shore Kauaʻi"
+              src="/images/hanaleipier.jpeg"
+              alt="Hanalei Pier"
               width={800}
               height={900}
             />
             <Image
               className={styles.stayImgAccent}
-              src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80"
-              alt="Hanalei"
+              src="/images/hanaleitown.jpeg"
+              alt="Hanalei Town"
               width={600}
               height={600}
             />
