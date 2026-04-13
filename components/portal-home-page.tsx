@@ -358,11 +358,14 @@ export function PortalHomePage({
         <a className={styles.navLogo} href="/">
           Vital <span>Kaua&#699;i</span>
         </a>
-        <div className="nav-dropdown-wrap" style={{ position: "relative", cursor: "pointer" }}>
-          <span style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(245,240,232,0.75)" }}>Integration</span>
-          <div className="nav-dropdown" style={{ left: "50%", transform: "translateX(-50%)" }}>
-            <a href="/portal/integration/pre-ceremony" style={{ borderBottom: "none", borderRadius: "4px 4px 0 0" }}>Pre-Ceremony</a>
-            <a href="/portal/integration/post-ceremony" style={{ borderTop: "1px solid rgba(200,169,110,0.1)", borderRadius: "0 0 4px 4px" }}>Post-Ceremony</a>
+        <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
+          <a href="/portal" style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(245,240,232,0.75)", textDecoration: "none", transition: "color 0.2s" }}>Dashboard</a>
+          <div className="nav-dropdown-wrap" style={{ position: "relative", cursor: "pointer" }}>
+            <span style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(245,240,232,0.75)" }}>Integration</span>
+            <div className="nav-dropdown" style={{ left: "50%", transform: "translateX(-50%)" }}>
+              <a href="/portal/integration/pre-ceremony" style={{ borderBottom: "none", borderRadius: "4px 4px 0 0" }}>Pre-Ceremony</a>
+              <a href="/portal/integration/post-ceremony" style={{ borderTop: "1px solid rgba(200,169,110,0.1)", borderRadius: "0 0 4px 4px" }}>Post-Ceremony</a>
+            </div>
           </div>
         </div>
         <div className={styles.navMember}>
