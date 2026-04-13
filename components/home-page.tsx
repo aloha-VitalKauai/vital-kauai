@@ -483,9 +483,9 @@ export function HomePage() {
                 </div>
               ))}
             </div>
-            <a href="#reciprocity" className={`${styles.storyLink} ${styles.reveal}`}>
+            <Link href="/stay" className={`${styles.storyLink} ${styles.reveal}`}>
               Stay with Us →
-            </a>
+            </Link>
           </div>
         </div>
       </section>
