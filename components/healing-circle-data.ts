@@ -28,7 +28,7 @@ export const members: Member[] = [
     name: "Rachel Nelson",
     role: "Co-Founder",
     cat: "founders",
-    photo: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300&q=80",
+    photo: "/images/about/rachel-nelson.jpg",
     shortBio:
       "Rachel Nelson is the co-founder of Vital Kauaʻi and the vision behind its emergence on the North Shore. Her path weaves Eastern wisdom traditions with evidence-based modern science into experiences that are both practically grounding and profoundly transformative. She holds masters-level training in Consciousness, Spirituality and Transpersonal Psychology through Alef Trust, and doctoral-level naturopathic medicine education. A student of Margot Anand's SkyDancing Tantra lineage and a devoted yogi for over 25 years, Rachel brings her full self — mother, healer, mystic, and community builder — to every container she holds.",
     bio: "Rachel Nelson is the co-founder of Vital Kauaʻi and the vision behind its emergence on the North Shore. Her path weaves Eastern wisdom traditions with evidence-based modern science into experiences that are both practically grounding and profoundly transformative. She holds masters-level training in Consciousness, Spirituality and Transpersonal Psychology through Alef Trust, and doctoral-level naturopathic medicine education. A student of Margot Anand's SkyDancing Tantra lineage and a devoted yogi for over 25 years, Rachel brings her full self — mother, healer, mystic, and community builder — to every container she holds.",
@@ -38,7 +38,7 @@ export const members: Member[] = [
     name: "Josh Perdue",
     role: "Co-Founder",
     cat: "founders",
-    photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80",
+    photo: "/images/about/josh-perdue.jpg",
     shortBio:
       "Josh Perdue is the co-founder of Vital Kauaʻi and a devoted practitioner of somatic healing, relational transformation, and conscious business. He holds authentic Bwiti initiation in Gabon and ISTA training at Highden Temple in New Zealand. Josh is certified in PsychoNeuroEnergetics and EFT, and trained in somatic therapy with Judith Johnson. His Stanford Design School background informs how he builds healing containers with both beauty and precision. Josh is also the founder of The Mycelium Network and Best Life Ever.",
     bio: "Josh Perdue is the co-founder of Vital Kauaʻi and a devoted practitioner of somatic healing, relational transformation, and conscious business. He holds authentic Bwiti initiation in Gabon, ISTA training at Highden Temple in New Zealand, somatic certification through PsychoNeuroEnergetics, and EFT certification. He is also the founder of The Mycelium Network and Best Life Ever.",
@@ -48,7 +48,7 @@ export const members: Member[] = [
     name: "Judith Johnson",
     role: "Director of Somatic Integration",
     cat: "somatic",
-    photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&q=80",
+    photo: "/images/judithjohnson.jpeg",
     shortBio:
       "Judith Johnson is a pioneer of body-oriented healing and the founder of PsychoNeuroEnergetics (PNE). Her path spans Transactional Analysis, Gestalt, neo-Reichian work, and Somatic Experiencing with Peter Levine. PNE works through the vagus nerve to unwind traumatic imprints held deep in the nervous system. She has integrated Stephen Porges' Polyvagal Theory throughout her practice and teaching. Judith serves as Head Somatic Therapy Integration Director for Americans for Ibogaine.",
     bio: "Judith Johnson is a pioneer of body-oriented healing and the founder of PsychoNeuroEnergetics (PNE). Her path spans Transactional Analysis, Gestalt, neo-Reichian work, Body Electronics with John Ray, and Somatic Experiencing with Peter Levine — giving her the foundation to develop something entirely her own: a modality that accesses the deepest layers of traumatic imprint held in the nervous system, using the healing power of the vagus nerve as its primary gateway. She has deeply integrated Stephen Porges' Polyvagal Theory and Social Engagement work into her teaching and practice. Judith serves as the Head Somatic Therapy Integration Director for Americans for Ibogaine, bringing her lifetime of nervous system expertise directly into the field of plant medicine integration. We are honored to have Judith as a cornerstone of the Vital Kauaʻi circle.",
@@ -58,7 +58,7 @@ export const members: Member[] = [
     name: "Dr. Liz Esalen",
     role: "Psychedelic Integration Psychologist",
     cat: "somatic",
-    photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&q=80",
+    photo: "/images/lizesalen.jpeg",
     shortBio:
       "Dr. Liz Esalen is a Doctor of Clinical Psychology with over 30 years of holistic, life-affirming care. She is the founder and CEO of Luminous Healing Center and The Lotus Collaborative in California. Her work bridges psychology, shamanic wisdom, MDMA-assisted therapy, and embodied healing. She is a lineage-initiated mesa carrier and shamanic energy medicine practitioner. At Vital Kauaʻi, Dr. Liz serves as both a pre-ceremony preparation guide and post-ceremony integration specialist.",
     bio: "Dr. Liz Esalen is a Doctor of Clinical Psychology and the founder of Luminous Healing Center — one of only ten centers in the nation approved to offer MDMA-assisted therapy through MAPS. With over 30 years of holistic, life-affirming care, her work bridges clinical psychology, shamanic energy medicine, Internal Family Systems, the Enneagram, and embodied movement practices. She is a lineage-initiated mesa carrier and leads transformational dance journeys and feminine leadership retreats around the world. At Vital Kauaʻi, Dr. Liz serves as both a pre-ceremony preparation specialist and post-ceremony integration guide — holding guests with the full breadth of her clinical and ceremonial intelligence at every stage of their journey.",
@@ -87,7 +87,7 @@ export const members: Member[] = [
     name: "Rachel Nelson",
     role: "Integration Guide",
     cat: "somatic",
-    photo: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300&q=80",
+    photo: "/images/about/rachel-nelson.jpg",
     shortBio:
       "Rachel leads the morning-after integration container at Vital Kauaʻi — a sacred holding space where the insights, visions, and openings from ceremony begin to find their roots in daily life. Rachel understands that what surfaces in ceremony is only the beginning — integration is where the real transformation lives. She holds this space with warmth, depth, and the intuition of someone who has walked the path herself.",
     bio: "Rachel leads the morning-after integration container at Vital Kauaʻi — a sacred holding space where the insights, visions, and openings from ceremony begin to find their roots in daily life. Rachel understands that what surfaces in ceremony is only the beginning — integration is where the real transformation lives. She holds this space with warmth, depth, and the intuition of someone who has walked the path herself.",
@@ -97,7 +97,7 @@ export const members: Member[] = [
     name: "Josh Perdue",
     role: "Plant Medicine Guide · Bwiti Initiate",
     cat: "plant",
-    photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80",
+    photo: "/images/about/josh-perdue.jpg",
     shortBio:
       "Josh Perdue holds authentic Bwiti initiation from Gabon — one of the most rigorous and sacred plant medicine lineages in the world. His ceremonial work is rooted in years of personal practice, deep study, and a genuine reverence for the intelligence of plant consciousness. Josh brings a rare combination of ceremonial precision, somatic awareness, and heart-centered presence to every journey he guides. He is co-founder of Vital Kauaʻi and has dedicated his life to the responsible stewardship of transformational medicine. Every ceremony he holds is an act of devotion.",
     bio: "Josh Perdue holds authentic Bwiti initiation from Gabon — one of the most rigorous and sacred plant medicine lineages in the world. His ceremonial work is rooted in years of personal practice, deep study, and a genuine reverence for the intelligence of plant consciousness. Josh brings a rare combination of ceremonial precision, somatic awareness, and heart-centered presence to every journey he guides. He is co-founder of Vital Kauaʻi and has dedicated his life to the responsible stewardship of transformational medicine. Every ceremony he holds is an act of devotion.",
@@ -117,7 +117,7 @@ export const members: Member[] = [
     name: "Rachel Nelson",
     role: "Breathwork · Yoga & Movement · Energy Healing",
     cat: "healers",
-    photo: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300&q=80",
+    photo: "/images/about/rachel-nelson.jpg",
     shortBio:
       "Rachel Nelson is a devoted healer whose offerings draw from a rich and layered training in the healing arts. She holds master's training in Consciousness, Spirituality and Transpersonal Psychology through Alef Trust, and doctoral-level studies in the naturopathic medicine. She is also a certified life coach, hypnotherapist, and Mind Body Nutrition practitioner trained through Marc David's Institute for the Psychology of Eating. Her energy healing work is rooted in Reiki and Tantra, and a lifetime of somatic and devotional practice. Rachel weaves dynamic breathwork, yoga, and embodied movement into intimate, one-of-a-kind healing experiences — meeting each guest exactly where they are.",
     bio: "Rachel Nelson is a devoted healer whose offerings draw from a rich and layered training in the healing arts. She holds master's training in Consciousness, Spirituality and Transpersonal Psychology through Alef Trust, and doctoral-level studies in the naturopathic medicine. She is also a certified life coach, hypnotherapist, and Mind Body Nutrition practitioner trained through Marc David's Institute for the Psychology of Eating. Her energy healing work is rooted in Reiki and Tantra, and a lifetime of somatic and devotional practice. Rachel weaves dynamic breathwork, yoga, and embodied movement into intimate, one-of-a-kind healing experiences — meeting each guest exactly where they are.",
@@ -207,7 +207,7 @@ export const members: Member[] = [
     name: "Kurtis Kunesh",
     role: "Deep Tissue Massage",
     cat: "healers",
-    photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80",
+    photo: "/images/about/josh-perdue.jpg",
     shortBio:
       "Kurtis Kunesh brings skilled, therapeutic deep tissue massage to the Vital Kauaʻi circle. His work goes beneath surface tension to address the deeper layers of muscle and connective tissue, releasing chronic holding patterns and restoring ease of movement throughout the body. Kurtis combines strong technique with attentive presence, meeting each client exactly where they are.",
     bio: "Kurtis Kunesh brings skilled, therapeutic deep tissue massage to the Vital Kauaʻi circle. His work goes beneath surface tension to address the deeper layers of muscle and connective tissue, releasing chronic holding patterns and restoring ease of movement throughout the body. Kurtis combines strong technique with attentive presence, meeting each client exactly where they are.",
@@ -217,7 +217,7 @@ export const members: Member[] = [
     name: "Ariana Beil",
     role: "BioGeometry Balancing",
     cat: "healers",
-    photo: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300&q=80",
+    photo: "/images/about/rachel-nelson.jpg",
     shortBio:
       "Ariana Beil brings the revolutionary science of BioGeometry to the Vital Kauaʻi circle — a practice that uses the subtle energy principles of shape, color, and form to restore natural balance within biological systems and living environments. Founded by Egyptian scholar Dr. Ibrahim Karim, BioGeometry works to harmonize the body's energy interactions with its surroundings, addressing geopathic stress, EMF, and energetic imbalance at a foundational level. Ariana's sessions support the body's own intelligence in returning to harmony, ease, and coherence. Her work is a quietly powerful complement to every healing journey at Vital Kauaʻi.",
     bio: "Ariana Beil brings the revolutionary science of BioGeometry to the Vital Kauaʻi circle — a practice that uses the subtle energy principles of shape, color, and form to restore natural balance within biological systems and living environments. Founded by Egyptian scholar Dr. Ibrahim Karim, BioGeometry works to harmonize the body's energy interactions with its surroundings, addressing geopathic stress, EMF, and energetic imbalance at a foundational level. Ariana's sessions support the body's own intelligence in returning to harmony, ease, and coherence. Her work is a quietly powerful complement to every healing journey at Vital Kauaʻi.",
