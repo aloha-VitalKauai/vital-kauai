@@ -79,6 +79,9 @@ export function ChurchInformationPage() {
               <li>
                 <Link href="/church-information">About Vital Kauaʻi Church</Link>
               </li>
+              <li>
+                <Link href="/healing-circle">Our Healing Circle</Link>
+              </li>
             </ul>
           </li>
           <li>

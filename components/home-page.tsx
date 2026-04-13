@@ -159,6 +159,9 @@ export function HomePage() {
               <li>
                 <Link href="/church-information">About Vital Kauaʻi Church</Link>
               </li>
+              <li>
+                <Link href="/healing-circle">Our Healing Circle</Link>
+              </li>
             </ul>
           </li>
           <li>
@@ -197,9 +200,9 @@ export function HomePage() {
         <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>
           About Vital Kauaʻi Church
         </Link>
-        <a href="#team" onClick={() => setIsMobileNavOpen(false)}>
+        <Link href="/healing-circle" onClick={() => setIsMobileNavOpen(false)}>
           Our Healing Circle
-        </a>
+        </Link>
         <a href="/portal" onClick={() => setIsMobileNavOpen(false)}>
           Member Portal
         </a>

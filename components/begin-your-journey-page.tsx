@@ -48,6 +48,9 @@ export function BeginYourJourneyPage() {
               <li>
                 <Link href="/church-information">About Vital Kaua&#699;i Church</Link>
               </li>
+              <li>
+                <Link href="/healing-circle">Our Healing Circle</Link>
+              </li>
             </ul>
           </li>
           <li>
