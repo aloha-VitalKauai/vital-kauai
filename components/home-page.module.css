@@ -628,6 +628,7 @@
 
 .riverFeatureImage {
   object-fit: cover;
+  object-position: left center;
   filter: brightness(0.55);
 }
 
