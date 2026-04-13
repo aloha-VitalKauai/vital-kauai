@@ -37,6 +37,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
                 <a href="/portal/integration/post-ceremony" className="pn-dropdown-item">Post-Ceremony</a>
               </div>
             </div>
+          <a href="/portal/community" className="pn-link">Community</a>
           </div>
         </div>
         <div className="pn-right">
