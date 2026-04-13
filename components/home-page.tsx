@@ -5,23 +5,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import styles from "./home-page.module.css";
 
-const testimonials = [
-  {
-    quote:
-      "I arrived broken and left remembering who I was before the world told me who to be. Vital Kauaʻi didn't heal me — they held space for me to heal myself. It was the most profound experience of my life.",
-    attribution: "Sarah M., 42 · Iboga Journey Participant",
-  },
-  {
-    quote:
-      "I have done many retreats over the years. What happened here surpassed all of them. The land, the medicine, the care — it all worked together in a way words can only begin to hold. I came home to myself.",
-    attribution: "James T., 38 · Vitality Reset Participant",
-  },
-  {
-    quote:
-      "My partner and I arrived at a crossroads. We left with our hearts cracked open and more in love than we have ever been. What Rachel and Josh hold is something truly rare — a container unlike anything we have experienced.",
-    attribution: "Maya & Daniel R. · Sacred Intimacy Immersion",
-  },
-];
+const testimonialQuote = "If anyone is considering going here, do it. As an expert in the fields of healing and spirituality, traveling the world experiencing the best modalities, retreats and events for the past 18 years, this is by far one of the most profound and effective experiences that you can\u2019t find anywhere else. I can\u2019t imagine such a positive future for myself if I hadn\u2019t gone here first. Eternally grateful.";
+const testimonialAttribution = "Daniel R.";
 
 const teamMembers = [
   {
@@ -111,7 +96,6 @@ const particles = [
 export function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const pageRef = useRef<HTMLElement | null>(null);
 
@@ -122,14 +106,6 @@ export function HomePage() {
     window.addEventListener("scroll", onScroll);
 
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      setCurrentSlide((slide) => (slide + 1) % testimonials.length);
-    }, 7000);
-
-    return () => window.clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -284,28 +260,10 @@ export function HomePage() {
 
       <section id="testimonial-hero" className={styles.testimonialHero}>
         <div className={styles.testimonialCarousel}>
-          <div
-            className={styles.testimonialTrack}
-            style={{ transform: `translateX(-${currentSlide * (100 / testimonials.length)}%)` }}
-          >
-            {testimonials.map((item) => (
-              <div key={item.attribution} className={styles.testimonialSlide}>
-                <div className={styles.testimonialQuoteMark}>&quot;</div>
-                <p className={styles.testimonialText}>&quot;{item.quote}&quot;</p>
-                <p className={styles.testimonialAttr}>— {item.attribution}</p>
-              </div>
-            ))}
-          </div>
-          <div className={styles.testimonialDots}>
-            {testimonials.map((item, index) => (
-              <button
-                key={item.attribution}
-                type="button"
-                aria-label={`Go to testimonial ${index + 1}`}
-                className={`${styles.testimonialDot} ${currentSlide === index ? styles.testimonialDotActive : ""}`}
-                onClick={() => setCurrentSlide(index)}
-              />
-            ))}
+          <div className={styles.testimonialSlide}>
+            <div className={styles.testimonialQuoteMark}>&quot;</div>
+            <p className={styles.testimonialText}>&quot;{testimonialQuote}&quot;</p>
+            <p className={styles.testimonialAttr}>— {testimonialAttribution}</p>
           </div>
         </div>
       </section>
