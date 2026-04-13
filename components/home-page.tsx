@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import styles from "./home-page.module.css";
+import { createClient } from "@/lib/supabase/client";
 
 const testimonialQuote = "If anyone is considering going here, do it. As an expert in the fields of healing and spirituality, traveling the world experiencing the best modalities, retreats and events for the past 18 years, this is by far one of the most profound and effective experiences that you can\u2019t find anywhere else. I can\u2019t imagine such a positive future for myself if I hadn\u2019t gone here first. Eternally grateful.";
 const testimonialAttribution = "Daniel R.";
@@ -100,6 +101,65 @@ export function HomePage() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const pageRef = useRef<HTMLElement | null>(null);
+
+  const [contactForm, setContactForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+  const [contactStatus, setContactStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  async function handleContactSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setContactStatus("sending");
+
+    const supabase = createClient();
+    const fullName = `${contactForm.firstName.trim()} ${contactForm.lastName.trim()}`.trim();
+
+    const { error } = await supabase.from("leads").insert({
+      full_name: fullName,
+      email: contactForm.email.trim().toLowerCase(),
+      phone: contactForm.phone.trim() || null,
+      message: contactForm.message.trim() || null,
+      source: "Contact",
+      lead_date: new Date().toISOString(),
+      welcome_video_sent: false,
+      discovery_call_booked: false,
+      converted_to_member: false,
+    });
+
+    if (error && error.code !== "23505") {
+      console.error("Contact form error:", error);
+      setContactStatus("error");
+      return;
+    }
+
+    // Notify founders via email
+    const emailBody = [
+      `New contact form submission from ${fullName}`,
+      `Email: ${contactForm.email.trim()}`,
+      contactForm.phone.trim() ? `Phone: ${contactForm.phone.trim()}` : null,
+      contactForm.message.trim() ? `\nMessage:\n${contactForm.message.trim()}` : null,
+    ].filter(Boolean).join("\n");
+
+    supabase.functions.invoke("send-notification", {
+      body: {
+        channel: "email",
+        to: "aloha@vitalkauai.com",
+        subject: `New inquiry from ${fullName}`,
+        message: emailBody,
+        notify_founders: true,
+        founder_subject: `New contact inquiry — ${fullName}`,
+        founder_message: emailBody,
+        to_name: fullName,
+      },
+    }).catch((err) => console.error("Notification error:", err));
+
+    setContactStatus("sent");
+    setContactForm({ firstName: "", lastName: "", email: "", phone: "", message: "" });
+  }
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 60);
@@ -721,35 +781,76 @@ export function HomePage() {
           </div>
         </div>
 
-        <form className={styles.contactForm}>
+        <form className={styles.contactForm} onSubmit={handleContactSubmit}>
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
               <label htmlFor="first-name">First Name</label>
-              <input id="first-name" type="text" placeholder="Your name" />
+              <input
+                id="first-name"
+                type="text"
+                placeholder="Your name"
+                required
+                value={contactForm.firstName}
+                onChange={(e) => setContactForm((f) => ({ ...f, firstName: e.target.value }))}
+              />
             </div>
             <div className={styles.formGroup}>
               <label htmlFor="last-name">Last Name</label>
-              <input id="last-name" type="text" placeholder="Your name" />
+              <input
+                id="last-name"
+                type="text"
+                placeholder="Your name"
+                value={contactForm.lastName}
+                onChange={(e) => setContactForm((f) => ({ ...f, lastName: e.target.value }))}
+              />
             </div>
           </div>
           <div className={styles.formGroup}>
             <label htmlFor="email">Email</label>
-            <input id="email" type="email" placeholder="your@email.com" />
+            <input
+              id="email"
+              type="email"
+              placeholder="your@email.com"
+              required
+              value={contactForm.email}
+              onChange={(e) => setContactForm((f) => ({ ...f, email: e.target.value }))}
+            />
           </div>
           <div className={styles.formGroup}>
             <label htmlFor="phone">Phone</label>
-            <input id="phone" type="tel" placeholder="+1 (000) 000-0000" />
+            <input
+              id="phone"
+              type="tel"
+              placeholder="+1 (000) 000-0000"
+              value={contactForm.phone}
+              onChange={(e) => setContactForm((f) => ({ ...f, phone: e.target.value }))}
+            />
           </div>
           <div className={styles.formGroup}>
             <label htmlFor="message">What Is Calling You?</label>
             <textarea
               id="message"
               placeholder="Share what's alive in you — what you're ready to heal, explore, or discover..."
+              value={contactForm.message}
+              onChange={(e) => setContactForm((f) => ({ ...f, message: e.target.value }))}
             />
           </div>
-          <button type="button" className={styles.btnSubmit}>
-            Send With Aloha →
+          <button
+            type="submit"
+            className={styles.btnSubmit}
+            disabled={contactStatus === "sending"}
+          >
+            {contactStatus === "sending"
+              ? "Sending..."
+              : contactStatus === "sent"
+                ? "Sent with Aloha ✓"
+                : "Send With Aloha →"}
           </button>
+          {contactStatus === "error" && (
+            <p style={{ color: "#e57373", marginTop: "0.5rem", fontSize: "0.9rem" }}>
+              Something went wrong — please try again or email us directly.
+            </p>
+          )}
         </form>
       </section>
 
