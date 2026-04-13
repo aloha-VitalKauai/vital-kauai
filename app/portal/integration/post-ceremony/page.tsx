@@ -476,6 +476,7 @@ export default function PostCeremonyPage() {
   const [completed, setCompleted] = useState<Set<number>>(new Set())
   const [checklist, setChecklist] = useState<Record<string, boolean>>({})
   const [weeklyTracking, setWeeklyTracking] = useState<Record<number, WeekTracking>>({})
+  const [journal, setJournal] = useState<Record<string, string>>({})
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
   const [checkInWeek, setCheckInWeek] = useState<number | null>(null)
 
@@ -495,6 +496,7 @@ export default function PostCeremonyPage() {
         setCompleted(done)
         setChecklist(data.checklist_items ?? {})
         setWeeklyTracking(data.weekly_tracking ?? {})
+        setJournal(data.journal_responses ?? {})
         const next = [0,1,2,3,4,5].find(w => !done.has(w))
         setActiveWeek(next !== undefined ? next : 5)
       }
@@ -506,7 +508,8 @@ export default function PostCeremonyPage() {
   const save = useCallback(async (
     newCompleted: Set<number>,
     newChecklist: Record<string, boolean>,
-    newTracking: Record<number, WeekTracking>
+    newTracking: Record<number, WeekTracking>,
+    newJournal?: Record<string, string>
   ) => {
     if (!userId) return
     setSaveStatus('saving')
@@ -515,11 +518,23 @@ export default function PostCeremonyPage() {
       weeks_completed: [...newCompleted],
       checklist_items: newChecklist,
       weekly_tracking: newTracking,
+      journal_responses: newJournal ?? journal,
       last_updated: new Date().toISOString(),
     }, { onConflict: 'member_id' })
     setSaveStatus('saved')
     setTimeout(() => setSaveStatus('idle'), 2200)
-  }, [userId])
+  }, [userId, journal])
+
+  // Journal auto-save with debounce
+  const journalTimerRef = { current: null as ReturnType<typeof setTimeout> | null }
+  const updateJournal = (key: string, value: string) => {
+    const next = { ...journal, [key]: value }
+    setJournal(next)
+    if (journalTimerRef.current) clearTimeout(journalTimerRef.current)
+    journalTimerRef.current = setTimeout(() => {
+      save(completed, checklist, weeklyTracking, next)
+    }, 1500)
+  }
 
   const handleCheckInComplete = async (weekIdx: number, data: Omit<WeekTracking, 'completed'>) => {
     setCheckInWeek(null)
@@ -584,6 +599,9 @@ export default function PostCeremonyPage() {
         .dataset-note{background:rgba(28,43,30,.04);border:.5px solid rgba(28,43,30,.1);border-radius:2px;padding:12px 16px;margin-top:12px;font-size:12px;color:var(--stone);line-height:1.7;font-style:italic}
         .actions-list{display:flex;flex-direction:column;gap:10px}.action-item{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border:.5px solid var(--border);border-radius:4px;background:white}.action-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}.action-text{font-size:13.5px;color:var(--ink);line-height:1.5}.action-note{font-size:12px;color:var(--stone);line-height:1.6;margin-top:5px;font-style:italic}
         .prompts-list{border-top:1px solid var(--border)}.prompt-item{padding:22px 0;border-bottom:1px solid var(--border)}.prompt-num{font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:10px}.prompt-q{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--ink);line-height:1.35;margin-bottom:10px}.prompt-hint{font-size:12.5px;color:var(--stone);line-height:1.75;font-style:italic}
+        .journal-textarea{width:100%;margin-top:14px;padding:14px 16px;border:1px solid rgba(200,169,110,0.2);border-left:2px solid var(--gold);background:rgba(200,169,110,0.03);font-family:'Jost',sans-serif;font-size:14px;font-weight:300;color:var(--ink);line-height:1.85;resize:vertical;outline:none;min-height:100px;transition:border-color .2s,background .2s}
+        .journal-textarea:focus{border-color:var(--gold);background:rgba(200,169,110,0.06)}
+        .journal-textarea::placeholder{color:rgba(28,43,30,0.2);font-style:italic}
         .integration-qs{margin-top:28px;border:.5px solid rgba(200,169,110,.2);border-radius:4px;overflow:hidden}.iq-header{background:rgba(200,169,110,.06);padding:14px 20px;border-bottom:.5px solid rgba(200,169,110,.15)}.iq-label{font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}.iq-item{padding:18px 20px;border-bottom:.5px solid var(--border-lt)}.iq-item:last-of-type{border-bottom:none}.iq-q{font-size:13px;color:var(--ink-mid);font-weight:500;margin-bottom:6px}.iq-hint{font-size:12px;color:var(--stone);font-style:italic;line-height:1.65}
         .rg-wrap{margin-top:40px;border:.5px solid rgba(200,169,110,.35);border-radius:4px;overflow:hidden}.rg-header{background:var(--forest);padding:18px 24px;display:flex;align-items:center;gap:12px}.rg-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0}.rg-title{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}.rg-body{padding:20px 24px}.rg-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:.5px solid var(--border)}.rg-item:last-of-type{border-bottom:none}.rg-check{width:18px;height:18px;border-radius:2px;border:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}.rg-check.checked{background:var(--gold);border-color:var(--gold)}.rg-check-icon{font-size:10px;color:white;opacity:0}.rg-check.checked .rg-check-icon{opacity:1}.rg-item-text{font-size:13px;color:var(--ink-mid);line-height:1.5}
         .monthly-arc{margin-top:48px;background:linear-gradient(135deg,rgba(28,43,30,.04) 0%,rgba(200,169,110,.04) 100%);border:.5px solid rgba(200,169,110,.18);border-radius:4px;padding:32px 36px}.ma-eyebrow{font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:block}.ma-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--ink);line-height:1.2;margin-bottom:14px}.ma-title em{font-style:italic;color:var(--gold)}.ma-text{font-size:13.5px;color:var(--stone);line-height:1.9;margin-bottom:20px}.ma-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}.ma-card{background:white;border:.5px solid var(--border);border-radius:4px;padding:18px 20px}.ma-card-label{font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:block}.ma-card-text{font-size:13px;color:var(--ink-mid);line-height:1.7}.ma-question{margin-top:20px;background:rgba(200,169,110,.06);border:.5px solid rgba(200,169,110,.2);border-radius:4px;padding:16px 20px}.ma-q-label{font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:block}.ma-q-text{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;color:var(--ink);line-height:1.4}
@@ -692,13 +710,23 @@ export default function PostCeremonyPage() {
             <div className="section">
               <span className="section-label">Journal prompts — 2 only</span>
               <div className="prompts-list">
-                {w.prompts.map((p, pi) => (
-                  <div className="prompt-item" key={pi}>
-                    <span className="prompt-num">0{pi+1}</span>
-                    <p className="prompt-q">{p.q}</p>
-                    <p className="prompt-hint">{p.hint}</p>
-                  </div>
-                ))}
+                {w.prompts.map((p, pi) => {
+                  const jKey = `w${i}-p${pi}`
+                  return (
+                    <div className="prompt-item" key={pi}>
+                      <span className="prompt-num">0{pi+1}</span>
+                      <p className="prompt-q">{p.q}</p>
+                      <p className="prompt-hint">{p.hint}</p>
+                      <textarea
+                        className="journal-textarea"
+                        value={journal[jKey] ?? ''}
+                        onChange={(e) => updateJournal(jKey, e.target.value)}
+                        placeholder="Write freely..."
+                        rows={4}
+                      />
+                    </div>
+                  )
+                })}
               </div>
               <div className="continuity" style={{ marginTop: 20, marginBottom: 0 }}>
                 <div className="ct-arrow">→</div>
