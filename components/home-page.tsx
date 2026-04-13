@@ -626,7 +626,7 @@ export function HomePage() {
             home, centering aloha ʻāina in everything we do and returning a portion of every
             offering to the regeneration of this place.
           </p>
-          <Link href="/stay#community" className={`${styles.storyLink} ${styles.reveal}`}>
+          <Link href="/stay#explore-land" className={`${styles.storyLink} ${styles.reveal}`}>
             The Stewards We Walk Alongside →
           </Link>
         </div>
