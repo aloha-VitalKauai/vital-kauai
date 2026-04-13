@@ -365,7 +365,7 @@ export function HomePage() {
       <section id="rivers" className={styles.rivers}>
         <div className={`${styles.riverFeature} ${styles.reveal}`}>
           <Image
-            src="/images/iboga.jpeg"
+            src="/images/ibogaseed.jpeg"
             alt="Iboga seed"
             fill
             sizes="100vw"
