@@ -563,6 +563,9 @@ export function HomePage() {
             &quot;We found each other at exactly the right moment. This sanctuary is our offering —
             built in service of something far greater than either of us.&quot;
           </p>
+          <Link href="/about" className={styles.storyLink} style={{ marginTop: 30 }}>
+            Meet the Founders →
+          </Link>
         </div>
       </section>
 
