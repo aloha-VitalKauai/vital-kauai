@@ -174,7 +174,7 @@ const BODY_CONTENT = `
 
 <div class="cover">
   <div class="cover-header">
-    <a href="https://vitalkauai.com" class="cover-logo">Vital Kauaʻi</a>
+    <a href="/" class="cover-logo">Vital Kauaʻi</a>
     <span class="cover-tag">Free Resource</span>
   </div>
   <div class="cover-main">
