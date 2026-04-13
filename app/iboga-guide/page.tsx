@@ -190,7 +190,7 @@ const BODY_CONTENT = `
 <div class="cover">
   <div class="cover-header">
     <a href="/" class="cover-logo">Vital Kauaʻi</a>
-    <span class="cover-tag">Free Resource</span>
+    <a href="/downloads/iboga-guide.pdf" download class="cover-tag" style="text-decoration:none;cursor:pointer;">Download This Free Resource</a>
   </div>
   <div class="cover-main">
     <span class="cover-eyebrow">Africa's Sacred Healing Plant · An Introduction</span>
