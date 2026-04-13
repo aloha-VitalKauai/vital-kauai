@@ -284,7 +284,9 @@ export function HomePage() {
                 practice, study, and healing that touched the surface but could not fully reach what
                 was underneath. Iboga could. It showed us what was actually there — the patterns
                 carried since childhood, the stories built into identity, and the places where we had
-                drifted from ourselves.
+                drifted from ourselves. What it gave back was our freedom — freedom from the
+                background noise of anxiety and depression, freedom to create, to serve, and to live
+                with lightness and peace. We didn&apos;t just heal. We came alive.
               </p>
               <p className={styles.storyBody}>
                 We built Vital Kauaʻi around this medicine because we could not imagine doing
