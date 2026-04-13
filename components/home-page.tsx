@@ -360,8 +360,8 @@ export function HomePage() {
       <section id="rivers" className={styles.rivers}>
         <div className={`${styles.riverFeature} ${styles.reveal}`}>
           <Image
-            src="https://images.unsplash.com/photo-1518291344630-4857135fb581?w=1600&q=80"
-            alt="Iboga Medicine"
+            src="https://herbalistics.com.au/wp-content/uploads/2015/06/2015_Iboga6.jpg"
+            alt="Iboga seed"
             fill
             sizes="100vw"
             className={styles.riverFeatureImage}
