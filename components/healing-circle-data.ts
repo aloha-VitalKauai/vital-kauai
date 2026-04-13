@@ -209,7 +209,7 @@ export const members: Member[] = [
     name: "Kurtis Kunesh",
     role: "Deep Tissue Massage",
     cat: "healers",
-    photo: "/images/about/josh-perdue.jpg",
+    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=80",
     shortBio:
       "Kurtis Kunesh brings skilled, therapeutic deep tissue massage to the Vital Kauaʻi circle. His work goes beneath surface tension to address the deeper layers of muscle and connective tissue, releasing chronic holding patterns and restoring ease of movement throughout the body. Kurtis combines strong technique with attentive presence, meeting each client exactly where they are.",
     bio: "Kurtis Kunesh brings skilled, therapeutic deep tissue massage to the Vital Kauaʻi circle. His work goes beneath surface tension to address the deeper layers of muscle and connective tissue, releasing chronic holding patterns and restoring ease of movement throughout the body. Kurtis combines strong technique with attentive presence, meeting each client exactly where they are.",
@@ -219,7 +219,7 @@ export const members: Member[] = [
     name: "Ariana Beil",
     role: "BioGeometry Balancing",
     cat: "healers",
-    photo: "/images/about/rachel-nelson.jpg",
+    photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&q=80",
     shortBio:
       "Ariana Beil brings the revolutionary science of BioGeometry to the Vital Kauaʻi circle — a practice that uses the subtle energy principles of shape, color, and form to restore natural balance within biological systems and living environments. Founded by Egyptian scholar Dr. Ibrahim Karim, BioGeometry works to harmonize the body's energy interactions with its surroundings, addressing geopathic stress, EMF, and energetic imbalance at a foundational level. Ariana's sessions support the body's own intelligence in returning to harmony, ease, and coherence. Her work is a quietly powerful complement to every healing journey at Vital Kauaʻi.",
     bio: "Ariana Beil brings the revolutionary science of BioGeometry to the Vital Kauaʻi circle — a practice that uses the subtle energy principles of shape, color, and form to restore natural balance within biological systems and living environments. Founded by Egyptian scholar Dr. Ibrahim Karim, BioGeometry works to harmonize the body's energy interactions with its surroundings, addressing geopathic stress, EMF, and energetic imbalance at a foundational level. Ariana's sessions support the body's own intelligence in returning to harmony, ease, and coherence. Her work is a quietly powerful complement to every healing journey at Vital Kauaʻi.",
