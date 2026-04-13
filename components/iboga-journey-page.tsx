@@ -10,6 +10,11 @@ import styles from "./iboga-journey-page.module.css";
 export function IbogaJourneyPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [guideName, setGuideName] = useState("");
+  const [guideEmail, setGuideEmail] = useState("");
+  const [guideSubmitting, setGuideSubmitting] = useState(false);
+  const [guideError, setGuideError] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 40);

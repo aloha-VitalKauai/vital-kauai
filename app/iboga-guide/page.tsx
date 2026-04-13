@@ -1,16 +1,31 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function IbogaGuidePage() {
+  const [allowed, setAllowed] = useState(false);
+  const router = useRouter();
+
   useEffect(() => {
+    if (sessionStorage.getItem("guide_access") === "true") {
+      setAllowed(true);
+    } else {
+      router.replace("/iboga-journey");
+    }
+  }, [router]);
+
+  useEffect(() => {
+    if (!allowed) return;
     const observer = new IntersectionObserver(
       (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.remove("hidden"); e.target.classList.add("visible"); } }),
       { threshold: 0.1 }
     );
     document.querySelectorAll(".reveal").forEach((el) => { el.classList.add("hidden"); observer.observe(el); });
     return () => observer.disconnect();
-  }, []);
+  }, [allowed]);
+
+  if (!allowed) return null;
 
   return (
     <>

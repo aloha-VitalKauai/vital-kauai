@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import styles from "./home-page.module.css";
 
 const testimonialQuote = "If anyone is considering going here, do it. As an expert in the fields of healing and spirituality, traveling the world experiencing the best modalities, retreats and events for the past 18 years, this is by far one of the most profound and effective experiences that you can\u2019t find anywhere else. I can\u2019t imagine such a positive future for myself if I hadn\u2019t gone here first. Eternally grateful.";
@@ -386,6 +388,24 @@ export function HomePage() {
               The Medicine →
             </Link>
           </div>
+        </div>
+      </section>
+
+      <section className={styles.leadCapture}>
+        <div className={styles.leadGrid}>
+          <div>
+            <p className={`${styles.sectionLabel} ${styles.reveal}`}>Free Resource</p>
+            <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>
+              Everything You Need{" "}
+              <em className={styles.sageEmphasis}>to Know About Iboga</em>
+            </h2>
+            <p className={`${styles.sectionSub} ${styles.reveal}`}>
+              Download our comprehensive guide covering the history of Iboga, what to expect during
+              ceremony, preparation protocols, and how to choose a safe, qualified provider. This is
+              the resource we wish existed when we began our own journeys.
+            </p>
+          </div>
+          <HomeLeadCard />
         </div>
       </section>
 
@@ -795,5 +815,44 @@ export function HomePage() {
         </p>
       </div>
     </main>
+  );
+}
+
+function HomeLeadCard() {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit() {
+    if (!name.trim() || !email.trim()) { setError("Please enter your name and email."); return; }
+    setSubmitting(true);
+    setError("");
+    const supabase = createClient();
+    const { error: insertErr } = await supabase.from("leads").insert({
+      full_name: name.trim(),
+      email: email.trim().toLowerCase(),
+      source: "Free Guide",
+      lead_date: new Date().toISOString(),
+      welcome_video_sent: false,
+      discovery_call_booked: false,
+      converted_to_member: false,
+    });
+    if (insertErr && insertErr.code !== "23505") { setError("Something went wrong. Please try again."); setSubmitting(false); return; }
+    router.push("/iboga-guide");
+  }
+
+  return (
+    <div className={styles.leadCard}>
+      <h3 className={styles.leadCardTitle}>Get the Free Guide</h3>
+      <input type="text" placeholder="Your Name" className={styles.leadInput} value={name} onChange={(e) => setName(e.target.value)} />
+      <input type="email" placeholder="Your Email" className={styles.leadInput} value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSubmit()} />
+      {error && <p style={{ fontSize: 12, color: "#A85555", margin: "0 0 8px" }}>{error}</p>}
+      <button onClick={handleSubmit} disabled={submitting} className={styles.leadBtn} style={{ opacity: submitting ? 0.6 : 1, cursor: submitting ? "not-allowed" : "pointer" }}>
+        {submitting ? "Sending..." : "Download Free Guide \u2192"}
+      </button>
+      <p className={styles.leadDisclaimer}>No spam. Unsubscribe anytime.</p>
+    </div>
   );
 }
