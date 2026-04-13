@@ -139,10 +139,6 @@ export function AboutPage() {
             <em>&amp; Rachel</em>
           </h1>
         </div>
-        <div className={styles.heroScroll}>
-          <span>Scroll</span>
-          <div className={styles.scrollLine} />
-        </div>
       </section>
 
       {/* ── Bridge ── */}
