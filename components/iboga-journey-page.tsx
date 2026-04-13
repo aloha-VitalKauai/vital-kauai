@@ -187,8 +187,8 @@ export function IbogaJourneyPage() {
         <div className={styles.medicineGrid}>
           <div className={styles.medicineImgWrap}>
             <Image
-              src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600&q=80"
-              alt="Forest canopy"
+              src="/images/ibogafruit.jpg"
+              alt="Iboga fruit"
               fill
               sizes="(max-width: 1024px) 100vw, 40vw"
               className={styles.medicineCoverImg}
@@ -579,7 +579,8 @@ function LeadCaptureCard() {
     if (insertErr) {
       // If duplicate email, still redirect to guide
       if (insertErr.code === "23505") {
-        router.push("/iboga-guide");
+        sessionStorage.setItem("guide_access", "true");
+    router.push("/iboga-guide");
         return;
       }
       setError("Something went wrong. Please try again.");
@@ -587,6 +588,7 @@ function LeadCaptureCard() {
       return;
     }
 
+    sessionStorage.setItem("guide_access", "true");
     router.push("/iboga-guide");
   }
 

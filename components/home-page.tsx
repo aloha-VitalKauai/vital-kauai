@@ -840,6 +840,7 @@ function HomeLeadCard() {
       converted_to_member: false,
     });
     if (insertErr && insertErr.code !== "23505") { setError("Something went wrong. Please try again."); setSubmitting(false); return; }
+    sessionStorage.setItem("guide_access", "true");
     router.push("/iboga-guide");
   }
 
