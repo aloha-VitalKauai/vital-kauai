@@ -18,26 +18,15 @@ function fmt(n: number | null | undefined, prefix = "") {
 export default async function OnboardingPage() {
   const supabase = await createClient();
 
-  const [{ data: members }, { data: profiles }, { data: intakes }, { data: preProgress }, { data: postProgress }] = await Promise.all([
-    supabase.from("members").select("id, full_name, email, medical_cleared, cardiac_cleared, portal_unlocked, integration_unlocked, status, ceremony_date").order("created_at", { ascending: false }),
-    supabase.from("member_profiles").select("id, email, membership_agreement_signed, medical_disclaimer_signed, deposit_paid, deposit_amount"),
+  const [{ data: members }, { data: profiles }, { data: intakes }] = await Promise.all([
+    supabase.from("members").select("id, full_name, email, medical_cleared, cardiac_cleared, portal_unlocked, integration_unlocked").order("created_at", { ascending: false }),
+    supabase.from("member_profiles").select("id, membership_agreement_signed, medical_disclaimer_signed, deposit_paid, deposit_amount"),
     supabase.from("intake_forms").select("member_id"),
-    supabase.from("pre_ceremony_progress").select("member_id, weeks_completed, last_updated"),
-    supabase.from("post_ceremony_progress").select("member_id, weeks_completed, last_updated"),
   ]);
 
   const profileMap: Record<string, any> = {};
   for (const p of profiles ?? []) profileMap[p.id] = p;
   const intakeSet = new Set((intakes ?? []).map((i) => i.member_id));
-
-  // Map auth user IDs to member emails for progress lookup
-  const emailToAuthId: Record<string, string> = {};
-  for (const p of profiles ?? []) if (p.email) emailToAuthId[p.email] = p.id;
-
-  const preMap: Record<string, any> = {};
-  for (const p of preProgress ?? []) preMap[p.member_id] = p;
-  const postMap: Record<string, any> = {};
-  for (const p of postProgress ?? []) postMap[p.member_id] = p;
 
   const rows = (members ?? []).map((m) => {
     const p = profileMap[m.id];
@@ -107,87 +96,6 @@ export default async function OnboardingPage() {
                   </td>
                 </tr>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Integration Progress */}
-      <div style={{ background: "#fff", border: "0.5px solid rgba(0,0,0,0.1)", borderRadius: 10, overflow: "hidden", marginTop: "1.25rem" }}>
-        <div style={{ padding: "0.875rem 1.25rem", borderBottom: "0.5px solid rgba(0,0,0,0.07)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: "#6B6B67", fontWeight: 500 }}>Integration progress — pre & post ceremony</span>
-        </div>
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                {["Member", "Status", "Pre-Ceremony", "", "Post-Ceremony", "", "Last Active"].map((h, i) => (
-                  <th key={`${h}-${i}`} style={TH}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {(members ?? []).length === 0 ? (
-                <tr><td colSpan={7} style={{ padding: "2.5rem", textAlign: "center", color: "#9E9E9A", fontSize: 14 }}>No members yet</td></tr>
-              ) : (members ?? []).map((m) => {
-                const authId = emailToAuthId[m.email];
-                const pre = authId ? preMap[authId] : null;
-                const post = authId ? postMap[authId] : null;
-                const preWeeks = pre?.weeks_completed?.length ?? 0;
-                const postWeeks = post?.weeks_completed?.length ?? 0;
-                const prePct = Math.round((preWeeks / 6) * 100);
-                const postPct = Math.round((postWeeks / 6) * 100);
-                const lastActive = pre?.last_updated || post?.last_updated;
-                return (
-                  <tr key={m.id} style={{ borderBottom: "0.5px solid rgba(0,0,0,0.06)" }}>
-                    <td style={TD}>
-                      <a href={`/dashboard/${m.id}`} style={{ textDecoration: "none", color: "inherit" }}>
-                        <div style={{ fontWeight: 500, fontSize: 13 }}>{m.full_name}</div>
-                      </a>
-                    </td>
-                    <td style={TD}>
-                      <span style={{ fontSize: 11, color: "#6B6B67" }}>{m.status ?? "—"}</span>
-                    </td>
-                    <td style={TD}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <div style={{ width: 60, height: 4, background: "#E1F5EE", borderRadius: 2, overflow: "hidden" }}>
-                          <div style={{ height: "100%", width: `${prePct}%`, background: "#1D9E75", borderRadius: 2 }} />
-                        </div>
-                        <span style={{ fontSize: 11, color: preWeeks > 0 ? "#085041" : "#9E9E9A", fontWeight: 500 }}>{preWeeks}/6</span>
-                      </div>
-                    </td>
-                    <td style={TD}>
-                      {preWeeks === 6 ? (
-                        <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 99, background: "#E1F5EE", color: "#085041", fontWeight: 500 }}>Complete</span>
-                      ) : preWeeks > 0 ? (
-                        <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 99, background: "#FAEEDA", color: "#633806", fontWeight: 500 }}>Week {preWeeks + 1}</span>
-                      ) : (
-                        <span style={{ fontSize: 10, color: "#9E9E9A" }}>Not started</span>
-                      )}
-                    </td>
-                    <td style={TD}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <div style={{ width: 60, height: 4, background: "#FAEEDA", borderRadius: 2, overflow: "hidden" }}>
-                          <div style={{ height: "100%", width: `${postPct}%`, background: "#C8A96E", borderRadius: 2 }} />
-                        </div>
-                        <span style={{ fontSize: 11, color: postWeeks > 0 ? "#633806" : "#9E9E9A", fontWeight: 500 }}>{postWeeks}/6</span>
-                      </div>
-                    </td>
-                    <td style={TD}>
-                      {postWeeks === 6 ? (
-                        <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 99, background: "#FAEEDA", color: "#633806", fontWeight: 500 }}>Complete</span>
-                      ) : postWeeks > 0 ? (
-                        <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 99, background: "#FAEEDA", color: "#633806", fontWeight: 500 }}>Week {postWeeks + 1}</span>
-                      ) : (
-                        <span style={{ fontSize: 10, color: "#9E9E9A" }}>Not started</span>
-                      )}
-                    </td>
-                    <td style={{ ...TD, fontSize: 11, color: lastActive ? "#6B6B67" : "#9E9E9A" }}>
-                      {lastActive ? new Date(lastActive).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—"}
-                    </td>
-                  </tr>
-                );
-              })}
             </tbody>
           </table>
         </div>
