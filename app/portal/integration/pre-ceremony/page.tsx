@@ -176,6 +176,7 @@ export default function PreCeremonyPage() {
   const [activeWeek, setActiveWeek] = useState(0)
   const [completed, setCompleted] = useState<Set<number>>(new Set())
   const [checklist, setChecklist] = useState<Record<string, boolean>>({})
+  const [journal, setJournal] = useState<Record<string, string>>({})
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
 
   // ── Auth + data load
@@ -196,6 +197,7 @@ export default function PreCeremonyPage() {
       if (data) {
         setCompleted(new Set(data.weeks_completed ?? []))
         setChecklist(data.checklist_items ?? {})
+        setJournal(data.journal_responses ?? {})
         // Resume at last uncompleted week
         const done = new Set<number>(data.weeks_completed ?? [])
         const next = [0,1,2,3,4,5].find(w => !done.has(w))
@@ -209,18 +211,29 @@ export default function PreCeremonyPage() {
   }, [])
 
   // ── Save
-  const save = useCallback(async (newCompleted: Set<number>, newChecklist: Record<string, boolean>) => {
+  const save = useCallback(async (newCompleted: Set<number>, newChecklist: Record<string, boolean>, newJournal?: Record<string, string>) => {
     if (!userId) return
     setSaveStatus('saving')
     await supabase.from('pre_ceremony_progress').upsert({
       member_id: userId,
       weeks_completed: [...newCompleted],
       checklist_items: newChecklist,
+      journal_responses: newJournal ?? journal,
       last_updated: new Date().toISOString(),
     }, { onConflict: 'member_id' })
     setSaveStatus('saved')
     setTimeout(() => setSaveStatus('idle'), 2000)
-  }, [userId])
+  }, [userId, journal])
+
+  const journalTimerRef = { current: null as ReturnType<typeof setTimeout> | null }
+  const updateJournal = (key: string, value: string) => {
+    const next = { ...journal, [key]: value }
+    setJournal(next)
+    if (journalTimerRef.current) clearTimeout(journalTimerRef.current)
+    journalTimerRef.current = setTimeout(() => {
+      save(completed, checklist, next)
+    }, 1500)
+  }
 
   const markComplete = async (weekIdx: number) => {
     if (completed.has(weekIdx)) return
@@ -380,6 +393,9 @@ export default function PreCeremonyPage() {
         .prompt-num { font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:10px; }
         .prompt-q { font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--ink);line-height:1.35;margin-bottom:10px; }
         .prompt-hint { font-size:12.5px;color:var(--stone);line-height:1.75;font-style:italic; }
+        .journal-textarea{width:100%;margin-top:14px;padding:14px 16px;border:1px solid rgba(122,158,126,0.2);border-left:2px solid var(--sage-lt);background:rgba(122,158,126,0.04);font-family:'Jost',sans-serif;font-size:14px;font-weight:300;color:var(--ink);line-height:1.85;resize:vertical;outline:none;min-height:100px;transition:border-color .2s,background .2s}
+        .journal-textarea:focus{border-color:var(--sage);background:rgba(122,158,126,0.07)}
+        .journal-textarea::placeholder{color:rgba(28,43,30,0.2);font-style:italic}
 
         /* READINESS GATE */
         .rg-wrap { margin-top:40px;border:.5px solid rgba(122,158,126,.35);border-radius:4px;overflow:hidden; }
@@ -545,13 +561,23 @@ export default function PreCeremonyPage() {
             <div className="section">
               <span className="section-label">Journal prompts — 2 only</span>
               <div className="prompts-list">
-                {w.prompts.map((p, pi) => (
-                  <div className="prompt-item" key={pi}>
-                    <span className="prompt-num">0{pi + 1}</span>
-                    <p className="prompt-q">{p.q}</p>
-                    <p className="prompt-hint">{p.hint}</p>
-                  </div>
-                ))}
+                {w.prompts.map((p, pi) => {
+                  const jKey = `w${i}-p${pi}`
+                  return (
+                    <div className="prompt-item" key={pi}>
+                      <span className="prompt-num">0{pi + 1}</span>
+                      <p className="prompt-q">{p.q}</p>
+                      <p className="prompt-hint">{p.hint}</p>
+                      <textarea
+                        className="journal-textarea"
+                        value={journal[jKey] ?? ''}
+                        onChange={(e) => updateJournal(jKey, e.target.value)}
+                        placeholder="Write freely..."
+                        rows={4}
+                      />
+                    </div>
+                  )
+                })}
               </div>
               <div className="continuity" style={{ marginTop: 20, marginBottom: 0 }}>
                 <div className="ct-arrow">→</div>
