@@ -396,6 +396,10 @@
   background: var(--forest);
 }
 
+.founders {
+  padding: 160px 60px 140px;
+}
+
 .testimonialHero {
   position: relative;
   overflow: hidden;

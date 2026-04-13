@@ -498,13 +498,13 @@ export function HomePage() {
               name: "Josh",
               title: "Co-Founder · Medicine Keeper · Mentor",
               bio: "Josh's path has taken him from Stanford Design School to the red earth of Africa, where he underwent initiation with the Bwiti tribe and trained in the deep traditions of plant medicine. He has trained at Highden Mystery School Temple in New Zealand and brings a rare integration of indigenous wisdom, somatic practice, and entrepreneurial vision to holding space for transformation.",
-              image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80",
+              image: "/images/about/josh-perdue.jpg",
             },
             {
               name: "Rachel",
               title: "Co-Founder · Healer · Somatic Integration Guide",
               bio: "Rachel weaves over two decades of devotion to embodied awakening — bridging yogic and tantric philosophy with doctorate and masters-level education in naturopathic medicine and transpersonal psychology, consciousness, and spirituality. Rachel's passion is helping guide people back to their own self-love and couples back to one another. Her containers are known to be powerful, deeply trustworthy, and radically transformative.",
-              image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
+              image: "/images/about/rachel-nelson.jpg",
             },
           ].map((founder, index) => (
             <div key={founder.name} className={`${styles.founderCard} ${styles.reveal} ${index ? styles.revealDelay1 : ""}`}>
