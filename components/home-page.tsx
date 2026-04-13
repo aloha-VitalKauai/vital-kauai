@@ -286,7 +286,7 @@ export function HomePage() {
                 carried since childhood, the stories built into identity, and the places where we had
                 drifted from ourselves. What it gave back was our freedom — freedom from the
                 background noise of anxiety and depression, freedom to create, to serve, and to live
-                with lightness and peace. We didn&apos;t just heal. We came alive.
+                with lightness and peace.
               </p>
               <p className={styles.storyBody}>
                 We built Vital Kauaʻi around this medicine because we could not imagine doing
