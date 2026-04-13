@@ -154,7 +154,7 @@ export function AboutPage() {
       <section className={styles.meeting} id="meeting">
         <div className={styles.meetingGrid}>
           <div className={styles.meetingPhoto}>
-            <Image src="/images/about/meeting-rachel-josh.jpg" alt="Rachel & Josh at Hanalei" fill sizes="50vw" className={styles.meetingImg} />
+            <Image src="/images/rachjosh.jpeg" alt="Rachel & Josh at Hanalei" fill sizes="50vw" className={styles.meetingImg} />
           </div>
           <div className={styles.meetingText}>
             <p className={`${styles.eyebrow} ${styles.reveal}`}>Hanalei, Kaua&#699;i</p>
