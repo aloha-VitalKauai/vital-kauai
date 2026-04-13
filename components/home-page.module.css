@@ -627,12 +627,8 @@
 }
 
 .riverFeatureImage {
-  object-fit: none;
-  object-position: 32% 55%;
-  width: 300% !important;
-  height: 300% !important;
-  left: -60% !important;
-  top: -80% !important;
+  object-fit: cover;
+  object-position: 25% 50%;
   filter: brightness(0.55);
 }
 
