@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { PortalNav } from "./portal-nav";
 import styles from "./portal-home-page.module.css";
 
 type Profile = {
@@ -354,29 +355,7 @@ export function PortalHomePage({
   return (
     <div className={styles.page}>
       {/* ── NAV ── */}
-      <nav className={styles.portalNav}>
-        <a className={styles.navLogo} href="/">
-          Vital <span>Kaua&#699;i</span>
-        </a>
-        <div style={{ display: "flex", alignItems: "center", gap: 36 }}>
-          <a href="/portal" style={{ fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(245,240,232,0.7)", textDecoration: "none", fontWeight: 400 }}>Dashboard</a>
-          <div className="nav-dropdown-wrap" style={{ position: "relative", cursor: "pointer" }}>
-            <span style={{ fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(245,240,232,0.95)", fontWeight: 500 }}>Integration / Support &#9662;</span>
-            <div className="nav-dropdown" style={{ left: "50%", transform: "translateX(-50%)" }}>
-              <a href="/portal/integration/pre-ceremony" style={{ borderBottom: "none", borderRadius: "4px 4px 0 0" }}>Pre-Ceremony</a>
-              <a href="/portal/integration/post-ceremony" style={{ borderTop: "1px solid rgba(200,169,110,0.1)", borderRadius: "0 0 4px 4px" }}>Post-Ceremony</a>
-            </div>
-          </div>
-        </div>
-        <div className={styles.navMember}>
-          <span className={styles.navMemberName}>{userEmail}</span>
-          <form action="/auth/logout" method="post">
-            <button type="submit" className={styles.navLogout}>
-              Sign Out
-            </button>
-          </form>
-        </div>
-      </nav>
+      <PortalNav email={userEmail} />
 
       {/* ── HERO ── */}
       <section className={styles.portalHero}>

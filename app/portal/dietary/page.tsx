@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { PortalNav } from "@/components/portal-nav";
 
 export const metadata = { title: "Dietary Preparation — Vital Kauaʻi" };
 
@@ -38,20 +39,7 @@ function DietaryContent() {
   return (
     <div style={{ minHeight: "100vh", background: "#F7F3ED", fontFamily: "'Jost', sans-serif", color: ink, fontSize: 15, lineHeight: 1.75 }}>
       {/* Nav */}
-      <nav style={{ background: "rgba(14,26,16,0.97)", backdropFilter: "blur(14px)", padding: "0 48px", height: 60, display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(200,169,110,0.08)" }}>
-        <a href="/" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 17, fontWeight: 300, letterSpacing: "0.2em", color: "#F5F0E8", textTransform: "uppercase", textDecoration: "none" }}>Vital Kauaʻi</a>
-        <div style={{ display: "flex", alignItems: "center", gap: 36 }}>
-          <a href="/portal" style={{ fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(245,240,232,0.7)", textDecoration: "none", fontWeight: 400 }}>Dashboard</a>
-          <div className="nav-dropdown-wrap" style={{ position: "relative", cursor: "pointer" }}>
-            <span style={{ fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(245,240,232,0.95)", fontWeight: 500 }}>Integration / Support &#9662;</span>
-            <div className="nav-dropdown" style={{ left: "50%", transform: "translateX(-50%)" }}>
-              <a href="/portal/integration/pre-ceremony" style={{ borderBottom: "none", borderRadius: "4px 4px 0 0" }}>Pre-Ceremony</a>
-              <a href="/portal/integration/post-ceremony" style={{ borderTop: "1px solid rgba(200,169,110,0.1)", borderRadius: "0 0 4px 4px" }}>Post-Ceremony</a>
-            </div>
-          </div>
-        </div>
-        <a href="/portal" style={{ fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(245,240,232,0.4)", textDecoration: "none" }}>&larr; Return to Portal</a>
-      </nav>
+      <PortalNav />
       {/* Header */}
       <div style={{ background: ink, color: "#F7F3ED", padding: "70px 40px 60px", textAlign: "center" }}>
         <p style={{ fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(247,243,237,0.4)", marginBottom: 18 }}>Vital Kaua&#699;i — Client Portal</p>
