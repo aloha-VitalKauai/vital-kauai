@@ -3,6 +3,7 @@ export type MemberCategory =
   | "somatic"
   | "plant"
   | "healers"
+  | "medical"
   | "hidden";
 
 export type Member = {
@@ -20,6 +21,7 @@ export const categoryLabels: Record<Exclude<MemberCategory, "hidden">, string> =
   somatic: "Somatic Integration Guides",
   plant: "Plant Medicine",
   healers: "Healers",
+  medical: "Medical",
 };
 
 export const members: Member[] = [
@@ -222,6 +224,16 @@ export const members: Member[] = [
       "Ariana Beil brings the revolutionary science of BioGeometry to the Vital Kauaʻi circle — a practice that uses the subtle energy principles of shape, color, and form to restore natural balance within biological systems and living environments. Founded by Egyptian scholar Dr. Ibrahim Karim, BioGeometry works to harmonize the body's energy interactions with its surroundings, addressing geopathic stress, EMF, and energetic imbalance at a foundational level. Ariana's sessions support the body's own intelligence in returning to harmony, ease, and coherence. Her work is a quietly powerful complement to every healing journey at Vital Kauaʻi.",
     bio: "Ariana Beil brings the revolutionary science of BioGeometry to the Vital Kauaʻi circle — a practice that uses the subtle energy principles of shape, color, and form to restore natural balance within biological systems and living environments. Founded by Egyptian scholar Dr. Ibrahim Karim, BioGeometry works to harmonize the body's energy interactions with its surroundings, addressing geopathic stress, EMF, and energetic imbalance at a foundational level. Ariana's sessions support the body's own intelligence in returning to harmony, ease, and coherence. Her work is a quietly powerful complement to every healing journey at Vital Kauaʻi.",
   },
+  {
+    id: "jon_allen",
+    name: "Jon Allen, PA-C",
+    role: "Medical Advisor · PA-C · Harvard-Trained",
+    cat: "medical",
+    photo: "/images/jonallen.jpeg",
+    shortBio:
+      "Jon is a Harvard-trained, board-certified Physician Assistant practicing family and cardiovascular medicine on Kauaʻi's North Shore. He reviews all participant medical records, evaluates contraindications, and provides clinical oversight throughout the preparation process. For those who wish it, Jon is available to be present during ceremony — bringing the reassurance of skilled, grounded medical presence to the container.",
+    bio: "Jon is a Harvard-trained, board-certified Physician Assistant practicing family and cardiovascular medicine on Kauaʻi's North Shore. He reviews all participant medical records, evaluates contraindications, and provides clinical oversight throughout the preparation process. For those who wish it, Jon is available to be present during ceremony — bringing the reassurance of skilled, grounded medical presence to the container.",
+  },
 ];
 
 export const filterTabs = [
@@ -230,4 +242,5 @@ export const filterTabs = [
   { value: "somatic", label: "Somatic Integration Guides" },
   { value: "plant", label: "Plant Medicine" },
   { value: "healers", label: "Healers" },
+  { value: "medical", label: "Medical" },
 ] as const;
