@@ -103,8 +103,8 @@ export function IbogaJourneyPage() {
       <section className={styles.hero}>
         <Image
           className={styles.heroBgImg}
-          src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600&q=80"
-          alt="Lush forest canopy"
+          src="/images/ibogaprep.jpeg"
+          alt="Iboga preparation"
           fill
           priority
           sizes="100vw"
