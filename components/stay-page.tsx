@@ -135,6 +135,112 @@ nav.scrolled {
 }
 .nav-cta:hover { background: var(--gold-light); }
 
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 4px;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--cream);
+  opacity: 0.8;
+}
+
+.nav-dropdown-label {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: 0.85;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+.nav-dropdown-label:hover { opacity: 1; }
+.nav-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(14, 26, 16, 0.96);
+  backdrop-filter: blur(12px);
+  padding: 16px 24px;
+  list-style: none;
+  min-width: 220px;
+  border: 1px solid rgba(200,169,110,0.15);
+}
+.nav-dropdown-wrap { position: relative; }
+.nav-dropdown-wrap:hover .nav-dropdown-menu { display: block; }
+.nav-dropdown-menu li + li { margin-top: 10px; }
+.nav-dropdown-menu a {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cream);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+}
+.nav-dropdown-menu a:hover { opacity: 1; }
+
+.nav-mobile {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(14, 26, 16, 0.98);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.nav-mobile.nav-mobile-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.nav-mobile a {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--cream);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+.nav-mobile a:hover { opacity: 1; }
+.nav-mobile .mobile-accent-link {
+  font-size: 11px;
+  font-family: inherit;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--forest);
+  background: var(--gold);
+  padding: 14px 36px;
+  margin-bottom: 20px;
+}
+.nav-mobile-close {
+  position: absolute;
+  top: 28px;
+  right: 32px;
+  background: none;
+  border: none;
+  color: var(--cream);
+  font-size: 28px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
 /* ── HERO ── */
 #hero {
   position: relative;
@@ -969,6 +1075,8 @@ footer {
   .gallery-item.tall { grid-row: span 1; height: 280px; }
   nav { padding: 24px 32px; }
   .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .nav-cta { display: none; }
   footer { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 768px) {
@@ -991,15 +1099,31 @@ const BODY_CONTENT = `
 
 <!-- NAV -->
 <nav id="nav">
+  <button class="hamburger" aria-label="Menu" onclick="document.getElementById('mobile-nav').classList.add('nav-mobile-open')">
+    <span></span><span></span><span></span>
+  </button>
   <a href="/" class="nav-logo">Vital Kauaʻi</a>
   <ul class="nav-links">
     <li><a href="/iboga-journey">The Iboga Journey</a></li>
     <li class="nav-dropdown-wrap"><a href="/stay" style="opacity:1;">Stay With Us</a><span class="nav-dropdown"><a href="#local">Work With Us</a></span></li>
-    <li><a href="/about">About</a></li>
-    <li><a href="/begin-your-journey">Contact</a></li>
+    <li class="nav-dropdown-wrap"><span class="nav-dropdown-label">About</span><ul class="nav-dropdown-menu"><li><a href="/about">About the Founders</a></li><li><a href="/church-information">About Vital Kauaʻi Church</a></li><li><a href="/healing-circle">Our Healing Circle</a></li></ul></li>
+    <li><a href="/#contact">Contact</a></li>
   </ul>
   <a href="/begin-your-journey" class="nav-cta">Begin the Journey</a>
 </nav>
+
+<!-- MOBILE NAV -->
+<div id="mobile-nav" class="nav-mobile">
+  <button class="nav-mobile-close" onclick="document.getElementById('mobile-nav').classList.remove('nav-mobile-open')">✕</button>
+  <a href="/begin-your-journey" class="mobile-accent-link">Begin the Journey</a>
+  <a href="/iboga-journey">The Iboga Journey</a>
+  <a href="/stay">Stay With Us</a>
+  <a href="/stay#local">Work With Us</a>
+  <a href="/about">About the Founders</a>
+  <a href="/church-information">About Vital Kauaʻi Church</a>
+  <a href="/healing-circle">Our Healing Circle</a>
+  <a href="/portal">Member Portal</a>
+</div>
 
 <!-- HERO -->
 <section id="hero">
