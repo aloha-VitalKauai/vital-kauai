@@ -167,9 +167,9 @@ export function IbogaJourneyPage() {
             <h3 className={styles.leadCardTitle}>Get the Free Guide</h3>
             <input type="text" placeholder="Your Name" className={styles.leadInput} />
             <input type="email" placeholder="Your Email" className={styles.leadInput} />
-            <button type="button" className={styles.leadBtn}>
+            <Link href="/iboga-guide" className={styles.leadBtn}>
               Download Free Guide &rarr;
-            </button>
+            </Link>
             <p className={styles.leadDisclaimer}>No spam. Unsubscribe anytime.</p>
           </div>
         </div>
