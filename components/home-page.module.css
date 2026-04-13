@@ -396,6 +396,101 @@
   background: var(--forest);
 }
 
+.ceremonies {
+  background: var(--forest-dark);
+  padding: 80px 60px;
+  text-align: center;
+}
+
+.ceremoniesInner {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.ceremoniesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  margin-bottom: 44px;
+}
+
+.ceremonyCardActive,
+.ceremonyCard {
+  padding: 28px 20px;
+}
+
+.ceremonyCardActive {
+  background: rgba(28, 43, 30, 0.8);
+}
+
+.ceremonyCard {
+  background: rgba(28, 43, 30, 0.5);
+}
+
+.ceremonyLabel {
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: rgba(200, 169, 110, 0.35);
+  margin-bottom: 10px;
+}
+
+.ceremonyDate {
+  font-family: var(--font-display), serif;
+  font-size: 24px;
+  font-weight: 300;
+  color: var(--cream);
+  margin-bottom: 4px;
+}
+
+.ceremonyDateMuted {
+  font-family: var(--font-display), serif;
+  font-size: 24px;
+  font-weight: 300;
+  color: rgba(245, 240, 232, 0.35);
+  margin-bottom: 4px;
+}
+
+.ceremonySub {
+  font-size: 11px;
+  color: rgba(245, 240, 232, 0.4);
+  letter-spacing: 0.08em;
+}
+
+.ceremonyStatus {
+  font-size: 10px;
+  margin-top: 12px;
+  letter-spacing: 0.05em;
+}
+
+.ceremonyStatusMuted {
+  font-size: 10px;
+  color: rgba(245, 240, 232, 0.2);
+  margin-top: 12px;
+}
+
+.ceremonyBtn {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--forest);
+  background: var(--gold);
+  padding: 18px 44px;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+@media (max-width: 768px) {
+  .ceremoniesGrid {
+    grid-template-columns: 1fr;
+  }
+  .ceremonies {
+    padding: 60px 24px;
+  }
+}
+
 .founders {
   padding: 160px 60px 140px;
 }

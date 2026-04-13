@@ -490,6 +490,44 @@ export function HomePage() {
         </div>
       </section>
 
+      <section className={styles.ceremonies}>
+        <div className={styles.ceremoniesInner}>
+          <p className={`${styles.sectionLabel} ${styles.reveal}`} style={{ color: "var(--terra)" }}>Come As You Are</p>
+          <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>
+            Upcoming
+            <br />
+            <em style={{ color: "var(--terra-pale)" }}>Ceremonies</em>
+          </h2>
+          <p className={`${styles.sectionSub} ${styles.reveal}`} style={{ maxWidth: 600, margin: "0 auto 48px" }}>
+            Each ceremony is a small, held gathering — six members, seven days, one sacred arc. Book a
+            discovery call to learn about the next available date.
+          </p>
+          <div className={`${styles.ceremoniesGrid} ${styles.reveal}`}>
+            <div className={styles.ceremonyCardActive}>
+              <p className={styles.ceremonyLabel} style={{ color: "var(--terra)" }}>Next Ceremony</p>
+              <p className={styles.ceremonyDate}>Sept 6 – 13</p>
+              <p className={styles.ceremonySub}>2026 · Hanalei, Kauaʻi</p>
+              <p className={styles.ceremonyStatus} style={{ color: "var(--terra-light)" }}>Filling Now</p>
+            </div>
+            <div className={styles.ceremonyCard}>
+              <p className={styles.ceremonyLabel}>Upcoming</p>
+              <p className={styles.ceremonyDateMuted}>TBA</p>
+              <p className={styles.ceremonySub}>2026 · Hanalei, Kauaʻi</p>
+              <p className={styles.ceremonyStatusMuted}>Dates Coming</p>
+            </div>
+            <div className={styles.ceremonyCard}>
+              <p className={styles.ceremonyLabel}>Upcoming</p>
+              <p className={styles.ceremonyDateMuted}>TBA</p>
+              <p className={styles.ceremonySub}>2026 · Hanalei, Kauaʻi</p>
+              <p className={styles.ceremonyStatusMuted}>Dates Coming</p>
+            </div>
+          </div>
+          <a href="https://calendly.com/aloha-vitalkauai" target="_blank" rel="noopener noreferrer" className={styles.ceremonyBtn}>
+            Join Our Next Group Ceremony
+          </a>
+        </div>
+      </section>
+
       <section id="founders" className={styles.founders}>
         <p className={`${styles.sectionLabel} ${styles.reveal}`}>The Hearts Behind the Work</p>
         <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>Josh & Rachel</h2>
