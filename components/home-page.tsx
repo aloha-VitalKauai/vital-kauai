@@ -397,7 +397,9 @@ export function HomePage() {
               We offer support at every level. Internal cleansing, detoxification, and deep restoration
               prepare the body to receive. Somatic therapy draws out and integrates what the medicine
               reveals. Breathwork, movement, sound, and energetic practice open presence and aliveness
-              across every dimension of the experience.
+              across every dimension of the experience. Most importantly, we offer full preparation
+              and post-ceremony integration support over the course of months — so the transformation
+              that begins here continues to deepen long after you leave.
             </p>
           </div>
           <div className={`${styles.offeringsImageWrap} ${styles.reveal}`}>
