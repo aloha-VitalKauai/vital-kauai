@@ -310,8 +310,8 @@ export function HomePage() {
         <div className={styles.medicineGrid}>
           <div className={styles.medicineImagePane}>
             <Image
-              src="https://images.unsplash.com/photo-1511497584788-876760111969?w=900&q=80"
-              alt="Iboga Medicine"
+              src="/images/ibogaroot.jpeg"
+              alt="Iboga root bark"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               className={styles.medicineImage}
