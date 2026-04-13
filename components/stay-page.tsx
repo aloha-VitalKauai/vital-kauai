@@ -1363,7 +1363,7 @@ const BODY_CONTENT = `
 
       <div style="padding:20px;background:var(--cream);">
         <div style="height:120px;overflow:hidden;margin-bottom:14px;background:var(--forest-dark);">
-          <img src="https://images.unsplash.com/photo-1542640244-8a927d20bfec?w=600&q=80" alt="Haena State Park" style="width:100%;height:100%;object-fit:cover;object-position:center 60%;filter:saturate(0.85) brightness(0.88);">
+          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" alt="Haena State Park" style="width:100%;height:100%;object-fit:cover;object-position:center 60%;filter:saturate(0.85) brightness(0.88);">
         </div>
         <h3 style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--text-dark);margin-bottom:3px;">Hāʻena State Park</h3>
         <p style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;">Kēʻē Beach · Kalalau Trail</p>
