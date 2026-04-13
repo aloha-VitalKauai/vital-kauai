@@ -512,7 +512,7 @@ function LabDocumentsSection({ labs, memberId }: { labs: LabDoc[]; memberId: str
       .update({
         status,
         founder_notes: notes || null,
-        reviewed_at: new Date().toISOString(),
+        founder_reviewed_at: new Date().toISOString(),
       })
       .eq("id", docId);
     window.location.reload();
