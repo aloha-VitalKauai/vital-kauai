@@ -454,19 +454,16 @@ export default function PreCeremonyPage() {
         <div className="pc-nav-left">
           <Link href="/" className="pc-logo">Vital <em>Kauaʻi</em></Link>
           <div className="pc-nav-links">
-            <Link href="/portal/dashboard" className="pc-nav-link">Dashboard</Link>
-            <Link href="/portal/my-journey" className="pc-nav-link">My Journey</Link>
+            <Link href="/portal" className="pc-nav-link">Dashboard</Link>
 
             {/* Integration / Support dropdown */}
             <div className="pc-dropdown">
               <button className="pc-dropdown-trigger">Integration / Support</button>
               <div className="pc-dropdown-menu">
-                <Link href="/portal/integration/pre-ceremony" className="pc-dropdown-item current">Pre Ceremony</Link>
-                <span className="pc-dropdown-item soon">Post Ceremony</span>
+                <Link href="/portal/integration/pre-ceremony" className="pc-dropdown-item current">Pre-Ceremony</Link>
+                <Link href="/portal/integration/post-ceremony" className="pc-dropdown-item">Post-Ceremony</Link>
               </div>
             </div>
-
-            <Link href="/portal/resources" className="pc-nav-link">Resources</Link>
           </div>
         </div>
         <div className="pc-nav-right">
