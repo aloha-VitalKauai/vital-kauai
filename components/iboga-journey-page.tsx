@@ -108,7 +108,7 @@ export function IbogaJourneyPage() {
         />
         <div className={styles.heroOverlay} />
         <div className={styles.heroContent}>
-          <p className={styles.heroEyebrow}>Grandfather Medicine &middot; 9-Week Immersive Protocol</p>
+          <p className={styles.heroEyebrow}>Grandfather Medicine &middot; Immersive Protocol</p>
           <h1 className={styles.heroTitle}>
             The Iboga
             <br />
@@ -117,7 +117,7 @@ export function IbogaJourneyPage() {
           <p className={styles.heroSubtitle}>
             Imagine waking up on the other side &mdash; clearer, freer, more yourself than you have
             ever been. This is our offering: a fully held, carefully titrated Iboga ceremony woven
-            into nine weeks of preparation, ceremony, and integration.
+            into weeks of preparation, ceremony, and integration.
           </p>
         </div>
       </section>
@@ -214,7 +214,7 @@ export function IbogaJourneyPage() {
               <span>Titrated Dosing</span>
               <span>Cardiac Monitoring Available</span>
               <span>Sacred Ancestral Tradition</span>
-              <span>9-Week Protocol</span>
+              <span>Extended Protocol</span>
               <span>Neuroplasticity Window</span>
             </div>
           </div>
@@ -379,11 +379,11 @@ export function IbogaJourneyPage() {
         <div className={styles.protocolIntro}>
           <span className={styles.sectionLabel}>The Journey Structure</span>
           <h2 className={styles.sectionTitle}>
-            Nine Weeks of{" "}
+            Weeks of{" "}
             <em className={styles.sageLightItalic}>Transformation</em>
           </h2>
           <p className={styles.protocolBody}>
-            The Iboga Journey is not a single event &mdash; it is a nine-week arc of preparation,
+            The Iboga Journey is not a single event &mdash; it is an extended arc of preparation,
             ceremony, and integration designed to honor the depth of this medicine and the full
             spectrum of your transformation.
           </p>

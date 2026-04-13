@@ -349,7 +349,7 @@ export function HomePage() {
               </p>
             </div>
             <div className={styles.medicinePills}>
-              {["Whole-Plant Protocol", "Titrated Dosing", "Ancient Lineage", "9-Week Held Journey", "Integration Support"].map(
+              {["Whole-Plant Protocol", "Titrated Dosing", "Ancient Lineage", "Integration Support"].map(
                 (pill) => (
                   <span key={pill} className={styles.pill}>
                     {pill}
