@@ -215,7 +215,7 @@ export function IbogaJourneyPage() {
               <span>Whole-Plant Root Bark</span>
               <span>Titrated Dosing</span>
               <span>Cardiac Monitoring Available</span>
-              <span>Sacred Ancestral Tradition</span>
+              <span>Rooted in Reverence</span>
               <span>Extended Protocol</span>
               <span>Neuroplasticity Window</span>
             </div>
