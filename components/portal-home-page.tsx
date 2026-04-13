@@ -151,27 +151,44 @@ export function PortalHomePage({
     fetchProfile();
   }, [fetchProfile]);
 
-  // Load checklist from localStorage
+  // Load checklist from Supabase (with localStorage fallback)
   useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem("vk-prep-checks") || "[]");
-      if (saved.length === PREP_ITEMS.length) {
-        setCheckedItems(saved);
+    async function loadChecklist() {
+      if (!memberId) return;
+      const { data: items } = await supabase
+        .from("member_checklist")
+        .select("item_key, completed")
+        .eq("member_id", memberId);
+      if (items && items.length > 0) {
+        const map: Record<string, boolean> = {};
+        for (const item of items) map[item.item_key] = item.completed;
+        setCheckedItems(PREP_ITEMS.map((_, i) => map[`prep_${i}`] ?? false));
       } else {
-        setCheckedItems(new Array(PREP_ITEMS.length).fill(false));
+        try {
+          const saved = JSON.parse(localStorage.getItem("vk-prep-checks") || "[]");
+          if (saved.length === PREP_ITEMS.length) setCheckedItems(saved);
+          else setCheckedItems(new Array(PREP_ITEMS.length).fill(false));
+        } catch { setCheckedItems(new Array(PREP_ITEMS.length).fill(false)); }
       }
-    } catch {
-      setCheckedItems(new Array(PREP_ITEMS.length).fill(false));
     }
-  }, []);
+    loadChecklist();
+  }, [memberId]);
 
   function toggleCheck(idx: number) {
     setCheckedItems((prev) => {
       const next = [...prev];
       next[idx] = !next[idx];
-      try {
-        localStorage.setItem("vk-prep-checks", JSON.stringify(next));
-      } catch { /* ignore */ }
+      try { localStorage.setItem("vk-prep-checks", JSON.stringify(next)); } catch {}
+      // Sync to Supabase
+      if (memberId) {
+        const key = `prep_${idx}`;
+        supabase.from("member_checklist").upsert({
+          member_id: memberId,
+          item_key: key,
+          completed: next[idx],
+          completed_at: next[idx] ? new Date().toISOString() : null,
+        }, { onConflict: "member_id,item_key" }).then(() => {});
+      }
       return next;
     });
   }
@@ -384,6 +401,9 @@ export function PortalHomePage({
                 : "Date TBD"}
             </p>
             <p className={styles.heroCardOffering}>Iboga Journey</p>
+            {memberData?.status && (
+              <p style={{ fontSize: 11, letterSpacing: "0.06em", color: "rgba(245,240,232,0.5)", marginTop: 4 }}>{memberData.status}</p>
+            )}
             <hr className={styles.heroCardDivider} />
             <p className={styles.heroCardDays}>{daysUntil ?? "\u2014"}</p>
             <p className={styles.heroCardDaysLabel}>Days Until Arrival</p>

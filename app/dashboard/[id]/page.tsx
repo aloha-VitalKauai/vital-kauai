@@ -35,6 +35,24 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
 
   if (!member) notFound();
 
+  // Look up auth user ID via member_profiles (for pre/post ceremony progress)
+  const { data: profileByEmail } = await supabase
+    .from("member_profiles")
+    .select("id")
+    .eq("email", member.email)
+    .maybeSingle();
+
+  let preProgress = null;
+  let postProgress = null;
+  if (profileByEmail) {
+    const [{ data: pre }, { data: post }] = await Promise.all([
+      supabase.from("pre_ceremony_progress").select("weeks_completed, checklist_items, journal_responses, last_updated").eq("member_id", profileByEmail.id).maybeSingle(),
+      supabase.from("post_ceremony_progress").select("weeks_completed, checklist_items, weekly_tracking, journal_responses, last_updated").eq("member_id", profileByEmail.id).maybeSingle(),
+    ]);
+    preProgress = pre;
+    postProgress = post;
+  }
+
   return (
     <MemberProfileEditor
       member={member}
@@ -43,6 +61,8 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       documents={documents ?? []}
       ceremonies={ceremonies ?? []}
       checklist={checklist ?? []}
+      preProgress={preProgress}
+      postProgress={postProgress}
     />
   );
 }
