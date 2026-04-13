@@ -385,21 +385,34 @@ export function HomePage() {
       </section>
 
       <section id="offerings" className={styles.offerings}>
-        <p className={`${styles.sectionLabel} ${styles.reveal}`}>In Support of the Medicine</p>
-        <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>
-          What Supports
-          <br />
-          <em>the Work?</em>
-        </h2>
-        <p className={`${styles.sectionSub} ${styles.reveal} ${styles.revealDelay1}`}>
-          We offer support at every level. Internal cleansing, detoxification, and deep restoration
-          prepare the body to receive. Somatic therapy draws out and integrates what the medicine
-          reveals. Breathwork, movement, sound, and energetic practice open presence and aliveness
-          across every dimension of the experience.
-        </p>
+        <div className={styles.offeringsHeader}>
+          <div>
+            <p className={`${styles.sectionLabel} ${styles.reveal}`}>In Support of the Medicine</p>
+            <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>
+              What Supports
+              <br />
+              <em>the Work?</em>
+            </h2>
+            <p className={`${styles.sectionSub} ${styles.reveal} ${styles.revealDelay1}`}>
+              We offer support at every level. Internal cleansing, detoxification, and deep restoration
+              prepare the body to receive. Somatic therapy draws out and integrates what the medicine
+              reveals. Breathwork, movement, sound, and energetic practice open presence and aliveness
+              across every dimension of the experience.
+            </p>
+          </div>
+          <div className={`${styles.offeringsImageWrap} ${styles.reveal}`}>
+            <Image
+              src="/images/kauaiwaterfall.jpeg"
+              alt="Kauai waterfall"
+              width={500}
+              height={600}
+              className={styles.offeringsImage}
+            />
+          </div>
+        </div>
 
         <div className={`${styles.offeringTags} ${styles.reveal}`}>
-          {["Somatics", "Cleansing", "Breathwork", "Sound Healing", "Bodywork", "Movement", "Energetics", "ʻĀina", "Integration", "Ceremony"].map(
+          {["Somatics", "Cleansing", "Breathwork", "Sound Healing", "Bodywork", "Movement", "Energetics", "Nature Immersion", "Integration", "Ceremony"].map(
             (tag, index) => (
               <span key={tag} className={index % 2 === 0 ? styles.tagSage : styles.tagGold}>
                 {tag}

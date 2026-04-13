@@ -679,6 +679,39 @@
   background: var(--forest);
 }
 
+.offeringsHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 60px;
+  margin-bottom: 20px;
+}
+
+.offeringsImageWrap {
+  flex-shrink: 0;
+  width: 340px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.offeringsImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+  filter: brightness(0.9) saturate(0.9);
+}
+
+@media (max-width: 900px) {
+  .offeringsHeader {
+    flex-direction: column;
+    gap: 30px;
+  }
+  .offeringsImageWrap {
+    width: 100%;
+    max-width: 400px;
+  }
+}
+
 .sectionLabel {
   margin-bottom: 20px;
   font-size: 10px;
