@@ -453,13 +453,13 @@ export function HomePage() {
               <em className={styles.sageEmphasis}>Visitorship</em>
             </h2>
             <p className={`${styles.sectionSubDark} ${styles.reveal}`}>
-              Your accommodations are homes offered in the spirit of aloha — local, intimate, real.
+              Your accommodations are private homes on the North Shore — intimate, nature-integrated, steps from Hanalei Bay.
             </p>
             <div className={styles.stayFeatures}>
               {[
                 [
-                  "Community-Held Homes",
-                  "North Shore homes offered by regenerative community stewards — intimate, nature-integrated, steps from Hanalei Bay",
+                  "Private North Shore Homes",
+                  "Stay in private homes in Hanalei — intimate, nature-integrated, steps from Hanalei Bay",
                 ],
                 [
                   "ʻĀina-Based Nourishment",
@@ -467,11 +467,11 @@ export function HomePage() {
                 ],
                 [
                   "Nature Immersion Daily",
-                  "Ocean swims, barefoot beach walks, waterfall hikes, grounding practices — held by the wild beauty of the North Shore",
+                  "Ocean swims, barefoot beach walks, grounding practices — held by the wild beauty of the North Shore",
                 ],
                 [
                   "For Island Residents",
-                  "For those who call the North Shore home, we come to you. Our work is available to island residents — in your space, in ours, or out in the land itself.",
+                  "For those who call the North Shore home, we come to you. Our work is available to island residents.",
                 ],
               ].map(([title, body], index) => (
                 <div key={title} className={`${styles.stayFeature} ${styles.reveal} ${index % 2 ? styles.revealDelay1 : ""}`}>
@@ -482,7 +482,7 @@ export function HomePage() {
               ))}
             </div>
             <a href="#reciprocity" className={`${styles.storyLink} ${styles.reveal}`}>
-              View Accommodations →
+              Stay with Us →
             </a>
           </div>
         </div>
