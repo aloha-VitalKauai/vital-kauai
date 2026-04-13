@@ -360,8 +360,8 @@ export function HomePage() {
       <section id="rivers" className={styles.rivers}>
         <div className={`${styles.riverFeature} ${styles.reveal}`}>
           <Image
-            src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Tabernanthe_iboga_MS_4098.jpg"
-            alt="Tabernanthe iboga fruit"
+            src="https://images.unsplash.com/photo-1518291344630-4857135fb581?w=1600&q=80"
+            alt="Iboga Medicine"
             fill
             sizes="100vw"
             className={styles.riverFeatureImage}
