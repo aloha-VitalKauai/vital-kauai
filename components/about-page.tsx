@@ -154,7 +154,7 @@ export function AboutPage() {
       <section className={styles.meeting} id="meeting">
         <div className={styles.meetingGrid}>
           <div style={{ overflow: "hidden" }}>
-            <img src="/images/rachjosh.jpeg" alt="Rachel & Josh at Hanalei" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%", display: "block", minHeight: 600 }} />
+            <img src="/images/rachjosh.jpg" alt="Rachel & Josh at Hanalei" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%", display: "block", minHeight: 600 }} />
           </div>
           <div className={styles.meetingText}>
             <p className={`${styles.eyebrow} ${styles.reveal}`}>Hanalei, Kaua&#699;i</p>
