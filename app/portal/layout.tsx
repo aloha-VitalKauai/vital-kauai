@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { PortalNav } from "@/components/portal-nav";
 
 export const metadata = { title: "Member Portal — Vital Kauaʻi" };
 
@@ -10,5 +11,10 @@ export default async function PortalLayout({ children }: { children: React.React
   } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=/portal");
 
-  return <>{children}</>;
+  return (
+    <>
+      <PortalNav email={user.email ?? ""} />
+      {children}
+    </>
+  );
 }

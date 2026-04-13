@@ -354,8 +354,7 @@ export function PortalHomePage({
 
   return (
     <div className={styles.page}>
-      {/* ── NAV ── */}
-      <PortalNav email={userEmail} />
+      {/* NAV provided by portal layout */}
 
       {/* ── HERO ── */}
       <section className={styles.portalHero}>

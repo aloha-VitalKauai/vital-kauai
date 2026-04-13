@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { PortalNav } from "@/components/portal-nav";
 
 const PHASES = [
   {
@@ -89,7 +88,6 @@ export default function JournalClient() {
   return (
     <div style={{ minHeight: "100vh", background: "#FDFBF7", fontFamily: "'Jost', sans-serif", fontWeight: 300 }}>
       {/* Nav */}
-      <PortalNav />
 
       {/* Hero */}
       <div style={{ background: "#1C2B1E", padding: "72px 60px 68px", position: "relative", overflow: "hidden" }}>

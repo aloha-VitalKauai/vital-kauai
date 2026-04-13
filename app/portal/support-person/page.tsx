@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { PortalNav } from "@/components/portal-nav";
 
 export const metadata = { title: "Support Person Guide — Vital Kauaʻi" };
 
@@ -29,7 +28,6 @@ export default async function SupportPersonPage() {
   return (
     <div style={{ minHeight: "100vh", background: cream, fontFamily: "'Jost', sans-serif", fontWeight: 300, lineHeight: 1.75, fontSize: 15, color: ink }}>
       {/* Nav */}
-      <PortalNav />
 
       {/* Hero */}
       <section style={{ padding: "100px 40px 80px", maxWidth: 780, margin: "0 auto", textAlign: "center" }}>

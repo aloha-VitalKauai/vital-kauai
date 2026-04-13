@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { PortalNav } from "@/components/portal-nav";
 
 export const metadata = { title: "Ceremony Guidelines — Vital Kauaʻi" };
 
@@ -37,7 +36,6 @@ export default async function CeremonyGuidelinesPage() {
   return (
     <div style={{ minHeight: "100vh", background: cream, fontFamily: "'Jost', sans-serif", fontWeight: 300, lineHeight: 1.75, color: ink }}>
       {/* Nav */}
-      <PortalNav />
 
       <div style={{ maxWidth: 820, margin: "0 auto", padding: "3rem 1.5rem 5rem" }}>
         {/* Header */}

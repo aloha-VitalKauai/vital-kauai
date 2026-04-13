@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { PortalNav } from "@/components/portal-nav";
 
 export const metadata = { title: "Dietary Preparation — Vital Kauaʻi" };
 
@@ -39,7 +38,6 @@ function DietaryContent() {
   return (
     <div style={{ minHeight: "100vh", background: "#F7F3ED", fontFamily: "'Jost', sans-serif", color: ink, fontSize: 15, lineHeight: 1.75 }}>
       {/* Nav */}
-      <PortalNav />
       {/* Header */}
       <div style={{ background: ink, color: "#F7F3ED", padding: "70px 40px 60px", textAlign: "center" }}>
         <p style={{ fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(247,243,237,0.4)", marginBottom: 18 }}>Vital Kaua&#699;i — Client Portal</p>

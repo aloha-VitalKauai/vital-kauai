@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { PortalNav } from "@/components/portal-nav";
 
 const STORAGE_KEY = "vk-packing-checks";
 
@@ -97,7 +96,6 @@ export default function WhatToBringClient() {
   return (
     <div style={{ minHeight: "100vh", background: "#F7F3ED", fontFamily: "'Jost', sans-serif", color: ink, fontSize: 15, lineHeight: 1.75 }}>
       {/* Nav */}
-      <PortalNav />
 
       {/* Header */}
       <div style={{ background: ink, color: "#F7F3ED", padding: "70px 40px 60px", textAlign: "center" }}>

@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { PortalNav } from "@/components/portal-nav";
 
 export const metadata = { title: "Nervous System Safety Guide — Vital Kauaʻi" };
 
@@ -24,7 +23,6 @@ export default async function NervousSystemPage() {
   return (
     <div style={{ minHeight: "100vh", background: warmWhite, fontFamily: "'Jost', sans-serif", fontWeight: 300, color: ink }}>
       {/* Nav */}
-      <PortalNav />
 
       {/* Hero */}
       <div style={{ background: forest, padding: "72px 60px 68px", position: "relative", overflow: "hidden" }}>

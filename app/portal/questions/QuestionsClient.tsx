@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { PortalNav } from "@/components/portal-nav";
 
 const SECTIONS = [
   {
@@ -110,7 +109,6 @@ export default function QuestionsClient() {
   return (
     <div style={{ minHeight: "100vh", background: "#FDFBF7", fontFamily: "'Jost', sans-serif", fontWeight: 300, color: "#1A1A18" }}>
       {/* Nav */}
-      <PortalNav />
 
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "64px 48px 96px" }}>
         {/* Header */}

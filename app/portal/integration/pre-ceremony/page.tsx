@@ -176,9 +176,7 @@ export default function PreCeremonyPage() {
   const [activeWeek, setActiveWeek] = useState(0)
   const [completed, setCompleted] = useState<Set<number>>(new Set())
   const [checklist, setChecklist] = useState<Record<string, boolean>>({})
-  const [journal, setJournal] = useState<Record<string, string>>({})
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
-  const saveTimer = useState<ReturnType<typeof setTimeout> | null>(null)
 
   // ── Auth + data load
   useEffect(() => {
@@ -198,7 +196,6 @@ export default function PreCeremonyPage() {
       if (data) {
         setCompleted(new Set(data.weeks_completed ?? []))
         setChecklist(data.checklist_items ?? {})
-        setJournal(data.journal_responses ?? {})
         // Resume at last uncompleted week
         const done = new Set<number>(data.weeks_completed ?? [])
         const next = [0,1,2,3,4,5].find(w => !done.has(w))
@@ -212,19 +209,18 @@ export default function PreCeremonyPage() {
   }, [])
 
   // ── Save
-  const save = useCallback(async (newCompleted: Set<number>, newChecklist: Record<string, boolean>, newJournal?: Record<string, string>) => {
+  const save = useCallback(async (newCompleted: Set<number>, newChecklist: Record<string, boolean>) => {
     if (!userId) return
     setSaveStatus('saving')
     await supabase.from('pre_ceremony_progress').upsert({
       member_id: userId,
       weeks_completed: [...newCompleted],
       checklist_items: newChecklist,
-      journal_responses: newJournal ?? journal,
       last_updated: new Date().toISOString(),
     }, { onConflict: 'member_id' })
     setSaveStatus('saved')
     setTimeout(() => setSaveStatus('idle'), 2000)
-  }, [userId, journal])
+  }, [userId])
 
   const markComplete = async (weekIdx: number) => {
     if (completed.has(weekIdx)) return
@@ -239,17 +235,6 @@ export default function PreCeremonyPage() {
     const next = { ...checklist, [id]: !checklist[id] }
     setChecklist(next)
     await save(completed, next)
-  }
-
-  // Journal auto-save with debounce
-  const journalTimerRef = { current: null as ReturnType<typeof setTimeout> | null }
-  const updateJournal = (key: string, value: string) => {
-    const next = { ...journal, [key]: value }
-    setJournal(next)
-    if (journalTimerRef.current) clearTimeout(journalTimerRef.current)
-    journalTimerRef.current = setTimeout(() => {
-      save(completed, checklist, next)
-    }, 1500)
   }
 
   const progress = Math.round((completed.size / 6) * 100)
@@ -292,8 +277,7 @@ export default function PreCeremonyPage() {
         .pc-dropdown { position:relative; }
         .pc-dropdown-trigger { font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--sage-lt);padding:6px 14px;border-radius:3px;border:none;background:none;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:6px; }
         .pc-dropdown-trigger::after { content:'▾';font-size:8px;color:var(--gold); }
-        .pc-dropdown-menu { display:none;position:absolute;top:100%;left:0;background:rgba(14,26,16,.98);backdrop-filter:blur(16px);border:.5px solid rgba(200,169,110,.15);border-radius:4px;min-width:180px;padding:8px 0;box-shadow:0 16px 40px rgba(0,0,0,.4); }
-        .pc-dropdown::after { content:'';position:absolute;top:100%;left:0;right:0;height:12px; }
+        .pc-dropdown-menu { display:none;position:absolute;top:calc(100% + 10px);left:0;background:rgba(14,26,16,.98);backdrop-filter:blur(16px);border:.5px solid rgba(200,169,110,.15);border-radius:4px;min-width:180px;padding:8px 0;box-shadow:0 16px 40px rgba(0,0,0,.4); }
         .pc-dropdown:hover .pc-dropdown-menu { display:block; }
         .pc-dropdown-item { display:block;padding:10px 20px;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,240,232,.55);text-decoration:none;transition:color .15s,background .15s;border-left:2px solid transparent; }
         .pc-dropdown-item:hover { color:var(--cream);background:rgba(122,158,126,.06); }
@@ -396,15 +380,6 @@ export default function PreCeremonyPage() {
         .prompt-num { font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:10px; }
         .prompt-q { font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--ink);line-height:1.35;margin-bottom:10px; }
         .prompt-hint { font-size:12.5px;color:var(--stone);line-height:1.75;font-style:italic; }
-        .journal-textarea {
-          width:100%;margin-top:14px;padding:14px 16px;border:1px solid rgba(122,158,126,0.2);
-          border-left:2px solid var(--sage-lt);background:rgba(122,158,126,0.04);
-          font-family:'Jost',sans-serif;font-size:14px;font-weight:300;color:var(--ink);
-          line-height:1.85;resize:vertical;outline:none;min-height:100px;
-          transition:border-color 0.2s,background 0.2s;
-        }
-        .journal-textarea:focus { border-color:var(--sage);background:rgba(122,158,126,0.07); }
-        .journal-textarea::placeholder { color:rgba(28,43,30,0.2);font-style:italic; }
 
         /* READINESS GATE */
         .rg-wrap { margin-top:40px;border:.5px solid rgba(122,158,126,.35);border-radius:4px;overflow:hidden; }
@@ -450,33 +425,7 @@ export default function PreCeremonyPage() {
         }
       `}</style>
 
-      {/* NAV */}
-      <nav className="pc-nav">
-        <div className="pc-nav-left">
-          <Link href="/" className="pc-logo">Vital <em>Kauaʻi</em></Link>
-          <div className="pc-nav-links">
-            <Link href="/portal" className="pc-nav-link">Dashboard</Link>
-
-            {/* Integration / Support dropdown */}
-            <div className="pc-dropdown">
-              <button className="pc-dropdown-trigger">Integration / Support</button>
-              <div className="pc-dropdown-menu">
-                <Link href="/portal/integration/pre-ceremony" className="pc-dropdown-item current">Pre-Ceremony</Link>
-                <Link href="/portal/integration/post-ceremony" className="pc-dropdown-item">Post-Ceremony</Link>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="pc-nav-right">
-          <span className="pc-nav-email">{userEmail}</span>
-          <button
-            className="pc-nav-out"
-            onClick={async () => { await supabase.auth.signOut(); router.push('/portal') }}
-          >
-            Sign out
-          </button>
-        </div>
-      </nav>
+      {/* NAV provided by portal layout */}
 
       {/* PROGRESS */}
       <div className="pc-prog">
@@ -596,23 +545,13 @@ export default function PreCeremonyPage() {
             <div className="section">
               <span className="section-label">Journal prompts — 2 only</span>
               <div className="prompts-list">
-                {w.prompts.map((p, pi) => {
-                  const jKey = `w${i}-p${pi}`
-                  return (
-                    <div className="prompt-item" key={pi}>
-                      <span className="prompt-num">0{pi + 1}</span>
-                      <p className="prompt-q">{p.q}</p>
-                      <p className="prompt-hint">{p.hint}</p>
-                      <textarea
-                        className="journal-textarea"
-                        value={journal[jKey] ?? ''}
-                        onChange={(e) => updateJournal(jKey, e.target.value)}
-                        placeholder="Write freely..."
-                        rows={4}
-                      />
-                    </div>
-                  )
-                })}
+                {w.prompts.map((p, pi) => (
+                  <div className="prompt-item" key={pi}>
+                    <span className="prompt-num">0{pi + 1}</span>
+                    <p className="prompt-q">{p.q}</p>
+                    <p className="prompt-hint">{p.hint}</p>
+                  </div>
+                ))}
               </div>
               <div className="continuity" style={{ marginTop: 20, marginBottom: 0 }}>
                 <div className="ct-arrow">→</div>
