@@ -338,7 +338,7 @@
 
 .bridge {
   background: var(--forest);
-  padding: 120px 60px;
+  padding: 60px 60px;
   text-align: center;
 }
 
@@ -469,7 +469,7 @@
 }
 
 .storyContent {
-  padding: 100px 80px;
+  padding: 60px 80px;
   max-width: 960px;
   margin: 0 auto;
   overflow: hidden;
