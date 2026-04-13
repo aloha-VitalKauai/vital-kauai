@@ -380,6 +380,7 @@
 .meetingPhoto {
   position: relative;
   overflow: hidden;
+  min-height: 500px;
 }
 
 .meetingPhoto .imgPlaceholder {

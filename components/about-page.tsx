@@ -154,7 +154,7 @@ export function AboutPage() {
       <section className={styles.meeting} id="meeting">
         <div className={styles.meetingGrid}>
           <div className={styles.meetingPhoto}>
-            <Image src="/images/rachjosh.jpeg" alt="Rachel & Josh at Hanalei" fill sizes="50vw" className={styles.meetingImg} />
+            <Image src="/images/rachjosh.jpeg" alt="Rachel & Josh at Hanalei" width={700} height={900} className={styles.meetingImg} style={{ width: "100%", height: "100%", position: "absolute", inset: 0 }} />
           </div>
           <div className={styles.meetingText}>
             <p className={`${styles.eyebrow} ${styles.reveal}`}>Hanalei, Kaua&#699;i</p>
@@ -164,23 +164,23 @@ export function AboutPage() {
               <em>of Your Truest Self</em>
             </h2>
             <p className={`${styles.meetingPara} ${styles.reveal}`}>
-              We are humbled by this path and grateful beyond words. This land brought us to each
-              other to hold space for others&apos; homecoming. What we carry into our work is
-              everything we have genuinely lived &mdash; the depths we have touched, the healing we
-              have done, the love we have built here on the North Shore.
-            </p>
-            <p className={`${styles.meetingPara} ${styles.reveal} ${styles.d1}`}>
-              We&apos;re grateful to be in service, devotion, and care for your transformation.
-            </p>
-            <p className={`${styles.meetingPara} ${styles.reveal} ${styles.d2}`}>
               We found each other after a yoga class. Josh put down roots on Kaua&#699;i after years
               of travel, studying with masters of somatics, plant medicine, detoxification, and
               indigenous ceremony. Rachel was raising two boys while tending to her heart.
             </p>
-            <p className={`${styles.meetingPara} ${styles.reveal} ${styles.d3}`}>
+            <p className={`${styles.meetingPara} ${styles.reveal} ${styles.d1}`}>
               Months passed, and then our fields began weaving organically, merging daily without
               plan &mdash; on the beach, in town, in the surf. We started talking and immediately
               knew we had work to do together.
+            </p>
+            <p className={`${styles.meetingPara} ${styles.reveal} ${styles.d2}`}>
+              This sanctuary is the culmination of our life paths brought together &mdash; to be in
+              loving service of others&apos; healing and transformation. What we carry into this work
+              is everything we have genuinely lived &mdash; the depths we have touched, the healing
+              we have done, the love we have built here on the North Shore.
+            </p>
+            <p className={`${styles.meetingPara} ${styles.reveal} ${styles.d3}`}>
+              We&apos;re grateful to be in service, devotion, and care for your transformation.
             </p>
           </div>
         </div>
