@@ -1326,7 +1326,7 @@ const BODY_CONTENT = `
     <div style="margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid rgba(184,105,74,0.15);">
       <span class="section-label reveal" style="margin-bottom:6px;">Regenerative Visitorship</span>
       <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(22px,2.5vw,34px);font-weight:300;color:var(--text-dark);line-height:1.15;margin-bottom:14px;" class="reveal">The Living <em style="font-style:italic;color:var(--terra);">ʻĀina</em></h2>
-      <p class="reveal" style="font-size:13px;color:var(--stone);line-height:1.85;max-width:680px;font-weight:300;">For those who feel called, there is an option to volunteer at one of these places and give back to the land that holds you. These organizations welcome hands and open hearts.</p>
+      <p class="reveal" style="font-size:13px;color:var(--stone);line-height:1.85;max-width:680px;font-weight:300;">For those who feel called, there is an option to visit or volunteer at one of these places and give back to the land that holds you. These organizations welcome hands and open hearts.</p>
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(184,105,74,0.1);overflow:hidden;" class="reveal">

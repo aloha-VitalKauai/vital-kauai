@@ -804,12 +804,11 @@
 .medicineGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  min-height: 80vh;
+  align-items: stretch;
 }
 
 .medicineImagePane {
   position: relative;
-  min-height: 600px;
   overflow: hidden;
   background: linear-gradient(160deg, #0a1f0d 0%, #152b18 40%, #1a3a1e 70%, #0e1a10 100%);
 }

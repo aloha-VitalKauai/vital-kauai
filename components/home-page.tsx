@@ -61,9 +61,9 @@ const faqs = [
       "Guests are welcome to stay in one of our community-held North Shore homes — offered by local stewards as an act of aloha, with meals included. Local residents and those who prefer to arrange their own accommodations are equally welcome. We work with whatever supports you best.",
   },
   {
-    question: "What is the donation amount or membership offering?",
+    question: "What is the love offering?",
     answer:
-      "Every journey is shaped around you — and so is the love offering. We discuss this personally on your discovery call, where we explore what's right for your journey, your needs, and your circumstances. As a general guide, offerings for Iboga start at $15,000. If you feel called to begin with cleansing, somatic, or energetic work, we can explore that on your discovery call and find the love offering that fits. Need-based scholarships and kamaʻāina love offerings are available.",
+      "Vital Kauaʻi is a legally established church, and all offerings support our sacred mission. There is no fixed price — every journey is shaped around you, and the love offering is discussed personally on your discovery call. We believe this work should be accessible to anyone who is truly called. No one is turned away based on financial circumstances. Kamaʻāina and need-based considerations are always welcome in that conversation.",
   },
   {
     question: "How do I know if I'm ready?",
