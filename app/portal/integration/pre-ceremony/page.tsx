@@ -292,7 +292,8 @@ export default function PreCeremonyPage() {
         .pc-dropdown { position:relative; }
         .pc-dropdown-trigger { font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--sage-lt);padding:6px 14px;border-radius:3px;border:none;background:none;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:6px; }
         .pc-dropdown-trigger::after { content:'▾';font-size:8px;color:var(--gold); }
-        .pc-dropdown-menu { display:none;position:absolute;top:calc(100% + 10px);left:0;background:rgba(14,26,16,.98);backdrop-filter:blur(16px);border:.5px solid rgba(200,169,110,.15);border-radius:4px;min-width:180px;padding:8px 0;box-shadow:0 16px 40px rgba(0,0,0,.4); }
+        .pc-dropdown-menu { display:none;position:absolute;top:100%;left:0;background:rgba(14,26,16,.98);backdrop-filter:blur(16px);border:.5px solid rgba(200,169,110,.15);border-radius:4px;min-width:180px;padding:8px 0;box-shadow:0 16px 40px rgba(0,0,0,.4); }
+        .pc-dropdown::after { content:'';position:absolute;top:100%;left:0;right:0;height:12px; }
         .pc-dropdown:hover .pc-dropdown-menu { display:block; }
         .pc-dropdown-item { display:block;padding:10px 20px;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,240,232,.55);text-decoration:none;transition:color .15s,background .15s;border-left:2px solid transparent; }
         .pc-dropdown-item:hover { color:var(--cream);background:rgba(122,158,126,.06); }
