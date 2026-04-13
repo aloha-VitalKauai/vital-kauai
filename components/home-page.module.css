@@ -965,8 +965,8 @@
 }
 
 .founderImg {
-  width: 180px;
-  height: 220px;
+  width: 260px;
+  height: 320px;
   object-fit: cover;
   filter: grayscale(20%);
 }
