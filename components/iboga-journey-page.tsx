@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import styles from "./iboga-journey-page.module.css";
 
 export function IbogaJourneyPage() {
@@ -166,15 +168,7 @@ export function IbogaJourneyPage() {
               the resource we wish existed when we began our own journeys.
             </p>
           </div>
-          <div className={styles.leadCard}>
-            <h3 className={styles.leadCardTitle}>Get the Free Guide</h3>
-            <input type="text" placeholder="Your Name" className={styles.leadInput} />
-            <input type="email" placeholder="Your Email" className={styles.leadInput} />
-            <Link href="/iboga-guide" className={styles.leadBtn}>
-              Download Free Guide &rarr;
-            </Link>
-            <p className={styles.leadDisclaimer}>No spam. Unsubscribe anytime.</p>
-          </div>
+          <LeadCaptureCard />
         </div>
       </section>
 
@@ -548,5 +542,77 @@ export function IbogaJourneyPage() {
         </p>
       </div>
     </main>
+  );
+}
+
+function LeadCaptureCard() {
+  const router = useRouter();
+  const supabase = createClient();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit() {
+    if (!name.trim() || !email.trim()) {
+      setError("Please enter your name and email.");
+      return;
+    }
+    setSubmitting(true);
+    setError("");
+
+    const { error: insertErr } = await supabase.from("leads").insert({
+      full_name: name.trim(),
+      email: email.trim().toLowerCase(),
+      source: "Free Guide",
+      lead_date: new Date().toISOString(),
+      welcome_video_sent: false,
+      discovery_call_booked: false,
+      converted_to_member: false,
+    });
+
+    if (insertErr) {
+      // If duplicate email, still redirect to guide
+      if (insertErr.code === "23505") {
+        router.push("/iboga-guide");
+        return;
+      }
+      setError("Something went wrong. Please try again.");
+      setSubmitting(false);
+      return;
+    }
+
+    router.push("/iboga-guide");
+  }
+
+  return (
+    <div className={styles.leadCard}>
+      <h3 className={styles.leadCardTitle}>Get the Free Guide</h3>
+      <input
+        type="text"
+        placeholder="Your Name"
+        className={styles.leadInput}
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+      <input
+        type="email"
+        placeholder="Your Email"
+        className={styles.leadInput}
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+      />
+      {error && <p style={{ fontSize: 12, color: "#A85555", margin: "0 0 8px" }}>{error}</p>}
+      <button
+        onClick={handleSubmit}
+        disabled={submitting}
+        className={styles.leadBtn}
+        style={{ opacity: submitting ? 0.6 : 1, cursor: submitting ? "not-allowed" : "pointer" }}
+      >
+        {submitting ? "Sending..." : "Download Free Guide \u2192"}
+      </button>
+      <p className={styles.leadDisclaimer}>No spam. Unsubscribe anytime.</p>
+    </div>
   );
 }
