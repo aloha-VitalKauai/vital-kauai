@@ -13,7 +13,7 @@ const teamMembers = [
     name: "Judith Johnson",
     role: "Founder, PsychoNeuroEnergetics · Somatic Integration Director, Americans for Ibogaine",
     bio: "A pioneer of body-oriented healing, Judith is the founder and developer of PsychoNeuroEnergetics (PNE) — a breakthrough modality that unwinds traumatic imprints held in the nervous system through the healing power of the vagus nerve. With decades of practice across Somatic Experiencing, Polyvagal Theory, and body electronics, she brings an extraordinary depth of wisdom to every container at Vital Kauaʻi.",
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80",
+    image: "/images/judithjohnson.jpeg",
   },
   {
     name: "Dr. Liz Esalen",
