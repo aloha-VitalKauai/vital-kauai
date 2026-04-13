@@ -251,7 +251,7 @@ export function HomePage() {
             ))}
           </div>
           <Image
-            src="https://images.unsplash.com/photo-1505852679233-d9fd70aff56d?w=1800&q=85"
+            src="https://images.unsplash.com/photo-1542640244-8a927d20bfec?w=1800&q=85"
             alt="Nāpali Coast, Kauaʻi"
             fill
             priority
