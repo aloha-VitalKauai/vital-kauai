@@ -775,7 +775,7 @@
 
 .medicineImage {
   object-fit: cover;
-  object-position: center center;
+  object-position: center top;
   filter: brightness(0.65) saturate(0.8);
 }
 
