@@ -1355,7 +1355,7 @@ const BODY_CONTENT = `
         <div style="height:120px;overflow:hidden;margin-bottom:14px;background:var(--forest-dark);">
           <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" alt="Hui Makaainana" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:saturate(0.85) brightness(0.88);">
         </div>
-        <h3 style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--text-dark);margin-bottom:3px;">Hui Makaʻāinana</h3>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--text-dark);margin-bottom:3px;">Hui Makaʻāinana o Makana</h3>
         <p style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;">Hāʻena</p>
         <p style="font-size:12px;color:var(--stone);line-height:1.7;">Community stewards of the reef, watershed, and cultural memory.</p>
         <a href="https://www.huimakaainanaomakana.org" target="_blank" style="display:inline-block;margin-top:10px;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--terra);text-decoration:none;border-bottom:1px solid rgba(184,105,74,0.3);padding-bottom:2px;">Visit →</a>
