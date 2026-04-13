@@ -251,10 +251,6 @@ export function HomePage() {
               </Link>
             </div>
           </div>
-          <div className={styles.scrollIndicator}>
-            <span className={styles.scrollText}>Descend</span>
-            <div className={styles.scrollLine} />
-          </div>
         </section>
       </div>
 
