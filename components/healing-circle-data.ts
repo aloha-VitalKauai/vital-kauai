@@ -227,12 +227,12 @@ export const members: Member[] = [
   {
     id: "jon_allen",
     name: "Jon Allen, PA-C",
-    role: "Medical Advisor · PA-C · Harvard-Trained",
+    role: "Medical Advisor · PA-C · Yale-Trained",
     cat: "medical",
     photo: "/images/jonallen.jpeg",
     shortBio:
-      "Jon is a Harvard-trained, board-certified Physician Assistant practicing family and cardiovascular medicine on Kauaʻi's North Shore. He reviews all participant medical records, evaluates contraindications, and provides clinical oversight throughout the preparation process. For those who wish it, Jon is available to be present during ceremony — bringing the reassurance of skilled, grounded medical presence to the container.",
-    bio: "Jon is a Harvard-trained, board-certified Physician Assistant practicing family and cardiovascular medicine on Kauaʻi's North Shore. He reviews all participant medical records, evaluates contraindications, and provides clinical oversight throughout the preparation process. For those who wish it, Jon is available to be present during ceremony — bringing the reassurance of skilled, grounded medical presence to the container.",
+      "Jon is a Yale School of Medicine-trained, board-certified Physician Assistant practicing family and cardiovascular medicine on Kauaʻi's North Shore. He reviews all participant medical records, evaluates contraindications, and provides clinical oversight throughout the preparation process. For those who wish it, Jon is available to be present during ceremony — bringing the reassurance of skilled, grounded medical presence to the container.",
+    bio: "Jon is a Yale School of Medicine-trained, board-certified Physician Assistant practicing family and cardiovascular medicine on Kauaʻi's North Shore. He reviews all participant medical records, evaluates contraindications, and provides clinical oversight throughout the preparation process. For those who wish it, Jon is available to be present during ceremony — bringing the reassurance of skilled, grounded medical presence to the container.",
   },
 ];
 
