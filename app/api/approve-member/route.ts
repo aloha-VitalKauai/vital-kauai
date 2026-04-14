@@ -158,7 +158,10 @@ async function getOrCreateAuthUser(email: string, fullName: string): Promise<str
   })
   const data = await res.json()
   if (!res.ok) throw new Error(JSON.stringify(data))
-  return data.user.id
+  // Admin REST API returns user object directly (not wrapped in { user: {} })
+  const userId = data.user?.id || data.id
+  if (!userId) throw new Error(`No user ID in response: ${JSON.stringify(data).slice(0, 200)}`)
+  return userId
 }
 
 async function generatePasswordSetupLink(email: string, fullName: string): Promise<string | null> {
