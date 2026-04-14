@@ -163,7 +163,7 @@ const WEEKS = [
     prompts: [
       { q: 'How are the people closest to me responding to my changes — and what does that bring up in me?', hint: 'Notice without defending or collapsing. Their response is information about the system, not a verdict on your transformation. What does it bring up, and how are you choosing to meet that?' },
       { q: 'Where am I still wearing an old mask in relationships — and what would it feel like to take it off?', hint: 'The medicine showed you what lives beneath the masks. In which relationships are you still performing the old version of yourself? What would genuine contact look like instead?' },
-      { q: 'What is still alive in me — still moving, still asking for attention?', hint: 'Some material takes months. Name what is still tender, still present, still working itself through. Naming it is itself integration.' },
+      { q: 'What is still alive in me — still moving, still unresolved, still asking for attention?', hint: 'Some material takes months. Name what is still tender, still present, still working itself through — including what remains unresolved. Naming it is itself integration.' },
       { q: 'Where is the medicine still teaching you?', hint: 'In dreams, in patterns you notice, in moments of unexpected recognition. The ceremony continues to move in you. Where are you still receiving its instruction?' },
       { q: 'Where is forgiveness still alive — and what relationship is asking you to continue that work?', hint: 'Forgiveness is rarely a single event. It is a practice. Who are you still releasing — and what would it mean to take one more step in that direction?' },
     ],
