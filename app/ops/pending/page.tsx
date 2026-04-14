@@ -62,6 +62,18 @@ export default function PendingApprovalsPage() {
     setActing(null)
   }
 
+  async function resendNotification(lead: Lead) {
+    setActing(lead.id)
+    const res = await fetch('/api/resend-notification', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lead_id: lead.id }),
+    })
+    const data = await res.json()
+    showToast(res.ok ? `Founder email resent for ${lead.full_name}` : (data.error || 'Resend failed'))
+    setActing(null)
+  }
+
   function showToast(msg: string) {
     setToast(msg)
     setTimeout(() => setToast(null), 4000)
@@ -127,16 +139,21 @@ export default function PendingApprovalsPage() {
                   </div>
                 </div>
 
-                {lead.approval_status === 'pending' && (
-                  <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-                    <button onClick={() => approve(lead)} disabled={acting === lead.id} style={{ padding: '10px 20px', borderRadius: 6, background: acting === lead.id ? 'rgba(200,169,110,0.3)' : '#c8a96e', color: '#1a2e1c', border: 'none', fontFamily: 'sans-serif', fontSize: 13, fontWeight: 600, cursor: acting === lead.id ? 'not-allowed' : 'pointer' }}>
-                      {acting === lead.id ? '\u2026' : 'Approve'}
-                    </button>
-                    <button onClick={() => decline(lead)} disabled={acting === lead.id} style={{ padding: '10px 20px', borderRadius: 6, background: 'transparent', color: 'rgba(245,240,232,0.45)', border: '1px solid rgba(245,240,232,0.15)', fontFamily: 'sans-serif', fontSize: 13, cursor: acting === lead.id ? 'not-allowed' : 'pointer' }}>
-                      Decline
-                    </button>
-                  </div>
-                )}
+                <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                  {lead.approval_status === 'pending' && (
+                    <>
+                      <button onClick={() => approve(lead)} disabled={acting === lead.id} style={{ padding: '10px 20px', borderRadius: 6, background: acting === lead.id ? 'rgba(200,169,110,0.3)' : '#c8a96e', color: '#1a2e1c', border: 'none', fontFamily: 'sans-serif', fontSize: 13, fontWeight: 600, cursor: acting === lead.id ? 'not-allowed' : 'pointer' }}>
+                        {acting === lead.id ? '\u2026' : 'Approve'}
+                      </button>
+                      <button onClick={() => decline(lead)} disabled={acting === lead.id} style={{ padding: '10px 20px', borderRadius: 6, background: 'transparent', color: 'rgba(245,240,232,0.45)', border: '1px solid rgba(245,240,232,0.15)', fontFamily: 'sans-serif', fontSize: 13, cursor: acting === lead.id ? 'not-allowed' : 'pointer' }}>
+                        Decline
+                      </button>
+                    </>
+                  )}
+                  <button onClick={() => resendNotification(lead)} disabled={acting === lead.id} title="Resend founder approval email" style={{ padding: '10px 16px', borderRadius: 6, background: 'transparent', color: 'rgba(245,240,232,0.35)', border: '1px solid rgba(245,240,232,0.1)', fontFamily: 'sans-serif', fontSize: 12, cursor: acting === lead.id ? 'not-allowed' : 'pointer' }}>
+                    Resend Email
+                  </button>
+                </div>
               </div>
             ))}
           </div>
