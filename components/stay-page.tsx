@@ -1388,7 +1388,7 @@ const BODY_CONTENT = `
             <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Integration</span>
           </div>
           <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Land & Reflection</h3>
-          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">Nature, sessions, and the quiet where the deeper layers begin to settle and clarify.</p>
+          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">Nature, somatic integration sessions with your guide, and the quiet where the deeper layers begin to settle and clarify.</p>
         </div>
       </div>
 
