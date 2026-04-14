@@ -567,7 +567,7 @@ function LeadCaptureCard() {
     setSubmitting(true);
     setError("");
 
-    const { error: insertErr } = await supabase.from("leads").insert({
+    await supabase.from("leads").insert({
       full_name: name.trim(),
       email: email.trim().toLowerCase(),
       source: "Free Guide",
@@ -575,19 +575,7 @@ function LeadCaptureCard() {
       welcome_video_sent: false,
       discovery_call_booked: false,
       converted_to_member: false,
-    });
-
-    if (insertErr) {
-      // If duplicate email, still redirect to guide
-      if (insertErr.code === "23505") {
-        sessionStorage.setItem("guide_access", "true");
-    router.push("/iboga-guide");
-        return;
-      }
-      setError("Something went wrong. Please try again.");
-      setSubmitting(false);
-      return;
-    }
+    }).catch(() => {});
 
     sessionStorage.setItem("guide_access", "true");
     router.push("/iboga-guide");

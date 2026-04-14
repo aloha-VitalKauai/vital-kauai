@@ -951,7 +951,7 @@ function HomeLeadCard() {
     setSubmitting(true);
     setError("");
     const supabase = createClient();
-    const { error: insertErr } = await supabase.from("leads").insert({
+    await supabase.from("leads").insert({
       full_name: name.trim(),
       email: email.trim().toLowerCase(),
       source: "Free Guide",
@@ -959,8 +959,7 @@ function HomeLeadCard() {
       welcome_video_sent: false,
       discovery_call_booked: false,
       converted_to_member: false,
-    });
-    if (insertErr && insertErr.code !== "23505") { setError("Something went wrong. Please try again."); setSubmitting(false); return; }
+    }).catch(() => {});
     sessionStorage.setItem("guide_access", "true");
     router.push("/iboga-guide");
   }
