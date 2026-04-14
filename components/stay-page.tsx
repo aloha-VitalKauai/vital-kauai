@@ -1160,14 +1160,14 @@ const BODY_CONTENT = `
   <div class="homes-grid">
     <div class="reveal" style="display:flex;flex-direction:column;gap:10px;position:relative;">
       <div style="height:320px;overflow:hidden;background:var(--forest-dark);">
-        <img src="Bedroom_1_2.jpg" alt="Private bedroom with Nā Pali mountain views" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;">
+        <img src="/images/bedroom.jpg" alt="Private bedroom with mountain views" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;">
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <div style="height:200px;overflow:hidden;background:var(--forest-dark);">
-          <img src="Kitchen_1_1.jpg" alt="Open kitchen and living space" style="width:100%;height:100%;object-fit:cover;object-position:center 30%;">
+          <img src="/images/kitchen.jpg" alt="Open kitchen and living space" style="width:100%;height:100%;object-fit:cover;object-position:center 30%;">
         </div>
         <div style="height:200px;overflow:hidden;background:var(--forest-dark);">
-          <img src="Bathroom_1_1.jpg" alt="Bathroom with stone sink and mountain views" style="width:100%;height:100%;object-fit:cover;object-position:center 20%;">
+          <img src="/images/bathroom.jpg" alt="Bathroom" style="width:100%;height:100%;object-fit:cover;object-position:center 20%;">
         </div>
       </div>
       <p style="font-size:10px;color:rgba(26,26,24,0.32);letter-spacing:0.05em;font-style:italic;text-align:center;margin-top:6px;">Photos of your private sanctuary shared personally after your discovery call.</p>
@@ -1178,7 +1178,7 @@ const BODY_CONTENT = `
       <p class="homes-body reveal">You will be staying in a private home in Hanalei — carefully selected for comfort, space, and proximity to the land and the bay. Each home sits within walking distance of the water, cradled by the mountains, and prepared with intention for the people who will move through it.</p>
       <p class="homes-body reveal reveal-delay-1">The specific home for your ceremony date will be shared with you personally after our discovery call.</p>
       <div class="homes-pull reveal reveal-delay-2">
-        <p>"The home is the first layer of the medicine — arriving somewhere clean, quiet, and prepared for you, in a place that holds."</p>
+        <p>"The home is the first layer of the medicine — arriving somewhere clean, quiet, and prepared for you, in a deeply healing place."</p>
       </div>
       <p class="homes-body reveal">Members share a spacious, welcoming home — a private, intimate container of up to six members at a time, so the space and the care remain deeply personal.</p>
     </div>
