@@ -1464,7 +1464,7 @@ const BODY_CONTENT = `
 
       <div style="padding:20px;background:var(--cream);">
         <div style="height:120px;overflow:hidden;margin-bottom:14px;background:var(--forest-dark);">
-          <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&q=80" alt="Waipā Foundation" style="width:100%;height:100%;object-fit:cover;filter:saturate(0.85) brightness(0.88);">
+          <img src="/images/waipa.jpg" alt="Waipā Foundation" style="width:100%;height:100%;object-fit:cover;filter:saturate(0.85) brightness(0.88);">
         </div>
         <h3 style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--text-dark);margin-bottom:3px;">Waipā Foundation</h3>
         <p style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;">Hanalei Bay</p>
