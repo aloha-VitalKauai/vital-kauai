@@ -219,7 +219,7 @@ export const members: Member[] = [
     name: "Ariana Beil",
     role: "BioGeometry Balancing",
     cat: "healers",
-    photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&q=80",
+    photo: "/images/arianabeil.jpeg",
     shortBio:
       "Ariana Beil brings the revolutionary science of BioGeometry to the Vital Kauaʻi circle — a practice that uses the subtle energy principles of shape, color, and form to restore natural balance within biological systems and living environments. Founded by Egyptian scholar Dr. Ibrahim Karim, BioGeometry works to harmonize the body's energy interactions with its surroundings, addressing geopathic stress, EMF, and energetic imbalance at a foundational level. Ariana's sessions support the body's own intelligence in returning to harmony, ease, and coherence. Her work is a quietly powerful complement to every healing journey at Vital Kauaʻi.",
     bio: "Ariana Beil brings the revolutionary science of BioGeometry to the Vital Kauaʻi circle — a practice that uses the subtle energy principles of shape, color, and form to restore natural balance within biological systems and living environments. Founded by Egyptian scholar Dr. Ibrahim Karim, BioGeometry works to harmonize the body's energy interactions with its surroundings, addressing geopathic stress, EMF, and energetic imbalance at a foundational level. Ariana's sessions support the body's own intelligence in returning to harmony, ease, and coherence. Her work is a quietly powerful complement to every healing journey at Vital Kauaʻi.",
