@@ -950,20 +950,17 @@ function HomeLeadCard() {
     if (!name.trim() || !email.trim()) { setError("Please enter your name and email."); return; }
     setSubmitting(true);
     setError("");
+    // Fire and forget — never block redirect
     const supabase = createClient();
-    try {
-      await supabase.from("leads").insert({
-        full_name: name.trim(),
-        email: email.trim().toLowerCase(),
-        source: "Free Guide",
-        lead_date: new Date().toISOString(),
-        welcome_video_sent: false,
-        discovery_call_booked: false,
-        converted_to_member: false,
-      });
-    } catch { /* silently continue — guide access is more important */ }
+    supabase.from("leads").insert({
+      full_name: name.trim(),
+      email: email.trim().toLowerCase(),
+      source: "Free Guide",
+      lead_date: new Date().toISOString(),
+    }).then(() => {}).catch(() => {});
+
     sessionStorage.setItem("guide_access", "true");
-    router.push("/iboga-guide");
+    window.location.href = "/iboga-guide";
   }
 
   return (

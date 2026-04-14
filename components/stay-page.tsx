@@ -1208,7 +1208,7 @@ const BODY_CONTENT = `
 
 <!-- HANALEI BAY PHOTO STRIP -->
 <div style="height:55vh;min-height:380px;overflow:hidden;position:relative;">
-  <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1800&q=85"
+  <img src="/images/hanalei2.jpg"
     alt="Hanalei Bay, Kauaʻi"
     style="width:100%;height:100%;object-fit:cover;object-position:center 60%;filter:saturate(0.9) brightness(0.88);">
   <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,20,12,0.15) 0%,rgba(10,20,12,0.0) 40%,rgba(10,20,12,0.45) 100%);"></div>
@@ -1579,7 +1579,6 @@ const BODY_CONTENT = `
         </button>
         <div class="faq-answer">
           <p>The first step is a discovery call — a real conversation with Rachel and/or Josh, bookable directly through our Calendly. We want to understand what brings you here, what you are carrying, your health history, and what support will serve you best. This is how we begin to know you, so that the container we hold for you is built for who you actually are.</p>
-          <p>Depending on the nature of your journey, there may also be medical forms and protocol preparation materials shared in advance of arrival.</p>
         </div>
       </div>
 
