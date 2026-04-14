@@ -1208,7 +1208,7 @@ const BODY_CONTENT = `
 
 <!-- HANALEI BAY PHOTO STRIP -->
 <div style="height:55vh;min-height:380px;overflow:hidden;position:relative;">
-  <img src="/images/hanalei2.jpg"
+  <img src="/images/hanaleipier2.jpg"
     alt="Hanalei Bay, Kauaʻi"
     style="width:100%;height:100%;object-fit:cover;object-position:center 60%;filter:saturate(0.9) brightness(0.88);">
   <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,20,12,0.15) 0%,rgba(10,20,12,0.0) 40%,rgba(10,20,12,0.45) 100%);"></div>
