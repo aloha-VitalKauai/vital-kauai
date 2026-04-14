@@ -35,13 +35,13 @@ export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) 
 
   // Detect recovery tokens in URL hash — redirect to set-password page
   // This handles the case where Supabase redirects here with tokens
-  // instead of directly to /portal/set-password
+  // instead of directly to /setup-account
   useEffect(() => {
     const hash = window.location.hash.substring(1)
     if (!hash) return
     const params = new URLSearchParams(hash)
     if (params.get('type') === 'recovery' && params.get('access_token')) {
-      window.location.href = `/portal/set-password#${hash}`
+      window.location.href = `/setup-account#${hash}`
     }
   }, []);
 

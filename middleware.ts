@@ -29,9 +29,7 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
   // Not logged in — protect both portal and dashboard
-  // Exception: /portal/set-password must be accessible without a session
-  // because new members arrive with auth tokens in the URL hash (client-side)
-  if (!user && path !== "/portal/set-password" && (path.startsWith("/portal") || path.startsWith("/dashboard"))) {
+  if (!user && (path.startsWith("/portal") || path.startsWith("/dashboard"))) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 

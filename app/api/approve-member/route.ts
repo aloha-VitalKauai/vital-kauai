@@ -129,7 +129,7 @@ async function handleApproval(token: string, source: string) {
   if (timelineErr) console.error('[approve-member] STEP:timeline — FAILED:', JSON.stringify(timelineErr))
   else console.log(`[approve-member] STEP:timeline — logged`)
 
-  // Generate one-time setup link -> /portal/set-password
+  // Generate one-time setup link -> /setup-account
   // This is NOT an ongoing magic link.
   // After they create their password, they ALWAYS log in with email + password.
   const setupLink = await generatePasswordSetupLink(lead.email, lead.full_name)
@@ -154,7 +154,7 @@ async function getOrCreateAuthUser(email: string, fullName: string): Promise<str
     email,
     email_confirm: true,
     user_metadata: { full_name: fullName },
-    // No password -- member sets it themselves on /portal/set-password
+    // No password -- member sets it themselves on /setup-account
   })
   const data = await res.json()
   if (!res.ok) throw new Error(JSON.stringify(data))
@@ -167,7 +167,7 @@ async function getOrCreateAuthUser(email: string, fullName: string): Promise<str
 async function generatePasswordSetupLink(email: string, fullName: string): Promise<string | null> {
   // Use Supabase JS admin client — raw adminFetch wasn't encoding redirect_to properly
   const supabase = db()
-  const redirectTo = `${env().appUrl}/portal/set-password`
+  const redirectTo = `${env().appUrl}/setup-account`
 
   const { data, error } = await supabase.auth.admin.generateLink({
     type: 'recovery',
