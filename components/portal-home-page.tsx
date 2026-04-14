@@ -79,7 +79,7 @@ const PREP_ITEMS: { text: string; link?: string; external?: boolean }[] = [
   { text: "Sign all three required documents (Intake Form, Membership Agreement, Medical Disclaimer)" },
   { text: "Submit your remaining love offering" },
   { text: "Read Iboga Preparedness Guide", link: "/iboga-preparedness-guide.html" },
-  { text: "Book your preparation calls with your integration guide", link: "https://calendly.com/aloha-vitalkauai", external: true },
+  { text: "Book your preparation calls with your integration guide" },
   { text: "Discuss all medications and supplements with Rachel and Josh \u2014 confirm any required washout periods" },
   { text: "Confirm required lab work with your physician and submit results", link: "/portal/physician-guide" },
   { text: "Begin dietary preparation protocol", link: "/portal/dietary" },
