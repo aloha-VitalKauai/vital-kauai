@@ -57,7 +57,7 @@ export default async function NervousSystemPage() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 48 }}>
           {[
             { label: "State One", title: "Ventral Vagal", subtitle: "Safe & Social", desc: "Your home base. Here, your body feels settled, your heart is open, connection feels natural, and creative thought flows easily.", feel: "ease, warmth in the chest, a soft belly, bright eyes, an open throat, a desire to connect.", color: "#1D9E75", bg: "#E1F5EE" },
-            { label: "State Two", title: "Sympathetic", subtitle: "Mobilized", desc: "Your system has detected a signal of danger and is preparing you to act \u2014 fight or flee. This state is not wrong; it is your protection activating.", feel: "racing heart, tight jaw, shallow breath, heat, restlessness, urgency, irritability, or fear.", color: "#EF9F27", bg: "#FAEEDA" },
+            { label: "State Two", title: "Sympathetic", subtitle: "Mobilized", desc: "Your system has detected a signal of danger and is preparing you to act \u2014 fight or flee. This state is your protection activating.", feel: "racing heart, tight jaw, shallow breath, heat, restlessness, urgency, irritability, or fear.", color: "#EF9F27", bg: "#FAEEDA" },
             { label: "State Three", title: "Dorsal Vagal", subtitle: "Shutdown", desc: "When overwhelm exceeds what can be mobilized, the system collapses into stillness. This is an ancient form of protection.", feel: "heaviness, numbness, flatness, disconnection, fog, collapse, or a wish to disappear.", color: "#378ADD", bg: "#E6F1FB" },
           ].map((state) => (
             <div key={state.title} style={{ background: state.bg, borderRadius: 10, padding: "24px", border: `0.5px solid ${border}` }}>
@@ -91,7 +91,7 @@ export default async function NervousSystemPage() {
           {[
             { num: "I", title: "Orienting", text: "Slowly allow your gaze to move through the space around you \u2014 as if you are a gentle animal arriving somewhere new. Let your eyes rest on something stable, something soft, something that carries a sense of safety. When you find it, let your gaze settle and breathe there." },
             { num: "II", title: "Grounding", text: "Feel the weight of your body making contact with whatever is beneath you \u2014 a chair, the floor, the earth. Press your feet into the ground. Sense the steady, unwavering support that is always there. Gravity is holding you. The earth is holding you." },
-            { num: "III", title: "Titration", text: "You do not need to process everything at once. Titration means coming into contact with a difficult experience in small, manageable doses \u2014 allowing a little sensation, a little feeling, and then returning to a resource. Small steps are deep steps." },
+            { num: "III", title: "Titration", text: "You can process in small doses. Titration means coming into contact with a difficult experience in manageable amounts \u2014 allowing a little sensation, a little feeling, and then returning to a resource. Small steps are deep steps." },
             { num: "IV", title: "Pendulation", text: "The nervous system heals through rhythm \u2014 through the natural movement between activation and rest. Pendulation means consciously swinging your awareness between what feels difficult and what feels resourced and safe." },
             { num: "V", title: "Self-Hold", text: "Place your hands on your own body \u2014 over your heart, across your belly, on your upper arms in a gentle self-embrace. Warm, steady touch activates the same co-regulation pathways that are activated in loving human contact. Your own touch is real." },
           ].map((practice) => (
@@ -126,7 +126,7 @@ export default async function NervousSystemPage() {
 
           {[
             { time: "7 sec", label: "Inhale \u2014 Fill the Belly, Then the Chest", text: "Begin by allowing the breath to flow into the belly first \u2014 feel your lower hand rise as your diaphragm descends. Then continue upward into the chest. Take the full seven seconds to complete this wave of breath, moving from low to high." },
-            { time: "7 sec", label: "Hold \u2014 Rest at the Top", text: "At the fullness of your inhale, pause. Hold gently \u2014 not with effort, but with presence. Feel the aliveness in your body at this moment. This pause is not empty \u2014 it is full. Simply be here for seven seconds." },
+            { time: "7 sec", label: "Hold \u2014 Rest at the Top", text: "At the fullness of your inhale, pause. Hold gently, with presence. Feel the aliveness in your body at this moment. This pause is full. Simply be here for seven seconds." },
             { time: "7 sec", label: "Exhale \u2014 Sound, Soften, Release", text: "Open your mouth and allow the exhale to carry an audible sound \u2014 a sigh, an \u201Cahhh.\u201D Let the chest soften and collapse naturally. Allow the belly to draw gently inward. Take the full seven seconds to empty." },
           ].map((step, i) => (
             <div key={i} style={{ display: "flex", gap: 16, marginBottom: 20, alignItems: "flex-start" }}>
@@ -156,9 +156,9 @@ export default async function NervousSystemPage() {
             { title: "Orienting Gaze", text: "Slowly allow your gaze to sweep the room. Let your eyes rest briefly on objects that feel neutral or pleasant. This slow, deliberate visual scan signals safety to the subcortical brain." },
             { title: "Feet on the Earth", text: "Stand or sit with bare feet on the ground, or imagine roots extending from the soles of your feet into the earth below. Press down. Feel the earth pressing back." },
             { title: "Temperature Anchor", text: "Hold something warm \u2014 a mug of tea, a warm cloth, your own palms pressed together. Temperature is one of the fastest pathways to the present-moment body." },
-            { title: "Name What You Notice", text: "Gently label the sensations you experience without judgment: tingling, warmth, tightness, expansion. This practice activates the prefrontal cortex and creates stabilizing distance." },
+            { title: "Name What You Notice", text: "Gently label the sensations you experience with openness and curiosity: tingling, warmth, tightness, expansion. This practice activates the prefrontal cortex and creates stabilizing distance." },
             { title: "Sound & Tone", text: "Humming, chanting, or toning directly vibrates the vagus nerve. A simple sustained hum activates your parasympathetic system and creates resonance in the body." },
-            { title: "The Inner Witness", text: "When activation rises, invite the quiet, steady part of yourself to simply observe. Say inwardly: I see what is happening. I am here with it. The witness does not fix \u2014 it accompanies." },
+            { title: "The Inner Witness", text: "When activation rises, invite the quiet, steady part of yourself to simply observe. Say inwardly: I see what is happening. I am here with it. The witness accompanies — it holds space." },
           ].map((p) => (
             <div key={p.title} style={{ background: "rgba(122,158,126,0.04)", border: `1px solid rgba(122,158,126,0.12)`, borderRadius: 8, padding: "24px 28px" }}>
               <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 19, fontWeight: 400, marginBottom: 10 }}>{p.title}</h4>

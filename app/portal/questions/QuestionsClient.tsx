@@ -18,10 +18,10 @@ const SECTIONS = [
   {
     num: "2",
     label: "Blind Spots & Shadows",
-    title: "What am I not seeing?",
-    subtitle: "What patterns, beliefs, or truths have been hidden from you — about yourself, others, or the life you are living?",
+    title: "What do I most need to see?",
+    subtitle: "What patterns, beliefs, or truths are ready to come into the light — about yourself, others, or the life you are living?",
     examples: [
-      "What am I not seeing that I most need to see?",
+      "What do I most need to see right now?",
       "Where am I lying to myself?",
       "What shadows are alive in me that I have been unwilling to face?",
     ],
@@ -118,7 +118,7 @@ export default function QuestionsClient() {
             Questions for<br /><em style={{ fontStyle: "italic", color: "#8B8070" }}>the Medicine</em>
           </h1>
           <p style={{ fontSize: 14, lineHeight: 1.85, color: "#3D3D38", maxWidth: 620 }}>
-            Iboga listens. Before you arrive, take time to clarify what you are truly asking &mdash; not just what you hope to resolve, but what you are willing to see, feel, and be shown. These questions are seeds. Write them with sincerity and as much specificity as you can. The medicine will meet you exactly where you are.
+            Iboga listens. Before you arrive, take time to clarify what you are truly asking — both what you hope to resolve and what you are willing to see, feel, and be shown. These questions are seeds. Write them with sincerity and as much specificity as you can. The medicine will meet you exactly where you are.
           </p>
         </div>
 

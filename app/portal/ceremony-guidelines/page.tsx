@@ -73,13 +73,13 @@ export default async function CeremonyGuidelinesPage() {
 
         {/* 2. Confidentiality */}
         <Card accent={sage} icon="&#9711;" title="Confidentiality & the Sacred Container">
-          <p style={p}>Everything shared and experienced within this space is sacred. We ask that you hold complete confidentiality &mdash; not only the identities of those present, but the details of their experiences, processes, and private shares.</p>
+          <p style={p}>Everything shared and experienced within this space is sacred. We ask that you hold complete confidentiality — the identities of those present, the details of their experiences, processes, and private shares.</p>
           <p style={p}>You are welcome to speak about your own personal feelings and insights. We ask that you keep the specific practices and exercises within this container.</p>
           <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0" }}>
             {[
               "When sharing with a partner or loved one, focus on your own experience rather than what others shared or did in the space.",
-              "Within any group container, do not assume you may share another participant\u2019s experience with someone else from the same group.",
-              "Photos, video, and social media shares are not appropriate within ceremony or session spaces.",
+              "Within any group container, keep each participant\u2019s experience in confidence — even with others from the same group.",
+              "Ceremony and session spaces are photo-free, video-free, and social-media-free.",
             ].map((item) => (
               <li key={item} style={listItem}>
                 <span style={{ position: "absolute", left: 0, color: gold, fontWeight: 400 }}>&mdash;</span>
@@ -96,7 +96,7 @@ export default async function CeremonyGuidelinesPage() {
             {[
               "Drink water, use the restroom freely, move your body, and have a snack as needed.",
               "Stay attuned to your comfort \u2014 physical, emotional, and energetic.",
-              "Know your yes\u2019s and your no\u2019s, and trust them. Everything offered is an invitation, not a requirement.",
+              "Know your yes\u2019s and your no\u2019s, and trust them. Everything offered is an invitation.",
               "Notice the protective voice in your mind \u2014 the impulse toward fight, flight, freeze, numbing, or dissociation \u2014 and meet it with curiosity and breath.",
               "When in doubt, do less. Less is always honored here.",
               "When difficult material arises, return to breath, sound, and movement as your anchors.",
@@ -137,9 +137,9 @@ export default async function CeremonyGuidelinesPage() {
           <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0" }}>
             {[
               { bold: "Healer as Mirror:", text: " Your facilitators are human. When personal material arises in us, we name it internally and return our full presence to you." },
-              { bold: "Empathy, not Sympathy:", text: " We meet you in your experience rather than absorbing it or fixing it for you." },
-              { bold: "Love, not Judgment:", text: " There is nothing you can bring into this space that will be met with anything other than compassionate presence." },
-              { bold: "Trust, not Control:", text: " We hold structure and safety \u2014 and within that, we release the need to control your process." },
+              { bold: "Empathic Presence:", text: " We meet you in your experience — accompanying rather than absorbing, witnessing rather than fixing." },
+              { bold: "Unconditional Love:", text: " There is nothing you can bring into this space that will be met with anything other than compassionate presence." },
+              { bold: "Trust & Sovereignty:", text: " We hold structure and safety \u2014 and within that, we honor your process fully." },
               { bold: "Ask before offering:", text: " Facilitators will always check in before extending physical support or energy work." },
             ].map((item) => (
               <li key={item.bold} style={listItem}>

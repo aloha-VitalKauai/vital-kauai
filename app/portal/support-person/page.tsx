@@ -88,13 +88,13 @@ export default async function SupportPersonPage() {
       <Section id="return" num="04" label="Integration" title="When They" titleEm="Return Home" rose={rose} border={border} sage={sage}>
         <p style={prose}>This is the phase that calls most upon your patience and understanding. In the days and weeks after ceremony, the person who returns is genuinely tender &mdash; rebuilding from a more honest foundation. They may seem slower, quieter, and less available for ordinary connection.</p>
         <Callout color={gold} bg={goldLt} label="The Most Important Thing to Know">
-          If your person seems unreachable or less relational than usual, that is not a reflection of their love for you, or of something going wrong. It is temporary, and it is not personal.
+          If your person seems unreachable or less relational than usual, this is a sign of deep processing. It is temporary and will shift.
         </Callout>
-        <p style={prose}>What tends to support them most: clean food, rest, low stimulation, gentle nature, and space to be quiet without explanation.</p>
+        <p style={prose}>What tends to support them most: clean food, rest, low stimulation, gentle nature, and space to be quiet.</p>
         <Callout color={sage} bg={sageLt} label="Questions Worth Asking">
           <span>When the time feels right, these simple invitations open space without pressure:</span>
           <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 14 }}>
-            {["\u201CWhat are you noticing?\u201D", "\u201CHow can I support you best right now?\u201D", "\u201CIs there anything you need from me today \u2014 or anything you need less of?\u201D", "\u201CI\u2019m here. There\u2019s no rush.\u201D", "\u201CWould you like company, or would space feel better?\u201D"].map((q) => (
+            {["\u201CWhat are you noticing?\u201D", "\u201CHow can I support you best right now?\u201D", "\u201CIs there anything you need from me today?\u201D", "\u201CI\u2019m here. Take all the time you need.\u201D", "\u201CWould you like company, or would space feel better?\u201D"].map((q) => (
               <p key={q} style={{ paddingLeft: 18, borderLeft: `1px solid ${sage}`, fontSize: 14.5, color: inkMid, lineHeight: 1.75, margin: 0 }}>{q}</p>
             ))}
           </div>
@@ -105,7 +105,7 @@ export default async function SupportPersonPage() {
           {[
             { time: "Days 1\u20133", title: "Stillness & Landing", text: "Rest, sleep, minimal stimulation. Quiet presence is the greatest gift." },
             { time: "Week 1\u20132", title: "Emergence", text: "Gradual return of presence, appetite, and speech. Emotions may move unexpectedly. Let them share at their own pace." },
-            { time: "Weeks 2\u20138", title: "Active Integration", text: "Insights become changes \u2014 in habits, relationships, perspective. Witnessing without judgment is everything." },
+            { time: "Weeks 2\u20138", title: "Active Integration", text: "Insights become changes \u2014 in habits, relationships, perspective. Witnessing with open presence is everything." },
             { time: "Months 2\u20136", title: "Stabilization", text: "The new ground becomes the new normal. Relationships often grow richer, more honest, and more present." },
           ].map((item, i, arr) => (
             <div key={item.title} style={{ display: "grid", gridTemplateColumns: "120px 1fr", gap: "0 32px", padding: "28px 0", borderBottom: i < arr.length - 1 ? `1px solid ${border}` : "none" }}>
@@ -123,9 +123,9 @@ export default async function SupportPersonPage() {
 
       {/* Section 5: Caring for Yourself */}
       <Section id="yourself" num="05" label="Your Inner Experience" title="Caring for" titleEm="Yourself" rose={rose} border={border} sage={sage}>
-        <p style={prose}>Supporting someone through this process is its own journey. You may feel proud and nervous and quietly left out all at once. When your person returns and is not yet available in the ways you are used to, confusion, disconnection, or even resentment can surface. These feelings are real, valid, and human.</p>
+        <p style={prose}>Supporting someone through this process is its own journey. You may feel proud and nervous and quietly uncertain all at once. When your person returns changed in ways you are still understanding, confusion, disconnection, or even resentment can surface. These feelings are real, valid, and human.</p>
         <Callout color={rose} bg={roseLt} label="This Is Worth Naming">
-          Tending to your own needs during this time is not a distraction from supporting them &mdash; it is what makes sustained support possible. Stay close to the people and practices that help you feel grounded.
+          Tending to your own needs during this time is what makes sustained support possible. Stay close to the people and practices that help you feel grounded.
         </Callout>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 20, margin: "36px 0" }}>
           {[

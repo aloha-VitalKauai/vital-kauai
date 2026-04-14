@@ -334,7 +334,7 @@ const BODY_CONTENT = `
   <div class="hero-in">
     <p class="hero-eye">Member Portal · <span>Community</span> · April 13, 2026</p>
     <h1 class="hero-h1">The Shared<br><em>Field</em></h1>
-    <p class="hero-p">Each person here is walking their own arc — at different weeks, in different phases, carrying different things. Once a week, the community gathers around a shared theme. Not to synchronize the journeys, but to remember that no one is walking alone.</p>
+    <p class="hero-p">Each person here is walking their own arc — at different weeks, in different phases, carrying different things. Once a week, the community gathers around a shared theme — to remember that everyone here is walking alongside you.</p>
   </div>
 </div>
 
@@ -387,10 +387,10 @@ const BODY_CONTENT = `
       </div>
     </div>
     <div class="yp-note">
-      You are three weeks into preparation. The medicine is already listening. This is the time when patterns begin to surface — not from the plant, but from the awareness that something is arriving. <strong>What you are noticing right now is real preparation.</strong> Trust what is rising.
+      You are three weeks into preparation. The medicine is already listening. This is the time when patterns begin to surface — from your own awareness that something is arriving. <strong>What you are noticing right now is real preparation.</strong> Trust what is rising.
     </div>
     <div class="yp-callout">
-      The community theme below belongs to everyone — regardless of where each person is in their own journey. Others here are in Week 1 of integration, Week 6 of preparation, or anywhere in between. The shared theme is not about your week number. It is about what the community is sitting with together right now.
+      The community theme below belongs to everyone — regardless of where each person is in their own journey. Others here are in Week 1 of integration, Week 6 of preparation, or anywhere in between. The shared theme transcends week numbers — it is what the community is sitting with together right now.
     </div>
   </div>
 
@@ -413,11 +413,11 @@ const BODY_CONTENT = `
       <div class="lens-grid">
         <div class="lens">
           <p class="lens-tag">If you are preparing</p>
-          <p class="lens-txt">Old patterns are returning not as failure, but as inventory. The medicine does not remove them — it asks you to know them. Notice what keeps showing up this week without trying to fix it yet.</p>
+          <p class="lens-txt">Old patterns are returning as inventory, as information. The medicine asks you to know them. Notice what keeps showing up this week — simply observing.</p>
         </div>
         <div class="lens">
           <p class="lens-tag">If you are integrating</p>
-          <p class="lens-txt">The ceremony showed you something. What has quietly returned in the weeks since? The question is not why it came back — it is whether you can meet it differently now than you could before.</p>
+          <p class="lens-txt">The ceremony showed you something. What has quietly returned in the weeks since? The question is whether you can meet it differently now than you could before.</p>
         </div>
       </div>
       <div class="practice-box">
@@ -425,7 +425,7 @@ const BODY_CONTENT = `
         <p class="prac-title">What the community is doing together this week</p>
         <ul class="prac-steps">
           <li>When a pattern returns, pause before responding — even for thirty seconds</li>
-          <li>Do not immediately interrupt or resolve what arises; let it complete its movement</li>
+          <li>Pause before interrupting or resolving — let it complete its movement</li>
           <li>Return to your practice at least once after noticing — even briefly</li>
         </ul>
         <div class="prac-footer">
@@ -442,7 +442,7 @@ const BODY_CONTENT = `
     <p class="team-lbl">This week's holding</p>
     <div class="team-layout">
       <div>
-        <p class="team-note">"This theme always arrives like a quiet tide — you may not notice it until the water is already at your feet. This week, we are less interested in what you are doing in your practice, and more in what you are simply allowing yourself to notice. You do not have to resolve anything yet. Just see it clearly."</p>
+        <p class="team-note">"This theme always arrives like a quiet tide — felt before it is fully seen. This week, we are less interested in what you are doing in your practice, and more in what you are simply allowing yourself to notice. You have permission to let it be. Just see it clearly."</p>
         <p class="team-sig">— Rachel &amp; Josh · Vital Kauaʻi</p>
         <p class="team-anchor">This week, <strong>stay with what arises rather than resolve it.</strong> The impulse to fix or explain is the thing to notice. Let the pattern show itself fully before you decide what to do with it.</p>
       </div>
@@ -452,7 +452,7 @@ const BODY_CONTENT = `
 
   <!-- ━━ 04  OTHERS ON THIS PATH ━━ -->
   <div class="sec"><span>Others on this path</span></div>
-  <p class="ref-intro">Curated, anonymized reflections from members sitting with this same theme — some preparing, some integrating, each at their own place in the arc. Shared not as advice, but as resonance.</p>
+  <p class="ref-intro">Curated, anonymized reflections from members sitting with this same theme — some preparing, some integrating, each at their own place in the arc. Shared as resonance.</p>
   <div class="ref-toolbar">
     <div class="ref-tabs">
       <button class="ref-tab active" onclick="switchTab('pre',this)">Those preparing</button>
