@@ -1237,7 +1237,7 @@ const BODY_CONTENT = `
     <div class="included-card reveal">
       <div class="included-rule"></div>
       <h3 class="included-title">Private Sessions & Ceremonies</h3>
-      <p class="included-body">Iboga ceremony, yoga, breathwork, two massages, one nervous system support session (acupuncture, biogeometry, bodytalk, and more), one sound healing ceremony, and integration work — held in our dedicated space or in nature itself.</p>
+      <p class="included-body">Your ceremony stay is a fully held and coordinated arc — each day intentionally designed. Iboga ceremony, yoga, breathwork, two massages, one nervous system support session (acupuncture, biogeometry, bodytalk, and more), one sound healing ceremony, and integration work — held in our dedicated space or in nature itself.</p>
     </div>
     <div class="included-card reveal reveal-delay-1">
       <div class="included-rule"></div>
