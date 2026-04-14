@@ -1537,7 +1537,7 @@ const BODY_CONTENT = `
         <span class="section-label reveal">Before You Ask</span>
         <h2 class="section-title reveal">Common<br><em>Questions</em></h2>
       </div>
-      <p class="reveal">If something specific is on your mind, bring it. Reach out — every question matters when you are preparing to do real work.</p>
+      <p class="reveal">Your questions are important and we are here to answer them. Reach out — we are always happy to connect.</p>
     </div>
     <div class="faq-list reveal">
 
