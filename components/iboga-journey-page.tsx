@@ -198,7 +198,7 @@ export function IbogaJourneyPage() {
             <p className={styles.medicineBody}>
               Iboga is one of humanity&apos;s oldest plant allies &mdash; used for millennia in the
               Bwiti tradition of Central Africa as a sacrament of initiation, healing, and spiritual
-              awakening. It is not a recreational substance. It is a teacher &mdash; a living
+              awakening. It is a teacher &mdash; a living
               intelligence that works with the whole human system: body, mind, emotion, and spirit.
             </p>
             <blockquote className={styles.medicineDistinction}>
