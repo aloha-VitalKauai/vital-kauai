@@ -29,24 +29,23 @@ export function StayPage() {
       observer.observe(el);
     });
 
-    // FAQ accordion
-    const faqButtons = document.querySelectorAll(".faq-question");
-    const faqHandlers: Array<() => void> = [];
-    faqButtons.forEach((btn) => {
-      const handler = () => {
-        const item = btn.closest(".faq-item");
-        if (!item) return;
-        const isOpen = item.classList.contains("open");
-        document.querySelectorAll(".faq-item.open").forEach((i) => i.classList.remove("open"));
-        if (!isOpen) item.classList.add("open");
-      };
-      btn.addEventListener("click", handler);
-      faqHandlers.push(handler);
-    });
+    // FAQ accordion — delay to ensure dangerouslySetInnerHTML content is rendered
+    const faqTimer = setTimeout(() => {
+      document.querySelectorAll(".faq-question").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const item = btn.closest(".faq-item");
+          if (!item) return;
+          const isOpen = item.classList.contains("open");
+          document.querySelectorAll(".faq-item.open").forEach((i) => i.classList.remove("open"));
+          if (!isOpen) item.classList.add("open");
+        });
+      });
+    }, 100);
 
     return () => {
       window.removeEventListener("scroll", onScroll);
       observer.disconnect();
+      clearTimeout(faqTimer);
     };
   }, []);
 
