@@ -153,8 +153,8 @@ export function AboutPage() {
       {/* ── Meeting ── */}
       <section className={styles.meeting} id="meeting">
         <div className={styles.meetingGrid}>
-          <div style={{ borderRadius: 8, overflow: "hidden" }}>
-            <img src="/images/rachjosh.jpg" alt="Rachel & Josh at Hanalei" style={{ width: "100%", height: "auto", objectFit: "cover", objectPosition: "center 20%", display: "block", borderRadius: 8 }} />
+          <div style={{ borderRadius: 8, overflow: "hidden", maxHeight: 500 }}>
+            <img src="/images/rachjosh.jpg" alt="Rachel & Josh at Hanalei" style={{ width: "100%", height: "100%", maxHeight: 500, objectFit: "cover", objectPosition: "center 20%", display: "block", borderRadius: 8 }} />
           </div>
           <div className={styles.meetingText}>
             <p className={`${styles.eyebrow} ${styles.reveal}`}>Hanalei, Kaua&#699;i</p>
@@ -326,9 +326,9 @@ export function AboutPage() {
           and the visionary, the deeply personal and the rigorously trained. Vital Kaua&#699;i is the
           natural expression of the life we are living.
         </p>
-        <Link href="/#contact" className={`${styles.closeCta} ${styles.reveal}`}>
+        <a href="https://calendly.com/aloha-vitalkauai" target="_blank" rel="noopener noreferrer" className={`${styles.closeCta} ${styles.reveal}`}>
           Begin the Journey
-        </Link>
+        </a>
       </section>
 
       {/* ── Footer ── */}
