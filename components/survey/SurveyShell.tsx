@@ -1,8 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { buildSteps, resumeStepIndex, EligibilitySnapshot, StepConfig } from '@/lib/assessments/surveySteps';
-import { canSubmit } from '@/lib/assessments/surveyValidation';
+import { canSubmit as _canSubmit } from '@/lib/assessments/surveyValidation';
+import { finalizeAssessment } from '@/lib/assessments/finalizeAssessment';
+import { mapMissingFieldsToSteps, SubmitError } from '@/lib/assessments/submitErrorHelpers';
 import { useSurveyAutosave, SaveStatus } from '@/lib/assessments/useSurveyAutosave';
 import { IntroStep } from './steps/IntroStep';
 import { Phq9Step } from './steps/Phq9Step';
@@ -42,6 +45,7 @@ const SAVE_COLOR: Record<SaveStatus, string> = {
 
 export function SurveyShell({ assessment, authUserId }: Props) {
   const supabase = createClient();
+  const router = useRouter();
   const isReadOnly = assessment.is_locked || assessment.is_final;
 
   const eligibility = (assessment.eligibility_snapshot ?? null) as EligibilitySnapshot | null;
@@ -60,6 +64,9 @@ export function SurveyShell({ assessment, authUserId }: Props) {
   );
 
   const [responses, setResponses] = useState<Record<string, any>>(initialResponses);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<SubmitError | null>(null);
+  const inFlightSubmit = useRef(false);
 
   const { saveStatus, updateResponse, flushSave } = useSurveyAutosave({
     supabase, assessmentId: assessment.id, authUserId, isReadOnly,
@@ -76,7 +83,6 @@ export function SurveyShell({ assessment, authUserId }: Props) {
       setStepIndex(i => i + 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    // TODO Ticket 5: if last step && submitReady, call finalize_assessment()
   }
 
   function goBack() {
@@ -86,9 +92,51 @@ export function SurveyShell({ assessment, authUserId }: Props) {
     }
   }
 
+  function goToStep(targetIndex: number) {
+    setStepIndex(Math.max(0, Math.min(targetIndex, steps.length - 1)));
+    setSubmitError(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function handleSubmit() {
+    if (inFlightSubmit.current || isReadOnly || !submitReady) return;
+    inFlightSubmit.current = true;
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      await flushSave();
+      const result = await finalizeAssessment(supabase, assessment.id);
+
+      switch (result.outcome) {
+        case 'success':
+        case 'already_submitted':
+          router.push(`/portal/assessments?submitted=${assessment.timepoint}`);
+          return; // Don't reset — navigating away
+
+        case 'incomplete': {
+          const stepsWithErrors = mapMissingFieldsToSteps(result.missingFields, steps);
+          setSubmitError({ type: 'incomplete', stepsWithErrors });
+          break;
+        }
+        case 'window_closed':          setSubmitError({ type: 'window_closed', closedAt: result.closedAt }); break;
+        case 'window_not_open':        setSubmitError({ type: 'window_not_open', opensAt: result.opensAt }); break;
+        case 'baseline_past_ceremony': setSubmitError({ type: 'baseline_past_ceremony' }); break;
+        case 'locked':                 setSubmitError({ type: 'locked' }); break;
+        default:
+          setSubmitError({ type: 'error', message: result.outcome === 'error' ? result.message : 'Submission failed.' });
+      }
+    } catch (err: unknown) {
+      setSubmitError({ type: 'error', message: err instanceof Error ? err.message : 'An unexpected error occurred.' });
+    } finally {
+      setIsSubmitting(false);
+      inFlightSubmit.current = false;
+    }
+  }
+
   const step = steps[stepIndex];
   const isLastStep = stepIndex === steps.length - 1;
-  const submitReady = canSubmit(responses, steps);
+  const submitReady = _canSubmit(responses, steps);
 
   function renderStep(s: StepConfig) {
     const commonProps = { responses, onUpdate: handleUpdate, readOnly: isReadOnly };
@@ -108,7 +156,7 @@ export function SurveyShell({ assessment, authUserId }: Props) {
       case 'addiction':      return <AddictionStep {...commonProps} />;
       case 'ptsd':           return <PtsdStep {...commonProps} />;
       case 'safety':         return <SafetyCheckStep {...commonProps} />;
-      case 'review':         return <ReviewStep steps={steps} responses={responses} readOnly={isReadOnly} />;
+      case 'review':         return <ReviewStep steps={steps} responses={responses} readOnly={isReadOnly} isSubmitting={isSubmitting} canSubmit={submitReady} submitError={submitError} onSubmit={handleSubmit} onGoToStep={goToStep} />;
       default:               return <p style={{ fontSize: '0.85rem', color: T.creamMuted }}>Step type &ldquo;{s.type}&rdquo; not yet implemented.</p>;
     }
   }
@@ -169,19 +217,14 @@ export function SurveyShell({ assessment, authUserId }: Props) {
           {SAVE_LABEL[saveStatus]}
         </span>
 
-        <div>
+        <div style={isLastStep ? { visibility: 'hidden' } : undefined}>
           <button
-            style={{
-              ...btnBase, background: 'transparent',
-              border: `1px solid ${isLastStep ? (submitReady ? T.sageDark : T.earthLight) : T.goldDim}`,
-              color: isLastStep ? (submitReady ? T.sage : T.creamMuted) : T.goldLight,
-              ...((isLastStep && !submitReady) && { opacity: 0.4, cursor: 'not-allowed', pointerEvents: 'none' as const }),
-            }}
+            style={{ ...btnBase, background: 'transparent', border: `1px solid ${T.goldDim}`, color: T.goldLight }}
             onClick={goNext}
-            disabled={isLastStep && !submitReady}
-            title={isLastStep && !submitReady ? 'Complete all required fields to submit' : undefined}
+            disabled={isLastStep}
+            aria-hidden={isLastStep}
           >
-            {isLastStep ? 'Submit \u2192' : 'Next \u2192'}
+            Next &rarr;
           </button>
         </div>
       </footer>

@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { getMemberAssessmentStatus, CeremonyGroup } from '@/lib/assessments/getMemberAssessmentStatus';
 import { startOrResumeAssessment } from '@/lib/assessments/startOrResumeAssessment';
@@ -21,7 +21,21 @@ const T = {
 };
 
 export default function AssessmentsPage() {
+  return (
+    <Suspense>
+      <AssessmentsPageInner />
+    </Suspense>
+  );
+}
+
+const TIMEPOINT_LABELS: Record<string, string> = {
+  baseline: 'Baseline', post_72h: '72-hour', post_1m: '1-month',
+  post_3m: '3-month', post_6m: '6-month', post_12m: '12-month',
+};
+
+function AssessmentsPageInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [state, setState] = useState<'loading' | 'empty' | 'error' | 'ready'>('loading');
   const [ceremonies, setCeremonies] = useState<CeremonyGroup[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
@@ -41,6 +55,15 @@ export default function AssessmentsPage() {
     setToast(message);
     setTimeout(() => setToast(''), 3500);
   }
+
+  // Show success toast when returning from a completed submission
+  useEffect(() => {
+    const submitted = searchParams.get('submitted');
+    if (!submitted) return;
+    const label = TIMEPOINT_LABELS[submitted] ?? submitted;
+    showToast(`Your ${label} assessment has been submitted.`);
+    router.replace('/portal/assessments', { scroll: false });
+  }, [searchParams, router]);
 
   async function refreshTimeline() {
     try {
