@@ -124,9 +124,9 @@ export function TrajectoriesPanel({ data }: TrajectoriesPanelProps) {
         </thead>
         <tbody>
           {data.map((row, i) => (
-            <tr key={i} style={{ background: T.earthMid }}>
-              <td style={{ ...td, fontWeight: 600, color: T.goldLight, whiteSpace: 'nowrap' }}>
-                {row.display_name ?? row.member_name ?? '-'}
+            <tr key={i} style={{ background: T.earthMid, cursor: row.member_id ? 'pointer' : undefined }} onClick={() => row.member_id && (window.location.href = `/founders/outcomes/${row.member_id}`)}>
+              <td style={{ ...td, fontWeight: 600, color: T.goldLight, whiteSpace: 'nowrap', textDecoration: 'underline', textDecorationColor: 'rgba(201,169,110,0.3)', textUnderlineOffset: '2px' }}>
+                {row.display_name ?? row.member_name ?? row.full_name ?? '-'}
               </td>
               <td style={{ ...td, color: T.creamDim }}>{row.partner_name ?? '-'}</td>
               <td style={td}>{row.assessment_count ?? row.total_assessments ?? '-'}</td>
