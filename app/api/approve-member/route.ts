@@ -16,15 +16,25 @@ function env() {
 // GET  /api/approve-member?token=xxx  <- clicked from founder email button
 // POST /api/approve-member            <- called from ops dashboard
 export async function GET(req: NextRequest) {
-  const token = req.nextUrl.searchParams.get('token')
-  if (!token) return htmlResponse(errorPage('Missing approval token.'), 400)
-  return handleApproval(token, 'email_button')
+  try {
+    const token = req.nextUrl.searchParams.get('token')
+    if (!token) return htmlResponse(errorPage('Missing approval token.'), 400)
+    return await handleApproval(token, 'email_button')
+  } catch (err: any) {
+    console.error('[approve-member] Unhandled GET error:', err.message, err.stack)
+    return htmlResponse(errorPage('An unexpected error occurred. Please try again or use the ops dashboard.'), 500)
+  }
 }
 
 export async function POST(req: NextRequest) {
-  const { token, decidedBy } = await req.json()
-  if (!token) return NextResponse.json({ error: 'Missing token' }, { status: 400 })
-  return handleApproval(token, decidedBy || 'dashboard')
+  try {
+    const { token, decidedBy } = await req.json()
+    if (!token) return NextResponse.json({ error: 'Missing token' }, { status: 400 })
+    return await handleApproval(token, decidedBy || 'dashboard')
+  } catch (err: any) {
+    console.error('[approve-member] Unhandled POST error:', err.message, err.stack)
+    return NextResponse.json({ error: 'Internal error' }, { status: 500 })
+  }
 }
 
 async function handleApproval(token: string, source: string) {

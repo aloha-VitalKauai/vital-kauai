@@ -10,58 +10,81 @@ function getSupabase() {
 }
 
 export async function POST(req: NextRequest) {
-  const supabase = getSupabase()
-  let payload: any
+  // ALWAYS return 200 to Calendly — even on errors.
+  // If we return 4xx/5xx, Calendly enters retry backoff and eventually
+  // stops delivering webhooks entirely. We handle errors internally.
   try {
-    payload = await req.json()
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+    let payload: any
+    try {
+      payload = await req.json()
+    } catch {
+      console.error('[calendly-webhook] Invalid JSON body')
+      return NextResponse.json({ ok: false, reason: 'invalid_json' }, { status: 200 })
+    }
+
+    // Only handle new bookings
+    if (payload.event !== 'invitee.created') {
+      return NextResponse.json({ ok: true, ignored: true })
+    }
+
+    const invitee = payload.payload?.invitee
+    const eventDet = payload.payload?.event
+
+    if (!invitee?.email) {
+      console.error('[calendly-webhook] Missing invitee email in payload')
+      return NextResponse.json({ ok: false, reason: 'missing_email' }, { status: 200 })
+    }
+
+    const email = invitee.email
+    const fullName = invitee.name || 'Unknown'
+    const eventName = eventDet?.name || 'Discovery Call'
+    const startTime = eventDet?.start_time || null
+    const calendlyEventId = eventDet?.uuid || null
+
+    // Generate a secure approval token
+    const approvalToken = randomBytes(32).toString('hex')
+
+    // Save lead to Supabase
+    const supabase = getSupabase()
+    const { data: lead, error: leadError } = await supabase
+      .from('leads')
+      .upsert({
+        full_name: fullName,
+        email,
+        source: 'Calendly',
+        discovery_call_booked: true,
+        discovery_call_date: startTime ? startTime.split('T')[0] : null,
+        calendly_event_id: calendlyEventId,
+        calendly_booked_at: new Date().toISOString(),
+        approval_status: 'pending',
+        approval_token: approvalToken,
+      }, { onConflict: 'email' })
+      .select()
+      .single()
+
+    if (leadError) {
+      console.error('[calendly-webhook] Lead upsert failed:', JSON.stringify(leadError))
+      // Still return 200 — don't let Calendly retry
+      return NextResponse.json({ ok: false, reason: 'db_error', detail: leadError.message }, { status: 200 })
+    }
+
+    console.log(`[calendly-webhook] Lead saved: ${fullName} (${email}) — id: ${lead.id}`)
+
+    // Send founder notification email — wrapped in try/catch so it never crashes the webhook
+    try {
+      await sendFounderNotification({ fullName, email, eventName, startTime, approvalToken })
+      console.log(`[calendly-webhook] Founder notification sent for ${fullName}`)
+    } catch (emailErr: any) {
+      console.error('[calendly-webhook] Founder email failed:', emailErr.message)
+      // Lead is saved — founders can still approve from /ops/pending dashboard
+    }
+
+    return NextResponse.json({ ok: true, leadId: lead.id })
+  } catch (err: any) {
+    // Catch-all — NEVER let an unhandled error return 500 to Calendly
+    console.error('[calendly-webhook] Unhandled error:', err.message, err.stack)
+    return NextResponse.json({ ok: false, reason: 'internal_error' }, { status: 200 })
   }
-
-  // Only handle new bookings
-  if (payload.event !== 'invitee.created') {
-    return NextResponse.json({ ok: true, ignored: true })
-  }
-
-  const invitee   = payload.payload.invitee
-  const eventDet  = payload.payload.event
-
-  const email           = invitee.email
-  const fullName        = invitee.name
-  const eventName       = eventDet?.name || 'Discovery Call'
-  const startTime       = eventDet?.start_time
-  const calendlyEventId = eventDet?.uuid
-
-  // Generate a secure approval token (used in approve/decline email buttons)
-  const approvalToken = randomBytes(32).toString('hex')
-
-  // Save lead to Supabase
-  const { data: lead, error: leadError } = await supabase
-    .from('leads')
-    .upsert({
-      full_name:             fullName,
-      email,
-      source:                'Calendly',
-      discovery_call_booked: true,
-      discovery_call_date:   startTime ? startTime.split('T')[0] : null,
-      calendly_event_id:     calendlyEventId,
-      calendly_booked_at:    new Date().toISOString(),
-      approval_status:       'pending',
-      approval_token:        approvalToken,
-    }, { onConflict: 'email' })
-    .select()
-    .single()
-
-  if (leadError) {
-    console.error('Lead upsert failed:', leadError)
-    return NextResponse.json({ error: leadError.message }, { status: 500 })
-  }
-
-  // Email founders — notification only, no approve/decline yet
-  // They will use this email AFTER the discovery call to approve or decline
-  await sendFounderNotification({ fullName, email, eventName, startTime, approvalToken })
-
-  return NextResponse.json({ ok: true, leadId: lead.id })
 }
 
 async function sendFounderNotification({
@@ -70,14 +93,20 @@ async function sendFounderNotification({
   fullName: string
   email: string
   eventName: string
-  startTime: string
+  startTime: string | null
   approvalToken: string
 }) {
-  const firstName  = fullName?.split(' ')[0] || 'Someone'
-  const baseUrl    = process.env.NEXT_PUBLIC_APP_URL || 'https://vital-kauai.vercel.app'
+  const resendKey = process.env.RESEND_API_KEY
+  if (!resendKey) {
+    console.warn('[calendly-webhook] No RESEND_API_KEY — skipping founder notification')
+    return
+  }
+
+  const firstName = fullName?.split(' ')[0] || 'Someone'
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://vital-kauai.vercel.app'
   const approveUrl = `${baseUrl}/api/approve-member?token=${approvalToken}`
   const declineUrl = `${baseUrl}/api/decline-member?token=${approvalToken}`
-  const dashUrl    = `${baseUrl}/ops/pending`
+  const dashUrl = `${baseUrl}/ops/pending`
 
   const callDate = startTime
     ? new Date(startTime).toLocaleDateString('en-US', {
@@ -137,22 +166,22 @@ async function sendFounderNotification({
 </body>
 </html>`
 
-  if (!process.env.RESEND_API_KEY) {
-    console.log('No RESEND_API_KEY — skipping founder notification')
-    return
-  }
-
-  await fetch('https://api.resend.com/emails', {
+  const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      Authorization: `Bearer ${resendKey}`,
     },
     body: JSON.stringify({
-      from:    'Vital Kaua\u02BBi <aloha@vitalkauai.com>',
-      to:      ['joshuaperdue2@gmail.com', 'aloha@vitalkauai.com'],
+      from: 'Vital Kaua\u02BBi <aloha@vitalkauai.com>',
+      to: ['joshuaperdue2@gmail.com', 'aloha@vitalkauai.com'],
       subject: `New discovery call: ${fullName} \u2014 ${callDate}`,
       html,
     }),
   })
+
+  if (!res.ok) {
+    const errorText = await res.text()
+    throw new Error(`Resend ${res.status}: ${errorText}`)
+  }
 }
