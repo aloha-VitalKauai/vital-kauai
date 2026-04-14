@@ -416,7 +416,7 @@ export function IbogaJourneyPage() {
             <h3 className={styles.phaseTitle}>Integration</h3>
             <span className={styles.phaseWeek}>6+ Weeks &amp; Beyond</span>
             <p className={styles.phaseBody}>
-              Calls with your integration guide, somatic practices, and guided reflection. This is
+              Calls with your integration guide and guided reflection. This is
               where the real work takes root &mdash; establishing new patterns, processing what
               arose, and anchoring your transformation into daily life. Beyond formal integration,
               you join an ongoing community of those who have walked this path &mdash; connection
