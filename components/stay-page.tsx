@@ -1287,7 +1287,7 @@ const BODY_CONTENT = `
         <div class="setting-feature">
           <div class="setting-feature-line"></div>
           <div class="setting-feature-text">
-            <p class="setting-feature-name">Nā Pali Mountains</p>
+            <p class="setting-feature-name">Mountain Views</p>
             <p class="setting-feature-desc">Ancient volcanic peaks hold you in every ceremony</p>
           </div>
         </div>
