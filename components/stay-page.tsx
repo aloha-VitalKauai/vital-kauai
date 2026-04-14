@@ -1175,7 +1175,7 @@ const BODY_CONTENT = `
     <div class="homes-text">
       <span class="section-label reveal">Where You Will Stay</span>
       <h2 class="section-title reveal">A Private Home<br><em>in Hanalei</em></h2>
-      <p class="homes-body reveal">You will be staying in a private home in Hanalei — carefully selected for comfort, space, and proximity to the land and the bay. Each home sits within walking distance of the water, cradled by the Nā Pali mountains, and prepared with intention for the people who will move through it.</p>
+      <p class="homes-body reveal">You will be staying in a private home in Hanalei — carefully selected for comfort, space, and proximity to the land and the bay. Each home sits within walking distance of the water, cradled by the mountains, and prepared with intention for the people who will move through it.</p>
       <p class="homes-body reveal reveal-delay-1">The specific home for your ceremony date will be shared with you personally after our discovery call.</p>
       <div class="homes-pull reveal reveal-delay-2">
         <p>"The home is the first layer of the medicine — arriving somewhere clean, quiet, and prepared for you, in a place that holds."</p>
