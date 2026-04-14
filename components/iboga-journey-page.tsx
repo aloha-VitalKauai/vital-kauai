@@ -145,7 +145,7 @@ export function IbogaJourneyPage() {
               given our complete attention.
             </p>
             <p>
-              You will be supported from your first conversation through the weeks of integration
+              You will be supported from your first conversation through the months of integration
               that follow. The ceremony is held in living relationship with the mana of Mama
               Kaua&#699;i &mdash; the land, the water, the forest &mdash; so that nature itself
               becomes an active participant in your healing.
