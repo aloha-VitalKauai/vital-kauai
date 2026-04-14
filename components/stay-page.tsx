@@ -29,18 +29,6 @@ export function StayPage() {
       observer.observe(el);
     });
 
-    // FAQ accordion — event delegation
-    function handleFaqClick(e: MouseEvent) {
-      const btn = (e.target as HTMLElement).closest(".faq-question");
-      if (!btn) return;
-      const item = btn.closest(".faq-item");
-      if (!item) return;
-      const isOpen = item.classList.contains("open");
-      document.querySelectorAll(".faq-item.open").forEach((i) => i.classList.remove("open"));
-      if (!isOpen) item.classList.add("open");
-    }
-    document.addEventListener("click", handleFaqClick);
-
     // Mobile nav
     function handleMobileNav(e: MouseEvent) {
       const target = e.target as HTMLElement;
@@ -59,7 +47,6 @@ export function StayPage() {
     return () => {
       window.removeEventListener("scroll", onScroll);
       observer.disconnect();
-      document.removeEventListener("click", handleFaqClick);
       document.removeEventListener("click", handleMobileNav);
     };
   }, []);
@@ -901,7 +888,7 @@ nav.scrolled {
 .faq-item {
   border-bottom: 1px solid rgba(184,105,74,0.2);
 }
-.faq-question {
+.faq-item summary {
   width: 100%;
   background: none;
   border: none;
@@ -912,7 +899,9 @@ nav.scrolled {
   align-items: center;
   gap: 32px;
   text-align: left;
+  list-style: none;
 }
+.faq-item summary::-webkit-details-marker { display: none; }
 .faq-q-text {
   font-family: 'Cormorant Garamond', serif;
   font-size: 20px;
@@ -943,16 +932,14 @@ nav.scrolled {
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
 }
-.faq-item.open .faq-icon::after {
+.faq-item[open] .faq-icon::after {
   transform: translate(-50%, -50%) rotate(90deg);
   opacity: 0;
 }
 .faq-answer {
-  display: none;
   padding: 0 0 30px;
   max-width: 780px;
 }
-.faq-item.open .faq-answer { display: block; }
 .faq-answer p {
   font-size: 14px;
   color: var(--text-mid);
@@ -1225,7 +1212,7 @@ const BODY_CONTENT = `
 
 <!-- HANALEI BAY PHOTO STRIP -->
 <div style="height:55vh;min-height:380px;overflow:hidden;position:relative;">
-  <img src="/images/hanaleipier2.jpg"
+  <img src="/images/hanalei2.jpg?v=2"
     alt="Hanalei Bay, Kauaʻi"
     style="width:100%;height:100%;object-fit:cover;object-position:center 60%;filter:saturate(0.9) brightness(0.88);">
   <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,20,12,0.15) 0%,rgba(10,20,12,0.0) 40%,rgba(10,20,12,0.45) 100%);"></div>
@@ -1336,7 +1323,7 @@ const BODY_CONTENT = `
             <p class="setting-feature-desc">Cold plunges, quiet floats, elemental baptisms</p>
           </div>
         </div>
-      </div>
+      </details>
     </div>
   </div>
 </section>
@@ -1579,81 +1566,81 @@ const BODY_CONTENT = `
     </div>
     <div class="faq-list reveal">
 
-      <div class="faq-item">
-        <button class="faq-question" aria-expanded="false">
+      <details class="faq-item">
+        <summary>
           <span class="faq-q-text">How long is a typical stay?</span>
           <span class="faq-icon" aria-hidden="true"></span>
-        </button>
+        </summary>
         <div class="faq-answer">
           <p>Our group ceremony is a seven-day arc — arriving on Day 1, two days of preparation, ceremony on Day 3, three days of integration, and a closing on Day 7. We discuss your specific journey and any additional support you may need on your discovery call.</p>
         </div>
-      </div>
+      </details>
 
-      <div class="faq-item">
-        <button class="faq-question" aria-expanded="false">
+      <details class="faq-item">
+        <summary>
           <span class="faq-q-text">What does the discovery call look like?</span>
           <span class="faq-icon" aria-hidden="true"></span>
-        </button>
+        </summary>
         <div class="faq-answer">
           <p>The first step is a discovery call — a real conversation with Rachel and/or Josh, bookable directly through our Calendly. We want to understand what brings you here, what you are carrying, your health history, and what support will serve you best. This is how we begin to know you, so that the container we hold for you is built for who you actually are.</p>
         </div>
-      </div>
+      </details>
 
-      <div class="faq-item">
-        <button class="faq-question" aria-expanded="false">
+      <details class="faq-item">
+        <summary>
           <span class="faq-q-text">Can I bring a partner or travel companion?</span>
           <span class="faq-icon" aria-hidden="true"></span>
-        </button>
+        </summary>
         <div class="faq-answer">
           <p>Yes. We work with couples and close companions who wish to move through a journey together. Co-journeying can be deeply powerful — and it does require its own kind of preparation and intentionality. Let us know on your discovery call that you are coming with someone, and we will discuss what serves you both best. We also welcome groups — intimate gatherings of friends, family, or community who feel called to transform together.</p>
         </div>
-      </div>
+      </details>
 
-      <div class="faq-item">
-        <button class="faq-question" aria-expanded="false">
+      <details class="faq-item">
+        <summary>
           <span class="faq-q-text">What should I pack?</span>
           <span class="faq-icon" aria-hidden="true"></span>
-        </button>
+        </summary>
         <div class="faq-answer">
           <p>Light, natural fabrics that can get wet and get dirty. Layers for cool mornings and evenings. Good walking shoes and flip flops. A journal. Anything that helps you feel at home in your body. Your full packing and preparation guide is available in your member portal once your journey is confirmed.</p>
         </div>
-      </div>
+      </details>
 
-      <div class="faq-item">
-        <button class="faq-question" aria-expanded="false">
+      <details class="faq-item">
+        <summary>
           <span class="faq-q-text">How is the food handled?</span>
           <span class="faq-icon" aria-hidden="true"></span>
-        </button>
+        </summary>
         <div class="faq-answer">
           <p>Meals are prepared with the same intentionality as everything else at Vital Kauaʻi. We source locally and seasonally — farms, farmers' markets, and the ocean. All dietary needs, allergies, and protocol-specific requirements are gathered on your discovery call and honored throughout your stay. Your nutrition is held with care across all seven days.</p>
         </div>
-      </div>
+      </details>
 
-      <div class="faq-item">
-        <button class="faq-question" aria-expanded="false">
+      <details class="faq-item">
+        <summary>
           <span class="faq-q-text">How far is the airport from Hanalei?</span>
           <span class="faq-icon" aria-hidden="true"></span>
-        </button>
+        </summary>
         <div class="faq-answer">
           <p>Līhuʻe Airport (LIH) is approximately one hour from Hanalei along Kauaʻi's scenic North Shore highway. Ground transportation can be arranged through us — simply let us know on your discovery call and we will have everything coordinated. Members are also welcome to arrange their own transportation and make their own way north.</p>
         </div>
-      </div>
+      </details>
 
-      <div class="faq-item">
-        <button class="faq-question" aria-expanded="false">
+      <details class="faq-item">
+        <summary>
           <span class="faq-q-text">Is there WiFi? What is the connectivity like?</span>
           <span class="faq-icon" aria-hidden="true"></span>
-        </button>
+        </summary>
         <div class="faq-answer">
           <p>Yes, WiFi is available in the homes. Many members find that their relationship with devices naturally shifts once they are here — Hanalei has a way of drawing you fully into the present. Your relationship with devices is yours to navigate, and we fully support a digital reset if that is something you want to explore as part of your journey.</p>
         </div>
-      </div>
+      </details>
 
-      <div class="faq-item">
-        <button class="faq-question" aria-expanded="false">
+      <details class="faq-item">
+        <summary>
           <span class="faq-q-text">What is your cancellation policy?</span>
           <span class="faq-icon" aria-hidden="true"></span>
-        </button>
+        </summary>
         <div class="faq-answer">
           <p>We understand that life moves and plans shift. Our cancellation terms are shared in full at the time of booking. Cancellations made within 30 days of arrival are eligible for a full transfer. Reach out to us directly and we will find a path forward together.</p>
         </div>
