@@ -381,13 +381,12 @@ export function IbogaJourneyPage() {
         <div className={styles.protocolIntro}>
           <span className={styles.sectionLabel}>The Journey Structure</span>
           <h2 className={styles.sectionTitle}>
-            Weeks of{" "}
+            Months of{" "}
             <em className={styles.sageLightItalic}>Transformation</em>
           </h2>
           <p className={styles.protocolBody}>
-            The Iboga Journey is not a single event &mdash; it is an extended arc of preparation,
-            ceremony, and integration designed to honor the depth of this medicine and the full
-            spectrum of your transformation.
+            The Iboga Journey is a held arc of preparation, ceremony, and integration that unfolds
+            over months. Every phase is guided, every step supported.
           </p>
         </div>
 
@@ -395,31 +394,33 @@ export function IbogaJourneyPage() {
           <div className={styles.protocolPhase}>
             <span className={styles.phaseNumber}>01</span>
             <h3 className={styles.phaseTitle}>Preparation</h3>
-            <span className={styles.phaseWeek}>Weeks 1 &ndash; 4</span>
+            <span className={styles.phaseWeek}>6+ Weeks</span>
             <p className={styles.phaseBody}>
-              Medical screening, dietary preparation, intention setting, and weekly calls with your
-              facilitator. We prepare your body, mind, and spirit for the journey ahead &mdash;
+              Medical screening, dietary preparation, intention setting, and calls with your
+              integration guide. We prepare your body, mind, and spirit for the journey ahead &mdash;
               gradually, carefully, and with full attention to your unique constitution.
             </p>
           </div>
           <div className={styles.protocolPhase}>
             <span className={styles.phaseNumber}>02</span>
             <h3 className={styles.phaseTitle}>Ceremony</h3>
-            <span className={styles.phaseWeek}>Week 5 &middot; Kaua&#699;i</span>
+            <span className={styles.phaseWeek}>1 Week &middot; Hanalei, Kaua&#699;i</span>
             <p className={styles.phaseBody}>
-              Your ceremony takes place on the North Shore of Kaua&#699;i in our private sanctuary.
-              You will be held continuously by experienced facilitators through a carefully titrated,
-              multi-day process &mdash; from the first dose through full integration on the land.
+              Your ceremony takes place in a private home in Hanalei. You will be held continuously
+              by experienced facilitators through a carefully titrated, multi-day process &mdash;
+              from the first dose through full integration on the land.
             </p>
           </div>
           <div className={styles.protocolPhase}>
             <span className={styles.phaseNumber}>03</span>
             <h3 className={styles.phaseTitle}>Integration</h3>
-            <span className={styles.phaseWeek}>Weeks 6 &ndash; 9</span>
+            <span className={styles.phaseWeek}>6+ Weeks &amp; Beyond</span>
             <p className={styles.phaseBody}>
-              Weekly integration calls, somatic practices, and guided reflection. This is where the
-              real work takes root &mdash; establishing new patterns, processing what arose, and
-              anchoring your transformation into daily life.
+              Calls with your integration guide, somatic practices, and guided reflection. This is
+              where the real work takes root &mdash; establishing new patterns, processing what
+              arose, and anchoring your transformation into daily life. Beyond formal integration,
+              you join an ongoing community of those who have walked this path &mdash; connection
+              and support that continues as long as you choose.
             </p>
           </div>
         </div>
@@ -456,9 +457,9 @@ export function IbogaJourneyPage() {
           shorter protocols designed for exploration, clarity, and gentle opening. These can serve as
           a standalone experience or a bridge toward a deeper journey.
         </p>
-        <Link href="/#contact" className={styles.entryLink}>
+        <a href="https://calendly.com/aloha-vitalkauai" target="_blank" rel="noopener noreferrer" className={styles.entryLink}>
           Explore This Option &rarr;
-        </Link>
+        </a>
       </section>
 
       {/* ── CTA ── */}
