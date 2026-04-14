@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Jost } from "next/font/google";
+import { RecoveryRedirect } from "@/components/recovery-redirect";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -45,7 +46,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${cormorant.variable} ${jost.variable}`}>{children}</body>
+      <body className={`${cormorant.variable} ${jost.variable}`}>
+        <RecoveryRedirect />
+        {children}
+      </body>
     </html>
   );
 }

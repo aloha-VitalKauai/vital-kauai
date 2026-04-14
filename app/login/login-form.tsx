@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import styles from "./login-form.module.css";
@@ -32,6 +32,18 @@ export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) 
 
   const nextPath = sanitizeNextPath(nextPathParam ?? null);
   const errorMessage = errorMessageParam ?? null;
+
+  // Detect recovery tokens in URL hash — redirect to set-password page
+  // This handles the case where Supabase redirects here with tokens
+  // instead of directly to /portal/set-password
+  useEffect(() => {
+    const hash = window.location.hash.substring(1)
+    if (!hash) return
+    const params = new URLSearchParams(hash)
+    if (params.get('type') === 'recovery' && params.get('access_token')) {
+      window.location.href = `/portal/set-password#${hash}`
+    }
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
