@@ -32,7 +32,7 @@ const WEEKS = [
     ],
     prompts: [
       { q: 'What do I want? What is my intention?', hint: 'Write the truest version. If your intention is still forming, write that. Uncertainty is honest. Iboga works with what is true.' },
-      { q: 'What in my life is asking to be transformed?', hint: 'This is the beginning of seeing clearly — IKE. Not to fix anything yet. Just to look. Name what you have been living alongside without fully acknowledging.' },
+      { q: 'What in my life is asking to be transformed?', hint: 'This is the beginning of seeing clearly — IKE. Just to look. Name what you have been living alongside without fully acknowledging.' },
       { q: 'What becomes possible if this works — really works?', hint: 'Write from hope, not strategy. What opens in your life, your relationships, your sense of self? Let yourself imagine the actual version of what you\'re moving toward.' },
     ],
     thread: 'Your answers here are the raw material of your Questions for the Medicine — the specific questions you\'ll bring into ceremony. Write honestly. Over the coming weeks, these words will sharpen into something you can carry in. This is where that conversation begins.',
@@ -83,7 +83,7 @@ const WEEKS = [
     prompts: [
       { q: 'Where do I feel unsafe — in my body, in my life, or in this process?', hint: 'Safety is a felt sense in the body — a settling, a ground. Notice where that feeling lives in you, and where it is still finding its way. Name it in the body, specifically.' },
       { q: 'What happens in my body when I am under stress or overwhelmed?', hint: 'Fight, flight, freeze, or fawn — which is your dominant pattern? How does it show up physically? This self-knowledge is a navigational tool inside ceremony.' },
-      { q: 'What does inner safety feel like for you — as a lived experience, not a concept?', hint: 'When have you felt genuinely safe in your body? What were the conditions? What would it take to arrive at ceremony with more of that already present in you?' },
+      { q: 'What does inner safety feel like for you — as a lived, felt experience in your body?', hint: 'When have you felt genuinely safe in your body? What were the conditions? What would it take to arrive at ceremony with more of that already present in you?' },
     ],
     thread: 'The body awareness you\'re building this week is what carries you through ceremony. When the medicine is at its most intense, your capacity to track sensation without being consumed by it is the skill that matters most. You are practicing it now.',
   },
@@ -107,9 +107,9 @@ const WEEKS = [
     prompts: [
       { q: 'Where am I lying to myself?', hint: 'Where do you know something — and have been choosing to look past it? This is the medicine\'s first question. Answer it here, in ink, before you arrive.' },
       { q: 'What am I avoiding — and what do I imagine would happen if I stopped?', hint: 'Avoidance is always in service of something — protection, comfort, survival. Name what you\'re avoiding, and then name what you fear would happen without the avoidance. That fear is often the most honest thing in the room.' },
-      { q: 'What shame are you carrying that has never been spoken aloud?', hint: 'Name it plainly. The medicine will find it regardless. Better to arrive having already turned toward it.' },
-      { q: 'Where are you not in integrity — and what would it take to come clean?', hint: 'Integrity is alignment between what you know and what you do. Name the gap honestly. The ceremony will show you this anyway. Write it here first.' },
-      { q: 'What do you fear most about being seen completely — by the medicine and by yourself?', hint: 'The medicine does not negotiate with the parts of us that prefer not to be seen. Name the fear. It loses some of its power the moment it is written down.' },
+      { q: 'What shame are you carrying that has never been spoken aloud?', hint: 'Name it plainly. The medicine meets what we bring into the light. Arriving having already turned toward it changes everything.' },
+      { q: 'Where are you not in integrity — and what would it take to come clean?', hint: 'Integrity is alignment between what you know and what you do. Name the gap honestly. The ceremony will bring this to light. Write it here first.' },
+      { q: 'What do you fear most about being seen completely — by the medicine and by yourself?', hint: 'The medicine illuminates everything. Name the fear. It loses power the moment it is written down.' },
     ],
     thread: 'What you name here, you are no longer carrying unconsciously. Iboga surfaces what we hold in the dark. You are turning on a light before you arrive. Next week you turn toward your people.',
   },
@@ -134,7 +134,7 @@ const WEEKS = [
     prompts: [
       { q: 'Who do I need to forgive — and what would it actually feel like to be free of that weight?', hint: 'Forgiveness is setting down what you\'ve been carrying on someone else\'s behalf. Who are you still carrying? Include yourself.' },
       { q: 'Who is in my corner — and have I let them in?', hint: 'Name the people specifically. And be honest: have you told them what you\'re doing? Have you let them offer real support? If not — what is in the way?' },
-      { q: 'What would it feel like to fully forgive yourself — not to excuse, but to set down the weight you have been carrying?', hint: 'Self-forgiveness is different from self-absolution. It is the willingness to stop using your own past against yourself. What would you say to the version of you who made the choice you still hold against yourself?' },
+      { q: 'What would it feel like to fully forgive yourself — to set down the weight you have been carrying?', hint: 'Self-forgiveness is the willingness to meet yourself with the same compassion you would offer someone you love. What would you say to the version of you who is still waiting to be forgiven?' },
     ],
     thread: 'The forgiveness work you begin here continues in ceremony and for months afterward. Begin it this week — the medicine will carry it forward from wherever you start. One week remains. Next week you arrive.',
   },

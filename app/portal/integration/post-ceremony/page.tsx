@@ -46,9 +46,9 @@ const WEEKS = [
     prompts: [
       { q: 'What did the medicine show me that I most need to remember?', hint: 'What it actually showed you — the image, the moment, the knowing. Record it before it softens.' },
       { q: 'What has shifted in my body since ceremony — and what does that feel like?', hint: 'The soma knows before the mind does. Name the physical reality of where you are: lighter, raw, open, tender, strange. All of it is information.' },
-      { q: 'What am I grateful for — however small or simple?', hint: 'Gratitude and grief can coexist. Name what you are genuinely grateful for right now. Let it be specific — a moment, a person, something the medicine gave you.' },
+      { q: 'What am I genuinely grateful for right now?', hint: 'Gratitude and grief can coexist. Name what is real. A moment, a person, something the medicine gave you.' },
       { q: 'What patterns or themes ran through my ceremony — and where do I see them in my life?', hint: 'The medicine often speaks in recurring images, emotions, or revelations. What was shown more than once? What pattern was being named?' },
-      { q: 'What do I know now that I did not know three days ago?', hint: 'Some knowing is instant. Some arrives slowly. Write what has landed — even if it is still forming. What is different in you right now that was not different before?' },
+      { q: 'What do I know now that I did not know three days ago?', hint: 'Some knowing is instant. Some arrives slowly. Write what has landed — even if it is still forming. What is already different in you?' },
     ],
     thread: 'What you record this week becomes the foundation of the integration work ahead. Don\'t evaluate it. Don\'t organize it. Just let it exist on the page. Next week you begin to live it.',
   },
@@ -78,9 +78,8 @@ const WEEKS = [
     prompts: [
       { q: 'What one insight from ceremony most needs to become a daily practice — and what would that actually look like in my life?', hint: 'A practice — something you do with your body, something lived rather than only understood. Be specific: what, when, how.' },
       { q: 'What does my body need most right now — and am I giving it that?', hint: 'Sleep. Food. Movement. Stillness. Touch. Sunlight. Water. Name what your body is asking for and be honest about whether you\'re listening.' },
-      { q: 'Looking at the intentions I came in with — what was answered? What was redirected? What surprised me?', hint: 'Ceremonies rarely deliver what we asked for in the way we expected. Review what you came in with. How did the medicine respond? The answer is rarely the one we planned for.' },
       { q: 'What did the medicine show me about my own nature — who I truly am beneath the patterns, stories, and defenses?', hint: 'Beneath the persona, the history, the ways you have learned to protect yourself — what did you see? Name it plainly. This is the thing worth integrating.' },
-      { q: 'Where did I feel resistance during the journey — and what was it protecting?', hint: 'Resistance during ceremony is not failure. It is information. What was the nature of it — and what do you understand now about what it was guarding?' },
+      { q: 'Where did I feel resistance during the journey — and what was it protecting?', hint: 'Resistance during ceremony is information. What was the nature of it — and what do you understand now about what it was guarding?' },
     ],
     thread: 'The practice you establish this week has a disproportionate impact on everything that follows. The medicine opened the window. This week you decide what you\'re building inside it.',
   },
@@ -105,7 +104,7 @@ const WEEKS = [
       { color: 'gold', text: 'Second integration call with your guide this week', note: 'This is the most important call of the integration arc. Bring the return of the familiar. Bring what is still unresolved. Your guide is trained to work with exactly this territory. Book via My Care Team on your Dashboard.' },
     ],
     prompts: [
-      { q: 'What old pattern has returned this week — and how am I choosing to meet it differently than before?', hint: 'The pattern returning is not failure. How you respond to it now is everything. What does the changed version of you do when this pattern appears?' },
+      { q: 'What old pattern has returned this week — and how am I choosing to meet it differently than before?', hint: 'The pattern returning is part of the arc. How you respond to it now is what matters. What does the changed version of you do when this pattern appears?' },
       { q: 'Where am I being hard on myself — and what would genuine self-compassion look like here?', hint: 'The medicine showed you your capacity. Haʻahaʻa asks you to extend the same grace to yourself that you would extend to someone you love.' },
       { q: 'Looking back at the intentions I set before ceremony — what was answered, exceeded, or transformed beyond what I could have imagined?', hint: 'The medicine rarely answers the question you asked in the way you expected. Look honestly at what you came in wanting — and then look at what actually happened. What do you see?' },
     ],
@@ -136,7 +135,7 @@ const WEEKS = [
     prompts: [
       { q: 'What am I accountable to now — that I was not accountable to before ceremony?', hint: 'The medicine showed you something you cannot unknow. What does that knowing require of you specifically? Name the accountability.' },
       { q: 'What would the person the medicine showed me I could be — do this week in the specific situation I\'ve been avoiding?', hint: 'Name the situation. Name the avoidance. Name what the changed version of you would do. Then ask honestly: what is stopping you from doing that now?' },
-      { q: 'Which commitments I made to myself during ceremony have I honored — and where have I let them slip?', hint: 'Honest inventory. Where have you kept the agreement you made to yourself? Where has the old self quietly resumed? Both answers are useful.' },
+      { q: 'Which commitments I made to myself during ceremony have I honored — and which am I still growing into?', hint: 'Honest inventory. Where have you kept the agreement? Where is the work still in motion? Both answers matter.' },
     ],
     thread: 'Kuleana is not a burden. It is an honor — the recognition that you have been shown something real and that you are capable of living it. Next week the work moves outward, into your relationships.',
   },
@@ -164,7 +163,7 @@ const WEEKS = [
     prompts: [
       { q: 'How are the people closest to me responding to my changes — and what does that bring up in me?', hint: 'Notice without defending or collapsing. Their response is information about the system, not a verdict on your transformation. What does it bring up, and how are you choosing to meet that?' },
       { q: 'Where am I still wearing an old mask in relationships — and what would it feel like to take it off?', hint: 'The medicine showed you what lives beneath the masks. In which relationships are you still performing the old version of yourself? What would genuine contact look like instead?' },
-      { q: 'What is still unresolved — what has not yet found its place in the integration?', hint: 'Some material takes months. Name what is still live, still tender, still asking for attention. Naming it clearly is itself a form of integration.' },
+      { q: 'What is still alive in me — still moving, still asking for attention?', hint: 'Some material takes months. Name what is still tender, still present, still working itself through. Naming it is itself integration.' },
       { q: 'Where is the medicine still teaching you?', hint: 'In dreams, in patterns you notice, in moments of unexpected recognition. The ceremony continues to move in you. Where are you still receiving its instruction?' },
       { q: 'Where is forgiveness still alive — and what relationship is asking you to continue that work?', hint: 'Forgiveness is rarely a single event. It is a practice. Who are you still releasing — and what would it mean to take one more step in that direction?' },
     ],
@@ -202,7 +201,7 @@ const WEEKS = [
       { q: 'Who am I now — compared to who I was when I arrived at ceremony?', hint: 'Be specific and actual. What is genuinely different in how you move through the world, how you meet yourself, how you are in relationship?' },
       { q: 'Where have I drifted from what the medicine showed me — and what would it take to return?', hint: 'Honest accounting. Honest inventory. The medicine gave you a clear picture. How close are you living to it right now?' },
       { q: 'How has my sense of purpose or direction shifted?', hint: 'Something may have clarified about what your life is for. Name it plainly, even if it feels large or still forming. Purpose often surfaces in ceremony more clearly than we expect.' },
-      { q: 'If I could write a letter to the version of myself who first said yes to ceremony — what would they need to hear?', hint: 'From where you are now, looking back. What did that version of you not yet know? What are you grateful they chose? What do you want them to understand?' },
+      { q: 'If I could write a letter to the version of myself who first said yes to ceremony — what would they need to hear?', hint: 'From where you are now, looking back. What are you grateful they chose? What do you want them to know?' },
     ],
     thread: 'The medicine opened a window. You chose to walk through it — week by week, practice by practice, honest conversation by honest conversation. What you have built is a foundation. The work continues. We continue with you.',
     monthlyArc: true,
