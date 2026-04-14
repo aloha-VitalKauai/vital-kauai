@@ -156,33 +156,49 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, reason: 'missing_email' }, { status: 200 })
   }
 
-  // === STEP 7: Idempotency check ===
+  // === STEP 7: Idempotency — use DB UNIQUE constraint to block race conditions ===
+  // Calendly sends duplicate webhooks within milliseconds. The application-level
+  // check can't catch them because both arrive before either is marked processed.
+  // Instead, try to claim the idempotency_key via INSERT — if it conflicts, it's a dupe.
   if (inviteeUri) {
+    const { error: claimErr } = await supabase
+      .from('webhook_receipts')
+      .update({ idempotency_key: inviteeUri })
+      .eq('id', receiptId)
+
+    if (claimErr && claimErr.code === '23505') {
+      // UNIQUE violation — another webhook already claimed this inviteeUri
+      console.log(`[webhook] STEP:idempotency — duplicate (DB constraint), skipping: ${inviteeUri}`)
+      await updateReceipt(supabase, receiptId, 'ignored', `Duplicate: ${inviteeUri}`)
+      return NextResponse.json({ ok: true, deduplicated: true })
+    }
+
+    // Double-check: did another receipt already process this?
     const { data: existing } = await supabase
       .from('webhook_receipts')
       .select('id')
       .eq('idempotency_key', inviteeUri)
-      .eq('processing_status', 'processed')
+      .neq('id', receiptId)
       .limit(1)
       .single()
 
     if (existing) {
-      console.log(`[webhook] STEP:idempotency — duplicate, skipping: ${inviteeUri}`)
+      console.log(`[webhook] STEP:idempotency — duplicate (existing receipt), skipping: ${inviteeUri}`)
       await updateReceipt(supabase, receiptId, 'ignored', `Duplicate: ${inviteeUri}`)
       return NextResponse.json({ ok: true, deduplicated: true })
     }
   }
   console.log('[webhook] STEP:idempotency — OK, not a duplicate')
 
-  // === STEP 8: Smart upsert — don't overwrite approved/declined leads ===
-  const approvalToken = randomBytes(32).toString('hex')
-
-  // Check if lead already exists and has been decided on
+  // === STEP 8: Smart upsert — preserve approval_token if lead already exists ===
   const { data: existingLead } = await supabase
     .from('leads')
     .select('id, approval_status, approval_token')
     .eq('email', email)
     .single()
+
+  // Only generate a new token if there isn't one already
+  const approvalToken = existingLead?.approval_token || randomBytes(32).toString('hex')
 
   let lead: any
   let leadError: any
@@ -204,11 +220,31 @@ export async function POST(req: NextRequest) {
       .single()
     lead = data
     leadError = error
-  } else {
-    // New lead or still pending — full upsert
+  } else if (existingLead) {
+    // Existing pending lead — update booking info, keep existing token
+    console.log(`[webhook] STEP:upsert — existing pending lead, preserving token`)
     const { data, error } = await supabase
       .from('leads')
-      .upsert({
+      .update({
+        full_name: fullName,
+        source: 'Calendly',
+        discovery_call_booked: true,
+        discovery_call_date: startTime ? startTime.split('T')[0] : null,
+        calendly_event_id: calendlyEventId,
+        calendly_booked_at: new Date().toISOString(),
+        // Keep existing approval_token — do NOT overwrite
+      })
+      .eq('email', email)
+      .select()
+      .single()
+    lead = data
+    leadError = error
+  } else {
+    // Brand new lead
+    console.log(`[webhook] STEP:upsert — new lead`)
+    const { data, error } = await supabase
+      .from('leads')
+      .insert({
         full_name: fullName,
         email,
         source: 'Calendly',
@@ -218,7 +254,7 @@ export async function POST(req: NextRequest) {
         calendly_booked_at: new Date().toISOString(),
         approval_status: 'pending',
         approval_token: approvalToken,
-      }, { onConflict: 'email' })
+      })
       .select()
       .single()
     lead = data
@@ -239,7 +275,6 @@ export async function POST(req: NextRequest) {
     .update({
       processing_status: 'processed',
       lead_id: lead.id,
-      idempotency_key: inviteeUri,
     })
     .eq('id', receiptId)
 
