@@ -1270,7 +1270,7 @@ const BODY_CONTENT = `
 <section id="setting">
   <div class="setting-grid">
     <div class="setting-photo">
-      <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85" alt="Open kitchen and living space, Hanalei home">
+      <img src="/images/hanalei1.jpg" alt="Hanalei Bay, Kauai">
     </div>
     <div class="setting-text">
       <span class="section-label reveal">The Land</span>
