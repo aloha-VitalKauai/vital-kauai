@@ -63,7 +63,8 @@ body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm
 .cover::after { content: ''; position: absolute; bottom: -80px; left: -80px; width: 480px; height: 480px; background: radial-gradient(circle, rgba(200,169,110,0.05) 0%, transparent 70%); pointer-events: none; }
 .cover-header { display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 1; }
 .cover-logo { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 300; letter-spacing: 0.32em; text-transform: uppercase; color: rgba(245,240,232,0.6); text-decoration: none; }
-.cover-tag { font-size: 8.5px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(200,169,110,0.2); padding: 7px 18px; }
+.cover-tag { font-size: 8.5px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(200,169,110,0.2); padding: 7px 18px; text-decoration: none; transition: border-color 0.3s; cursor: pointer; }
+.cover-tag:hover { border-color: var(--gold); }
 .cover-main { position: relative; z-index: 1; padding: 48px 0 0; }
 .cover-eyebrow { font-size: 9px; letter-spacing: 0.44em; text-transform: uppercase; color: var(--sage-light); display: block; margin-bottom: 28px; }
 .cover-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(72px, 11vw, 136px); font-weight: 300; color: var(--cream); line-height: 0.88; letter-spacing: -0.015em; margin-bottom: 40px; }
@@ -190,7 +191,7 @@ const BODY_CONTENT = `
 <div class="cover">
   <div class="cover-header">
     <a href="/" class="cover-logo">Vital Kauaʻi</a>
-    <a href="/downloads/iboga-guide.pdf" download class="cover-tag" style="text-decoration:none;cursor:pointer;">Download This Free Resource</a>
+    <a href="/iboga-guide-free.pdf" download class="cover-tag">Download Free Resource</a>
   </div>
   <div class="cover-main">
     <span class="cover-eyebrow">Africa's Sacred Healing Plant · An Introduction</span>
