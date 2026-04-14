@@ -156,6 +156,27 @@ export function HomePage() {
       },
     }).catch((err) => console.error("Notification error:", err));
 
+    // Auto-reply to the person who submitted the form
+    const firstName = contactForm.firstName.trim();
+    const autoReply = [
+      `Aloha ${firstName},`,
+      `Thank you for reaching out. We're honored you're considering this path, and we want you to know — your message has been received and will be read personally by Rachel and Josh.`,
+      `We'll be in touch within 48 hours.`,
+      `If you're feeling ready to take the next step, you're welcome to book a discovery call with us. It's simply a space to share what's calling you and explore whether this journey is the right fit.`,
+      `Book a Discovery Call: https://calendly.com/aloha-vitalkauai`,
+      `With aloha,\nRachel & Josh\nVital Kaua\u02BBi · Hanalei, Kaua\u02BBi`,
+    ].join("\n\n");
+
+    supabase.functions.invoke("send-notification", {
+      body: {
+        channel: "email",
+        to: contactForm.email.trim().toLowerCase(),
+        subject: "We received your message — mahalo",
+        message: autoReply,
+        to_name: fullName,
+      },
+    }).catch((err) => console.error("Auto-reply error:", err));
+
     setContactStatus("sent");
     setContactForm({ firstName: "", lastName: "", email: "", phone: "", message: "" });
   }
