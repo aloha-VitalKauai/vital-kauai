@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { sendFounderNotification } from '../calendly-webhook/route'
+import { verifyFounder } from '@/lib/auth/founder-check'
 
 function getSupabase() {
   return createClient(
@@ -18,6 +19,9 @@ function getSupabase() {
  */
 export async function POST(req: NextRequest) {
   try {
+    const founder = await verifyFounder()
+    if (!founder) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+
     const { lead_id } = await req.json()
 
     if (!lead_id) {

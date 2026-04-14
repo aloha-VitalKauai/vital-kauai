@@ -28,8 +28,8 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
   const path = request.nextUrl.pathname;
 
-  // Not logged in — protect both portal and dashboard
-  if (!user && (path.startsWith("/portal") || path.startsWith("/dashboard"))) {
+  // Not logged in — protect portal, dashboard, and ops
+  if (!user && (path.startsWith("/portal") || path.startsWith("/dashboard") || path.startsWith("/ops"))) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
@@ -42,8 +42,8 @@ export async function middleware(request: NextRequest) {
 
     const isFounder = FOUNDER_IDS.includes(user.id);
 
-    // Protect /dashboard — founders only, send members back to portal
-    if (path.startsWith("/dashboard") && !isFounder) {
+    // Protect /dashboard and /ops — founders only, send members back to portal
+    if ((path.startsWith("/dashboard") || path.startsWith("/ops")) && !isFounder) {
       return NextResponse.redirect(new URL("/portal", request.url));
     }
 
@@ -60,5 +60,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/portal/:path*", "/dashboard/:path*", "/login"],
+  matcher: ["/portal/:path*", "/dashboard/:path*", "/ops/:path*", "/login"],
 };

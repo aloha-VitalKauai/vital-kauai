@@ -2,6 +2,10 @@ import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { randomBytes, createHmac } from 'crypto'
 
+function esc(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
 function getSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -61,7 +65,10 @@ function extractInviteeData(body: any): {
 // ---------------------------------------------------------------------------
 function verifySignature(req: NextRequest, rawBody: string): boolean {
   const signingKey = process.env.CALENDLY_WEBHOOK_SIGNING_KEY
-  if (!signingKey) return true
+  if (!signingKey) {
+    console.warn('[webhook] STEP:signature — no CALENDLY_WEBHOOK_SIGNING_KEY configured, skipping verification')
+    return true // TODO: set CALENDLY_WEBHOOK_SIGNING_KEY in production to enforce
+  }
 
   const signature = req.headers.get('calendly-webhook-signature')
   if (!signature) {
@@ -428,7 +435,10 @@ export async function sendFounderNotification({
     throw new Error('No RESEND_API_KEY configured')
   }
 
-  const firstName = fullName?.split(' ')[0] || 'Someone'
+  const firstName = esc(fullName?.split(' ')[0] || 'Someone')
+  const safeName = esc(fullName)
+  const safeEmail = esc(email)
+  const safeEventName = esc(eventName)
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://vital-kauai.vercel.app'
   const approveUrl = `${baseUrl}/api/approve-member?token=${approvalToken}`
   const declineUrl = `${baseUrl}/api/decline-member?token=${approvalToken}`
@@ -473,9 +483,9 @@ export async function sendFounderNotification({
       <h1>New discovery call booked</h1>
     </div>
     <div class="body">
-      <div class="field"><div class="label">Name</div><div class="value">${fullName}</div></div>
-      <div class="field"><div class="label">Email</div><div class="value">${email}</div></div>
-      <div class="field"><div class="label">Call type</div><div class="value">${eventName}</div></div>
+      <div class="field"><div class="label">Name</div><div class="value">${safeName}</div></div>
+      <div class="field"><div class="label">Email</div><div class="value">${safeEmail}</div></div>
+      <div class="field"><div class="label">Call type</div><div class="value">${safeEventName}</div></div>
       <div class="field"><div class="label">Scheduled for</div><div class="value">${callDate}</div></div>
       <hr>
       <div class="instructions">
@@ -501,7 +511,7 @@ export async function sendFounderNotification({
     body: JSON.stringify({
       from: 'Vital Kaua\u02BBi <aloha@vitalkauai.com>',
       to: ['joshuaperdue2@gmail.com', 'aloha@vitalkauai.com'],
-      subject: `New discovery call: ${fullName} \u2014 ${callDate}`,
+      subject: `New discovery call: ${safeName} \u2014 ${callDate}`,
       html,
     }),
   })

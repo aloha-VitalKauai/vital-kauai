@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { verifyFounder } from '@/lib/auth/founder-check'
 
 function db() {
   return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
@@ -28,6 +29,9 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    const founder = await verifyFounder()
+    if (!founder) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+
     const { token, decidedBy } = await req.json()
     if (!token) return NextResponse.json({ error: 'Missing token' }, { status: 400 })
     return await handleApproval(token, decidedBy || 'dashboard')
@@ -47,6 +51,13 @@ async function handleApproval(token: string, source: string) {
   if (error || !lead) return respond(source, false, 'This approval link is invalid or has expired.')
   if (lead.approval_status === 'approved') return respond(source, true, null, lead.full_name, true)
   if (lead.approval_status === 'declined') return respond(source, false, `${lead.full_name} was previously declined. Update from the ops dashboard if needed.`)
+
+  // Token expiration — 7 days from when the lead was created
+  const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000
+  const createdAt = new Date(lead.created_at || lead.calendly_booked_at || 0).getTime()
+  if (Date.now() - createdAt > TOKEN_TTL_MS) {
+    return respond(source, false, 'This approval link has expired (7 day limit). Use the ops dashboard to approve.')
+  }
 
   // === STEP 1: Create Supabase auth user (no password — member sets it themselves) ===
   let userId: string
@@ -190,8 +201,12 @@ async function generatePasswordSetupLink(email: string, fullName: string): Promi
   return null
 }
 
+function esc(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
 async function sendSetupEmail(email: string, fullName: string, setupLink: string) {
-  const firstName = fullName?.split(' ')[0] || 'Friend'
+  const firstName = esc(fullName?.split(' ')[0] || 'Friend')
 
   const html = `<!DOCTYPE html>
 <html>

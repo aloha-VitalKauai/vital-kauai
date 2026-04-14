@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { verifyFounder } from '@/lib/auth/founder-check'
 
 function getSupabase() {
   return createClient(
@@ -17,6 +18,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const founder = await verifyFounder()
+  if (!founder) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+
   const { token, reason, decidedBy } = await req.json()
   if (!token) return NextResponse.json({ error: 'Missing token' }, { status: 400 })
   return handleDecline(token, decidedBy || 'dashboard', reason)
