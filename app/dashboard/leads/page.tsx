@@ -19,7 +19,7 @@ export default async function LeadsPage() {
   const supabase = await createClient();
   const { data: leads } = await supabase
     .from("leads")
-    .select("id, full_name, email, source, lead_date, welcome_video_sent, discovery_call_booked, discovery_call_date, converted_to_member, notes")
+    .select("id, full_name, email, source, lead_date, welcome_video_sent, discovery_call_booked, discovery_call_date, converted_to_member, notes, phone, message")
     .order("lead_date", { ascending: false });
 
   const rows = leads ?? [];
@@ -62,20 +62,22 @@ export default async function LeadsPage() {
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
-                {["Name", "Source", "Lead date", "Video sent", "Call booked", "Call date", "Status", "Notes"].map((h) => (
+                {["Name", "Message", "Source", "Lead date", "Video sent", "Call booked", "Call date", "Status", "Notes"].map((h) => (
                   <th key={h} style={TH}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {rows.length === 0 ? (
-                <tr><td colSpan={8} style={{ padding: "2.5rem", textAlign: "center", color: "#9E9E9A", fontSize: 14 }}>No leads yet</td></tr>
+                <tr><td colSpan={9} style={{ padding: "2.5rem", textAlign: "center", color: "#9E9E9A", fontSize: 14 }}>No leads yet</td></tr>
               ) : rows.map((r) => (
                 <tr key={r.id} style={{ borderBottom: "0.5px solid rgba(0,0,0,0.06)" }}>
                   <td style={TD}>
                     <div style={{ fontWeight: 500, fontSize: 13 }}>{r.full_name}</div>
                     <div style={{ fontSize: 11, color: "#9E9E9A", marginTop: 1 }}>{r.email}</div>
+                    {r.phone && <div style={{ fontSize: 11, color: "#9E9E9A", marginTop: 1 }}>{r.phone}</div>}
                   </td>
+                  <td style={{ ...TD, fontSize: 11, color: r.message ? "#444441" : "#9E9E9A", maxWidth: 260, whiteSpace: "pre-wrap", lineHeight: 1.4 }}>{r.message ?? "—"}</td>
                   <td style={TD}>{r.source ?? "—"}</td>
                   <td style={TD}>{fmtDate(r.lead_date)}</td>
                   <td style={TD}><Check ok={r.welcome_video_sent} /></td>
