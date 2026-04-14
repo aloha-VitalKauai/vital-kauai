@@ -33,6 +33,7 @@ const WEEKS = [
     prompts: [
       { q: 'What do I want? What is my intention?', hint: 'Write the truest version. If your intention is still forming, write that. Uncertainty is honest. Iboga works with what is true.' },
       { q: 'What in my life is asking to be transformed?', hint: 'This is the beginning of seeing clearly — IKE. Not to fix anything yet. Just to look. Name what you have been living alongside without fully acknowledging.' },
+      { q: 'What becomes possible if this works — really works?', hint: 'Write from hope, not strategy. What opens in your life, your relationships, your sense of self? Let yourself imagine the actual version of what you\'re moving toward.' },
     ],
     thread: 'Your answers here are the raw material of your Questions for the Medicine — the specific questions you\'ll bring into ceremony. Write honestly. Over the coming weeks, these words will sharpen into something you can carry in. This is where that conversation begins.',
   },
@@ -56,6 +57,7 @@ const WEEKS = [
     prompts: [
       { q: 'What must change?', hint: 'Write from what you already know — the thing that brought you here. The answer lives beneath what you wish were true.' },
       { q: 'What am I actually committing to — and do I feel ready for what that means?', hint: 'Whether or not you feel ready — write. This is an honest check-in. If resistance surfaces here, write that too. Resistance is the work beginning.' },
+      { q: 'What gifts is this healing meant to serve — in you and through you?', hint: 'Beyond your own relief or healing. What do you sense this work is for — in your relationships, your family, your work, your life\'s contribution?' },
     ],
     thread: '"What must change" becomes the spine of your Week 4 shadow work and your Week 6 ceremony questions. Start a running list anywhere — the specific questions you want to bring to the medicine will take shape over the next four weeks. You\'ll draft them formally in Week 4.',
   },
@@ -104,6 +106,8 @@ const WEEKS = [
     prompts: [
       { q: 'Where am I lying to myself?', hint: 'Where do you know something — and have been choosing to look past it? This is the medicine\'s first question. Answer it here, in ink, before you arrive.' },
       { q: 'What am I avoiding — and what do I imagine would happen if I stopped?', hint: 'Avoidance is always in service of something — protection, comfort, survival. Name what you\'re avoiding, and then name what you fear would happen without the avoidance. That fear is often the most honest thing in the room.' },
+      { q: 'What shame are you carrying that has never been spoken aloud?', hint: 'Name it plainly. The medicine will find it regardless. Better to arrive having already turned toward it.' },
+      { q: 'Where are you not in integrity — and what would it take to come clean?', hint: 'Integrity is alignment between what you know and what you do. Name the gap honestly. The ceremony will show you this anyway. Write it here first.' },
     ],
     thread: 'What you name here, you are no longer carrying unconsciously. Iboga surfaces what we hold in the dark. You are turning on a light before you arrive. Next week you turn toward your people.',
   },
