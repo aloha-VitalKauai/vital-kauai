@@ -1206,24 +1206,24 @@ const BODY_CONTENT = `
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
     <div class="gallery-item" style="height:360px;grid-row:span 2;" >
-      <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=900&q=85" alt="Hanalei Bay, North Shore Kauai" style="width:100%;height:100%;object-fit:cover;filter:saturate(0.88) brightness(0.92);">
+      <img src="/images/hanalei1.jpg" alt="Hanalei Bay" style="width:100%;height:100%;object-fit:cover;filter:saturate(0.88) brightness(0.92);">
       <div class="gallery-caption"><p>Hanalei Bay · Steps Away</p></div>
     </div>
     <div class="gallery-item" style="height:240px;">
-      <img src="https://images.unsplash.com/photo-1598135753163-6167c1a1ad65?w=900&q=85" alt="Nā Pali Mountains, Kauai" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:saturate(0.88) brightness(0.92);">
-      <div class="gallery-caption"><p>Nā Pali Mountains · Behind Every Ceremony</p></div>
+      <img src="/images/hanalei2.jpg" alt="Hanalei mountains" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:saturate(0.88) brightness(0.92);">
+      <div class="gallery-caption"><p>The Mountains · Behind Every Ceremony</p></div>
     </div>
     <div class="gallery-item" style="height:240px;">
-      <img src="https://images.unsplash.com/photo-1598135753163-6167c1a1ad65?w=900&q=85" alt="Hanalei Valley, Kauai" style="width:100%;height:100%;object-fit:cover;filter:saturate(0.88) brightness(0.92);">
+      <img src="/images/hanalei3.jpg" alt="Hanalei Valley" style="width:100%;height:100%;object-fit:cover;filter:saturate(0.88) brightness(0.92);">
       <div class="gallery-caption"><p>Hanalei Valley · Living ʻĀina</p></div>
     </div>
     <div class="gallery-item" style="height:240px;">
-      <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=900&q=85" alt="Hanalei River, Kauai" style="width:100%;height:100%;object-fit:cover;filter:saturate(0.88) brightness(0.92);">
-      <div class="gallery-caption"><p>Hanalei River · Cold Plunges & Quiet Floats</p></div>
+      <img src="/images/hanaleipier2.jpg" alt="Hanalei Pier" style="width:100%;height:100%;object-fit:cover;filter:saturate(0.88) brightness(0.92);">
+      <div class="gallery-caption"><p>Hanalei Pier · The Heart of Town</p></div>
     </div>
     <div class="gallery-item" style="height:240px;">
-      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&q=85" alt="North Shore Kauai coastline" style="width:100%;height:100%;object-fit:cover;object-position:center 30%;filter:saturate(0.88) brightness(0.92);">
-      <div class="gallery-caption"><p>North Shore · Ocean Immersion Daily</p></div>
+      <img src="/images/hanaleitown2.jpg" alt="Hanalei Town" style="width:100%;height:100%;object-fit:cover;object-position:center 30%;filter:saturate(0.88) brightness(0.92);">
+      <div class="gallery-caption"><p>Hanalei Town · Island Life</p></div>
     </div>
   </div>
   <p style="margin-top:20px;font-size:11px;color:rgba(26,26,24,0.35);letter-spacing:0.05em;font-style:italic;text-align:center;">Accommodation photos and home details are shared personally after your discovery call.</p>
