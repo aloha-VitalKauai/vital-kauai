@@ -952,12 +952,14 @@ function HomeLeadCard() {
     setError("");
     // Fire and forget — never block redirect
     const supabase = createClient();
-    supabase.from("leads").insert({
-      full_name: name.trim(),
-      email: email.trim().toLowerCase(),
-      source: "Free Guide",
-      lead_date: new Date().toISOString(),
-    }).then(() => {}).catch(() => {});
+    try {
+      await supabase.from("leads").insert({
+        full_name: name.trim(),
+        email: email.trim().toLowerCase(),
+        source: "Free Guide",
+        lead_date: new Date().toISOString(),
+      });
+    } catch {}
 
     sessionStorage.setItem("guide_access", "true");
     window.location.href = "/iboga-guide";
