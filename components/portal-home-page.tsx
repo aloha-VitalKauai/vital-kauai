@@ -82,7 +82,7 @@ const PREP_ITEMS = [
   { text: "Book your preparation calls with your integration guide" },
   { text: "Discuss all medications and supplements with Rachel and Josh \u2014 confirm any required washout periods" },
   { text: "Confirm required lab work with your physician and submit results" },
-  { text: "Begin dietary preparation protocol (6\u20138 weeks before arrival for Iboga)" },
+  { text: "Begin dietary preparation protocol" },
   { text: "Begin journaling (prompts available in your member portal journal)" },
   { text: "Prepare your questions for the medicine" },
   { text: "Begin nervous system preparation practices (breathwork, somatic self-regulation)" },
