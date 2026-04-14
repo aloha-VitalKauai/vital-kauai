@@ -169,11 +169,13 @@ async function generatePasswordSetupLink(email: string, fullName: string): Promi
   // email_confirm: true, so 'invite' links produce tokens that expire
   // immediately (invite expects an unconfirmed email).
   // Recovery links work for any existing confirmed user.
+  // Route through /auth/callback which exchanges the PKCE code for a session,
+  // then redirects to /portal/set-password with an active cookie session.
   const res = await adminFetch('POST', '/auth/v1/admin/generate_link', {
     type: 'recovery',
     email,
     options: {
-      redirect_to: `${env().appUrl}/portal/set-password`,
+      redirect_to: `${env().appUrl}/auth/callback?next=/portal/set-password`,
     },
   })
   const data = await res.json()

@@ -19,27 +19,39 @@ export default function SetPasswordPage() {
   const [userName, setUserName]     = useState('')
 
   useEffect(() => {
-    // Supabase puts session tokens in URL hash after invite link is clicked:
-    // /portal/set-password#access_token=xxx&refresh_token=yyy&type=invite
-    const hash   = window.location.hash.substring(1)
-    const params = new URLSearchParams(hash)
-    const accessToken  = params.get('access_token')
-    const refreshToken = params.get('refresh_token')
-
-    if (!accessToken || !refreshToken) {
-      setStage('error')
-      return
-    }
-
-    supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken })
-      .then(({ data, error }) => {
-        if (error || !data.session) { setStage('error'); return }
-        const name = data.session.user.user_metadata?.full_name || ''
+    async function initSession() {
+      // Method 1: Cookie session (PKCE flow — user came through /auth/callback)
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        const name = session.user.user_metadata?.full_name || ''
         setUserName(name.split(' ')[0] || '')
         setStage('set-password')
-        // Clear tokens from URL bar
-        window.history.replaceState(null, '', window.location.pathname)
-      })
+        return
+      }
+
+      // Method 2: Hash tokens (implicit flow fallback)
+      const hash   = window.location.hash.substring(1)
+      const params = new URLSearchParams(hash)
+      const accessToken  = params.get('access_token')
+      const refreshToken = params.get('refresh_token')
+
+      if (accessToken && refreshToken) {
+        const { data, error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        })
+        if (!error && data.session) {
+          const name = data.session.user.user_metadata?.full_name || ''
+          setUserName(name.split(' ')[0] || '')
+          setStage('set-password')
+          window.history.replaceState(null, '', window.location.pathname)
+          return
+        }
+      }
+
+      setStage('error')
+    }
+    initSession()
   }, [])
 
   function getStrength(pw: string): { label: string; color: string; pct: string } {
