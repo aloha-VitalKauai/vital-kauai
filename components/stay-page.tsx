@@ -1128,7 +1128,7 @@ const BODY_CONTENT = `
 <!-- HERO -->
 <section id="hero">
   <img class="hero-img"
-    src="https://images.unsplash.com/photo-1542640244-8a927d20bfec?w=1800&q=85"
+    src="https://images.unsplash.com/photo-1598135753163-6167c1a1ad65?w=1800&q=85"
     alt="Hanalei Bay, Kauaʻi North Shore">
   <div class="hero-overlay"></div>
   <div class="hero-content">
@@ -1170,7 +1170,7 @@ const BODY_CONTENT = `
           <img src="/images/bathroom.jpg" alt="Bathroom" style="width:100%;height:100%;object-fit:cover;object-position:center 20%;">
         </div>
       </div>
-      <p style="font-size:10px;color:rgba(26,26,24,0.32);letter-spacing:0.05em;font-style:italic;text-align:center;margin-top:6px;">Photos of your private sanctuary shared personally after your discovery call.</p>
+      <p style="font-size:10px;color:rgba(26,26,24,0.32);letter-spacing:0.05em;font-style:italic;text-align:center;margin-top:6px;">One of our ceremony homes. Photos of your private sanctuary shared personally after your discovery call.</p>
     </div>
     <div class="homes-text">
       <span class="section-label reveal">Where You Will Stay</span>
@@ -1210,7 +1210,7 @@ const BODY_CONTENT = `
       <div class="gallery-caption"><p>Hanalei Bay · Steps Away</p></div>
     </div>
     <div class="gallery-item" style="height:240px;">
-      <img src="https://images.unsplash.com/photo-1542640244-8a927d20bfec?w=900&q=85" alt="Nā Pali Mountains, Kauai" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:saturate(0.88) brightness(0.92);">
+      <img src="https://images.unsplash.com/photo-1598135753163-6167c1a1ad65?w=900&q=85" alt="Nā Pali Mountains, Kauai" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:saturate(0.88) brightness(0.92);">
       <div class="gallery-caption"><p>Nā Pali Mountains · Behind Every Ceremony</p></div>
     </div>
     <div class="gallery-item" style="height:240px;">
