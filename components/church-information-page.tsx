@@ -205,9 +205,9 @@ export function ChurchInformationPage() {
             <span className={styles.eyebrow}>Our Mission</span>
             <p className={styles.missionText}>
               Vital Kauai Church is a living sanctuary of transformation. We support the remembrance
-              of our interconnectedness through vitality, intimacy, and nature medicine. We offer
-              somatic, psycho-spiritual, and nature-led experiences where people are supported to
-              live with greater aliveness, interconnectedness, and truth.
+              of our interconnectedness through the intelligence of plant medicine, somatic healing,
+              and the wisdom of nature as a reflection of our true inner nature. We hold space for
+              people to return to greater aliveness, truth, and wholeness.
             </p>
           </div>
           <p className={styles.bodyText}>
