@@ -61,7 +61,7 @@ export default async function FinancialsPage() {
           { label: "Total costs", value: fmt(totalCost, "$") },
           { label: "Gross profit", value: fmt(totalProfit, "$"), color: "#085041" },
           { label: "Profit margin", value: `${overallMargin}%`, color: "#085041" },
-          { label: "Avg profit / client", value: fmt(avgProfit, "$") },
+          { label: "Avg profit / member", value: fmt(avgProfit, "$") },
         ].map((c) => (
           <div key={c.label} style={{ background: "#fff", border: "0.5px solid rgba(0,0,0,0.1)", borderRadius: 10, padding: "1rem 1.1rem" }}>
             <p style={LABEL}>{c.label}</p>
@@ -72,21 +72,21 @@ export default async function FinancialsPage() {
 
       <div style={{ background: "#fff", border: "0.5px solid rgba(0,0,0,0.1)", borderRadius: 10, overflow: "hidden" }}>
         <div style={{ padding: "0.875rem 1.25rem", borderBottom: "0.5px solid rgba(0,0,0,0.07)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: "#6B6B67", fontWeight: 500 }}>Revenue breakdown by client</span>
-          <span style={{ fontSize: 11, color: "#9E9E9A" }}>{rows.length} clients</span>
+          <span style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: "#6B6B67", fontWeight: 500 }}>Revenue breakdown by member</span>
+          <span style={{ fontSize: 11, color: "#9E9E9A" }}>{rows.length} members</span>
         </div>
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
-                {["Client", "Partner", "Tier", "Program price", "Cost of service", "Gross profit", "Margin", "Deposit paid", "Deposit amt", "Balance remaining"].map((h) => (
+                {["Member", "Partner", "Tier", "Program price", "Cost of service", "Gross profit", "Margin", "Deposit paid", "Deposit amt", "Balance remaining"].map((h) => (
                   <th key={h} style={TH}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {rows.length === 0 ? (
-                <tr><td colSpan={10} style={{ padding: "2.5rem", textAlign: "center", color: "#9E9E9A", fontSize: 14 }}>No clients yet</td></tr>
+                <tr><td colSpan={10} style={{ padding: "2.5rem", textAlign: "center", color: "#9E9E9A", fontSize: 14 }}>No members yet</td></tr>
               ) : (
                 <>
                   {rows.map((r) => (

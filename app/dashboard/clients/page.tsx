@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 
-export const metadata = { title: "Clients — Vital Kauaʻi" };
+export const metadata = { title: "Members — Vital Kauaʻi" };
 
 const STATUS_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
   "Signed — Awaiting Intake": { bg: "#E6F1FB", text: "#0C447C", dot: "#378ADD" },
@@ -63,11 +63,11 @@ export default async function ClientsPage() {
   return (
     <div style={{ fontFamily: "var(--font-body, sans-serif)" }}>
       <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.07em", color: "#9E9E9A", marginBottom: 3 }}>Members</p>
-      <h1 style={{ fontFamily: "var(--font-display, serif)", fontSize: 26, fontWeight: 400, letterSpacing: "-0.02em", color: "#1A1A18", marginBottom: "1.5rem" }}>Clients</h1>
+      <h1 style={{ fontFamily: "var(--font-display, serif)", fontSize: 26, fontWeight: 400, letterSpacing: "-0.02em", color: "#1A1A18", marginBottom: "1.5rem" }}>Members</h1>
 
       <div style={{ background: "#fff", border: "0.5px solid rgba(0,0,0,0.1)", borderRadius: 10, overflow: "hidden" }}>
         <div style={{ padding: "0.875rem 1.25rem", borderBottom: "0.5px solid rgba(0,0,0,0.07)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: "#6B6B67", fontWeight: 500 }}>All clients</span>
+          <span style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: "#6B6B67", fontWeight: 500 }}>All members</span>
           <span style={{ fontSize: 11, color: "#9E9E9A" }}>{rows.length} total</span>
         </div>
         <div style={{ overflowX: "auto" }}>
@@ -81,7 +81,7 @@ export default async function ClientsPage() {
             </thead>
             <tbody>
               {rows.length === 0 ? (
-                <tr><td colSpan={14} style={{ padding: "2.5rem", textAlign: "center", color: "#9E9E9A", fontSize: 14 }}>No clients yet</td></tr>
+                <tr><td colSpan={14} style={{ padding: "2.5rem", textAlign: "center", color: "#9E9E9A", fontSize: 14 }}>No members yet</td></tr>
               ) : rows.map((r) => {
                 const c = STATUS_COLORS[r.status ?? ""] ?? fallback;
                 return (

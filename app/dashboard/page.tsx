@@ -96,7 +96,7 @@ export default async function DashboardPage() {
       {/* KPI Cards — 6 columns */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(6, minmax(0, 1fr))", gap: 10, marginBottom: "1.25rem" }}>
         {[
-          { label: "Total clients", value: String(rows.length), sub: "active members" },
+          { label: "Total members", value: String(rows.length), sub: "active members" },
           { label: "Total leads", value: String(totalLeads), up: totalLeads > 0 ? `${totalLeads} tracked` : undefined },
           { label: "Conversion", value: `${conversionRate}%`, sub: "leads → members" },
           { label: "Total revenue", value: hasPricing ? fmt(totalRevenue, "$") : "—" },

@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     .select("full_name")
     .eq("id", id)
     .maybeSingle();
-  return { title: member ? `${member.full_name} — Vital Kauaʻi` : "Client — Vital Kauaʻi" };
+  return { title: member ? `${member.full_name} — Vital Kauaʻi` : "Member — Vital Kauaʻi" };
 }
 
 export default async function MemberProfilePage({ params }: { params: Promise<{ id: string }> }) {
