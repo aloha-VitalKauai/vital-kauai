@@ -1091,6 +1091,9 @@
     padding: 80px 48px;
   }
 
+}
+
+@media (max-width: 768px) {
   .leadGrid {
     grid-template-columns: 1fr;
     gap: 48px;
