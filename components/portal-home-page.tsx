@@ -75,20 +75,20 @@ const MEDICAL_DISCLAIMER = [
   },
 ];
 
-const PREP_ITEMS = [
+const PREP_ITEMS: { text: string; link?: string; external?: boolean }[] = [
   { text: "Sign all three required documents (Intake Form, Membership Agreement, Medical Disclaimer)" },
   { text: "Submit your remaining love offering" },
-  { text: "Read Iboga Preparedness Guide (in the \"Prepare\" section on your dashboard)" },
-  { text: "Book your preparation calls with your integration guide (calendar link below)" },
+  { text: "Read Iboga Preparedness Guide", link: "/iboga-preparedness-guide.html" },
+  { text: "Book your preparation calls with your integration guide", link: "https://calendly.com/aloha-vitalkauai", external: true },
   { text: "Discuss all medications and supplements with Rachel and Josh \u2014 confirm any required washout periods" },
-  { text: "Confirm required lab work with your physician and submit results" },
-  { text: "Begin dietary preparation protocol" },
-  { text: "Begin journaling (prompts available in your member portal journal)" },
-  { text: "Prepare your questions for the medicine (prompts available in your member portal journal)" },
-  { text: "Begin nervous system preparation practices (breathwork, somatic self-regulation) (guide available in your member portal)" },
-  { text: "Share the Support Person Guide with your home circle (guide available in your member portal)" },
+  { text: "Confirm required lab work with your physician and submit results", link: "/portal/physician-guide" },
+  { text: "Begin dietary preparation protocol", link: "/portal/dietary" },
+  { text: "Begin journaling", link: "/portal/journal" },
+  { text: "Prepare your questions for the medicine", link: "/portal/questions" },
+  { text: "Begin nervous system preparation practices (breathwork, somatic self-regulation)", link: "/portal/nervous-system" },
+  { text: "Share the Support Person Guide with your home circle", link: "/portal/support-person" },
   { text: "Confirm travel arrangements and send arrival details to aloha@vitalkauai.com" },
-  { text: "Pack using the interactive packing guide (guide available in your member portal)" },
+  { text: "Pack using the interactive packing guide", link: "/portal/what-to-bring" },
 ];
 
 export function PortalHomePage({
@@ -791,6 +791,17 @@ export function PortalHomePage({
               >
                 <div className={styles.ciBox} />
                 <p className={styles.ciText}>{item.text}</p>
+                {item.link && (
+                  <a
+                    href={item.link}
+                    target={item.external ? "_blank" : "_self"}
+                    rel={item.external ? "noopener noreferrer" : undefined}
+                    className={styles.ciLink}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    →
+                  </a>
+                )}
               </div>
             ))}
           </div>
