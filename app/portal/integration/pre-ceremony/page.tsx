@@ -51,7 +51,7 @@ const WEEKS = [
     actionIntro: 'These actions are intentionally light. Identity shifts happen in the noticing. This week your job is to begin seeing clearly — the changes will follow.',
     actions: [
       { color: 'blue', text: 'First call with your integration guide', note: 'Come with your intentions from Week 1. Come with your questions. Come as you are. This call is the beginning of a relationship that will hold you through the hardest parts of what\'s ahead.' },
-      { color: 'amber', text: 'Begin noticing your daily habits', note: 'Observe alcohol, sleep, screens, food, substances. Honest observation is all that's asked. What you notice this week becomes data for your body to begin working with.' },
+      { color: 'amber', text: 'Begin noticing your daily habits', note: 'Observe alcohol, sleep, screens, food, substances. Honest observation is all that\u2019s asked. What you notice this week becomes data for your body to begin working with.' },
       { color: 'blue', text: 'Schedule your required medical appointments and labs', note: 'EKG and labs must be completed before Week 5. Schedule now — medical appointments take time. This protects you.' },
     ],
     prompts: [
