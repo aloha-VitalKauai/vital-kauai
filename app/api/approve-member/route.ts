@@ -175,9 +175,16 @@ async function generatePasswordSetupLink(email: string, fullName: string): Promi
     options: { redirectTo },
   })
 
-  const link = data?.properties?.action_link
+  let link = data?.properties?.action_link
   console.log(`[approve-member] STEP:setuplink — redirectTo=${redirectTo}, has_link=${!!link}, error=${error?.message || 'none'}`)
-  if (link) return link
+  if (link) {
+    // generateLink doesn't always encode redirect_to in the action_link — append it
+    const url = new URL(link)
+    url.searchParams.set('redirect_to', redirectTo)
+    link = url.toString()
+    console.log(`[approve-member] STEP:setuplink — final link redirect_to=${redirectTo}`)
+    return link
+  }
 
   console.error('[approve-member] STEP:setuplink — FAILED:', error?.message || 'no action_link')
   return null
