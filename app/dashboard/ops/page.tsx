@@ -632,6 +632,8 @@ export default function OpsDashboardPage() {
           <Link href='/dashboard' style={{fontSize:11,color:C.muted,textDecoration:'none',letterSpacing:'.06em'}}>← Dashboard</Link>
           <span style={{color:C.dim}}>·</span>
           <span style={{fontSize:10,color:C.dim,letterSpacing:'.12em',textTransform:'uppercase'}}>Command Center</span>
+          <span style={{color:C.dim}}>·</span>
+          <Link href='/ops/pending' style={{fontSize:11,color:C.terra,textDecoration:'none',letterSpacing:'.06em',fontWeight:600}}>Pending Approvals →</Link>
         </div>
         <div style={{display:'flex',alignItems:'center',gap:8}}>
           <button onClick={()=>{setCreateForMember(null);setShowCreate(v=>!v)}} style={{fontSize:10,color:C.terra,background:C.terraBg,border:`0.5px solid ${C.terra}55`,borderRadius:6,padding:'4px 12px',cursor:'pointer',fontWeight:600,letterSpacing:'.06em'}}>
