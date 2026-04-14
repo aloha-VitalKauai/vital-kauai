@@ -1515,7 +1515,7 @@ const BODY_CONTENT = `
 
       <div style="padding:20px;background:var(--cream);">
         <div style="height:120px;overflow:hidden;margin-bottom:14px;background:var(--forest-dark);">
-          <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" alt="Hui Makaainana" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:saturate(0.85) brightness(0.88);">
+          <img src="/images/hanalei2.jpg" alt="Hui Makaainana" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:saturate(0.85) brightness(0.88);">
         </div>
         <h3 style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--text-dark);margin-bottom:3px;">Hui Makaʻāinana o Makana</h3>
         <p style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;">Hāʻena</p>
