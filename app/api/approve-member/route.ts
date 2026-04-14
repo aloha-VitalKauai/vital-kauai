@@ -165,32 +165,22 @@ async function getOrCreateAuthUser(email: string, fullName: string): Promise<str
 }
 
 async function generatePasswordSetupLink(email: string, fullName: string): Promise<string | null> {
-  // Try invite first (for new users)
-  let res = await adminFetch('POST', '/auth/v1/admin/generate_link', {
-    type:  'invite',
+  // Always use 'recovery' type — the auth user is already created with
+  // email_confirm: true, so 'invite' links produce tokens that expire
+  // immediately (invite expects an unconfirmed email).
+  // Recovery links work for any existing confirmed user.
+  const res = await adminFetch('POST', '/auth/v1/admin/generate_link', {
+    type: 'recovery',
     email,
     options: {
       redirect_to: `${env().appUrl}/portal/set-password`,
-      data: { full_name: fullName },
     },
   })
-  let data = await res.json()
+  const data = await res.json()
+  console.log(`[approve-member] STEP:setuplink — type=recovery, has_link=${!!data.action_link}`)
   if (data.action_link) return data.action_link
 
-  // If user already exists, use recovery link instead
-  if (data.error_code === 'email_exists' || data.msg?.includes('already been registered')) {
-    res = await adminFetch('POST', '/auth/v1/admin/generate_link', {
-      type: 'recovery',
-      email,
-      options: {
-        redirect_to: `${env().appUrl}/portal/set-password`,
-      },
-    })
-    data = await res.json()
-    if (data.action_link) return data.action_link
-  }
-
-  console.error('Setup link generation failed:', data)
+  console.error('[approve-member] STEP:setuplink — FAILED:', JSON.stringify(data).slice(0, 300))
   return null
 }
 
