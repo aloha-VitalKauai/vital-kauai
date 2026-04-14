@@ -26,6 +26,17 @@ export interface AssessmentRow {
   started_at: string | null;
   last_saved_at: string | null;
   submitted_at: string | null;
+  overdue_submission: boolean | null;
+  // Score summary — non-null only when status === 'completed'
+  phq9_total: number | null;
+  phq9_severity: string | null;
+  gad7_total: number | null;
+  gad7_severity: string | null;
+  qol_total: number | null;
+  overall_change: string | null;
+  regulation_score: number | null;
+  pcl5_total: number | null;
+  pcl5_severity: string | null;
 }
 
 export interface CeremonyGroup {
@@ -55,7 +66,9 @@ export async function getMemberAssessmentStatus(
       'ceremony_id,ceremony_date,ceremony_status,timepoint,timepoint_label,' +
       'sort_order,status,is_editable,is_overdue_window,days_remaining,' +
       'window_open_at,window_due_at,window_hard_close_at,' +
-      'assessment_id,started_at,last_saved_at,submitted_at'
+      'assessment_id,started_at,last_saved_at,submitted_at,overdue_submission,' +
+      'phq9_total,phq9_severity,gad7_total,gad7_severity,' +
+      'qol_total,overall_change,regulation_score,pcl5_severity'
     )
     .eq('member_id', memberId)
     .order('sort_order', { ascending: true });
