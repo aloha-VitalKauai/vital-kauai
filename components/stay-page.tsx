@@ -1252,7 +1252,7 @@ const BODY_CONTENT = `
     <div class="included-card reveal">
       <div class="included-rule"></div>
       <h3 class="included-title">Nature Immersion Daily</h3>
-      <p class="included-body">Ocean swims, river floats, grounding practices — woven into your days with intention. An optional intention-setting hike along the Nā Pali Coast is available for those who feel called. Kauaʻi's wild North Shore is the primary medicine.</p>
+      <p class="included-body">Ocean swims, river floats, grounding practices — woven into your days with intention. An optional intention-setting hike along the Nā Pali Coast is available for those who feel called.</p>
     </div>
     <div class="included-card reveal reveal-delay-1">
       <div class="included-rule"></div>
@@ -1262,7 +1262,7 @@ const BODY_CONTENT = `
     <div class="included-card reveal reveal-delay-2">
       <div class="included-rule"></div>
       <h3 class="included-title">Arrival & Departure</h3>
-      <p class="included-body">Arrival pickup and departure drop-off are available through us — simply let us know during intake and we will have everything coordinated. Members are also welcome to arrange their own transportation.</p>
+      <p class="included-body">Arrival pickup and departure drop-off are available through us — simply let us know and we will have everything coordinated. Members are also welcome to arrange their own transportation.</p>
     </div>
   </div>
 
