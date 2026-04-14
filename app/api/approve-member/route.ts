@@ -119,7 +119,8 @@ async function getOrCreateAuthUser(email: string, fullName: string): Promise<str
 }
 
 async function generatePasswordSetupLink(email: string, fullName: string): Promise<string | null> {
-  const res  = await adminFetch('POST', '/auth/v1/admin/generate_link', {
+  // Try invite first (for new users)
+  let res = await adminFetch('POST', '/auth/v1/admin/generate_link', {
     type:  'invite',
     email,
     options: {
@@ -127,10 +128,22 @@ async function generatePasswordSetupLink(email: string, fullName: string): Promi
       data: { full_name: fullName },
     },
   })
-  const data = await res.json()
+  let data = await res.json()
   if (data.action_link) return data.action_link
 
-  // If it fails, return null -- we do NOT fall back to a magic link ever
+  // If user already exists, use recovery link instead
+  if (data.error_code === 'email_exists' || data.msg?.includes('already been registered')) {
+    res = await adminFetch('POST', '/auth/v1/admin/generate_link', {
+      type: 'recovery',
+      email,
+      options: {
+        redirect_to: `${env().appUrl}/portal/set-password`,
+      },
+    })
+    data = await res.json()
+    if (data.action_link) return data.action_link
+  }
+
   console.error('Setup link generation failed:', data)
   return null
 }
