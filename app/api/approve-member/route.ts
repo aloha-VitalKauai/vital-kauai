@@ -165,25 +165,21 @@ async function getOrCreateAuthUser(email: string, fullName: string): Promise<str
 }
 
 async function generatePasswordSetupLink(email: string, fullName: string): Promise<string | null> {
-  // Always use 'recovery' type — the auth user is already created with
-  // email_confirm: true, so 'invite' links produce tokens that expire
-  // immediately (invite expects an unconfirmed email).
-  // Recovery links work for any existing confirmed user.
-  // Recovery links use implicit flow (tokens in URL hash), so redirect
-  // directly to set-password which reads them client-side.
-  // IMPORTANT: This URL must be in Supabase's Redirect URLs allow list.
-  const res = await adminFetch('POST', '/auth/v1/admin/generate_link', {
+  // Use Supabase JS admin client — raw adminFetch wasn't encoding redirect_to properly
+  const supabase = db()
+  const redirectTo = `${env().appUrl}/portal/set-password`
+
+  const { data, error } = await supabase.auth.admin.generateLink({
     type: 'recovery',
     email,
-    options: {
-      redirect_to: `${env().appUrl}/portal/set-password`,
-    },
+    options: { redirectTo },
   })
-  const data = await res.json()
-  console.log(`[approve-member] STEP:setuplink — type=recovery, has_link=${!!data.action_link}`)
-  if (data.action_link) return data.action_link
 
-  console.error('[approve-member] STEP:setuplink — FAILED:', JSON.stringify(data).slice(0, 300))
+  const link = data?.properties?.action_link
+  console.log(`[approve-member] STEP:setuplink — redirectTo=${redirectTo}, has_link=${!!link}, error=${error?.message || 'none'}`)
+  if (link) return link
+
+  console.error('[approve-member] STEP:setuplink — FAILED:', error?.message || 'no action_link')
   return null
 }
 
