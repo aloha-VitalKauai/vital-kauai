@@ -29,23 +29,38 @@ export function StayPage() {
       observer.observe(el);
     });
 
-    // FAQ accordion — delay to ensure dangerouslySetInnerHTML content is rendered
-    const faqTimer = setTimeout(() => {
-      document.querySelectorAll(".faq-question").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const item = btn.closest(".faq-item");
-          if (!item) return;
-          const isOpen = item.classList.contains("open");
-          document.querySelectorAll(".faq-item.open").forEach((i) => i.classList.remove("open"));
-          if (!isOpen) item.classList.add("open");
-        });
-      });
-    }, 100);
+    // FAQ accordion — event delegation
+    function handleFaqClick(e: MouseEvent) {
+      const btn = (e.target as HTMLElement).closest(".faq-question");
+      if (!btn) return;
+      const item = btn.closest(".faq-item");
+      if (!item) return;
+      const isOpen = item.classList.contains("open");
+      document.querySelectorAll(".faq-item.open").forEach((i) => i.classList.remove("open"));
+      if (!isOpen) item.classList.add("open");
+    }
+    document.addEventListener("click", handleFaqClick);
+
+    // Mobile nav
+    function handleMobileNav(e: MouseEvent) {
+      const target = e.target as HTMLElement;
+      if (target.closest(".hamburger")) {
+        document.getElementById("mobile-nav")?.classList.add("nav-mobile-open");
+      }
+      if (target.closest(".nav-mobile-close")) {
+        document.getElementById("mobile-nav")?.classList.remove("nav-mobile-open");
+      }
+      if (target.closest("#mobile-nav a")) {
+        document.getElementById("mobile-nav")?.classList.remove("nav-mobile-open");
+      }
+    }
+    document.addEventListener("click", handleMobileNav);
 
     return () => {
       window.removeEventListener("scroll", onScroll);
       observer.disconnect();
-      clearTimeout(faqTimer);
+      document.removeEventListener("click", handleFaqClick);
+      document.removeEventListener("click", handleMobileNav);
     };
   }, []);
 
