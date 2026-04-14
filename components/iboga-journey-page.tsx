@@ -567,15 +567,17 @@ function LeadCaptureCard() {
     setSubmitting(true);
     setError("");
 
-    await supabase.from("leads").insert({
-      full_name: name.trim(),
-      email: email.trim().toLowerCase(),
-      source: "Free Guide",
-      lead_date: new Date().toISOString(),
-      welcome_video_sent: false,
-      discovery_call_booked: false,
-      converted_to_member: false,
-    }).catch(() => {});
+    try {
+      await supabase.from("leads").insert({
+        full_name: name.trim(),
+        email: email.trim().toLowerCase(),
+        source: "Free Guide",
+        lead_date: new Date().toISOString(),
+        welcome_video_sent: false,
+        discovery_call_booked: false,
+        converted_to_member: false,
+      });
+    } catch { /* silently continue */ }
 
     sessionStorage.setItem("guide_access", "true");
     router.push("/iboga-guide");

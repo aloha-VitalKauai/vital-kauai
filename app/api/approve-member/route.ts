@@ -71,11 +71,16 @@ async function handleApproval(token: string, source: string) {
     onboarding_complete:         false,
   }, { onConflict: 'id' })
 
-  // Assign member role
-  await db().from('user_roles').upsert(
-    { user_id: userId, role: 'member' },
-    { onConflict: 'user_id' }
-  )
+  // Assign member role — but never overwrite a founder role
+  const { data: existingRole } = await db().from('user_roles').select('role').eq('user_id', userId).single()
+  if (existingRole?.role === 'founder') {
+    console.log(`[approve-member] Skipping role assignment — ${lead.email} is already a founder`)
+  } else {
+    await db().from('user_roles').upsert(
+      { user_id: userId, role: 'member' },
+      { onConflict: 'user_id' }
+    )
+  }
 
   // Mark lead approved
   await db().from('leads').update({
