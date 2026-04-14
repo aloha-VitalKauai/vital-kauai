@@ -48,18 +48,38 @@ async function handleApproval(token: string, source: string) {
   if (lead.approval_status === 'approved') return respond(source, true, null, lead.full_name, true)
   if (lead.approval_status === 'declined') return respond(source, false, `${lead.full_name} was previously declined. Update from the ops dashboard if needed.`)
 
-  // Create Supabase auth user -- NO password set
-  // Member creates their own password on /portal/set-password
+  // === STEP 1: Create Supabase auth user (no password — member sets it themselves) ===
   let userId: string
   try {
     userId = await getOrCreateAuthUser(lead.email, lead.full_name)
+    console.log(`[approve-member] STEP:auth — user ready: ${userId}`)
   } catch (err: any) {
-    console.error('Auth user creation failed:', err)
+    console.error('[approve-member] STEP:auth — FAILED:', err.message || err)
     return respond(source, false, 'Failed to create account. Check Supabase logs.')
   }
 
-  // Create member_profiles row
-  await db().from('member_profiles').upsert({
+  // === STEP 2: Create members row (main operational table — all FKs point here) ===
+  const { data: existingMember } = await db().from('members').select('id').eq('id', userId).single()
+  if (!existingMember) {
+    const { error: memberErr } = await db().from('members').upsert({
+      id:        userId,
+      full_name: lead.full_name,
+      email:     lead.email,
+      phone:     lead.phone || null,
+      lead_id:   lead.id,
+      status:    'Signed — Awaiting Intake',
+    }, { onConflict: 'id' })
+    if (memberErr) {
+      console.error('[approve-member] STEP:members — FAILED:', JSON.stringify(memberErr))
+      return respond(source, false, `Failed to create member record: ${memberErr.message}`)
+    }
+    console.log(`[approve-member] STEP:members — created for ${lead.email}`)
+  } else {
+    console.log(`[approve-member] STEP:members — already exists for ${lead.email}`)
+  }
+
+  // === STEP 3: Create member_profiles row (onboarding checklist) ===
+  const { error: profileErr } = await db().from('member_profiles').upsert({
     id:                          userId,
     email:                       lead.email,
     full_name:                   lead.full_name,
@@ -70,20 +90,24 @@ async function handleApproval(token: string, source: string) {
     deposit_paid:                false,
     onboarding_complete:         false,
   }, { onConflict: 'id' })
+  if (profileErr) console.error('[approve-member] STEP:profiles — FAILED:', JSON.stringify(profileErr))
+  else console.log(`[approve-member] STEP:profiles — OK`)
 
-  // Assign member role — but never overwrite a founder role
+  // === STEP 4: Assign member role (never overwrite founder) ===
   const { data: existingRole } = await db().from('user_roles').select('role').eq('user_id', userId).single()
   if (existingRole?.role === 'founder') {
-    console.log(`[approve-member] Skipping role assignment — ${lead.email} is already a founder`)
+    console.log(`[approve-member] STEP:role — skipping, already founder`)
   } else {
-    await db().from('user_roles').upsert(
+    const { error: roleErr } = await db().from('user_roles').upsert(
       { user_id: userId, role: 'member' },
       { onConflict: 'user_id' }
     )
+    if (roleErr) console.error('[approve-member] STEP:role — FAILED:', JSON.stringify(roleErr))
+    else console.log(`[approve-member] STEP:role — assigned member`)
   }
 
-  // Mark lead approved
-  await db().from('leads').update({
+  // === STEP 5: Mark lead approved (member_id FK now valid because members row exists) ===
+  const { error: leadErr } = await db().from('leads').update({
     approval_status:     'approved',
     approval_decided_at: new Date().toISOString(),
     approval_decided_by: source,
@@ -91,15 +115,19 @@ async function handleApproval(token: string, source: string) {
     member_id:           userId,
     invite_sent_at:      new Date().toISOString(),
   }).eq('approval_token', token)
+  if (leadErr) console.error('[approve-member] STEP:lead — FAILED:', JSON.stringify(leadErr))
+  else console.log(`[approve-member] STEP:lead — marked approved`)
 
-  // Log timeline event
-  await db().from('member_timelines').insert({
+  // === STEP 6: Log timeline event ===
+  const { error: timelineErr } = await db().from('member_timelines').insert({
     member_id:    userId,
     event_type:   'account_approved',
     event_title:  'Membership approved',
     event_detail: `Approved via ${source} \u2014 setup instructions sent`,
     is_system:    true,
   })
+  if (timelineErr) console.error('[approve-member] STEP:timeline — FAILED:', JSON.stringify(timelineErr))
+  else console.log(`[approve-member] STEP:timeline — logged`)
 
   // Generate one-time setup link -> /portal/set-password
   // This is NOT an ongoing magic link.
