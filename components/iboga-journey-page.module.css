@@ -462,6 +462,8 @@
   position: relative;
   aspect-ratio: 3 / 4;
   overflow: hidden;
+  max-width: 380px;
+  max-height: 500px;
 }
 
 .medicineCoverImg {
