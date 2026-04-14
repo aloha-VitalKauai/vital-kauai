@@ -102,9 +102,9 @@ export default function PendingApprovalsPage() {
         </h1>
 
         <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
-          {(['pending', 'approved', 'declined', 'all'] as Filter[]).map(f => (
-            <button key={f} onClick={() => setFilter(f)} style={{ padding: '8px 18px', borderRadius: 6, border: filter === f ? '1.5px solid #c8a96e' : '1.5px solid rgba(245,240,232,0.12)', background: filter === f ? 'rgba(200,169,110,0.12)' : 'transparent', color: filter === f ? '#c8a96e' : 'rgba(245,240,232,0.45)', fontFamily: 'sans-serif', fontSize: 13, cursor: 'pointer', textTransform: 'capitalize' }}>
-              {f}
+          {([['pending','Pending'], ['approved','Members'], ['declined','Declined'], ['all','All']] as [Filter, string][]).map(([f, label]) => (
+            <button key={f} onClick={() => setFilter(f)} style={{ padding: '8px 18px', borderRadius: 6, border: filter === f ? '1.5px solid #c8a96e' : '1.5px solid rgba(245,240,232,0.12)', background: filter === f ? 'rgba(200,169,110,0.12)' : 'transparent', color: filter === f ? '#c8a96e' : 'rgba(245,240,232,0.45)', fontFamily: 'sans-serif', fontSize: 13, cursor: 'pointer' }}>
+              {label}
             </button>
           ))}
         </div>
@@ -125,7 +125,7 @@ export default function PendingApprovalsPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
                     <span style={{ color: '#f5f0e8', fontFamily: 'Georgia,serif', fontSize: 18 }}>{lead.full_name}</span>
                     <span style={{ fontFamily: 'sans-serif', fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: statusColor[lead.approval_status], border: `1px solid ${statusColor[lead.approval_status]}`, padding: '2px 8px', borderRadius: 4 }}>
-                      {lead.approval_status}
+                      {lead.approval_status === 'approved' ? 'member' : lead.approval_status}
                     </span>
                   </div>
                   <div style={{ color: 'rgba(245,240,232,0.5)', fontFamily: 'sans-serif', fontSize: 13 }}>
