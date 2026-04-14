@@ -127,7 +127,7 @@ export function IbogaJourneyPage() {
           <p className={styles.heroSubtitle}>
             Imagine waking up on the other side &mdash; clearer, freer, more yourself than you have
             ever been. This is our offering: a fully held, carefully titrated Iboga ceremony woven
-            into weeks of preparation, ceremony, and integration.
+            into months of preparation, ceremony, and integration.
           </p>
         </div>
       </section>
