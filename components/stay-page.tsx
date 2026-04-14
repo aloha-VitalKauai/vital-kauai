@@ -30,11 +30,18 @@ export function StayPage() {
     });
 
     // FAQ accordion
-    document.querySelectorAll(".faq-question").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const item = btn.parentElement;
-        if (item) item.classList.toggle("open");
-      });
+    const faqButtons = document.querySelectorAll(".faq-question");
+    const faqHandlers: Array<() => void> = [];
+    faqButtons.forEach((btn) => {
+      const handler = () => {
+        const item = btn.closest(".faq-item");
+        if (!item) return;
+        const isOpen = item.classList.contains("open");
+        document.querySelectorAll(".faq-item.open").forEach((i) => i.classList.remove("open"));
+        if (!isOpen) item.classList.add("open");
+      };
+      btn.addEventListener("click", handler);
+      faqHandlers.push(handler);
     });
 
     return () => {
