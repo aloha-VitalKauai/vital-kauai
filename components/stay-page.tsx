@@ -1588,7 +1588,7 @@ const BODY_CONTENT = `
           <span class="faq-icon" aria-hidden="true"></span>
         </button>
         <div class="faq-answer">
-          <p>Yes. We work with couples and close companions who wish to move through a journey together. Co-journeying can be deeply powerful — and it does require its own kind of preparation and intentionality. Let us know on your discovery call that you are coming with someone, and we will discuss what serves you both best. We also welcome groups — intimate gatherings of friends, family, or community who feel called to transform together. Reach out and we will shape something worthy of the occasion.</p>
+          <p>Yes. We work with couples and close companions who wish to move through a journey together. Co-journeying can be deeply powerful — and it does require its own kind of preparation and intentionality. Let us know on your discovery call that you are coming with someone, and we will discuss what serves you both best. We also welcome groups — intimate gatherings of friends, family, or community who feel called to transform together.</p>
         </div>
       </div>
 
