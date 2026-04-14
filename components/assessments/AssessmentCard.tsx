@@ -60,11 +60,13 @@ function fmtShort(iso: string | null) {
 interface Props {
   row: AssessmentRow;
   index: number;
+  isLoading?: boolean;
+  errorMessage?: string;
   onBegin?: (timepoint: string, ceremonyId: string) => void;
   onContinue?: (timepoint: string, ceremonyId: string, assessmentId: string) => void;
 }
 
-export function AssessmentCard({ row, index, onBegin, onContinue }: Props) {
+export function AssessmentCard({ row, index, isLoading, errorMessage, onBegin, onContinue }: Props) {
   const meta = TIMEPOINT_META[row.timepoint] ?? { label: row.timepoint_label, description: '' };
   const chip = CHIP[row.status];
   const dot = DOT_STYLES[row.status];
@@ -105,6 +107,8 @@ export function AssessmentCard({ row, index, onBegin, onContinue }: Props) {
     alignItems: 'center', gap: '0.5rem', whiteSpace: 'nowrap',
   };
 
+  const loadingStyle: React.CSSProperties = isLoading ? { opacity: 0.6, cursor: 'wait', pointerEvents: 'none' } : {};
+
   const cta = (() => {
     if (!row.is_editable || row.status === 'locked' || row.status === 'closed') {
       return (
@@ -117,20 +121,22 @@ export function AssessmentCard({ row, index, onBegin, onContinue }: Props) {
       const isOverdue = row.status === 'overdue';
       return (
         <button
-          style={{ ...btnBase, background: 'transparent', border: `1px solid ${isOverdue ? T.roseDim : T.goldDim}`, color: isOverdue ? T.rose : T.goldLight }}
+          style={{ ...btnBase, ...loadingStyle, background: 'transparent', border: `1px solid ${isOverdue ? T.roseDim : T.goldDim}`, color: isOverdue ? T.rose : T.goldLight }}
+          disabled={isLoading}
           onClick={() => onBegin?.(row.timepoint, row.ceremony_id)}
         >
-          {isOverdue ? 'Begin now' : 'Begin'} \u2192
+          {isLoading ? 'Opening\u2026' : isOverdue ? 'Begin now' : 'Begin'} {!isLoading && '\u2192'}
         </button>
       );
     }
     if (row.status === 'draft' && row.assessment_id) {
       return (
         <button
-          style={{ ...btnBase, background: 'transparent', border: `1px solid ${T.goldDim}`, color: T.goldLight }}
+          style={{ ...btnBase, ...loadingStyle, background: 'transparent', border: `1px solid ${T.goldDim}`, color: T.goldLight }}
+          disabled={isLoading}
           onClick={() => onContinue?.(row.timepoint, row.ceremony_id, row.assessment_id!)}
         >
-          Continue \u2192
+          {isLoading ? 'Opening\u2026' : 'Continue \u2192'}
         </button>
       );
     }
@@ -172,6 +178,16 @@ export function AssessmentCard({ row, index, onBegin, onContinue }: Props) {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem', flexShrink: 0 }}>
           {cta}
         </div>
+        {errorMessage && (
+          <p role="alert" style={{
+            gridColumn: '1 / -1', fontSize: '0.72rem', color: T.rose,
+            marginTop: '0.65rem', padding: '0.5rem 0.75rem',
+            borderLeft: `2px solid ${T.roseDim}`, background: 'rgba(196,132,106,0.06)',
+            borderRadius: '0 2px 2px 0', lineHeight: 1.6,
+          }}>
+            {errorMessage}
+          </p>
+        )}
       </div>
     </article>
   );

@@ -10,11 +10,12 @@ function fmtLong(iso: string) {
 interface Props {
   group: CeremonyGroup;
   showCeremonyHeader: boolean;
+  cardStates: Record<string, { loading: boolean; error: string }>;
   onBegin: (timepoint: string, ceremonyId: string) => void;
   onContinue: (timepoint: string, ceremonyId: string, assessmentId: string) => void;
 }
 
-export function AssessmentTimeline({ group, showCeremonyHeader, onBegin, onContinue }: Props) {
+export function AssessmentTimeline({ group, showCeremonyHeader, cardStates, onBegin, onContinue }: Props) {
   return (
     <section style={{ marginBottom: '3rem' }} aria-label={`Assessments for ceremony on ${fmtLong(group.ceremony_date)}`}>
       {showCeremonyHeader && (
@@ -25,26 +26,27 @@ export function AssessmentTimeline({ group, showCeremonyHeader, onBegin, onConti
         </div>
       )}
 
-      <div
-        role="list"
-        aria-label="Assessment timeline"
-        style={{ position: 'relative', paddingLeft: '2.5rem' }}
-      >
-        {/* Timeline spine */}
+      <div role="list" aria-label="Assessment timeline" style={{ position: 'relative', paddingLeft: '2.5rem' }}>
         <div style={{
           position: 'absolute', left: 7, top: 16, bottom: 16, width: 1,
           background: 'linear-gradient(to bottom, transparent 0%, rgba(201,169,110,0.18) 8%, rgba(201,169,110,0.18) 92%, transparent 100%)',
         }} />
 
-        {group.timepoints.map((row, i) => (
-          <AssessmentCard
-            key={row.timepoint}
-            row={row}
-            index={i}
-            onBegin={onBegin}
-            onContinue={onContinue}
-          />
-        ))}
+        {group.timepoints.map((row, i) => {
+          const key = `${row.timepoint}:${row.ceremony_id}`;
+          const cs = cardStates[key];
+          return (
+            <AssessmentCard
+              key={row.timepoint}
+              row={row}
+              index={i}
+              isLoading={cs?.loading}
+              errorMessage={cs?.error}
+              onBegin={onBegin}
+              onContinue={onContinue}
+            />
+          );
+        })}
       </div>
     </section>
   );
