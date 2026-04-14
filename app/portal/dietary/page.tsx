@@ -40,7 +40,7 @@ function DietaryContent() {
       {/* Nav */}
       {/* Header */}
       <div style={{ background: ink, color: "#F7F3ED", padding: "70px 40px 60px", textAlign: "center" }}>
-        <p style={{ fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(247,243,237,0.4)", marginBottom: 18 }}>Vital Kaua&#699;i — Client Portal</p>
+        <p style={{ fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(247,243,237,0.4)", marginBottom: 18 }}>Vital Kaua&#699;i — Member Portal</p>
         <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 50, fontWeight: 300, letterSpacing: "0.03em", lineHeight: 1.1, marginBottom: 10 }}>
           Dietary<br /><em style={{ fontStyle: "italic", color: "rgba(247,243,237,0.55)" }}>Preparation</em>
         </h1>
@@ -154,7 +154,7 @@ function DietaryContent() {
 
         {/* Iboga Supplement Protocol */}
         <div style={{ marginBottom: 52 }}>
-          <SectionHeader dot={gold} title="Iboga Journey \u2014 Supplement Protocol" />
+          <SectionHeader dot={gold} title="Iboga Journey Supplement Protocol" />
           <div style={{ background: goldBg, border: `1px solid ${goldSoft}`, borderRadius: 10, padding: "36px 40px" }}>
             <p style={{ fontSize: 9, letterSpacing: "0.22em", textTransform: "uppercase", color: gold, fontWeight: 600, marginBottom: 6 }}>Iboga Preparation</p>
             <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 30, fontWeight: 400, letterSpacing: "0.03em", marginBottom: 14, lineHeight: 1.15 }}>

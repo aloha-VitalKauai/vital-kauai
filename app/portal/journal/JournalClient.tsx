@@ -92,7 +92,7 @@ export default function JournalClient() {
       {/* Hero */}
       <div style={{ background: "#1C2B1E", padding: "72px 60px 68px", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "relative", zIndex: 1, maxWidth: 780 }}>
-          <span style={{ fontSize: 9, letterSpacing: "0.42em", textTransform: "uppercase", color: "#C8A96E", display: "block", marginBottom: 16 }}>Client Portal &middot; Iboga Journey</span>
+          <span style={{ fontSize: 9, letterSpacing: "0.42em", textTransform: "uppercase", color: "#C8A96E", display: "block", marginBottom: 16 }}>Member Portal &middot; Iboga Journey</span>
           <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(36px, 4vw, 58px)", fontWeight: 300, color: "#F5F0E8", lineHeight: 1.06, marginBottom: 20 }}>
             Your Journey<br /><em style={{ fontStyle: "italic", color: "#A8C5AC" }}>Journal</em>
           </h1>

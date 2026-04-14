@@ -40,7 +40,7 @@ export default async function CeremonyGuidelinesPage() {
       <div style={{ maxWidth: 820, margin: "0 auto", padding: "3rem 1.5rem 5rem" }}>
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
-          <span style={{ display: "block", fontWeight: 400, fontSize: "0.7rem", letterSpacing: "0.22em", textTransform: "uppercase", color: gold, marginBottom: "0.75rem" }}>Client Portal</span>
+          <span style={{ display: "block", fontWeight: 400, fontSize: "0.7rem", letterSpacing: "0.22em", textTransform: "uppercase", color: gold, marginBottom: "0.75rem" }}>Member Portal</span>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2rem, 5vw, 2.75rem)", lineHeight: 1.2, marginBottom: "1.25rem" }}>Ceremony Guidelines</h2>
           <p style={{ fontSize: "0.95rem", color: inkSoft, maxWidth: 580, margin: "0 auto", lineHeight: 1.8 }}>
             These guidelines exist to support your deepest transformation. They are a living invitation &mdash; held with care by your facilitators and by each person who enters this space.
