@@ -19,8 +19,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const { token, reason, decidedBy } = await req.json()
   if (!token) return NextResponse.json({ error: 'Missing token' }, { status: 400 })
-  await handleDecline(token, decidedBy || 'dashboard', reason)
-  return NextResponse.json({ ok: true })
+  return handleDecline(token, decidedBy || 'dashboard', reason)
 }
 
 async function handleDecline(token: string, source: string, reason: string | null) {
@@ -30,8 +29,15 @@ async function handleDecline(token: string, source: string, reason: string | nul
     .eq('approval_token', token)
     .single()
 
-  if (error || !lead) return htmlResponse(errorPage('This link is invalid or has expired.'), 400)
-  if (lead.approval_status === 'declined') return htmlResponse(alreadyDeclinedPage(lead.full_name), 200)
+  if (error || !lead) {
+    if (source === 'email_button') return htmlResponse(errorPage('This link is invalid or has expired.'), 400)
+    return NextResponse.json({ error: 'Invalid or expired token' }, { status: 400 })
+  }
+
+  if (lead.approval_status === 'declined') {
+    if (source === 'email_button') return htmlResponse(alreadyDeclinedPage(lead.full_name), 200)
+    return NextResponse.json({ ok: true, alreadyDeclined: true })
+  }
 
   await getSupabase().from('leads').update({
     approval_status:     'declined',
