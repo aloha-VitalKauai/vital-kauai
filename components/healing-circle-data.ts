@@ -185,16 +185,6 @@ export const members: Member[] = [
     bio: "Jenny Zoberg is a breathwork, yoga, and sound healing facilitator who guides practices that reconnect guests with their inner world. She trained as a breathwork facilitator with David Elliott, deepened her yoga studies with Bhavani Silvia Maki, and became certified in Sound Healing through her sensitivity to vibration and harmony. In 2022 she sat a 10-day Vipassana meditation in South Africa — an experience that continues to inform how she holds space. Her sessions are breath-led and music-connected, encouraging guests to move beyond the surface into a felt experience of body, mind, and soul. She brings her full gifts to the intimate containers of Vital Kauaʻi.",
   },
   {
-    id: "jenny_h",
-    name: "Jenny Harris",
-    role: "Deep Tissue · Thai Massage · CranioSacral",
-    cat: "healers",
-    photo: "https://images.unsplash.com/photo-1526510747491-58f928ec870f?w=300&q=80",
-    shortBio:
-      "Jenny Harris is a massage therapist with 15+ years of experience and a personal trainer with a Bachelor's in Exercise Physiology from the University of Florida. She specializes in deep tissue, Thai massage, and CranioSacral therapy — bringing both anatomical precision and uplifting energy to every session. Her work is as therapeutic as it is joyful, grounded in a deep understanding of how the body moves, holds tension, and releases. She is a radiant, high-energy presence on the North Shore whose work transforms every container she enters.",
-    bio: "Jenny Harris is a massage therapist with 15+ years of experience and a personal trainer with a Bachelor's in Exercise Physiology from the University of Florida. She specializes in deep tissue, Thai massage, and CranioSacral therapy — bringing both anatomical precision and uplifting energy to every session. Her work is as therapeutic as it is joyful, grounded in a deep understanding of how the body moves, holds tension, and releases. She is a radiant, high-energy presence on the North Shore whose work transforms every container she enters.",
-  },
-  {
     id: "paul",
     name: "Paul Heffernan",
     role: "BodyTalk Practitioner",
