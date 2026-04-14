@@ -30,6 +30,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
           <a href="/" className="pn-logo">Vital <em>Kaua&#699;i</em></a>
           <div className="pn-links">
             <a href="/portal" className="pn-link">Dashboard</a>
+            <a href="/portal/assessments" className="pn-link">Outcomes</a>
             <div className="pn-dropdown">
               <button className="pn-dropdown-trigger">Integration / Support</button>
               <div className="pn-dropdown-menu">
