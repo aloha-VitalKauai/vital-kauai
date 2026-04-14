@@ -1436,7 +1436,7 @@ const BODY_CONTENT = `
     </div>
     <div>
       <p class="local-body reveal">Transformation arrives right where you are. If you live on Kauaʻi and feel the pull of this work — the medicine, somatic healing, energy work, or simply a reset — we are here, and we come to you.</p>
-      <p class="local-body reveal reveal-delay-1">Rachel and Josh work with a quiet circle of island residents who seek the depth of a Vital Kauaʻi journey without leaving home. Sessions happen in your space, in ours, or out in the land itself. The container is just as held. The medicine is the same.</p>
+      <p class="local-body reveal reveal-delay-1">Rachel and Josh work with a quiet circle of island residents who seek the depth of a Vital Kauaʻi journey without leaving home. Sessions happen in your space. The container is just as held.</p>
       <p class="local-body reveal reveal-delay-2">If you are local and something in you is ready, reach out. The conversation is always the beginning.</p>
       <a href="/begin-your-journey" class="local-cta reveal reveal-delay-3">Reach Out →</a>
     </div>
@@ -1492,7 +1492,7 @@ const BODY_CONTENT = `
         <h3 style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--text-dark);margin-bottom:3px;">Hāʻena State Park</h3>
         <p style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;">Kēʻē Beach · Kalalau Trail</p>
         <p style="font-size:12px;color:var(--stone);line-height:1.7;">Ancient sea caves, sacred sites, and the Nā Pali Coast.</p>
-        <a href="https://gohaena.com" target="_blank" style="display:inline-block;margin-top:10px;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--terra);text-decoration:none;border-bottom:1px solid rgba(184,105,74,0.3);padding-bottom:2px;">Reserve →</a>
+        <a href="https://gohaena.com" target="_blank" style="display:inline-block;margin-top:10px;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--terra);text-decoration:none;border-bottom:1px solid rgba(184,105,74,0.3);padding-bottom:2px;">Visit →</a>
       </div>
 
     </div>
