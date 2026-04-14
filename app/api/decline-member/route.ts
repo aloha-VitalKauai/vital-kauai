@@ -58,14 +58,19 @@ function htmlResponse(html: string, status: number) {
   return new NextResponse(html, { status, headers: { 'Content-Type': 'text/html' } })
 }
 
+function esc(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
 function declinedPage(name: string) {
+  const safe = esc(name)
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Declined</title>
   <style>body{font-family:Georgia,serif;background:#f5f0e8;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
   .card{background:#1a2e1c;padding:52px 44px;border-radius:8px;max-width:440px;text-align:center}
   h1{color:#f5f0e8;font-size:22px;font-weight:400;margin:0 0 14px}
   p{color:rgba(245,240,232,.6);font-size:15px;line-height:1.65;margin:0}
   </style></head><body><div class="card">
-  <h1>${name} has been declined</h1>
+  <h1>${safe} has been declined</h1>
   <p>No invite will be sent. You can close this tab. If you change your mind, update their status from the ops dashboard.</p>
   </div></body></html>`
 }
@@ -78,7 +83,7 @@ function alreadyDeclinedPage(name: string) {
   p{color:rgba(245,240,232,.6);font-size:15px;line-height:1.65;margin:0}
   </style></head><body><div class="card">
   <h1>Already declined</h1>
-  <p>${name} was already marked as declined. Manage from the ops dashboard if needed.</p>
+  <p>${esc(name)} was already marked as declined. Manage from the ops dashboard if needed.</p>
   </div></body></html>`
 }
 
@@ -88,5 +93,5 @@ function errorPage(message: string) {
   .card{background:#1a2e1c;padding:52px 44px;border-radius:8px;max-width:440px;text-align:center}
   h1{color:#f5f0e8;font-size:22px;font-weight:400;margin:0 0 14px}
   p{color:rgba(245,240,232,.6);font-size:15px;line-height:1.65;margin:0}
-  </style></head><body><div class="card"><h1>Something went wrong</h1><p>${message}</p></div></body></html>`
+  </style></head><body><div class="card"><h1>Something went wrong</h1><p>${esc(message)}</p></div></body></html>`
 }

@@ -274,7 +274,7 @@ async function sendSetupEmail(email: string, fullName: string, setupLink: string
       <p style="color:rgba(245,240,232,.6);font-family:'Helvetica Neue',sans-serif;font-size:14px;margin:0 0 16px">After setup, sign in any time at:</p>
       <div class="login-box">
         <p>Member portal login</p>
-        <span class="login-url">${env().appUrl}/portal/sign-in</span>
+        <span class="login-url">${env().appUrl}/login</span>
       </div>
       <p class="note">The setup button expires in <strong style="color:rgba(245,240,232,.45)">24 hours</strong>. If it expires, go to the login page and use "Forgot password" to get a new link.</p>
       <p class="note">Questions? Reply to this email or reach us at <a href="mailto:aloha@vitalkauai.com">aloha@vitalkauai.com</a></p>
@@ -326,6 +326,7 @@ function htmlResponse(html: string, status: number) {
 }
 
 function successPage(name: string, alreadyDone: boolean) {
+  const safe = esc(name)
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Approved</title>
   <style>body{font-family:Georgia,serif;background:#f5f0e8;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
   .card{background:#1a2e1c;padding:52px 44px;border-radius:8px;max-width:440px;text-align:center}
@@ -334,8 +335,8 @@ function successPage(name: string, alreadyDone: boolean) {
   p{color:rgba(245,240,232,.6);font-size:15px;line-height:1.65;margin:0}
   </style></head><body><div class="card">
   <div class="check">\u2713</div>
-  <h1>${alreadyDone ? 'Already approved' : `${name} approved`}</h1>
-  <p>${alreadyDone ? `${name} was already approved. Their setup email was sent.` : 'Setup instructions have been sent to their email. You can close this tab.'}</p>
+  <h1>${alreadyDone ? 'Already approved' : `${safe} approved`}</h1>
+  <p>${alreadyDone ? `${safe} was already approved. Their setup email was sent.` : 'Setup instructions have been sent to their email. You can close this tab.'}</p>
   </div></body></html>`
 }
 
