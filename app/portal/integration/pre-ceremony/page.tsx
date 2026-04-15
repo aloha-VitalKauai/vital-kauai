@@ -123,7 +123,7 @@ const WEEKS = [
     reentry: { strong: 'Arriving at this week without having done Week 4\'s journaling?', text: ' Do one prompt from Week 4 — just one — before you move forward. The shadow work and the relational work are connected. Ten minutes of Week 4 journaling is where to begin.' },
     sub: 'Aloha is a way of being in relationship. This week, you turn outward. Even as the inner work continues — because transformation that touches your relationships is transformation that lands. The people who love you are part of this process. Let them be.',
     video: { label: 'A Message from Rachel & Josh · Week 5', text: 'The ceremony container is powerful. But the integration that follows lives or dies in your relationships and your home environment. This week Rachel and Josh talk about the most common reason people lose their ceremony gains after returning home — and what you can do right now to protect against it.' },
-    box: { type: 'info', label: 'Why the relational field is structural, not secondary', text: 'Isolation is the primary risk in integration — and this week is when its antidote is built. The weeks and months after ceremony are when the insights are tender and the old world is asking you to return to who you were. The relational preparation you do this week is a structural protection against that pull. Share the Support Person Guide. Have the real conversations. Let your circle know you\'re asking for something from them — and be specific about what.' },
+    box: { type: 'info', label: 'Why the relational field is the foundation of your return', text: 'The relational preparation you do this week is a structural protection for integration. The weeks and months after ceremony are when the insights are tender and the old world is asking you to return to who you were. The relational preparation you do this week is a structural protection against that pull. Share the Support Person Guide. Have the real conversations. Let your circle know you\'re asking for something from them — and be specific about what.' },
     actionLabel: 'Actions this week — 4 only',
     actions: [
       { color: 'green', text: 'Share the Support Person Guide with your home circle — this week', note: 'Not after ceremony. Now. So they have time to read it, ask questions, and show up prepared for your return.' },
@@ -152,7 +152,7 @@ const WEEKS = [
     actions: [
       { color: 'red', text: 'Confirm labs are submitted and reviewed by the medical team', note: 'If you haven\'t received confirmation, reach out now and confirm directly. This is a safety step — it directly affects whether your ceremony proceeds as planned.' },
       { color: 'red', text: 'Complete your Baseline Wellbeing Check-in', note: 'A 5-minute survey covering mood, anxiety, sleep, and quality of life. This creates your before-picture.' },
-      { color: 'blue', text: 'Final prep call with your care team', note: 'Bring your finalized Questions for the Medicine. Bring anything still alive. Speak everything that is ready to be said.' },
+      { color: 'blue', text: 'Preparation call with Rachel & Josh', note: 'Bring your finalized Questions for the Medicine. Bring anything still alive. Speak everything that is ready to be said.' },
       { color: 'blue', text: 'Confirm travel and send arrival details to aloha@vitalkauai.com' },
       { color: 'green', text: 'Finalize your Questions for the Medicine — land on what feels most true', note: 'The truest question — that is the one. Hold it with open hands.' },
     ],
@@ -472,7 +472,7 @@ export default function PreCeremonyPage() {
             Move through them in order. Trust the arc.
           </p>
           <div className="pc-hero-meta">
-            {[['6','Weeks'],['2','Prompts per week'],['6','Video transmissions'],['2','Integration calls']].map(([n,l]) => (
+            {[['6','Weeks'],['2','Prompts per week'],['6','Video transmissions'],['2','Guide calls']].map(([n,l]) => (
               <div key={l}><div className="hm-num">{n}</div><div className="hm-lbl">{l}</div></div>
             ))}
           </div>
@@ -601,7 +601,7 @@ export default function PreCeremonyPage() {
                     <div className="rg-title">Readiness confirmation — complete before arrival</div>
                   </div>
                   <div className="rg-body">
-                    {['Lab results submitted and confirmed reviewed by medical team','Baseline Wellbeing Check-in completed','Final preparation call completed with care team','Readiness confirmed by your integration guide'].map((txt, ri) => (
+                    {['Lab results submitted and confirmed reviewed by medical team','Baseline Wellbeing Check-in completed','Preparation call completed with Rachel & Josh','Readiness confirmed by your integration guide'].map((txt, ri) => (
                       <div className="rg-item" key={ri}>
                         <div className={`rg-check${checklist[`rg-${ri}`] ? ' checked' : ''}`} onClick={() => toggleCheck(`rg-${ri}`)}>
                           <span className="rg-check-icon">✓</span>

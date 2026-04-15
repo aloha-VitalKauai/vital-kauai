@@ -36,9 +36,8 @@ const WEEKS = [
       text: 'The first 48 hours after ceremony are the most neurologically plastic of your entire journey. What you allow yourself to feel, what you speak aloud, what you write — is being encoded more deeply than at almost any other moment in your life. This is a time for receiving what was shown — set aside decisions, analysis, and explanation.',
     },
     video: { label: 'A Message from Rachel & Josh · Week 1', text: 'You made it through. In this first transmission Rachel and Josh speak directly to where you are right now — the disorientation, the tenderness, the strange combination of exhaustion and aliveness. They want to meet you exactly here, before you do anything else.' },
-    actionLabel: 'This week — 5 things only',
+    actionLabel: 'This week — 4 things',
     actions: [
-      { color: 'amber', text: 'Somatic integration call #1 with your guide', note: 'Your first somatic integration session. This is a body-based call focused on landing and nervous system regulation \u2014 not analysis. Your guide will help you feel what the medicine opened. Book via the Integration Specialist section on your Dashboard.' },
       { color: 'sage', text: 'Check in with your guide within 48 hours of returning home', note: 'A brief check-in to let them know you arrived safely, how you\'re doing, and what you most need right now.' },
       { color: 'green', text: 'Rest completely for the first 48 hours', note: 'Let the experience settle. Rest before sharing. Allow what happened to remain wordless a little longer.' },
       { color: 'blue', text: 'Journal what arose before it fades — images, moments, what the medicine showed you', note: 'Don\'t interpret it yet. Just record it. The meaning arrives in its own time. What you write now will be the material you return to for months.' },
@@ -68,10 +67,9 @@ const WEEKS = [
       text: 'Noribogaine, iboga\'s primary metabolite, keeps your brain in a state of heightened neuroplasticity for approximately 4–6 weeks post-ceremony. Right now you are at peak plasticity. What you practice consistently this week becomes your new baseline faster than at almost any other time in your adult life. This is the most important behavioral window of your entire process. Use it deliberately.',
     },
     video: { label: 'A Message from Rachel & Josh · Week 2', text: 'The neuroplasticity window is real — and this week is its peak. Rachel and Josh talk about what that actually means in practice, why this week\'s small daily choices matter more than they appear, and how to tend what the medicine opened without forcing it into shape too quickly.' },
-    actionLabel: 'This week — 5 things',
+    actionLabel: 'This week — 4 things',
     actions: [
-      { color: 'amber', text: 'Somatic integration call #2 with your guide', note: 'Your second somatic session. This week\u2019s call focuses on tending what the medicine opened \u2014 working with the body to anchor new patterns while the neuroplasticity window is at its peak. Book via the Integration Specialist section on your Dashboard.' },
-      { color: 'blue', text: 'First full integration call with your guide this week', note: 'Bring your journal from Week 1. Bring the raw material \u2014 the images, the moments, the things that don\'t yet make sense. Book via the Integration Specialist section on your Dashboard.' },
+      { color: 'blue', text: 'First call with your integration guide', note: 'Bring your journal from Week 1. Bring the raw material — the images, the moments, the things that don\'t yet make sense. Book via the Integration Specialist section on your Dashboard.' },
       { color: 'gold', text: 'Establish one morning practice — and do it every day, tracking your days below', note: 'Coherent Heart Breath. Journaling. Movement. Prayer. One thing. Done every morning. The medicine opened the door. Repetition is how you walk through it. You are contributing to one of the most comprehensive iboga outcome datasets in the world — your practice days matter.' },
       { color: 'green', text: 'Continue magnesium glycinate (300–400mg) and DHA/EPA (2–4g) daily — do not stop', note: 'The supplement protocol from your preparation does not end at ceremony. Magnesium supports nervous system regulation during the post-ceremony window. DHA/EPA supports the neuroplasticity process. Continue both for at minimum 30 days post-ceremony.' },
       { color: 'sage', text: 'Continue full sobriety — minimum 30 days, 3 months strongly recommended', note: 'Iboga resets tolerance. Returning to any substance before the window closes undermines what the medicine worked to open. The noribogaine window is your most protected asset right now.' },
@@ -101,10 +99,9 @@ const WEEKS = [
     video: { label: 'A Message from Rachel & Josh · Week 3', text: 'This is the week most people wonder if the ceremony "worked." Rachel and Josh speak directly to the return of the familiar — why it happens, what it means, and why the people who stay with the practice through this week are the ones who see lasting change.' },
     actionLabel: 'This week — 3 things',
     actions: [
-      { color: 'amber', text: 'Somatic integration call #3 with your guide', note: 'Your third somatic session. This is often the most important somatic call \u2014 old patterns are returning and your body is learning to respond differently. Your guide will work with the nervous system directly. Book via the Integration Specialist section on your Dashboard.' },
-      { color: 'blue', text: 'Name one old pattern that has returned \u2014 write about it without judgment', note: 'To see it clearly. Naming with precision is itself a form of integration. Your guide can see your weekly tracking and will reach out if they notice something that needs support.' },
-      { color: 'sage', text: 'Continue your daily practice \u2014 especially on the days you don\'t want to', note: 'Resistance to practice is often the pattern protecting itself. The days you least want to show up are the days it matters most.' },
-      { color: 'gold', text: 'Second integration call with your guide this week', note: 'This is the most important call of the integration arc. Bring the return of the familiar. Bring what is still unresolved. Your guide is trained to work with exactly this territory. Book via the Integration Specialist section on your Dashboard.' },
+      { color: 'gold', text: 'Second call with your integration guide', note: 'This is the most important call of the integration arc. Bring the return of the familiar. Bring what is still unresolved. Your guide is trained to work with exactly this territory. Book via the Integration Specialist section on your Dashboard.' },
+      { color: 'blue', text: 'Name one old pattern that has returned — write about it', note: 'To see it clearly. Naming with precision is itself a form of integration. Your guide can see your weekly tracking and will reach out if they notice something that needs support.' },
+      { color: 'sage', text: 'Continue your daily practice — especially on the days you least want to', note: 'The days you least want to show up are the days it matters most.' },
     ],
     prompts: [
       { q: 'What old pattern has returned this week — and how am I choosing to meet it differently than before?', hint: 'The pattern returning is part of the arc. How you respond to it now is what matters. What does the changed version of you do when this pattern appears?' },
@@ -130,9 +127,9 @@ const WEEKS = [
     video: { label: 'A Message from Rachel & Josh · Week 4', text: 'Kuleana is one of the most important Hawaiian concepts for understanding what integration actually requires. In this transmission Rachel and Josh talk about the difference between insight and accountability — and what it looks like to take full responsibility for the change you\'ve been shown is possible.' },
     actionLabel: 'This week — 4 things',
     actions: [
-      { color: 'amber', text: 'Somatic integration call #4 with your guide', note: 'Your final somatic session of the initial series. This call focuses on consolidation \u2014 what your body has learned, what patterns have shifted somatically, and how to maintain nervous system regulation as the noribogaine window closes. Book via the Integration Specialist section on your Dashboard.' },
-      { color: 'gold', text: 'Write your three non-negotiables for the next three months', note: 'Three things you are committing to \u2014 in your body, your relationships, your daily life \u2014 that reflect who you are becoming. Specific, liveable, honest.' },
-      { color: 'blue', text: 'Share your non-negotiables with your guide and one person in your life', note: 'Accountability that lives only in your head is easily undone. Name it to someone who will hold you. This is not about pressure \u2014 it is about anchoring. Book your third integration call via My Care Team.' },
+      { color: 'blue', text: 'Third call with your integration guide', note: 'Bring your non-negotiables. Bring what has anchored and what is still in motion. Your guide can see your weekly tracking and will meet you exactly where you are. Book via the Integration Specialist section on your Dashboard.' },
+      { color: 'gold', text: 'Write your three non-negotiables for the next three months', note: 'Three things you are committing to — in your body, your relationships, your daily life — that reflect who you are becoming. Specific, liveable, honest.' },
+      { color: 'blue', text: 'Share your non-negotiables with one person in your life', note: 'Accountability held by another person anchors differently than accountability held alone. Be specific about what you are asking them to hold with you.' },
       { color: 'sage', text: 'Audit one thing in your environment that actively works against your new self \u2014 and change it this week', note: 'Physical environment. Social environment. Digital environment. What in each is pulling you back toward who you were? Make one concrete change this week.' },
     ],
     dataset: 'Your practice days and regulation scores this week are among the most clinically significant data points in the entire dataset. Week 4 tracking — when the noribogaine window is closing — predicts long-term integration outcomes more reliably than any other week. What you log here matters beyond your own journey.',
@@ -157,12 +154,11 @@ const WEEKS = [
       text: ' When one person does deep transformational work, the entire relational system around them reorganizes. This is a sign the change is real. The people closest to you have built their relationship with the previous version of you. Give them time. Hold your changes clearly without needing their immediate understanding or approval. The skill here is patience without self-abandonment — staying present to the relationship while remaining your changed self. Bring specific relationships to your guide this week.',
     },
     video: { label: 'A Message from Rachel & Josh · Week 5', text: 'The integration that happens in relationship is some of the most important integration of all. Rachel and Josh talk about what it looks like to bring a changed self back into existing relationships — how to hold new ground without disconnecting from the people you love, and how to let the medicine\'s work deepen through honest contact with others.' },
-    actionLabel: 'This week — 4 things',
+    actionLabel: 'This week — 3 things',
     actions: [
-      { color: 'blue', text: 'Have one honest conversation you have been postponing', note: 'The medicine may have shown you something about a relationship that needs to be spoken. Come from the changed place, not the defended one. Your guide can help you prepare for this conversation.' },
-      { color: 'sage', text: 'Practice being changed in the presence of people who knew you before', note: 'Notice when you contract back into who you were in someone\'s presence. That noticing — without self-criticism — is the practice. You cannot force others to meet your new self. You can only keep showing up as that person.' },
-      { color: 'green', text: 'Practice Ho\'oponopono with anyone you are still carrying', note: 'I\'m sorry. Please forgive me. Thank you. I love you. The forgiveness work from ceremony continues here. It does not require the other person to be present or to know. This is an internal release, not an external transaction.' },
-      { color: 'gold', text: 'Fourth integration call — bring the relational territory specifically', note: 'Name the conversations that happened or didn\'t happen. Name what the relational friction is bringing up. The relational field is often where the deepest integration work happens. Book via the Integration Specialist section on your Dashboard.' },
+      { color: 'blue', text: 'Have one honest conversation you have been postponing', note: 'The medicine may have shown you something about a relationship that needs to be spoken. Come from the changed place. Bring what comes up to your next call with your guide.' },
+      { color: 'sage', text: 'Practice being your changed self in the presence of people who knew you before', note: 'Notice when you contract back into who you were in someone\'s presence. That noticing is the practice. You can only keep showing up as the person you are becoming.' },
+      { color: 'green', text: 'Practice Ho\'oponopono with anyone you are still carrying', note: 'I\'m sorry. Please forgive me. Thank you. I love you. The forgiveness work from ceremony continues here. It does not require the other person to be present or to know. This is an internal release.' },
     ],
     prompts: [
       { q: 'How are the people closest to me responding to my changes — and what does that bring up in me?', hint: 'Notice without defending or collapsing. Their response is information about the system, not a verdict on your transformation. What does it bring up, and how are you choosing to meet that?' },
@@ -186,7 +182,7 @@ const WEEKS = [
     actionLabel: 'This week — 4 completions',
     actions: [
       { color: 'gold', text: 'Complete your 3-month Wellbeing Check-in', note: 'The same survey you completed before ceremony — mood, anxiety, sleep, quality of life. This is your after-picture. Compare it to your baseline. The shift you feel is now measurable.' },
-      { color: 'blue', text: 'Final intensive integration call with your guide', note: 'This call closes the six-week arc and establishes your monthly rhythm. Bring your integration statement. Book via the Integration Specialist section on your Dashboard.' },
+      { color: 'blue', text: 'Fourth call with your integration guide — closing the arc', note: 'This call closes the six-week arc and establishes your monthly rhythm. Bring your integration statement. Book via the Integration Specialist section on your Dashboard.' },
       { color: 'sage', text: 'Write your integration statement — guided below', note: 'Three questions, one page. What changed. What you know now. What you are committed to. Date it. You will want to read it in six months.' },
       { color: 'green', text: 'Establish your monthly rhythm — one practice, one question, one connection', note: 'One thing you do every day. One honest question each month. One conversation with someone who knows what you went through. Simple enough to sustain.' },
     ],
@@ -197,7 +193,7 @@ const WEEKS = [
     ],
     checklist: [
       '3-month Wellbeing Check-in completed',
-      'Final integration call completed with your guide',
+      'Fourth call with your integration guide completed',
       'Integration statement written and dated',
       'Monthly rhythm established',
     ],
@@ -647,7 +643,7 @@ export default function PostCeremonyPage() {
           <h1>Six Weeks of<br /><em>Integration</em></h1>
           <p className="pc-hero-desc">The medicine opened the window. Integration is how you build what goes inside it. Each week has one theme, one video, clear actions, and a weekly check-in that tracks your progress over time.</p>
           <div className="pc-hero-meta">
-            {[['6','Weeks'],['4','Integration calls'],['6','Video transmissions'],['1','Monthly rhythm']].map(([n,l]) => (
+            {[['6','Weeks'],['4','Guide calls'],['6','Video transmissions'],['1','Monthly rhythm']].map(([n,l]) => (
               <div key={l}><div className="hm-num">{n}</div><div className="hm-lbl">{l}</div></div>
             ))}
           </div>
