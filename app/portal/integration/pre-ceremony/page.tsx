@@ -172,6 +172,13 @@ const DOT_COLORS: Record<string, string> = {
   red: '#A85555',
 }
 
+// ─── Journal sync map: pre-ceremony key → member_journals key ────────────────
+const PRE_TO_JOURNAL_MAP: Record<string, string> = {
+  'w0-p0': 'p0-0',  // "What do I want? What is my intention?"
+  'w3-p0': 'p0-6',  // "Where am I lying to myself?"
+  'w4-p0': 'p0-12', // "Who do I need to forgive..."
+}
+
 // ─── Component ────────────────────────────────────────────
 export default function PreCeremonyPage() {
   const router = useRouter()
@@ -232,6 +239,18 @@ export default function PreCeremonyPage() {
     setTimeout(() => setSaveStatus('idle'), 2000)
   }, [userId, journal])
 
+  const syncToMainJournal = useCallback(async (integJournal: Record<string, string>, changedKey: string) => {
+    if (!userId || !PRE_TO_JOURNAL_MAP[changedKey]) return
+    const updates: Record<string, string> = {}
+    for (const [integKey, journalKey] of Object.entries(PRE_TO_JOURNAL_MAP)) {
+      if (integJournal[integKey]) updates[journalKey] = integJournal[integKey]
+    }
+    if (Object.keys(updates).length === 0) return
+    const { data } = await supabase.from('member_journals').select('responses').eq('member_id', userId).maybeSingle()
+    const merged = { ...((data?.responses as Record<string, string>) ?? {}), ...updates }
+    await supabase.from('member_journals').upsert({ member_id: userId, responses: merged, last_saved_at: new Date().toISOString() }, { onConflict: 'member_id' })
+  }, [userId])
+
   const journalTimerRef = { current: null as ReturnType<typeof setTimeout> | null }
   const updateJournal = (key: string, value: string) => {
     const next = { ...journal, [key]: value }
@@ -239,6 +258,7 @@ export default function PreCeremonyPage() {
     if (journalTimerRef.current) clearTimeout(journalTimerRef.current)
     journalTimerRef.current = setTimeout(() => {
       save(completed, checklist, next)
+      syncToMainJournal(next, key)
     }, 1500)
   }
 

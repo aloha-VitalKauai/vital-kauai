@@ -476,6 +476,15 @@ function ProgressInsights({ tracking }: { tracking: Record<number, WeekTracking>
   )
 }
 
+// ─── Journal sync map: post-ceremony key → member_journals key ───────────────
+const POST_TO_JOURNAL_MAP: Record<string, string> = {
+  'w1-p2': 'p1-4',  // "What did the medicine show me about my own nature..."
+  'w2-p2': 'p1-8',  // "Looking back at the intentions I set before ceremony..."
+  'w4-p4': 'p2-6',  // "Where is forgiveness still alive..."
+  'w5-p0': 'p2-9',  // "Who am I now — compared to who I was when I arrived at ceremony?"
+  'w5-p2': 'p2-8',  // "How has my sense of purpose or direction shifted?"
+}
+
 // ─── Main component ───────────────────────────────────────
 export default function PostCeremonyPage() {
   const router = useRouter()
@@ -537,6 +546,18 @@ export default function PostCeremonyPage() {
     setTimeout(() => setSaveStatus('idle'), 2200)
   }, [userId, journal])
 
+  const syncToMainJournal = useCallback(async (integJournal: Record<string, string>, changedKey: string) => {
+    if (!userId || !POST_TO_JOURNAL_MAP[changedKey]) return
+    const updates: Record<string, string> = {}
+    for (const [integKey, journalKey] of Object.entries(POST_TO_JOURNAL_MAP)) {
+      if (integJournal[integKey]) updates[journalKey] = integJournal[integKey]
+    }
+    if (Object.keys(updates).length === 0) return
+    const { data } = await supabase.from('member_journals').select('responses').eq('member_id', userId).maybeSingle()
+    const merged = { ...((data?.responses as Record<string, string>) ?? {}), ...updates }
+    await supabase.from('member_journals').upsert({ member_id: userId, responses: merged, last_saved_at: new Date().toISOString() }, { onConflict: 'member_id' })
+  }, [userId])
+
   // Journal auto-save with debounce
   const journalTimerRef = { current: null as ReturnType<typeof setTimeout> | null }
   const updateJournal = (key: string, value: string) => {
@@ -545,6 +566,7 @@ export default function PostCeremonyPage() {
     if (journalTimerRef.current) clearTimeout(journalTimerRef.current)
     journalTimerRef.current = setTimeout(() => {
       save(completed, checklist, weeklyTracking, next)
+      syncToMainJournal(next, key)
     }, 1500)
   }
 
