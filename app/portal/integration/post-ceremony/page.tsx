@@ -41,7 +41,6 @@ const WEEKS = [
       { color: 'sage', text: 'Check in with your guide within 48 hours of returning home', note: 'A brief check-in to let them know you arrived safely, how you\'re doing, and what you most need right now.' },
       { color: 'green', text: 'Rest completely for the first 48 hours', note: 'Let the experience settle. Rest before sharing. Allow what happened to remain wordless a little longer.' },
       { color: 'blue', text: 'Journal what arose before it fades — images, moments, what the medicine showed you', note: 'Don\'t interpret it yet. Just record it. The meaning arrives in its own time. What you write now will be the material you return to for months.' },
-      { color: 'green', text: 'Expect disrupted sleep, vivid dreams, and heightened dreaming in the first week — this is the medicine continuing its work', note: 'Post-ceremony sleep often shifts for 5–10 days. Dreams are frequently where integration continues after the acute experience. Keep a notebook by the bed. Record what comes.' },
     ],
     prompts: [
       { q: 'What am I grateful for today?', hint: 'Let gratitude be specific. The smaller the detail, the more real it lands.' },
