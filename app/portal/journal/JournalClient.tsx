@@ -163,7 +163,7 @@ export default function JournalClient() {
             Your Journey<br /><em style={{ fontStyle: "italic", color: "#A8C5AC" }}>Journal</em>
           </h1>
           <p style={{ fontSize: 14.5, color: "rgba(245,240,232,0.58)", lineHeight: 1.95, maxWidth: 580, marginBottom: 28 }}>
-            This journal is a companion for the full arc of your iboga journey &mdash; from the questions you carry in, to the tender silence after ceremony, to the long, sacred work of integration. There are no right answers here. Only honest ones.
+            This journal is a companion for the full arc of your iboga journey &mdash; from the questions you carry in, to the tender silence after ceremony, to the long, sacred work of integration.
           </p>
           <p style={{ fontSize: 12, color: "rgba(245,240,232,0.3)", borderLeft: "2px solid rgba(168,197,172,0.2)", paddingLeft: 14, lineHeight: 1.7 }}>
             Everything here is an invitation, not a requirement. Take what serves you. Leave the rest.
