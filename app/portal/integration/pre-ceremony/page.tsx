@@ -551,7 +551,6 @@ export default function PreCeremonyPage() {
                     <div className="action-dot" style={{ background: DOT_COLORS[a.color] }} />
                     <div>
                       <div className="action-text">{a.text}</div>
-                      {a.note && <div className="action-note">{a.note}</div>}
                     </div>
                   </div>
                 ))}

@@ -711,7 +711,6 @@ export default function PostCeremonyPage() {
                     <div className="action-dot" style={{ background: DOT[a.color] }} />
                     <div>
                       <div className="action-text">{a.text}</div>
-                      {a.note && <div className="action-note">{a.note}</div>}
                     </div>
                   </div>
                 ))}
