@@ -48,7 +48,7 @@ export function journeyDateToInputValue(isoUtc: string | null): string {
  * Converts a YYYY-MM-DD date input value to an ISO UTC string,
  * treating the input as noon Hawaii time (avoids off-by-one day bugs).
  */
-export function inputValueToJourneyIso(dateStr: string): string | null {
+export function inputValueToJourneyIso(dateStr: string | null): string | null {
   if (!dateStr) return null
   // noon Hawaii = UTC+10 offset, so noon HI = 22:00 UTC same day
   // Using a fixed ISO string avoids DST edge cases
