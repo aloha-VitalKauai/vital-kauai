@@ -221,6 +221,21 @@ export default function PreCeremonyPage() {
     load()
   }, [])
 
+  // ── Hash navigation: deep-link to a specific week's journal section
+  useEffect(() => {
+    if (loading) return
+    if (typeof window === 'undefined') return
+    const hash = window.location.hash
+    const match = hash.match(/^#journal-w(\d)$/)
+    if (!match) return
+    const weekNum = parseInt(match[1], 10)
+    if (weekNum < 1 || weekNum > 6) return
+    setActiveWeek(weekNum - 1)
+    setTimeout(() => {
+      document.getElementById(`journal-w${weekNum}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 250)
+  }, [loading])
+
   // ── Save
   const save = useCallback(async (newCompleted: Set<number>, newChecklist: Record<string, boolean>, newJournal?: Record<string, string>) => {
     if (!userId) return
@@ -581,7 +596,7 @@ export default function PreCeremonyPage() {
             </div>
 
             {/* Journal prompts */}
-            <div className="section">
+            <div className="section" id={`journal-w${i + 1}`}>
               <span className="section-label">Journal prompts</span>
               <div className="prompts-list">
                 {w.prompts.map((p, pi) => {

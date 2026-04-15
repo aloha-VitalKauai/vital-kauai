@@ -83,7 +83,7 @@ const PREP_ITEMS: { text: string; link?: string; external?: boolean }[] = [
   { text: "Discuss all medications and supplements with Rachel and Josh \u2014 confirm any required washout periods" },
   { text: "Confirm required lab work with your physician and submit results", link: "/portal/physician-guide" },
   { text: "Begin dietary preparation protocol", link: "/portal/dietary" },
-  { text: "Begin journaling", link: "/portal/journal" },
+  { text: "Begin journaling", link: "/portal/integration/pre-ceremony#journal-w1" },
   { text: "Prepare your questions for the medicine", link: "/portal/questions" },
   { text: "Begin nervous system preparation practices (breathwork, somatic self-regulation)", link: "/portal/nervous-system" },
   { text: "Share the Support Person Guide with your home circle", link: "/portal/support-person" },
