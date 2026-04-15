@@ -630,7 +630,7 @@ export default function PreCeremonyPage() {
 
                 <div className="bridge">
                   <span className="bridge-eyebrow">What comes next</span>
-                  <h3 className="bridge-title">The preparation is complete.<br /><em>The work is not.</em></h3>
+                  <h3 className="bridge-title">The preparation is complete.</h3>
                   <p className="bridge-text">In the weeks following ceremony, this portal will continue to guide you through integration — with the same rhythm, the same depth, and the same care you've experienced here. You will be held through every phase of what comes next.</p>
                 </div>
               </>
