@@ -806,7 +806,7 @@ export default function PostCeremonyPage() {
                 <div className="ma-grid">
                   <div className="ma-card">
                     <span className="ma-card-label">One daily practice</span>
-                    <div className="ma-card-text">The practice you established in week 2. Continue it — not perfectly, consistently. It is the thread that connects ceremony to the life you are building.</div>
+                    <div className="ma-card-text">The practice you established in week 2. Continue it — consistently. It is the thread that connects ceremony to the life you are building.</div>
                   </div>
                   <div className="ma-card">
                     <span className="ma-card-label">One monthly check-in</span>
