@@ -103,7 +103,7 @@ const WEEKS = [
       { color: 'sage', text: 'Continue your daily practice — especially on the days you least want to', note: 'The days you least want to show up are the days it matters most.' },
     ],
     prompts: [
-      { q: 'What one commitment am I making to myself as I begin the return home?', hint: 'Make it concrete. Something you can hold yourself to.' },
+      { q: 'What one commitment am I making to myself?', hint: 'Make it concrete. Something you can hold yourself to.' },
       { q: 'What do I want to say to the version of me who arrived here — the one who was afraid, uncertain, or carrying so much?', hint: 'Write them a letter if you wish.' },
       { q: 'What old patterns, reactions, or beliefs have I noticed returning — and how am I choosing to meet them now?', hint: 'Return is part of the spiral. How you respond now is what matters.' },
     ],
