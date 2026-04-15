@@ -36,8 +36,9 @@ const WEEKS = [
       text: 'The first 48 hours after ceremony are the most neurologically plastic of your entire journey. What you allow yourself to feel, what you speak aloud, what you write — is being encoded more deeply than at almost any other moment in your life. This is not a time for decisions, analysis, or explaining yourself to others. It is a time for receiving what was shown.',
     },
     video: { label: 'A Message from Rachel & Josh · Week 1', text: 'You made it through. In this first transmission Rachel and Josh speak directly to where you are right now — the disorientation, the tenderness, the strange combination of exhaustion and aliveness. They want to meet you exactly here, before you do anything else.' },
-    actionLabel: 'This week — 4 things only',
+    actionLabel: 'This week — 5 things only',
     actions: [
+      { color: 'amber', text: 'Somatic integration call #1 with your guide', note: 'Your first somatic integration session. This is a body-based call focused on landing and nervous system regulation \u2014 not analysis. Your guide will help you feel what the medicine opened. Book via your Dashboard under My Care Team.' },
       { color: 'sage', text: 'Check in with your guide within 48 hours of returning home', note: 'A brief check-in to let them know you arrived safely, how you\'re doing, and what you most need right now.' },
       { color: 'green', text: 'Rest completely for the first 48 hours', note: 'Let the experience settle. Rest before sharing. Allow what happened to remain wordless a little longer.' },
       { color: 'blue', text: 'Journal what arose before it fades — images, moments, what the medicine showed you', note: 'Don\'t interpret it yet. Just record it. The meaning arrives in its own time. What you write now will be the material you return to for months.' },
@@ -67,9 +68,10 @@ const WEEKS = [
       text: 'Noribogaine, iboga\'s primary metabolite, keeps your brain in a state of heightened neuroplasticity for approximately 4–6 weeks post-ceremony. Right now you are at peak plasticity. What you practice consistently this week becomes your new baseline faster than at almost any other time in your adult life. This is the most important behavioral window of your entire process. Use it deliberately.',
     },
     video: { label: 'A Message from Rachel & Josh · Week 2', text: 'The neuroplasticity window is real — and this week is its peak. Rachel and Josh talk about what that actually means in practice, why this week\'s small daily choices matter more than they appear, and how to tend what the medicine opened without forcing it into shape too quickly.' },
-    actionLabel: 'This week — 4 things',
+    actionLabel: 'This week — 5 things',
     actions: [
-      { color: 'blue', text: 'First full integration call with your guide this week', note: 'Bring your journal from Week 1. Bring the raw material — the images, the moments, the things that don\'t yet make sense. Book via the link on your Dashboard under My Care Team.' },
+      { color: 'amber', text: 'Somatic integration call #2 with your guide', note: 'Your second somatic session. This week\u2019s call focuses on tending what the medicine opened \u2014 working with the body to anchor new patterns while the neuroplasticity window is at its peak. Book via your Dashboard under My Care Team.' },
+      { color: 'blue', text: 'First full integration call with your guide this week', note: 'Bring your journal from Week 1. Bring the raw material \u2014 the images, the moments, the things that don\'t yet make sense. Book via the link on your Dashboard under My Care Team.' },
       { color: 'gold', text: 'Establish one morning practice — and do it every day, tracking your days below', note: 'Coherent Heart Breath. Journaling. Movement. Prayer. One thing. Done every morning. The medicine opened the door. Repetition is how you walk through it. You are contributing to one of the most comprehensive iboga outcome datasets in the world — your practice days matter.' },
       { color: 'green', text: 'Continue magnesium glycinate (300–400mg) and DHA/EPA (2–4g) daily — do not stop', note: 'The supplement protocol from your preparation does not end at ceremony. Magnesium supports nervous system regulation during the post-ceremony window. DHA/EPA supports the neuroplasticity process. Continue both for at minimum 30 days post-ceremony.' },
       { color: 'sage', text: 'Continue full sobriety — minimum 30 days, 3 months strongly recommended', note: 'Iboga resets tolerance. Returning to any substance before the window closes undermines what the medicine worked to open. The noribogaine window is your most protected asset right now.' },
@@ -99,8 +101,9 @@ const WEEKS = [
     video: { label: 'A Message from Rachel & Josh · Week 3', text: 'This is the week most people wonder if the ceremony "worked." Rachel and Josh speak directly to the return of the familiar — why it happens, what it means, and why the people who stay with the practice through this week are the ones who see lasting change.' },
     actionLabel: 'This week — 3 things',
     actions: [
-      { color: 'blue', text: 'Name one old pattern that has returned — write about it without judgment', note: 'To see it clearly. Naming with precision is itself a form of integration. Your guide can see your weekly tracking and will reach out if they notice something that needs support.' },
-      { color: 'sage', text: 'Continue your daily practice — especially on the days you don\'t want to', note: 'Resistance to practice is often the pattern protecting itself. The days you least want to show up are the days it matters most.' },
+      { color: 'amber', text: 'Somatic integration call #3 with your guide', note: 'Your third somatic session. This is often the most important somatic call \u2014 old patterns are returning and your body is learning to respond differently. Your guide will work with the nervous system directly. Book via My Care Team on your Dashboard.' },
+      { color: 'blue', text: 'Name one old pattern that has returned \u2014 write about it without judgment', note: 'To see it clearly. Naming with precision is itself a form of integration. Your guide can see your weekly tracking and will reach out if they notice something that needs support.' },
+      { color: 'sage', text: 'Continue your daily practice \u2014 especially on the days you don\'t want to', note: 'Resistance to practice is often the pattern protecting itself. The days you least want to show up are the days it matters most.' },
       { color: 'gold', text: 'Second integration call with your guide this week', note: 'This is the most important call of the integration arc. Bring the return of the familiar. Bring what is still unresolved. Your guide is trained to work with exactly this territory. Book via My Care Team on your Dashboard.' },
     ],
     prompts: [
@@ -125,11 +128,12 @@ const WEEKS = [
       text: 'By the end of week four, the peak neuroplasticity driven by noribogaine begins to narrow. This does not mean growth stops. It means the extraordinary ease of new pattern formation that characterized weeks 1–3 is shifting toward normal. What you have practiced is becoming structural. What you have not yet committed to in behavior will require more effort after this week. Your practice days logged here are one of the strongest predictors of long-term outcomes. This week matters.',
     },
     video: { label: 'A Message from Rachel & Josh · Week 4', text: 'Kuleana is one of the most important Hawaiian concepts for understanding what integration actually requires. In this transmission Rachel and Josh talk about the difference between insight and accountability — and what it looks like to take full responsibility for the change you\'ve been shown is possible.' },
-    actionLabel: 'This week — 3 things',
+    actionLabel: 'This week — 4 things',
     actions: [
-      { color: 'gold', text: 'Write your three non-negotiables for the next three months', note: 'Three things you are committing to — in your body, your relationships, your daily life — that reflect who you are becoming. Specific, liveable, honest.' },
-      { color: 'blue', text: 'Share your non-negotiables with your guide and one person in your life', note: 'Accountability that lives only in your head is easily undone. Name it to someone who will hold you. This is not about pressure — it is about anchoring. Book your third integration call via My Care Team.' },
-      { color: 'sage', text: 'Audit one thing in your environment that actively works against your new self — and change it this week', note: 'Physical environment. Social environment. Digital environment. What in each is pulling you back toward who you were? Make one concrete change this week.' },
+      { color: 'amber', text: 'Somatic integration call #4 with your guide', note: 'Your final somatic session of the initial series. This call focuses on consolidation \u2014 what your body has learned, what patterns have shifted somatically, and how to maintain nervous system regulation as the noribogaine window closes. Book via My Care Team on your Dashboard.' },
+      { color: 'gold', text: 'Write your three non-negotiables for the next three months', note: 'Three things you are committing to \u2014 in your body, your relationships, your daily life \u2014 that reflect who you are becoming. Specific, liveable, honest.' },
+      { color: 'blue', text: 'Share your non-negotiables with your guide and one person in your life', note: 'Accountability that lives only in your head is easily undone. Name it to someone who will hold you. This is not about pressure \u2014 it is about anchoring. Book your third integration call via My Care Team.' },
+      { color: 'sage', text: 'Audit one thing in your environment that actively works against your new self \u2014 and change it this week', note: 'Physical environment. Social environment. Digital environment. What in each is pulling you back toward who you were? Make one concrete change this week.' },
     ],
     dataset: 'Your practice days and regulation scores this week are among the most clinically significant data points in the entire dataset. Week 4 tracking — when the noribogaine window is closing — predicts long-term integration outcomes more reliably than any other week. What you log here matters beyond your own journey.',
     prompts: [
