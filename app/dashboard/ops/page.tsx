@@ -4,6 +4,9 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import JourneyScheduler from '@/components/dashboard/JourneyScheduler'
+import CohortManager from '@/components/dashboard/CohortManager'
+import SchedulingRequestQueue from '@/components/dashboard/SchedulingRequestQueue'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
 /* ── DESIGN TOKENS ──────────────────────────────────────────────── */
@@ -670,7 +673,7 @@ export default function OpsDashboardPage() {
           <div>
             {/* Tabs */}
             <div style={{display:'flex',gap:2,marginBottom:13,background:C.card,borderRadius:9,padding:3,border:`0.5px solid ${C.border}`}}>
-              {(['pipeline','risk','outcomes','alerts'] as const).map(t=>(
+              {(['pipeline','risk','outcomes','alerts','journeys','cohorts'] as const).map(t=>(
                 <button key={t} onClick={()=>setTab(t)} style={{flex:1,padding:'6px 0',borderRadius:7,border:'none',background:tab===t?C.surf:'transparent',color:tab===t?C.text:C.dim,fontSize:10,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',cursor:'pointer',transition:'all .15s',position:'relative'}}>
                   {t}{t==='alerts'&&(critCount+highCount)>0&&<span style={{position:'absolute',top:4,right:8,width:5,height:5,borderRadius:'50%',background:critCount?C.crit:C.high}}/>}
                 </button>
@@ -849,6 +852,8 @@ export default function OpsDashboardPage() {
                 ))}
               </div>
             )}
+            {tab==='journeys'&&<JourneyScheduler />}
+            {tab==='cohorts'&&<CohortManager />}
           </div>
 
           {/* SIDEBAR */}
@@ -862,6 +867,10 @@ export default function OpsDashboardPage() {
               {upcoming.length===0?<div style={{fontSize:11,color:C.dim}}>None scheduled</div>:upcoming.map((c:any)=>(
                 <div key={c.member_id} style={{display:'flex',alignItems:'center',gap:9,marginBottom:10}}><Avatar name={c.full_name} size={26}/><div style={{flex:1}}><div style={{fontSize:12,fontWeight:500}}>{c.full_name}</div><div style={{fontSize:10,color:C.muted}}>{c.ceremony_date}</div></div><div style={{fontSize:14,fontWeight:600,color:C.blue,fontFamily:'var(--font-cormorant-garamond,serif)'}}>{c.days_until_ceremony}d</div></div>
               ))}
+            </div>
+            <div style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:12,padding:'14px 16px'}}>
+              <div style={{fontSize:9,color:C.dim,letterSpacing:'.1em',textTransform:'uppercase',marginBottom:11}}>Scheduling Requests</div>
+              <SchedulingRequestQueue />
             </div>
             <div style={{background:C.card,border:`0.5px solid ${overdueFu.length?C.amber+'44':C.border}`,borderRadius:12,padding:'14px 16px'}}>
               <div style={{fontSize:9,color:C.dim,letterSpacing:'.1em',textTransform:'uppercase',marginBottom:11}}>Follow-ups{overdueFu.length>0&&<span style={{color:C.amber,marginLeft:5}}>· {overdueFu.length} overdue</span>}</div>

@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { PortalNav } from "./portal-nav";
+import PortalJourneyCard from "@/components/portal/PortalJourneyCard";
 import styles from "./portal-home-page.module.css";
 
 type Profile = {
@@ -389,25 +390,7 @@ export function PortalHomePage({
               where you are in the arc of your transformation.
             </p>
           </div>
-          <div className={styles.heroCard}>
-            <p className={styles.heroCardLabel}>Your Journey</p>
-            <p className={styles.heroCardDate}>
-              {memberData?.ceremony_date
-                ? new Date(memberData.ceremony_date).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })
-                : "Date TBD"}
-            </p>
-            <p className={styles.heroCardOffering}>Iboga Journey</p>
-            {memberData?.status && (
-              <p style={{ fontSize: 11, letterSpacing: "0.06em", color: "rgba(245,240,232,0.5)", marginTop: 4 }}>{memberData.status}</p>
-            )}
-            <hr className={styles.heroCardDivider} />
-            <p className={styles.heroCardDays}>{daysUntil ?? "\u2014"}</p>
-            <p className={styles.heroCardDaysLabel}>Days Until Arrival</p>
-          </div>
+          <PortalJourneyCard />
         </div>
       </section>
 
