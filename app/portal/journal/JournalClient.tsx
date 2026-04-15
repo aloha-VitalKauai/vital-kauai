@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 const PHASES = [
   {
@@ -67,18 +68,83 @@ const PHASES = [
 export default function JournalClient() {
   const [mode, setMode] = useState<"write" | "read">("write");
   const [values, setValues] = useState<Record<string, string>>({});
+  const [saveStatus, setSaveStatus] = useState<"" | "saving" | "saved" | "error">("");
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingRef = useRef<Record<string, string>>({});
+  const userIdRef = useRef<string | null>(null);
 
-  useEffect(() => {
+  const flushToSupabase = useCallback(async (data: Record<string, string>) => {
+    if (!userIdRef.current) return;
+    setSaveStatus("saving");
     try {
-      const saved = JSON.parse(localStorage.getItem("vk-journal-data") || "{}");
-      if (typeof saved === "object") setValues(saved);
-    } catch {}
+      const supabase = createClient();
+      const { error } = await supabase
+        .from("member_journals")
+        .upsert({
+          member_id: userIdRef.current,
+          responses: data,
+          last_saved_at: new Date().toISOString(),
+        }, { onConflict: "member_id" });
+      if (error) throw error;
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus(""), 3000);
+    } catch {
+      setSaveStatus("error");
+    }
   }, []);
+
+  // Load from Supabase on mount, fall back to localStorage
+  useEffect(() => {
+    async function load() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      userIdRef.current = user.id;
+
+      const { data } = await supabase
+        .from("member_journals")
+        .select("responses")
+        .eq("member_id", user.id)
+        .maybeSingle();
+
+      if (data?.responses && typeof data.responses === "object") {
+        setValues(data.responses as Record<string, string>);
+        try { localStorage.setItem("vk-journal-data", JSON.stringify(data.responses)); } catch {}
+      } else {
+        // Migrate from localStorage if exists
+        try {
+          const local = JSON.parse(localStorage.getItem("vk-journal-data") || "{}");
+          if (typeof local === "object" && Object.keys(local).length > 0) {
+            setValues(local);
+            flushToSupabase(local); // Migrate to Supabase
+          }
+        } catch {}
+      }
+    }
+    load();
+  }, [flushToSupabase]);
+
+  // Flush on tab close / visibility change
+  useEffect(() => {
+    const handler = () => {
+      if (document.visibilityState === "hidden" && Object.keys(pendingRef.current).length > 0) {
+        flushToSupabase(pendingRef.current);
+      }
+    };
+    document.addEventListener("visibilitychange", handler);
+    return () => document.removeEventListener("visibilitychange", handler);
+  }, [flushToSupabase]);
 
   function updateField(key: string, value: string) {
     setValues((prev) => {
       const next = { ...prev, [key]: value };
+      pendingRef.current = next;
       try { localStorage.setItem("vk-journal-data", JSON.stringify(next)); } catch {}
+
+      // Debounced save to Supabase
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+      saveTimer.current = setTimeout(() => flushToSupabase(next), 1500);
+
       return next;
     });
   }
@@ -115,7 +181,12 @@ export default function JournalClient() {
             </button>
           ))}
         </div>
-        <button onClick={() => window.print()} style={{ marginLeft: "auto", fontFamily: "'Jost', sans-serif", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", padding: "10px 16px", border: "1px solid rgba(28,43,30,0.1)", cursor: "pointer", background: "transparent", color: "#8B8070" }}>Print Journal</button>
+        {saveStatus && (
+          <span style={{ fontSize: 9, letterSpacing: "0.12em", color: saveStatus === "saved" ? "#4e7250" : saveStatus === "saving" ? "#8a7250" : "#c4846a", marginLeft: "auto", whiteSpace: "nowrap" }}>
+            {saveStatus === "saving" ? "Saving\u2026" : saveStatus === "saved" ? "Saved" : "Not saved"}
+          </span>
+        )}
+        <button onClick={() => window.print()} style={{ marginLeft: saveStatus ? 0 : "auto", fontFamily: "'Jost', sans-serif", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", padding: "10px 16px", border: "1px solid rgba(28,43,30,0.1)", cursor: "pointer", background: "transparent", color: "#8B8070" }}>Print Journal</button>
       </div>
 
       {/* Journal content */}
