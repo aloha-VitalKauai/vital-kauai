@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { POST_CEREMONY_WEEKS } from '@/lib/journal-prompts'
 
 // ─── Types ────────────────────────────────────────────────
 type WeekTracking = {
@@ -42,14 +43,7 @@ const WEEKS = [
       { color: 'green', text: 'Rest completely for the first 48 hours', note: 'Let the experience settle. Rest before sharing. Allow what happened to remain wordless a little longer.' },
       { color: 'blue', text: 'Journal what arose before it fades — images, moments, what the medicine showed you', note: 'Don\'t interpret it yet. Just record it. The meaning arrives in its own time. What you write now will be the material you return to for months.' },
     ],
-    prompts: [
-      { q: 'What am I grateful for today?', hint: 'Let gratitude be specific. The smaller the detail, the more real it lands.' },
-      { q: 'What is present in my body right now? Where do I feel the most sensation, heaviness, lightness, or aliveness?', hint: 'Stay in the body. Stay with sensation.' },
-      { q: 'What images, impressions, or moments from ceremony keep returning? What feels most alive or most unresolved?', hint: 'Record them. The meaning arrives in its own time.' },
-      { q: 'Where did I feel the most resistance during the journey? What was I holding onto — and what happened when I let go?', hint: 'Resistance during ceremony is information.' },
-      { q: 'What did the medicine show me?', hint: 'What was revealed — about yourself, your nature, your life. Name it plainly.' },
-      { q: 'What is one thing I feel called to do, release, or begin?', hint: 'Trust the impulse. Write it before the mind catches up.' },
-    ],
+    prompts: POST_CEREMONY_WEEKS[0].prompts,
     thread: 'What you record this week becomes the foundation of the integration work ahead. Don\'t evaluate it. Don\'t organize it. Just let it exist on the page. Next week you begin to live it.',
   },
   {
@@ -75,11 +69,7 @@ const WEEKS = [
       { color: 'sage', text: 'Continue full sobriety — minimum 30 days, 3 months strongly recommended', note: 'Iboga resets tolerance. Returning to any substance before the window closes undermines what the medicine worked to open. The noribogaine window is your most protected asset right now.' },
     ],
     dataset: 'Your weekly tracking below contributes to one of the most comprehensive iboga integration datasets being built anywhere in the world. What you log — your practice days, your regulation, your patterns — helps the field understand how this medicine actually works across hundreds of participants over time. Your experience becomes part of something larger.',
-    prompts: [
-      { q: 'What relationships, dynamics, or patterns were illuminated? What did I see about how I show up with others?', hint: 'Write what you saw, without softening it.' },
-      { q: 'Looking back at the intentions I set before ceremony — what was answered, exceeded, or transformed beyond what I could have imagined? What is still emerging?', hint: 'The medicine rarely answers in the way you expected. Look honestly at what actually happened.' },
-      { q: 'Where am I meeting myself differently in daily life? What have I noticed about the way I move through the world since returning home?', hint: 'Small shifts count. A changed reaction. A pause before responding. Name them.' },
-    ],
+    prompts: POST_CEREMONY_WEEKS[1].prompts,
     thread: 'The practice you establish this week has a disproportionate impact on everything that follows. The medicine opened the window. This week you decide what you\'re building inside it.',
   },
   {
@@ -102,11 +92,7 @@ const WEEKS = [
       { color: 'blue', text: 'Name one old pattern that has returned — write about it', note: 'To see it clearly. Naming with precision is itself a form of integration. Your guide can see your weekly tracking and will reach out if they notice something that needs support.' },
       { color: 'sage', text: 'Continue your daily practice — especially on the days you least want to', note: 'The days you least want to show up are the days it matters most.' },
     ],
-    prompts: [
-      { q: 'What one commitment am I making to myself?', hint: 'Make it concrete. Something you can hold yourself to.' },
-      { q: 'What do I want to say to my pre-ceremony self — the one who was afraid, uncertain, or carrying so much?', hint: 'Write them a letter if you wish.' },
-      { q: 'What old patterns, reactions, or beliefs have I noticed returning — and how am I choosing to meet them now?', hint: 'Return is part of the spiral. How you respond now is what matters.' },
-    ],
+    prompts: POST_CEREMONY_WEEKS[2].prompts,
     thread: 'Every person who has done deep transformational work meets this week. The ones who move through it are the ones who keep showing up to their practice even when the felt sense of the medicine has faded. You are in the long arc now.',
   },
   {
@@ -132,11 +118,7 @@ const WEEKS = [
       { color: 'sage', text: 'Audit one thing in your environment that actively works against your new self \u2014 and change it this week', note: 'Physical environment. Social environment. Digital environment. What in each is pulling you back toward who you were? Make one concrete change this week.' },
     ],
     dataset: 'Your practice days and regulation scores this week are among the most clinically significant data points in the entire dataset. Week 4 tracking — when the noribogaine window is closing — predicts long-term integration outcomes more reliably than any other week. What you log here matters beyond your own journey.',
-    prompts: [
-      { q: 'What relationships in my life are shifting as I change? Who is meeting me in my growth — and where am I feeling friction or distance?', hint: 'Both the welcome and the friction are information.' },
-      { q: 'What commitments did I make — to myself, to a new way of being — and how am I honoring them? Where do I need more support or structure?', hint: 'Honest inventory. Name where you\'ve kept the agreement and where the work is still in motion.' },
-      { q: 'What does my body need right now in this integration phase? How is it speaking to me — and am I listening?', hint: 'Sleep, nourishment, movement, stillness, touch, nature. Let the body lead.' },
-    ],
+    prompts: POST_CEREMONY_WEEKS[3].prompts,
     thread: 'Kuleana is an honor — the recognition that you have been shown something real and that you are capable of living it. Next week the work moves outward, into your relationships.',
   },
   {
@@ -159,11 +141,7 @@ const WEEKS = [
       { color: 'sage', text: 'Practice being your changed self in the presence of people who knew you before', note: 'Notice when you contract back into who you were in someone\'s presence. That noticing is the practice. You can only keep showing up as the person you are becoming.' },
       { color: 'green', text: 'Practice Ho\'oponopono with anyone you are still carrying', note: 'I\'m sorry. Please forgive me. Thank you. I love you. The forgiveness work from ceremony continues here. It does not require the other person to be present or to know. This is an internal release.' },
     ],
-    prompts: [
-      { q: 'What is still alive and in process? What is still seeking form in words, understanding, or action?', hint: 'The most important material sometimes takes the longest to land.' },
-      { q: 'What forgiveness work is still alive in me? Who or what am I still in the process of releasing?', hint: 'Forgiveness is a practice. Be honest about where you are in it.' },
-      { q: 'What is the medicine still teaching me? What insights continue to surface — in dreams, synchronicities, or the quiet moments?', hint: 'The ceremony continues to move in you.' },
-    ],
+    prompts: POST_CEREMONY_WEEKS[4].prompts,
     thread: 'The integration that holds in relationship is the integration that holds in life. What you are practicing this week — being your changed self in the presence of people who knew you before — is some of the most important work of the entire arc.',
   },
   {
@@ -194,10 +172,7 @@ const WEEKS = [
       'Integration statement written and dated',
       'Monthly rhythm established',
     ],
-    prompts: [
-      { q: 'How has my sense of purpose shifted or clarified? What am I called to create, offer, or become in this next chapter?', hint: 'Purpose often surfaces in ceremony more clearly than we expect. Name it plainly, even if it\'s still forming.' },
-      { q: 'Who am I now? How would I describe the person who arrived — and the person standing here today?', hint: 'Write this one without holding back. You have earned the right to see yourself clearly.' },
-    ],
+    prompts: POST_CEREMONY_WEEKS[5].prompts,
     thread: 'The medicine opened a window. You chose to walk through it — week by week, practice by practice, honest conversation by honest conversation. What you have built is a foundation. The work continues. We continue with you.',
     monthlyArc: true,
   },

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { PRE_CEREMONY_WEEKS } from '@/lib/journal-prompts'
 
 // ─── Types ────────────────────────────────────────────────
 type Progress = {
@@ -30,11 +31,7 @@ const WEEKS = [
       { color: 'blue', text: 'Submit your love offering', note: 'Your donation completes the container. It signals to your nervous system: I have chosen this. I am in.' },
       { color: 'blue', text: 'Read "Understanding Iboga" and "What Iboga Works On" in your Preparedness Guide', note: 'Begin an honest relationship with what you\'re stepping into.' },
     ],
-    prompts: [
-      { q: 'What do I want? What is my intention?', hint: 'Write the truest version. If your intention is still forming, write that.' },
-      { q: 'What are my greatest gifts? What is my purpose and mission in this life?', hint: 'Even a partial, uncertain answer is welcome here.' },
-      { q: 'After this journey, what becomes possible?', hint: 'Dream beyond what feels realistic. Let yourself go there.' },
-    ],
+    prompts: PRE_CEREMONY_WEEKS[0].prompts,
     thread: 'Your answers here are the raw material of your Questions for the Medicine — the specific questions you\'ll bring into ceremony. Write honestly. Over the coming weeks, these words will sharpen into something you can carry in. This is where that conversation begins.',
   },
   {
@@ -54,11 +51,7 @@ const WEEKS = [
       { color: 'amber', text: 'Begin noticing your daily habits', note: 'Observe alcohol, sleep, screens, food, substances. Honest observation is all that\u2019s asked. What you notice this week becomes data for your body to begin working with.' },
       { color: 'blue', text: 'Schedule your required medical appointments and labs', note: 'EKG and labs must be completed before Week 5. Schedule now — medical appointments take time. This protects you.' },
     ],
-    prompts: [
-      { q: 'What changes in my life are being asked of me? What do I need to let go of?', hint: 'Write from what you already know.' },
-      { q: 'What am I most afraid of?', hint: 'Fear named loses half its power. Let it be seen here.' },
-      { q: 'Where am I resisting?', hint: 'In my body. In my life. In my willingness to change.' },
-    ],
+    prompts: PRE_CEREMONY_WEEKS[1].prompts,
     thread: '"What must change" becomes the spine of your Week 4 shadow work and your Week 6 ceremony questions. Start a running list anywhere — the specific questions you want to bring to the medicine will take shape over the next four weeks. You\'ll draft them formally in Week 4.',
   },
   {
@@ -80,10 +73,7 @@ const WEEKS = [
       { color: 'red', text: 'Begin DHA/EPA and magnesium glycinate supplementation daily', note: 'DHA/EPA: 2–4g daily with food. Magnesium glycinate: 300–400mg before bed. Confirm with your physician if you are on any medications.' },
     ],
     safetyBox: { label: 'Physiological preparation — safety note', text: 'Magnesium is cardiac-critical for iboga. Adequate magnesium levels directly affect cardiac function during the medicine, particularly QT interval regulation. This supplementation is cardiac-critical preparation — part of your physiological safety protocol. If you have any cardiac history, confirm dosing with your physician and inform the Vital Kauaʻi team before proceeding.' },
-    prompts: [
-      { q: 'Where do I go when I feel dysregulated? What is my dominant pattern — fight, flight, freeze, or fawn?', hint: 'This is self-knowledge. Observe clearly.' },
-      { q: 'How do I create safety within myself? What brings me back to center?', hint: 'Name what is true for your body.' },
-    ],
+    prompts: PRE_CEREMONY_WEEKS[2].prompts,
     thread: 'The body awareness you\'re building this week is what carries you through ceremony. When the medicine is at its most intense, your capacity to track sensation without being consumed by it is the skill that matters most. You are practicing it now.',
   },
   {
@@ -103,11 +93,7 @@ const WEEKS = [
       { color: 'blue', text: 'Draft your Questions for the Medicine — first version', note: 'You\'ve been gathering the raw material for four weeks. What do you most want to ask? What do you most need to be shown? Write freely. These will be refined in Week 6.' },
       { color: 'amber', text: 'Begin clearing contraindicated substances per your protocol timeline', note: 'Cannabis: clear fully 2 weeks before ceremony. All other substances: review the Preparedness Guide. Questions about specific medications — reach out to the team now, not later.' },
     ],
-    prompts: [
-      { q: 'Where am I lying to myself — and where am I living out of integrity as a result?', hint: 'Iboga sees everything. Arrive having already looked.' },
-      { q: 'What shadows are showing up right now? What patterns keep returning?', hint: 'What surfaces repeatedly is ready to be seen.' },
-      { q: 'What is my relationship to shame? Where does it show up — or where has it shaped me?', hint: 'Shame seen clearly begins to lose its grip.' },
-    ],
+    prompts: PRE_CEREMONY_WEEKS[3].prompts,
     thread: 'What you name here, you are no longer carrying unconsciously. Iboga surfaces what we hold in the dark. You are turning on a light before you arrive. Next week you turn toward your people.',
   },
   {
@@ -128,11 +114,7 @@ const WEEKS = [
       { color: 'amber', text: 'Begin preparing your home environment for your return', note: 'Clean it. Simplify it. Stock what will nourish you. The space you return to is part of integration. Prepare it now, before you\'re altered by what\'s coming.' },
       { color: 'blue', text: 'Complete the What to Bring packing checklist', note: 'Practical, yes — and also a ritualized act of arrival. Let the packing be intentional.' },
     ],
-    prompts: [
-      { q: 'Who do I need to forgive in order to feel free?', hint: 'Forgiveness is releasing the weight you carry on their behalf.' },
-      { q: 'Where do I need to forgive myself?', hint: 'The same grace you would offer someone you love — extend it here.' },
-      { q: 'How will I connect with my support team — and what specific support do I need from them?', hint: 'Be specific. The more specific the ask, the more support lands.' },
-    ],
+    prompts: PRE_CEREMONY_WEEKS[4].prompts,
     thread: 'The forgiveness work you begin here continues in ceremony and for months afterward. Begin it this week — the medicine will carry it forward from wherever you start. One week remains. Next week you arrive.',
   },
   {
@@ -153,10 +135,7 @@ const WEEKS = [
       { color: 'blue', text: 'Confirm travel and send arrival details to aloha@vitalkauai.com' },
       { color: 'green', text: 'Finalize your Questions for the Medicine — land on what feels most true', note: 'The truest question — that is the one. Hold it with open hands.' },
     ],
-    prompts: [
-      { q: 'What am I ready to receive?', hint: 'What are you genuinely ready — in your body, in your heart, in your life — to actually receive and live into? Write from that place.' },
-      { q: 'What am I committing to after — in one sentence, as concrete as possible?', hint: 'A commitment — concrete, lived. The medicine amplifies what you bring into ceremony. Arrive with a clear commitment, and it becomes a reference point for everything that follows.' },
-    ],
+    prompts: PRE_CEREMONY_WEEKS[5].prompts,
     thread: 'In Week 1 you named what is asking to change. In Week 2 you named what must change. In Week 4 you looked at what you were hiding. In Week 5 you opened to your people. Now you state what you are ready for and what you are committing to. You built this. Carry it in.',
     readinessGate: true,
   },
