@@ -104,7 +104,7 @@ const WEEKS = [
     ],
     prompts: [
       { q: 'What one commitment am I making to myself?', hint: 'Make it concrete. Something you can hold yourself to.' },
-      { q: 'What do I want to say to the version of me who arrived here — the one who was afraid, uncertain, or carrying so much?', hint: 'Write them a letter if you wish.' },
+      { q: 'What do I want to say to my pre-ceremony self — the one who was afraid, uncertain, or carrying so much?', hint: 'Write them a letter if you wish.' },
       { q: 'What old patterns, reactions, or beliefs have I noticed returning — and how am I choosing to meet them now?', hint: 'Return is part of the spiral. How you respond now is what matters.' },
     ],
     thread: 'Every person who has done deep transformational work meets this week. The ones who move through it are the ones who keep showing up to their practice even when the felt sense of the medicine has faded. You are in the long arc now.',
