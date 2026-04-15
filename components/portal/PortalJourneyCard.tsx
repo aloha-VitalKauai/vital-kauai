@@ -58,10 +58,11 @@ export default function PortalJourneyCard() {
   const daysLeft = journey ? getDaysUntilJourney(journey.start_at) : null
   const isTBD    = !journey || display.displayDate === 'Date TBD'
 
-  // Show scheduling form when: journey exists, date is TBD, not yet submitted
-  const showForm = !!journey &&
-    isTBD &&
-    (journey.status === 'approved' || journey.status === 'scheduling') &&
+  // Show scheduling form when date is TBD and not yet submitted.
+  // Renders even when no journey exists — submitSchedulingRequest will
+  // work without a journey_id, and the founder assigns the date later.
+  const showForm = isTBD &&
+    (!journey || journey.status === 'approved' || journey.status === 'scheduling') &&
     !submitted
 
   // Booking label — shown where "Iboga Journey" was

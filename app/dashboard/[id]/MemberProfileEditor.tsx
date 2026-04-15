@@ -119,7 +119,6 @@ export default function MemberProfileEditor({
   const [membershipTier, setMembershipTier] = useState(member.membership_tier ?? "");
   const [programPrice, setProgramPrice] = useState(member.program_price?.toString() ?? "");
   const [costOfService, setCostOfService] = useState(member.cost_of_service?.toString() ?? "");
-  const [ceremonyDate, setCeremonyDate] = useState(member.ceremony_date ?? "");
   const [arrivalDate, setArrivalDate] = useState(member.arrival_date ?? "");
   const [journeyFocus, setJourneyFocus] = useState(member.journey_focus ?? "");
   const [integrationGuide, setIntegrationGuide] = useState(member.integration_guide ?? "");
@@ -142,7 +141,6 @@ export default function MemberProfileEditor({
         membership_tier: membershipTier || null,
         program_price: programPrice ? Number(programPrice) : null,
         cost_of_service: costOfService ? Number(costOfService) : null,
-        ceremony_date: ceremonyDate || null,
         arrival_date: arrivalDate || null,
         journey_focus: journeyFocus || null,
         integration_guide: integrationGuide || null,
@@ -342,12 +340,9 @@ export default function MemberProfileEditor({
               </div>
               <div>
                 <label style={LABEL}>Ceremony date</label>
-                <input
-                  style={INPUT}
-                  type="date"
-                  value={ceremonyDate}
-                  onChange={(e) => setCeremonyDate(e.target.value)}
-                />
+                <p style={{ fontSize: 12, color: '#888', margin: '4px 0 0', fontStyle: 'italic' }}>
+                  {member.ceremony_date ? fmtDate(member.ceremony_date) : 'Not set'} — manage via Journey Scheduling tab
+                </p>
               </div>
               <div>
                 <label style={LABEL}>Arrival date</label>
