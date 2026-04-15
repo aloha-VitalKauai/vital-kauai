@@ -84,11 +84,7 @@ export default function PortalJourneyCard() {
       }[journey.status]
 
   return (
-    <div style={cardStyle} data-testid="portal-journey-card-v2">
-      {/* DEBUG — remove after confirming render */}
-      <div style={{ background: '#C4A661', color: '#1C1A17', padding: '6px 10px', borderRadius: 4, fontSize: 11, fontFamily: 'monospace', marginBottom: 12 }}>
-        V2 | journey={journey ? 'yes' : 'no'} | status={journey?.status ?? 'none'} | schedule={journey?.schedule_type ?? 'none'} | showForm={String(showForm)}
-      </div>
+    <div style={cardStyle}>
       {/* Eyebrow */}
       <p style={eyebrowStyle}>YOUR JOURNEY</p>
 
