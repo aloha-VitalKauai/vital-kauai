@@ -23,7 +23,7 @@ const WEEKS = [
     sub: 'Iboga is one of the most demanding, most revealing, and most transformative processes a human being can undergo. What you do in these six weeks is part of the medicine itself. The preparation is the first dose.',
     italic: 'This week calls for presence. Just begin.',
     video: { label: 'A Message from Rachel & Josh · Week 1', text: 'A real conversation about what you are walking into, why the next six weeks matter, and the one thing that protects you more than any lab result or dietary protocol. Watch this before you read anything else this week.' },
-    box: { type: 'info', label: 'The most important safety variable', text: 'More than your labs. More than your diet. More than your supplement protocol — your honesty in this process is what most determines how the medicine meets you. Iboga surfaces what is true. The more clearly you can see yourself before you arrive, the more navigable the experience. This is how the medicine works.' },
+    box: { type: 'info', label: 'The most important safety factor is your honesty.', text: 'Your labs, your diet, and your supplement plan all matter—but it\'s your willingness to see yourself clearly that shapes how the medicine meets you. Iboga brings truth to the surface. When you arrive having already begun that process with yourself, the experience becomes something you can move through with awareness. This is how the medicine meets you.' },
     actionLabel: 'Actions this week — 3 only',
     actions: [
       { color: 'blue', text: 'Sign all three required documents — Intake Form, Membership Agreement, Medical Disclaimer', note: 'Each document is an act of commitment. Read them with care. The Intake Form in particular is an act of self-honesty — complete it that way.' },
