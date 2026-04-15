@@ -625,9 +625,6 @@ export default function PreCeremonyPage() {
                         <div className="rg-item-text">{txt}</div>
                       </div>
                     ))}
-                    <p className="rg-note">
-                      Your care team — not this checklist — makes the final readiness determination. If you haven't heard from us within 48 hours, reach out directly: <a href="mailto:aloha@vitalkauai.com" style={{ color: 'var(--sage)' }}>aloha@vitalkauai.com</a>
-                    </p>
                   </div>
                 </div>
 
