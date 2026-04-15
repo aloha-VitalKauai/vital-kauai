@@ -46,6 +46,7 @@ const WEEKS = [
       { q: 'What am I grateful for today?', hint: 'Let gratitude be specific. The smaller the detail, the more real it lands.' },
       { q: 'What is present in my body right now? Where do I feel the most sensation, heaviness, lightness, or aliveness?', hint: 'Stay in the body. Stay with sensation.' },
       { q: 'What images, impressions, or moments from ceremony keep returning? What feels most alive or most unresolved?', hint: 'Record them. The meaning arrives in its own time.' },
+      { q: 'Where did I feel the most resistance during the journey? What was I holding onto — and what happened when I let go?', hint: 'Resistance during ceremony is information.' },
       { q: 'What did the medicine show me?', hint: 'What was revealed — about yourself, your nature, your life. Name it plainly.' },
       { q: 'What is one thing I feel called to do, release, or begin?', hint: 'Trust the impulse. Write it before the mind catches up.' },
     ],
@@ -76,7 +77,6 @@ const WEEKS = [
     dataset: 'Your weekly tracking below contributes to one of the most comprehensive iboga integration datasets being built anywhere in the world. What you log — your practice days, your regulation, your patterns — helps the field understand how this medicine actually works across hundreds of participants over time. Your experience becomes part of something larger.',
     prompts: [
       { q: 'What relationships, dynamics, or patterns were illuminated? What did I see about how I show up with others?', hint: 'Write what you saw, without softening it.' },
-      { q: 'Where did I feel the most resistance during the journey? What was I holding onto — and what happened when I let go?', hint: 'Resistance during ceremony is information.' },
       { q: 'Looking back at the intentions I set before ceremony — what was answered, exceeded, or transformed beyond what I could have imagined? What is still emerging?', hint: 'The medicine rarely answers in the way you expected. Look honestly at what actually happened.' },
       { q: 'Where am I meeting myself differently in daily life? What have I noticed about the way I move through the world since returning home?', hint: 'Small shifts count. A changed reaction. A pause before responding. Name them.' },
     ],
