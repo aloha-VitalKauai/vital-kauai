@@ -57,7 +57,7 @@ export default async function SupportPersonPage() {
       {/* Section 1: Understanding Iboga */}
       <Section id="understanding" num="01" label="The Foundation" title="Understanding" titleEm="Iboga" rose={rose} border={border} sage={sage}>
         <p style={prose}>Iboga is a sacred root medicine from the Bwiti tradition of Central Africa. At Vital Kaua&#699;i, ceremonies are held with deep reverence &mdash; rooted in lineage, conducted by trained guides, within a carefully prepared container on the North Shore of Kaua&#699;i.</p>
-        <p style={prose}>Iboga works on a profound level &mdash; moving through the nervous system, the emotional body, and the unconscious over a ceremony that typically spans 24 to 36 hours. People come for many reasons: to release addiction, to metabolize grief or trauma, to step into a new chapter.</p>
+        <p style={prose}>Iboga works on a profound level &mdash; moving through the nervous system, the emotional body, and the unconscious over a ceremony that typically spans 12 to 36 hours. People come for many reasons: to release addiction, to metabolize grief or trauma, to step into a new chapter.</p>
         <p style={prose}>The medicine&rsquo;s work does not end with ceremony. In the days and weeks that follow, it continues &mdash; reorganizing how a person relates to themselves and the world. This is called integration, and your role during this time matters enormously.</p>
       </Section>
 
@@ -139,16 +139,6 @@ export default async function SupportPersonPage() {
             </div>
           ))}
         </div>
-      </Section>
-
-      <Divider />
-
-      {/* Section 6: Other Offerings */}
-      <Section num="06" label="Other Vital Kauaʻi Journeys" title="A Note on Our" titleEm="Other Offerings" rose={rose} border={border} sage={sage}>
-        <p style={prose}>Vital Kaua&#699;i also holds Sacred Intimacy & Tantra journeys and Vitality & Detox programs. Someone returning from Sacred Intimacy work may be more emotionally open and self-aware in relationship. Someone returning from a Vitality program may have changed appetites and a heightened sensitivity.</p>
-        <Callout color={sage} bg={sageLt} label="For All Journeys">
-          Whatever brought your person to Vital Kaua&#699;i, your role is the same: patient, loving witness. You do not have to understand everything to be a profound source of support.
-        </Callout>
       </Section>
 
       {/* Closing */}
