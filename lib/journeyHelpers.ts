@@ -9,7 +9,7 @@
  * ─────────────────────────────────────────────────────────────
  */
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import {
   formatJourneyDate,
   getDaysUntilJourney,
@@ -74,7 +74,7 @@ export async function getActiveJourney(
 }
 
 export async function getActiveJourneyForCurrentUser(): Promise<Journey | null> {
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
   const { data: { session } } = await supabase.auth.getSession()
   if (!session?.user?.id) return null
   return getActiveJourney(supabase, session.user.id)

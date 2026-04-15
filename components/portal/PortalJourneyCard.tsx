@@ -18,7 +18,7 @@
  */
 
 import { useEffect, useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import {
   getActiveJourney,
   getJourneyDisplayStatus,
@@ -28,7 +28,7 @@ import type { Journey } from '@/lib/journeyHelpers'
 import SchedulingRequestForm from '@/components/portal/SchedulingRequestForm'
 
 export default function PortalJourneyCard() {
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
   const [journey,   setJourney]   = useState<Journey | null | undefined>(undefined)
   const [submitted, setSubmitted] = useState(false)
 

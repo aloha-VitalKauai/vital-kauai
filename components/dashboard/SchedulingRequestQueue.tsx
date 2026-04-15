@@ -18,7 +18,7 @@
  */
 
 import { useEffect, useState, useCallback, useTransition } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { resolveSchedulingRequest } from '@/app/actions/journeys'
 import { journeyDateToInputValue } from '@/lib/journeyDates'
 
@@ -168,7 +168,7 @@ function AssignModal({
 // ── Main component ────────────────────────────────────────────
 
 export default function SchedulingRequestQueue() {
-  const supabase   = createClientComponentClient()
+  const supabase   = createClient()
   const [requests, setRequests] = useState<RequestRow[]>([])
   const [loading,  setLoading]  = useState(true)
   const [active,   setActive]   = useState<RequestRow | null>(null)

@@ -19,8 +19,7 @@
  * ─────────────────────────────────────────────────────────────
  */
 
-import { cookies } from 'next/headers'
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/server'
 import { inputValueToJourneyIso } from '@/lib/journeyDates'
 
 // ── Types ─────────────────────────────────────────────────────
@@ -48,7 +47,7 @@ export interface ActionResult<T = void> {
 // ── Auth helpers ──────────────────────────────────────────────
 
 async function getClient() {
-  const supabase = createServerActionClient({ cookies })
+  const supabase = await createClient()
   const { data: { user }, error } = await supabase.auth.getUser()
   if (error || !user) return { supabase: null, user: null, error: 'Not authenticated' }
   return { supabase, user, error: null }

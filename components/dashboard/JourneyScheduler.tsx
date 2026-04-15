@@ -16,7 +16,7 @@
  */
 
 import { useEffect, useState, useCallback, useTransition } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { journeyDateToInputValue } from '@/lib/journeyDates'
 import { createJourney, rescheduleJourney, cancelJourney } from '@/app/actions/journeys'
 import type { BookingType, ScheduleType } from '@/app/actions/journeys'
@@ -431,7 +431,7 @@ function MemberJourneyRow({
 // ── Main component ────────────────────────────────────────────
 
 export default function JourneyScheduler() {
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
   const [members,   setMembers]   = useState<MemberRow[]>([])
   const [journeys,  setJourneys]  = useState<JourneySummaryRow[]>([])
   const [cohorts,   setCohorts]   = useState<CohortRow[]>([])

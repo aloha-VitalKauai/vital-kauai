@@ -11,7 +11,7 @@
  */
 
 import { useEffect, useState, useCallback } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 
 interface Cohort {
   id: string
@@ -59,7 +59,7 @@ function CohortForm({
   onSaved: (id: string) => void
   onCancel: () => void
 }) {
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
   const [title, setTitle]       = useState(existing?.title ?? '')
   const [startDate, setStart]   = useState(toInputDate(existing?.start_at ?? null))
   const [endDate, setEnd]       = useState(toInputDate(existing?.end_at ?? null))
@@ -158,7 +158,7 @@ function CohortCard({
   cohort: Cohort
   onRefresh: () => void
 }) {
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
   const [expanded, setExpanded]   = useState(false)
   const [editing, setEditing]     = useState(false)
   const [members, setMembers]     = useState<CohortMember[]>([])
@@ -319,7 +319,7 @@ function CohortCard({
 // ── Main component ────────────────────────────────────────────
 
 export default function CohortManager() {
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
   const [cohorts, setCohorts] = useState<Cohort[]>([])
   const [loading, setLoading] = useState(true)
   const [creating, setCreating] = useState(false)

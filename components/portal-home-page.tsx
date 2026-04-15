@@ -21,9 +21,7 @@ type Profile = {
 };
 
 type MemberData = {
-  ceremony_date: string | null;
   assigned_partner: string | null;
-  status: string | null;
 };
 
 const MEMBERSHIP_AGREEMENT = [
@@ -129,7 +127,7 @@ export function PortalHomePage({
     // Also try to get member data for ceremony date
     const { data: mData } = await supabase
       .from("members")
-      .select("id, ceremony_date, assigned_partner, status")
+      .select("id, assigned_partner")
       .eq("email", userEmail)
       .single();
     if (mData) {
@@ -203,11 +201,6 @@ export function PortalHomePage({
   const medicalDone = profile?.medical_disclaimer_signed ?? false;
   const allRequiredDone = donationDone && agreementDone && medicalDone;
   const requiredCount = [donationDone, agreementDone, medicalDone].filter(Boolean).length;
-
-  // Countdown
-  const daysUntil = memberData?.ceremony_date
-    ? Math.max(0, Math.ceil((new Date(memberData.ceremony_date).getTime() - Date.now()) / 86400000))
-    : null;
 
   const firstName = profile?.full_name?.split(" ")[0] || userEmail.split("@")[0];
   const initials = profile?.full_name
