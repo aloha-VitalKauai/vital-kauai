@@ -480,10 +480,9 @@ export function PortalHomePage({
               from Your Guides
             </h2>
             <p className={styles.videoText}>
-              Before you move through any documents or guides, we invite you to receive this
-              message from us. In it, we share what this portal holds for you, how to move through
-              it, and what to reach out about as you prepare. Our doors are always open &mdash; and
-              so are our hearts.
+              Welcome — we&rsquo;re so grateful you have arrived. Watch this video where we share
+              what this portal holds for you, how to move through it, and what to reach out about
+              as you prepare. Our doors are always open &mdash; and so are our hearts.
             </p>
             <p className={styles.videoSignature}>&mdash; Rachel &amp; Josh</p>
           </div>
