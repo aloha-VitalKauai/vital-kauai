@@ -21,19 +21,19 @@ const WEEKS = [
     title: 'Seeing clearly.',
     subtitle: 'This is the beginning of something real.',
     sub: 'Iboga is one of the most demanding, most revealing, and most transformative processes a human being can undergo. What you do in these six weeks is part of the medicine itself. The preparation is the first dose.',
-    italic: 'This week calls for presence, not comprehension. Just begin.',
+    italic: 'This week calls for presence. Just begin.',
     video: { label: 'A Message from Rachel & Josh · Week 1', text: 'A real conversation about what you are walking into, why the next six weeks matter, and the one thing that protects you more than any lab result or dietary protocol. Watch this before you read anything else this week.' },
     box: { type: 'info', label: 'The most important safety variable', text: 'More than your labs. More than your diet. More than your supplement protocol — your honesty in this process is what most determines how the medicine meets you. Iboga surfaces what is true. The more clearly you can see yourself before you arrive, the more navigable the experience. This is how the medicine works.' },
     actionLabel: 'Actions this week — 3 only',
     actions: [
       { color: 'blue', text: 'Sign all three required documents — Intake Form, Membership Agreement, Medical Disclaimer', note: 'Each document is an act of commitment. Read them with care. The Intake Form in particular is an act of self-honesty — complete it that way.' },
-      { color: 'blue', text: 'Submit your love offering', note: 'Your financial commitment completes the container. It signals to your nervous system: I have chosen this. I am in.' },
-      { color: 'blue', text: 'Read "Understanding Iboga" and "What Iboga Works On" in your Preparedness Guide', note: 'Not to learn about the medicine. To begin an honest relationship with what you\'re stepping into.' },
+      { color: 'blue', text: 'Submit your love offering', note: 'Your donation completes the container. It signals to your nervous system: I have chosen this. I am in.' },
+      { color: 'blue', text: 'Read "Understanding Iboga" and "What Iboga Works On" in your Preparedness Guide', note: 'Begin an honest relationship with what you\'re stepping into.' },
     ],
     prompts: [
-      { q: 'What do I want? What is my intention?', hint: 'Write the truest version. If your intention is still forming, write that. Uncertainty is honest. Iboga works with what is true.' },
+      { q: 'What do I want? What is my intention?', hint: 'Write the truest version. If your intention is still forming, write that. Iboga meets you exactly where you are.' },
       { q: 'What in my life is asking to be transformed?', hint: 'This is the beginning of seeing clearly — IKE. Just to look. Name what you have been living alongside without fully acknowledging.' },
-      { q: 'What becomes possible if this works — really works?', hint: 'Write from hope, not strategy. What opens in your life, your relationships, your sense of self? Let yourself imagine the actual version of what you\'re moving toward.' },
+      { q: 'What becomes possible when this works?', hint: 'Write from hope and genuine imagination. What opens in your life, your relationships, your sense of self? Let yourself imagine the actual version of what you\'re moving toward.' },
     ],
     thread: 'Your answers here are the raw material of your Questions for the Medicine — the specific questions you\'ll bring into ceremony. Write honestly. Over the coming weeks, these words will sharpen into something you can carry in. This is where that conversation begins.',
   },
@@ -71,7 +71,7 @@ const WEEKS = [
     reentry: { strong: 'Arriving at this week behind?', text: ' If you haven\'t yet completed Week 2\'s integration call, do that first — before starting anything here. One real conversation with your guide is worth more than moving forward alone. If you\'re behind on journaling, write just five minutes on Week 1\'s prompts before opening Week 3. Start here: one integration call scheduled, one journal prompt written.' },
     sub: 'Iboga works through the body — the gut, the heart, the nervous system, the tissue where unresolved experience lives. The more regulated and resourced your nervous system is when you arrive, the more cleanly the medicine can do its work. This week, you begin building that foundation.',
     video: { label: 'A Message from Rachel & Josh · Week 3', text: 'Something may already be coming up — old feelings, vivid dreams, unexpected heaviness. This is the medicine already in relationship with you. In this week\'s transmission, Rachel and Josh explain why this happens, what it means, and how to stay with what arises without being swept away by it.' },
-    box: { type: 'info', label: 'If something surfaces this week', text: 'Iboga is intelligent and relational. It begins its work the moment you say yes. If difficult material arises — old grief, anxiety, somatic intensity — here is what to do: slow down, not speed up. Bring your attention to one physical sensation at a time. Breathe. Place both feet on the floor. You are not required to understand what is arising, only to be with it. Your integration guide is available between sessions. You do not need to wait for your scheduled call.\n\nIt is also completely normal to resist parts of this process — for some days to feel harder to begin. Noticing that resistance — naming it honestly — is itself the practice.' },
+    box: { type: 'info', label: 'If something surfaces this week', text: 'Iboga is intelligent and relational. It begins its work the moment you say yes. If difficult material arises — old grief, anxiety, somatic intensity — here is what to do: slow down deliberately. Bring your attention to one physical sensation at a time. Breathe. Place both feet on the floor. Be with what is arising — presence is enough. Your integration guide is available between sessions. Reach out whenever you need support.\n\nSome days will feel harder to begin. Noticing that — naming it honestly — is itself the practice.' },
     actionLabel: 'Actions this week — 4 only',
     actions: [
       { color: 'green', text: 'Read the Nervous System Safety Guide fully — this week, not later', note: 'Understanding your polyvagal states before ceremony is one of the most valuable things you can do. It gives you a map for what you\'ll encounter in your own body during the experience.' },
@@ -108,7 +108,7 @@ const WEEKS = [
       { q: 'Where am I lying to myself?', hint: 'Where do you know something — and have been choosing to look past it? This is the medicine\'s first question. Answer it here, in ink, before you arrive.' },
       { q: 'What am I avoiding — and what do I imagine would happen if I stopped?', hint: 'Avoidance is always in service of something — protection, comfort, survival. Name what you\'re avoiding, and then name what you fear would happen without the avoidance. That fear is often the most honest thing in the room.' },
       { q: 'What shame are you carrying that has never been spoken aloud?', hint: 'Name it plainly. The medicine meets what we bring into the light. Arriving having already turned toward it changes everything.' },
-      { q: 'Where are you not in integrity — and what would it take to come clean?', hint: 'Integrity is alignment between what you know and what you do. Name the gap honestly. The ceremony will bring this to light. Write it here first.' },
+      { q: 'Where is there a gap between what you know and how you are living — and what would it take to come clean?', hint: 'Integrity is alignment between what you know and what you do. Name the gap honestly. The ceremony will bring this to light. Write it here first.' },
       { q: 'What do you fear most about being seen completely — by the medicine and by yourself?', hint: 'The medicine illuminates everything. Name the fear. It loses power the moment it is written down.' },
     ],
     thread: 'What you name here, you are no longer carrying unconsciously. Iboga surfaces what we hold in the dark. You are turning on a light before you arrive. Next week you turn toward your people.',
@@ -147,7 +147,7 @@ const WEEKS = [
     carryForward: 'You have opened to your people. You have begun the forgiveness work. You have tended your home. This final week calls for completion, alignment, and the willingness to arrive.',
     sub: 'Mana is the power that comes from within. Pono is right relationship — with yourself, with others, with what\'s coming. This week you are being asked to arrive. The work of preparation is complete. What remains is alignment: finishing what is unfinished, confirming what is confirmed, and meeting yourself honestly about what you are ready to receive.',
     video: { label: 'A Message from Rachel & Josh · Week 6', text: 'Five weeks ago you were a person who was thinking about doing this. Today you are a person who has done the preparation. Rachel and Josh want to mark that — and to meet you exactly where you are before you come through our door.' },
-    box: { type: 'close', label: 'Emotional closure — the arc completes here', text: 'Five weeks ago this process asked you to see clearly. Then to commit. Then to tend your body. Then to meet your shadow. Then to open to your people. You have done all of that. Whatever remains unresolved — the medicine will meet it. Your job this week is not to solve anything more. It is to arrive with openness, trust your team, and let yourself be held. That is enough. That is everything.\n\nIf you feel uncertain right now — more unsettled than you expected to feel at the end of six weeks of preparation — that is not a sign something went wrong. That feeling often means you have done real work. Uncertainty is a form of readiness.' },
+    box: { type: 'close', label: 'Emotional closure — the arc completes here', text: 'Five weeks ago this process asked you to see clearly. Then to commit. Then to tend your body. Then to meet your shadow. Then to open to your people. You have done all of that. Whatever remains unresolved — the medicine will meet it. Your job this week is to arrive with openness, trust your team, and let yourself be held. That is enough. That is everything.\n\nIf you feel uncertain right now — more unsettled than you expected to feel at the end of six weeks of preparation — that feeling often means you have done real work. Uncertainty is a form of readiness.' },
     actionLabel: 'Actions this week — 5 operational completions',
     actions: [
       { color: 'red', text: 'Confirm labs are submitted and reviewed by the medical team', note: 'If you haven\'t received confirmation, reach out now and confirm directly. This is a safety step — it directly affects whether your ceremony proceeds as planned.' },
@@ -566,7 +566,7 @@ export default function PreCeremonyPage() {
 
             {/* Journal prompts */}
             <div className="section">
-              <span className="section-label">Journal prompts — 2 only</span>
+              <span className="section-label">Journal prompts</span>
               <div className="prompts-list">
                 {w.prompts.map((p, pi) => {
                   const jKey = `w${i}-p${pi}`
