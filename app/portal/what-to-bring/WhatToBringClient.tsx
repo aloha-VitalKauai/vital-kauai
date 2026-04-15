@@ -113,7 +113,7 @@ export default function WhatToBringClient() {
             Your time here is an invitation to arrive fully &mdash; body, spirit, and the things that make you feel most like yourself. Pack lightly and intentionally.
           </p>
           <p style={{ fontSize: 13, color: inkLight, letterSpacing: "0.03em" }}>
-            Kaua&#699;i&rsquo;s North Shore is warm and lush, with cool mornings, afternoon rain, and everything in between. Pack accordingly.
+            Kaua&#699;i&rsquo;s North Shore is warm and lush, with afternoon rain and everything in between. Pack accordingly.
           </p>
         </div>
 
