@@ -569,7 +569,7 @@ export function PortalHomePage({
                   Membership <em>Donation</em>
                 </div>
                 <div className={styles.docDesc}>
-                  A refundable $250 membership donation applied toward your first month. Activates
+                  A refundable $250 membership donation. Activates
                   your portal immediately upon payment and is fully refundable if you choose to
                   cancel.
                 </div>
