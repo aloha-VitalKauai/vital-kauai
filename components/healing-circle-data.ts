@@ -109,7 +109,7 @@ export const members: Member[] = [
     name: "Paul Heffernan",
     role: "Plant Medicine Guide",
     cat: "plant",
-    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=80",
+    photo: "",
     shortBio:
       "Paul Heffernan is a devoted plant medicine guide bringing deep ceremonial experience and a grounded, heart-centered presence to every container he holds. His work is informed by years of practice, personal transformation, and a profound respect for the sacred intelligence of plant medicine.",
     bio: "Paul Heffernan is a devoted plant medicine guide bringing deep ceremonial experience and a grounded, heart-centered presence to every container he holds. His work is informed by years of practice, personal transformation, and a profound respect for the sacred intelligence of plant medicine.",
@@ -129,7 +129,7 @@ export const members: Member[] = [
     name: "Robyn DeBonet",
     role: "Shen Po · Seitai Shinpo Acupuncture",
     cat: "healers",
-    photo: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&q=80",
+    photo: "",
     shortBio:
       "Robyn DeBonet is a certified Seitai Shinpo acupuncturist based on Kauaʻi, holding her Silver Certificate since 2006. Seitai Shinpo is a Japanese system of acupuncture rooted in restoring the body's natural alignment and flow of life force energy. Her practice, known as Shen Po, works at the intersection of structural balance, energetic harmony, and deep nervous system restoration. Robyn brings decades of island-rooted healing wisdom to every session. Her hands carry both precision and presence in equal measure.",
     bio: "Robyn DeBonet is a certified Seitai Shinpo acupuncturist based on Kauaʻi, holding her Silver Certificate since 2006. Seitai Shinpo is a Japanese system of acupuncture rooted in restoring the body's natural alignment and flow of life force energy. Her practice, known as Shen Po, works at the intersection of structural balance, energetic harmony, and deep nervous system restoration. Robyn brings decades of island-rooted healing wisdom to every session. Her hands carry both precision and presence in equal measure.",
@@ -189,7 +189,7 @@ export const members: Member[] = [
     name: "Paul Heffernan",
     role: "BodyTalk Practitioner",
     cat: "healers",
-    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=80",
+    photo: "",
     shortBio:
       "Paul is a certified BodyTalk practitioner bringing a subtle yet profoundly effective system of whole-body healing to the Vital Kauaʻi circle. BodyTalk works by identifying and reestablishing disrupted communication pathways within the body-mind complex, allowing the innate wisdom of the body to restore balance and function. His sessions are quiet, non-invasive, and often surprising in the depth of shift they produce.",
     bio: "Paul is a certified BodyTalk practitioner bringing a subtle yet profoundly effective system of whole-body healing to the Vital Kauaʻi circle. BodyTalk works by identifying and reestablishing disrupted communication pathways within the body-mind complex, allowing the innate wisdom of the body to restore balance and function. His sessions are quiet, non-invasive, and often surprising in the depth of shift they produce.",
