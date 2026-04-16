@@ -292,7 +292,7 @@ export function AboutPage() {
             Iboga had been calling me — in my dreams, and while sitting with people. When I finally answered, something ancient and precise moved through everything I had been holding — the anger, the blame, the feeling that I was less than the mother my boys deserved. I emerged lighter. More present and authentically me.
           </p>
           <p className={styles.storyPara}>
-            That experience re-oriented me. Everything I had trained in across three decades — naturopathic medicine, transpersonal psychology, consciousness and spirituality, Tantra and other Eastern wisdom traditions, mind-body nutrition, energy work, hypnotherapy — came together as a calling into this work, with my beloved.
+            That experience re-oriented me. Everything I had trained in across three decades — naturopathic medicine, transpersonal psychology, consciousness and spirituality, Tantra and other Eastern wisdom traditions, mind-body nutrition, energy work, life coaching, hypnotherapy — came together as a calling into this work, with my beloved.
           </p>
           <p className={styles.storyPara}>
             My deepest passion is holding space for couples — helping them find their way back to each other, to feel truly safe, loved, and seen in one another&apos;s presence. I know what it is to lose that thread, and I know what it takes to find it again.
