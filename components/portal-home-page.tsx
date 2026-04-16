@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { PortalNav } from "./portal-nav";
 import PortalJourneyCard from "@/components/portal/PortalJourneyCard";
@@ -10,6 +11,8 @@ type Profile = {
   id: string;
   email: string;
   full_name: string | null;
+  intake_form_completed: boolean;
+  intake_form_completed_at: string | null;
   membership_agreement_signed: boolean;
   medical_disclaimer_signed: boolean;
   deposit_paid: boolean;
@@ -75,7 +78,7 @@ const MEDICAL_DISCLAIMER = [
 ];
 
 const PREP_ITEMS: { text: string; link?: string; external?: boolean; isLab?: boolean }[] = [
-  { text: "Sign all three required documents (Intake Form, Membership Agreement, Medical Disclaimer)" },
+  { text: "Complete all four required steps (Intake Form, Donation, Membership Agreement, Medical Disclaimer)", link: "/portal" },
   { text: "Submit your remaining love offering" },
   { text: "Read Iboga Preparedness Guide", link: "/iboga-preparedness-guide.html" },
   { text: "Book your preparation calls with your integration guide" },
@@ -204,12 +207,14 @@ export function PortalHomePage({
   const checkedCount = checkedItems.filter(Boolean).length;
   const checkPct = PREP_ITEMS.length > 0 ? Math.round((checkedCount / PREP_ITEMS.length) * 100) : 0;
 
-  // Required docs status
+  // Required steps status
+  const intakeDone = profile?.intake_form_completed ?? false;
   const donationDone = profile?.deposit_paid ?? false;
   const agreementDone = profile?.membership_agreement_signed ?? false;
   const medicalDone = profile?.medical_disclaimer_signed ?? false;
-  const allRequiredDone = donationDone && agreementDone && medicalDone;
-  const requiredCount = [donationDone, agreementDone, medicalDone].filter(Boolean).length;
+  const allRequiredDone = intakeDone && donationDone && agreementDone && medicalDone;
+  const requiredCount = [intakeDone, donationDone, agreementDone, medicalDone].filter(Boolean).length;
+  const requiredTotal = 4;
 
   const firstName = profile?.full_name?.split(" ")[0] || userEmail.split("@")[0];
   const initials = profile?.full_name
@@ -287,7 +292,12 @@ export function PortalHomePage({
       .single();
     if (data) {
       setProfile(data as Profile);
-      if (data.membership_agreement_signed && data.medical_disclaimer_signed && data.deposit_paid) {
+      if (
+        data.intake_form_completed &&
+        data.membership_agreement_signed &&
+        data.medical_disclaimer_signed &&
+        data.deposit_paid
+      ) {
         await supabase
           .from("member_profiles")
           .update({
@@ -396,22 +406,31 @@ export function PortalHomePage({
         </div>
       </section>
 
-      {/* ── REQUIRED DOCUMENTS BANNER ── */}
+      {/* ── REQUIRED STEPS BANNER ── */}
       {!allRequiredDone && (
         <div className={styles.requiredBanner}>
           <div className={styles.requiredInner}>
             <div className={styles.requiredDot} />
             <p className={styles.requiredText}>
-              <strong>Action Required &mdash;</strong> Three documents require your signature
-              before your journey begins.
+              <strong>Action Required &mdash;</strong> Four steps are required before your journey
+              begins.
             </p>
             <div className={styles.requiredLinks}>
+              {intakeDone ? (
+                <button className={`${styles.reqLink} ${styles.reqLinkSigned}`} disabled>
+                  Intake Form {"\u2713"}
+                </button>
+              ) : (
+                <Link href="/intake-form" className={styles.reqLink}>
+                  Intake Form
+                </Link>
+              )}
               <button
                 className={`${styles.reqLink} ${donationDone ? styles.reqLinkSigned : ""}`}
                 onClick={() => !donationDone && setModal("donation")}
                 disabled={donationDone}
               >
-                Intake Form{donationDone ? " \u2713" : ""}
+                Donation{donationDone ? " \u2713" : ""}
               </button>
               <button
                 className={`${styles.reqLink} ${agreementDone ? styles.reqLinkSigned : ""}`}
@@ -439,13 +458,13 @@ export function PortalHomePage({
           <div className={styles.lockedOverlay}>
             <div className={styles.lockedMessage}>
               <p className={styles.lockedIcon}>&#128274;</p>
-              <h2>Complete Your Required Documents</h2>
+              <h2>Complete Your Required Steps</h2>
               <p>
-                Finish your Intake Form, Membership Agreement, and Medical Disclaimer above to unlock
-                your full member portal.
+                Finish your Intake Form, Donation, Membership Agreement, and Medical Disclaimer above
+                to unlock your full member portal.
               </p>
               <p className={styles.lockedProgress}>
-                {requiredCount} of 3 completed
+                {requiredCount} of {requiredTotal} completed
               </p>
             </div>
           </div>
@@ -498,22 +517,65 @@ export function PortalHomePage({
           {/* PHASE 0: REQUIRED DOCUMENTS */}
           <div className={`${styles.phasePanel} ${activePhase === 0 ? styles.phasePanelActive : ""}`}>
             <div className={styles.docGrid}>
+              {intakeDone ? (
+                <div
+                  className={`${styles.docCard} ${styles.docCardCompleted} ${styles.fadeIn}`}
+                  aria-disabled="true"
+                >
+                  <div className={styles.docTitle}>
+                    Participant <em>Intake Form</em>
+                  </div>
+                  <div className={styles.docDesc}>
+                    A thorough and intimate overview of who you are and what you are bringing to this
+                    work &mdash; your intentions, personal history, somatic awareness, psycho-spiritual
+                    context, growth work you&apos;ve done, health disclosure, and informed consent.
+                    Complete this first. It opens the conversation and shapes how we hold you.
+                  </div>
+                  <div className={styles.docFooter}>
+                    <span className={`${styles.docTag} ${styles.tagRequired}`}>Complete</span>
+                    <span className={`${styles.docAction} ${styles.docActionSigned}`}>
+                      {"\u2713 Complete"}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  href="/intake-form"
+                  className={`${styles.docCard} ${styles.docCardRequired} ${styles.fadeIn}`}
+                >
+                  <div className={styles.docTitle}>
+                    Participant <em>Intake Form</em>
+                  </div>
+                  <div className={styles.docDesc}>
+                    A thorough and intimate overview of who you are and what you are bringing to this
+                    work &mdash; your intentions, personal history, somatic awareness, psycho-spiritual
+                    context, growth work you&apos;ve done, health disclosure, and informed consent.
+                    Complete this first. It opens the conversation and shapes how we hold you.
+                  </div>
+                  <div className={styles.docFooter}>
+                    <span className={`${styles.docTag} ${styles.tagRequired}`}>
+                      Completion Required
+                    </span>
+                    <span className={styles.docAction}>{"Begin \u2192"}</span>
+                  </div>
+                </Link>
+              )}
+
               <button
                 className={`${styles.docCard} ${donationDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
                 onClick={() => !donationDone && setModal("donation")}
               >
                 <div className={styles.docTitle}>
-                  Participant <em>Intake Form</em>
+                  Membership <em>Donation</em>
                 </div>
                 <div className={styles.docDesc}>
-                  A thorough and intimate overview of who you are and what you are bringing to this
-                  work &mdash; your intentions, personal history, somatic awareness, psycho-spiritual
-                  context, growth work you&apos;ve done, health disclosure, and informed consent.
-                  Complete this first. It opens the conversation and shapes how we hold you.
+                  A refundable $250 membership donation applied toward your first month. Activates
+                  your portal immediately upon payment and is fully refundable if you choose to
+                  cancel.
                 </div>
                 <div className={styles.docFooter}>
                   <span className={`${styles.docTag} ${styles.tagRequired}`}>
-                    {donationDone ? "Complete" : "Signature Required"}
+                    {donationDone ? "Complete" : "Payment Required"}
                   </span>
                   <span className={`${styles.docAction} ${donationDone ? styles.docActionSigned : ""}`}>
                     {donationDone ? "\u2713 Complete" : "Complete \u2192"}

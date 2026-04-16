@@ -382,6 +382,15 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 1px 3px var(--shadow);
+  text-align: left;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
+.docCard[aria-disabled="true"] {
+  cursor: default;
 }
 
 .docCard:hover {

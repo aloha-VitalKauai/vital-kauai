@@ -486,11 +486,43 @@ function updateProgress() {
 document.querySelectorAll('.tracked').forEach(el => { el.addEventListener('input', updateProgress); });
 const sigDate = document.getElementById('sigDate');
 if (sigDate) sigDate.value = new Date().toISOString().split('T')[0];
-function submitForm() {
+async function submitForm() {
   const acks = document.querySelectorAll('.ack-box');
   let allChecked = true;
   acks.forEach(a => { if (!a.classList.contains('checked')) allChecked = false; });
   if (!allChecked) { alert('Please confirm all acknowledgment items before submitting.'); return; }
+
+  const btn = document.querySelector('.btn-submit');
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
+
+  // Collect everything named in the form into a flat payload.
+  const formEl = document.getElementById('intakeForm');
+  const payload = {};
+  if (formEl) {
+    const fd = new FormData(formEl);
+    fd.forEach((v, k) => { payload[k] = typeof v === 'string' ? v : String(v); });
+  }
+
+  try {
+    const res = await fetch('/api/intake/complete', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      const msg = data && data.error ? data.error : 'Could not save your intake form. Please try again.';
+      alert(msg);
+      if (btn) { btn.disabled = false; btn.textContent = 'Submit Intake Form'; }
+      return;
+    }
+  } catch (err) {
+    alert('Network error. Please check your connection and try again.');
+    if (btn) { btn.disabled = false; btn.textContent = 'Submit Intake Form'; }
+    return;
+  }
+
   document.getElementById('intakeForm').style.display = 'none';
   document.getElementById('success-msg').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
