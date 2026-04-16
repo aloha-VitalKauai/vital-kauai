@@ -161,7 +161,7 @@ export function AboutPage() {
             <h2 className={`${styles.meetingTitle} ${styles.reveal}`}>
               In Humble Service
               <br />
-              <em>of Your Truest Self</em>
+              <em>of Your True Nature</em>
             </h2>
             <p className={`${styles.meetingPara} ${styles.reveal}`}>
               We found each other after a yoga class. Josh put down roots on Kaua&#699;i after years
