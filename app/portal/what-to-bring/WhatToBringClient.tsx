@@ -174,7 +174,7 @@ export default function WhatToBringClient() {
             <p style={{ fontSize: 13, color: inkLight, marginBottom: 18, lineHeight: 1.6 }}>We ask that you leave the following at home. These items interfere with the depth and safety of the work.</p>
             <ul style={{ listStyle: "none", display: "grid", gap: 8 }}>
               {[
-                { text: "Food of any kind", note: "All meals and nourishment are lovingly provided and tailored to your journey" },
+                { text: "Processed or ceremonially-restricted foods", note: "All meals are lovingly provided and tailored to your journey. You\u2019re welcome to bring healthy snacks or shop for additional foods you love at Hanalei Market \u2014 it\u2019s just minutes away." },
                 { text: "Alcohol" },
                 { text: "Plant medicines", note: "If you have questions about this, please reach out before you arrive" },
                 { text: "Additional supplements", note: "Unless essential to your health \u2014 let us know in advance" },
