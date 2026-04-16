@@ -301,8 +301,8 @@ export function AboutPage() {
             I&apos;ve learned so much from my own surrender — to Spirit, to the unknown, to the medicine, to love. That&apos;s what I bring into every space I hold. The ceremonies I&apos;m blessed to guide are known to be powerful, trustworthy, and radically transformative — weaving intention, play, and grounded spirituality into an experience that meets each person exactly where they are. I am so grateful to be of service to others&apos; awakening and homecoming — in this place, with the people I love, doing the work I was born for.
           </p>
           <div className={styles.pullPlaceholder}>
-            <p>&ldquo;[Jacque&apos;s quote goes here]&rdquo;</p>
-            <span>&mdash; Jacque [Last Name]</span>
+            <p>&ldquo;Rachel holds a space that feels so safe. She just has a magic about her and I trust her completely. I&apos;ve spent my whole life calling in healing for a deep ancestral wound, and Rachel&apos;s guidance finally brought me the freedom I&apos;ve been seeking.&rdquo;</p>
+            <span>&mdash; Jacque S.</span>
           </div>
         </div>
       </section>
