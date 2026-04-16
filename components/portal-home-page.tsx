@@ -74,13 +74,13 @@ const MEDICAL_DISCLAIMER = [
   },
 ];
 
-const PREP_ITEMS: { text: string; link?: string; external?: boolean }[] = [
+const PREP_ITEMS: { text: string; link?: string; external?: boolean; isLab?: boolean }[] = [
   { text: "Sign all three required documents (Intake Form, Membership Agreement, Medical Disclaimer)" },
   { text: "Submit your remaining love offering" },
   { text: "Read Iboga Preparedness Guide", link: "/iboga-preparedness-guide.html" },
   { text: "Book your preparation calls with your integration guide" },
   { text: "Discuss all medications and supplements with Rachel and Josh \u2014 confirm any required washout periods" },
-  { text: "Confirm required lab work with your physician and submit results", link: "/portal/physician-guide" },
+  { text: "Confirm required lab work with your physician and submit results", isLab: true },
   { text: "Begin dietary preparation protocol", link: "/portal/dietary" },
   { text: "Begin journaling", link: "/portal/integration/pre-ceremony#journal-w1" },
   { text: "Prepare your questions for the medicine", link: "/portal/questions" },
@@ -112,6 +112,7 @@ export function PortalHomePage({
 
   // Lab upload state
   const [showLabUpload, setShowLabUpload] = useState(false);
+  const [showChecklistLabUpload, setShowChecklistLabUpload] = useState(false);
   const [memberId, setMemberId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -773,27 +774,87 @@ export function PortalHomePage({
             <div className={styles.checklistBar} style={{ width: `${checkPct}%` }} />
           </div>
           <div className={styles.checklistItems}>
-            {PREP_ITEMS.map((item, i) => (
-              <div
-                key={i}
-                className={`${styles.checkItem} ${checkedItems[i] ? styles.checkItemDone : ""}`}
-                onClick={() => toggleCheck(i)}
-              >
-                <div className={styles.ciBox} />
-                <p className={styles.ciText}>{item.text}</p>
-                {item.link && (
-                  <a
-                    href={item.link}
-                    target={item.external ? "_blank" : "_self"}
-                    rel={item.external ? "noopener noreferrer" : undefined}
-                    className={styles.ciLink}
-                    onClick={(e) => e.stopPropagation()}
+            {PREP_ITEMS.flatMap((item, i) => {
+              const row = (
+                <div
+                  key={i}
+                  className={`${styles.checkItem} ${checkedItems[i] ? styles.checkItemDone : ""}`}
+                  onClick={() => toggleCheck(i)}
+                >
+                  <div className={styles.ciBox} />
+                  <p className={styles.ciText}>{item.text}</p>
+                  {item.isLab ? (
+                    <button
+                      className={styles.ciLink}
+                      style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                      onClick={(e) => { e.stopPropagation(); setShowChecklistLabUpload((v) => !v); }}
+                    >
+                      {showChecklistLabUpload ? "▾" : "→"}
+                    </button>
+                  ) : item.link ? (
+                    <a
+                      href={item.link}
+                      target={item.external ? "_blank" : "_self"}
+                      rel={item.external ? "noopener noreferrer" : undefined}
+                      className={styles.ciLink}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      →
+                    </a>
+                  ) : null}
+                </div>
+              );
+
+              if (item.isLab && showChecklistLabUpload) {
+                return [row, (
+                  <div
+                    key="checklist-lab-upload"
+                    style={{ gridColumn: "1 / -1", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(168,197,172,0.2)", borderRadius: 10, padding: "20px 24px" }}
                   >
-                    →
-                  </a>
-                )}
-              </div>
-            ))}
+                    <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.2em", color: "#A8C5AC", marginBottom: 16, fontWeight: 600 }}>
+                      Lab Requirements &amp; Medical Prep
+                    </p>
+                    <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
+                      <a
+                        href="/portal/physician-guide"
+                        style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 18px", background: "rgba(168,197,172,0.12)", border: "1px solid rgba(168,197,172,0.3)", borderRadius: 8, fontSize: 13, color: "#A8C5AC", textDecoration: "none", fontWeight: 500 }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        Physician Form →
+                      </a>
+                      <label
+                        style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 18px", background: labUploading ? "rgba(255,255,255,0.02)" : "rgba(184,149,106,0.12)", border: "1px solid rgba(184,149,106,0.3)", borderRadius: 8, fontSize: 13, color: "#C8A96E", fontWeight: 500, cursor: labUploading ? "not-allowed" : "pointer", opacity: labUploading ? 0.5 : 1 }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {labUploading ? "Uploading…" : labDoc ? "Replace Lab Results ↑" : "Upload Lab Results ↑"}
+                        <input
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png,.webp"
+                          style={{ display: "none" }}
+                          disabled={labUploading}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleLabUpload(file);
+                            e.target.value = "";
+                          }}
+                        />
+                      </label>
+                    </div>
+                    {labDoc && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 12, color: "rgba(245,240,232,0.5)" }}>
+                        <span style={{ width: 8, height: 8, borderRadius: "50%", flexShrink: 0, background: labDoc.status === "approved" ? "#1D9E75" : labDoc.status === "flagged" ? "#A32D2D" : "#378ADD" }} />
+                        <span>{labDoc.file_name}</span>
+                        <span style={{ color: labDoc.status === "approved" ? "#1D9E75" : labDoc.status === "flagged" ? "#FF9E8C" : "#378ADD" }}>
+                          {labDoc.status === "approved" ? "Approved" : labDoc.status === "flagged" ? "Needs attention" : labDoc.status === "processing" ? "Processing…" : "Under review"}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )];
+              }
+
+              return [row];
+            })}
           </div>
         </div>
 
