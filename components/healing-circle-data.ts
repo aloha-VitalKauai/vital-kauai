@@ -179,7 +179,7 @@ export const members: Member[] = [
     name: "Jenny Zoberg",
     role: "Breathwork · Yoga · Sound Healing",
     cat: "healers",
-    photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&q=80",
+    photo: "/images/jennyzoberg.jpeg",
     shortBio:
       "Jenny Zoberg is a breathwork, yoga, and sound healing facilitator who guides practices that reconnect guests with their inner world. She trained as a breathwork facilitator with David Elliott, deepened her yoga studies with Bhavani Silvia Maki, and became certified in Sound Healing through her sensitivity to vibration and harmony. In 2022 she sat a 10-day Vipassana meditation in South Africa — an experience that continues to inform how she holds space. Her sessions are breath-led and music-connected, encouraging guests to move beyond the surface into a felt experience of body, mind, and soul. She brings her full gifts to the intimate containers of Vital Kauaʻi.",
     bio: "Jenny Zoberg is a breathwork, yoga, and sound healing facilitator who guides practices that reconnect guests with their inner world. She trained as a breathwork facilitator with David Elliott, deepened her yoga studies with Bhavani Silvia Maki, and became certified in Sound Healing through her sensitivity to vibration and harmony. In 2022 she sat a 10-day Vipassana meditation in South Africa — an experience that continues to inform how she holds space. Her sessions are breath-led and music-connected, encouraging guests to move beyond the surface into a felt experience of body, mind, and soul. She brings her full gifts to the intimate containers of Vital Kauaʻi.",
