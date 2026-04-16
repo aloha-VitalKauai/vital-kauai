@@ -782,7 +782,17 @@ export function PortalHomePage({
                   onClick={() => toggleCheck(i)}
                 >
                   <div className={styles.ciBox} />
-                  <p className={styles.ciText}>{item.text}</p>
+                  <div style={{ flex: 1 }}>
+                    <p className={styles.ciText} style={{ margin: 0 }}>{item.text}</p>
+                    {item.isLab && (
+                      <button
+                        style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: 12, color: "#C8A96E", fontFamily: "inherit", marginTop: 5, display: "block", letterSpacing: "0.04em" }}
+                        onClick={(e) => { e.stopPropagation(); setShowChecklistLabUpload((v) => !v); }}
+                      >
+                        {labDoc ? `Uploaded · ${labDoc.status === "approved" ? "Approved ✓" : "Under review"}` : "Submit results →"}
+                      </button>
+                    )}
+                  </div>
                   {item.isLab ? (
                     <button
                       className={styles.ciLink}
