@@ -113,6 +113,14 @@ export function PortalHomePage({
   // Lab upload state
   const [showLabUpload, setShowLabUpload] = useState(false);
   const [memberId, setMemberId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (showLabUpload) {
+      setTimeout(() => {
+        document.getElementById("lab-upload-panel")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 50);
+    }
+  }, [showLabUpload]);
   const [labDoc, setLabDoc] = useState<{ id: string; file_name: string; status: string; uploaded_at: string } | null>(null);
   const [labUploading, setLabUploading] = useState(false);
 
@@ -569,104 +577,111 @@ export function PortalHomePage({
                 { title: "Support Person", em: "Guide", desc: "For the people at home who love you \u2014 what to expect, how to hold space from a distance, and how to support your integration when you return.", tag: "For Your Circle", tagClass: styles.tagGuide, link: "/portal/support-person" },
                 { title: "What to Bring", em: "& Leave Behind", desc: "An interactive packing checklist for island life \u2014 organized by what to carry and what to leave at home for the integrity of your work.", tag: "Packing", tagClass: styles.tagPrep, link: "/portal/what-to-bring" },
                 { title: "Baseline", em: "Check-in", desc: "A brief wellness survey that helps us understand where you are before ceremony \u2014 covering mood, anxiety, sleep, and recovery. Takes about 3 minutes.", tag: "Assessment", tagClass: styles.tagPrep, link: "/portal/outcomes/survey?tp=baseline" },
-              ].map((doc: any, i: number) => (
-                <div
-                  key={i}
-                  className={`${styles.docCard} ${styles.fadeIn}`}
-                  onClick={doc.isLab ? () => setShowLabUpload(!showLabUpload) : doc.link ? () => (window.location.href = doc.link) : undefined}
-                  style={doc.isLab || doc.link ? { cursor: "pointer" } : undefined}
-                >
-                  <div className={styles.docTitle}>
-                    {doc.title} <em>{doc.em}</em>
-                  </div>
-                  <div className={styles.docDesc}>{doc.desc}</div>
-                  <div className={styles.docFooter}>
-                    <span className={`${styles.docTag} ${doc.tagClass}`}>{doc.tag}</span>
-                    <span className={styles.docAction}>
-                      {doc.isLab
-                        ? labDoc
-                          ? `Uploaded ${showLabUpload ? "▾" : "▸"}`
-                          : `Upload ${showLabUpload ? "▾" : "▸"}`
-                        : "Open \u2192"}
-                    </span>
-                  </div>
-                </div>
-              ))}
-
-              {/* Lab Upload Panel */}
-              {showLabUpload && (
-                <div
-                  className={styles.fadeIn}
-                  style={{
-                    gridColumn: "1 / -1",
-                    background: "#1A2A1C",
-                    border: "0.5px solid rgba(168,197,172,0.15)",
-                    borderRadius: 12,
-                    padding: "1.5rem",
-                  }}
-                >
-                  <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: "#A8C5AC", marginBottom: 16, fontWeight: 500 }}>
-                    Upload Your Lab Results
-                  </p>
-
-                  {labDoc ? (
-                    <div style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.04)", borderRadius: 8, padding: "14px 16px", marginBottom: 12 }}>
-                      <span style={{
-                        width: 10, height: 10, borderRadius: "50%", flexShrink: 0,
-                        background: labDoc.status === "approved" ? "#1D9E75" : labDoc.status === "flagged" ? "#A32D2D" : labDoc.status === "processing" ? "#EF9F27" : "#378ADD",
-                      }} />
-                      <div style={{ flex: 1 }}>
-                        <p style={{ fontSize: 14, color: "#F5F0E8", fontWeight: 500, margin: 0 }}>{labDoc.file_name}</p>
-                        <p style={{ fontSize: 11, color: "#6B6B67", margin: "2px 0 0" }}>
-                          Uploaded {new Date(labDoc.uploaded_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                        </p>
-                      </div>
-                      <span style={{
-                        fontSize: 12, padding: "3px 10px", borderRadius: 99,
-                        background: labDoc.status === "approved" ? "rgba(29,158,117,0.15)" : labDoc.status === "flagged" ? "rgba(163,45,45,0.15)" : "rgba(55,138,221,0.15)",
-                        color: labDoc.status === "approved" ? "#1D9E75" : labDoc.status === "flagged" ? "#FF9E8C" : "#378ADD",
-                      }}>
-                        {labDoc.status === "approved" ? "Approved" : labDoc.status === "flagged" ? "Needs attention" : labDoc.status === "processing" ? "Processing..." : "Under review"}
+              ].flatMap((doc: any, i: number) => {
+                const card = (
+                  <div
+                    key={i}
+                    className={`${styles.docCard} ${styles.fadeIn}`}
+                    onClick={doc.isLab ? () => setShowLabUpload(!showLabUpload) : doc.link ? () => (window.location.href = doc.link) : undefined}
+                    style={doc.isLab || doc.link ? { cursor: "pointer" } : undefined}
+                  >
+                    <div className={styles.docTitle}>
+                      {doc.title} <em>{doc.em}</em>
+                    </div>
+                    <div className={styles.docDesc}>{doc.desc}</div>
+                    <div className={styles.docFooter}>
+                      <span className={`${styles.docTag} ${doc.tagClass}`}>{doc.tag}</span>
+                      <span className={styles.docAction}>
+                        {doc.isLab
+                          ? labDoc
+                            ? `Uploaded ${showLabUpload ? "▾" : "▸"}`
+                            : `Upload ${showLabUpload ? "▾" : "▸"}`
+                          : "Open \u2192"}
                       </span>
                     </div>
-                  ) : null}
+                  </div>
+                );
 
-                  <label
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 8,
-                      background: labUploading ? "rgba(255,255,255,0.02)" : "rgba(168,197,172,0.08)",
-                      border: "1px dashed rgba(168,197,172,0.25)",
-                      borderRadius: 8,
-                      padding: "20px",
-                      cursor: labUploading ? "not-allowed" : "pointer",
-                      opacity: labUploading ? 0.5 : 1,
-                      transition: "all 0.15s",
-                    }}
-                  >
-                    <span style={{ fontSize: 14, color: "#A8C5AC", fontWeight: 500 }}>
-                      {labUploading ? "Uploading..." : labDoc ? "Replace with new document" : "Choose file to upload"}
-                    </span>
-                    <input
-                      type="file"
-                      accept=".pdf,.jpg,.jpeg,.png,.webp"
-                      style={{ display: "none" }}
-                      disabled={labUploading}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) handleLabUpload(file);
-                        e.target.value = "";
+                if (doc.isLab && showLabUpload) {
+                  return [card, (
+                    <div
+                      key="lab-upload"
+                      id="lab-upload-panel"
+                      className={styles.fadeIn}
+                      style={{
+                        gridColumn: "1 / -1",
+                        background: "#1A2A1C",
+                        border: "0.5px solid rgba(168,197,172,0.15)",
+                        borderRadius: 12,
+                        padding: "1.5rem",
                       }}
-                    />
-                  </label>
+                    >
+                      <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: "#A8C5AC", marginBottom: 16, fontWeight: 500 }}>
+                        Upload Your Lab Results
+                      </p>
 
-                  <p style={{ fontSize: 11, color: "#6B6B67", marginTop: 14, lineHeight: 1.6 }}>
-                    Upload the lab results document from your doctor as a single PDF or image. Our medical team will review the results and extract the required values (EKG, thyroid, liver, magnesium, cardiac, CYP450, CMP) internally.
-                  </p>
-                </div>
-              )}
+                      {labDoc ? (
+                        <div style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.04)", borderRadius: 8, padding: "14px 16px", marginBottom: 12 }}>
+                          <span style={{
+                            width: 10, height: 10, borderRadius: "50%", flexShrink: 0,
+                            background: labDoc.status === "approved" ? "#1D9E75" : labDoc.status === "flagged" ? "#A32D2D" : labDoc.status === "processing" ? "#EF9F27" : "#378ADD",
+                          }} />
+                          <div style={{ flex: 1 }}>
+                            <p style={{ fontSize: 14, color: "#F5F0E8", fontWeight: 500, margin: 0 }}>{labDoc.file_name}</p>
+                            <p style={{ fontSize: 11, color: "#6B6B67", margin: "2px 0 0" }}>
+                              Uploaded {new Date(labDoc.uploaded_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                            </p>
+                          </div>
+                          <span style={{
+                            fontSize: 12, padding: "3px 10px", borderRadius: 99,
+                            background: labDoc.status === "approved" ? "rgba(29,158,117,0.15)" : labDoc.status === "flagged" ? "rgba(163,45,45,0.15)" : "rgba(55,138,221,0.15)",
+                            color: labDoc.status === "approved" ? "#1D9E75" : labDoc.status === "flagged" ? "#FF9E8C" : "#378ADD",
+                          }}>
+                            {labDoc.status === "approved" ? "Approved" : labDoc.status === "flagged" ? "Needs attention" : labDoc.status === "processing" ? "Processing..." : "Under review"}
+                          </span>
+                        </div>
+                      ) : null}
+
+                      <label
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 8,
+                          background: labUploading ? "rgba(255,255,255,0.02)" : "rgba(168,197,172,0.08)",
+                          border: "1px dashed rgba(168,197,172,0.25)",
+                          borderRadius: 8,
+                          padding: "20px",
+                          cursor: labUploading ? "not-allowed" : "pointer",
+                          opacity: labUploading ? 0.5 : 1,
+                          transition: "all 0.15s",
+                        }}
+                      >
+                        <span style={{ fontSize: 14, color: "#A8C5AC", fontWeight: 500 }}>
+                          {labUploading ? "Uploading..." : labDoc ? "Replace with new document" : "Choose file to upload"}
+                        </span>
+                        <input
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png,.webp"
+                          style={{ display: "none" }}
+                          disabled={labUploading}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleLabUpload(file);
+                            e.target.value = "";
+                          }}
+                        />
+                      </label>
+
+                      <p style={{ fontSize: 11, color: "#6B6B67", marginTop: 14, lineHeight: 1.6 }}>
+                        Upload the lab results document from your doctor as a single PDF or image. Our medical team will review the results and extract the required values (EKG, thyroid, liver, magnesium, cardiac, CYP450, CMP) internally.
+                      </p>
+                    </div>
+                  )];
+                }
+
+                return [card];
+              })}
             </div>
           </div>
 
