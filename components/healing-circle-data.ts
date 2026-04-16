@@ -169,7 +169,7 @@ export const members: Member[] = [
     name: "Samantha Nordstrom",
     role: "Sound Healing · Hatha Yoga · Reiki",
     cat: "healers",
-    photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&q=80",
+    photo: "/images/samanthanordstrom.jpeg",
     shortBio:
       "Samantha Nordstrom's offering is intuitive and heart-led, born from her own deep healing journey. She draws on yoga, meditation, breathwork, Reiki, and the power of crystal sound bowls to bring guests into a deeply restorative, meditative state of being. Her offerings are a blend of nourishing movement and soothing sounds — each session a loving prayer and an invitation to joy. Sam is inspired by the power of each unique individual to access wholeness through ancient practices. She brings her gifts to Vital Kauaʻi as a devoted member of the healing circle.",
     bio: "Samantha Nordstrom's teaching is intuitive and heart-led, born from her own deep healing journey. She draws on yoga, meditation, breathwork, Reiki, and the power of crystal sound bowls to bring guests into a deeply restorative, meditative state of being. Her offerings are a blend of nourishing movement and soothing sounds — each session a loving prayer and an invitation to joy. Sam is inspired by the power of each unique individual to access wholeness through ancient practices. She brings her gifts to Vital Kauaʻi as a devoted member of the healing circle.",
