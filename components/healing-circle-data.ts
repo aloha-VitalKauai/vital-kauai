@@ -139,7 +139,7 @@ export const members: Member[] = [
     name: "Lizzy Benson",
     role: "Yoga · Somatic Bodywork · Lymphatic",
     cat: "healers",
-    photo: "https://images.unsplash.com/photo-1583864697784-a0efc8379f70?w=300&q=80",
+    photo: "/images/lizzybenson.jpeg",
     shortBio:
       "Lizzy Benson's relationship with yoga reaches all the way back to childhood, deepening into a devoted healing path after a pivotal period of personal transformation. She holds over 800 hours of yoga training and is a licensed massage therapist, certified posture educator, and birth doula. Her offerings weave yoga, somatic bodywork, and lymphatic support into a holistic and fully embodied practice. Each session is a cocktail of self-inquiry, functional movement, and playful sequencing. Her teaching mantra is simple: teach to learn.",
     bio: "Lizzy Benson's relationship with yoga reaches all the way back to childhood, deepening into a devoted healing path after a pivotal period of personal transformation. She holds over 800 hours of yoga training and is a licensed massage therapist, certified posture educator, and birth doula. Her offerings weave yoga, somatic bodywork, and lymphatic support into a holistic and fully embodied practice. Each session is a cocktail of self-inquiry, functional movement, and playful sequencing. Her teaching mantra is simple: teach to learn.",
