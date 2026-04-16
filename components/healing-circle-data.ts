@@ -149,7 +149,7 @@ export const members: Member[] = [
     name: "Dorothea Barth-Jorgensen",
     role: "Sound Healing · Breathwork · Cacao Ceremony",
     cat: "healers",
-    photo: "https://images.unsplash.com/photo-1499996860823-5214fcc65f8f?w=300&q=80",
+    photo: "/images/dorothea.jpeg",
     shortBio:
       "Dorothea Barth-Jorgensen is deeply devoted to helping others remember their true nature — the wholesome, joyous, and creatively connected essence that flows from Source itself. She trained in Breathwork Levels 1–3 with David Elliott and is a certified Sound Healer through The Soul of Yoga in Encinitas. Her approach is gentle yet profound — rooted in compassion, curiosity, and the belief that true healing arises through surrender, not force. Since 2022 she has called Kauaʻi home, offering workshops, private sessions, and shamanic cacao ceremony. Her work has been shared at Soho House, The Mindry, and healing spaces across the world.",
     bio: "Dorothea Barth-Jorgensen is deeply devoted to helping others remember their true nature — the wholesome, joyous, and creatively connected essence that flows from Source itself. She trained in Breathwork Levels 1–3 with David Elliott and is a certified Sound Healer through The Soul of Yoga in Encinitas. Her approach is gentle yet profound — rooted in compassion, curiosity, and the belief that true healing arises through surrender, not force. Since 2022 she has called Kauaʻi home, offering workshops, private sessions, and shamanic cacao ceremony. Her work has been shared at Soho House, The Mindry, and healing spaces across the world.",
@@ -199,7 +199,7 @@ export const members: Member[] = [
     name: "Kurtis Kunesh",
     role: "Deep Tissue Massage",
     cat: "healers",
-    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=80",
+    photo: "/images/kurtiskunesh.jpeg",
     shortBio:
       "Kurtis Kunesh brings skilled, therapeutic deep tissue massage to the Vital Kauaʻi circle. His work goes beneath surface tension to address the deeper layers of muscle and connective tissue, releasing chronic holding patterns and restoring ease of movement throughout the body. Kurtis combines strong technique with attentive presence, meeting each person exactly where they are.",
     bio: "Kurtis Kunesh brings skilled, therapeutic deep tissue massage to the Vital Kauaʻi circle. His work goes beneath surface tension to address the deeper layers of muscle and connective tissue, releasing chronic holding patterns and restoring ease of movement throughout the body. Kurtis combines strong technique with attentive presence, meeting each person exactly where they are.",
