@@ -199,7 +199,7 @@ export const members: Member[] = [
     name: "Kurtis Kunesh",
     role: "Deep Tissue Massage",
     cat: "healers",
-    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=80",
+    photo: "/images/kurtiskunesh.jpeg",
     shortBio:
       "Kurtis Kunesh brings skilled, therapeutic deep tissue massage to the Vital Kauaʻi circle. His work goes beneath surface tension to address the deeper layers of muscle and connective tissue, releasing chronic holding patterns and restoring ease of movement throughout the body. Kurtis combines strong technique with attentive presence, meeting each person exactly where they are.",
     bio: "Kurtis Kunesh brings skilled, therapeutic deep tissue massage to the Vital Kauaʻi circle. His work goes beneath surface tension to address the deeper layers of muscle and connective tissue, releasing chronic holding patterns and restoring ease of movement throughout the body. Kurtis combines strong technique with attentive presence, meeting each person exactly where they are.",
