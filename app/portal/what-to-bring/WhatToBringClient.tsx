@@ -41,7 +41,6 @@ const sageSoft = "#C8DAC9";
 const gold = "#8B6914";
 const goldBg = "#F5F0E4";
 const rose = "#B56B5A";
-const roseBg = "#F5EDEB";
 const warmWhite = "#FDFAF6";
 
 function CheckSvg() {
@@ -157,17 +156,6 @@ export default function WhatToBringClient() {
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: rose, flexShrink: 0 }} />
             <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 400, letterSpacing: "0.03em" }}>Journey-Specific Items</h2>
             <div style={{ flex: 1, height: 1, background: border }} />
-          </div>
-
-          <div style={{ background: roseBg, borderLeft: `3px solid ${rose}`, borderRadius: 8, padding: "20px 24px", marginBottom: 16 }}>
-            <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 500, marginBottom: 10, letterSpacing: "0.02em" }}>Sacred Intimacy Journey</h3>
-            <p style={{ fontSize: 13.5, lineHeight: 1.65, color: inkLight }}>For those arriving for Sacred Intimacy work, the following personal items support your comfort and full presence.</p>
-            <ul style={{ marginTop: 10, paddingLeft: 18, fontSize: 13.5, color: inkLight, lineHeight: 1.8 }}>
-              <li>Personal robe &mdash; for transitions between sessions and moments of rest</li>
-              <li>Massage oil and personal lubricant</li>
-              <li>&ldquo;Goddess / God&rdquo; clothing for rituals and celebrations<span style={{ display: "block", fontSize: 12, color: inkLight, fontStyle: "italic", marginTop: 2 }}>Bring whatever makes you feel radiant, powerful, and fully yourself</span></li>
-              <li>Fun makeup, adornments, and bling</li>
-            </ul>
           </div>
 
           <div style={{ background: goldBg, borderLeft: `3px solid ${gold}`, borderRadius: 8, padding: "20px 24px", marginBottom: 16 }}>
