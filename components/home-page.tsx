@@ -293,7 +293,18 @@ export function HomePage() {
 
       <div className={styles.heroWrap}>
         <section id="hero" className={styles.hero}>
-          <video autoPlay muted loop playsInline className={styles.heroVideo} />
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster="/images/hanalei2.jpg"
+            className={styles.heroVideo}
+          >
+            <source src="/videos/hero-loop.webm" type="video/webm" />
+            <source src="/videos/hero-loop.mp4" type="video/mp4" />
+          </video>
           <div className={styles.heroBgFallback} />
           <div className={styles.particles}>
             {particles.map((particle) => (
@@ -311,14 +322,6 @@ export function HomePage() {
               />
             ))}
           </div>
-          <Image
-            src="/images/hanalei2.jpg"
-            alt="Nāpali Coast, Kauaʻi"
-            fill
-            priority
-            sizes="100vw"
-            className={styles.heroImage}
-          />
           <div className={styles.heroOverlay} />
           <div className={styles.heroContent}>
             <p className={styles.heroEyebrow}>A Living Sanctuary</p>
