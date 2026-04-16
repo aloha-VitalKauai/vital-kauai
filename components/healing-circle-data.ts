@@ -159,7 +159,7 @@ export const members: Member[] = [
     name: "Mary Mailhot",
     role: "Kundalini · Hatha Yoga · Sound · Reiki",
     cat: "healers",
-    photo: "https://images.unsplash.com/photo-1487309078313-fad80c3ec1e5?w=300&q=80",
+    photo: "/images/marymailhot.jpeg",
     shortBio:
       "Born into a world of music and movement, Mary Mailhot grew up singing and dancing as a way of life. Now a trained musician, dancer, devoted yogi, and mother, she blends the sacred arts of Kundalini, Hatha, and Bhakti yoga with mantra, sound, and embodied flow. Her training includes a 220-hour Kundalini certification, 200-hour Kripalu Hatha, 100-hour Advanced Anusara, Yin Yoga, and Reiki Master. As a recording artist, she has released three albums including the Kundalini mantra album Angels and Space under the name MM'Honey. Her sessions are a living prayer — an invitation to radical self-love and inner radiance.",
     bio: "Born into a world of music and movement, Mary Mailhot grew up singing and dancing as a way of life. Now a trained musician, dancer, devoted yogi, and mother, she blends the sacred arts of Kundalini, Hatha, and Bhakti yoga with mantra, sound, and embodied flow. Her training includes a 220-hour Kundalini certification, 200-hour Kripalu Hatha, 100-hour Advanced Anusara, Yin Yoga, and Reiki Master. As a recording artist, she has released three albums including the Kundalini mantra album Angels and Space under the name MM'Honey. Her sessions are a living prayer — an invitation to radical self-love and inner radiance.",
