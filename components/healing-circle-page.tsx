@@ -244,7 +244,11 @@ export function HealingCirclePage() {
                   }}
                 >
                   <div className={styles.photoRing}>
-                    <Image src={member.photo} alt={member.name} width={110} height={110} loading="lazy" />
+                    {member.photo ? (
+                      <Image src={member.photo} alt={member.name} width={110} height={110} loading="lazy" />
+                    ) : (
+                      <span className={styles.photoPlaceholder}>Photo coming soon</span>
+                    )}
                   </div>
                   <p className={styles.cardName}>{member.name}</p>
                   <p className={styles.cardRole}>{member.role}</p>
@@ -262,7 +266,11 @@ export function HealingCirclePage() {
                         ✕
                       </button>
                       <div className={styles.bioRowPhoto}>
-                        <Image src={activeMember.photo} alt={activeMember.name} width={130} height={130} />
+                        {activeMember.photo ? (
+                          <Image src={activeMember.photo} alt={activeMember.name} width={130} height={130} />
+                        ) : (
+                          <span className={styles.photoPlaceholder}>Photo coming soon</span>
+                        )}
                       </div>
                       <div>
                         <span className={styles.bioRowCat}>{activeCategoryLabel}</span>
