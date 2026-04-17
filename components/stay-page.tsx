@@ -1368,7 +1368,7 @@ const BODY_CONTENT = `
             <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Preparation</span>
           </div>
           <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Time on the Land & in the Water</h3>
-          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">Time in nature, on the bay, in the rivers. Body and spirit readied for what follows.</p>
+          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">Time in nature, on the bay, in the rivers, a guided walk along the Nā Pali Coast. Body and spirit readied for what follows.</p>
         </div>
       </div>
 
