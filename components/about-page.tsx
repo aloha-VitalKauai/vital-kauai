@@ -289,7 +289,7 @@ export function AboutPage() {
             A corporate career that hollowed my soul. A debilitating autoimmune condition. And then the completion of a seventeen-year relationship — the greatest unraveling of my life. I became a single mother, carrying the weight of what felt like failure, resentment I didn&apos;t know what to do with, and a grief so heavy I knew my boys could feel it too.
           </p>
           <p className={styles.storyPara}>
-            Iboga had been calling me — in my dreams, and while facilitating containers. When I finally answered, something ancient and precise moved through everything I had been holding — the anger, the blame, the feeling that I was less than the mother my boys deserved. I emerged lighter. More present and authentically me.
+            Iboga had been calling me — in my dreams, and while facilitating containers. When I finally answered, something ancient and precise moved through everything I had been holding — the anger, the blame, the feeling that I was less than the mother my boys deserved. I emerged lighter — more present and authentically me.
           </p>
           <p className={styles.storyPara}>
             That experience re-oriented me. Everything I had trained in across three decades — naturopathic medicine, transpersonal psychology, consciousness and spirituality, Tantra and other Eastern wisdom traditions, mind-body nutrition, energy work, life coaching, hypnotherapy — came together as a calling into this work, with my beloved.
