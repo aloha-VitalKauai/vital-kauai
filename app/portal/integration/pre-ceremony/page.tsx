@@ -606,7 +606,7 @@ export default function PreCeremonyPage() {
                     <div className="rg-title">Readiness confirmation — complete before arrival</div>
                   </div>
                   <div className="rg-body">
-                    {['Lab results submitted and confirmed reviewed by medical team','Baseline Wellbeing Check-in completed','Preparation call completed with Rachel & Josh','Readiness confirmed by your integration guide'].map((txt, ri) => (
+                    {['Lab results submitted and confirmed reviewed by medical team','Baseline Wellbeing Check-in completed','Preparation call completed with Rachel & Josh'].map((txt, ri) => (
                       <div className="rg-item" key={ri}>
                         <div className={`rg-check${checklist[`rg-${ri}`] ? ' checked' : ''}`} onClick={() => toggleCheck(`rg-${ri}`)}>
                           <span className="rg-check-icon">✓</span>
