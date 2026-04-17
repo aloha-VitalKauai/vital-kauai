@@ -80,7 +80,7 @@ const MEDICAL_DISCLAIMER = [
 const STRIPE_LOVE_OFFERING_URL = "https://buy.stripe.com/test_cNi4gzcoG3ZBeQUcmZbo400";
 
 const PREP_ITEMS: { text: string; link?: string; external?: boolean; isLab?: boolean }[] = [
-  { text: "Complete all four required steps (Intake Form, Donation, Membership Agreement, Medical Disclaimer)", link: "/portal" },
+  { text: "Complete all three required steps (Donation, Membership Agreement, Medical Disclaimer)", link: "/portal" },
   { text: "Submit your Love Offering / Membership Donation", link: STRIPE_LOVE_OFFERING_URL, external: true },
   { text: "Read Iboga Preparedness Guide", link: "/iboga-preparedness-guide.html" },
   { text: "Book your preparation calls with your integration guide" },
@@ -210,13 +210,12 @@ export function PortalHomePage({
   const checkPct = PREP_ITEMS.length > 0 ? Math.round((checkedCount / PREP_ITEMS.length) * 100) : 0;
 
   // Required steps status
-  const intakeDone = profile?.intake_form_completed ?? false;
   const donationDone = profile?.deposit_paid ?? false;
   const agreementDone = profile?.membership_agreement_signed ?? false;
   const medicalDone = profile?.medical_disclaimer_signed ?? false;
-  const allRequiredDone = intakeDone && donationDone && agreementDone && medicalDone;
-  const requiredCount = [intakeDone, donationDone, agreementDone, medicalDone].filter(Boolean).length;
-  const requiredTotal = 4;
+  const allRequiredDone = donationDone && agreementDone && medicalDone;
+  const requiredCount = [donationDone, agreementDone, medicalDone].filter(Boolean).length;
+  const requiredTotal = 3;
 
   const firstName = profile?.full_name?.split(" ")[0] || userEmail.split("@")[0];
   const initials = profile?.full_name
@@ -295,7 +294,6 @@ export function PortalHomePage({
     if (data) {
       setProfile(data as Profile);
       if (
-        data.intake_form_completed &&
         data.membership_agreement_signed &&
         data.medical_disclaimer_signed &&
         data.deposit_paid
@@ -416,19 +414,10 @@ export function PortalHomePage({
           <div className={styles.requiredInner}>
             <div className={styles.requiredDot} />
             <p className={styles.requiredText}>
-              <strong>Action Required &mdash;</strong> Four steps are required before your journey
+              <strong>Action Required &mdash;</strong> Three steps are required before your journey
               begins.
             </p>
             <div className={styles.requiredLinks}>
-              {intakeDone ? (
-                <button className={`${styles.reqLink} ${styles.reqLinkSigned}`} disabled>
-                  Intake Form {"\u2713"}
-                </button>
-              ) : (
-                <Link href="/intake-form" className={styles.reqLink}>
-                  Intake Form
-                </Link>
-              )}
               <button
                 className={`${styles.reqLink} ${donationDone ? styles.reqLinkSigned : ""}`}
                 onClick={() => {
@@ -467,7 +456,7 @@ export function PortalHomePage({
               <p className={styles.lockedIcon}>&#128274;</p>
               <h2>Complete Your Required Steps</h2>
               <p>
-                Finish your Intake Form, Donation, Membership Agreement, and Medical Disclaimer above
+                Finish your Donation, Membership Agreement, and Medical Disclaimer above
                 to unlock your full member portal.
               </p>
               <p className={styles.lockedProgress}>
@@ -525,50 +514,6 @@ export function PortalHomePage({
           {/* PHASE 0: REQUIRED DOCUMENTS */}
           <div className={`${styles.phasePanel} ${activePhase === 0 ? styles.phasePanelActive : ""}`}>
             <div className={styles.docGrid}>
-              {intakeDone ? (
-                <div
-                  className={`${styles.docCard} ${styles.docCardCompleted} ${styles.fadeIn}`}
-                  aria-disabled="true"
-                >
-                  <div className={styles.docTitle}>
-                    Participant <em>Intake Form</em>
-                  </div>
-                  <div className={styles.docDesc}>
-                    A thorough and intimate overview of who you are and what you are bringing to this
-                    work &mdash; your intentions, personal history, somatic awareness, psycho-spiritual
-                    context, growth work you&apos;ve done, health disclosure, and informed consent.
-                    Complete this first. It opens the conversation and shapes how we hold you.
-                  </div>
-                  <div className={styles.docFooter}>
-                    <span className={`${styles.docTag} ${styles.tagRequired}`}>Complete</span>
-                    <span className={`${styles.docAction} ${styles.docActionSigned}`}>
-                      {"\u2713 Complete"}
-                    </span>
-                  </div>
-                </div>
-              ) : (
-                <Link
-                  href="/intake-form"
-                  className={`${styles.docCard} ${styles.docCardRequired} ${styles.fadeIn}`}
-                >
-                  <div className={styles.docTitle}>
-                    Participant <em>Intake Form</em>
-                  </div>
-                  <div className={styles.docDesc}>
-                    A thorough and intimate overview of who you are and what you are bringing to this
-                    work &mdash; your intentions, personal history, somatic awareness, psycho-spiritual
-                    context, growth work you&apos;ve done, health disclosure, and informed consent.
-                    Complete this first. It opens the conversation and shapes how we hold you.
-                  </div>
-                  <div className={styles.docFooter}>
-                    <span className={`${styles.docTag} ${styles.tagRequired}`}>
-                      Completion Required
-                    </span>
-                    <span className={styles.docAction}>{"Begin \u2192"}</span>
-                  </div>
-                </Link>
-              )}
-
               <button
                 className={`${styles.docCard} ${donationDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
                 onClick={() => {
