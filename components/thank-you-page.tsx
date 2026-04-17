@@ -33,9 +33,11 @@ export function ThankYouPage() {
           <Link href="/portal" className={styles.btnPrimary}>
             Return to Member Portal
           </Link>
-          <Link href="/portal/community" className={styles.btnSecondary}>
+          {/* Gatherings CTA hidden until the Community section is ready.
+              Restore by uncommenting the Link below. */}
+          {/* <Link href="/portal/community" className={styles.btnSecondary}>
             View Upcoming Gatherings
-          </Link>
+          </Link> */}
         </div>
 
         <p className={styles.disclaimer}>
