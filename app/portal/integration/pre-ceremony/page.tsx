@@ -27,7 +27,7 @@ const WEEKS = [
     box: { type: 'info', label: 'The most important safety factor is your honesty.', text: 'Your labs, your diet, and your supplement plan all matter—but it\'s your willingness to see yourself clearly that shapes how the medicine meets you. Iboga brings truth to the surface. When you arrive having already begun that process with yourself, the experience becomes something you can move through with awareness. This is how the medicine meets you.' },
     actionLabel: 'Actions this week — 3 only',
     actions: [
-      { color: 'blue', text: 'Sign all three required documents — Intake Form, Membership Agreement, Medical Disclaimer', note: 'Each document is an act of commitment. Read them with care. The Intake Form in particular is an act of self-honesty — complete it that way.' },
+      { color: 'blue', text: 'Sign both required documents — Membership Agreement, Medical Disclaimer', note: 'Each document is an act of commitment. Read them with care.' },
       { color: 'blue', text: 'Submit your love offering', note: 'Your donation completes the container. It signals to your nervous system: I have chosen this. I am in.' },
       { color: 'blue', text: 'Read "Understanding Iboga" and "What Iboga Works On" in your Preparedness Guide', note: 'Begin an honest relationship with what you\'re stepping into.' },
     ],
