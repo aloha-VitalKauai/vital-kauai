@@ -29,7 +29,7 @@ const WEEKS = [
     theme: 'Unity',
     eyebrow: 'Week 1 · LŌKAHI · Unity',
     title: 'The medicine is still\nmoving in you.',
-    subtitle: 'Let it.',
+    subtitle: '',
     intro: 'Lōkahi means unity — the integration of all that was shown into the whole of who you are. This week asks almost nothing of you except presence. Rest after ceremony is active integration. Your nervous system is processing at a depth you cannot fully feel or measure. Trust it.',
     safetyNote: {
       type: 'gold',
@@ -659,7 +659,7 @@ export default function PostCeremonyPage() {
 
             <div>
               <span className="wh-eyebrow">{w.eyebrow}</span>
-              <h2 className="wh-title">{w.title}<br /><em>{w.subtitle}</em></h2>
+              <h2 className="wh-title">{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</h2>
               <p className="wh-sub">{w.intro}</p>
             </div>
 
