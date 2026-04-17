@@ -375,6 +375,7 @@ export default function PreCeremonyPage() {
         .video-primer { background:var(--forest);padding:24px 28px;display:flex;align-items:center;gap:20px; }
         .vp-play { width:44px;height:44px;border-radius:50%;border:1px solid rgba(168,197,172,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer; }
         .vp-play-icon { color:var(--sage-lt);font-size:14px;margin-left:3px; }
+        .vp-coming-soon { margin-top:12px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.04em;color:var(--gold); }
         .vp-label { font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:6px; }
         .vp-text { font-size:13.5px;color:rgba(245,240,232,.75);line-height:1.7; }
         .vp-text em { font-style:italic;color:var(--cream); }
@@ -536,6 +537,7 @@ export default function PreCeremonyPage() {
                   <div>
                     <div className="vp-label">{w.video.label}</div>
                     <div className="vp-text">{w.video.text}</div>
+                    <div className="vp-coming-soon">Coming Soon</div>
                   </div>
                 </div>
               </div>
