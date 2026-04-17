@@ -77,9 +77,11 @@ const MEDICAL_DISCLAIMER = [
   },
 ];
 
+const STRIPE_LOVE_OFFERING_URL = "https://buy.stripe.com/test_cNi4gzcoG3ZBeQUcmZbo400";
+
 const PREP_ITEMS: { text: string; link?: string; external?: boolean; isLab?: boolean }[] = [
   { text: "Complete all four required steps (Intake Form, Donation, Membership Agreement, Medical Disclaimer)", link: "/portal" },
-  { text: "Submit your remaining love offering" },
+  { text: "Submit your remaining love offering", link: STRIPE_LOVE_OFFERING_URL, external: true },
   { text: "Read Iboga Preparedness Guide", link: "/iboga-preparedness-guide.html" },
   { text: "Book your preparation calls with your integration guide" },
   { text: "Discuss all medications and supplements with Rachel and Josh \u2014 confirm any required washout periods" },
@@ -563,7 +565,10 @@ export function PortalHomePage({
 
               <button
                 className={`${styles.docCard} ${donationDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
-                onClick={() => !donationDone && setModal("donation")}
+                onClick={() => {
+                  if (donationDone) return;
+                  window.open(STRIPE_LOVE_OFFERING_URL, "_blank", "noopener,noreferrer");
+                }}
               >
                 <div className={styles.docTitle}>
                   Membership <em>Donation</em>
@@ -845,7 +850,21 @@ export function PortalHomePage({
                 >
                   <div className={styles.ciBox} />
                   <div style={{ flex: 1 }}>
-                    <p className={styles.ciText} style={{ margin: 0 }}>{item.text}</p>
+                    <p className={styles.ciText} style={{ margin: 0 }}>
+                      {item.link && item.external ? (
+                        <a
+                          href={item.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: "inherit", textDecoration: "none", borderBottom: "1px dashed rgba(200,169,110,0.45)", paddingBottom: 1 }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {item.text}
+                        </a>
+                      ) : (
+                        item.text
+                      )}
+                    </p>
                     {item.isLab && (
                       <button
                         style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: 12, color: "#C8A96E", fontFamily: "inherit", marginTop: 5, display: "block", letterSpacing: "0.04em" }}
