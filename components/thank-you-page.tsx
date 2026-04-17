@@ -19,25 +19,22 @@ export function ThankYouPage() {
 
         <div className={styles.body}>
           <p>
-            Your generosity helps make this community possible &mdash; the gatherings, the
-            teachings, the space we hold together for one another and for Nature.
+            Your gift supports the ministry and the sacred work unfolding here on Kaua&#699;i.
           </p>
           <p>
             A receipt is on its way to your inbox. If you don&rsquo;t see it within a few
             minutes, please check your spam folder.
           </p>
-          <p>We&rsquo;re grateful you&rsquo;re here. See you at the next gathering.</p>
+          <p>We&rsquo;re honored to hold space for you. We&rsquo;ll see you soon.</p>
         </div>
 
         <div className={styles.actions}>
           <Link href="/portal" className={styles.btnPrimary}>
             Return to Member Portal
           </Link>
-          {/* Gatherings CTA hidden until the Community section is ready.
-              Restore by uncommenting the Link below. */}
-          {/* <Link href="/portal/community" className={styles.btnSecondary}>
-            View Upcoming Gatherings
-          </Link> */}
+          <Link href="/portal#upcoming-ceremony" className={styles.btnSecondary}>
+            View Upcoming Ceremony Dates
+          </Link>
         </div>
 
         <p className={styles.disclaimer}>

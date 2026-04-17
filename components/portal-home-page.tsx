@@ -404,7 +404,9 @@ export function PortalHomePage({
               where you are in the arc of your transformation.
             </p>
           </div>
-          <PortalJourneyCard />
+          <div id="upcoming-ceremony">
+            <PortalJourneyCard />
+          </div>
         </div>
       </section>
 
