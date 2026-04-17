@@ -115,7 +115,7 @@ const WEEKS = [
       { color: 'blue', text: 'Complete the What to Bring packing checklist', note: 'Practical, yes — and also a ritualized act of arrival. Let the packing be intentional.' },
     ],
     prompts: PRE_CEREMONY_WEEKS[4].prompts,
-    thread: 'The forgiveness work you begin here continues in ceremony and for months afterward. Begin it this week — the medicine will carry it forward from wherever you start. One week remains. Next week you arrive.',
+    thread: 'The forgiveness work you begin here continues in ceremony and for months afterward. Begin it this week — the medicine will carry it forward from wherever you start. One week remains.',
   },
   {
     id: 5,
