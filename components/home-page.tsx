@@ -359,7 +359,7 @@ export function HomePage() {
               <div className={styles.playCircle}>
                 <div className={styles.playTriangle} />
               </div>
-              <p className={styles.videoLabel}>Rachel & Josh · Our Story</p>
+              <p className={styles.videoLabel}>Welcome to Vital Kaua&#699;i</p>
               <p className={styles.videoComingSoon}>Coming Soon</p>
             </div>
             <div>
