@@ -481,6 +481,7 @@ export function PortalHomePage({
         <div className={styles.videoBlock}>
           <div className={styles.videoWrap}>
             <div className={styles.videoPlay}>&#9654;</div>
+            <span className={styles.videoComingSoon}>Coming Soon</span>
             <span className={styles.videoLabel}>A Message from Rachel &amp; Josh</span>
           </div>
           <div className={styles.videoContent}>

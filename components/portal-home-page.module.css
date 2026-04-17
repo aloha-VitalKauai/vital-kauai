@@ -739,6 +739,19 @@
   font-weight: 500;
 }
 
+.videoComingSoon {
+  position: absolute;
+  top: calc(50% + 60px);
+  left: 50%;
+  transform: translate(-50%, 0);
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  color: rgb(245 240 232 / 0.88);
+  pointer-events: none;
+}
+
 .videoContent {
   background: var(--cream);
   padding: 48px 40px;
