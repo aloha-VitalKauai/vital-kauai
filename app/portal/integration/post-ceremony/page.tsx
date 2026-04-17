@@ -151,11 +151,11 @@ const WEEKS = [
     subtitle: 'This is who you are now.',
     carryForward: 'You have moved through the full arc — from the raw tenderness of emergence to the relational work of week five. This final week is a transition from active integration into sustained living.',
     intro: 'Pono means right relationship — with yourself, with others, with the life you are building. Week six marks the close of the intensive integration window and the opening of a longer, quieter arc. The medicine\'s most dramatic effects have passed, but its work continues — in your dreams, your relationships, your daily choices, and in the moments you catch yourself responding differently than you used to.',
-    video: { label: 'A Message from Rachel & Josh · Week 6', text: 'Six weeks ago you came home from ceremony. In this final weekly transmission Rachel and Josh want to mark what you have done — and to be honest about what comes next. The intensive window is closing. The long integration is beginning. They want you to know what to expect, and how to hold yourself through the months ahead.' },
+    video: { label: 'A Message from Rachel & Josh · Week 6', text: 'Six weeks ago you came home from ceremony. In this final weekly transmission Rachel and Josh want to mark what you have done. The long integration is beginning. They want you to know what to expect, and how to hold yourself through the months ahead.' },
     actionLabel: 'This week — 4 completions',
     actions: [
       { color: 'gold', text: 'Complete your 3-month Wellbeing Check-in', note: 'The same survey you completed before ceremony — mood, anxiety, sleep, quality of life. This is your after-picture. Compare it to your baseline. The shift you feel is now measurable.' },
-      { color: 'blue', text: 'Fourth call with your integration guide — closing the arc', note: 'This call closes the six-week arc and establishes your monthly rhythm. Bring your integration statement. Book via the Integration Specialist section on your Dashboard.' },
+      { color: 'blue', text: 'Consider ongoing calls with your integration guide', note: 'You have sessions remaining in your six-session arc, and you can also continue beyond that as a living practice. Your guide can help you establish a monthly rhythm or meet you as the work keeps moving. Book via the Integration Specialist section on your Dashboard.' },
       { color: 'sage', text: 'Write your integration statement — guided below', note: 'Three questions, one page. What changed. What you know now. What you are committed to. Date it. You will want to read it in six months.' },
       { color: 'green', text: 'Establish your monthly rhythm — one practice, one question, one connection', note: 'One thing you do every day. One honest question each month. One conversation with someone who knows what you went through. Simple enough to sustain.' },
     ],
@@ -166,7 +166,6 @@ const WEEKS = [
     ],
     checklist: [
       '3-month Wellbeing Check-in completed',
-      'Fourth call with your integration guide completed',
       'Integration statement written and dated',
       'Monthly rhythm established',
     ],
@@ -787,7 +786,7 @@ export default function PostCeremonyPage() {
                 </div>
                 <div className="ma-question">
                   <span className="ma-q-label">Your monthly question</span>
-                  <div className="ma-q-text">Where have I drifted from what the medicine showed me — and what would it take to return?</div>
+                  <div className="ma-q-text">What is still alive from what the medicine showed me — and how am I living that this month?</div>
                 </div>
               </div>
             )}
