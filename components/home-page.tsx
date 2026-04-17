@@ -65,7 +65,7 @@ const faqs = [
   {
     question: "What is the love offering?",
     answer:
-      "Vital Kauaʻi is a legally established church, and all offerings support our sacred mission. There is no fixed price — every journey is shaped around you, and the love offering is discussed personally on your discovery call. We believe this work should be accessible to anyone who is truly called. No one is turned away based on financial circumstances. Kamaʻāina and need-based considerations are always welcome in that conversation.",
+      "Vital Kauaʻi is a legally established church, and all offerings support our sacred mission. Every journey is shaped around you, and the love offering is discussed personally on your discovery call. We believe this work should be accessible to anyone who is truly called. No one is turned away based on financial circumstances. Kamaʻāina and need-based considerations are always welcome in that conversation.",
   },
   {
     question: "How do I know if I'm ready?",
