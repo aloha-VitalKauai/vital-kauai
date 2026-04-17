@@ -228,8 +228,8 @@ export function AboutPage() {
             I arrived at my first iboga retreat freshly off a detox — physically clean, emotionally open, and extraordinarily receptive. The experience lacked preparation, safety, and proper integration, and I left more fragmented than I arrived. That experience clarified everything that would shape my work: the medicine itself is only as whole as the people and ceremony that hold it.
           </p>
           <div className={styles.pullPlaceholder}>
-            <p>&ldquo;[Quote from one of Josh&apos;s friends goes here]&rdquo;</p>
-            <span>&mdash; [Friend&apos;s Name]</span>
+            <p>&ldquo;[Member quote goes here]&rdquo;</p>
+            <span>&mdash; [Member Name]</span>
           </div>
           <div className={styles.pull}>
             <p>
