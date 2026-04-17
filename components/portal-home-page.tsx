@@ -761,7 +761,6 @@ export function PortalHomePage({
               {[
                 { title: "Ceremony", em: "Guidelines", desc: "Sacred agreements, space etiquette, facilitator roles, confidentiality, and everything that holds the container for your ceremony to go deep.", tag: "Sacred Container", tagClass: styles.tagGuide, link: "/portal/ceremony-guidelines" },
                 { title: "Safety in", em: "the Body", desc: "How to orient within intense somatic experience during ceremony \u2014 what you may feel, how to work with it, and what our team is here to support.", tag: "During Ceremony", tagClass: styles.tagGuide },
-                { title: "Pre-Arrival", em: "Protocol", desc: "Your supplement and wellness protocol in the days before arrival \u2014 what to take, when, and how to arrive in peak physiological readiness.", tag: "Pre-Arrival", tagClass: styles.tagPrep },
               ].map((doc, i) => (
                 <div key={i} className={`${styles.docCard} ${styles.fadeIn}`}>
                   <div className={styles.docTitle}>
