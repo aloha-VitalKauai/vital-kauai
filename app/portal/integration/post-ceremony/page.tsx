@@ -109,9 +109,8 @@ const WEEKS = [
       text: 'By the end of week four, the peak neuroplasticity driven by noribogaine begins to narrow. The extraordinary ease of new pattern formation that characterized weeks 1–3 is shifting toward normal — and what you have practiced is becoming structural. What you have yet to commit to in behavior will ask more of you after this week. Your practice days logged here are one of the strongest predictors of long-term outcomes. This week matters.',
     },
     video: { label: 'A Message from Rachel & Josh · Week 4', text: 'Kuleana is one of the most important Hawaiian concepts for understanding what integration actually requires. In this transmission Rachel and Josh talk about the difference between insight and accountability — and what it looks like to take full responsibility for the change you\'ve been shown is possible.' },
-    actionLabel: 'This week — 4 things',
+    actionLabel: 'This week — 3 things',
     actions: [
-      { color: 'blue', text: 'Third call with your integration guide', note: 'Bring your non-negotiables. Bring what has anchored and what is still in motion. Your guide can see your weekly tracking and will meet you exactly where you are. Book via the Integration Specialist section on your Dashboard.' },
       { color: 'gold', text: 'Write your three non-negotiables for the next three months', note: 'Three things you are committing to — in your body, your relationships, your daily life — that reflect who you are becoming. Specific, liveable, honest.' },
       { color: 'blue', text: 'Share your non-negotiables with one person in your life', note: 'Accountability held by another person anchors differently than accountability held alone. Be specific about what you are asking them to hold with you.' },
       { color: 'sage', text: 'Audit one thing in your environment that actively works against your new self \u2014 and change it this week', note: 'Physical environment. Social environment. Digital environment. What in each is pulling you back toward who you were? Make one concrete change this week.' },
