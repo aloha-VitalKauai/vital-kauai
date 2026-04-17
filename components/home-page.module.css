@@ -754,6 +754,15 @@
   color: rgb(200 169 110 / 0.4);
 }
 
+.videoComingSoon {
+  margin: 4px 0 0;
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  color: rgb(245 240 232 / 0.85);
+}
+
 .storyEyebrow {
   display: block;
   margin-bottom: 20px;

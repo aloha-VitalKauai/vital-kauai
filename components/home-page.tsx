@@ -360,6 +360,7 @@ export function HomePage() {
                 <div className={styles.playTriangle} />
               </div>
               <p className={styles.videoLabel}>Rachel & Josh · Our Story</p>
+              <p className={styles.videoComingSoon}>Coming Soon</p>
             </div>
             <div>
               <span className={styles.storyEyebrow}>Why Iboga</span>
