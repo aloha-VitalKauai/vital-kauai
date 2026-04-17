@@ -482,11 +482,6 @@ export default function PreCeremonyPage() {
             The preparation is the first dose. Each week has one theme, one video transmission, and a small number of clear actions.
             Move through them in order. Trust the arc.
           </p>
-          <div className="pc-hero-meta">
-            {[['6','Weeks'],['2','Prompts per week'],['6','Video transmissions'],['2','Guide calls']].map(([n,l]) => (
-              <div key={l}><div className="hm-num">{n}</div><div className="hm-lbl">{l}</div></div>
-            ))}
-          </div>
         </div>
       </div>
 

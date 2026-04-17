@@ -634,11 +634,6 @@ export default function PostCeremonyPage() {
           <span className="pc-hero-eyebrow">Member Portal · Post-Ceremony Integration · Confidential</span>
           <h1>Six Weeks of<br /><em>Integration</em></h1>
           <p className="pc-hero-desc">The medicine opened the window. Integration is how you build what goes inside it. Each week has one theme, one video, clear actions, and a weekly check-in that tracks your progress over time.</p>
-          <div className="pc-hero-meta">
-            {[['6','Weeks'],['4','Guide calls'],['6','Video transmissions'],['1','Monthly rhythm']].map(([n,l]) => (
-              <div key={l}><div className="hm-num">{n}</div><div className="hm-lbl">{l}</div></div>
-            ))}
-          </div>
         </div>
       </div>
 
