@@ -127,7 +127,7 @@ const WEEKS = [
     title: 'You have changed.',
     subtitle: 'Your relationships are noticing.',
     carryForward: 'You have anchored your non-negotiables. You have taken responsibility for what you know. This week the work moves outward — into the relational field, where transformation either lands or dissolves.',
-    intro: 'Aloha as genuine, embodied presence in relationship. By week five, the people in your life are responding to a changed version of you. Some will welcome it. Some will be unsettled by it. Some will try to pull you back into who you were. This week you learn how to hold your new ground with love rather than armor.',
+    intro: 'Aloha as genuine, embodied presence in relationship. By week five, the people in your life are responding to a changed version of you. This week you learn how to hold your new ground with love rather than armor.',
     reentry: {
       strong: 'If people in your life are struggling with your changes:',
       text: ' When one person does deep transformational work, the entire relational system around them reorganizes. This is a sign the change is real. The people closest to you have built their relationship with the previous version of you. Give them time. Hold your changes clearly without needing their immediate understanding or approval. The skill here is patience without self-abandonment — staying present to the relationship while remaining your changed self. Bring specific relationships to your guide this week.',
