@@ -429,7 +429,10 @@ export function PortalHomePage({
               )}
               <button
                 className={`${styles.reqLink} ${donationDone ? styles.reqLinkSigned : ""}`}
-                onClick={() => !donationDone && setModal("donation")}
+                onClick={() => {
+                  if (donationDone) return;
+                  window.open(STRIPE_LOVE_OFFERING_URL, "_blank", "noopener,noreferrer");
+                }}
                 disabled={donationDone}
               >
                 Donation{donationDone ? " \u2713" : ""}
