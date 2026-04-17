@@ -45,7 +45,7 @@ const WEEKS = [
     video: { label: 'A Message from Rachel & Josh · Week 2', text: 'Something shifts the moment you say yes. This week Rachel and Josh talk about what that shift means, how the preparation window works as active medicine, and the question that matters more than "what do I need to learn?" — who am I becoming?' },
     box: { type: 'info', label: 'The identity shift', text: 'You are no longer the person who was considering this. The moment you committed, something changed. This week\'s job is to feel that shift — as a lived, embodied orientation. The portal, this video, and the prompts below all serve one thing: moving you from "I signed up for something" to "I am inside a process."' },
     actionLabel: 'Actions this week — 3 only',
-    actionIntro: 'These actions are intentionally light. Identity shifts happen in the noticing. This week your job is to begin seeing clearly — the changes will follow.',
+    actionIntro: 'Identity shifts happen in the noticing. This week your job is to begin seeing clearly — the changes will follow.',
     actions: [
       { color: 'blue', text: 'First call with your integration guide', note: 'Come with your intentions from Week 1. Come with your questions. Come as you are. This call is the beginning of a relationship that will hold you through the hardest parts of what\'s ahead.' },
       { color: 'amber', text: 'Begin noticing your daily habits', note: 'Observe alcohol, sleep, screens, food, substances. Honest observation is all that\u2019s asked. What you notice this week becomes data for your body to begin working with.' },
