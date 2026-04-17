@@ -39,7 +39,9 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
                 <a href="/portal/journal" className="pn-dropdown-item">Comprehensive Journal</a>
               </div>
             </div>
-          <a href="/portal/community" className="pn-link">Community</a>
+          {/* Community tab hidden while the section is being built out.
+              Restore by uncommenting this line. */}
+          {/* <a href="/portal/community" className="pn-link">Community</a> */}
           </div>
         </div>
         <div className="pn-right">
