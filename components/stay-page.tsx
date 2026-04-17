@@ -1262,7 +1262,7 @@ const BODY_CONTENT = `
     <div class="included-card reveal">
       <div class="included-rule"></div>
       <h3 class="included-title">Private Sessions & Ceremonies</h3>
-      <p class="included-body">Your ceremony stay is a fully held and coordinated arc — each day intentionally designed. Iboga ceremony, yoga, breathwork, two massages, one nervous system support session (acupuncture, biogeometry, bodytalk, and more), one sound healing ceremony, and integration work — held in our dedicated space or in nature itself.</p>
+      <p class="included-body">Your ceremony stay is a fully held and coordinated arc — each day intentionally designed. Iboga ceremony, yoga, breathwork, massage, nervous system support session (acupuncture, biogeometry, bodytalk, and more), sound healing ceremony, and integration work — held in our dedicated space or in nature itself.</p>
     </div>
     <div class="included-card reveal reveal-delay-1">
       <div class="included-rule"></div>
@@ -1277,7 +1277,7 @@ const BODY_CONTENT = `
     <div class="included-card reveal">
       <div class="included-rule"></div>
       <h3 class="included-title">Nature Immersion Daily</h3>
-      <p class="included-body">Ocean swims, river floats, grounding practices — woven into your days with intention. An optional intention-setting hike along the Nā Pali Coast is available for those who feel called.</p>
+      <p class="included-body">Ocean swims, river floats, grounding practices — woven into your days with intention. A guided walk along the Nā Pali Coast to release and receive, in communion with the elements before ceremony.</p>
     </div>
     <div class="included-card reveal reveal-delay-1">
       <div class="included-rule"></div>
