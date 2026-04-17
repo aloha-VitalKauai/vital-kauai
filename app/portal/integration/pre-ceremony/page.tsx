@@ -81,7 +81,7 @@ const WEEKS = [
     code: 'KALA',
     theme: 'Release',
     title: 'Iboga sees everything.',
-    subtitle: 'You may as well arrive having already looked.',
+    subtitle: '',
     carryForward: 'Your nervous system is more regulated. Your body has begun its preparation. You have a map of your own inner states. You are ready for what this week asks — trust what you\'ve built.',
     reentry: { strong: 'Coming to this week with the Week 3 breathwork still ahead of you?', text: ' Start there before you start here. One week of daily Coherent Heart Breath practice behind shadow journaling is worth more than confronting difficult material without a regulated nervous system. Begin the breathwork today, do it for three days, then return to Week 4.' },
     sub: 'Kala means release — and release requires honesty. This week asks more of you than any previous week. It is also the most important week. The medicine will meet whatever you bring. Participants who do this work before ceremony tend to have cleaner, more navigable experiences — and arrive with something real to work with from the first moment.',
@@ -514,7 +514,7 @@ export default function PreCeremonyPage() {
             {/* Week header */}
             <div>
               <span className="wh-eyebrow">Week {i + 1} · {w.code} · {w.theme}</span>
-              <h2 className="wh-title">{w.title}<br /><em>{w.subtitle}</em></h2>
+              <h2 className="wh-title">{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</h2>
               <p className="wh-sub">{w.sub}</p>
               {w.italic && <p className="wh-italic">{w.italic}</p>}
             </div>
