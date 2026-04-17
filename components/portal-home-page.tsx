@@ -83,7 +83,7 @@ const PREP_ITEMS: { text: string; link?: string; external?: boolean; isLab?: boo
   { text: "Complete all three required steps (Donation, Membership Agreement, Medical Disclaimer)", link: "/portal" },
   { text: "Submit your Love Offering / Membership Donation", link: STRIPE_LOVE_OFFERING_URL, external: true },
   { text: "Read Iboga Preparedness Guide", link: "/iboga-preparedness-guide.html" },
-  { text: "Book your preparation calls with your integration guide" },
+  { text: "Book your preparation calls with your integration guide", link: "/portal#integration-specialist" },
   { text: "Discuss all medications and supplements with Rachel and Josh \u2014 confirm any required washout periods" },
   { text: "Confirm required lab work with your physician and submit results", isLab: true },
   { text: "Begin dietary preparation protocol", link: "/portal/dietary" },
@@ -933,7 +933,7 @@ export function PortalHomePage({
                 Reach Josh
               </a>
             </div>
-            <div className={styles.teamCard}>
+            <div id="integration-specialist" className={styles.teamCard}>
               <p className={styles.teamRole}>Integration Specialist</p>
               <p className={styles.teamName}>
                 {memberData?.assigned_partner || "Your Integration Guide"}
@@ -942,6 +942,11 @@ export function PortalHomePage({
                 Your integration specialist walks with you as guide, facilitator, coach, and
                 teammate &mdash; meeting you in preparation, within the 48 hours after ceremony,
                 and ongoing as you return home and carry the work forward.
+              </p>
+              <p className={styles.teamBio}>
+                The arc of your journey includes six sessions with your integration guide, used
+                on your timing &mdash; we suggest weaving some before and some after ceremony,
+                and the rhythm is yours to choose.
               </p>
               <a href="#" className={styles.teamCta}>
                 Book a Session
