@@ -185,16 +185,6 @@ export const members: Member[] = [
     bio: "Jenny Zoberg is a breathwork, yoga, and sound healing facilitator who guides practices that reconnect guests with their inner world. She trained as a breathwork facilitator with David Elliott, deepened her yoga studies with Bhavani Silvia Maki, and became certified in Sound Healing through her sensitivity to vibration and harmony. In 2022 she sat a 10-day Vipassana meditation in South Africa — an experience that continues to inform how she holds space. Her sessions are breath-led and music-connected, encouraging guests to move beyond the surface into a felt experience of body, mind, and soul. She brings her full gifts to the intimate containers of Vital Kauaʻi.",
   },
   {
-    id: "paul",
-    name: "Paul Heffernan",
-    role: "BodyTalk Practitioner",
-    cat: "healers",
-    photo: "",
-    shortBio:
-      "Paul is a certified BodyTalk practitioner bringing a subtle yet profoundly effective system of whole-body healing to the Vital Kauaʻi circle. BodyTalk works by identifying and reestablishing disrupted communication pathways within the body-mind complex, allowing the innate wisdom of the body to restore balance and function. His sessions are quiet, non-invasive, and often surprising in the depth of shift they produce.",
-    bio: "Paul is a certified BodyTalk practitioner bringing a subtle yet profoundly effective system of whole-body healing to the Vital Kauaʻi circle. BodyTalk works by identifying and reestablishing disrupted communication pathways within the body-mind complex, allowing the innate wisdom of the body to restore balance and function. His sessions are quiet, non-invasive, and often surprising in the depth of shift they produce.",
-  },
-  {
     id: "kurtis",
     name: "Kurtis Kunesh",
     role: "Deep Tissue Massage",
