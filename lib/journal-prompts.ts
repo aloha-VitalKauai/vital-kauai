@@ -81,11 +81,11 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     theme: 'Unity',
     title: 'The medicine is still moving in you',
     prompts: [
+      { q: 'What did the medicine show me?', hint: 'What was revealed — about yourself, your nature, your life. Name it plainly.' },
       { q: 'What am I grateful for today?', hint: 'Let gratitude be specific. The smaller the detail, the more real it lands.' },
       { q: 'What is present in my body right now? Where do I feel the most sensation, heaviness, lightness, or aliveness?', hint: 'Stay in the body. Stay with sensation.' },
       { q: 'What images, impressions, or moments from ceremony keep returning? What feels most alive or most unresolved?', hint: 'Record them. The meaning arrives in its own time.' },
       { q: 'Where did I feel the most resistance during the journey? What was I holding onto — and what happened when I let go?', hint: 'Resistance during ceremony is information.' },
-      { q: 'What did the medicine show me?', hint: 'What was revealed — about yourself, your nature, your life. Name it plainly.' },
       { q: 'What is one thing I feel called to do, release, or begin?', hint: 'Trust the impulse. Write it before the mind catches up.' },
     ],
   },
