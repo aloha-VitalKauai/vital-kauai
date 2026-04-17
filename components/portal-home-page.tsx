@@ -574,12 +574,11 @@ export function PortalHomePage({
                 }}
               >
                 <div className={styles.docTitle}>
-                  Membership <em>Donation</em>
+                  Love Offering / Membership <em>Donation</em>
                 </div>
                 <div className={styles.docDesc}>
-                  A refundable $250 membership donation. Activates
-                  your portal immediately upon payment and is fully refundable if you choose to
-                  cancel.
+                  Your gift supports the ministry, our gatherings, and the work Nature is doing
+                  through Vital Kaua&#699;i. Every offering is received with gratitude.
                 </div>
                 <div className={styles.docFooter}>
                   <span className={`${styles.docTag} ${styles.tagRequired}`}>
