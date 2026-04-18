@@ -25,6 +25,7 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
     { data: ceremonies },
     { data: checklist },
     { data: commitment },
+    { data: memberDonationsData },
   ] = await Promise.all([
     supabase.from("members").select("*").eq("id", id).maybeSingle(),
     supabase.from("member_profiles").select("*").eq("id", id).maybeSingle(),
@@ -34,12 +35,19 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
     supabase.from("member_checklist").select("*").eq("member_id", id).order("created_at", { ascending: true }),
     supabase
       .from("financial_commitments")
-      .select("id, expected_amount_cents, status")
+      .select("id, expected_amount_cents, status, journey_id, kind")
       .eq("member_id", id)
       .in("status", ["draft", "active", "partially_paid", "paid", "waived"])
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle(),
+    supabase
+      .from("donations")
+      .select("id, amount_cents, completed_at, kind, metadata, status")
+      .eq("member_id", id)
+      .eq("status", "completed")
+      .order("completed_at", { ascending: false })
+      .limit(25),
   ]);
 
   if (!member) notFound();
@@ -62,6 +70,64 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
     postProgress = post;
   }
 
+  // Financial detail: allocations, tokens, journey+cohort title
+  let collectedCents = 0;
+  let tokens: Array<{ token: string; expires_at: string; consumed_at: string | null; created_at: string }> = [];
+  let journeyTitle: string | null = null;
+  let journeyEndAt: string | null = null;
+
+  if (commitment) {
+    const [{ data: allocs }, { data: toks }] = await Promise.all([
+      supabase
+        .from("payment_allocations")
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .select("allocated_amount_cents, donation:donations(status)" as any)
+        .eq("commitment_id", commitment.id),
+      supabase
+        .from("payment_tokens")
+        .select("token, expires_at, consumed_at, created_at")
+        .eq("commitment_id", commitment.id)
+        .order("created_at", { ascending: false }),
+    ]);
+
+    collectedCents = ((allocs ?? []) as unknown as Array<{ allocated_amount_cents: number; donation: { status: string } | null }>)
+      .filter((r) => r.donation?.status === "completed")
+      .reduce((sum, r) => sum + r.allocated_amount_cents, 0);
+
+    tokens = (toks ?? []) as typeof tokens;
+
+    // Journey → cohort title
+    if (commitment.journey_id) {
+      const { data: journey } = await supabase
+        .from("journeys")
+        .select("end_at, cohort_id")
+        .eq("id", commitment.journey_id)
+        .maybeSingle();
+
+      if (journey?.cohort_id) {
+        const { data: cohort } = await supabase
+          .from("cohorts")
+          .select("title, end_at")
+          .eq("id", journey.cohort_id)
+          .maybeSingle();
+        journeyTitle = (cohort as { title?: string | null })?.title ?? null;
+        journeyEndAt = (cohort as { end_at?: string | null })?.end_at ?? journey.end_at ?? null;
+      } else {
+        journeyEndAt = journey?.end_at ?? null;
+      }
+    }
+  }
+
+  // Build token → donation amount map (consumed tokens show what was paid)
+  const tokenAmounts: Record<string, number> = {};
+  for (const d of memberDonationsData ?? []) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const tokenUsed = (d.metadata as any)?.token_used;
+    if (tokenUsed && d.amount_cents) {
+      tokenAmounts[tokenUsed] = d.amount_cents;
+    }
+  }
+
   return (
     <MemberProfileEditor
       member={member}
@@ -73,6 +139,12 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       preProgress={preProgress}
       postProgress={postProgress}
       commitment={commitment ?? undefined}
+      collectedCents={collectedCents}
+      tokens={tokens}
+      tokenAmounts={tokenAmounts}
+      donations={(memberDonationsData ?? []) as Array<{ id: string; amount_cents: number; completed_at: string | null; kind: string; metadata: Record<string, unknown> | null }>}
+      journeyTitle={journeyTitle}
+      journeyEndAt={journeyEndAt}
     />
   );
 }

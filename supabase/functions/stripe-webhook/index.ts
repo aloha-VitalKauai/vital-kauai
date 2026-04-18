@@ -154,8 +154,12 @@ Deno.serve(async (req) => {
             .is("consumed_at", null);
         }
 
-        // Phase 2: allocate to commitment if this is a journey contribution
-        if (
+        // Phase 2: allocate to commitment if this is a journey contribution,
+        // or no-op for additional_gift (already marked completed above).
+        if (s.metadata?.kind === "additional_gift") {
+          // Intentionally no payment_allocations write and no membership flag
+          // flip for additional gifts. Donation is already marked completed.
+        } else if (
           s.metadata?.kind === "journey_contribution" &&
           s.metadata?.commitment_id
         ) {

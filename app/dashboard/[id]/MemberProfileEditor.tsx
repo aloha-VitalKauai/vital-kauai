@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import MemberFinancialSection from "./MemberFinancialSection";
 
 /* ── Status colours (same as dashboard) ────────────────────────── */
 const STATUS_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
@@ -90,24 +91,9 @@ const TEXTAREA: React.CSSProperties = {
 };
 
 /* ── Component ─────────────────────────────────────────────────── */
-type Commitment = { id: string; expected_amount_cents: number; status: string } | null;
-
-async function generatePaymentLink(commitmentId: string) {
-  const res = await fetch("/api/payments/generate-link", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ commitment_id: commitmentId }),
-  });
-  const { url, expires_at, error } = await res.json();
-  if (error) {
-    alert(error);
-    return;
-  }
-  await navigator.clipboard.writeText(url);
-  alert(
-    `Payment link copied — expires ${new Date(expires_at).toLocaleDateString()}`,
-  );
-}
+type Commitment = { id: string; expected_amount_cents: number; status: string; journey_id?: string | null | undefined; kind?: string | null | undefined } | null;
+type PaymentToken = { token: string; expires_at: string; consumed_at: string | null; created_at: string };
+type DonationRow = { id: string; amount_cents: number; completed_at: string | null; kind: string; metadata: Record<string, unknown> | null };
 
 export default function MemberProfileEditor({
   member,
@@ -119,6 +105,12 @@ export default function MemberProfileEditor({
   preProgress,
   postProgress,
   commitment,
+  collectedCents = 0,
+  tokens = [],
+  tokenAmounts = {},
+  donations = [],
+  journeyTitle = null,
+  journeyEndAt = null,
 }: {
   member: Member;
   profile: Profile;
@@ -129,6 +121,12 @@ export default function MemberProfileEditor({
   preProgress: any;
   postProgress: any;
   commitment?: Commitment;
+  collectedCents?: number;
+  tokens?: PaymentToken[];
+  tokenAmounts?: Record<string, number>;
+  donations?: DonationRow[];
+  journeyTitle?: string | null;
+  journeyEndAt?: string | null;
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -775,54 +773,16 @@ export default function MemberProfileEditor({
         </div>
       )}
 
-      {/* Journey payment commitment */}
-      {commitment && (
-        <div style={{ ...CARD, marginTop: "1.5rem" }}>
-          <p style={{ ...LABEL, marginBottom: 12 }}>Journey payment</p>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-            <div style={{ fontSize: 13, color: "#1A1A18" }}>
-              <span style={{ color: "#6B6B67" }}>Expected: </span>
-              <strong>
-                {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
-                  commitment.expected_amount_cents / 100,
-                )}
-              </strong>
-              <span
-                style={{
-                  marginLeft: 10,
-                  fontSize: 11,
-                  padding: "2px 8px",
-                  borderRadius: 99,
-                  background: commitment.status === "paid" ? "#E1F5EE" : "#FAEEDA",
-                  color: commitment.status === "paid" ? "#085041" : "#633806",
-                  fontWeight: 500,
-                  textTransform: "uppercase" as const,
-                  letterSpacing: "0.04em",
-                }}
-              >
-                {commitment.status}
-              </span>
-            </div>
-            {commitment.status !== "paid" && commitment.status !== "waived" && (
-              <button
-                onClick={() => generatePaymentLink(commitment.id)}
-                style={{
-                  padding: "8px 14px",
-                  fontSize: 12,
-                  fontWeight: 500,
-                  background: "#085041",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: 8,
-                  cursor: "pointer",
-                }}
-              >
-                Generate Payment Link
-              </button>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Journey payment — full financial section */}
+      <MemberFinancialSection
+        commitment={commitment ? { ...commitment, journey_id: commitment.journey_id ?? null, kind: commitment.kind ?? null } : null}
+        collectedCents={collectedCents}
+        tokens={tokens}
+        tokenAmounts={tokenAmounts}
+        donations={donations}
+        journeyTitle={journeyTitle}
+        journeyEndAt={journeyEndAt}
+      />
     </div>
   );
 }
