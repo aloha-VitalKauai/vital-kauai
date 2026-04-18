@@ -106,6 +106,8 @@ const WEEKS = [
         ],
       },
     ],
+    dataset: 'Your wellbeing assessments — taken at baseline, 72 hours, 1 month, 3 months, 6 months, and 12 months — follow a standardized outcomes framework adapted for iboga from the validated instruments used in psychedelic research worldwide. Your responses, fully anonymized, contribute to one of the most comprehensive iboga datasets being built anywhere in the world — adding rigor to the field, helping legitimize this medicine, and giving future participants, clinicians, and researchers a clearer picture of how iboga actually works across hundreds of journeys. Your experience becomes part of something larger.',
+    datasetLink: { text: 'Open your Outcomes →', href: '/portal/assessments' },
     prompts: PRE_CEREMONY_WEEKS[0].prompts,
     thread: 'Your answers here are the raw material of your Questions for the Medicine — the specific questions you\'ll bring into ceremony. Write honestly. Over the coming weeks, these words will sharpen into something you can carry in. This is where that conversation begins.',
   },
@@ -586,6 +588,14 @@ export default function PreCeremonyPage() {
 
         /* ACTIONS */
         .actions-intro { font-size:13px;color:var(--stone);line-height:1.8;font-style:italic;margin-bottom:14px;padding-bottom:14px;border-bottom:.5px solid var(--border-lt); }
+        .dataset-note{background:rgba(200,169,110,.07);border:1px solid rgba(200,169,110,.32);border-left:3px solid var(--gold);border-radius:3px;padding:18px 22px;margin-top:18px;font-size:13px;color:var(--ink-mid);line-height:1.75}
+        .dataset-note .dn-label{display:block;font-size:9px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:10px}
+        .dataset-note .dn-body{font-style:italic}
+        .dataset-note .dn-cta{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);text-decoration:none;font-weight:500;padding:8px 14px;border:1px solid rgba(200,169,110,.5);border-radius:2px;transition:all .2s}
+        .dataset-note .dn-cta:hover{background:rgba(200,169,110,.1);border-color:var(--gold)}
+        .dataset-note .dn-header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+        .dataset-note .dn-header .dn-label{margin-bottom:0}
+        .dataset-note .dn-footer{margin-top:14px;display:flex;justify-content:flex-end}
         .actions-list { display:flex;flex-direction:column;gap:10px; }
         .action-item { display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border:.5px solid var(--border);border-radius:4px;background:white; }
         .action-dot { width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px; }
@@ -755,6 +765,30 @@ export default function PreCeremonyPage() {
                   <div className="box-text">{w.safetyBox.text}</div>
                 </div>
               )}
+              {(w as { dataset?: string }).dataset && (() => {
+                const dataset = (w as { dataset?: string }).dataset as string
+                const dl = (w as { datasetLink?: { text: string; href: string } }).datasetLink
+                return (
+                  <div className="dataset-note">
+                    <div className="dn-header">
+                      <span className="dn-label">Outcomes — your contribution to the field</span>
+                      {dl && (
+                        <Link href={dl.href} className="dn-cta">
+                          {dl.text}
+                        </Link>
+                      )}
+                    </div>
+                    <div className="dn-body">{dataset}</div>
+                    {dl && (
+                      <div className="dn-footer">
+                        <Link href={dl.href} className="dn-cta">
+                          {dl.text}
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                )
+              })()}
             </div>
 
             {/* Journal prompts */}
