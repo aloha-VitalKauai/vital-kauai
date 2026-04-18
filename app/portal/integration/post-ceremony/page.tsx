@@ -691,7 +691,6 @@ export default function PostCeremonyPage() {
         .integration-qs{margin-top:28px;border:.5px solid rgba(200,169,110,.2);border-radius:4px;overflow:hidden}.iq-header{background:rgba(200,169,110,.06);padding:14px 20px;border-bottom:.5px solid rgba(200,169,110,.15)}.iq-label{font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}.iq-item{padding:18px 20px;border-bottom:.5px solid var(--border-lt)}.iq-item:last-of-type{border-bottom:none}.iq-q{font-size:13px;color:var(--ink-mid);font-weight:500;margin-bottom:6px}.iq-hint{font-size:12px;color:var(--stone);font-style:italic;line-height:1.65}
         .rg-wrap{margin-top:40px;border:.5px solid rgba(200,169,110,.35);border-radius:4px;overflow:hidden}.rg-header{background:var(--forest);padding:18px 24px;display:flex;align-items:center;gap:12px}.rg-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0}.rg-title{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}.rg-body{padding:20px 24px}.rg-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:.5px solid var(--border)}.rg-item:last-of-type{border-bottom:none}.rg-check{width:18px;height:18px;border-radius:2px;border:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}.rg-check.checked{background:var(--gold);border-color:var(--gold)}.rg-check-icon{font-size:10px;color:white;opacity:0}.rg-check.checked .rg-check-icon{opacity:1}.rg-item-text{font-size:13px;color:var(--ink-mid);line-height:1.5}
         .monthly-arc{margin-top:48px;background:linear-gradient(135deg,rgba(28,43,30,.04) 0%,rgba(200,169,110,.04) 100%);border:.5px solid rgba(200,169,110,.18);border-radius:4px;padding:32px 36px}.ma-eyebrow{font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:block}.ma-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--ink);line-height:1.2;margin-bottom:14px}.ma-title em{font-style:italic;color:var(--gold)}.ma-text{font-size:13.5px;color:var(--stone);line-height:1.9;margin-bottom:20px}.ma-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}.ma-card{background:white;border:.5px solid var(--border);border-radius:4px;padding:18px 20px}.ma-card-label{font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:block}.ma-card-text{font-size:13px;color:var(--ink-mid);line-height:1.7}.ma-question{margin-top:20px;background:rgba(200,169,110,.06);border:.5px solid rgba(200,169,110,.2);border-radius:4px;padding:16px 20px}.ma-q-label{font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:block}.ma-q-text{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;color:var(--ink);line-height:1.4}
-        .ma-calls{margin-top:20px;border:.5px solid var(--border);border-radius:4px;padding:16px 20px;background:white}.ma-calls-label{font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:block}.ma-calls-list{list-style:disc;margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}.ma-calls-list li{font-size:13px;color:var(--ink-mid);line-height:1.75}.ma-calls-list strong{color:var(--ink);font-weight:500}.ma-calls-list a{color:inherit;text-decoration:none;border-bottom:1px dashed rgba(200,169,110,.55)}
         .bridge{margin-top:40px;background:var(--forest);padding:32px 36px;border-radius:2px}.bridge-eyebrow{font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:block}.bridge-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--cream);line-height:1.2;margin-bottom:14px}.bridge-title em{font-style:italic;color:var(--gold)}.bridge-text{font-size:13.5px;color:rgba(245,240,232,.62);line-height:1.9}
         .wc-wrap{margin-top:48px;padding-top:36px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}.wc-text{font-size:12.5px;color:var(--stone);line-height:1.65}.wc-text strong{color:var(--ink-mid);font-weight:500}
         .btn-complete{padding:12px 28px;background:var(--gold);border:none;border-radius:3px;color:var(--deep);font-family:inherit;font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap}.btn-complete:hover{background:#d4b87a}.btn-complete.done{background:rgba(200,169,110,.12);border:.5px solid var(--gold);color:var(--gold);cursor:default}
@@ -896,33 +895,6 @@ export default function PostCeremonyPage() {
                 <div className="ma-question">
                   <span className="ma-q-label">Your monthly question</span>
                   <div className="ma-q-text">What is still alive from what the medicine showed me — and how am I living that this month?</div>
-                </div>
-                <div className="ma-calls">
-                  <span className="ma-calls-label">Scheduled calls with Rachel &amp; Josh</span>
-                  <ul className="ma-calls-list">
-                    <li>
-                      <strong>Week 9 · around month 2</strong> — Consider scheduling a{' '}
-                      <a
-                        href="https://calendly.com/aloha-vitalkauai/30-minute-check-in-call"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        check-in call with Rachel &amp; Josh
-                      </a>
-                      .
-                    </li>
-                    <li>
-                      <strong>Week 12 · around month 3</strong> — Schedule your{' '}
-                      <a
-                        href="https://calendly.com/aloha-vitalkauai/30-minute-completion-call"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Completion Call with Rachel &amp; Josh
-                      </a>
-                      .
-                    </li>
-                  </ul>
                 </div>
               </div>
             )}
