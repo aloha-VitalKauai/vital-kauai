@@ -288,7 +288,7 @@ const WEEKS = [
     sub: 'Mana is the power that comes from within. Pono is right relationship — with yourself, with others, with what\'s coming. This week you are being asked to arrive. The work of preparation is complete. What remains is alignment — meeting yourself honestly about what you are ready to receive.',
     video: { label: 'A Message from Rachel & Josh · Week 6', text: 'Five weeks ago you were a person who was thinking about doing this. Today you are a person who has done the preparation. In this week\'s transmission, Rachel and Josh speak to the power within that got you here — and to the invitation to set down the preparation and trust that you are ready.' },
     box: { type: 'close', label: 'Emotional closure — the arc completes here', text: 'Five weeks ago this process asked you to see clearly. Then to commit. Then to tend your body. Then to meet your shadow. Then to open to your people. You have done all of that. Whatever remains unresolved — the medicine will meet it. Your job this week is to arrive with openness, trust your team, and let yourself be held. That is enough. That is everything.\n\nIf you feel uncertain right now — more unsettled than you expected to feel at the end of six weeks of preparation — that feeling often means you have done real work. Uncertainty is a form of readiness.' },
-    actionLabel: 'Actions this week — 4 operational completions',
+    actionLabel: 'Actions this week — 5 operational completions',
     actions: [
       {
         color: 'red',
@@ -305,6 +305,14 @@ const WEEKS = [
         note: 'Bring your finalized Questions for the Medicine. Bring anything still alive. Speak everything that is ready to be said.',
         links: [
           { text: 'Preparation call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true },
+        ],
+      },
+      {
+        color: 'amber',
+        text: 'Call with your integration guide',
+        note: 'A final pre-ceremony touchpoint with the guide who will walk with you through integration. Bring what is asking to be spoken before you arrive.',
+        links: [
+          { text: 'Call with your integration guide', href: '/portal#integration-specialist' },
         ],
       },
       {
