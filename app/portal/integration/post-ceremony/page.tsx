@@ -121,7 +121,8 @@ const WEEKS = [
         ],
       },
     ],
-    dataset: 'Your weekly tracking below contributes to one of the most comprehensive iboga integration datasets being built anywhere in the world. What you log — your practice days, your regulation, your patterns — helps the field understand how this medicine actually works across hundreds of participants over time. Your experience becomes part of something larger.',
+    dataset: 'Your wellbeing assessments — taken at baseline, 72 hours, 1 month, 3 months, 6 months, and 12 months — contribute to one of the most comprehensive iboga outcomes datasets being built anywhere in the world. The MAPS-based benchmarks you complete in the Outcomes section help the field understand how this medicine actually works across hundreds of participants over time. Your experience becomes part of something larger.',
+    datasetLink: { text: 'Open your Outcomes →', href: '/portal/assessments' },
     prompts: POST_CEREMONY_WEEKS[1].prompts,
     thread: 'The practice you establish this week has a disproportionate impact on everything that follows. The medicine opened the window. This week you decide what you\'re building inside it.',
   },
@@ -763,7 +764,22 @@ export default function PostCeremonyPage() {
                   </div>
                 ))}
               </div>
-              {w.dataset && <div className="dataset-note">{w.dataset}</div>}
+              {w.dataset && (
+                <div className="dataset-note">
+                  {w.dataset}
+                  {(w as { datasetLink?: { text: string; href: string } }).datasetLink && (
+                    <>
+                      {' '}
+                      <Link
+                        href={(w as { datasetLink: { text: string; href: string } }).datasetLink.href}
+                        style={{ color: 'inherit', textDecoration: 'none', borderBottom: '1px dashed rgba(200,169,110,.55)', fontStyle: 'normal', whiteSpace: 'nowrap' }}
+                      >
+                        {(w as { datasetLink: { text: string; href: string } }).datasetLink.text}
+                      </Link>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="section">
