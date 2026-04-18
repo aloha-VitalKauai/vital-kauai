@@ -192,13 +192,21 @@ const WEEKS = [
     title: 'Iboga sees everything.',
     subtitle: '',
     carryForward: 'Your nervous system is more regulated. Your body has begun its preparation. You have a map of your own inner states. You are ready for what this week asks — trust what you\'ve built.',
-    reentry: { strong: 'Coming to this week with the Week 3 breathwork still ahead of you?', text: ' Start there before you start here. One week of daily Coherent Heart Breath practice behind shadow journaling is worth more than confronting difficult material without a regulated nervous system. Begin the breathwork today, do it for three days, then return to Week 4.' },
-    sub: 'Kala means release — and release requires honesty. This week asks more of you than any previous week. It is also the most important week. The medicine will meet whatever you bring. Participants who do this work before ceremony tend to have cleaner, more navigable experiences — and arrive with something real to work with from the first moment.',
-    video: { label: 'A Message from Rachel & Josh · Week 4', text: 'Rachel and Josh designed this week to hold you through the deepest work of preparation. In this transmission they explain why the shadow work you do here changes what ceremony will ask of you, and how to go slow while staying grounded.' },
-    box: { type: 'warn', label: 'Pacing permission — read this before you begin', text: 'This week\'s journaling may bring up old grief, anger, shame, or material you haven\'t touched in years. That is appropriate. It is a sign the process is working. Write for ten minutes. Stop. Breathe. Come back tomorrow. Go slow on purpose. If something feels too large to hold alone, reach out to your integration guide before your next scheduled call.\n\nAnd know this: this process moves in waves. Feeling more unsettled now than you did in Week 1 — more uncertain, more raw — is often a sign something is genuinely moving. Regression before breakthrough is real. You are in it.' },
-    actionLabel: 'Actions this week — 3 only',
+    reentry: { strong: 'A note on pacing:', text: ' Let the Coherent Heart Breath be with you this week. Return to it before each journal prompt — let it settle you before you begin, and steady you when the material goes deep.' },
+    sub: 'Kala means release — and release requires honesty. Kala also means that there are no limits, and the boundaries you experience are essentially self-imposed — as you untie those blocks you realize your ultimate, unlimited potential. This week asks more of you than any previous week. The medicine will meet whatever you bring. Participants who do this work before ceremony tend to have cleaner, more navigable experiences — and arrive with something to work with from the first moment.',
+    video: { label: 'A Message from Rachel & Josh · Week 4', text: 'Rachel and Josh designed this week to hold you. In this transmission they explain why the shadow work you do here changes what ceremony will ask of you, and how to go slow while staying grounded.' },
+    box: { type: 'warn', label: 'Pacing permission — read this before you begin', text: 'This week\'s journaling may bring up old grief, anger, shame, or material you haven\'t touched in years. That is appropriate. It is a sign the process is working. Write for ten minutes. Stop. Breathe. Come back tomorrow. Go slow on purpose. If something feels too large to hold alone, reach out to your integration guide before your next scheduled call.\n\nAnd know this: this process moves in waves. Feeling more unsettled now than you did in Week 1 — more uncertain, more raw — is often a sign something is genuinely moving. Regression before breakthrough is real.' },
+    actionLabel: 'Actions this week — 4 only',
     actions: [
       { color: 'red', text: 'Deep journaling — this is the primary work of this week', note: 'An act of honesty. Approach the prompts below as if the medicine is already in the room with you — because in a real sense, it is.' },
+      {
+        color: 'blue',
+        text: 'Call with your integration guide',
+        note: 'Bring the material that is surfacing. Your guide is trained to hold exactly this territory.',
+        links: [
+          { text: 'Call with your integration guide', href: '/portal#integration-specialist' },
+        ],
+      },
       {
         color: 'blue',
         text: 'Draft your Questions for the Medicine — first version',
