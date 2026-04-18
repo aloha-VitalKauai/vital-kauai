@@ -107,10 +107,10 @@ const WEEKS = [
       { color: 'sage', text: 'Continue full sobriety — minimum 30 days, 3 months strongly recommended', note: 'Iboga resets tolerance. Returning to any substance before the window closes undermines what the medicine worked to open. The noribogaine window is your most protected asset right now.' },
       {
         color: 'blue',
-        text: 'Schedule a check-in call with Rachel & Josh — around week 9 / month 2',
+        text: 'Schedule a check-in call with Rachel & Josh',
         note: 'An optional mid-integration touchpoint to bring what is still moving, notice what has anchored, and speak honestly about what is alive.',
         links: [
-          { text: 'Schedule a check-in call with Rachel & Josh — around week 9 / month 2', href: 'https://calendly.com/aloha-vitalkauai/30-minute-check-in-call', external: true },
+          { text: 'Schedule a check-in call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-check-in-call', external: true },
         ],
       },
     ],
