@@ -781,36 +781,18 @@ export function PortalHomePage({
           {/* PHASE 3: INTEGRATION */}
           <div className={`${styles.phasePanel} ${activePhase === 3 ? styles.phasePanelActive : ""}`}>
             <div className={styles.docGrid}>
-              <div className={`${styles.docCard} ${styles.docCardLocked} ${styles.fadeIn}`}>
+              <Link href="/portal#integration-specialist" className={`${styles.docCard} ${styles.fadeIn}`} style={{ textDecoration: "none", color: "inherit" }}>
                 <div className={styles.docTitle}>
-                  Integration <em>Manual</em>
+                  Book Your <em>Integration Calls</em>
                 </div>
                 <div className={styles.docDesc}>
-                  Your complete post-ceremony guide &mdash; working with neuroplasticity, supplement
-                  protocol, somatic practices, dream work, and the daily rhythms of integration.
+                  Schedule your post-ceremony integration sessions with Rachel and Josh &mdash; and connect with your assigned integration specialist if applicable.
                 </div>
                 <div className={styles.docFooter}>
-                  <span className={`${styles.docTag} ${styles.tagLocked}`}>Unlocks Post-Ceremony</span>
-                  <span className={`${styles.docAction} ${styles.docActionLocked}`}>Locked</span>
+                  <span className={`${styles.docTag} ${styles.tagIntegration}`}>Integration Support</span>
+                  <span className={styles.docAction}>Open &rarr;</span>
                 </div>
-              </div>
-              {[
-                { title: "Book Your", em: "Integration Call", desc: "Schedule your post-ceremony integration sessions with Rachel and Josh \u2014 and connect with your assigned integration specialist if applicable.", tag: "Integration Support", tagClass: styles.tagIntegration },
-                { title: "Post-Ceremony", em: "Supplement Protocol", desc: "Niacin, GABA, DHA/EPA, and a full noribogaine-phase support protocol \u2014 what to take, when, and why in the critical neuroplasticity window.", tag: "Post-Ceremony", tagClass: styles.tagIntegration },
-                { title: "Dream", em: "Log", desc: "The medicine often continues to speak through dreams. This daily log holds your dreams, images, and nighttime transmissions through the integration window.", tag: "Dream Work", tagClass: styles.tagIntegration },
-                { title: "Community", em: "Check-In", desc: "A 30-day and 90-day check-in portal for sharing your integration milestones, your challenges, and staying in reciprocal relationship with Vital Kaua\u02BBi.", tag: "Community", tagClass: styles.tagIntegration },
-              ].map((doc, i) => (
-                <div key={i} className={`${styles.docCard} ${styles.fadeIn}`}>
-                  <div className={styles.docTitle}>
-                    {doc.title} <em>{doc.em}</em>
-                  </div>
-                  <div className={styles.docDesc}>{doc.desc}</div>
-                  <div className={styles.docFooter}>
-                    <span className={`${styles.docTag} ${doc.tagClass}`}>{doc.tag}</span>
-                    <span className={styles.docAction}>Open &rarr;</span>
-                  </div>
-                </div>
-              ))}
+              </Link>
             </div>
           </div>
         </div>

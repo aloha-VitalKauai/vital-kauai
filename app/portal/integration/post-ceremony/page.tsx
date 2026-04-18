@@ -226,7 +226,14 @@ const WEEKS = [
           { text: 'Schedule your Completion Call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-completion-call', external: true },
         ],
       },
-      { color: 'blue', text: 'Consider ongoing calls with your integration guide', note: 'You have sessions remaining in your six-session arc, and you can also continue beyond that as a living practice. Your guide can help you establish a monthly rhythm or meet you as the work keeps moving. Book via the Integration Specialist section on your Dashboard.' },
+      {
+        color: 'blue',
+        text: 'Consider ongoing calls with your integration guide',
+        note: 'You have sessions remaining in your six-session arc, and you can also continue beyond that as a living practice. Your guide can help you establish a monthly rhythm or meet you as the work keeps moving. Book via the Integration Specialist section on your Dashboard.',
+        links: [
+          { text: 'Consider ongoing calls with your integration guide', href: '/portal#integration-specialist' },
+        ],
+      },
       { color: 'sage', text: 'Write your integration statement — guided below', note: 'Three questions, one page. What changed. What you know now. What you are committed to. Date it. You will want to read it in six months.' },
       { color: 'green', text: 'Establish your monthly rhythm — one practice, one question, one connection', note: 'One thing you do every day. One honest question each month. One conversation with someone who knows what you went through. Simple enough to sustain.' },
     ],
