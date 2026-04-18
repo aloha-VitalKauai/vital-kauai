@@ -45,6 +45,73 @@ function renderActionText(
   )
 }
 
+// ─── Return-practice calendar helpers ─────────────────────
+function returnDates(): { months: number; label: string; date: Date }[] {
+  const base = new Date()
+  base.setHours(9, 0, 0, 0)
+  const add = (m: number) => {
+    const d = new Date(base)
+    d.setMonth(d.getMonth() + m)
+    return d
+  }
+  return [
+    { months: 3,  label: '3-month integration return',  date: add(3)  },
+    { months: 6,  label: '6-month integration return',  date: add(6)  },
+    { months: 12, label: '1-year integration return',   date: add(12) },
+  ]
+}
+
+function toICSDate(d: Date): string {
+  return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
+}
+
+function downloadReturnICS() {
+  if (typeof window === 'undefined') return
+  const now = new Date()
+  const stamp = toICSDate(now)
+  const desc = 'Return to your Vital Kauaʻi integration portal. Revisit your Outcomes. Notice what has moved, what has deepened, what still asks for attention.\\n\\nhttps://vital-kauai.vercel.app/portal/integration/post-ceremony'
+  const events = returnDates().map((r, i) => {
+    const end = new Date(r.date.getTime() + 30 * 60 * 1000)
+    return [
+      'BEGIN:VEVENT',
+      `UID:vk-return-${i}-${Date.now()}@vitalkauai`,
+      `DTSTAMP:${stamp}`,
+      `DTSTART:${toICSDate(r.date)}`,
+      `DTEND:${toICSDate(end)}`,
+      `SUMMARY:Vital Kauaʻi · ${r.label}`,
+      `DESCRIPTION:${desc}`,
+      'END:VEVENT',
+    ].join('\r\n')
+  }).join('\r\n')
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Vital Kauai//Integration Returns//EN',
+    events,
+    'END:VCALENDAR',
+  ].join('\r\n')
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'vital-kauai-integration-returns.ics'
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
+function returnMailto(): string {
+  const fmt = (d: Date) => d.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
+  const lines = returnDates().map((r) => `• ${r.label} — ${fmt(r.date)}`).join('\n')
+  const body =
+    'A gentle reminder to return to your Vital Kauaʻi integration portal at these three markers:\n\n' +
+    lines +
+    '\n\nWhen each arrives, revisit your outcomes and notice what has moved.\n\n' +
+    'https://vital-kauai.vercel.app/portal/integration/post-ceremony'
+  return `mailto:?subject=${encodeURIComponent('Vital Kauaʻi · Integration return dates')}&body=${encodeURIComponent(body)}`
+}
+
 // ─── Types ────────────────────────────────────────────────
 type WeekTracking = {
   regulation: number        // 1–10
@@ -697,7 +764,8 @@ export default function PostCeremonyPage() {
         .integration-qs{margin-top:28px;border:.5px solid rgba(200,169,110,.2);border-radius:4px;overflow:hidden}.iq-header{background:rgba(200,169,110,.06);padding:14px 20px;border-bottom:.5px solid rgba(200,169,110,.15)}.iq-label{font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}.iq-item{padding:18px 20px;border-bottom:.5px solid var(--border-lt)}.iq-item:last-of-type{border-bottom:none}.iq-q{font-size:13px;color:var(--ink-mid);font-weight:500;margin-bottom:6px}.iq-hint{font-size:12px;color:var(--stone);font-style:italic;line-height:1.65}
         .rg-wrap{margin-top:40px;border:.5px solid rgba(200,169,110,.35);border-radius:4px;overflow:hidden}.rg-header{background:var(--forest);padding:18px 24px;display:flex;align-items:center;gap:12px}.rg-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0}.rg-title{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}.rg-body{padding:20px 24px}.rg-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:.5px solid var(--border)}.rg-item:last-of-type{border-bottom:none}.rg-check{width:18px;height:18px;border-radius:2px;border:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}.rg-check.checked{background:var(--gold);border-color:var(--gold)}.rg-check-icon{font-size:10px;color:white;opacity:0}.rg-check.checked .rg-check-icon{opacity:1}.rg-item-text{font-size:13px;color:var(--ink-mid);line-height:1.5}
         .monthly-arc{margin-top:48px;background:linear-gradient(135deg,rgba(28,43,30,.04) 0%,rgba(200,169,110,.04) 100%);border:.5px solid rgba(200,169,110,.18);border-radius:4px;padding:32px 36px}.ma-eyebrow{font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:block}.ma-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--ink);line-height:1.2;margin-bottom:14px}.ma-title em{font-style:italic;color:var(--gold)}.ma-text{font-size:13.5px;color:var(--stone);line-height:1.9;margin-bottom:20px}.ma-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}.ma-card{background:white;border:.5px solid var(--border);border-radius:4px;padding:18px 20px}.ma-card-label{font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:block}.ma-card-text{font-size:13px;color:var(--ink-mid);line-height:1.7}.ma-question{margin-top:20px;background:rgba(200,169,110,.06);border:.5px solid rgba(200,169,110,.2);border-radius:4px;padding:16px 20px}.ma-q-label{font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:block}.ma-q-text{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;color:var(--ink);line-height:1.4}
-        .bridge{margin-top:40px;background:var(--forest);padding:32px 36px;border-radius:2px}.bridge-eyebrow{font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:block}.bridge-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--cream);line-height:1.2;margin-bottom:14px}.bridge-title em{font-style:italic;color:var(--gold)}.bridge-text{font-size:13.5px;color:rgba(245,240,232,.62);line-height:1.9}
+        .return-practice{margin-top:40px;background:rgba(200,169,110,.06);border:.5px solid rgba(200,169,110,.25);border-left:3px solid var(--gold);border-radius:4px;padding:28px 32px}.rp-eyebrow{font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:block;font-weight:500}.rp-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--ink);line-height:1.2;margin-bottom:14px}.rp-text{font-size:13.5px;color:var(--ink-mid);line-height:1.85;margin-bottom:12px}.rp-text:last-of-type{margin-bottom:20px}.rp-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}.rp-btn{font-family:inherit;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid var(--gold);border-radius:2px;padding:10px 16px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;transition:all .2s;font-weight:500}.rp-btn:hover{background:rgba(200,169,110,.1)}.rp-btn-alt{background:rgba(200,169,110,.06)}
+        .bridge{margin-top:28px;background:var(--forest);padding:32px 36px;border-radius:2px}.bridge-eyebrow{font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:block}.bridge-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--cream);line-height:1.2;margin-bottom:14px}.bridge-title em{font-style:italic;color:var(--gold)}.bridge-text{font-size:13.5px;color:rgba(245,240,232,.62);line-height:1.9}
         .wc-wrap{margin-top:48px;padding-top:36px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}.wc-text{font-size:12.5px;color:var(--stone);line-height:1.65}.wc-text strong{color:var(--ink-mid);font-weight:500}
         .btn-complete{padding:12px 28px;background:var(--gold);border:none;border-radius:3px;color:var(--deep);font-family:inherit;font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap}.btn-complete:hover{background:#d4b87a}.btn-complete.done{background:rgba(200,169,110,.12);border:.5px solid var(--gold);color:var(--gold);cursor:default}
         .save-pill{position:fixed;bottom:24px;right:24px;padding:10px 18px;border-radius:4px;font-size:11px;letter-spacing:.1em;font-family:inherit;background:rgba(28,43,30,.9);color:var(--gold);opacity:0;transition:opacity .3s;pointer-events:none;z-index:200}.save-pill.visible{opacity:1}
@@ -898,6 +966,19 @@ export default function PostCeremonyPage() {
                 <div className="ma-question">
                   <span className="ma-q-label">Your monthly question</span>
                   <div className="ma-q-text">What is still alive from what the medicine showed me — and how am I living that this month?</div>
+                </div>
+              </div>
+            )}
+
+            {w.monthlyArc && (
+              <div className="return-practice">
+                <span className="rp-eyebrow">A practice of return</span>
+                <h3 className="rp-title">Mark the returns.</h3>
+                <p className="rp-text">Integration happens in waves. Before you close this tab, take a moment to place three gentle markers on your own calendar — three months, six months, and one year from today. When each arrives, return here. Revisit your outcomes. Notice what has moved, what has deepened, what still asks for attention.</p>
+                <p className="rp-text">We will also reach out. But the most important return is the one you promise yourself.</p>
+                <div className="rp-actions">
+                  <button type="button" className="rp-btn" onClick={downloadReturnICS}>Add all three to my calendar</button>
+                  <a className="rp-btn rp-btn-alt" href={returnMailto()}>Email the dates to myself</a>
                 </div>
               </div>
             )}
