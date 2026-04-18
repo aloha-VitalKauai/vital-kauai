@@ -302,7 +302,7 @@ const WEEKS = [
         text: 'Preparation call with Rachel & Josh',
         note: 'Bring your finalized Questions for the Medicine. Bring anything still alive. Speak everything that is ready to be said.',
         links: [
-          { text: 'Preparation call with Rachel & Josh', href: '/portal#team' },
+          { text: 'Preparation call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai', external: true },
         ],
       },
       {
@@ -795,22 +795,33 @@ export default function PreCeremonyPage() {
                   </div>
                   <div className="rg-body">
                     {[
-                      { text: 'Lab results submitted and confirmed reviewed by medical team', href: '/portal/physician-guide' },
-                      { text: 'Baseline Wellbeing Check-in completed', href: '/portal/assessments' },
-                      { text: 'Preparation call completed with Rachel & Josh', href: '/portal#team' },
+                      {
+                        text: 'Lab results submitted and confirmed reviewed by medical team',
+                        links: [
+                          { text: 'Lab results submitted', href: '/portal#lab-upload-panel' },
+                          { text: 'reviewed by medical team', href: '/portal/physician-guide' },
+                        ],
+                      },
+                      {
+                        text: 'Baseline Wellbeing Check-in completed',
+                        links: [{ text: 'Baseline Wellbeing Check-in completed', href: '/portal/assessments' }],
+                      },
+                      {
+                        text: 'Preparation call completed with Rachel & Josh',
+                        links: [{ text: 'Preparation call completed with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai', external: true }],
+                      },
                     ].map((item, ri) => (
                       <div className="rg-item" key={ri}>
                         <div className={`rg-check${checklist[`rg-${ri}`] ? ' checked' : ''}`} onClick={() => toggleCheck(`rg-${ri}`)}>
                           <span className="rg-check-icon">✓</span>
                         </div>
-                        <a
-                          href={item.href}
+                        <div
                           className="rg-item-text"
                           onClick={(e) => e.stopPropagation()}
-                          style={{ color: 'inherit', textDecoration: 'none', borderBottom: '1px dashed rgba(200,169,110,.55)' }}
+                          style={{ cursor: 'default' }}
                         >
-                          {item.text}
-                        </a>
+                          {renderActionText(item.text, item.links)}
+                        </div>
                       </div>
                     ))}
                   </div>
