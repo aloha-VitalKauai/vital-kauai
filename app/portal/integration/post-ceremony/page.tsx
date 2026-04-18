@@ -90,10 +90,10 @@ const WEEKS = [
       { color: 'blue', text: 'Journal what arose — images, moments, what the medicine showed you', note: 'Don\'t interpret it yet. Just record it. The meaning arrives in its own time. What you write now will be the material you return to for months.' },
       {
         color: 'gold',
-        text: 'Complete your 72-hour Wellbeing Check-in',
+        text: 'Complete your 72-hour Outcome',
         note: 'A brief, anonymized assessment taken within the first few days after ceremony. This is part of the standardized outcomes framework adapted for iboga from the validated instruments used in psychedelic research worldwide — your responses help establish legitimacy for this medicine and contribute to one of the most comprehensive iboga datasets being built anywhere in the world.',
         links: [
-          { text: 'Complete your 72-hour Wellbeing Check-in', href: '/portal/assessments' },
+          { text: 'Complete your 72-hour Outcome', href: '/portal/assessments' },
         ],
       },
     ],

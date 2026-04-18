@@ -291,10 +291,10 @@ const WEEKS = [
       },
       {
         color: 'red',
-        text: 'Complete your Baseline Wellbeing Check-in',
+        text: 'Complete your Baseline Outcome',
         note: 'A 5-minute survey covering mood, anxiety, sleep, and quality of life. This creates your before-picture.',
         links: [
-          { text: 'Complete your Baseline Wellbeing Check-in', href: '/portal/assessments' },
+          { text: 'Complete your Baseline Outcome', href: '/portal/assessments' },
         ],
       },
       {
@@ -803,8 +803,8 @@ export default function PreCeremonyPage() {
                         ],
                       },
                       {
-                        text: 'Baseline Wellbeing Check-in completed',
-                        links: [{ text: 'Baseline Wellbeing Check-in completed', href: '/portal/assessments' }],
+                        text: 'Baseline Outcome completed',
+                        links: [{ text: 'Baseline Outcome completed', href: '/portal/assessments' }],
                       },
                       {
                         text: 'Preparation call completed with Rachel & Josh',
