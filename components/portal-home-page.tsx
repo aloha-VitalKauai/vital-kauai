@@ -384,10 +384,12 @@ export function PortalHomePage({
     const hash = window.location.hash;
     if (!hash || hash.length < 2) return;
     const id = hash.slice(1);
-    // The lab upload panel is only rendered when the Lab Requirements card
-    // is expanded. Open it so the anchor target exists; the existing effect
-    // on showLabUpload handles the actual scroll.
+    // The lab upload panel lives inside the Prepare phase tab and is only
+    // rendered when the Lab Requirements card is expanded. Activate that
+    // tab and open the panel so the anchor target exists; the existing
+    // effect on showLabUpload handles the actual scroll.
     if (id === "lab-upload-panel") {
+      setActivePhase(1);
       setShowLabUpload(true);
       return;
     }

@@ -302,7 +302,7 @@ const WEEKS = [
         text: 'Preparation call with Rachel & Josh',
         note: 'Bring your finalized Questions for the Medicine. Bring anything still alive. Speak everything that is ready to be said.',
         links: [
-          { text: 'Preparation call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai', external: true },
+          { text: 'Preparation call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true },
         ],
       },
       {
@@ -808,7 +808,7 @@ export default function PreCeremonyPage() {
                       },
                       {
                         text: 'Preparation call completed with Rachel & Josh',
-                        links: [{ text: 'Preparation call completed with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai', external: true }],
+                        links: [{ text: 'Preparation call completed with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true }],
                       },
                     ].map((item, ri) => (
                       <div className="rg-item" key={ri}>
