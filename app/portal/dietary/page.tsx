@@ -153,7 +153,7 @@ function DietaryContent() {
         </div>
 
         {/* Iboga Supplement Protocol */}
-        <div style={{ marginBottom: 52 }}>
+        <div id="supplement-protocol" style={{ marginBottom: 52, scrollMarginTop: 80 }}>
           <SectionHeader dot={gold} title="Iboga Journey Supplement Protocol" />
           <div style={{ background: goldBg, border: `1px solid ${goldSoft}`, borderRadius: 10, padding: "36px 40px" }}>
             <p style={{ fontSize: 9, letterSpacing: "0.22em", textTransform: "uppercase", color: gold, fontWeight: 600, marginBottom: 6 }}>Iboga Preparation</p>

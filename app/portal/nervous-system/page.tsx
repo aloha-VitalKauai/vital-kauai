@@ -115,7 +115,7 @@ export default async function NervousSystemPage() {
         </p>
 
         {/* Coherent Heart Breath */}
-        <div style={{ background: "rgba(122,158,126,0.06)", border: "1px solid rgba(122,158,126,0.15)", borderRadius: 12, padding: "36px 40px", marginBottom: 48 }}>
+        <div id="coherent-heart-breath" style={{ background: "rgba(122,158,126,0.06)", border: "1px solid rgba(122,158,126,0.15)", borderRadius: 12, padding: "36px 40px", marginBottom: 48, scrollMarginTop: 80 }}>
           <span style={{ fontSize: 8.5, letterSpacing: "0.4em", textTransform: "uppercase", color: sage, display: "block", marginBottom: 8 }}>Foundational Practice</span>
           <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 26, fontWeight: 300, marginBottom: 8 }}>The Coherent <em style={{ fontStyle: "italic", color: sage }}>Heart Breath</em></h3>
           <p style={{ fontSize: 13, color: stone, lineHeight: 1.8, marginBottom: 28 }}>A complete cycle of breath that fills, stills, and releases</p>
