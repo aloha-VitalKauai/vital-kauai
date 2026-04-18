@@ -248,7 +248,14 @@ const WEEKS = [
           { text: 'Share the Support Person Guide with your home circle — this week', href: '/portal/support-person' },
         ],
       },
-      { color: 'amber', text: 'Begin preparing your home environment for your return', note: 'Clean it. Simplify it. Stock what will nourish you. The space you return to is part of integration. Prepare it now, before you\'re altered by what\'s coming.' },
+      {
+        color: 'amber',
+        text: 'Begin preparing your home environment for your return',
+        note: 'Clean it. Simplify it. Stock what will nourish you. The space you return to is part of integration. Prepare it now, before you\'re altered by what\'s coming.',
+        links: [
+          { text: 'Begin preparing your home environment for your return', href: '/portal/support-person#return' },
+        ],
+      },
       {
         color: 'blue',
         text: 'Complete the What to Bring packing checklist',
