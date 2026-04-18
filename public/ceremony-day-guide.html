@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ceremony Day Guide — Vital Kauaʻi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream:      #FAF6F0;
+      --cream-deep: #F3EDE2;
+      --ink:        #2C2416;
+      --ink-soft:   #5C5043;
+      --ink-mist:   #8A7F72;
+      --gold:       #B8956A;
+      --gold-light: #E6D5BF;
+      --gold-deep:  #9A7A52;
+      --sage:       #7A8C6E;
+      --sage-light: #D4DBCE;
+      --forest:     #1F2A1F;
+      --rose:       #C4897A;
+      --rule:       rgba(184,149,106,0.28);
+      --card-bg:    #FEFCF8;
+      --shadow-soft: 0 1px 2px rgba(44,36,22,0.04), 0 8px 24px rgba(44,36,22,0.05);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ──────────────────────────────────────────────────────────── */
+    nav {
+      background: var(--forest);
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(230,213,191,0.15);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      color: var(--gold-light);
+      letter-spacing: 0.18em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .nav-logo em { font-style: italic; font-weight: 400; }
+    .nav-back {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(230,213,191,0.25);
+      transition: all 0.3s ease;
+    }
+    .nav-back:hover { background: var(--gold); color: var(--forest); border-color: var(--gold); }
+
+    /* ── PRINT BAR ────────────────────────────────────────────────────── */
+    .print-bar {
+      background: var(--cream-deep);
+      padding: 0.75rem 2rem;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .print-bar span {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .btn-print {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      background: transparent;
+      color: var(--gold-deep);
+      border: 1px solid var(--gold);
+      padding: 0.45rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn-print:hover { background: var(--gold); color: var(--cream); }
+
+    /* ── HERO ─────────────────────────────────────────────────────────── */
+    .hero {
+      padding: 5.5rem 2rem 4.5rem;
+      text-align: center;
+      background: linear-gradient(180deg, var(--cream) 0%, var(--cream-deep) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 2rem; left: 50%;
+      transform: translateX(-50%);
+      width: 1px; height: 2.5rem;
+      background: var(--gold);
+      opacity: 0.4;
+    }
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--gold-deep);
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(2.5rem, 5.5vw, 4rem);
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 em { font-style: italic; color: var(--gold-deep); }
+    .hero-sub {
+      max-width: 620px;
+      margin: 0 auto;
+      font-size: 1.05rem;
+      color: var(--ink-soft);
+      line-height: 1.8;
+    }
+    .hero-note {
+      margin-top: 2.25rem;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--gold-deep);
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    /* ── CONTAINER ────────────────────────────────────────────────────── */
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 1.75rem;
+    }
+
+    /* ── INTRO ────────────────────────────────────────────────────────── */
+    .intro-block {
+      padding: 4rem 0 2.5rem;
+      border-bottom: 1px solid var(--rule);
+      text-align: center;
+    }
+    .intro-block p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-style: italic;
+      line-height: 1.7;
+      color: var(--ink-soft);
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    /* ── SECTION ──────────────────────────────────────────────────────── */
+    .section {
+      padding: 4rem 0 3rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .section:last-of-type { border-bottom: none; }
+    .section-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold-deep);
+      margin-bottom: 1rem;
+    }
+    .section h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+      line-height: 1.2;
+      color: var(--ink);
+      margin-bottom: 1.75rem;
+    }
+    .section h2 em { font-style: italic; color: var(--gold-deep); }
+    .section p {
+      font-size: 1rem;
+      line-height: 1.85;
+      color: var(--ink-soft);
+      margin-bottom: 1.25rem;
+    }
+    .section p strong { color: var(--ink); font-weight: 400; }
+
+    /* ── ARC / TIMELINE ───────────────────────────────────────────────── */
+    .arc {
+      margin-top: 2.5rem;
+      position: relative;
+    }
+    .arc::before {
+      content: '';
+      position: absolute;
+      left: 80px;
+      top: 12px;
+      bottom: 12px;
+      width: 1px;
+      background: var(--rule);
+    }
+    .arc-item {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 2rem;
+      padding-bottom: 2.5rem;
+      position: relative;
+    }
+    .arc-item:last-child { padding-bottom: 0; }
+    .arc-marker {
+      position: relative;
+      padding-top: 0.4rem;
+    }
+    .arc-dot {
+      position: absolute;
+      left: 74px;
+      top: 0.75rem;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--cream);
+      border: 2px solid var(--gold);
+      z-index: 1;
+    }
+    .arc-dot.dim { border-color: var(--gold-light); background: var(--cream); }
+    .arc-dot.deep { background: var(--gold); }
+    .arc-time {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.92rem;
+      color: var(--gold-deep);
+      letter-spacing: 0.06em;
+      text-align: right;
+      padding-right: 1rem;
+    }
+    .arc-content {
+      padding-left: 0.5rem;
+    }
+    .arc-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: 1.4rem;
+      color: var(--ink);
+      margin-bottom: 0.6rem;
+      line-height: 1.3;
+    }
+    .arc-title em { font-style: italic; color: var(--gold-deep); }
+    .arc-text {
+      font-size: 0.98rem;
+      line-height: 1.75;
+      color: var(--ink-soft);
+    }
+    .arc-text + .arc-text {
+      margin-top: 0.75rem;
+    }
+
+    /* ── FEATURE BOX (dark) ───────────────────────────────────────────── */
+    .feature-dark {
+      background: var(--forest);
+      color: var(--cream);
+      padding: 3.5rem 2.5rem;
+      margin: 3rem -2rem 0;
+      position: relative;
+    }
+    .feature-inner {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .feature-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-bottom: 1.25rem;
+    }
+    .feature-dark h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(1.9rem, 4vw, 2.5rem);
+      color: var(--cream);
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+    }
+    .feature-dark h2 em { font-style: italic; color: var(--gold-light); }
+    .feature-dark > .feature-inner > p {
+      color: rgba(250,246,240,0.82);
+      font-size: 1rem;
+      line-height: 1.85;
+      margin-bottom: 1.25rem;
+    }
+    .feature-dark .pillar-list {
+      list-style: none;
+      padding: 0;
+      margin-top: 2rem;
+      display: grid;
+      gap: 0.9rem;
+    }
+    .feature-dark .pillar-list li {
+      padding: 1rem 1.5rem;
+      background: rgba(230,213,191,0.06);
+      border-left: 2px solid var(--gold-light);
+      color: rgba(250,246,240,0.9);
+      font-size: 0.98rem;
+      line-height: 1.65;
+    }
+    .feature-dark .pillar-list strong {
+      color: var(--gold-light);
+      font-weight: 400;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    /* ── BRING LIST ───────────────────────────────────────────────────── */
+    .bring-grid {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+    .bring-card {
+      background: var(--card-bg);
+      border: 1px solid var(--rule);
+      padding: 1.5rem 1.5rem;
+    }
+    .bring-card h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--gold-deep);
+      margin-bottom: 0.7rem;
+    }
+    .bring-card ul {
+      list-style: none;
+      padding: 0;
+    }
+    .bring-card li {
+      padding: 0.35rem 0 0.35rem 1.1rem;
+      position: relative;
+      font-size: 0.95rem;
+      color: var(--ink-soft);
+      line-height: 1.6;
+    }
+    .bring-card li::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    /* ── PULL QUOTE ───────────────────────────────────────────────────── */
+    .pull-quote {
+      margin: 3rem 0 1rem;
+      padding: 2.5rem 2rem;
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      text-align: center;
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.4rem;
+      line-height: 1.6;
+      color: var(--ink);
+      max-width: 620px;
+      margin: 0 auto;
+    }
+    .pull-quote::before {
+      content: '✦';
+      display: block;
+      color: var(--gold);
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+      letter-spacing: 0.4em;
+    }
+
+    /* ── REMINDERS ────────────────────────────────────────────────────── */
+    .reminders {
+      background: var(--cream-deep);
+      border: 1px solid var(--rule);
+      padding: 2.5rem;
+      margin-top: 2rem;
+    }
+    .reminders h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: 1.55rem;
+      color: var(--ink);
+      margin-bottom: 1.25rem;
+      text-align: center;
+    }
+    .reminders h3 em { font-style: italic; color: var(--gold-deep); }
+    .reminder-list {
+      list-style: none;
+      padding: 0;
+    }
+    .reminder-list li {
+      padding: 0.85rem 0 0.85rem 2.5rem;
+      position: relative;
+      font-size: 1rem;
+      color: var(--ink-soft);
+      line-height: 1.7;
+      border-bottom: 1px dashed var(--rule);
+    }
+    .reminder-list li:last-child { border-bottom: none; }
+    .reminder-list li::before {
+      content: '✦';
+      position: absolute;
+      left: 0.5rem;
+      top: 0.95rem;
+      color: var(--gold);
+      font-size: 0.7rem;
+    }
+    .reminder-list em {
+      font-style: italic;
+      color: var(--ink);
+    }
+
+    /* ── MORNING AFTER BLOCK ──────────────────────────────────────────── */
+    .morning-after {
+      background: var(--cream-deep);
+      padding: 3rem 2.5rem;
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .morning-after h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: 1.7rem;
+      color: var(--ink);
+      margin-bottom: 1.25rem;
+    }
+    .morning-after h3 em { font-style: italic; color: var(--gold-deep); }
+    .morning-after p {
+      max-width: 580px;
+      margin: 0 auto 1rem;
+      font-size: 1rem;
+      color: var(--ink-soft);
+      line-height: 1.85;
+    }
+
+    /* ── CLOSING ──────────────────────────────────────────────────────── */
+    .closing {
+      text-align: center;
+      padding: 4.5rem 2rem 5.5rem;
+    }
+    .closing-mark {
+      color: var(--gold);
+      font-size: 0.8rem;
+      letter-spacing: 0.4em;
+      margin-bottom: 1.5rem;
+    }
+    .closing p {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.3rem;
+      line-height: 1.7;
+      color: var(--ink-soft);
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    /* ── FOOTER ───────────────────────────────────────────────────────── */
+    footer {
+      background: var(--forest);
+      color: var(--gold-light);
+      text-align: center;
+      padding: 3rem 2rem 2.5rem;
+      border-top: 1px solid var(--rule);
+    }
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.5rem;
+      color: var(--gold-light);
+      letter-spacing: 0.15em;
+      margin-bottom: 1.25rem;
+    }
+    footer p:not(.footer-logo) {
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      line-height: 1.9;
+      color: rgba(230,213,191,0.75);
+      max-width: 620px;
+      margin: 0 auto;
+    }
+    footer a {
+      color: var(--gold-light);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(230,213,191,0.3);
+      transition: border-color 0.3s ease;
+    }
+    footer a:hover {
+      border-bottom-color: var(--gold-light);
+    }
+    .footer-disclaimer {
+      margin-top: 1rem !important;
+      font-style: italic;
+      font-size: 0.72rem !important;
+      color: rgba(230,213,191,0.55) !important;
+    }
+
+    /* ── MEDIA & PRINT ────────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-logo { font-size: 1rem; }
+      .print-bar { padding: 0.65rem 1.25rem; }
+      .hero { padding: 4rem 1.4rem 3.5rem; }
+      .container { padding: 0 1.4rem; }
+      .arc::before { left: 50px; }
+      .arc-item { grid-template-columns: 60px 1fr; gap: 1.25rem; }
+      .arc-dot { left: 44px; }
+      .arc-time { font-size: 0.82rem; padding-right: 0.5rem; }
+      .feature-dark { padding: 2.5rem 1.4rem; margin: 2.5rem -1.4rem 0; }
+      .reminders, .morning-after { padding: 1.75rem 1.25rem; }
+    }
+
+    @media print {
+      @page {
+        size: letter;
+        margin: 0.6in 0.65in;
+      }
+
+      nav, .print-bar, .btn-print { display: none !important; }
+
+      html, body {
+        background: white;
+        color: black;
+        font-size: 10.5pt;
+        line-height: 1.55;
+      }
+
+      /* Hero slimmed */
+      .hero {
+        padding: 1rem 0 1.5rem;
+        background: white;
+        page-break-after: avoid;
+      }
+      .hero::before { display: none; }
+      .hero h1 { font-size: 2.1rem; margin-bottom: 0.75rem; }
+      .hero-eyebrow { margin-bottom: 0.6rem; }
+      .hero-sub { font-size: 0.95rem; line-height: 1.55; }
+      .hero-note { margin-top: 1rem; font-size: 1rem; line-height: 1.5; }
+
+      /* Intro */
+      .intro-block { padding: 1.25rem 0 1.25rem; }
+      .intro-block p { font-size: 1.05rem; line-height: 1.5; }
+
+      /* Container full width */
+      .container { padding: 0; max-width: 100%; }
+
+      /* Sections */
+      .section {
+        padding: 1.5rem 0 1.25rem;
+      }
+      .section h2 {
+        font-size: 1.55rem;
+        margin-bottom: 0.8rem;
+      }
+      .section-eyebrow {
+        margin-bottom: 0.4rem;
+      }
+      .section p {
+        font-size: 10.5pt;
+        line-height: 1.55;
+        margin-bottom: 0.7rem;
+        orphans: 3;
+        widows: 3;
+      }
+
+      /* Keep headings with the content after them, but let them flow naturally */
+      h2, h3, h4 {
+        page-break-inside: avoid;
+      }
+      h2 + p, h3 + p { page-break-before: avoid; }
+
+      /* Arc / timeline — keep each item together when possible, allow splitting for tall items */
+      .arc { margin-top: 1rem; }
+      .arc::before { left: 70px; }
+      .arc-item {
+        grid-template-columns: 80px 1fr;
+        gap: 1.25rem;
+        padding-bottom: 1rem;
+        orphans: 3;
+        widows: 3;
+      }
+      .arc-dot { left: 64px; top: 0.5rem; }
+      .arc-time { font-size: 0.85rem; padding-right: 0.75rem; }
+      .arc-title { font-size: 1.15rem; margin-bottom: 0.4rem; }
+      .arc-text { font-size: 10pt; line-height: 1.55; }
+      .arc-text + .arc-text { margin-top: 0.5rem; }
+
+      /* Dark feature box -> cream box for print */
+      .feature-dark {
+        background: #f9f4ec !important;
+        color: black;
+        margin: 1rem 0;
+        padding: 1.25rem 1.5rem;
+        border: 1px solid #d9c9ad;
+        page-break-inside: avoid;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .feature-dark h2, .feature-dark > .feature-inner > p, .feature-dark .pillar-list li { color: black; }
+      .feature-dark .pillar-list strong, .feature-dark h2 em, .feature-eyebrow { color: #9A7A52; }
+      .feature-dark .pillar-list li {
+        background: #f0e8d8;
+        border-left-color: #9A7A52;
+        padding: 0.55rem 0.9rem;
+        font-size: 10pt;
+        line-height: 1.5;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .feature-dark h2 { font-size: 1.5rem; margin-bottom: 0.7rem; }
+      .feature-dark > .feature-inner > p { font-size: 10pt; line-height: 1.5; margin-bottom: 0.6rem; }
+      .pillar-list { margin-top: 0.9rem !important; gap: 0.4rem !important; }
+      .pillar-list strong { font-size: 1rem !important; margin-bottom: 0.2rem !important; }
+
+      /* Bring grid: 2 cols */
+      .bring-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem;
+        margin-top: 0.9rem;
+      }
+      .bring-card {
+        padding: 0.8rem 1rem;
+        page-break-inside: avoid;
+      }
+      .bring-card h4 { font-size: 1rem; margin-bottom: 0.4rem; }
+      .bring-card li { font-size: 9.75pt; line-height: 1.5; padding: 0.2rem 0 0.2rem 1rem; }
+
+      /* Reminders */
+      .reminders {
+        padding: 1rem 1.25rem;
+        margin-top: 0.9rem;
+        background: #f5efe4;
+        page-break-inside: avoid;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .reminders h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+      .reminder-list li {
+        padding: 0.45rem 0 0.45rem 2rem;
+        font-size: 10pt;
+        line-height: 1.55;
+      }
+      .reminder-list li::before { top: 0.6rem; }
+
+      /* Morning after */
+      .morning-after {
+        padding: 1rem 1.5rem;
+        margin-top: 0.9rem;
+        background: #f5efe4;
+        page-break-inside: avoid;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .morning-after h3 { font-size: 1.3rem; margin-bottom: 0.6rem; }
+      .morning-after p { font-size: 10pt; line-height: 1.55; margin-bottom: 0.6rem; }
+
+      /* Pull quote */
+      .pull-quote {
+        margin: 1.25rem 0;
+        padding: 1rem 1.5rem;
+        page-break-inside: avoid;
+      }
+      .pull-quote p { font-size: 1.15rem; line-height: 1.5; }
+
+      /* Closing */
+      .closing { padding: 1.5rem 0 1rem; page-break-inside: avoid; }
+      .closing p { font-size: 1.05rem; line-height: 1.55; }
+
+      /* Footer in print */
+      footer {
+        background: #f5efe4 !important;
+        color: #5C5043 !important;
+        padding: 0.9rem 1rem 0.75rem !important;
+        margin-top: 0.6rem;
+        border-top: 1px solid #d9c9ad !important;
+        page-break-inside: avoid;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .footer-logo {
+        color: #9A7A52 !important;
+        font-size: 1.1rem !important;
+        margin-bottom: 0.4rem !important;
+      }
+      footer p:not(.footer-logo) {
+        color: #5C5043 !important;
+        font-size: 8.5pt !important;
+        line-height: 1.5 !important;
+      }
+      footer a {
+        color: #9A7A52 !important;
+        border-bottom: none !important;
+      }
+      .footer-disclaimer {
+        font-size: 7.75pt !important;
+        color: #8A7F72 !important;
+        margin-top: 0.5rem !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/portal" class="nav-logo">Vital <em>Kauaʻi</em></a>
+  <a href="/portal" class="nav-back">← Portal</a>
+</nav>
+
+<div class="print-bar">
+  <span>Save for offline reading</span>
+  <button class="btn-print" onclick="window.print()">Download / Print</button>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">Ceremony · Moment-by-Moment Guide</p>
+  <h1>Ceremony <em>Day</em> Guide</h1>
+  <p class="hero-sub">A moment-by-moment orientation for your ceremony day — what to expect from arrival through the full arc of the night and morning after. Your journey will last between 12 and 36 hours.</p>
+  <p class="hero-note">This is a living map. The medicine arrives in its own way, in its own time. Let this guide orient you — and then release it, and trust what unfolds.</p>
+</section>
+
+<div class="container">
+
+  <!-- INTRO -->
+  <div class="intro-block">
+    <p>You have prepared. You have arrived. What remains is to receive what has been waiting for you. Let this day meet you exactly as you are.</p>
+  </div>
+
+  <!-- THE MORNING -->
+  <section class="section">
+    <p class="section-eyebrow">Phase One · The Morning</p>
+    <h2>Rising Into <em>Ceremony</em></h2>
+    <p>The day begins gently. There is nothing to accomplish and nothing to prepare — everything has already been prepared. The morning is for settling, for quieting, for arriving in the body.</p>
+
+    <div class="arc">
+
+      <div class="arc-item">
+        <div class="arc-marker">
+          <span class="arc-dot"></span>
+          <div class="arc-time">On waking</div>
+        </div>
+        <div class="arc-content">
+          <h3 class="arc-title">Rest and <em>Gentle Movement</em></h3>
+          <p class="arc-text">Wake slowly. If you slept well, let that nourish you. If sleep was light, trust that your body got what it needed. Take a warm shower. Move your body gently — stretching, a slow walk outside, a few breaths under the sky.</p>
+          <p class="arc-text">Journaling is welcome if it is calling you. So is silence. Both are forms of arrival.</p>
+        </div>
+      </div>
+
+      <div class="arc-item">
+        <div class="arc-marker">
+          <span class="arc-dot"></span>
+          <div class="arc-time">Morning</div>
+        </div>
+        <div class="arc-content">
+          <h3 class="arc-title">Physical <em>Nourishment</em></h3>
+          <p class="arc-text">Nourishment if your body is asking for it: banana, eggs, coconut water, electrolyte drinks, fresh ginger root tea. Keep it light and easy to digest. Minimal food after midday — your system begins to clear for the medicine. Food and drink pause fully in the six hours before ceremony begins.</p>
+          <p class="arc-text">Hydrate through the morning. Rest when you feel tired. You are being cared for.</p>
+        </div>
+      </div>
+
+      <div class="arc-item">
+        <div class="arc-marker">
+          <span class="arc-dot"></span>
+          <div class="arc-time">Midday</div>
+        </div>
+        <div class="arc-content">
+          <h3 class="arc-title">Quiet <em>Preparation</em></h3>
+          <p class="arc-text">Step away from screens and from conversations that pull you outward. This is a time to turn inward. Review your intentions. Read back through your "Questions for the Medicine." Remember why you came.</p>
+          <p class="arc-text">Whatever you are feeling — excitement, fear, tenderness, uncertainty — is welcome and is part of arriving.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- THE AFTERNOON -->
+  <section class="section">
+    <p class="section-eyebrow">Phase Two · Late Afternoon</p>
+    <h2>Opening the <em>Container</em></h2>
+    <p>As the day softens into afternoon, the formal opening of ceremony begins. Your body, your heart, and the land will all feel this shift. Move with it.</p>
+
+    <div class="arc">
+
+      <div class="arc-item">
+        <div class="arc-marker">
+          <span class="arc-dot"></span>
+          <div class="arc-time">Afternoon</div>
+        </div>
+        <div class="arc-content">
+          <h3 class="arc-title">Parasympathetic <em>Support</em></h3>
+          <p class="arc-text">Treatment such as massage, acupuncture, or sound healing to support the parasympathetic nervous system — settling and opening the body in preparation for the work ahead.</p>
+        </div>
+      </div>
+
+      <div class="arc-item">
+        <div class="arc-marker">
+          <span class="arc-dot"></span>
+          <div class="arc-time">Before the fire</div>
+        </div>
+        <div class="arc-content">
+          <h3 class="arc-title">Dress in <em>White</em></h3>
+          <p class="arc-text">When it is time, dress in all white — the traditional color of ceremony, clarity, and openness. Let the act of dressing be part of the ritual — a quiet passage from your daily self into the self who is meeting the medicine tonight.</p>
+        </div>
+      </div>
+
+      <div class="arc-item">
+        <div class="arc-marker">
+          <span class="arc-dot deep"></span>
+          <div class="arc-time">Late afternoon</div>
+        </div>
+        <div class="arc-content">
+          <h3 class="arc-title">Opening &amp; <em>Fire Ceremony</em></h3>
+          <p class="arc-text">Arrive at the fire. Speak what you are releasing, your intentions, and your prayers. The fire receives what is ready to be let go. This is the beginning of sacred time — the ordinary rules soften, and the deeper wisdom takes over.</p>
+          <p class="arc-text">Breathe. You are entering.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOUR ANCHORS FEATURE -->
+  <section class="feature-dark">
+    <div class="feature-inner">
+      <p class="feature-eyebrow">Your Four Anchors in Ceremony</p>
+      <h2>What to <em>Remember</em> When You Are Inside It</h2>
+      <p>Once you are in, there is nothing to do but be with what arises. These four anchors are always available to you — they will carry you through any intensity, any depth, any wave.</p>
+
+      <ul class="pillar-list">
+        <li><strong>Your breath is your home.</strong> Your heart-belly breath is waiting for you. One hand on heart, one hand on belly. Inhale seven, hold seven, exhale seven with sound. Return here as often as you need.</li>
+        <li><strong>Your body is wise.</strong> Trust what it asks for — stillness, movement, sound, tears. If it wants to shake, let it shake. If it wants to weep, let it weep. The body is doing its work.</li>
+        <li><strong>Our team is here.</strong> A peace sign to leave the space. A raised hand for support. Words if you need them. Silence if you prefer. You are accompanied throughout.</li>
+        <li><strong>When in doubt, do less.</strong> The temptation in intensity is to push. Soften instead. Let the medicine move you. You came to receive — let yourself receive.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- THE JOURNEY ARC -->
+  <section class="section">
+    <p class="section-eyebrow">Phase Three · The Journey</p>
+    <h2>The Arc of <em>the Night</em></h2>
+    <p>Your journey can last between 12 and 36 hours. What follows is a map of the territory many travelers move through — and your journey is yours alone. The medicine arrives in its own way. Let this be a guide for orienting, and release it as soon as it stops serving you.</p>
+
+    <div class="arc">
+
+      <div class="arc-item">
+        <div class="arc-marker">
+          <span class="arc-dot"></span>
+          <div class="arc-time">Hours 1–3</div>
+        </div>
+        <div class="arc-content">
+          <h3 class="arc-title">Onset</h3>
+          <p class="arc-text">Return to the ceremony space, which has been prepared and held for you. Dosing begins here, titrated gradually over the first several hours of your journey. Your ceremony guides open the space with invocation — creating a protected, sacred container for what is to come.</p>
+          <p class="arc-text">Bwiti music begins. You are invited to move with it however feels true — rattle, dance, shake, sound, tone, sing, or remain in stillness. Follow what your body asks.</p>
+          <p class="arc-text">As onset arrives, you may be guided to lie down and receive an eye mask. Body heaviness, buzzing or vibration, and the beginning of visual patterns are natural signs the medicine is moving. Your facilitators are present throughout — attentive, grounded, and attuned to the whole room and to you.</p>
+        </div>
+      </div>
+
+      <div class="arc-item">
+        <div class="arc-marker">
+          <span class="arc-dot deep"></span>
+          <div class="arc-time">Hours 4–8</div>
+        </div>
+        <div class="arc-content">
+          <h3 class="arc-title">The Deepest <em>Phase</em></h3>
+          <p class="arc-text">Often the most immersive portion of the journey. Vivid life review, archetypal visions, guidance and insight, dream-like sequences. Many people remain eyes-closed and turned inward during this phase. Your facilitators offer reassurance, grounding touch when welcomed, and simple presence.</p>
+          <p class="arc-text">You may hear voices or whispers, encounter presences, or sense that vision is moving even behind the eye mask — iboga opens dimensions of experience that can be vast and unexpected. Whatever arises, your facilitators are with you. If you feel called to open your eyes, you may do so gently.</p>
+        </div>
+      </div>
+
+      <div class="arc-item">
+        <div class="arc-marker">
+          <span class="arc-dot"></span>
+          <div class="arc-time">Hours 8–20</div>
+        </div>
+        <div class="arc-content">
+          <h3 class="arc-title">Psycho-Spiritual <em>Processing</em></h3>
+          <p class="arc-text">This is where meaning-making often begins — life narrative integration, inner child work, ancestral and belief system processing, and discussing the insights surfacing from the visions. Your facilitator meets you where you are.</p>
+          <p class="arc-text">If you want to speak, you can speak. If you want to remain silent, remain silent. Both are honored. The medicine keeps working either way.</p>
+        </div>
+      </div>
+
+      <div class="arc-item">
+        <div class="arc-marker">
+          <span class="arc-dot dim"></span>
+          <div class="arc-time">After 20 hrs</div>
+        </div>
+        <div class="arc-content">
+          <h3 class="arc-title">Emergence &amp; <em>Grounding</em></h3>
+          <p class="arc-text">The journey moves into its closing arc. Sleep is the greatest medicine available to you at this point — if your body calls for it, follow it fully. You may feel physically tired and emotionally wide open. This tenderness is sacred — we hold it with full care.</p>
+          <p class="arc-text">Move slowly and accept assistance as you orient. Dizziness, visual trails, and shifts in perception are a natural part of emergence — the medicine is still working. Your facilitator's presence and gentle breathwork meet you here. Light will feel brighter than usual — sunglasses are your friend. Receive what arises with curiosity and trust.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PULL QUOTE -->
+  <div class="pull-quote">
+    <p>What arises in ceremony is arriving for your healing. Even the difficult parts are care. Trust the thread you are on.</p>
+  </div>
+
+  <!-- WHAT TO BRING -->
+  <section class="section">
+    <p class="section-eyebrow">Practical Support</p>
+    <h2>What to <em>Have With You</em></h2>
+    <p>Almost everything you need is provided. These are the few personal items that support your journey and let you settle in fully.</p>
+
+    <div class="bring-grid">
+      <div class="bring-card">
+        <h4>On your body</h4>
+        <ul>
+          <li>All white, comfortable clothing</li>
+          <li>A light layer for warmth</li>
+          <li>Socks (the body cools during ceremony)</li>
+        </ul>
+      </div>
+      <div class="bring-card">
+        <h4>Near your space</h4>
+        <ul>
+          <li>A water bottle</li>
+          <li>Your eye covering, if you like one</li>
+          <li>A personal object that holds meaning for you</li>
+        </ul>
+      </div>
+      <div class="bring-card">
+        <h4>For the heart</h4>
+        <ul>
+          <li>Photos of loved ones, if it supports you</li>
+          <li>A written intention or prayer</li>
+          <li>Any sacred object from your own lineage</li>
+        </ul>
+      </div>
+      <div class="bring-card">
+        <h4>For after</h4>
+        <ul>
+          <li>A journal and pen</li>
+          <li>Comfortable clothes for the morning</li>
+          <li>Sunglasses for the first day after</li>
+          <li>Slip-on shoes or sandals for steady walking</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- REMINDERS -->
+  <section class="section">
+    <p class="section-eyebrow">Carry These With You</p>
+    <h2>Reminders for <em>the Journey</em></h2>
+
+    <div class="reminders">
+      <h3>When the Work Goes <em>Deep</em></h3>
+      <ul class="reminder-list">
+        <li><em>You are safe.</em> You are held by our team, by the lineage, by the medicine itself, and by the land of Kauaʻi.</li>
+        <li><em>Nothing is wrong.</em> Whatever arises is the medicine working. Your body knows what it is doing.</li>
+        <li><em>Understanding can wait.</em> Let the experience move through you. Meaning will come in its own time.</li>
+        <li><em>The wave will pass.</em> Every sensation, every emotion, every vision is moving. Stay with it, breathe into it, and it will keep moving.</li>
+        <li><em>You are doing it right.</em> There is no right way to journey. Whatever you are doing, that is exactly it.</li>
+        <li><em>We are with you.</em> You are never alone in this. Raise a hand, signal, speak — or rest in the knowing that we are here.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- THE MORNING AFTER -->
+  <section class="section">
+    <p class="section-eyebrow">Phase Four · The Morning After</p>
+    <h2>The Day <em>Beyond</em></h2>
+    <p>When you emerge, the world will meet you softly. The medicine is still working within you, and your system is still settling. This is a tender, open, sacred time — a gentle passage from ceremony into the first movements of integration.</p>
+
+    <div class="morning-after">
+      <h3>What the <em>Morning</em> Asks of You</h3>
+      <p>Rest is the work of this morning. You will most likely still be lying down, processing — and this is exactly right. Eat gently when nourishment is welcome: fresh fruit, broth, something warm and easy. Sip water slowly. Let the body stay horizontal as long as it asks to.</p>
+      <p>If you feel called to move later in the afternoon — a few slow steps, time in quiet shade, a gentle sit outside — follow what your body allows. The ordinary world can wait.</p>
+      <p>You may feel wide open, emotionally sensitive, physically tired, or surprisingly clear. All of these are part of emergence. There is no right way to be the morning after.</p>
+      <p>Our team will be with you, checking in, offering nourishment and presence. Journaling can be powerful here — simply to capture what arose and what is arriving now. Let the words come as they come. You will be guided into your integration support in the days ahead.</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- CLOSING -->
+<section class="closing">
+  <p class="closing-mark">✦</p>
+  <p>You are entering something sacred. You are ready. You are held. May this day meet you with exactly what you came for, and may you receive it fully.</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p class="footer-logo">Vital Kauaʻi</p>
+  <p>Ceremony Day Guide · Confidential Member Document<br><a href="mailto:aloha@vitalkauai.com">aloha@vitalkauai.com</a> · <a href="/portal">Return to Portal</a><br>© 2026 Vital Kauaʻi Church · PO Box 932, Hanalei, HI 96714</p>
+  <p class="footer-disclaimer">For educational purposes only. All original content is protected by U.S. copyright law. Reproduction, redistribution, or recreation of this material in any form without the express written consent of Vital Kauaʻi Church is prohibited.</p>
+</footer>
+
+</body>
+</html>

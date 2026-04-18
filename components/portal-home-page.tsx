@@ -757,6 +757,7 @@ export function PortalHomePage({
               {[
                 { title: "Ceremony", em: "Guidelines", desc: "Sacred agreements, space etiquette, facilitator roles, confidentiality, and everything that holds the container for your ceremony to go deep.", tag: "Sacred Container", tagClass: styles.tagGuide, link: "/portal/ceremony-guidelines" },
                 { title: "Safety in", em: "the Body", desc: "How to orient within intense somatic experience during ceremony \u2014 what you may feel, how to work with it, and what our team is here to support.", tag: "During Ceremony", tagClass: styles.tagGuide, link: "/safety-in-the-body.html" },
+                { title: "Ceremony", em: "Day Guide", desc: "A moment-by-moment orientation for your ceremony day \u2014 what to expect from arrival through the full arc of the night and morning after.", tag: "Ceremony Day", tagClass: styles.tagGuide, link: "/ceremony-day-guide.html" },
               ].map((doc, i) => (
                 <div
                   key={i}
@@ -774,19 +775,6 @@ export function PortalHomePage({
                   </div>
                 </div>
               ))}
-              <div className={`${styles.docCard} ${styles.docCardLocked} ${styles.fadeIn}`}>
-                <div className={styles.docTitle}>
-                  Ceremony <em>Day Guide</em>
-                </div>
-                <div className={styles.docDesc}>
-                  A moment-by-moment orientation for your ceremony day &mdash; what to expect from
-                  arrival through the full arc of the night and morning after.
-                </div>
-                <div className={styles.docFooter}>
-                  <span className={`${styles.docTag} ${styles.tagLocked}`}>Unlocks on Arrival</span>
-                  <span className={`${styles.docAction} ${styles.docActionLocked}`}>Locked</span>
-                </div>
-              </div>
             </div>
           </div>
 
