@@ -7,13 +7,13 @@
  * when journey status is 'approved' or 'scheduling' with no date set.
  *
  * Calls submitSchedulingRequest() server action — no direct DB writes.
- *
- * Drop in: components/portal/SchedulingRequestForm.tsx
  * ─────────────────────────────────────────────────────────────
  */
 
-import { useState, useTransition } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { submitSchedulingRequest } from '@/app/actions/journeys'
+import { createClient } from '@/lib/supabase/client'
+import { fetchPublicCohorts, formatCohortRange, type PublicCohort } from '@/lib/cohorts'
 
 interface Props {
   onSubmitted?: () => void
@@ -21,31 +21,45 @@ interface Props {
 
 type FormState = 'idle' | 'submitted'
 
+const PRIVATE = '__private__'
+
 export default function SchedulingRequestForm({ onSubmitted }: Props) {
   const [isPending, startTransition] = useTransition()
   const [formState, setFormState] = useState<FormState>('idle')
   const [earliest, setEarliest] = useState('')
   const [latest, setLatest] = useState('')
-  const [avoid, setAvoid] = useState('')
+  const [preferred, setPreferred] = useState('')
   const [notes, setNotes] = useState('')
   const [err, setErr] = useState('')
+  const [cohorts, setCohorts] = useState<PublicCohort[]>([])
+
+  useEffect(() => {
+    let cancelled = false
+    const supabase = createClient()
+    fetchPublicCohorts(supabase).then(rows => {
+      if (!cancelled) setCohorts(rows)
+    })
+    return () => { cancelled = true }
+  }, [])
 
   function handleSubmit() {
     if (!earliest || !latest) { setErr('Please fill in both date fields.'); return }
     if (latest < earliest) { setErr('Latest date must be after earliest.'); return }
     setErr('')
 
-    // Parse "avoid" field into excluded_ranges if present
-    const excludedRanges = avoid.trim()
-      ? [{ from: earliest, to: latest, reason: avoid.trim() }]
-      : []
+    const preferredCohortId = preferred && preferred !== PRIVATE ? preferred : null
+    const noteParts: string[] = []
+    if (preferred === PRIVATE) noteParts.push('Requesting a private ceremony (custom date).')
+    if (notes.trim()) noteParts.push(notes.trim())
+    const combinedNotes = noteParts.length ? noteParts.join('\n\n') : null
 
     startTransition(async () => {
       const result = await submitSchedulingRequest({
-        earliestDate:   earliest,
-        latestDate:     latest,
-        excludedRanges,
-        notes:          notes || null,
+        earliestDate:      earliest,
+        latestDate:        latest,
+        excludedRanges:    [],
+        notes:             combinedNotes,
+        preferredCohortId,
       })
 
       if (!result.ok) { setErr(result.error ?? 'Something went wrong.'); return }
@@ -75,7 +89,7 @@ export default function SchedulingRequestForm({ onSubmitted }: Props) {
           fontFamily: 'sans-serif', fontSize: 11,
           color: 'rgba(255,255,255,0.35)', lineHeight: 1.6,
         }}>
-          We'll confirm your ceremony date within 2–3 days.
+          We'll be in touch to confirm your ceremony date.
         </p>
       </div>
     )
@@ -124,6 +138,25 @@ export default function SchedulingRequestForm({ onSubmitted }: Props) {
         Share your availability
       </p>
 
+      {/* Preferred ceremony date */}
+      <div style={{ marginBottom: 10 }}>
+        <label style={lbl}>Preferred ceremony date <span style={{ opacity: 0.45 }}>(optional)</span></label>
+        <select
+          value={preferred}
+          onChange={e => setPreferred(e.target.value)}
+          style={inp}
+        >
+          <option value=''>No preference / I&apos;m flexible</option>
+          {cohorts.map(c => (
+            <option key={c.id} value={c.id}>
+              {formatCohortRange(c.start_at, c.end_at)}
+              {c.title ? ` · ${c.title}` : ''}
+            </option>
+          ))}
+          <option value={PRIVATE}>Private ceremony (request a custom date)</option>
+        </select>
+      </div>
+
       {/* Date grid */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
         <div>
@@ -146,18 +179,6 @@ export default function SchedulingRequestForm({ onSubmitted }: Props) {
             style={inp}
           />
         </div>
-      </div>
-
-      {/* Dates to avoid */}
-      <div style={{ marginBottom: 10 }}>
-        <label style={lbl}>Dates to avoid <span style={{ opacity: 0.45 }}>(optional)</span></label>
-        <input
-          type='text'
-          value={avoid}
-          onChange={e => setAvoid(e.target.value)}
-          placeholder='e.g. May 15–20, June 3'
-          style={inp}
-        />
       </div>
 
       {/* Notes */}

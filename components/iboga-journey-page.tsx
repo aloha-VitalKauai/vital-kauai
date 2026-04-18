@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { fetchPublicCohorts, formatCohortRange, type PublicCohort } from "@/lib/cohorts";
 import styles from "./iboga-journey-page.module.css";
 
 export function IbogaJourneyPage() {
@@ -14,6 +15,7 @@ export function IbogaJourneyPage() {
   const [guideEmail, setGuideEmail] = useState("");
   const [guideSubmitting, setGuideSubmitting] = useState(false);
   const [guideError, setGuideError] = useState("");
+  const [publicCohorts, setPublicCohorts] = useState<PublicCohort[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -21,6 +23,11 @@ export function IbogaJourneyPage() {
     onScroll();
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const supabase = createClient();
+    fetchPublicCohorts(supabase).then(setPublicCohorts).catch(() => setPublicCohorts([]));
   }, []);
 
   return (
@@ -423,6 +430,60 @@ export function IbogaJourneyPage() {
               and support that continues as long as you choose.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* ── Upcoming Ceremonies ── */}
+      <section style={{ padding: "80px 60px", background: "var(--cream, #F5F0E8)", textAlign: "center" }}>
+        <div style={{ maxWidth: 880, margin: "0 auto" }}>
+          <span className={styles.sectionLabel} style={{ display: "block", marginBottom: 14 }}>Come As You Are</span>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(28px, 3.6vw, 44px)", fontWeight: 300, color: "var(--ink, #1A1A18)", lineHeight: 1.15, marginBottom: 14 }}>
+            Upcoming <em style={{ fontStyle: "italic", color: "var(--gold, #C8A96E)" }}>Ceremonies</em>
+          </h2>
+          <p style={{ fontSize: 14, color: "var(--ink-soft, #6B6B67)", lineHeight: 1.85, maxWidth: 580, margin: "0 auto 36px" }}>
+            Each ceremony is a small, held gathering — six members, seven days, one sacred arc.
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 1, marginBottom: 32, background: "rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.06)" }}>
+            {(() => {
+              const slots: (PublicCohort | null)[] = [...publicCohorts.slice(0, 3)];
+              while (slots.length < 3) slots.push(null);
+              return slots.map((c, i) => {
+                const isNext = i === 0 && c;
+                if (!c) {
+                  return (
+                    <div key={`tba-${i}`} style={{ background: "#FAFAF8", padding: "26px 20px" }}>
+                      <p style={{ fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: "rgba(0,0,0,0.35)", marginBottom: 10 }}>Upcoming</p>
+                      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 300, color: "rgba(0,0,0,0.4)", marginBottom: 4 }}>TBA</p>
+                      <p style={{ fontSize: 11, color: "rgba(0,0,0,0.35)", letterSpacing: "0.06em" }}>Hanalei, Kauaʻi</p>
+                      <p style={{ fontSize: 10, color: "rgba(0,0,0,0.3)", marginTop: 12 }}>Dates Coming</p>
+                    </div>
+                  );
+                }
+                const year = new Date(c.start_at).getUTCFullYear();
+                const dateText = formatCohortRange(c.start_at, c.end_at).replace(`, ${year}`, "");
+                return (
+                  <div key={c.id} style={{ background: isNext ? "#FFFFFF" : "#FAFAF8", padding: "26px 20px" }}>
+                    <p style={{ fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: isNext ? "var(--gold, #C8A96E)" : "rgba(0,0,0,0.45)", marginBottom: 10 }}>
+                      {isNext ? "Next Ceremony" : "Upcoming"}
+                    </p>
+                    <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 300, color: "var(--ink, #1A1A18)", marginBottom: 4 }}>{dateText}</p>
+                    <p style={{ fontSize: 11, color: "rgba(0,0,0,0.55)", letterSpacing: "0.06em" }}>{year} · Hanalei, Kauaʻi</p>
+                    <p style={{ fontSize: 10, color: isNext ? "var(--gold, #C8A96E)" : "rgba(0,0,0,0.5)", marginTop: 12, letterSpacing: "0.05em" }}>
+                      {isNext ? "Filling Now" : "Open"}
+                    </p>
+                  </div>
+                );
+              });
+            })()}
+          </div>
+          <a
+            href="https://calendly.com/aloha-vitalkauai"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: "inline-block", fontSize: 10, fontWeight: 500, letterSpacing: "0.28em", textTransform: "uppercase", color: "var(--ink, #1A1A18)", background: "var(--gold, #C8A96E)", padding: "16px 38px", textDecoration: "none", borderRadius: 2 }}
+          >
+            Book a Discovery Call
+          </a>
         </div>
       </section>
 

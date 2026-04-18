@@ -231,6 +231,7 @@ export interface SchedulingRequestInput {
     reason?: string
   }>
   notes?: string | null
+  preferredCohortId?: string | null  // null = no preference / private ceremony
 }
 
 /**
@@ -268,13 +269,14 @@ export async function submitSchedulingRequest(
   const { data, error } = await supabase
     .from('scheduling_requests')
     .insert({
-      member_id:       user.id,
-      journey_id:      journey?.id ?? null,
-      earliest_date:   input.earliestDate,
-      latest_date:     input.latestDate,
-      excluded_ranges: input.excludedRanges ?? [],
-      notes:           input.notes ?? null,
-      status:          'pending',
+      member_id:           user.id,
+      journey_id:          journey?.id ?? null,
+      earliest_date:       input.earliestDate,
+      latest_date:         input.latestDate,
+      excluded_ranges:     input.excludedRanges ?? [],
+      notes:               input.notes ?? null,
+      preferred_cohort_id: input.preferredCohortId ?? null,
+      status:              'pending',
     })
     .select('id')
     .single()

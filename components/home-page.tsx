@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { fetchPublicCohorts, formatCohortRange, type PublicCohort } from "@/lib/cohorts";
 import styles from "./home-page.module.css";
 
 const testimonialQuote = "If anyone is considering going here, do it. As an expert in the fields of healing and spirituality, traveling the world experiencing the best modalities for the past 18 years, this is by far one of the most profound and effective experiences that you can\u2019t find anywhere else. I can\u2019t imagine such a positive future for myself if I hadn\u2019t gone here first. Eternally grateful.";
@@ -99,7 +100,13 @@ export function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [publicCohorts, setPublicCohorts] = useState<PublicCohort[]>([]);
   const pageRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    fetchPublicCohorts(supabase).then(setPublicCohorts).catch(() => setPublicCohorts([]));
+  }, []);
 
   const [contactForm, setContactForm] = useState({
     firstName: "",
@@ -612,24 +619,39 @@ export function HomePage() {
             discovery call to learn about the next available date.
           </p>
           <div className={`${styles.ceremoniesGrid} ${styles.reveal}`}>
-            <div className={styles.ceremonyCardActive}>
-              <p className={styles.ceremonyLabel} style={{ color: "var(--terra)" }}>Next Ceremony</p>
-              <p className={styles.ceremonyDate}>Sept 6 – 13</p>
-              <p className={styles.ceremonySub}>2026 · Hanalei, Kauaʻi</p>
-              <p className={styles.ceremonyStatus} style={{ color: "var(--terra-light)" }}>Filling Now</p>
-            </div>
-            <div className={styles.ceremonyCard}>
-              <p className={styles.ceremonyLabel}>Upcoming</p>
-              <p className={styles.ceremonyDateMuted}>TBA</p>
-              <p className={styles.ceremonySub}>2026 · Hanalei, Kauaʻi</p>
-              <p className={styles.ceremonyStatusMuted}>Dates Coming</p>
-            </div>
-            <div className={styles.ceremonyCard}>
-              <p className={styles.ceremonyLabel}>Upcoming</p>
-              <p className={styles.ceremonyDateMuted}>TBA</p>
-              <p className={styles.ceremonySub}>2026 · Hanalei, Kauaʻi</p>
-              <p className={styles.ceremonyStatusMuted}>Dates Coming</p>
-            </div>
+            {(() => {
+              const slots = [...publicCohorts.slice(0, 3)];
+              while (slots.length < 3) slots.push(null as unknown as PublicCohort);
+              return slots.map((c, i) => {
+                if (!c) {
+                  return (
+                    <div key={`tba-${i}`} className={styles.ceremonyCard}>
+                      <p className={styles.ceremonyLabel}>Upcoming</p>
+                      <p className={styles.ceremonyDateMuted}>TBA</p>
+                      <p className={styles.ceremonySub}>Hanalei, Kauaʻi</p>
+                      <p className={styles.ceremonyStatusMuted}>Dates Coming</p>
+                    </div>
+                  );
+                }
+                const isNext = i === 0;
+                const year = new Date(c.start_at).getUTCFullYear();
+                return (
+                  <div key={c.id} className={isNext ? styles.ceremonyCardActive : styles.ceremonyCard}>
+                    <p className={styles.ceremonyLabel} style={isNext ? { color: "var(--terra)" } : undefined}>
+                      {isNext ? "Next Ceremony" : "Upcoming"}
+                    </p>
+                    <p className={styles.ceremonyDate}>{formatCohortRange(c.start_at, c.end_at).replace(`, ${year}`, "")}</p>
+                    <p className={styles.ceremonySub}>{year} · Hanalei, Kauaʻi</p>
+                    <p
+                      className={isNext ? styles.ceremonyStatus : styles.ceremonyStatusMuted}
+                      style={isNext ? { color: "var(--terra-light)" } : undefined}
+                    >
+                      {isNext ? "Filling Now" : "Open"}
+                    </p>
+                  </div>
+                );
+              });
+            })()}
           </div>
           <a href="https://calendly.com/aloha-vitalkauai" target="_blank" rel="noopener noreferrer" className={styles.ceremonyBtn}>
             Join Our Next Group Ceremony

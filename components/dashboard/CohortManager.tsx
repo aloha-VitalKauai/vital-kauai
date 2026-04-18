@@ -21,6 +21,7 @@ interface Cohort {
   capacity: number | null
   status: 'scheduled' | 'completed' | 'canceled'
   created_at: string
+  is_public: boolean
 }
 
 interface CohortMember {
@@ -64,6 +65,7 @@ function CohortForm({
   const [startDate, setStart]   = useState(toInputDate(existing?.start_at ?? null))
   const [endDate, setEnd]       = useState(toInputDate(existing?.end_at ?? null))
   const [capacity, setCapacity] = useState(existing?.capacity?.toString() ?? '')
+  const [isPublic, setIsPublic] = useState(existing?.is_public ?? false)
   const [saving, setSaving]     = useState(false)
   const [err, setErr]           = useState('')
 
@@ -78,6 +80,7 @@ function CohortForm({
       end_at:   endDate ? new Date(endDate + 'T12:00:00-10:00').toISOString() : null,
       capacity: capacity ? parseInt(capacity) : null,
       status:   'scheduled',
+      is_public: isPublic,
     }
 
     let data, error
@@ -129,6 +132,26 @@ function CohortForm({
           onChange={e => setCapacity(e.target.value)}
           placeholder='e.g. 8' style={inp} />
       </div>
+      <label style={{
+        display: 'flex', alignItems: 'flex-start', gap: 10, padding: '12px 14px',
+        background: isPublic ? '#E8F5EE' : '#FAFAF8',
+        border: `1px solid ${isPublic ? '#1A5C3A' : 'rgba(0,0,0,0.12)'}`,
+        borderRadius: 6, cursor: 'pointer',
+      }}>
+        <input
+          type='checkbox'
+          checked={isPublic}
+          onChange={e => setIsPublic(e.target.checked)}
+          style={{ marginTop: 2 }}
+        />
+        <span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: '#1A1A18' }}>Show on public site</span>
+          <span style={{ display: 'block', fontSize: 11, color: '#6B6B67', marginTop: 2 }}>
+            When checked, this cohort appears on the marketing site (Stay page, Iboga Journey page)
+            and as a "Preferred ceremony date" option on the member portal availability form.
+          </span>
+        </span>
+      </label>
       {err && <p style={{ fontSize: 12, color: '#C04040', margin: 0 }}>{err}</p>}
       <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
         <button onClick={onCancel} style={{
@@ -224,6 +247,13 @@ function CohortCard({
               background: statusColor.bg, color: statusColor.color,
               fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase',
             }}>{cohort.status}</span>
+            {cohort.is_public && (
+              <span style={{
+                padding: '2px 8px', borderRadius: 99,
+                background: '#F7F0E4', color: '#8B6914',
+                fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase',
+              }}>Public</span>
+            )}
           </div>
           <p style={{ fontSize: 12, color: '#888', margin: '3px 0 0' }}>
             {formatDate(cohort.start_at)}

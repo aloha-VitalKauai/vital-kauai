@@ -1,8 +1,44 @@
 "use client";
 
 import { useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { fetchPublicCohorts, formatCohortRange } from "@/lib/cohorts";
 
 export function StayPage() {
+  useEffect(() => {
+    let cancelled = false;
+    const supabase = createClient();
+    fetchPublicCohorts(supabase).then((cohorts) => {
+      if (cancelled) return;
+      for (let i = 0; i < 3; i++) {
+        const el = document.getElementById(`upcoming-ceremony-card-${i}`);
+        if (!el) continue;
+        const c = cohorts[i];
+        if (!c) {
+          el.innerHTML = [
+            '<p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.35);margin-bottom:10px;">Upcoming</p>',
+            '<p style="font-family:\'Cormorant Garamond\',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.35);margin-bottom:4px;">TBA</p>',
+            '<p style="font-size:11px;color:rgba(245,240,232,0.2);letter-spacing:0.08em;">Hanalei, Kauaʻi</p>',
+            '<p style="font-size:10px;color:rgba(245,240,232,0.2);margin-top:12px;">Dates Coming</p>',
+          ].join("");
+          el.style.background = "rgba(28,43,30,0.5)";
+          continue;
+        }
+        const isNext = i === 0;
+        const year = new Date(c.start_at).getUTCFullYear();
+        const dateText = formatCohortRange(c.start_at, c.end_at).replace(`, ${year}`, "");
+        el.innerHTML = [
+          `<p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:${isNext ? "var(--terra)" : "rgba(200,169,110,0.7)"};margin-bottom:10px;">${isNext ? "Next Ceremony" : "Upcoming"}</p>`,
+          `<p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--cream);margin-bottom:4px;">${dateText}</p>`,
+          `<p style="font-size:11px;color:rgba(245,240,232,0.4);letter-spacing:0.08em;">${year} · Hanalei, Kauaʻi</p>`,
+          `<p style="font-size:10px;color:${isNext ? "var(--terra-light)" : "rgba(245,240,232,0.55)"};margin-top:12px;letter-spacing:0.05em;">${isNext ? "Filling Now" : "Open"}</p>`,
+        ].join("");
+        el.style.background = isNext ? "rgba(28,43,30,0.8)" : "rgba(28,43,30,0.65)";
+      }
+    });
+    return () => { cancelled = true; };
+  }, []);
+
   useEffect(() => {
     // Scroll-based nav
     const nav = document.getElementById("nav");
@@ -1531,22 +1567,22 @@ const BODY_CONTENT = `
     <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,52px);font-weight:300;color:var(--cream);line-height:1.1;margin-bottom:16px;" class="reveal">Upcoming<br><em style="font-style:italic;color:var(--terra-pale);">Ceremonies</em></h2>
     <p class="reveal" style="font-size:14px;color:rgba(245,240,232,0.6);line-height:1.95;margin-bottom:48px;max-width:600px;margin-left:auto;margin-right:auto;">Each ceremony is a small, held gathering — six members, seven days, one sacred arc. Book a discovery call to learn about the next available date.</p>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-bottom:44px;" class="reveal">
-      <div style="background:rgba(28,43,30,0.8);padding:28px 20px;">
-        <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:var(--terra);margin-bottom:10px;">Next Ceremony</p>
-        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--cream);margin-bottom:4px;">Sept 6 – 13</p>
-        <p style="font-size:11px;color:rgba(245,240,232,0.4);letter-spacing:0.08em;">2026 · Hanalei, Kauaʻi</p>
-        <p style="font-size:10px;color:var(--terra-light);margin-top:12px;letter-spacing:0.05em;">Filling Now</p>
-      </div>
-      <div style="background:rgba(28,43,30,0.5);padding:28px 20px;">
+      <div id="upcoming-ceremony-card-0" style="background:rgba(28,43,30,0.5);padding:28px 20px;">
         <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.35);margin-bottom:10px;">Upcoming</p>
         <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.35);margin-bottom:4px;">TBA</p>
-        <p style="font-size:11px;color:rgba(245,240,232,0.2);letter-spacing:0.08em;">2026 · Hanalei, Kauaʻi</p>
+        <p style="font-size:11px;color:rgba(245,240,232,0.2);letter-spacing:0.08em;">Hanalei, Kauaʻi</p>
         <p style="font-size:10px;color:rgba(245,240,232,0.2);margin-top:12px;">Dates Coming</p>
       </div>
-      <div style="background:rgba(28,43,30,0.5);padding:28px 20px;">
+      <div id="upcoming-ceremony-card-1" style="background:rgba(28,43,30,0.5);padding:28px 20px;">
         <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.35);margin-bottom:10px;">Upcoming</p>
         <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.35);margin-bottom:4px;">TBA</p>
-        <p style="font-size:11px;color:rgba(245,240,232,0.2);letter-spacing:0.08em;">2026 · Hanalei, Kauaʻi</p>
+        <p style="font-size:11px;color:rgba(245,240,232,0.2);letter-spacing:0.08em;">Hanalei, Kauaʻi</p>
+        <p style="font-size:10px;color:rgba(245,240,232,0.2);margin-top:12px;">Dates Coming</p>
+      </div>
+      <div id="upcoming-ceremony-card-2" style="background:rgba(28,43,30,0.5);padding:28px 20px;">
+        <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.35);margin-bottom:10px;">Upcoming</p>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.35);margin-bottom:4px;">TBA</p>
+        <p style="font-size:11px;color:rgba(245,240,232,0.2);letter-spacing:0.08em;">Hanalei, Kauaʻi</p>
         <p style="font-size:10px;color:rgba(245,240,232,0.2);margin-top:12px;">Dates Coming</p>
       </div>
     </div>
