@@ -275,16 +275,50 @@ const WEEKS = [
     title: 'You have done the work.',
     subtitle: 'Trust your preparation.',
     carryForward: 'You have opened to your people. You have begun the forgiveness work. You have tended your home. This final week calls for completion, alignment, and the willingness to arrive.',
-    sub: 'Mana is the power that comes from within. Pono is right relationship — with yourself, with others, with what\'s coming. This week you are being asked to arrive. The work of preparation is complete. What remains is alignment: finishing what is unfinished, confirming what is confirmed, and meeting yourself honestly about what you are ready to receive.',
-    video: { label: 'A Message from Rachel & Josh · Week 6', text: 'Five weeks ago you were a person who was thinking about doing this. Today you are a person who has done the preparation. Rachel and Josh want to mark that — and to meet you exactly where you are before you come through our door.' },
+    sub: 'Mana is the power that comes from within. Pono is right relationship — with yourself, with others, with what\'s coming. This week you are being asked to arrive. The work of preparation is complete. What remains is alignment — meeting yourself honestly about what you are ready to receive.',
+    video: { label: 'A Message from Rachel & Josh · Week 6', text: 'Five weeks ago you were a person who was thinking about doing this. Today you are a person who has done the preparation. In this week\'s transmission, Rachel and Josh speak to the power within that got you here — and to the invitation to set down the preparation and trust that you are ready.' },
     box: { type: 'close', label: 'Emotional closure — the arc completes here', text: 'Five weeks ago this process asked you to see clearly. Then to commit. Then to tend your body. Then to meet your shadow. Then to open to your people. You have done all of that. Whatever remains unresolved — the medicine will meet it. Your job this week is to arrive with openness, trust your team, and let yourself be held. That is enough. That is everything.\n\nIf you feel uncertain right now — more unsettled than you expected to feel at the end of six weeks of preparation — that feeling often means you have done real work. Uncertainty is a form of readiness.' },
     actionLabel: 'Actions this week — 5 operational completions',
     actions: [
-      { color: 'red', text: 'Confirm labs are submitted and reviewed by the medical team', note: 'If you haven\'t received confirmation, reach out now and confirm directly. This is a safety step — it directly affects whether your ceremony proceeds as planned.' },
-      { color: 'red', text: 'Complete your Baseline Wellbeing Check-in', note: 'A 5-minute survey covering mood, anxiety, sleep, and quality of life. This creates your before-picture.' },
-      { color: 'blue', text: 'Preparation call with Rachel & Josh', note: 'Bring your finalized Questions for the Medicine. Bring anything still alive. Speak everything that is ready to be said.' },
-      { color: 'blue', text: 'Confirm travel and send arrival details to aloha@vitalkauai.com' },
-      { color: 'green', text: 'Finalize your Questions for the Medicine — land on what feels most true', note: 'The truest question — that is the one. Hold it with open hands.' },
+      {
+        color: 'red',
+        text: 'Confirm labs are submitted and reviewed by the medical team',
+        note: 'If you haven\'t received confirmation, reach out now and confirm directly. This is a safety step — it directly affects whether your ceremony proceeds as planned.',
+        links: [
+          { text: 'Confirm labs are submitted and reviewed by the medical team', href: '/portal/physician-guide' },
+        ],
+      },
+      {
+        color: 'red',
+        text: 'Complete your Baseline Wellbeing Check-in',
+        note: 'A 5-minute survey covering mood, anxiety, sleep, and quality of life. This creates your before-picture.',
+        links: [
+          { text: 'Complete your Baseline Wellbeing Check-in', href: '/portal/assessments' },
+        ],
+      },
+      {
+        color: 'blue',
+        text: 'Preparation call with Rachel & Josh',
+        note: 'Bring your finalized Questions for the Medicine. Bring anything still alive. Speak everything that is ready to be said.',
+        links: [
+          { text: 'Preparation call with Rachel & Josh', href: '/portal#team' },
+        ],
+      },
+      {
+        color: 'blue',
+        text: 'Confirm travel and send arrival details to aloha@vitalkauai.com',
+        links: [
+          { text: 'aloha@vitalkauai.com', href: 'mailto:aloha@vitalkauai.com' },
+        ],
+      },
+      {
+        color: 'green',
+        text: 'Finalize your Questions for the Medicine — land on what feels most true',
+        note: 'The truest question — that is the one. Hold it with open hands.',
+        links: [
+          { text: 'Finalize your Questions for the Medicine — land on what feels most true', href: '/portal/questions' },
+        ],
+      },
     ],
     prompts: PRE_CEREMONY_WEEKS[5].prompts,
     thread: 'In Week 1 you named what is asking to change. In Week 2 you named what must change. In Week 4 you looked at what you were hiding. In Week 5 you opened to your people. Now you state what you are ready for and what you are committing to. You built this. Carry it in.',

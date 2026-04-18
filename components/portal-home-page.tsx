@@ -918,7 +918,7 @@ export function PortalHomePage({
         </div>
 
         {/* JOURNEY TEAM */}
-        <div className={styles.teamSection}>
+        <div id="team" className={styles.teamSection}>
           <div className={styles.sectionHead}>
             <span className={styles.sectionEyebrow}>Your Team</span>
             <h2 className={styles.sectionTitle}>
