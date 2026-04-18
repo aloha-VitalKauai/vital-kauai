@@ -220,7 +220,7 @@ const WEEKS = [
         text: 'Begin clearing contraindicated substances per your protocol timeline',
         note: 'Cannabis: clear fully 2 weeks before ceremony. All other substances: review the Preparedness Guide. Questions about specific medications — reach out to the team now, not later.',
         links: [
-          { text: 'Begin clearing contraindicated substances per your protocol timeline', href: '/iboga-preparedness-guide.html#safety', external: true },
+          { text: 'Begin clearing contraindicated substances per your protocol timeline', href: '/iboga-preparedness-guide.html#contraindications', external: true },
         ],
       },
     ],
