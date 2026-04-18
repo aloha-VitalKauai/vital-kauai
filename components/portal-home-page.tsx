@@ -755,7 +755,7 @@ export function PortalHomePage({
           <div className={`${styles.phasePanel} ${activePhase === 2 ? styles.phasePanelActive : ""}`}>
             <div className={styles.docGrid}>
               {[
-                { title: "Ceremony", em: "Guidelines", desc: "Sacred agreements, space etiquette, facilitator roles, confidentiality, and everything that holds the container for your ceremony to go deep.", tag: "Sacred Container", tagClass: styles.tagGuide, link: "/portal/ceremony-guidelines" },
+                { title: "Ceremony", em: "Guidelines", desc: "Sacred agreements, space etiquette, facilitator roles, confidentiality, and everything that holds the container for your ceremony to go deep.", tag: "Sacred Container", tagClass: styles.tagGuide, link: "/ceremony-guidelines.html" },
                 { title: "Safety in", em: "the Body", desc: "How to orient within intense somatic experience during ceremony \u2014 what you may feel, how to work with it, and what our team is here to support.", tag: "During Ceremony", tagClass: styles.tagGuide, link: "/safety-in-the-body.html" },
                 { title: "Ceremony", em: "Day Guide", desc: "A moment-by-moment orientation for your ceremony day \u2014 what to expect from arrival through the full arc of the night and morning after.", tag: "Ceremony Day", tagClass: styles.tagGuide, link: "/ceremony-day-guide.html" },
               ].map((doc, i) => (
