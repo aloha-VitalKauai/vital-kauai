@@ -116,10 +116,10 @@ const WEEKS = [
     actions: [
       {
         color: 'blue',
-        text: 'First call with your integration guide',
+        text: 'Call with your integration guide',
         note: 'Come with your intentions from Week 1. Come with your questions. Come as you are. This call is the beginning of a relationship that will hold you through the hardest parts of what\'s ahead.',
         links: [
-          { text: 'First call with your integration guide', href: '/portal#integration-specialist' },
+          { text: 'Call with your integration guide', href: '/portal#integration-specialist' },
         ],
       },
       { color: 'amber', text: 'Begin noticing your daily habits', note: 'Observe alcohol, sleep, screens, food, substances. Honest observation is all that\u2019s asked. What you notice this week becomes data for your body to begin working with.' },
