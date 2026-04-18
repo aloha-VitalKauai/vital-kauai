@@ -374,6 +374,23 @@ export function PortalHomePage({
     }
   }, [allRequiredDone, profile, supabase, userId]);
 
+  // After content finishes loading, honor any `#anchor` in the URL by
+  // scrolling to the target. The browser's native anchor scroll fires
+  // before the async data-dependent content is in the DOM, so we do it
+  // ourselves once loading completes.
+  useEffect(() => {
+    if (loading) return;
+    if (typeof window === "undefined") return;
+    const hash = window.location.hash;
+    if (!hash || hash.length < 2) return;
+    const id = hash.slice(1);
+    // Defer one frame so the target element exists after render.
+    requestAnimationFrame(() => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, [loading]);
+
   if (loading) {
     return (
       <div className={styles.page}>
