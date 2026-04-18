@@ -238,12 +238,25 @@ const WEEKS = [
     sub: 'Aloha is a way of being in relationship. This week, you turn outward. Even as the inner work continues — because transformation that touches your relationships is transformation that lands. The people who love you are part of this process. Let them be.',
     video: { label: 'A Message from Rachel & Josh · Week 5', text: 'The ceremony container is powerful. But the integration that follows lives or dies in your relationships and your home environment. This week Rachel and Josh talk about the most common reason people lose their ceremony gains after returning home — and what you can do right now to protect against it.' },
     box: { type: 'info', label: 'Why the relational field is the foundation of your return', text: 'The relational preparation you do this week is a structural protection for integration. The weeks and months after ceremony are when the insights are tender and the old world is asking you to return to who you were. The relational preparation you do this week is a structural protection against that pull. Share the Support Person Guide. Have the real conversations. Let your circle know you\'re asking for something from them — and be specific about what.' },
-    actionLabel: 'Actions this week — 4 only',
+    actionLabel: 'Actions this week — 3 only',
     actions: [
-      { color: 'green', text: 'Share the Support Person Guide with your home circle — this week', note: 'Not after ceremony. Now. So they have time to read it, ask questions, and show up prepared for your return.' },
-      { color: 'blue', text: 'Second call with your integration guide', note: 'Bring the shadow material from Week 4 if it feels ready. Bring your Questions for the Medicine draft. Bring whatever is alive.' },
+      {
+        color: 'green',
+        text: 'Share the Support Person Guide with your home circle — this week',
+        note: 'Not after ceremony. Now. So they have time to read it, ask questions, and show up prepared for your return.',
+        links: [
+          { text: 'Share the Support Person Guide with your home circle — this week', href: '/portal/support-person' },
+        ],
+      },
       { color: 'amber', text: 'Begin preparing your home environment for your return', note: 'Clean it. Simplify it. Stock what will nourish you. The space you return to is part of integration. Prepare it now, before you\'re altered by what\'s coming.' },
-      { color: 'blue', text: 'Complete the What to Bring packing checklist', note: 'Practical, yes — and also a ritualized act of arrival. Let the packing be intentional.' },
+      {
+        color: 'blue',
+        text: 'Complete the What to Bring packing checklist',
+        note: 'Practical, yes — and also a ritualized act of arrival. Let the packing be intentional.',
+        links: [
+          { text: 'Complete the What to Bring packing checklist', href: '/portal/what-to-bring' },
+        ],
+      },
     ],
     prompts: PRE_CEREMONY_WEEKS[4].prompts,
     thread: 'The forgiveness work you begin here continues in ceremony and for months afterward. Begin it this week — the medicine will carry it forward from wherever you start. One week remains.',
