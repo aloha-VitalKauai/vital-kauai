@@ -321,7 +321,7 @@ const WEEKS = [
       },
     ],
     prompts: PRE_CEREMONY_WEEKS[5].prompts,
-    thread: 'In Week 1 you named what is asking to change. In Week 2 you named what must change. In Week 4 you looked at what you were hiding. In Week 5 you opened to your people. Now you state what you are ready for and what you are committing to. You built this. Carry it in.',
+    thread: 'In Week 1 you named what is asking to change. In Week 2 you named what must change. In Week 4 you looked at what you were hiding. In Week 5 you opened to your people. Now you state what you are ready for and what you are committing to.',
     readinessGate: true,
   },
 ]
@@ -793,12 +793,23 @@ export default function PreCeremonyPage() {
                     <div className="rg-title">Readiness confirmation — complete before arrival</div>
                   </div>
                   <div className="rg-body">
-                    {['Lab results submitted and confirmed reviewed by medical team','Baseline Wellbeing Check-in completed','Preparation call completed with Rachel & Josh'].map((txt, ri) => (
+                    {[
+                      { text: 'Lab results submitted and confirmed reviewed by medical team', href: '/portal/physician-guide' },
+                      { text: 'Baseline Wellbeing Check-in completed', href: '/portal/assessments' },
+                      { text: 'Preparation call completed with Rachel & Josh', href: '/portal#team' },
+                    ].map((item, ri) => (
                       <div className="rg-item" key={ri}>
                         <div className={`rg-check${checklist[`rg-${ri}`] ? ' checked' : ''}`} onClick={() => toggleCheck(`rg-${ri}`)}>
                           <span className="rg-check-icon">✓</span>
                         </div>
-                        <div className="rg-item-text">{txt}</div>
+                        <a
+                          href={item.href}
+                          className="rg-item-text"
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ color: 'inherit', textDecoration: 'none', borderBottom: '1px dashed rgba(200,169,110,.55)' }}
+                        >
+                          {item.text}
+                        </a>
                       </div>
                     ))}
                   </div>
