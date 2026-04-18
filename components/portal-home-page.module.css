@@ -398,6 +398,11 @@
   transform: translateY(-2px);
 }
 
+.docCardGold {
+  background: var(--gold-bg);
+  border-left-color: var(--gold);
+}
+
 .docCardRequired {
   border-left-color: var(--terra);
 }

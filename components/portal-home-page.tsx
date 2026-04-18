@@ -611,7 +611,7 @@ export function PortalHomePage({
 
               <Link
                 href="/intake-form"
-                className={`${styles.docCard} ${styles.fadeIn}`}
+                className={`${styles.docCard} ${styles.docCardGold} ${styles.fadeIn}`}
               >
                 <div className={styles.docTitle}>
                   Participant <em>Intake Form</em>
