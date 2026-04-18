@@ -150,10 +150,10 @@ const WEEKS = [
     actions: [
       {
         color: 'green',
-        text: 'Read the Nervous System Safety Guide fully',
+        text: 'Read the Nervous System Safety Guide',
         note: 'Understanding your polyvagal states before ceremony is one of the most valuable things you can do. It gives you a map for what you\'ll encounter in your own body during the experience.',
         links: [
-          { text: 'Read the Nervous System Safety Guide fully', href: '/portal/nervous-system' },
+          { text: 'Read the Nervous System Safety Guide', href: '/portal/nervous-system' },
         ],
       },
       {
@@ -199,8 +199,22 @@ const WEEKS = [
     actionLabel: 'Actions this week — 3 only',
     actions: [
       { color: 'red', text: 'Deep journaling — this is the primary work of this week', note: 'An act of honesty. Approach the prompts below as if the medicine is already in the room with you — because in a real sense, it is.' },
-      { color: 'blue', text: 'Draft your Questions for the Medicine — first version', note: 'You\'ve been gathering the raw material for four weeks. What do you most want to ask? What do you most need to be shown? Write freely. These will be refined in Week 6.' },
-      { color: 'amber', text: 'Begin clearing contraindicated substances per your protocol timeline', note: 'Cannabis: clear fully 2 weeks before ceremony. All other substances: review the Preparedness Guide. Questions about specific medications — reach out to the team now, not later.' },
+      {
+        color: 'blue',
+        text: 'Draft your Questions for the Medicine — first version',
+        note: 'You\'ve been gathering the raw material for four weeks. What do you most want to ask? What do you most need to be shown? Write freely. These will be refined in Week 6.',
+        links: [
+          { text: 'Draft your Questions for the Medicine — first version', href: '/portal/questions' },
+        ],
+      },
+      {
+        color: 'amber',
+        text: 'Begin clearing contraindicated substances per your protocol timeline',
+        note: 'Cannabis: clear fully 2 weeks before ceremony. All other substances: review the Preparedness Guide. Questions about specific medications — reach out to the team now, not later.',
+        links: [
+          { text: 'Begin clearing contraindicated substances per your protocol timeline', href: '/iboga-preparedness-guide.html#safety', external: true },
+        ],
+      },
     ],
     prompts: PRE_CEREMONY_WEEKS[3].prompts,
     thread: 'What you name here, you are no longer carrying unconsciously. Iboga surfaces what we hold in the dark. You are turning on a light before you arrive. Next week you turn toward your people.',
