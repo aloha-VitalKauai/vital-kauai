@@ -124,7 +124,7 @@ export function BeginYourJourneyPage() {
                 <path d="M8 5L18 11L8 17V5Z" fill="#C8A96E" />
               </svg>
             </div>
-            <p>Welcome video goes here</p>
+            <p>Coming Soon</p>
           </div>
 
           <p className={styles.videoCaption}>
