@@ -756,9 +756,14 @@ export function PortalHomePage({
             <div className={styles.docGrid}>
               {[
                 { title: "Ceremony", em: "Guidelines", desc: "Sacred agreements, space etiquette, facilitator roles, confidentiality, and everything that holds the container for your ceremony to go deep.", tag: "Sacred Container", tagClass: styles.tagGuide, link: "/portal/ceremony-guidelines" },
-                { title: "Safety in", em: "the Body", desc: "How to orient within intense somatic experience during ceremony \u2014 what you may feel, how to work with it, and what our team is here to support.", tag: "During Ceremony", tagClass: styles.tagGuide },
+                { title: "Safety in", em: "the Body", desc: "How to orient within intense somatic experience during ceremony \u2014 what you may feel, how to work with it, and what our team is here to support.", tag: "During Ceremony", tagClass: styles.tagGuide, link: "/safety-in-the-body.html" },
               ].map((doc, i) => (
-                <div key={i} className={`${styles.docCard} ${styles.fadeIn}`}>
+                <div
+                  key={i}
+                  className={`${styles.docCard} ${styles.fadeIn}`}
+                  onClick={doc.link ? () => (window.location.href = doc.link) : undefined}
+                  style={doc.link ? { cursor: "pointer" } : undefined}
+                >
                   <div className={styles.docTitle}>
                     {doc.title} <em>{doc.em}</em>
                   </div>
