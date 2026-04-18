@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { Fragment, useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -11,6 +11,47 @@ type Progress = {
   weeks_completed: number[]
   checklist_items: Record<string, boolean>
   last_updated: string
+}
+
+const STRIPE_LOVE_OFFERING_URL = 'https://buy.stripe.com/test_cNi4gzcoG3ZBeQUcmZbo400'
+
+// Render an action's text with optional inline links. Each link matches a
+// substring in `text` and is replaced with an anchor tag in place.
+function renderActionText(
+  text: string,
+  links?: { text: string; href: string; external?: boolean }[],
+) {
+  if (!links || links.length === 0) return text
+  type Seg = string | { text: string; href: string; external?: boolean }
+  let segments: Seg[] = [text]
+  for (const link of links) {
+    const next: Seg[] = []
+    for (const seg of segments) {
+      if (typeof seg !== 'string') { next.push(seg); continue }
+      const idx = seg.indexOf(link.text)
+      if (idx === -1) { next.push(seg); continue }
+      if (idx > 0) next.push(seg.slice(0, idx))
+      next.push(link)
+      const rest = seg.slice(idx + link.text.length)
+      if (rest) next.push(rest)
+    }
+    segments = next
+  }
+  return segments.map((seg, i) =>
+    typeof seg === 'string' ? (
+      <Fragment key={i}>{seg}</Fragment>
+    ) : (
+      <a
+        key={i}
+        href={seg.href}
+        target={seg.external ? '_blank' : undefined}
+        rel={seg.external ? 'noopener noreferrer' : undefined}
+        style={{ color: 'inherit', textDecoration: 'none', borderBottom: '1px dashed rgba(200,169,110,.55)' }}
+      >
+        {seg.text}
+      </a>
+    ),
+  )
 }
 
 // ─── Week data ────────────────────────────────────────────
@@ -27,9 +68,35 @@ const WEEKS = [
     box: { type: 'info', label: 'The most important safety factor is your honesty.', text: 'Your labs, your diet, and your supplement plan all matter—but it\'s your willingness to see yourself clearly that shapes how the medicine meets you. Iboga brings truth to the surface. When you arrive having already begun that process with yourself, the experience becomes something you can move through with awareness. This is how the medicine meets you.' },
     actionLabel: 'Actions this week — 3 only',
     actions: [
-      { color: 'blue', text: 'Sign both required documents — Membership Agreement, Medical Disclaimer', note: 'Each document is an act of commitment. Read them with care.' },
-      { color: 'blue', text: 'Submit your love offering', note: 'Your donation completes the container. It signals to your nervous system: I have chosen this. I am in.' },
-      { color: 'blue', text: 'Read "Understanding Iboga" and "What Iboga Works On" in your Preparedness Guide', note: 'Begin an honest relationship with what you\'re stepping into.' },
+      {
+        color: 'blue',
+        text: 'Sign both required documents — Membership Agreement, Medical Disclaimer',
+        note: 'Each document is an act of commitment. Read them with care.',
+        links: [
+          { text: 'Membership Agreement', href: '/portal#agreement-card' },
+          { text: 'Medical Disclaimer', href: '/portal#medical-card' },
+        ],
+      },
+      {
+        color: 'blue',
+        text: 'Submit your love offering',
+        note: 'Your donation completes the container. It signals to your nervous system: I have chosen this. I am in.',
+        links: [
+          { text: 'Submit your love offering', href: STRIPE_LOVE_OFFERING_URL, external: true },
+        ],
+      },
+      {
+        color: 'blue',
+        text: 'Read "Understanding Iboga" and "What Iboga Works On" in your Preparedness Guide',
+        note: 'Begin an honest relationship with what you\'re stepping into.',
+        links: [
+          {
+            text: 'Read "Understanding Iboga" and "What Iboga Works On" in your Preparedness Guide',
+            href: '/iboga-preparedness-guide.html',
+            external: true,
+          },
+        ],
+      },
     ],
     prompts: PRE_CEREMONY_WEEKS[0].prompts,
     thread: 'Your answers here are the raw material of your Questions for the Medicine — the specific questions you\'ll bring into ceremony. Write honestly. Over the coming weeks, these words will sharpen into something you can carry in. This is where that conversation begins.',
@@ -558,7 +625,7 @@ export default function PreCeremonyPage() {
                   <div className="action-item" key={ai}>
                     <div className="action-dot" style={{ background: DOT_COLORS[a.color] }} />
                     <div>
-                      <div className="action-text">{a.text}</div>
+                      <div className="action-text">{renderActionText(a.text, (a as { links?: { text: string; href: string; external?: boolean }[] }).links)}</div>
                     </div>
                   </div>
                 ))}
