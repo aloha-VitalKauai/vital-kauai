@@ -969,9 +969,6 @@ export function PortalHomePage({
                 early integration work. She stays present through the full arc of your journey and
                 continues to check in long after you&apos;ve returned home.
               </p>
-              <a href="mailto:aloha@vitalkauai.com" className={styles.teamCta}>
-                Reach Rachel
-              </a>
             </div>
             <div className={styles.teamCard}>
               <Image
@@ -989,9 +986,6 @@ export function PortalHomePage({
                 in preparation and integration as well, and like Rachel, remains in your corner long
                 after the ceremony is complete.
               </p>
-              <a href="mailto:aloha@vitalkauai.com" className={styles.teamCta}>
-                Reach Josh
-              </a>
             </div>
             <div id="integration-specialist" className={styles.teamCard}>
               {(() => {
