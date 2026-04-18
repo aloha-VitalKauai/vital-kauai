@@ -511,6 +511,35 @@
   transition: all 0.25s ease;
 }
 
+.teamPhoto {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 18px;
+  display: block;
+  border: 2px solid var(--gold-rule);
+}
+
+.teamPhotoPlaceholder {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gold-bg);
+  border: 1px dashed var(--gold-rule);
+  color: var(--gold-deep);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0 6px;
+  line-height: 1.3;
+}
+
 .teamCard:hover {
   box-shadow: 0 4px 16px var(--shadow-lg);
   transform: translateY(-2px);

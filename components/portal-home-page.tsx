@@ -2,10 +2,26 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { PortalNav } from "./portal-nav";
 import PortalJourneyCard from "@/components/portal/PortalJourneyCard";
+import { members as HEALING_CIRCLE_MEMBERS } from "@/components/healing-circle-data";
 import styles from "./portal-home-page.module.css";
+
+function findIntegrationGuidePhoto(name: string | null | undefined): string | null {
+  if (!name) return null;
+  const target = name.trim().toLowerCase();
+  // Prefer somatic-cat entries (the integration-guide section), fall back to any match.
+  const somatic = HEALING_CIRCLE_MEMBERS.find(
+    (m) => m.cat === "somatic" && m.name.trim().toLowerCase() === target && m.photo,
+  );
+  if (somatic?.photo) return somatic.photo;
+  const any = HEALING_CIRCLE_MEMBERS.find(
+    (m) => m.name.trim().toLowerCase() === target && m.photo,
+  );
+  return any?.photo ?? null;
+}
 
 type Profile = {
   id: string;
@@ -938,6 +954,13 @@ export function PortalHomePage({
           </div>
           <div className={styles.teamGrid}>
             <div className={styles.teamCard}>
+              <Image
+                src="/images/about/rachel-nelson.jpg"
+                alt="Rachel Nelson"
+                width={92}
+                height={92}
+                className={styles.teamPhoto}
+              />
               <p className={styles.teamRole}>Somatic Integration Guide, Co-Creatress</p>
               <p className={styles.teamName}>Rachel Nelson</p>
               <p className={styles.teamBio}>
@@ -951,6 +974,13 @@ export function PortalHomePage({
               </a>
             </div>
             <div className={styles.teamCard}>
+              <Image
+                src="/images/about/josh-perdue.jpg"
+                alt="Josh Perdue"
+                width={92}
+                height={92}
+                className={styles.teamPhoto}
+              />
               <p className={styles.teamRole}>Medicine Guide, Co-Creator</p>
               <p className={styles.teamName}>Josh Perdue</p>
               <p className={styles.teamBio}>
@@ -964,6 +994,20 @@ export function PortalHomePage({
               </a>
             </div>
             <div id="integration-specialist" className={styles.teamCard}>
+              {(() => {
+                const guidePhoto = findIntegrationGuidePhoto(memberData?.assigned_partner);
+                return guidePhoto ? (
+                  <Image
+                    src={guidePhoto}
+                    alt={memberData?.assigned_partner || "Your Integration Guide"}
+                    width={92}
+                    height={92}
+                    className={styles.teamPhoto}
+                  />
+                ) : (
+                  <div className={styles.teamPhotoPlaceholder}>Photo<br />on assignment</div>
+                );
+              })()}
               <p className={styles.teamRole}>Integration Specialist</p>
               <p className={styles.teamName}>
                 {memberData?.assigned_partner || "Your Integration Guide"}
