@@ -142,7 +142,14 @@ const WEEKS = [
     video: { label: 'A Message from Rachel & Josh · Week 3', text: 'Rachel and Josh speak directly to the return of the familiar — why it happens, what it means, and why the people who stay with the practice through this week are the ones who see lasting change.' },
     actionLabel: 'This week — 3 things',
     actions: [
-      { color: 'gold', text: 'Suggested call with your integration guide', note: 'This is the most important call of the integration arc. Bring the return of the familiar. Bring what is still unresolved. Your guide is trained to work with exactly this territory. Book via the Integration Specialist section on your Dashboard.' },
+      {
+        color: 'gold',
+        text: 'Suggested call with your integration guide',
+        note: 'This is the most important call of the integration arc. Bring the return of the familiar. Bring what is still unresolved. Your guide is trained to work with exactly this territory. Book via the Integration Specialist section on your Dashboard.',
+        links: [
+          { text: 'Suggested call with your integration guide', href: '/portal#integration-specialist' },
+        ],
+      },
       { color: 'blue', text: 'Name one old pattern that has returned — write about it', note: 'To see it clearly. Naming with precision is itself a form of integration. Your guide can see your weekly tracking and will reach out if they notice something that needs support.' },
       { color: 'sage', text: 'Continue your daily practice — especially on the days you least want to', note: 'The days you least want to show up are the days it matters most.' },
     ],
