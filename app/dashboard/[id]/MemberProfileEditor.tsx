@@ -90,6 +90,25 @@ const TEXTAREA: React.CSSProperties = {
 };
 
 /* ── Component ─────────────────────────────────────────────────── */
+type Commitment = { id: string; expected_amount_cents: number; status: string } | null;
+
+async function generatePaymentLink(commitmentId: string) {
+  const res = await fetch("/api/payments/generate-link", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ commitment_id: commitmentId }),
+  });
+  const { url, expires_at, error } = await res.json();
+  if (error) {
+    alert(error);
+    return;
+  }
+  await navigator.clipboard.writeText(url);
+  alert(
+    `Payment link copied — expires ${new Date(expires_at).toLocaleDateString()}`,
+  );
+}
+
 export default function MemberProfileEditor({
   member,
   profile,
@@ -99,6 +118,7 @@ export default function MemberProfileEditor({
   checklist,
   preProgress,
   postProgress,
+  commitment,
 }: {
   member: Member;
   profile: Profile;
@@ -108,6 +128,7 @@ export default function MemberProfileEditor({
   checklist: ChecklistItem[];
   preProgress: any;
   postProgress: any;
+  commitment?: Commitment;
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -750,6 +771,55 @@ export default function MemberProfileEditor({
                 </>
               );
             })() : <p style={{ fontSize: 13, color: "#9E9E9A" }}>Not started</p>}
+          </div>
+        </div>
+      )}
+
+      {/* Journey payment commitment */}
+      {commitment && (
+        <div style={{ ...CARD, marginTop: "1.5rem" }}>
+          <p style={{ ...LABEL, marginBottom: 12 }}>Journey payment</p>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+            <div style={{ fontSize: 13, color: "#1A1A18" }}>
+              <span style={{ color: "#6B6B67" }}>Expected: </span>
+              <strong>
+                {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
+                  commitment.expected_amount_cents / 100,
+                )}
+              </strong>
+              <span
+                style={{
+                  marginLeft: 10,
+                  fontSize: 11,
+                  padding: "2px 8px",
+                  borderRadius: 99,
+                  background: commitment.status === "paid" ? "#E1F5EE" : "#FAEEDA",
+                  color: commitment.status === "paid" ? "#085041" : "#633806",
+                  fontWeight: 500,
+                  textTransform: "uppercase" as const,
+                  letterSpacing: "0.04em",
+                }}
+              >
+                {commitment.status}
+              </span>
+            </div>
+            {commitment.status !== "paid" && commitment.status !== "waived" && (
+              <button
+                onClick={() => generatePaymentLink(commitment.id)}
+                style={{
+                  padding: "8px 14px",
+                  fontSize: 12,
+                  fontWeight: 500,
+                  background: "#085041",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 8,
+                  cursor: "pointer",
+                }}
+              >
+                Generate Payment Link
+              </button>
+            )}
           </div>
         </div>
       )}

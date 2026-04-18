@@ -26,23 +26,24 @@ function fmtDate(d: string | null | undefined) {
 export default async function DashboardPage() {
   const supabase = await createClient();
 
-  const [{ data: members }, { data: profiles }, { data: leads }, { data: ceremonies }] =
-    await Promise.all([
-      supabase
-        .from("members")
-        .select("id, full_name, email, status, assigned_partner, membership_tier, program_price, cost_of_service, medical_cleared, cardiac_cleared, ceremony_date")
-        .order("created_at", { ascending: false }),
-      supabase.from("member_profiles").select("id, deposit_amount, membership_agreement_signed, medical_disclaimer_signed, deposit_paid"),
-      supabase.from("leads").select("id, full_name, welcome_video_sent, discovery_call_booked, converted_to_member"),
-      supabase.from("ceremony_records").select("id, member_id, ceremony_date, status, guides_present, medicine_form").order("ceremony_date", { ascending: true }),
-    ]);
+  const [
+    { data: members },
+    { data: profiles },
+    { data: leads },
+    { data: ceremonies },
+    { data: overview },
+  ] = await Promise.all([
+    supabase
+      .from("members")
+      .select("id, full_name, email, status, assigned_partner, membership_tier, medical_cleared, cardiac_cleared, ceremony_date")
+      .order("created_at", { ascending: false }),
+    supabase.from("member_profiles").select("id, deposit_amount, membership_agreement_signed, medical_disclaimer_signed, deposit_paid"),
+    supabase.from("leads").select("id, full_name, welcome_video_sent, discovery_call_booked, converted_to_member"),
+    supabase.from("ceremony_records").select("id, member_id, ceremony_date, status, guides_present, medicine_form").order("ceremony_date", { ascending: true }),
+    supabase.from("financials_overview").select("*").single(),
+  ]);
 
-  const rows = (members ?? []).map((m) => {
-    const price = m.program_price != null ? Number(m.program_price) : null;
-    const cost = m.cost_of_service != null ? Number(m.cost_of_service) : null;
-    const profit = price != null && cost != null ? price - cost : null;
-    return { ...m, price, cost, profit };
-  });
+  const rows = members ?? [];
 
   const totalLeads = (leads ?? []).length;
   const videoSent = (leads ?? []).filter((l) => l.welcome_video_sent).length;
@@ -50,9 +51,18 @@ export default async function DashboardPage() {
   const converted = (leads ?? []).filter((l) => l.converted_to_member).length;
   const conversionRate = totalLeads > 0 ? Math.round((converted / totalLeads) * 100) : 0;
 
-  const hasPricing = rows.some((r) => r.price != null);
-  const totalRevenue = rows.reduce((s, r) => s + (r.price ?? 0), 0);
-  const totalProfit = rows.reduce((s, r) => s + (r.profit ?? 0), 0);
+  // Revenue & margin pulled from the same source as /dashboard/financials
+  const totalRevenueCents = overview?.total_revenue_cents ?? 0;
+  const totalExpensesCents = overview?.total_expenses_cents ?? 0;
+  const activePayoutsCents =
+    (overview?.payouts_pending_cents ?? 0) +
+    (overview?.payouts_scheduled_cents ?? 0) +
+    (overview?.payouts_paid_cents ?? 0);
+  const marginCents = totalRevenueCents - totalExpensesCents - activePayoutsCents;
+  const hasRevenue = totalRevenueCents > 0;
+  const marginPct =
+    hasRevenue ? Math.round((marginCents / totalRevenueCents) * 100) : null;
+
   const medCleared = rows.filter((r) => r.medical_cleared).length;
   const cardiacCleared = rows.filter((r) => r.cardiac_cleared).length;
 
@@ -99,8 +109,8 @@ export default async function DashboardPage() {
           { label: "Total members", value: String(rows.length), sub: "active members" },
           { label: "Total leads", value: String(totalLeads), up: totalLeads > 0 ? `${totalLeads} tracked` : undefined },
           { label: "Conversion", value: `${conversionRate}%`, sub: "leads → members" },
-          { label: "Total revenue", value: hasPricing ? fmt(totalRevenue, "$") : "—" },
-          { label: "Total profit", value: hasPricing ? fmt(totalProfit, "$") : "—", up: hasPricing && totalRevenue > 0 ? `${Math.round((totalProfit / totalRevenue) * 100)}% margin` : undefined },
+          { label: "Total revenue", value: fmt(totalRevenueCents / 100, "$"), sub: "Collected to date" },
+          { label: "Gross margin", value: fmt(marginCents / 100, "$"), up: marginPct != null ? `${marginPct}% margin` : undefined },
           { label: "Medically cleared", value: `${medCleared}/${rows.length}`, sub: `cardiac screened: ${cardiacCleared}/${rows.length}` },
         ].map((c) => (
           <div key={c.label} style={{ background: "#fff", border: "0.5px solid rgba(0,0,0,0.1)", borderRadius: 10, padding: "1rem 1.1rem" }}>
