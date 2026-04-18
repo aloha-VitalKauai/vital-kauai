@@ -845,6 +845,33 @@ export default function PostCeremonyPage() {
                   <span className="ma-q-label">Your monthly question</span>
                   <div className="ma-q-text">What is still alive from what the medicine showed me — and how am I living that this month?</div>
                 </div>
+                <div className="ma-calls">
+                  <span className="ma-calls-label">Scheduled calls with Rachel &amp; Josh</span>
+                  <ul className="ma-calls-list">
+                    <li>
+                      <strong>Week 9 · around month 2</strong> — Consider scheduling a{' '}
+                      <a
+                        href="https://calendly.com/aloha-vitalkauai/30-minute-check-in-call"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        check-in call with Rachel &amp; Josh
+                      </a>
+                      .
+                    </li>
+                    <li>
+                      <strong>Week 12 · around month 3</strong> — Schedule your{' '}
+                      <a
+                        href="https://calendly.com/aloha-vitalkauai/30-minute-completion-call"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Completion Call with Rachel &amp; Josh
+                      </a>
+                      .
+                    </li>
+                  </ul>
+                </div>
               </div>
             )}
 
