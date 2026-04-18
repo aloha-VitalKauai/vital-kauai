@@ -477,7 +477,7 @@ export function IbogaJourneyPage() {
             })()}
           </div>
           <a
-            href="https://calendly.com/aloha-vitalkauai/30min"
+            href="/begin-your-journey"
             target="_blank"
             rel="noopener noreferrer"
             style={{ display: "inline-block", fontSize: 10, fontWeight: 500, letterSpacing: "0.28em", textTransform: "uppercase", color: "var(--ink, #1A1A18)", background: "var(--gold, #C8A96E)", padding: "16px 38px", textDecoration: "none", borderRadius: 2 }}
@@ -518,7 +518,7 @@ export function IbogaJourneyPage() {
           shorter protocols designed for exploration, clarity, and gentle opening. These can serve as
           a standalone experience or a bridge toward a deeper journey.
         </p>
-        <a href="https://calendly.com/aloha-vitalkauai/30min" target="_blank" rel="noopener noreferrer" className={styles.entryLink}>
+        <a href="/begin-your-journey" target="_blank" rel="noopener noreferrer" className={styles.entryLink}>
           Explore This Option &rarr;
         </a>
       </section>
