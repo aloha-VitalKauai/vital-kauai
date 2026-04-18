@@ -24,6 +24,7 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
     { data: documents },
     { data: ceremonies },
     { data: checklist },
+    { data: commitment },
   ] = await Promise.all([
     supabase.from("members").select("*").eq("id", id).maybeSingle(),
     supabase.from("member_profiles").select("*").eq("id", id).maybeSingle(),
@@ -31,6 +32,14 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
     supabase.from("signed_documents").select("*").eq("member_id", id).order("signed_at", { ascending: false }),
     supabase.from("ceremony_records").select("*").eq("member_id", id).order("ceremony_date", { ascending: false }),
     supabase.from("member_checklist").select("*").eq("member_id", id).order("created_at", { ascending: true }),
+    supabase
+      .from("financial_commitments")
+      .select("id, expected_amount_cents, status")
+      .eq("member_id", id)
+      .in("status", ["draft", "active", "partially_paid", "paid", "waived"])
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ]);
 
   if (!member) notFound();
@@ -63,6 +72,7 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       checklist={checklist ?? []}
       preProgress={preProgress}
       postProgress={postProgress}
+      commitment={commitment ?? undefined}
     />
   );
 }
