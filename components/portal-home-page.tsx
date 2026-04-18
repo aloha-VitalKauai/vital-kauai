@@ -630,7 +630,7 @@ export function PortalHomePage({
                 className={`${styles.docCard} ${styles.docCardGold} ${styles.fadeIn}`}
               >
                 <div className={styles.docTitle}>
-                  Participant <em>Intake Form</em>
+                  Member <em>Intake Form</em>
                 </div>
                 <div className={styles.docDesc}>
                   A deeper look at who you are and what you are bringing to this work &mdash; your
