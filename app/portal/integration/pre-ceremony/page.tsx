@@ -285,7 +285,8 @@ const WEEKS = [
         text: 'Confirm labs are submitted and reviewed by the medical team',
         note: 'If you haven\'t received confirmation, reach out now and confirm directly. This is a safety step — it directly affects whether your ceremony proceeds as planned.',
         links: [
-          { text: 'Confirm labs are submitted and reviewed by the medical team', href: '/portal/physician-guide' },
+          { text: 'labs are submitted', href: '/portal#lab-upload-panel' },
+          { text: 'reviewed by the medical team', href: '/portal/physician-guide' },
         ],
       },
       {

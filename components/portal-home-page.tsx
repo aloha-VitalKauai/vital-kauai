@@ -802,7 +802,14 @@ export function PortalHomePage({
             </h2>
             <p className={styles.checklistSub}>
               Track your readiness as you move through each preparation step. This checklist saves
-              automatically.
+              automatically. The{" "}
+              <Link
+                href="/portal/integration/pre-ceremony"
+                style={{ color: "inherit", textDecoration: "none", borderBottom: "1px dashed rgba(200,169,110,.55)" }}
+              >
+                Pre-Ceremony tab
+              </Link>{" "}
+              walks you through all of this in a six-week arc.
             </p>
           </div>
           <div className={styles.checklistProgress}>
