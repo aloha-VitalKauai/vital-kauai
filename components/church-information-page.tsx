@@ -272,7 +272,7 @@ export function ChurchInformationPage() {
           community. The membership process is woven into your journey preparation, and our team
           guides you through each step with care.
         </p>
-        <a href="https://calendly.com/aloha-vitalkauai" target="_blank" rel="noopener noreferrer" className={styles.btnPrimary}>
+        <a href="https://calendly.com/aloha-vitalkauai/30min" target="_blank" rel="noopener noreferrer" className={styles.btnPrimary}>
           Begin the Journey
         </a>
         <a href="mailto:aloha@vitalkauai.com" className={styles.btnGhost}>

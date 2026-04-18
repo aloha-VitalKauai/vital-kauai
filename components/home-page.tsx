@@ -170,7 +170,7 @@ export function HomePage() {
       `Thank you for reaching out. We're honored you're considering this path, and we want you to know — your message has been received and will be read personally by Rachel and Josh.`,
       `We'll be in touch within 48 hours.`,
       `If you're feeling ready to take the next step, you're welcome to book a discovery call with us. It's simply a space to share what's calling you and explore whether this journey is the right fit.`,
-      `Book a Discovery Call: https://calendly.com/aloha-vitalkauai`,
+      `Book a Discovery Call: https://calendly.com/aloha-vitalkauai/30min`,
       `With aloha,\nRachel & Josh\nVital Kaua\u02BBi · Hanalei, Kaua\u02BBi`,
     ].join("\n\n");
 
@@ -653,7 +653,7 @@ export function HomePage() {
               });
             })()}
           </div>
-          <a href="https://calendly.com/aloha-vitalkauai" target="_blank" rel="noopener noreferrer" className={styles.ceremonyBtn}>
+          <a href="https://calendly.com/aloha-vitalkauai/30min" target="_blank" rel="noopener noreferrer" className={styles.ceremonyBtn}>
             Join Our Next Group Ceremony
           </a>
         </div>

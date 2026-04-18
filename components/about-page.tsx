@@ -326,7 +326,7 @@ export function AboutPage() {
           and the visionary, the deeply personal and the rigorously trained. Vital Kaua&#699;i is the
           natural expression of the life we are living.
         </p>
-        <a href="https://calendly.com/aloha-vitalkauai" target="_blank" rel="noopener noreferrer" className={`${styles.closeCta} ${styles.reveal}`}>
+        <a href="https://calendly.com/aloha-vitalkauai/30min" target="_blank" rel="noopener noreferrer" className={`${styles.closeCta} ${styles.reveal}`}>
           Begin the Journey
         </a>
       </section>
