@@ -114,9 +114,23 @@ const WEEKS = [
     actionLabel: 'Actions this week — 3 only',
     actionIntro: 'Identity shifts happen in the noticing. This week your job is to begin seeing clearly — the changes will follow.',
     actions: [
-      { color: 'blue', text: 'First call with your integration guide', note: 'Come with your intentions from Week 1. Come with your questions. Come as you are. This call is the beginning of a relationship that will hold you through the hardest parts of what\'s ahead.' },
+      {
+        color: 'blue',
+        text: 'First call with your integration guide',
+        note: 'Come with your intentions from Week 1. Come with your questions. Come as you are. This call is the beginning of a relationship that will hold you through the hardest parts of what\'s ahead.',
+        links: [
+          { text: 'First call with your integration guide', href: '/portal#integration-specialist' },
+        ],
+      },
       { color: 'amber', text: 'Begin noticing your daily habits', note: 'Observe alcohol, sleep, screens, food, substances. Honest observation is all that\u2019s asked. What you notice this week becomes data for your body to begin working with.' },
-      { color: 'blue', text: 'Schedule your required medical appointments and labs', note: 'EKG and labs must be completed before Week 5. Schedule now — medical appointments take time. This protects you.' },
+      {
+        color: 'blue',
+        text: 'Schedule your required medical appointments and labs',
+        note: 'EKG and labs must be completed before Week 5. Schedule now — medical appointments take time. This protects you.',
+        links: [
+          { text: 'Schedule your required medical appointments and labs', href: '/portal/physician-guide' },
+        ],
+      },
     ],
     prompts: PRE_CEREMONY_WEEKS[1].prompts,
     thread: '"What must change" becomes the spine of your Week 4 shadow work and your Week 6 ceremony questions. Start a running list anywhere — the specific questions you want to bring to the medicine will take shape over the next four weeks. You\'ll draft them formally in Week 4.',
