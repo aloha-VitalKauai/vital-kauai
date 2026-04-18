@@ -69,7 +69,7 @@ const WEEKS = [
     eyebrow: 'Week 1 · LŌKAHI · Unity',
     title: 'The medicine is still\nmoving in you.',
     subtitle: '',
-    intro: 'Lōkahi means unity — the integration of all that was shown into the whole of who you are. This week asks almost nothing of you except presence. Rest after ceremony is active integration. Your nervous system is processing at a depth you cannot fully feel or measure. Trust it.',
+    intro: 'Lōkahi means unity — the integration of all that was shown into the whole of who you are. This week asks almost nothing of you except presence. Rest after ceremony is active integration. Your nervous system is processing. Trust it.',
     safetyNote: {
       type: 'gold',
       label: 'The 48-hour window — read this first',
