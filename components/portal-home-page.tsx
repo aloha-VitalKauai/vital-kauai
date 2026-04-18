@@ -608,6 +608,25 @@ export function PortalHomePage({
                   </span>
                 </div>
               </button>
+
+              <Link
+                href="/intake-form"
+                className={`${styles.docCard} ${styles.fadeIn}`}
+              >
+                <div className={styles.docTitle}>
+                  Participant <em>Intake Form</em>
+                </div>
+                <div className={styles.docDesc}>
+                  A deeper look at who you are and what you are bringing to this work &mdash; your
+                  intentions, personal history, somatic awareness, and health context. Basic
+                  information is required (emergency contact, key health disclosures); all other
+                  questions are optional. The more you share, the more precisely we can hold you.
+                </div>
+                <div className={styles.docFooter}>
+                  <span className={`${styles.docTag} ${styles.tagGuide}`}>Optional &middot; Recommended</span>
+                  <span className={styles.docAction}>{"Open \u2192"}</span>
+                </div>
+              </Link>
             </div>
           </div>
 
