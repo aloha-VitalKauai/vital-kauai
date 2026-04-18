@@ -148,10 +148,38 @@ const WEEKS = [
     box: { type: 'info', label: 'If something surfaces this week', text: 'Iboga is intelligent and relational. It begins its work the moment you say yes. If difficult material arises — old grief, anxiety, somatic intensity — here is what to do: slow down deliberately. Bring your attention to one physical sensation at a time. Breathe. Place both feet on the floor. Be with what is arising — presence is enough. Your integration guide is available between sessions. Reach out whenever you need support.\n\nSome days will feel harder to begin. Noticing that — naming it honestly — is itself the practice.' },
     actionLabel: 'Actions this week — 4 only',
     actions: [
-      { color: 'green', text: 'Read the Nervous System Safety Guide fully — this week, not later', note: 'Understanding your polyvagal states before ceremony is one of the most valuable things you can do. It gives you a map for what you\'ll encounter in your own body during the experience.' },
-      { color: 'green', text: 'Begin Coherent Heart Breath — 10 minutes, every morning, without exception', note: 'This single practice does more for your ceremony readiness than almost anything else on this list. It is the minimum. Do it every day.' },
-      { color: 'amber', text: 'Begin dietary protocol in earnest — you are now 4 weeks out', note: 'Read the Dietary Preparation guide. The body you bring to ceremony is built in these four weeks. This is about arriving as a clear vessel — prepared, open, and ready to receive.' },
-      { color: 'red', text: 'Begin DHA/EPA and magnesium glycinate supplementation daily', note: 'DHA/EPA: 2–4g daily with food. Magnesium glycinate: 300–400mg before bed. Confirm with your physician if you are on any medications.' },
+      {
+        color: 'green',
+        text: 'Read the Nervous System Safety Guide fully — this week, not later',
+        note: 'Understanding your polyvagal states before ceremony is one of the most valuable things you can do. It gives you a map for what you\'ll encounter in your own body during the experience.',
+        links: [
+          { text: 'Read the Nervous System Safety Guide fully — this week, not later', href: '/portal/nervous-system' },
+        ],
+      },
+      {
+        color: 'green',
+        text: 'Begin Coherent Heart Breath — 10 minutes, every morning, without exception',
+        note: 'This single practice does more for your ceremony readiness than almost anything else on this list. It is the minimum. Do it every day.',
+        links: [
+          { text: 'Begin Coherent Heart Breath — 10 minutes, every morning, without exception', href: '/portal/nervous-system#coherent-heart-breath' },
+        ],
+      },
+      {
+        color: 'amber',
+        text: 'Begin dietary protocol in earnest — you are now 4 weeks out',
+        note: 'Read the Dietary Preparation guide. The body you bring to ceremony is built in these four weeks. This is about arriving as a clear vessel — prepared, open, and ready to receive.',
+        links: [
+          { text: 'Begin dietary protocol in earnest — you are now 4 weeks out', href: '/portal/dietary' },
+        ],
+      },
+      {
+        color: 'red',
+        text: 'Begin DHA/EPA and magnesium glycinate supplementation daily',
+        note: 'DHA/EPA: 2–4g daily with food. Magnesium glycinate: 300–400mg before bed. Confirm with your physician if you are on any medications.',
+        links: [
+          { text: 'Begin DHA/EPA and magnesium glycinate supplementation daily', href: '/portal/dietary#supplement-protocol' },
+        ],
+      },
     ],
     safetyBox: { label: 'Physiological preparation — safety note', text: 'Magnesium is cardiac-critical for iboga. Adequate magnesium levels directly affect cardiac function during the medicine, particularly QT interval regulation. This supplementation is cardiac-critical preparation — part of your physiological safety protocol. If you have any cardiac history, confirm dosing with your physician and inform the Vital Kauaʻi team before proceeding.' },
     prompts: PRE_CEREMONY_WEEKS[2].prompts,
