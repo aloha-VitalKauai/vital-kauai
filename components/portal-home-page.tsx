@@ -539,6 +539,7 @@ export function PortalHomePage({
               </button>
 
               <button
+                id="agreement-card"
                 className={`${styles.docCard} ${agreementDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
                 onClick={() => !agreementDone && setModal("agreement")}
               >
@@ -560,6 +561,7 @@ export function PortalHomePage({
               </button>
 
               <button
+                id="medical-card"
                 className={`${styles.docCard} ${medicalDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
                 onClick={() => !medicalDone && setModal("medical")}
               >
