@@ -1,10 +1,49 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { Fragment, useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { POST_CEREMONY_WEEKS } from '@/lib/journal-prompts'
+
+// Render an action's text with optional inline links. Each link matches a
+// substring in `text` and is replaced with an anchor tag in place.
+function renderActionText(
+  text: string,
+  links?: { text: string; href: string; external?: boolean }[],
+) {
+  if (!links || links.length === 0) return text
+  type Seg = string | { text: string; href: string; external?: boolean }
+  let segments: Seg[] = [text]
+  for (const link of links) {
+    const next: Seg[] = []
+    for (const seg of segments) {
+      if (typeof seg !== 'string') { next.push(seg); continue }
+      const idx = seg.indexOf(link.text)
+      if (idx === -1) { next.push(seg); continue }
+      if (idx > 0) next.push(seg.slice(0, idx))
+      next.push(link)
+      const rest = seg.slice(idx + link.text.length)
+      if (rest) next.push(rest)
+    }
+    segments = next
+  }
+  return segments.map((seg, i) =>
+    typeof seg === 'string' ? (
+      <Fragment key={i}>{seg}</Fragment>
+    ) : (
+      <a
+        key={i}
+        href={seg.href}
+        target={seg.external ? '_blank' : undefined}
+        rel={seg.external ? 'noopener noreferrer' : undefined}
+        style={{ color: 'inherit', textDecoration: 'none', borderBottom: '1px dashed rgba(200,169,110,.55)' }}
+      >
+        {seg.text}
+      </a>
+    ),
+  )
+}
 
 // ─── Types ────────────────────────────────────────────────
 type WeekTracking = {
@@ -61,11 +100,19 @@ const WEEKS = [
       text: 'Noribogaine, iboga\'s primary metabolite, keeps your brain in a state of heightened neuroplasticity for approximately 4–6 weeks post-ceremony. Right now you are at peak plasticity. What you practice consistently this week becomes your new baseline faster than at almost any other time in your adult life. This is the most important behavioral window of your entire process. Use it deliberately.',
     },
     video: { label: 'A Message from Rachel & Josh · Week 2', text: 'The neuroplasticity window is real — and this week is its peak. Rachel and Josh talk about what that actually means in practice, why this week\'s small daily choices matter more than they appear, and how to tend what the medicine opened without forcing it into shape too quickly.' },
-    actionLabel: 'This week — 3 things',
+    actionLabel: 'This week — 4 things',
     actions: [
       { color: 'gold', text: 'Establish one morning practice — and do it every day, tracking your days below', note: 'Coherent Heart Breath. Journaling. Movement. Prayer. One thing. Done every morning. The medicine opened the door. Repetition is how you walk through it. You are contributing to one of the most comprehensive iboga outcome datasets in the world — your practice days matter.' },
       { color: 'green', text: 'Continue magnesium glycinate (300–400mg) and DHA/EPA (2–4g) daily', note: 'The supplement protocol from your preparation does not end at ceremony. Magnesium supports nervous system regulation during the post-ceremony window. DHA/EPA supports the neuroplasticity process. Continue both for at minimum 30 days post-ceremony.' },
       { color: 'sage', text: 'Continue full sobriety — minimum 30 days, 3 months strongly recommended', note: 'Iboga resets tolerance. Returning to any substance before the window closes undermines what the medicine worked to open. The noribogaine window is your most protected asset right now.' },
+      {
+        color: 'blue',
+        text: 'Schedule a check-in call with Rachel & Josh — around week 9 / month 2',
+        note: 'An optional mid-integration touchpoint to bring what is still moving, notice what has anchored, and speak honestly about what is alive.',
+        links: [
+          { text: 'Schedule a check-in call with Rachel & Josh — around week 9 / month 2', href: 'https://calendly.com/aloha-vitalkauai/30-minute-check-in-call', external: true },
+        ],
+      },
     ],
     dataset: 'Your weekly tracking below contributes to one of the most comprehensive iboga integration datasets being built anywhere in the world. What you log — your practice days, your regulation, your patterns — helps the field understand how this medicine actually works across hundreds of participants over time. Your experience becomes part of something larger.',
     prompts: POST_CEREMONY_WEEKS[1].prompts,
@@ -152,9 +199,17 @@ const WEEKS = [
     carryForward: 'You have moved through the full arc — from the raw tenderness of emergence to the relational work of week five. This final week is a transition from active integration into sustained living.',
     intro: 'Pono means right relationship — with yourself, with others, with the life you are building. Week six marks the close of the intensive integration window and the opening of a longer, quieter arc. The medicine\'s most dramatic effects have passed, but its work continues — in your dreams, your relationships, your daily choices, and in the moments you catch yourself responding differently than you used to.',
     video: { label: 'A Message from Rachel & Josh · Week 6', text: 'Six weeks ago you came home from ceremony. In this final weekly transmission Rachel and Josh want to mark what you have done. The long integration is beginning. They want you to know what to expect, and how to hold yourself through the months ahead.' },
-    actionLabel: 'This week — 4 completions',
+    actionLabel: 'This week — 5 completions',
     actions: [
       { color: 'gold', text: 'Complete your 3-month Wellbeing Check-in', note: 'The same survey you completed before ceremony — mood, anxiety, sleep, quality of life. This is your after-picture. Compare it to your baseline. The shift you feel is now measurable.' },
+      {
+        color: 'blue',
+        text: 'Schedule your Completion Call with Rachel & Josh — around week 12 / month 3',
+        note: 'The closing call of your integration arc with Rachel & Josh. Bring your integration statement. Bring what has landed, what is still moving, and what you are carrying forward.',
+        links: [
+          { text: 'Schedule your Completion Call with Rachel & Josh — around week 12 / month 3', href: 'https://calendly.com/aloha-vitalkauai/30-minute-completion-call', external: true },
+        ],
+      },
       { color: 'blue', text: 'Consider ongoing calls with your integration guide', note: 'You have sessions remaining in your six-session arc, and you can also continue beyond that as a living practice. Your guide can help you establish a monthly rhythm or meet you as the work keeps moving. Book via the Integration Specialist section on your Dashboard.' },
       { color: 'sage', text: 'Write your integration statement — guided below', note: 'Three questions, one page. What changed. What you know now. What you are committed to. Date it. You will want to read it in six months.' },
       { color: 'green', text: 'Establish your monthly rhythm — one practice, one question, one connection', note: 'One thing you do every day. One honest question each month. One conversation with someone who knows what you went through. Simple enough to sustain.' },
@@ -696,7 +751,7 @@ export default function PostCeremonyPage() {
                   <div className="action-item" key={ai}>
                     <div className="action-dot" style={{ background: DOT[a.color] }} />
                     <div>
-                      <div className="action-text">{a.text}</div>
+                      <div className="action-text">{renderActionText(a.text, (a as { links?: { text: string; href: string; external?: boolean }[] }).links)}</div>
                     </div>
                   </div>
                 ))}
