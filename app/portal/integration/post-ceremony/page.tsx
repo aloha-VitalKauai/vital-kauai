@@ -668,7 +668,14 @@ export default function PostCeremonyPage() {
         .video-frame{border:.5px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:14px}.video-primer{background:var(--forest);padding:24px 28px;display:flex;align-items:center;gap:20px}.vp-play{width:44px;height:44px;border-radius:50%;border:1px solid rgba(200,169,110,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}.vp-play-icon{color:var(--gold);font-size:14px;margin-left:3px}.vp-label{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}.vp-text{font-size:13.5px;color:rgba(245,240,232,.75);line-height:1.7}.vp-coming-soon{margin-top:12px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.04em;color:var(--gold)}
         .box{margin-top:0;border-radius:2px;padding:16px 20px;margin-bottom:28px}.box-label{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:8px;font-weight:500}.box-text{font-size:13px;line-height:1.8;color:var(--ink-mid)}.box-gold{background:rgba(200,169,110,.08);border:.5px solid rgba(200,169,110,.28)}.box-gold .box-label{color:var(--gold)}.box-sage{background:rgba(122,158,126,.07);border:.5px solid rgba(122,158,126,.25)}.box-sage .box-label{color:var(--sage)}
         .reentry{background:rgba(200,169,110,.05);border:.5px solid rgba(200,169,110,.2);border-radius:2px;padding:14px 20px;margin-bottom:24px;display:flex;gap:14px;align-items:flex-start}.reentry-icon{font-size:13px;color:var(--gold);flex-shrink:0;margin-top:1px}.reentry-text{font-size:12.5px;color:var(--stone);line-height:1.75}
-        .dataset-note{background:rgba(28,43,30,.04);border:.5px solid rgba(28,43,30,.1);border-radius:2px;padding:12px 16px;margin-top:12px;font-size:12px;color:var(--stone);line-height:1.7;font-style:italic}
+        .dataset-note{background:rgba(200,169,110,.07);border:1px solid rgba(200,169,110,.32);border-left:3px solid var(--gold);border-radius:3px;padding:18px 22px;margin-top:18px;font-size:13px;color:var(--ink-mid);line-height:1.75}
+        .dataset-note .dn-label{display:block;font-size:9px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:10px}
+        .dataset-note .dn-body{font-style:italic}
+        .dataset-note .dn-cta{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);text-decoration:none;font-weight:500;padding:8px 14px;border:1px solid rgba(200,169,110,.5);border-radius:2px;transition:all .2s}
+        .dataset-note .dn-cta:hover{background:rgba(200,169,110,.1);border-color:var(--gold)}
+        .dataset-note .dn-header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+        .dataset-note .dn-header .dn-label{margin-bottom:0}
+        .dataset-note .dn-footer{margin-top:14px;display:flex;justify-content:flex-end}
         .actions-list{display:flex;flex-direction:column;gap:10px}.action-item{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border:.5px solid var(--border);border-radius:4px;background:white}.action-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}.action-text{font-size:13.5px;color:var(--ink);line-height:1.5}.action-note{font-size:12px;color:var(--stone);line-height:1.6;margin-top:5px;font-style:italic}
         .prompts-list{border-top:1px solid var(--border)}.prompt-item{padding:22px 0;border-bottom:1px solid var(--border)}.prompt-num{font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:10px}.prompt-q{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--ink);line-height:1.35;margin-bottom:10px}.prompt-hint{font-size:12.5px;color:var(--stone);line-height:1.75;font-style:italic}
         .journal-textarea{width:100%;margin-top:14px;padding:14px 16px;border:1px solid rgba(200,169,110,0.2);border-left:2px solid var(--gold);background:rgba(200,169,110,0.03);font-family:'Jost',sans-serif;font-size:14px;font-weight:300;color:var(--ink);line-height:1.85;resize:vertical;outline:none;min-height:100px;transition:border-color .2s,background .2s}
@@ -772,22 +779,29 @@ export default function PostCeremonyPage() {
                   </div>
                 ))}
               </div>
-              {w.dataset && (
-                <div className="dataset-note">
-                  {w.dataset}
-                  {(w as { datasetLink?: { text: string; href: string } }).datasetLink && (
-                    <>
-                      {' '}
-                      <Link
-                        href={(w as { datasetLink: { text: string; href: string } }).datasetLink.href}
-                        style={{ color: 'inherit', textDecoration: 'none', borderBottom: '1px dashed rgba(200,169,110,.55)', fontStyle: 'normal', whiteSpace: 'nowrap' }}
-                      >
-                        {(w as { datasetLink: { text: string; href: string } }).datasetLink.text}
-                      </Link>
-                    </>
-                  )}
-                </div>
-              )}
+              {w.dataset && (() => {
+                const dl = (w as { datasetLink?: { text: string; href: string } }).datasetLink
+                return (
+                  <div className="dataset-note">
+                    <div className="dn-header">
+                      <span className="dn-label">Outcomes — your contribution to the field</span>
+                      {dl && (
+                        <Link href={dl.href} className="dn-cta">
+                          {dl.text}
+                        </Link>
+                      )}
+                    </div>
+                    <div className="dn-body">{w.dataset}</div>
+                    {dl && (
+                      <div className="dn-footer">
+                        <Link href={dl.href} className="dn-cta">
+                          {dl.text}
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                )
+              })()}
             </div>
 
             <div className="section">
