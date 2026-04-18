@@ -133,7 +133,7 @@ const WEEKS = [
     eyebrow: 'Week 3 · HAʻAHAʻA · Humility',
     title: 'The familiar is returning.',
     subtitle: 'Meet it differently.',
-    carryForward: 'You\'ve been tending new practices. You\'ve begun to bring the insights into your days. This week something will shift — old patterns will begin to resurface. This is the real integration beginning.',
+    carryForward: 'You\'ve been tending new practices. You\'ve begun to bring the insights into your days. This week something will shift — old patterns may begin to resurface. This is the real integration beginning.',
     intro: 'Haʻahaʻa means humility — the willingness to be exactly where you are without pretending to be further along. By week three, the acute aliveness of ceremony has softened. The ordinary world has returned. And with it, the familiar — however slightly — may start to return. Your ability to notice it, welcome it, and shift it with greater awareness is alive. This week asks you to meet all of that with humility rather than shame.',
     reentry: {
       strong: 'When the pattern hits — do this:',
@@ -142,7 +142,7 @@ const WEEKS = [
     video: { label: 'A Message from Rachel & Josh · Week 3', text: 'Rachel and Josh speak directly to the return of the familiar — why it happens, what it means, and why the people who stay with the practice through this week are the ones who see lasting change.' },
     actionLabel: 'This week — 3 things',
     actions: [
-      { color: 'gold', text: 'Call with your integration guide', note: 'This is the most important call of the integration arc. Bring the return of the familiar. Bring what is still unresolved. Your guide is trained to work with exactly this territory. Book via the Integration Specialist section on your Dashboard.' },
+      { color: 'gold', text: 'Suggested call with your integration guide', note: 'This is the most important call of the integration arc. Bring the return of the familiar. Bring what is still unresolved. Your guide is trained to work with exactly this territory. Book via the Integration Specialist section on your Dashboard.' },
       { color: 'blue', text: 'Name one old pattern that has returned — write about it', note: 'To see it clearly. Naming with precision is itself a form of integration. Your guide can see your weekly tracking and will reach out if they notice something that needs support.' },
       { color: 'sage', text: 'Continue your daily practice — especially on the days you least want to', note: 'The days you least want to show up are the days it matters most.' },
     ],
@@ -170,7 +170,8 @@ const WEEKS = [
       { color: 'blue', text: 'Share your non-negotiables with one person in your life', note: 'Accountability held by another person anchors differently than accountability held alone. Be specific about what you are asking them to hold with you.' },
       { color: 'sage', text: 'Audit one thing in your environment that actively works against your new self \u2014 and change it this week', note: 'Physical environment. Social environment. Digital environment. What in each is pulling you back toward who you were? Make one concrete change this week.' },
     ],
-    dataset: 'Your practice days and regulation scores this week are among the most clinically significant data points in the entire dataset. Week 4 tracking — when the noribogaine window is closing — predicts long-term integration outcomes more reliably than any other week. What you log here matters beyond your own journey.',
+    dataset: 'Your wellbeing assessments this month — the MAPS-based benchmarks in the Outcomes section — are among the most clinically significant data points in the entire dataset. The 1-month survey, taken as the noribogaine window closes, predicts long-term integration outcomes more reliably than any other timepoint. What you submit here matters beyond your own journey.',
+    datasetLink: { text: 'Open your Outcomes →', href: '/portal/assessments' },
     prompts: POST_CEREMONY_WEEKS[3].prompts,
     thread: 'Kuleana is an honor — the recognition that you have been shown something real and that you are capable of living it. Next week the work moves outward, into your relationships.',
   },
