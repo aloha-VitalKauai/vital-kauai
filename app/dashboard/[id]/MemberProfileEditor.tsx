@@ -4,6 +4,19 @@ import { useState, useTransition } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import MemberFinancialSection from "./MemberFinancialSection";
+import { members as HEALING_CIRCLE_MEMBERS } from "@/components/healing-circle-data";
+
+/* Integration-guide options for the Assigned Partner dropdown.
+   Pulled from the healing-circle integration-guide section ('somatic'
+   category), de-duplicated by name. */
+const ASSIGNED_PARTNER_OPTIONS: string[] = Array.from(
+  new Set(
+    HEALING_CIRCLE_MEMBERS
+      .filter((m) => m.cat === "somatic")
+      .map((m) => m.name.trim())
+      .filter(Boolean),
+  ),
+).sort();
 
 /* ── Status colours (same as dashboard) ────────────────────────── */
 const STATUS_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
@@ -312,12 +325,27 @@ export default function MemberProfileEditor({
               </div>
               <div>
                 <label style={LABEL}>Assigned partner</label>
-                <input
+                <select
                   style={INPUT}
-                  value={assignedPartner}
-                  onChange={(e) => setAssignedPartner(e.target.value)}
-                  placeholder="e.g. Josh"
-                />
+                  value={
+                    assignedPartner && !ASSIGNED_PARTNER_OPTIONS.includes(assignedPartner)
+                      ? "__custom__"
+                      : assignedPartner
+                  }
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    if (v === "__custom__") return; // keep current value, user can clear via —
+                    setAssignedPartner(v);
+                  }}
+                >
+                  <option value="">— Unassigned —</option>
+                  {ASSIGNED_PARTNER_OPTIONS.map((name) => (
+                    <option key={name} value={name}>{name}</option>
+                  ))}
+                  {assignedPartner && !ASSIGNED_PARTNER_OPTIONS.includes(assignedPartner) && (
+                    <option value="__custom__">{assignedPartner} (legacy)</option>
+                  )}
+                </select>
               </div>
               <div>
                 <label style={LABEL}>Membership tier</label>
