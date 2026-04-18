@@ -150,26 +150,26 @@ const WEEKS = [
     actions: [
       {
         color: 'green',
-        text: 'Read the Nervous System Safety Guide fully — this week, not later',
+        text: 'Read the Nervous System Safety Guide fully',
         note: 'Understanding your polyvagal states before ceremony is one of the most valuable things you can do. It gives you a map for what you\'ll encounter in your own body during the experience.',
         links: [
-          { text: 'Read the Nervous System Safety Guide fully — this week, not later', href: '/portal/nervous-system' },
+          { text: 'Read the Nervous System Safety Guide fully', href: '/portal/nervous-system' },
         ],
       },
       {
         color: 'green',
-        text: 'Begin Coherent Heart Breath — 10 minutes, every morning, without exception',
+        text: 'Begin Coherent Heart Breath — 10 minutes, every morning',
         note: 'This single practice does more for your ceremony readiness than almost anything else on this list. It is the minimum. Do it every day.',
         links: [
-          { text: 'Begin Coherent Heart Breath — 10 minutes, every morning, without exception', href: '/portal/nervous-system#coherent-heart-breath' },
+          { text: 'Begin Coherent Heart Breath — 10 minutes, every morning', href: '/portal/nervous-system#coherent-heart-breath' },
         ],
       },
       {
         color: 'amber',
-        text: 'Begin dietary protocol in earnest — you are now 4 weeks out',
+        text: 'Begin dietary protocol — you are now 4 weeks out',
         note: 'Read the Dietary Preparation guide. The body you bring to ceremony is built in these four weeks. This is about arriving as a clear vessel — prepared, open, and ready to receive.',
         links: [
-          { text: 'Begin dietary protocol in earnest — you are now 4 weeks out', href: '/portal/dietary' },
+          { text: 'Begin dietary protocol — you are now 4 weeks out', href: '/portal/dietary' },
         ],
       },
       {
