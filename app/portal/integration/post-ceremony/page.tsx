@@ -78,7 +78,14 @@ const WEEKS = [
     video: { label: 'A Message from Rachel & Josh · Week 1', text: 'You made it through. In this first transmission Rachel and Josh speak directly to where you are right now — the tenderness, the strange combination of exhaustion and aliveness. They want to meet you exactly here, before you do anything else.' },
     actionLabel: 'This week — 4 things',
     actions: [
-      { color: 'sage', text: 'Check in with your guide within 48 hours of returning home', note: 'A brief check-in to let them know you arrived safely, how you\'re doing, and what you most need right now.' },
+      {
+        color: 'sage',
+        text: 'Check in with your guide within 48 hours of returning home',
+        note: 'A brief check-in to let them know you arrived safely, how you\'re doing, and what you most need right now.',
+        links: [
+          { text: 'Check in with your guide', href: '/portal#integration-specialist' },
+        ],
+      },
       { color: 'green', text: 'Rest completely for the first 48 hours', note: 'Let the experience settle. Rest before sharing. Allow what happened to remain wordless a little longer.' },
       { color: 'blue', text: 'Journal what arose — images, moments, what the medicine showed you', note: 'Don\'t interpret it yet. Just record it. The meaning arrives in its own time. What you write now will be the material you return to for months.' },
     ],
