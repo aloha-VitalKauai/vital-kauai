@@ -215,9 +215,8 @@ const WEEKS = [
     carryForward: 'You have moved through the full arc — from the raw tenderness of emergence to the relational work of week five. This final week is a transition from active integration into sustained living.',
     intro: 'Pono means right relationship — with yourself, with others, with the life you are building. Week six marks the close of the intensive integration window and the opening of a longer, quieter arc. The medicine\'s most dramatic effects have passed, but its work continues — in your dreams, your relationships, your daily choices, and in the moments you catch yourself responding differently than you used to.',
     video: { label: 'A Message from Rachel & Josh · Week 6', text: 'Six weeks ago you came home from ceremony. In this final weekly transmission Rachel and Josh want to mark what you have done. The long integration is beginning. They want you to know what to expect, and how to hold yourself through the months ahead.' },
-    actionLabel: 'This week — 5 completions',
+    actionLabel: 'This week — 4 completions',
     actions: [
-      { color: 'gold', text: 'Complete your 3-month Wellbeing Check-in', note: 'The same survey you completed before ceremony — mood, anxiety, sleep, quality of life. This is your after-picture. Compare it to your baseline. The shift you feel is now measurable.' },
       {
         color: 'blue',
         text: 'Schedule your Completion Call with Rachel & Josh',
@@ -243,7 +242,6 @@ const WEEKS = [
       { q: 'What are you committed to in the next six months?', hint: 'One sentence. Concrete and liveable. Something you can return to and know immediately whether you kept it.' },
     ],
     checklist: [
-      '3-month Wellbeing Check-in completed',
       'Integration statement written and dated',
       'Monthly rhythm established',
     ],
@@ -866,9 +864,6 @@ export default function PostCeremonyPage() {
                       <div className="rg-item-text">{txt}</div>
                     </div>
                   ))}
-                  <p style={{ marginTop: 16, fontSize: 12.5, color: 'var(--stone)', fontStyle: 'italic', borderTop: '0.5px solid var(--border)', paddingTop: 14, lineHeight: 1.75 }}>
-                    Compare your 3-month Wellbeing Check-in scores to your baseline completed before ceremony. The shift you feel is now measurable — and part of a dataset that helps the field understand how iboga works across hundreds of participants over time.
-                  </p>
                 </div>
               </div>
             )}
