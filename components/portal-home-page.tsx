@@ -384,6 +384,13 @@ export function PortalHomePage({
     const hash = window.location.hash;
     if (!hash || hash.length < 2) return;
     const id = hash.slice(1);
+    // The lab upload panel is only rendered when the Lab Requirements card
+    // is expanded. Open it so the anchor target exists; the existing effect
+    // on showLabUpload handles the actual scroll.
+    if (id === "lab-upload-panel") {
+      setShowLabUpload(true);
+      return;
+    }
     // Defer one frame so the target element exists after render.
     requestAnimationFrame(() => {
       const el = document.getElementById(id);
