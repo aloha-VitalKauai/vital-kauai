@@ -129,7 +129,7 @@ export const members: Member[] = [
     name: "Robyn DeBonet",
     role: "Shen Po · Seitai Shinpo Acupuncture",
     cat: "healers",
-    photo: "",
+    photo: "/images/robyndebonet.JPG",
     shortBio:
       "Robyn DeBonet is a certified Seitai Shinpo acupuncturist based on Kauaʻi, holding her Silver Certificate since 2006. Seitai Shinpo is a Japanese system of acupuncture rooted in restoring the body's natural alignment and flow of life force energy. Her practice, known as Shen Po, works at the intersection of structural balance, energetic harmony, and deep nervous system restoration. Robyn brings decades of island-rooted healing wisdom to every session. Her hands carry both precision and presence in equal measure.",
     bio: "Robyn DeBonet is a certified Seitai Shinpo acupuncturist based on Kauaʻi, holding her Silver Certificate since 2006. Seitai Shinpo is a Japanese system of acupuncture rooted in restoring the body's natural alignment and flow of life force energy. Her practice, known as Shen Po, works at the intersection of structural balance, energetic harmony, and deep nervous system restoration. Robyn brings decades of island-rooted healing wisdom to every session. Her hands carry both precision and presence in equal measure.",
