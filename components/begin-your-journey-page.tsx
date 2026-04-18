@@ -150,7 +150,7 @@ export function BeginYourJourneyPage() {
           </div>
           <div className={styles.calendlyEmbed}>
             <iframe
-              src="https://calendly.com/aloha-vitalkauai?hide_gdpr_banner=1&background_color=ffffff&text_color=1a1a18&primary_color=7a9e7e&embed_type=Inline"
+              src="https://calendly.com/aloha-vitalkauai/30min?hide_gdpr_banner=1&background_color=ffffff&text_color=1a1a18&primary_color=7a9e7e&embed_type=Inline"
               title="Schedule a Discovery Call"
             />
           </div>
