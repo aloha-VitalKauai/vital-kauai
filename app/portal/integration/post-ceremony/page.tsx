@@ -204,10 +204,10 @@ const WEEKS = [
       { color: 'gold', text: 'Complete your 3-month Wellbeing Check-in', note: 'The same survey you completed before ceremony — mood, anxiety, sleep, quality of life. This is your after-picture. Compare it to your baseline. The shift you feel is now measurable.' },
       {
         color: 'blue',
-        text: 'Schedule your Completion Call with Rachel & Josh — around week 12 / month 3',
+        text: 'Schedule your Completion Call with Rachel & Josh',
         note: 'The closing call of your integration arc with Rachel & Josh. Bring your integration statement. Bring what has landed, what is still moving, and what you are carrying forward.',
         links: [
-          { text: 'Schedule your Completion Call with Rachel & Josh — around week 12 / month 3', href: 'https://calendly.com/aloha-vitalkauai/30-minute-completion-call', external: true },
+          { text: 'Schedule your Completion Call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-completion-call', external: true },
         ],
       },
       { color: 'blue', text: 'Consider ongoing calls with your integration guide', note: 'You have sessions remaining in your six-session arc, and you can also continue beyond that as a living practice. Your guide can help you establish a monthly rhythm or meet you as the work keeps moving. Book via the Integration Specialist section on your Dashboard.' },
