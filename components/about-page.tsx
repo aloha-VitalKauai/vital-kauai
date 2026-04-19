@@ -228,8 +228,8 @@ export function AboutPage() {
             I arrived at my first iboga retreat freshly off a detox — physically clean, emotionally open, and extraordinarily receptive. The experience lacked preparation, safety, and proper integration, and I left more fragmented than I arrived. That experience clarified everything that would shape my work: the medicine itself is only as whole as the people and ceremony that hold it.
           </p>
           <div className={styles.pullPlaceholder}>
-            <p>&ldquo;[Member quote goes here]&rdquo;</p>
-            <span>&mdash; [Member Name]</span>
+            <p>&ldquo;Working with Josh has been such a game changer. He&rsquo;s really helped me see how I could be living my lifestyle in a different way. It&rsquo;s simply a choice. Choosing to live the way you enjoy life is the clearest way to find joy in daily activities.&rdquo;</p>
+            <span>&mdash; Luke Wallahan</span>
           </div>
           <div className={styles.pull}>
             <p>
