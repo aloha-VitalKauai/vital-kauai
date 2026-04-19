@@ -125,7 +125,7 @@ export function IbogaJourneyPage() {
         />
         <div className={styles.heroOverlay} />
         <div className={styles.heroContent}>
-          <p className={styles.heroEyebrow}>Grandfather Medicine &middot; Immersive Protocol</p>
+          <p className={styles.heroEyebrow}>Godparent Medicine &middot; Immersive Protocol</p>
           <h1 className={styles.heroTitle}>
             The Iboga
             <br />
@@ -186,7 +186,7 @@ export function IbogaJourneyPage() {
 
       {/* ── Medicine ── */}
       <section className={styles.medicine} id="medicine">
-        <span className={styles.sectionLabel}>Grandfather Medicine</span>
+        <span className={styles.sectionLabel}>Godparent Medicine</span>
         <h2 className={styles.sectionTitle}>
           Iboga &mdash; <em className={styles.sageLightItalic}>The Teacher Plant</em>
         </h2>
