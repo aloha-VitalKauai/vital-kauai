@@ -27,10 +27,15 @@ export function StayPage() {
         const isNext = i === 0;
         const year = new Date(c.start_at).getUTCFullYear();
         const dateText = formatCohortRange(c.start_at, c.end_at).replace(`, ${year}`, "");
+        const titleIsGeneric = /^[A-Za-z]+\s+\d+.*Ceremony$/.test(c.title);
+        const mainLine = titleIsGeneric ? dateText : c.title;
+        const subLine = titleIsGeneric
+          ? `${year} · Hanalei, Kauaʻi`
+          : `${dateText}, ${year} · Hanalei, Kauaʻi`;
         el.innerHTML = [
           `<p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:${isNext ? "var(--terra)" : "rgba(200,169,110,0.7)"};margin-bottom:10px;">${isNext ? "Next Ceremony" : "Upcoming"}</p>`,
-          `<p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--cream);margin-bottom:4px;">${dateText}</p>`,
-          `<p style="font-size:11px;color:rgba(245,240,232,0.4);letter-spacing:0.08em;">${year} · Hanalei, Kauaʻi</p>`,
+          `<p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--cream);margin-bottom:4px;">${mainLine}</p>`,
+          `<p style="font-size:11px;color:rgba(245,240,232,0.4);letter-spacing:0.08em;">${subLine}</p>`,
           `<p style="font-size:10px;color:${isNext ? "var(--terra-light)" : "rgba(245,240,232,0.55)"};margin-top:12px;letter-spacing:0.05em;">${isNext ? "Filling Now" : "Open"}</p>`,
         ].join("");
         el.style.background = isNext ? "rgba(28,43,30,0.8)" : "rgba(28,43,30,0.65)";

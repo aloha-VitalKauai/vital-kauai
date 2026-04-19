@@ -635,13 +635,17 @@ export function HomePage() {
                 }
                 const isNext = i === 0;
                 const year = new Date(c.start_at).getUTCFullYear();
+                const dateText = formatCohortRange(c.start_at, c.end_at).replace(`, ${year}`, "");
+                const titleIsGeneric = /^[A-Za-z]+\s+\d+.*Ceremony$/.test(c.title);
                 return (
                   <div key={c.id} className={isNext ? styles.ceremonyCardActive : styles.ceremonyCard}>
                     <p className={styles.ceremonyLabel} style={isNext ? { color: "var(--terra)" } : undefined}>
                       {isNext ? "Next Ceremony" : "Upcoming"}
                     </p>
-                    <p className={styles.ceremonyDate}>{formatCohortRange(c.start_at, c.end_at).replace(`, ${year}`, "")}</p>
-                    <p className={styles.ceremonySub}>{year} · Hanalei, Kauaʻi</p>
+                    <p className={styles.ceremonyDate}>{titleIsGeneric ? dateText : c.title}</p>
+                    <p className={styles.ceremonySub}>
+                      {titleIsGeneric ? `${year} · Hanalei, Kauaʻi` : `${dateText}, ${year} · Hanalei, Kauaʻi`}
+                    </p>
                     <p
                       className={isNext ? styles.ceremonyStatus : styles.ceremonyStatusMuted}
                       style={isNext ? { color: "var(--terra-light)" } : undefined}

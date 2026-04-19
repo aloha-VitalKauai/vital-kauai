@@ -461,13 +461,18 @@ export function IbogaJourneyPage() {
                 }
                 const year = new Date(c.start_at).getUTCFullYear();
                 const dateText = formatCohortRange(c.start_at, c.end_at).replace(`, ${year}`, "");
+                const titleIsGeneric = /^[A-Za-z]+\s+\d+.*Ceremony$/.test(c.title);
                 return (
                   <div key={c.id} style={{ background: isNext ? "#FFFFFF" : "#FAFAF8", padding: "26px 20px" }}>
                     <p style={{ fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: isNext ? "var(--gold, #C8A96E)" : "rgba(0,0,0,0.45)", marginBottom: 10 }}>
                       {isNext ? "Next Ceremony" : "Upcoming"}
                     </p>
-                    <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 300, color: "var(--ink, #1A1A18)", marginBottom: 4 }}>{dateText}</p>
-                    <p style={{ fontSize: 11, color: "rgba(0,0,0,0.55)", letterSpacing: "0.06em" }}>{year} · Hanalei, Kauaʻi</p>
+                    <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 300, color: "var(--ink, #1A1A18)", marginBottom: 4 }}>
+                      {titleIsGeneric ? dateText : c.title}
+                    </p>
+                    <p style={{ fontSize: 11, color: "rgba(0,0,0,0.55)", letterSpacing: "0.06em" }}>
+                      {titleIsGeneric ? `${year} · Hanalei, Kauaʻi` : `${dateText}, ${year} · Hanalei, Kauaʻi`}
+                    </p>
                     <p style={{ fontSize: 10, color: isNext ? "var(--gold, #C8A96E)" : "rgba(0,0,0,0.5)", marginTop: 12, letterSpacing: "0.05em" }}>
                       {isNext ? "Filling Now" : "Open"}
                     </p>
