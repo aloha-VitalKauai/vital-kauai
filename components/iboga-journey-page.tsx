@@ -144,6 +144,9 @@ export function IbogaJourneyPage() {
         <div className={styles.introGrid}>
           <div className={styles.introLead}>
             <p>&ldquo;The medicine shows you the door. We walk through it with you.&rdquo;</p>
+            <p style={{ marginTop: 12, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(245,240,232,0.45)", fontStyle: "normal" }}>
+              — Vital Kaua&#699;i
+            </p>
           </div>
           <div className={styles.introBody}>
             <p>
