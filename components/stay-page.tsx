@@ -1212,7 +1212,7 @@ const BODY_CONTENT = `
   <p style="font-size:10px;letter-spacing:0.45em;text-transform:uppercase;color:var(--terra-pale);margin-bottom:18px;">A Sacred Gathering</p>
   <p style="font-family:'Cormorant Garamond',serif;font-size:clamp(22px,3vw,36px);font-weight:300;font-style:italic;color:var(--cream);line-height:1.5;max-width:680px;margin:0 auto 10px;">There are those who feel the call before they understand it.</p>
   <p style="font-size:16px;color:rgba(245,240,232,0.7);letter-spacing:0.08em;margin-bottom:36px;">Next Group Ceremony · September 6 – 13, 2026 · Hanalei, Kauaʻi</p>
-  <a href="/begin-your-journey" target="_blank" style="display:inline-block;font-size:10px;font-weight:400;letter-spacing:0.3em;text-transform:uppercase;color:var(--forest);background:var(--gold);padding:18px 44px;text-decoration:none;transition:background 0.3s;">Join Our Next Group Ceremony</a>
+  <a href="/begin-your-journey" target="_blank" style="display:inline-block;font-size:10px;font-weight:400;letter-spacing:0.3em;text-transform:uppercase;color:var(--forest);background:var(--gold);padding:18px 44px;text-decoration:none;transition:background 0.3s;">Book a Discovery Call to Join Our Next Group Ceremony</a>
   <div style="margin-top:48px;padding-top:40px;border-top:1px solid rgba(200,169,110,0.1);max-width:820px;margin-left:auto;margin-right:auto;">
     <p style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:rgba(245,240,232,0.75);line-height:1.9;">We come together as a church — a small circle, deep transformation, a sacred plant, and this land. People arrive carrying something. They leave lighter. That is the work. You are welcome here.</p>
   </div>
@@ -1594,7 +1594,7 @@ const BODY_CONTENT = `
         <p style="font-size:10px;color:rgba(245,240,232,0.2);margin-top:12px;">Dates Coming</p>
       </div>
     </div>
-    <a href="/begin-your-journey" target="_blank" style="display:inline-block;font-size:10px;font-weight:400;letter-spacing:0.3em;text-transform:uppercase;color:var(--forest);background:var(--gold);padding:18px 44px;text-decoration:none;">Join Our Next Group Ceremony</a>
+    <a href="/begin-your-journey" target="_blank" style="display:inline-block;font-size:10px;font-weight:400;letter-spacing:0.3em;text-transform:uppercase;color:var(--forest);background:var(--gold);padding:18px 44px;text-decoration:none;">Book a Discovery Call to Join Our Next Group Ceremony</a>
   </div>
 </section>
 

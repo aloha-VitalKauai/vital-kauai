@@ -660,7 +660,7 @@ export function HomePage() {
             })()}
           </div>
           <a href="/begin-your-journey" target="_blank" rel="noopener noreferrer" className={styles.ceremonyBtn}>
-            Join Our Next Group Ceremony
+            Book a Discovery Call to Join Our Next Group Ceremony
           </a>
         </div>
       </section>
