@@ -42,12 +42,26 @@ export default function SchedulingRequestForm({ onSubmitted }: Props) {
     return () => { cancelled = true }
   }, [])
 
+  const pickedCohort = preferred && preferred !== PRIVATE
+    ? cohorts.find(c => c.id === preferred) ?? null
+    : null
+  const needsDateRange = !pickedCohort  // flexible or private ceremony
+
   function handleSubmit() {
-    if (!earliest || !latest) { setErr('Please fill in both date fields.'); return }
-    if (latest < earliest) { setErr('Latest date must be after earliest.'); return }
+    let earliestToSend = earliest
+    let latestToSend = latest
+
+    if (pickedCohort) {
+      // Use the cohort's own date range; don't require form inputs.
+      earliestToSend = new Date(pickedCohort.start_at).toISOString().slice(0, 10)
+      latestToSend = new Date(pickedCohort.end_at ?? pickedCohort.start_at).toISOString().slice(0, 10)
+    } else {
+      if (!earliest || !latest) { setErr('Please share your available date range.'); return }
+      if (latest < earliest) { setErr('Latest date must be after earliest.'); return }
+    }
     setErr('')
 
-    const preferredCohortId = preferred && preferred !== PRIVATE ? preferred : null
+    const preferredCohortId = pickedCohort ? pickedCohort.id : null
     const noteParts: string[] = []
     if (preferred === PRIVATE) noteParts.push('Requesting a private ceremony (custom date).')
     if (notes.trim()) noteParts.push(notes.trim())
@@ -55,8 +69,8 @@ export default function SchedulingRequestForm({ onSubmitted }: Props) {
 
     startTransition(async () => {
       const result = await submitSchedulingRequest({
-        earliestDate:      earliest,
-        latestDate:        latest,
+        earliestDate:      earliestToSend,
+        latestDate:        latestToSend,
         excludedRanges:    [],
         notes:             combinedNotes,
         preferredCohortId,
@@ -157,7 +171,8 @@ export default function SchedulingRequestForm({ onSubmitted }: Props) {
         </select>
       </div>
 
-      {/* Date grid */}
+      {/* Date grid — only when no specific cohort is chosen */}
+      {needsDateRange && (
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
         <div>
           <label style={lbl}>Earliest available</label>
@@ -180,6 +195,7 @@ export default function SchedulingRequestForm({ onSubmitted }: Props) {
           />
         </div>
       </div>
+      )}
 
       {/* Notes */}
       <div style={{ marginBottom: 12 }}>
