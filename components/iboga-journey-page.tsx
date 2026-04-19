@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { fetchPublicCohorts, formatCohortRange, type PublicCohort } from "@/lib/cohorts";
+import { fetchPublicCohorts, formatCohortRange, spotsLeftLabel, type PublicCohort } from "@/lib/cohorts";
 import styles from "./iboga-journey-page.module.css";
 
 export function IbogaJourneyPage() {
@@ -462,6 +462,8 @@ export function IbogaJourneyPage() {
                 const year = new Date(c.start_at).getUTCFullYear();
                 const dateText = formatCohortRange(c.start_at, c.end_at).replace(`, ${year}`, "");
                 const titleIsGeneric = /^[A-Za-z]+\s+\d+.*Ceremony$/.test(c.title);
+                const spots = spotsLeftLabel(c);
+                const statusText = spots ?? (isNext ? "Filling Now" : "Open");
                 return (
                   <div key={c.id} style={{ background: isNext ? "#FFFFFF" : "#FAFAF8", padding: "26px 20px" }}>
                     <p style={{ fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: isNext ? "var(--gold, #C8A96E)" : "rgba(0,0,0,0.45)", marginBottom: 10 }}>
@@ -473,8 +475,8 @@ export function IbogaJourneyPage() {
                     <p style={{ fontSize: 11, color: "rgba(0,0,0,0.55)", letterSpacing: "0.06em" }}>
                       {titleIsGeneric ? `${year} · Hanalei, Kauaʻi` : `${dateText}, ${year} · Hanalei, Kauaʻi`}
                     </p>
-                    <p style={{ fontSize: 10, color: isNext ? "var(--gold, #C8A96E)" : "rgba(0,0,0,0.5)", marginTop: 12, letterSpacing: "0.05em" }}>
-                      {isNext ? "Filling Now" : "Open"}
+                    <p style={{ fontSize: 10, color: isNext || spots ? "var(--gold, #C8A96E)" : "rgba(0,0,0,0.5)", marginTop: 12, letterSpacing: "0.05em" }}>
+                      {statusText}
                     </p>
                   </div>
                 );

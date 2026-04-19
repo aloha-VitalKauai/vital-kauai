@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { fetchPublicCohorts, formatCohortRange } from "@/lib/cohorts";
+import { fetchPublicCohorts, formatCohortRange, spotsLeftLabel } from "@/lib/cohorts";
 
 export function StayPage() {
   useEffect(() => {
@@ -32,11 +32,14 @@ export function StayPage() {
         const subLine = titleIsGeneric
           ? `${year} · Hanalei, Kauaʻi`
           : `${dateText}, ${year} · Hanalei, Kauaʻi`;
+        const spots = spotsLeftLabel(c);
+        const statusText = spots ?? (isNext ? "Filling Now" : "Open");
+        const statusColor = isNext || spots ? "var(--terra-light)" : "rgba(245,240,232,0.55)";
         el.innerHTML = [
           `<p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:${isNext ? "var(--terra)" : "rgba(200,169,110,0.7)"};margin-bottom:10px;">${isNext ? "Next Ceremony" : "Upcoming"}</p>`,
           `<p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--cream);margin-bottom:4px;">${mainLine}</p>`,
           `<p style="font-size:11px;color:rgba(245,240,232,0.4);letter-spacing:0.08em;">${subLine}</p>`,
-          `<p style="font-size:10px;color:${isNext ? "var(--terra-light)" : "rgba(245,240,232,0.55)"};margin-top:12px;letter-spacing:0.05em;">${isNext ? "Filling Now" : "Open"}</p>`,
+          `<p style="font-size:10px;color:${statusColor};margin-top:12px;letter-spacing:0.05em;">${statusText}</p>`,
         ].join("");
         el.style.background = isNext ? "rgba(28,43,30,0.8)" : "rgba(28,43,30,0.65)";
       }

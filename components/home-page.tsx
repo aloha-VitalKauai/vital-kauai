@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { fetchPublicCohorts, formatCohortRange, type PublicCohort } from "@/lib/cohorts";
+import { fetchPublicCohorts, formatCohortRange, spotsLeftLabel, type PublicCohort } from "@/lib/cohorts";
 import styles from "./home-page.module.css";
 
 const testimonialQuote = "If anyone is considering going here, do it. As an expert in the fields of healing and spirituality, traveling the world experiencing the best modalities for the past 18 years, this is by far one of the most profound and effective experiences that you can\u2019t find anywhere else. I can\u2019t imagine such a positive future for myself if I hadn\u2019t gone here first. Eternally grateful.";
@@ -637,6 +637,8 @@ export function HomePage() {
                 const year = new Date(c.start_at).getUTCFullYear();
                 const dateText = formatCohortRange(c.start_at, c.end_at).replace(`, ${year}`, "");
                 const titleIsGeneric = /^[A-Za-z]+\s+\d+.*Ceremony$/.test(c.title);
+                const spots = spotsLeftLabel(c);
+                const statusText = spots ?? (isNext ? "Filling Now" : "Open");
                 return (
                   <div key={c.id} className={isNext ? styles.ceremonyCardActive : styles.ceremonyCard}>
                     <p className={styles.ceremonyLabel} style={isNext ? { color: "var(--terra)" } : undefined}>
@@ -648,9 +650,9 @@ export function HomePage() {
                     </p>
                     <p
                       className={isNext ? styles.ceremonyStatus : styles.ceremonyStatusMuted}
-                      style={isNext ? { color: "var(--terra-light)" } : undefined}
+                      style={isNext || spots ? { color: "var(--terra-light)" } : undefined}
                     >
-                      {isNext ? "Filling Now" : "Open"}
+                      {statusText}
                     </p>
                   </div>
                 );
