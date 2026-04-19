@@ -228,8 +228,8 @@ export async function POST(req: NextRequest) {
     lead = data
     leadError = error
   } else if (existingLead) {
-    // Existing pending lead — update booking info, keep existing token
-    console.log(`[webhook] STEP:upsert — existing pending lead, preserving token`)
+    // Existing pending lead — update booking info, keep existing token (or backfill if missing)
+    console.log(`[webhook] STEP:upsert — existing pending lead, token ${existingLead.approval_token ? 'preserved' : 'backfilled'}`)
     const { data, error } = await supabase
       .from('leads')
       .update({
@@ -239,7 +239,8 @@ export async function POST(req: NextRequest) {
         discovery_call_date: startTime ? startTime.split('T')[0] : null,
         calendly_event_id: calendlyEventId,
         calendly_booked_at: new Date().toISOString(),
-        // Keep existing approval_token — do NOT overwrite
+        // Backfill token if the existing lead was created without one (e.g. via client-side form)
+        approval_token: approvalToken,
       })
       .eq('email', email)
       .select()

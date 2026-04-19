@@ -118,6 +118,9 @@ async function handleApproval(token: string, source: string) {
   }
 
   // === STEP 5: Mark lead approved (member_id FK now valid because members row exists) ===
+  // If this fails we MUST stop — continuing leaves the lead stuck in "pending"
+  // even though the auth user + members row exist, and the user would still see
+  // a success page while the dashboard shows them as un-approved.
   const { error: leadErr } = await db().from('leads').update({
     approval_status:     'approved',
     approval_decided_at: new Date().toISOString(),
@@ -126,8 +129,11 @@ async function handleApproval(token: string, source: string) {
     member_id:           userId,
     invite_sent_at:      new Date().toISOString(),
   }).eq('approval_token', token)
-  if (leadErr) console.error('[approve-member] STEP:lead — FAILED:', JSON.stringify(leadErr))
-  else console.log(`[approve-member] STEP:lead — marked approved`)
+  if (leadErr) {
+    console.error('[approve-member] STEP:lead — FAILED:', JSON.stringify(leadErr))
+    return respond(source, false, `Failed to mark lead approved: ${leadErr.message}`)
+  }
+  console.log(`[approve-member] STEP:lead — marked approved`)
 
   // === STEP 6: Log timeline event ===
   const { error: timelineErr } = await db().from('member_timelines').insert({

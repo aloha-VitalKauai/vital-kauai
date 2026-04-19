@@ -77,13 +77,15 @@ export async function GET(req: NextRequest) {
           // Check if lead already exists
           const { data: existing } = await supabase
             .from('leads')
-            .select('id, approval_status')
+            .select('id, approval_status, approval_token')
             .eq('email', email)
             .single()
 
           if (existing) {
             // Lead exists — update booking info if it's still pending
             if (existing.approval_status === 'pending') {
+              // Backfill approval_token if missing (e.g. lead created via client-side form without token)
+              const backfillToken = (existing as any).approval_token || randomBytes(32).toString('hex')
               await supabase
                 .from('leads')
                 .update({
@@ -91,6 +93,7 @@ export async function GET(req: NextRequest) {
                   discovery_call_date: event.start_time ? event.start_time.split('T')[0] : null,
                   calendly_event_id: eventId,
                   calendly_booked_at: new Date().toISOString(),
+                  approval_token: backfillToken,
                 })
                 .eq('id', existing.id)
             }
