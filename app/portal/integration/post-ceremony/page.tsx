@@ -219,10 +219,10 @@ const WEEKS = [
     actions: [
       {
         color: 'gold',
-        text: 'Suggested call with your integration guide',
+        text: 'Call with your integration guide',
         note: 'This is the most important call of the integration arc. Bring the return of the familiar. Bring what is still unresolved. Your guide is trained to work with exactly this territory. Book via the Integration Specialist section on your Dashboard.',
         links: [
-          { text: 'Suggested call with your integration guide', href: '/portal#integration-specialist' },
+          { text: 'Call with your integration guide', href: '/portal#integration-specialist' },
         ],
       },
       { color: 'blue', text: 'Name one old pattern that has returned — write about it', note: 'To see it clearly. Naming with precision is itself a form of integration. Your guide can see your weekly tracking and will reach out if they notice something that needs support.' },
@@ -246,11 +246,19 @@ const WEEKS = [
       text: 'By the end of week four, the peak neuroplasticity driven by noribogaine begins to narrow. The extraordinary ease of new pattern formation that characterized weeks 1–3 is shifting toward normal — and what you have practiced is becoming structural. What you have yet to commit to in behavior will ask more of you after this week. Your practice days logged here are one of the strongest predictors of long-term outcomes. This week matters.',
     },
     video: { label: 'A Message from Rachel & Josh · Week 4', text: 'Kuleana is one of the most important Hawaiian concepts for understanding what integration actually requires. In this transmission Rachel and Josh talk about the difference between insight and accountability — and what it looks like to take full responsibility for the change you\'ve been shown is possible.' },
-    actionLabel: 'This week — 3 things',
+    actionLabel: 'This week — 4 things',
     actions: [
       { color: 'gold', text: 'Write your three non-negotiables for the next three months', note: 'Three things you are committing to — in your body, your relationships, your daily life — that reflect who you are becoming. Specific, liveable, honest.' },
       { color: 'blue', text: 'Share your non-negotiables with one person in your life', note: 'Accountability held by another person anchors differently than accountability held alone. Be specific about what you are asking them to hold with you.' },
       { color: 'sage', text: 'Audit one thing in your environment that actively works against your new self \u2014 and change it this week', note: 'Physical environment. Social environment. Digital environment. What in each is pulling you back toward who you were? Make one concrete change this week.' },
+      {
+        color: 'amber',
+        text: 'Call with your integration guide',
+        note: 'Bring your non-negotiables. Name the pattern you are auditing. This is the call that anchors Week 4 accountability into behavior.',
+        links: [
+          { text: 'Call with your integration guide', href: '/portal#integration-specialist' },
+        ],
+      },
     ],
     dataset: 'Your 1-month wellbeing assessment, taken as the noribogaine window closes, is among the most clinically significant data points in the entire dataset — predicting long-term integration outcomes more reliably than any other timepoint. Built on the standardized framework used in psychedelic outcomes research worldwide and adapted for iboga, your fully anonymized responses help establish what works, for whom, and over what arc. What you submit here matters beyond your own journey.',
     datasetLink: { text: 'Open your Outcomes →', href: '/portal/assessments' },
@@ -271,11 +279,19 @@ const WEEKS = [
       text: ' When one person does deep transformational work, the entire relational system around them reorganizes. This is a sign the change is real. The people closest to you have built their relationship with the previous version of you. Give them time. Hold your changes clearly without needing their immediate understanding or approval. The skill here is patience without self-abandonment — staying present to the relationship while remaining your changed self. Bring specific relationships to your guide this week.',
     },
     video: { label: 'A Message from Rachel & Josh · Week 5', text: 'The integration that happens in relationship is some of the most important integration of all. Rachel and Josh talk about what it looks like to bring a changed self back into existing relationships — how to hold new ground without disconnecting from the people you love, and how to let the medicine\'s work deepen through honest contact with others.' },
-    actionLabel: 'This week — 3 things',
+    actionLabel: 'This week — 4 things',
     actions: [
       { color: 'blue', text: 'Have one honest conversation you have been postponing', note: 'The medicine may have shown you something about a relationship that needs to be spoken. Come from the changed place. Bring what comes up to your next call with your guide.' },
       { color: 'sage', text: 'Practice being your changed self in the presence of people who knew you before', note: 'Notice when you contract back into who you were in someone\'s presence. That noticing is the practice. You can only keep showing up as the person you are becoming.' },
       { color: 'green', text: 'Practice Ho\'oponopono with anyone you are still carrying', note: 'I\'m sorry. Please forgive me. Thank you. I love you. The forgiveness work from ceremony continues here. It does not require the other person to be present or to know. This is an internal release.' },
+      {
+        color: 'amber',
+        text: 'Call with your integration guide',
+        note: 'Bring the relationships that are reorganizing around your change. Your guide can help you stay present to what is arising without abandoning yourself or the people you love.',
+        links: [
+          { text: 'Call with your integration guide', href: '/portal#integration-specialist' },
+        ],
+      },
     ],
     prompts: POST_CEREMONY_WEEKS[4].prompts,
     thread: 'The integration that holds in relationship is the integration that holds in life. What you are practicing this week — being your changed self in the presence of people who knew you before — is some of the most important work of the entire arc.',
@@ -327,7 +343,7 @@ const WEEKS = [
 ]
 
 const DOT: Record<string, string> = {
-  blue: '#4A7FA5', green: '#7A9E7E', gold: '#C8A96E', sage: '#7A9E7E',
+  blue: '#4A7FA5', green: '#7A9E7E', gold: '#C8A96E', sage: '#7A9E7E', amber: '#B8956A',
 }
 
 // ─── Weekly Check-in Modal ────────────────────────────────
