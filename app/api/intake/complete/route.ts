@@ -111,13 +111,20 @@ export async function POST(req: NextRequest) {
         profile.medical_disclaimer_signed &&
         !profile.onboarding_complete
       ) {
-        await supabase
+        const { error: completeErr } = await supabase
           .from("member_profiles")
           .update({
             onboarding_complete: true,
             onboarding_completed_at: nowIso,
           })
           .eq("id", user.id);
+        if (completeErr) {
+          console.error("[intake/complete] onboarding_complete flip failed:", completeErr.message);
+          return NextResponse.json(
+            { error: "Intake saved, but failed to finalize onboarding. Please contact support." },
+            { status: 500 },
+          );
+        }
       }
     }
 

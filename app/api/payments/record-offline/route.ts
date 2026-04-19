@@ -104,15 +104,29 @@ export async function POST(req: Request) {
   // If now fully paid, flip commitment status
   const newCollected = alreadyAllocated + toAllocate;
   if (newCollected >= commitment.expected_amount_cents) {
-    await service
+    const { error: statusErr } = await service
       .from("financial_commitments")
       .update({ status: "paid" })
       .eq("id", commitment_id);
+    if (statusErr) {
+      console.error("record-offline: commitment status=paid update failed", statusErr);
+      return NextResponse.json(
+        { error: "Donation recorded but commitment status update failed — reconcile manually", donation_id: donation.id },
+        { status: 500 },
+      );
+    }
   } else if (commitment.status === "draft" || commitment.status === "active") {
-    await service
+    const { error: statusErr } = await service
       .from("financial_commitments")
       .update({ status: "partially_paid" })
       .eq("id", commitment_id);
+    if (statusErr) {
+      console.error("record-offline: commitment status=partially_paid update failed", statusErr);
+      return NextResponse.json(
+        { error: "Donation recorded but commitment status update failed — reconcile manually", donation_id: donation.id },
+        { status: 500 },
+      );
+    }
   }
 
   return NextResponse.json({ ok: true, donation_id: donation.id });

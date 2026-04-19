@@ -73,10 +73,14 @@ export async function POST(req: NextRequest) {
       })
 
       if (notifRow) {
-        await supabase
+        const { error: logErr } = await supabase
           .from('notification_log')
           .update({ status: 'sent', sent_at: new Date().toISOString() })
           .eq('id', notifRow.id)
+        if (logErr) {
+          // Email sent successfully; log update failed. Surface warning but still return ok.
+          console.error('[resend-notification] log update to sent failed:', logErr.message)
+        }
       }
 
       return NextResponse.json({
@@ -85,10 +89,13 @@ export async function POST(req: NextRequest) {
       })
     } catch (emailErr: any) {
       if (notifRow) {
-        await supabase
+        const { error: logErr } = await supabase
           .from('notification_log')
           .update({ status: 'failed', failure_reason: emailErr.message })
           .eq('id', notifRow.id)
+        if (logErr) {
+          console.error('[resend-notification] log update to failed failed:', logErr.message)
+        }
       }
 
       return NextResponse.json(

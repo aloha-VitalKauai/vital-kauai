@@ -90,6 +90,8 @@ async function handleApproval(token: string, source: string) {
   }
 
   // === STEP 3: Create member_profiles row (onboarding checklist) ===
+  // Halt on failure: without a profile the user can't access the portal even though
+  // auth + members row exist, which leaves them stuck mid-flow.
   const { error: profileErr } = await db().from('member_profiles').upsert({
     id:                          userId,
     email:                       lead.email,
@@ -101,10 +103,14 @@ async function handleApproval(token: string, source: string) {
     deposit_paid:                false,
     onboarding_complete:         false,
   }, { onConflict: 'id' })
-  if (profileErr) console.error('[approve-member] STEP:profiles — FAILED:', JSON.stringify(profileErr))
-  else console.log(`[approve-member] STEP:profiles — OK`)
+  if (profileErr) {
+    console.error('[approve-member] STEP:profiles — FAILED:', JSON.stringify(profileErr))
+    return respond(source, false, `Failed to create member profile: ${profileErr.message}`)
+  }
+  console.log(`[approve-member] STEP:profiles — OK`)
 
   // === STEP 4: Assign member role (never overwrite founder) ===
+  // Halt on failure: without the 'member' role, RLS blocks all portal reads/writes.
   const { data: existingRole } = await db().from('user_roles').select('role').eq('user_id', userId).single()
   if (existingRole?.role === 'founder') {
     console.log(`[approve-member] STEP:role — skipping, already founder`)
@@ -113,8 +119,11 @@ async function handleApproval(token: string, source: string) {
       { user_id: userId, role: 'member' },
       { onConflict: 'user_id' }
     )
-    if (roleErr) console.error('[approve-member] STEP:role — FAILED:', JSON.stringify(roleErr))
-    else console.log(`[approve-member] STEP:role — assigned member`)
+    if (roleErr) {
+      console.error('[approve-member] STEP:role — FAILED:', JSON.stringify(roleErr))
+      return respond(source, false, `Failed to assign member role: ${roleErr.message}`)
+    }
+    console.log(`[approve-member] STEP:role — assigned member`)
   }
 
   // === STEP 5: Mark lead approved (member_id FK now valid because members row exists) ===
@@ -136,6 +145,9 @@ async function handleApproval(token: string, source: string) {
   console.log(`[approve-member] STEP:lead — marked approved`)
 
   // === STEP 6: Log timeline event ===
+  // Lead is already marked approved at this point, but we still surface timeline
+  // failures so ops notices audit gaps — the approval has committed, caller should
+  // investigate the audit trail rather than re-trying approval.
   const { error: timelineErr } = await db().from('member_timelines').insert({
     member_id:    userId,
     event_type:   'account_approved',
@@ -143,8 +155,11 @@ async function handleApproval(token: string, source: string) {
     event_detail: `Approved via ${source} \u2014 setup instructions sent`,
     is_system:    true,
   })
-  if (timelineErr) console.error('[approve-member] STEP:timeline — FAILED:', JSON.stringify(timelineErr))
-  else console.log(`[approve-member] STEP:timeline — logged`)
+  if (timelineErr) {
+    console.error('[approve-member] STEP:timeline — FAILED (lead already approved):', JSON.stringify(timelineErr))
+    return respond(source, false, `Approval committed but timeline log failed: ${timelineErr.message}. Check audit trail manually.`)
+  }
+  console.log(`[approve-member] STEP:timeline — logged`)
 
   // Generate one-time setup link -> /setup-account
   // This is NOT an ongoing magic link.
