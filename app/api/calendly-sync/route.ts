@@ -86,7 +86,7 @@ export async function GET(req: NextRequest) {
             if (existing.approval_status === 'pending') {
               // Backfill approval_token if missing (e.g. lead created via client-side form without token)
               const backfillToken = (existing as any).approval_token || randomBytes(32).toString('hex')
-              await supabase
+              const { error: backfillErr } = await supabase
                 .from('leads')
                 .update({
                   discovery_call_booked: true,
@@ -96,6 +96,11 @@ export async function GET(req: NextRequest) {
                   approval_token: backfillToken,
                 })
                 .eq('id', existing.id)
+              if (backfillErr) {
+                console.error(`[calendly-sync] Backfill update failed for ${email}:`, backfillErr.message)
+                errors++
+                continue
+              }
             }
             skipped++
             continue
@@ -137,8 +142,8 @@ export async function GET(req: NextRequest) {
               approvalToken,
             })
 
-            // Log the notification
-            await supabase.from('notification_log').insert({
+            // Log the notification (audit trail only — don't fail the sync if it doesn't stick)
+            const { error: logErr } = await supabase.from('notification_log').insert({
               lead_id: lead.id,
               notification_type: 'founder_approval',
               recipient: ['joshuaperdue2@gmail.com', 'aloha@vitalkauai.com'],
@@ -146,11 +151,14 @@ export async function GET(req: NextRequest) {
               sent_at: new Date().toISOString(),
               payload: { trigger: 'calendly_sync_backfill' },
             })
+            if (logErr) {
+              console.error(`[calendly-sync] notification_log insert (sent) failed for ${email}:`, logErr.message)
+            }
 
             console.log(`[calendly-sync] Founder notification sent for ${invitee.name}`)
           } catch (emailErr: any) {
             console.error(`[calendly-sync] Email failed for ${email}:`, emailErr.message)
-            await supabase.from('notification_log').insert({
+            const { error: logErr } = await supabase.from('notification_log').insert({
               lead_id: lead.id,
               notification_type: 'founder_approval',
               recipient: ['joshuaperdue2@gmail.com', 'aloha@vitalkauai.com'],
@@ -158,6 +166,9 @@ export async function GET(req: NextRequest) {
               failure_reason: emailErr.message,
               payload: { trigger: 'calendly_sync_backfill' },
             })
+            if (logErr) {
+              console.error(`[calendly-sync] notification_log insert (failed) failed for ${email}:`, logErr.message)
+            }
           }
 
           synced++
