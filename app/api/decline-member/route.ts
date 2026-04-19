@@ -43,12 +43,18 @@ async function handleDecline(token: string, source: string, reason: string | nul
     return NextResponse.json({ ok: true, alreadyDeclined: true })
   }
 
-  await getSupabase().from('leads').update({
+  const { error: updateErr } = await getSupabase().from('leads').update({
     approval_status:     'declined',
     approval_decided_at: new Date().toISOString(),
     approval_decided_by: source,
     decline_reason:      reason || null,
   }).eq('approval_token', token)
+
+  if (updateErr) {
+    console.error('[decline-member] Failed to mark lead declined:', JSON.stringify(updateErr))
+    if (source === 'email_button') return htmlResponse(errorPage(`Failed to decline: ${updateErr.message}`), 500)
+    return NextResponse.json({ error: `Failed to decline: ${updateErr.message}` }, { status: 500 })
+  }
 
   if (source === 'email_button') return htmlResponse(declinedPage(lead.full_name), 200)
   return NextResponse.json({ ok: true })

@@ -162,10 +162,12 @@ export async function rescheduleJourney(
   }
 
   // Cancel old, create new — history preserved
-  await supabase
+  const { error: cancelErr } = await supabase
     .from('journeys')
     .update({ status: 'canceled', canceled_at: new Date().toISOString() })
     .eq('id', journeyId)
+
+  if (cancelErr) return { ok: false, error: `Failed to cancel old journey: ${cancelErr.message}` }
 
   const result = await createJourney({
     memberId:     summary.member_id,
@@ -259,11 +261,13 @@ export async function submitSchedulingRequest(
     .limit(1).maybeSingle()
 
   // Expire any existing pending requests from this member
-  await supabase
+  const { error: expireErr } = await supabase
     .from('scheduling_requests')
     .update({ status: 'expired' })
     .eq('member_id', user.id)
     .eq('status', 'pending')
+
+  if (expireErr) return { ok: false, error: `Failed to expire prior requests: ${expireErr.message}` }
 
   // Insert new request
   const { data, error } = await supabase
