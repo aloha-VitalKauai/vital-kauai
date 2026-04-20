@@ -30,18 +30,25 @@ export function HealingCirclePage() {
   const revealRefs = useRef<HTMLElement[]>([]);
 
   const visibleMembers = useMemo(
-    () =>
-      members.filter((member) => {
-        if (member.cat === "hidden") {
-          return false;
-        }
-
-        if (activeFilter === "all") {
-          return true;
-        }
-
+    () => {
+      const filtered = members.filter((member) => {
+        if (member.cat === "hidden") return false;
+        if (activeFilter === "all") return true;
         return member.cat === activeFilter;
-      }),
+      });
+      // On the All tab, dedupe by name so people with multiple roles
+      // (e.g. Rachel: founder + integration guide + healer) appear once.
+      // The data is ordered so the primary/founder role comes first, which
+      // is the one we keep.
+      if (activeFilter !== "all") return filtered;
+      const seen = new Set<string>();
+      return filtered.filter((member) => {
+        const key = member.name.trim().toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    },
     [activeFilter],
   );
 
