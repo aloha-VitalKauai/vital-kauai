@@ -58,7 +58,7 @@ export const members: Member[] = [
   {
     id: "liz",
     name: "Dr. Liz Esalen",
-    role: "Psychedelic Integration Psychologist",
+    role: "Director of On-Island Integration",
     cat: "somatic",
     photo: "/images/lizesalen.jpeg",
     shortBio:

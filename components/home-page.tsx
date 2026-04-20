@@ -20,7 +20,7 @@ const teamMembers = [
   },
   {
     name: "Dr. Liz Esalen",
-    role: "Shamanic Practitioner · Healer · Integration Guide",
+    role: "Director of On-Island Integration",
     bio: "A Doctor of Clinical Psychology and lineage-initiated shamanic energy medicine practitioner, Dr. Liz bridges the depth of evidence-based psychology with the precision of shamanic wisdom and embodied healing. Founder of Luminous Healing Center and The Lotus Collaborative, she brings over 25 years of transformational care — illuminating unconscious patterns, supporting psychedelic integration, and guiding members into authentic wholeness at the intersection of mind, body, and spirit.",
     image: "/images/lizesalen.jpeg",
   },
