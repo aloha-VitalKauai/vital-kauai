@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import GuideAssignCell from "./GuideAssignCell";
 
 export const metadata = { title: "Integration — Vital Kauaʻi" };
 
@@ -11,12 +12,15 @@ function fmtDate(d: string | null | undefined) {
 export default async function IntegrationPage() {
   const supabase = await createClient();
 
-  const [{ data: members }, { data: profiles }, { data: preProgress }, { data: postProgress }] = await Promise.all([
+  const [{ data: members }, { data: profiles }, { data: preProgress }, { data: postProgress }, { data: specialists }] = await Promise.all([
     supabase.from("members").select("id, full_name, email, status, ceremony_date, assigned_partner").order("created_at", { ascending: false }),
     supabase.from("member_profiles").select("id, email"),
     supabase.from("pre_ceremony_progress").select("member_id, weeks_completed, checklist_items, journal_responses, last_updated"),
     supabase.from("post_ceremony_progress").select("member_id, weeks_completed, checklist_items, weekly_tracking, journal_responses, last_updated"),
+    supabase.from("integration_specialists").select("id, name").eq("active", true).order("sort_order", { ascending: true }).order("name", { ascending: true }),
   ]);
+
+  const specialistList = (specialists ?? []) as { id: string; name: string }[];
 
   const emailToAuthId: Record<string, string> = {};
   for (const p of profiles ?? []) if (p.email) emailToAuthId[p.email] = p.id;
@@ -59,7 +63,12 @@ export default async function IntegrationPage() {
   return (
     <div style={{ fontFamily: "var(--font-body, sans-serif)" }}>
       <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.07em", color: "#9E9E9A", marginBottom: 3 }}>Member journey tracking</p>
-      <h1 style={{ fontFamily: "var(--font-display, serif)", fontSize: 26, fontWeight: 400, letterSpacing: "-0.02em", color: "#1A1A18", marginBottom: "1.5rem" }}>Integration</h1>
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: "1.5rem", gap: 12, flexWrap: "wrap" }}>
+        <h1 style={{ fontFamily: "var(--font-display, serif)", fontSize: 26, fontWeight: 400, letterSpacing: "-0.02em", color: "#1A1A18", margin: 0 }}>Integration</h1>
+        <Link href="/dashboard/integration/specialists" style={{ fontSize: 12, color: "#6B6B67", textDecoration: "none", borderBottom: "0.5px solid #C8C8C4", paddingBottom: 1 }}>
+          Manage specialists →
+        </Link>
+      </div>
 
       {/* KPI Cards */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(5, minmax(0, 1fr))", gap: 10, marginBottom: "1.25rem" }}>
@@ -104,7 +113,9 @@ export default async function IntegrationPage() {
                       <div style={{ fontSize: 11, color: "#9E9E9A", marginTop: 1 }}>{r.email}</div>
                     </Link>
                   </td>
-                  <td style={{ ...TD, color: r.assigned_partner ? "#1A1A18" : "#9E9E9A" }}>{r.assigned_partner ?? "—"}</td>
+                  <td style={TD}>
+                    <GuideAssignCell memberId={r.id} current={r.assigned_partner} specialists={specialistList} />
+                  </td>
                   <td style={TD}>
                     <span style={{ fontSize: 11, color: "#6B6B67" }}>{r.status ?? "—"}</span>
                   </td>

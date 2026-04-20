@@ -43,6 +43,14 @@ type MemberData = {
   assigned_partner: string | null;
 };
 
+type Specialist = {
+  id: string;
+  name: string;
+  photo_url: string | null;
+  bio: string | null;
+  calendly_url: string | null;
+};
+
 const MEMBERSHIP_AGREEMENT = [
   {
     h: "Membership Overview",
@@ -122,6 +130,7 @@ export function PortalHomePage({
   const supabase = createClient();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [memberData, setMemberData] = useState<MemberData | null>(null);
+  const [specialist, setSpecialist] = useState<Specialist | null>(null);
   const [activePhase, setActivePhase] = useState(0);
   const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
   const [loading, setLoading] = useState(true);
@@ -164,6 +173,20 @@ export function PortalHomePage({
     if (mData) {
       setMemberData(mData as MemberData);
       setMemberId(mData.id);
+
+      // Resolve assigned specialist by name (case-insensitive).
+      if (mData.assigned_partner) {
+        const { data: sData } = await supabase
+          .from("integration_specialists")
+          .select("id, name, photo_url, bio, calendly_url")
+          .ilike("name", mData.assigned_partner.trim())
+          .eq("active", true)
+          .maybeSingle();
+        if (sData) setSpecialist(sData as Specialist);
+        else setSpecialist(null);
+      } else {
+        setSpecialist(null);
+      }
       // Fetch lab document for this member (single upload)
       const { data: labs } = await supabase
         .from("lab_documents")
@@ -989,7 +1012,9 @@ export function PortalHomePage({
             </div>
             <div id="integration-specialist" className={styles.teamCard}>
               {(() => {
-                const guidePhoto = findIntegrationGuidePhoto(memberData?.assigned_partner);
+                const guidePhoto =
+                  specialist?.photo_url ||
+                  findIntegrationGuidePhoto(memberData?.assigned_partner);
                 return guidePhoto ? (
                   <Image
                     src={guidePhoto}
@@ -1006,19 +1031,30 @@ export function PortalHomePage({
               <p className={styles.teamName}>
                 {memberData?.assigned_partner || "Your Integration Guide"}
               </p>
-              <p className={styles.teamBio}>
-                Your integration specialist walks with you as guide, facilitator, coach, and
-                teammate &mdash; meeting you in preparation, within the 48 hours after ceremony,
-                and ongoing as you return home and carry the work forward.
-              </p>
+              {specialist?.bio ? (
+                <p className={styles.teamBio}>{specialist.bio}</p>
+              ) : (
+                <p className={styles.teamBio}>
+                  Your integration specialist walks with you as guide, facilitator, coach, and
+                  teammate &mdash; meeting you in preparation, within the 48 hours after ceremony,
+                  and ongoing as you return home and carry the work forward.
+                </p>
+              )}
               <p className={styles.teamBio}>
                 The arc of your journey includes six sessions with your integration guide, used
                 on your timing &mdash; we suggest weaving some before and some after ceremony,
                 and the rhythm is yours to choose.
               </p>
-              <a href="#" className={styles.teamCta}>
-                Book a Session
-              </a>
+              {specialist?.calendly_url ? (
+                <a
+                  href={`${specialist.calendly_url}?name=${encodeURIComponent(profile?.full_name ?? "")}&email=${encodeURIComponent(profile?.email ?? userEmail ?? "")}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={styles.teamCta}
+                >
+                  Book a Session
+                </a>
+              ) : null}
             </div>
           </div>
         </div>
