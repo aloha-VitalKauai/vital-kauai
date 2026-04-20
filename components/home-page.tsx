@@ -441,6 +441,9 @@ export function HomePage() {
                 millennia. The difference is the difference between a symphony and a single
                 note.&quot;
               </p>
+              <p style={{ marginTop: 16, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(245,240,232,0.45)", fontStyle: "normal" }}>
+                — Vital Kaua&#699;i
+              </p>
             </div>
             <div className={styles.medicinePills}>
               {["Whole-Plant Protocol", "Titrated Dosing", "Ancient Lineage", "Integration Support"].map(
