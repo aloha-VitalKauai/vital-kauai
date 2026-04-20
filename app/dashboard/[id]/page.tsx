@@ -128,6 +128,15 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
     }
   }
 
+  // Active integration specialists for the Assigned Partner dropdown.
+  const { data: specialistRows } = await supabase
+    .from("integration_specialists")
+    .select("name")
+    .eq("active", true)
+    .order("sort_order", { ascending: true })
+    .order("name", { ascending: true });
+  const specialists = (specialistRows ?? []).map((s) => s.name);
+
   return (
     <MemberProfileEditor
       member={member}
@@ -145,6 +154,7 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       donations={(memberDonationsData ?? []) as Array<{ id: string; amount_cents: number; completed_at: string | null; kind: string; metadata: Record<string, unknown> | null }>}
       journeyTitle={journeyTitle}
       journeyEndAt={journeyEndAt}
+      specialists={specialists}
     />
   );
 }

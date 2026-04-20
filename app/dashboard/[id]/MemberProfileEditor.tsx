@@ -4,19 +4,9 @@ import { useState, useTransition } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import MemberFinancialSection from "./MemberFinancialSection";
-import { members as HEALING_CIRCLE_MEMBERS } from "@/components/healing-circle-data";
-
-/* Integration-guide options for the Assigned Partner dropdown.
-   Pulled from the healing-circle integration-guide section ('somatic'
-   category), de-duplicated by name. */
-const ASSIGNED_PARTNER_OPTIONS: string[] = Array.from(
-  new Set(
-    HEALING_CIRCLE_MEMBERS
-      .filter((m) => m.cat === "somatic")
-      .map((m) => m.name.trim())
-      .filter(Boolean),
-  ),
-).sort();
+/* Integration Specialist options come from the integration_specialists
+   table via the `specialists` prop. Same source as /dashboard/integration
+   and the portal card — one source of truth. */
 
 /* ── Status colours (same as dashboard) ────────────────────────── */
 const STATUS_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
@@ -124,6 +114,7 @@ export default function MemberProfileEditor({
   donations = [],
   journeyTitle = null,
   journeyEndAt = null,
+  specialists = [],
 }: {
   member: Member;
   profile: Profile;
@@ -140,6 +131,7 @@ export default function MemberProfileEditor({
   donations?: DonationRow[];
   journeyTitle?: string | null;
   journeyEndAt?: string | null;
+  specialists?: string[];
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -153,7 +145,6 @@ export default function MemberProfileEditor({
   const [costOfService, setCostOfService] = useState(member.cost_of_service?.toString() ?? "");
   const [arrivalDate, setArrivalDate] = useState(member.arrival_date ?? "");
   const [journeyFocus, setJourneyFocus] = useState(member.journey_focus ?? "");
-  const [integrationGuide, setIntegrationGuide] = useState(member.integration_guide ?? "");
   const [notes, setNotes] = useState(member.notes ?? "");
   const [medicalCleared, setMedicalCleared] = useState(member.medical_cleared ?? false);
   const [portalUnlocked, setPortalUnlocked] = useState(member.portal_unlocked ?? false);
@@ -175,7 +166,6 @@ export default function MemberProfileEditor({
         cost_of_service: costOfService ? Number(costOfService) : null,
         arrival_date: arrivalDate || null,
         journey_focus: journeyFocus || null,
-        integration_guide: integrationGuide || null,
         notes: notes || null,
         medical_cleared: medicalCleared,
         portal_unlocked: portalUnlocked,
@@ -328,7 +318,7 @@ export default function MemberProfileEditor({
                 <select
                   style={INPUT}
                   value={
-                    assignedPartner && !ASSIGNED_PARTNER_OPTIONS.includes(assignedPartner)
+                    assignedPartner && !specialists.includes(assignedPartner)
                       ? "__custom__"
                       : assignedPartner
                   }
@@ -339,10 +329,10 @@ export default function MemberProfileEditor({
                   }}
                 >
                   <option value="">— Unassigned —</option>
-                  {ASSIGNED_PARTNER_OPTIONS.map((name) => (
+                  {specialists.map((name) => (
                     <option key={name} value={name}>{name}</option>
                   ))}
-                  {assignedPartner && !ASSIGNED_PARTNER_OPTIONS.includes(assignedPartner) && (
+                  {assignedPartner && !specialists.includes(assignedPartner) && (
                     <option value="__custom__">{assignedPartner} (legacy)</option>
                   )}
                 </select>
@@ -398,15 +388,6 @@ export default function MemberProfileEditor({
                   type="date"
                   value={arrivalDate}
                   onChange={(e) => setArrivalDate(e.target.value)}
-                />
-              </div>
-              <div>
-                <label style={LABEL}>Integration guide</label>
-                <input
-                  style={INPUT}
-                  value={integrationGuide}
-                  onChange={(e) => setIntegrationGuide(e.target.value)}
-                  placeholder="Guide name"
                 />
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 6 }}>
