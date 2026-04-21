@@ -147,8 +147,8 @@ export default function DonateClient({
       selectedPreset === "custom"
         ? Math.round(parseFloat(giftCustom) * 100)
         : selectedPreset;
-    if (!amount || !Number.isFinite(amount) || amount < 100 || amount > 1_000_000) {
-      setGiftError("Please enter a valid amount ($1–$10,000).");
+    if (!amount || !Number.isFinite(amount) || amount < 100 || amount > 2_500_000) {
+      setGiftError("Please enter a valid amount ($1–$25,000).");
       return;
     }
     setGiftLoading(true);
@@ -188,7 +188,7 @@ export default function DonateClient({
     giftAmount &&
       Number.isFinite(giftAmount) &&
       giftAmount >= 100 &&
-      giftAmount <= 1_000_000,
+      giftAmount <= 2_500_000,
   );
 
   return (
@@ -210,7 +210,17 @@ export default function DonateClient({
       <div style={containerStyle}>
 
         {/* ── Header ── */}
-        {state === "no-commitment" && (
+        {state === "no-commitment" && expected > 0 && (
+          <header style={headerStyle}>
+            <h1 style={h1Style}>Your Love Exchange.</h1>
+            <p style={subtitleStyle}>
+              Here is what remains for your upcoming journey. A secure payment
+              link will appear here once your journey is scheduled.
+            </p>
+          </header>
+        )}
+
+        {state === "no-commitment" && expected === 0 && (
           <header style={headerStyle}>
             <h1 style={h1Style}>Thank you for being with us.</h1>
             <p style={subtitleStyle}>
@@ -233,7 +243,9 @@ export default function DonateClient({
         )}
 
         {/* ── Stat cards ── */}
-        {(state === "pay-toward-pledge" || state === "complete") && (
+        {(state === "pay-toward-pledge" ||
+          state === "complete" ||
+          (state === "no-commitment" && expected > 0)) && (
           <div style={statGridStyle}>
             <StatCard label="Pledged" value={fmt(expected)} />
             <StatCard
@@ -250,7 +262,9 @@ export default function DonateClient({
         )}
 
         {/* ── Progress bar ── */}
-        {(state === "pay-toward-pledge" || state === "complete") && (
+        {(state === "pay-toward-pledge" ||
+          state === "complete" ||
+          (state === "no-commitment" && expected > 0)) && (
           <div style={trackStyle}>
             <div
               style={{
@@ -401,7 +415,7 @@ export default function DonateClient({
                   onChange={(e) => setGiftCustom(e.target.value)}
                   style={inputStyle}
                 />
-                <p style={hintStyle}>Min $1&ensp;·&ensp;Max $10,000</p>
+                <p style={hintStyle}>Min $1&ensp;·&ensp;Max $25,000</p>
               </div>
             )}
 

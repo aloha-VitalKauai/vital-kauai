@@ -161,6 +161,76 @@ async function handleApproval(token: string, source: string) {
   }
   console.log(`[approve-member] STEP:timeline — logged`)
 
+  // === STEP 7: Seed journey + draft commitment (non-blocking) ===
+  // Gives the founder something to attach a program_price to immediately after
+  // approval — saving program_price in the member editor updates this draft
+  // commitment's expected_amount_cents via /api/payments/sync-program-price,
+  // which then flows to the member's Love Exchange page as "Pledged / Remaining".
+  // Log-and-continue: approval has already committed, and these rows can be
+  // recreated from the dashboard if the insert blips.
+  try {
+    const { data: existingJourney } = await db()
+      .from('journeys')
+      .select('id')
+      .eq('member_id', userId)
+      .limit(1)
+      .maybeSingle()
+
+    let journeyId = existingJourney?.id as string | undefined
+    if (!journeyId) {
+      const { data: journeyRow, error: journeyErr } = await db()
+        .from('journeys')
+        .insert({
+          member_id:     userId,
+          booking_type:  'cohort',
+          schedule_type: 'tbd',
+          status:        'approved',
+          approved_at:   new Date().toISOString(),
+        })
+        .select('id')
+        .single()
+      if (journeyErr || !journeyRow) {
+        console.error('[approve-member] STEP:journey — FAILED (non-blocking):', JSON.stringify(journeyErr))
+      } else {
+        journeyId = journeyRow.id
+        console.log(`[approve-member] STEP:journey — created ${journeyId}`)
+      }
+    } else {
+      console.log(`[approve-member] STEP:journey — already exists ${journeyId}`)
+    }
+
+    if (journeyId) {
+      const { data: existingCommit } = await db()
+        .from('financial_commitments')
+        .select('id')
+        .eq('member_id', userId)
+        .eq('journey_id', journeyId)
+        .limit(1)
+        .maybeSingle()
+
+      if (!existingCommit) {
+        const { error: commitErr } = await db()
+          .from('financial_commitments')
+          .insert({
+            member_id:             userId,
+            journey_id:            journeyId,
+            kind:                  'journey_contribution',
+            expected_amount_cents: 0,
+            status:                'draft',
+          })
+        if (commitErr) {
+          console.error('[approve-member] STEP:commitment — FAILED (non-blocking):', JSON.stringify(commitErr))
+        } else {
+          console.log(`[approve-member] STEP:commitment — draft created for journey ${journeyId}`)
+        }
+      } else {
+        console.log(`[approve-member] STEP:commitment — already exists for journey ${journeyId}`)
+      }
+    }
+  } catch (err: any) {
+    console.error('[approve-member] STEP:journey+commitment — unexpected error (non-blocking):', err?.message || err)
+  }
+
   // Generate one-time setup link -> /setup-account
   // This is NOT an ongoing magic link.
   // After they create their password, they ALWAYS log in with email + password.

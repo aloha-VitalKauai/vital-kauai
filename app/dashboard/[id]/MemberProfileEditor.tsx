@@ -156,13 +156,14 @@ export default function MemberProfileEditor({
   async function handleSave() {
     setSaving(true);
     setSaved(false);
+    const priceNum = programPrice ? Number(programPrice) : null;
     const { error } = await supabase
       .from("members")
       .update({
         status,
         assigned_partner: assignedPartner || null,
         membership_tier: membershipTier || null,
-        program_price: programPrice ? Number(programPrice) : null,
+        program_price: priceNum,
         cost_of_service: costOfService ? Number(costOfService) : null,
         arrival_date: arrivalDate || null,
         journey_focus: journeyFocus || null,
@@ -172,6 +173,20 @@ export default function MemberProfileEditor({
         integration_unlocked: integrationUnlocked,
       })
       .eq("id", member.id);
+
+    // Keep the member's active commitment's expected_amount_cents in lockstep
+    // with program_price so the Love Exchange page shows one unilateral number.
+    // No-ops cleanly if the member has no active commitment yet.
+    if (!error && priceNum != null && Number.isFinite(priceNum)) {
+      await fetch("/api/payments/sync-program-price", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          member_id: member.id,
+          amount_cents: Math.round(priceNum * 100),
+        }),
+      }).catch((e) => console.error("sync-program-price failed", e));
+    }
 
     setSaving(false);
     if (!error) {
