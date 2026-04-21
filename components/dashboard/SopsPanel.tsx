@@ -1,10 +1,10 @@
 'use client'
 
 const C = {
-  card:'#1A1613', border:'#2A2018', text:'#EDE8DF', muted:'#7A6A58', dim:'#3E3226', faint:'#221A12',
-  terra:'#A84E38', terraBg:'rgba(168,78,56,.13)',
-  amber:'#C08018', amberBg:'rgba(192,128,24,.13)',
-  low:'#38886A',   lowBg:'rgba(56,136,106,.13)',
+  card:'#1A1613', border:'#4A3D2E', text:'#EDE8DF', muted:'#C4B199', dim:'#8A7A64', faint:'#221A12',
+  terra:'#C96A52', terraBg:'rgba(201,106,82,.16)',
+  amber:'#D89428', amberBg:'rgba(216,148,40,.16)',
+  low:'#4AA082',   lowBg:'rgba(74,160,130,.16)',
 }
 
 function pill(color: string, bg: string) {
@@ -24,7 +24,44 @@ export type Sop = {
   sections: SopSection[]
 }
 
-export const SOPS: Sop[] = []
+export const SOPS: Sop[] = [
+  {
+    id: 'reference-itinerary',
+    title: 'Reference Itinerary',
+    owner: '—',
+    updated: '—',
+    status: 'draft',
+    summary: 'Awaiting upload. Paste the canonical cohort-week schedule here.',
+    sections: [],
+  },
+  {
+    id: 'emergency-protocols',
+    title: 'Emergency Protocols',
+    owner: '—',
+    updated: '—',
+    status: 'draft',
+    summary: 'Awaiting upload. Paste medical emergency, cardiac event, and evacuation protocols here.',
+    sections: [],
+  },
+  {
+    id: 'practitioner-onboarding',
+    title: 'Practitioner Onboarding',
+    owner: '—',
+    updated: '—',
+    status: 'draft',
+    summary: 'Awaiting upload. Paste credentialing, training, and mentorship protocols here.',
+    sections: [],
+  },
+  {
+    id: 'sacred-hospitality-coordinator',
+    title: 'Sacred Hospitality Coordinator SOP',
+    owner: '—',
+    updated: '—',
+    status: 'draft',
+    summary: 'Awaiting upload. Paste hospitality coordinator protocols here.',
+    sections: [],
+  },
+]
 
 function SopStatusPill({status}:{status:Sop['status']}) {
   const m = status==='active' ? {color:C.low, bg:C.lowBg, label:'Active'}
