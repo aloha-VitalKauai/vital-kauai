@@ -228,6 +228,7 @@ export function IbogaJourneyPage() {
               <span>Rooted in Reverence</span>
               <span>Extended Protocol</span>
               <span>Neuroplasticity Window</span>
+              <span>Emphasis on Preparation and Integration</span>
             </div>
           </div>
         </div>
