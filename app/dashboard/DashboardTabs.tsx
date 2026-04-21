@@ -14,6 +14,7 @@ const TABS = [
   { label: "Outcomes", href: "/dashboard/outcomes" },
   { label: "Dosing", href: "/dashboard/dosing" },
   { label: "Financials", href: "/dashboard/financials" },
+  { label: "SOPs", href: "/dashboard/sops" },
 ];
 
 export default function DashboardTabs() {
