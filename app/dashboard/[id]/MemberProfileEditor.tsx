@@ -565,6 +565,212 @@ export default function MemberProfileEditor({
             )}
           </div>
 
+          {/* Financial records — auto-tracked contributions */}
+          <div style={CARD}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 12,
+              }}
+            >
+              <p style={{ ...LABEL, margin: 0 }}>Financial records</p>
+              {donations.length > 0 && (
+                <a
+                  href="#journey-financials"
+                  style={{ fontSize: 11, color: "#085041", textDecoration: "none" }}
+                >
+                  View full ledger →
+                </a>
+              )}
+            </div>
+
+            {donations.length === 0 && !commitment ? (
+              <p style={{ fontSize: 13, color: "#9E9E9A" }}>
+                No contributions yet
+              </p>
+            ) : (
+              <>
+                {/* Totals summary */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: commitment ? "repeat(3, 1fr)" : "1fr",
+                    gap: 10,
+                    marginBottom: donations.length > 0 ? 14 : 0,
+                    padding: "10px 12px",
+                    background: "#FAFAF8",
+                    borderRadius: 8,
+                  }}
+                >
+                  <div>
+                    <p
+                      style={{
+                        fontSize: 10,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
+                        color: "#6B6B67",
+                        margin: "0 0 2px",
+                      }}
+                    >
+                      Total contributed
+                    </p>
+                    <p
+                      style={{
+                        fontSize: 16,
+                        fontWeight: 600,
+                        color: "#085041",
+                        margin: 0,
+                      }}
+                    >
+                      {fmt(
+                        donations.reduce((s, d) => s + d.amount_cents, 0) / 100,
+                        "$",
+                      )}
+                    </p>
+                  </div>
+                  {commitment && (
+                    <>
+                      <div>
+                        <p
+                          style={{
+                            fontSize: 10,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                            color: "#6B6B67",
+                            margin: "0 0 2px",
+                          }}
+                        >
+                          Pledged
+                        </p>
+                        <p
+                          style={{
+                            fontSize: 16,
+                            fontWeight: 600,
+                            color: "#1A1A18",
+                            margin: 0,
+                          }}
+                        >
+                          {fmt(commitment.expected_amount_cents / 100, "$")}
+                        </p>
+                      </div>
+                      <div>
+                        <p
+                          style={{
+                            fontSize: 10,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                            color: "#6B6B67",
+                            margin: "0 0 2px",
+                          }}
+                        >
+                          Remaining
+                        </p>
+                        <p
+                          style={{
+                            fontSize: 16,
+                            fontWeight: 600,
+                            color:
+                              commitment.expected_amount_cents -
+                                collectedCents >
+                              0
+                                ? "#B8683D"
+                                : "#085041",
+                            margin: 0,
+                          }}
+                        >
+                          {fmt(
+                            Math.max(
+                              commitment.expected_amount_cents -
+                                collectedCents,
+                              0,
+                            ) / 100,
+                            "$",
+                          )}
+                        </p>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* Contribution list */}
+                {donations.length > 0 && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    {donations.slice(0, 6).map((d) => {
+                      const kindLabel =
+                        d.kind === "initial_membership"
+                          ? "Initial membership"
+                          : d.kind === "journey_contribution"
+                            ? "Journey contribution"
+                            : d.kind === "additional_gift"
+                              ? "Additional gift"
+                              : d.kind === "monthly_membership"
+                                ? "Monthly membership"
+                                : "Contribution";
+                      return (
+                        <div
+                          key={d.id}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            padding: "8px 12px",
+                            background: "#FAFAF8",
+                            borderRadius: 6,
+                          }}
+                        >
+                          <div>
+                            <p
+                              style={{
+                                fontSize: 13,
+                                fontWeight: 500,
+                                color: "#1A1A18",
+                                margin: 0,
+                              }}
+                            >
+                              {kindLabel}
+                            </p>
+                            <p
+                              style={{
+                                fontSize: 11,
+                                color: "#9E9E9A",
+                                margin: "2px 0 0",
+                              }}
+                            >
+                              {fmtDate(d.completed_at)}
+                            </p>
+                          </div>
+                          <span
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 600,
+                              color: "#085041",
+                            }}
+                          >
+                            {fmt(d.amount_cents / 100, "$")}
+                          </span>
+                        </div>
+                      );
+                    })}
+                    {donations.length > 6 && (
+                      <p
+                        style={{
+                          fontSize: 11,
+                          color: "#9E9E9A",
+                          margin: "4px 0 0",
+                          textAlign: "center",
+                        }}
+                      >
+                        + {donations.length - 6} more in full ledger below
+                      </p>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+
           {/* Ceremony records */}
           <div style={CARD}>
             <p style={{ ...LABEL, marginBottom: 12 }}>Ceremony records</p>
@@ -798,6 +1004,7 @@ export default function MemberProfileEditor({
       )}
 
       {/* Journey payment — full financial section */}
+      <div id="journey-financials" style={{ scrollMarginTop: 80 }} />
       <MemberFinancialSection
         commitment={commitment ? { ...commitment, journey_id: commitment.journey_id ?? null, kind: commitment.kind ?? null } : null}
         collectedCents={collectedCents}
