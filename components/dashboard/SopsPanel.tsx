@@ -22,17 +22,19 @@ export type Sop = {
   status: 'active' | 'draft' | 'review'
   summary: string
   sections: SopSection[]
+  href?: string
 }
 
 export const SOPS: Sop[] = [
   {
     id: 'reference-itinerary',
-    title: 'Reference Itinerary',
-    owner: '—',
-    updated: '—',
-    status: 'draft',
-    summary: 'Awaiting upload. Paste the canonical cohort-week schedule here.',
+    title: 'The Seven-Day Ceremony Arc',
+    owner: 'Rachel · Josh · Dr. Liz',
+    updated: '2026-04-21',
+    status: 'active',
+    summary: 'Arrival · Release · Medicine · Emergence · Integration · Embodiment · Closing. Held in Hanalei for up to six members per cohort.',
     sections: [],
+    href: '/dashboard/sops/reference-itinerary',
   },
   {
     id: 'emergency-protocols',
@@ -115,6 +117,7 @@ export default function SopsPanel() {
             <span>Updated · <span style={{color:C.muted,textTransform:'none',letterSpacing:0}}>{s.updated}</span></span>
           </div>
           {s.summary && <div style={{fontSize:12,color:C.muted,fontStyle:'italic',borderLeft:`2px solid ${C.terra}`,paddingLeft:10,marginBottom:14}}>{s.summary}</div>}
+          {s.href && <a href={s.href} style={{display:'inline-block',fontSize:11,color:C.terra,textDecoration:'none',fontWeight:600,letterSpacing:'.06em',textTransform:'uppercase',marginBottom:12,padding:'6px 12px',border:`0.5px solid ${C.terra}55`,background:C.terraBg,borderRadius:6}}>Open full document →</a>}
           {s.sections.map((sec,i)=>(
             <div key={i} style={{marginBottom:12}}>
               <div style={{fontSize:11,fontWeight:600,color:C.text,letterSpacing:'.06em',textTransform:'uppercase',marginBottom:6}}>{sec.heading}</div>
