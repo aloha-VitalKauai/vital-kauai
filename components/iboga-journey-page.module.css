@@ -509,12 +509,6 @@
   padding: 8px 18px;
   border: 1px solid var(--sage-light);
   color: var(--sage-light);
-  transition: background 0.3s, color 0.3s;
-}
-
-.medicinePills span:hover {
-  background: var(--sage-light);
-  color: var(--forest);
 }
 
 .comparisonQuote {
