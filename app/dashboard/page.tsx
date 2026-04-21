@@ -213,7 +213,7 @@ export default async function DashboardPage() {
       <div style={{ background: "#fff", border: "0.5px solid rgba(0,0,0,0.1)", borderRadius: 10, padding: "1rem 1.25rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
           <p style={{ ...LABEL, margin: 0 }}>Onboarding status</p>
-          <Link href="/dashboard/onboarding" style={{ fontSize: 12, color: "#1D6B4A", textDecoration: "none" }}>Full view →</Link>
+          <Link href="/dashboard/clients" style={{ fontSize: 12, color: "#1D6B4A", textDecoration: "none" }}>Full view →</Link>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
           {[
