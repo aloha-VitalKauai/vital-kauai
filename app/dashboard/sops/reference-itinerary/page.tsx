@@ -51,6 +51,20 @@ const STYLES = `
 .ref-itinerary .role-name em { display:block; font-size:11px; font-weight:400; color:#b08d5a; letter-spacing:.18em; text-transform:uppercase; margin-top:4px; font-style:normal; }
 .ref-itinerary .role-desc { font-size:13px; color:rgba(42,42,38,.62); line-height:1.7; padding-top:4px; }
 
+.ref-itinerary .sensations-block { background:rgba(122,158,126,.09); border:1px solid rgba(122,158,126,.18); padding:56px; margin:56px 0; border-radius:2px; }
+.ref-itinerary .sensations-block .eyebrow { color:#7a9e7e; margin-bottom:20px; }
+.ref-itinerary .sensations-block h2 { margin-bottom:10px; }
+.ref-itinerary .sensations-block h2 em { color:#7a9e7e; }
+.ref-itinerary .sensations-block .sub { font-family:${FONTS}; font-style:italic; font-size:16px; color:rgba(42,42,38,.58); margin-bottom:28px; }
+.ref-itinerary .sensations-block .intro { font-size:14px; color:#3d3d38; line-height:1.85; max-width:680px; margin-bottom:32px; }
+.ref-itinerary .practice-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:28px; }
+.ref-itinerary .practice-card { background:rgba(255,255,255,.6); border:1px solid rgba(122,158,126,.14); border-radius:8px; padding:22px 26px; }
+.ref-itinerary .practice-card h4 { font-family:${FONTS}; font-size:19px; font-weight:400; color:#28301f; margin-bottom:6px; }
+.ref-itinerary .practice-card .tag { font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:#7a9e7e; font-weight:500; margin-bottom:10px; display:block; }
+.ref-itinerary .practice-card p { font-size:13px; color:#3d3d38; line-height:1.75; }
+.ref-itinerary .sensations-block .full-guide { font-size:12px; color:rgba(42,42,38,.58); font-style:italic; line-height:1.8; border-top:1px solid rgba(122,158,126,.18); padding-top:20px; margin-top:8px; }
+.ref-itinerary .sensations-block .full-guide a { color:#b08d5a; text-decoration:none; font-weight:500; border-bottom:1px solid rgba(176,141,90,.4); }
+
 .ref-itinerary .modality-slots { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
 .ref-itinerary .modality-slots span { font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#8a9a85; padding:4px 10px; border:1px solid rgba(42,42,38,.14); border-radius:20px; font-weight:500; }
 
@@ -222,6 +236,58 @@ export default function ReferenceItineraryPage() {
               <div className="pillar-label">Why Day Five</div>
               <p>Members have moved through ceremony. Emotions and memories have been stirred. Hoʻoponopono offers a structured, sacred way to name what arose and release it — before the group sharing circle that follows. It honors the land, the ancestors, and the inner process all at once.</p>
             </div>
+          </div>
+
+          <div className="sensations-block">
+            <div className="eyebrow">Team &amp; Member Reference · Somatic Tracking</div>
+            <h2>How to Track Sensations <em>in the Body</em></h2>
+            <div className="sub">Simple protocols from Somatic Experiencing and PsychoNeuroEnergetics.</div>
+            <p className="intro">Tracking sensation is the heart of somatic work. When a member — or guide — names what is alive in the body (warmth, tightness, tingling, expansion), the nervous system begins to metabolize what has been held. These are the core practices we teach, return to, and carry into ceremony. Simple, repeatable, always available.</p>
+
+            <div className="practice-grid">
+              <div className="practice-card">
+                <span className="tag">Somatic Experiencing</span>
+                <h4>Orient</h4>
+                <p>Let your gaze move slowly through the space — as if you are a gentle animal arriving somewhere new. Rest your eyes on something stable, something soft. When you find it, breathe there.</p>
+              </div>
+              <div className="practice-card">
+                <span className="tag">Somatic Experiencing</span>
+                <h4>Ground</h4>
+                <p>Feel the weight of your body meeting whatever is beneath you. Press your feet into the ground. Sense the steady support that is always there. Gravity is holding you. The earth is holding you.</p>
+              </div>
+              <div className="practice-card">
+                <span className="tag">Somatic Experiencing</span>
+                <h4>Name What You Notice</h4>
+                <p>Out loud or silently, label sensation with curiosity: <em>tingling, warmth, tightness, openness.</em> Naming activates the prefrontal cortex and creates a stabilizing distance from the sensation itself.</p>
+              </div>
+              <div className="practice-card">
+                <span className="tag">Somatic Experiencing</span>
+                <h4>Titrate</h4>
+                <p>Contact a difficult sensation in small doses. A little, then return to a resource — a warm palm, the breath, the earth. Small steps are deep steps.</p>
+              </div>
+              <div className="practice-card">
+                <span className="tag">Somatic Experiencing</span>
+                <h4>Pendulate</h4>
+                <p>Swing awareness between what feels difficult and what feels resourced. The nervous system heals through this rhythm — activation and rest, contraction and ease.</p>
+              </div>
+              <div className="practice-card">
+                <span className="tag">SE · PNE</span>
+                <h4>Self-Hold</h4>
+                <p>Place your hands on your own body — over your heart, across your belly, or in a gentle self-embrace. Warm, steady touch activates the same co-regulation pathways as loving human contact.</p>
+              </div>
+              <div className="practice-card">
+                <span className="tag">PsychoNeuroEnergetics</span>
+                <h4>Jaw &amp; Base Point Hold</h4>
+                <p>One hand gently holds the jaw; the other rests at the base point (occiput, where the skull meets the neck). Maintain light, steady contact. Breath softens. This is the PNE vagal-regulation protocol we return to before and after ceremony.</p>
+              </div>
+              <div className="practice-card">
+                <span className="tag">Breath</span>
+                <h4>Longer Exhale</h4>
+                <p>Any time the system quickens, lengthen the exhale. Let it carry an audible sigh — an &ldquo;ahhh.&rdquo; A longer exhale relative to the inhale signals safety directly to the brainstem.</p>
+              </div>
+            </div>
+
+            <p className="full-guide">For the full guide — polyvagal theory, the three nervous-system states, the Coherent Heart Breath, and the complete practice kit — see <a href="/portal/nervous-system">the Nervous System Safety Guide</a>.</p>
           </div>
 
           <div className="team-block">
