@@ -420,9 +420,10 @@ export function IbogaJourneyPage() {
             <h3 className={styles.phaseTitle}>Ceremony</h3>
             <span className={styles.phaseWeek}>1 Week &middot; Hanalei, Kaua&#699;i</span>
             <p className={styles.phaseBody}>
-              Your ceremony takes place in a private home in Hanalei. You will be held continuously
-              by experienced facilitators through a carefully titrated, multi-day process &mdash;
-              from the first dose through full integration on the land.
+              Your ceremony takes place in a private home in Hanalei. You will be guided by
+              experienced facilitators through a multi-day process rooted in evidence-based
+              research and held with deep personal care &mdash; from the first dose through full
+              integration on the land.
             </p>
           </div>
           <div className={styles.protocolPhase}>
