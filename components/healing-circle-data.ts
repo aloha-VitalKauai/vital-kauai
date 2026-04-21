@@ -107,7 +107,7 @@ export const members: Member[] = [
   {
     id: "paul_plant",
     name: "Paul Heffernan",
-    role: "Plant Medicine Guide",
+    role: "Director of Plant Regeneration / Medicine Guide",
     cat: "plant",
     photo: "",
     shortBio:
