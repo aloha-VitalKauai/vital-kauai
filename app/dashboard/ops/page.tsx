@@ -485,6 +485,375 @@ const ChartTip = ({active,payload,label}:any) => {
   return <div style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:8,padding:'8px 14px'}}><div style={{fontSize:11,color:C.muted,marginBottom:4}}>{label}</div>{payload.map((p:any)=><div key={p.dataKey} style={{fontSize:12,color:p.color,fontWeight:500}}>{p.name}: {p.value?.toFixed(1)}</div>)}</div>
 }
 
+/* ── SOPS / PLAYBOOK ────────────────────────────────────────────── */
+type SopSection = { heading: string; items: string[] }
+type Sop = {
+  id: string
+  title: string
+  owner: string
+  updated: string
+  status: 'active' | 'draft' | 'review'
+  summary: string
+  sections: SopSection[]
+}
+
+const SOPS: Sop[] = [
+  {
+    id: 'medical-intake',
+    title: 'Medical Intake Playbook',
+    owner: 'Jon Allen PA-C · Josh',
+    updated: '2026-04-21',
+    status: 'draft',
+    summary: 'End-to-end pathway from first inquiry to ceremony-cleared. Every member passes through this gate before receiving a ceremony date.',
+    sections: [
+      {
+        heading: '1 · Pre-intake screening',
+        items: [
+          'Lead completes the intake form on vitalkauai.com (medical history, current medications, mental-health baseline, intention statement).',
+          'Screener flags automatic holds: active psychosis, uncontrolled cardiac disease, pregnancy, SSRI/MAOI/lithium within taper window.',
+          'Josh or Rachel schedules a 30-min discovery call before any clinical work begins; no clinical advice given on this call.',
+          'Inquiry logged in Supabase as a lead with source + UTM attribution.',
+        ],
+      },
+      {
+        heading: '2 · Clinical intake (Jon Allen PA-C)',
+        items: [
+          'Full medical history + medication reconciliation, including supplements and recreational substances.',
+          'Cardiac history + family history of sudden cardiac death or long QT syndrome — mandatory.',
+          'Mental-health baseline: PHQ-9, GAD-7, trauma/dissociation screen. Baseline stored in follow-up series.',
+          'Informed consent reviewed and signed (risks of iboga, cardiac monitoring protocol, emergency plan).',
+        ],
+      },
+      {
+        heading: '3 · Required labs (within 30 days of ceremony)',
+        items: [
+          'CBC with differential, CMP, Mg, K+, Ca2+ (electrolytes must be within range before medicine day).',
+          'LFTs (AST, ALT, bilirubin, alk phos).',
+          'TSH + free T4.',
+          'Urine drug screen.',
+          'Pregnancy test (where applicable).',
+          'ECG (12-lead) read by our cardiology consult — QTc flag threshold per Jon Allen protocol.',
+        ],
+      },
+      {
+        heading: '4 · Cardiac clearance',
+        items: [
+          'Members 40+, anyone with cardiac history, or any QTc flag → referred to cardiologist for formal clearance.',
+          'Clearance letter uploaded to member record before labs_all_cleared is set.',
+          'No exceptions. If cardiology cannot clear in time, ceremony is deferred to the next cohort.',
+        ],
+      },
+      {
+        heading: '5 · Medication washout',
+        items: [
+          'SSRIs/SNRIs: taper plan authored by member\'s prescribing physician + Jon Allen. Typical window 4–6 weeks; fluoxetine longer.',
+          'MAOIs: absolute contraindication within washout window — defer ceremony.',
+          'Tramadol, ondansetron, methadone, and other QT-prolonging meds: reviewed case-by-case.',
+          'Stimulants (ADHD meds) paused per protocol.',
+          'Washout status confirmed by Jon Allen in writing before medical_cleared flag is set.',
+        ],
+      },
+      {
+        heading: '6 · Sign-off + gate flip',
+        items: [
+          'Jon Allen signs off: medical_cleared = true.',
+          'Cardiology signs off: cardiac_cleared = true.',
+          'Lab review complete: labs_all_cleared = true.',
+          'Agreement + informed consent signed: all_required_signed = true.',
+          'Only when all four flags are true does the Ops dashboard open the ceremony date.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'emergency-protocols',
+    title: 'Emergency Protocols',
+    owner: 'Jon Allen PA-C · On-site medical lead',
+    updated: '2026-04-21',
+    status: 'draft',
+    summary: 'What to do when something goes wrong — during ceremony, integration nights, or between cohorts. Memorize the first bullet of every section.',
+    sections: [
+      {
+        heading: 'Chain of command (ceremony night)',
+        items: [
+          'On-site medical lead (PA-C or RN) has final call on any clinical decision.',
+          'Ceremony holder manages the container; medical lead manages the body.',
+          'Sacred hospitality coordinator assists, does not intervene clinically.',
+          'Josh or Rachel is the designated comms lead to family / outside parties.',
+        ],
+      },
+      {
+        heading: 'Cardiac event',
+        items: [
+          'Continuous pulse-ox + telemetry during the acute window; vitals logged every 15 min.',
+          'Chest pain, arrhythmia on monitor, or sustained HR outside safe band → stop dosing, stabilize, assess.',
+          'AED + IV magnesium + crash kit staged in ceremony space at all times.',
+          'Call 911 immediately for any suspected cardiac event. Do not wait.',
+          'Wilcox Medical Center (Līhuʻe) is the nearest ED — ~25 min by ground.',
+        ],
+      },
+      {
+        heading: 'Adverse psychological reaction',
+        items: [
+          'Contained space, one-on-one holder, lower stimulation. Never leave the person alone.',
+          'Benzodiazepine available per Jon Allen protocol if acute agitation cannot be contained verbally.',
+          'Persistent dissociation, suicidal ideation, or psychosis beyond the acute window → clinical escalation + in-person follow-up within 24 hours.',
+          'Document everything in the adverse events panel; file within 24 hours.',
+        ],
+      },
+      {
+        heading: 'On-island emergency contacts',
+        items: [
+          '911 — fire, paramedics, police.',
+          'Wilcox Medical Center (Līhuʻe): (808) 245-1100.',
+          'Kauaʻi Veterans Memorial Hospital (Waimea): (808) 338-9431.',
+          'Poison Control (national): 1-800-222-1222.',
+          'Jon Allen PA-C direct line: [fill in].',
+          'Insurance + malpractice carrier after-hours line: [fill in].',
+        ],
+      },
+      {
+        heading: 'Evacuation plan',
+        items: [
+          'Ground evac to Wilcox is primary — vehicle fueled and keys in known location at all times during retreat.',
+          'Air evac (AirMed / Life Flight) for inter-island transfer if Oʻahu-level care required.',
+          'Every staff member knows the driveway exit route and the nearest helicopter landing zone.',
+          'Run a tabletop evac drill before every cohort.',
+        ],
+      },
+      {
+        heading: 'Post-event debrief + reporting',
+        items: [
+          'Hot debrief within 24 hours with all staff present at the event.',
+          'Written incident report filed within 48 hours — root cause, timeline, what we\'d change.',
+          'Member + family communication handled only by Josh or Rachel.',
+          'If reportable, coordinate with counsel before any external statement.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'practitioner-onboarding',
+    title: 'Practitioner Onboarding',
+    owner: 'Rachel · Dr. Liz (Director of On-Island Integration)',
+    updated: '2026-04-21',
+    status: 'draft',
+    summary: 'Bringing a new guide, integration specialist, or medical practitioner into the Vital Kauaʻi container. No one holds space for a member until this is complete.',
+    sections: [
+      {
+        heading: '1 · Credentialing',
+        items: [
+          'License verification (clinical role) + current malpractice coverage on file.',
+          'Background check (national + state) — renewed annually.',
+          'Signed contractor agreement, NDA, and code of ethics.',
+          'W-9 + payment setup before first engagement.',
+        ],
+      },
+      {
+        heading: '2 · Orientation + training',
+        items: [
+          'Vital Kauaʻi ethos + history (2-hour session with Josh or Rachel).',
+          'Cultural orientation with kumu / cultural advisor — Hawaiian protocols, land, language.',
+          'Iboga 101: pharmacology, phenomenology, safety profile, our specific protocol.',
+          'Trauma-informed care + ethics training (internal modules + annual refresh).',
+          'Review of emergency protocols + dry run of the evac plan.',
+        ],
+      },
+      {
+        heading: '3 · Observed ceremonies',
+        items: [
+          'Minimum 2 observed ceremonies before any active role.',
+          'Written reflections after each observation, reviewed by mentor.',
+          'No clinical decisions by the trainee during this phase.',
+        ],
+      },
+      {
+        heading: '4 · Mentorship period',
+        items: [
+          'Assigned mentor (Dr. Liz or senior guide) for first 3 cohorts.',
+          'Weekly 1:1 during first cohort; biweekly after.',
+          'Peer consultation group monthly, ongoing.',
+        ],
+      },
+      {
+        heading: '5 · Integration-guide calibration',
+        items: [
+          'Shadow one full integration arc (pre-ceremony → 6-month follow-up).',
+          'Calibration call on PHQ-9 / GAD-7 / regulation scoring so data is consistent across guides.',
+          'Review of how we talk about outcomes — no claims, no promises.',
+        ],
+      },
+      {
+        heading: '6 · Go-live + ongoing',
+        items: [
+          'Profile added to Specialists registry; assignment cell enabled in Ops dashboard.',
+          'Calendly wired to the shared scheduling link.',
+          'Annual ethics + emergency refresh; credentials re-verified.',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'sacred-hospitality',
+    title: 'Sacred Hospitality Coordinator SOPs',
+    owner: 'Sacred Hospitality Coordinator · Robyn',
+    updated: '2026-04-21',
+    status: 'draft',
+    summary: 'Hospitality as ceremony. The coordinator is the keeper of the container — land, altar, rhythm, food, language. Everything a member feels from arrival to departure passes through this role.',
+    sections: [
+      {
+        heading: 'Opening the week · arrival',
+        items: [
+          'Land blessing with kumu or designated culture bearer before members arrive.',
+          'Lei greeting + pule (prayer) at the threshold — every member, every time.',
+          'Orientation walk: sleeping quarters, ceremony space, kitchen, bathrooms, emergency exits.',
+          'Phones collected and placed in the phone basket at the altar (returned at departure).',
+          'First-night kava circle: names, intentions, agreements, silence protocol.',
+        ],
+      },
+      {
+        heading: 'Altar + ceremonial space',
+        items: [
+          'Altar refreshed daily — water, flowers, pa\'akai (salt), offerings from the land.',
+          'Space cleansed with la\'au (hawaiian herbs) morning and evening.',
+          'Nothing crosses the altar without intention — no phones, no food, no street shoes.',
+          'Ceremony space is silent between 10pm and 6am unless medicine is active.',
+        ],
+      },
+      {
+        heading: 'Daily rhythm during retreat',
+        items: [
+          'Sunrise: pule + light movement on the lanai.',
+          'Breakfast is communal, silent for the first 10 minutes.',
+          'Morning: integration circle or 1:1 with guide.',
+          'Midday rest — no programming between 12 and 2pm.',
+          'Afternoon: somatic work, nature immersion, or creative time.',
+          'Evening: dinner, story circle, wind-down. Lights out by 10pm on non-ceremony nights.',
+        ],
+      },
+      {
+        heading: 'Food + kitchen',
+        items: [
+          'Pre-ceremony diet starts 72 hours before medicine day: no alcohol, caffeine tapered, whole foods, low sodium, no tyramine-heavy foods (aged cheese, cured meats, fermented soy).',
+          'Local + culturally aligned sourcing where possible: kalo, ulu, fish from trusted fisher, greens from the garden.',
+          'Allergies + dietary restrictions documented on the member card; cross-contamination protocol in the kitchen.',
+          'Post-ceremony meal is intentional — broth, simple, warming. No heavy solids until the body asks for them.',
+          'Water always available in the ceremony space; never interrupt a member to offer it.',
+        ],
+      },
+      {
+        heading: 'Language + cultural orientation',
+        items: [
+          'We do not use the word "shaman." We say guide, holder, or practitioner.',
+          'We do not say "trip" — we say journey or medicine.',
+          'Hawaiian words are used with reverence, not decoration. When unsure, ask kumu.',
+          'Members are told what kapu (sacred boundaries) apply on the land — where to walk, where not to walk, what to touch.',
+          'Photography is by explicit permission only; never of other members, never of the altar.',
+        ],
+      },
+      {
+        heading: 'Night oversight + medicine nights',
+        items: [
+          'Coordinator is awake and on-call during the full medicine window, handing off to night watch only with explicit verbal handoff.',
+          'No coordinator intervenes clinically — that is the medical lead\'s role. Hospitality holds the room, not the body.',
+          'Quiet hands, low voice, warm presence. Members in process are not conversed with unless they initiate.',
+          'Bathroom escorts as needed; dignity preserved at all times.',
+        ],
+      },
+      {
+        heading: 'Departure + aloha continuum',
+        items: [
+          'Closing circle on final morning — gratitudes, intention for return, what the member carries home.',
+          'Lei of departure + personalized blessing from kumu.',
+          'Phones returned at the threshold, not before.',
+          'Integration packet handed to member in person: follow-up schedule, guide contact, emergency lines.',
+          'Coordinator writes a one-paragraph note per member for the integration team within 48 hours.',
+        ],
+      },
+      {
+        heading: 'Between cohorts',
+        items: [
+          'Deep clean of ceremony space, altar reset with fresh offerings.',
+          'Kitchen inventory + restock, allergen audit.',
+          'Walk the land with kumu — what needs tending, what needs rest.',
+          'Debrief with Rachel + Josh on what worked, what to change for the next cohort.',
+        ],
+      },
+    ],
+  },
+]
+
+function SopStatusPill({status}:{status:Sop['status']}) {
+  const m = status==='active' ? {color:C.low, bg:C.lowBg, label:'Active'}
+         : status==='review'  ? {color:C.amber,bg:C.amberBg,label:'In Review'}
+         :                      {color:C.muted,bg:C.faint,  label:'Draft'}
+  return <span style={pill(m.color,m.bg)}>{m.label}</span>
+}
+
+function SopsPanel() {
+  const lastUpdated = SOPS.reduce((a,s)=>s.updated>a?s.updated:a,'')
+  return (
+    <div className='sops-panel'>
+      <div style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:12,padding:'16px 18px',marginBottom:12,display:'flex',alignItems:'center',justifyContent:'space-between',gap:12,flexWrap:'wrap'}}>
+        <div>
+          <div style={{fontSize:9,color:C.dim,letterSpacing:'.1em',textTransform:'uppercase',marginBottom:6}}>Vital Kauaʻi · Internal Playbook</div>
+          <div style={{fontSize:18,fontWeight:500,color:C.text,fontFamily:'var(--font-cormorant-garamond,serif)',marginBottom:2}}>Standard Operating Procedures</div>
+          <div style={{fontSize:11,color:C.muted}}>Source of truth for medical, emergency, practitioner, and hospitality protocols. {lastUpdated && <>Last updated {lastUpdated}.</>}</div>
+        </div>
+        <button onClick={()=>window.print()} style={{fontSize:10,color:C.terra,background:C.terraBg,border:`0.5px solid ${C.terra}55`,borderRadius:6,padding:'6px 14px',cursor:'pointer',fontWeight:600,letterSpacing:'.06em',textTransform:'uppercase'}}>Print / Share</button>
+      </div>
+
+      {/* TOC */}
+      {SOPS.length>0 && (
+        <div style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:12,padding:'12px 16px',marginBottom:12}}>
+          <div style={{fontSize:9,color:C.dim,letterSpacing:'.1em',textTransform:'uppercase',marginBottom:8}}>Contents</div>
+          <div style={{display:'flex',flexDirection:'column',gap:5}}>
+            {SOPS.map((s,i)=>(
+              <a key={s.id} href={`#sop-${s.id}`} style={{fontSize:12,color:C.muted,textDecoration:'none',display:'flex',gap:8,alignItems:'center'}}>
+                <span style={{fontSize:10,color:C.dim,minWidth:16}}>{String(i+1).padStart(2,'0')}</span>
+                <span>{s.title}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {SOPS.length===0 && (
+        <div style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:12,padding:'28px 20px',textAlign:'center',color:C.dim,fontSize:12}}>
+          No playbooks yet. Content coming in the next turn.
+        </div>
+      )}
+
+      {SOPS.map(s=>(
+        <div key={s.id} id={`sop-${s.id}`} style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:12,padding:'18px 20px',marginBottom:12,scrollMarginTop:80}}>
+          <div style={{display:'flex',alignItems:'baseline',gap:10,flexWrap:'wrap',marginBottom:8}}>
+            <div style={{fontSize:16,fontWeight:500,color:C.text,fontFamily:'var(--font-cormorant-garamond,serif)'}}>{s.title}</div>
+            <SopStatusPill status={s.status}/>
+          </div>
+          <div style={{display:'flex',gap:14,flexWrap:'wrap',fontSize:10,color:C.dim,letterSpacing:'.06em',textTransform:'uppercase',marginBottom:10}}>
+            <span>Owner · <span style={{color:C.muted,textTransform:'none',letterSpacing:0}}>{s.owner}</span></span>
+            <span>Updated · <span style={{color:C.muted,textTransform:'none',letterSpacing:0}}>{s.updated}</span></span>
+          </div>
+          {s.summary && <div style={{fontSize:12,color:C.muted,fontStyle:'italic',borderLeft:`2px solid ${C.terra}`,paddingLeft:10,marginBottom:14}}>{s.summary}</div>}
+          {s.sections.map((sec,i)=>(
+            <div key={i} style={{marginBottom:12}}>
+              <div style={{fontSize:11,fontWeight:600,color:C.text,letterSpacing:'.06em',textTransform:'uppercase',marginBottom:6}}>{sec.heading}</div>
+              <ul style={{listStyle:'none',padding:0,margin:0,display:'flex',flexDirection:'column',gap:4}}>
+                {sec.items.map((it,j)=>(
+                  <li key={j} style={{fontSize:12,color:C.muted,lineHeight:1.55,paddingLeft:14,position:'relative'}}>
+                    <span style={{position:'absolute',left:0,top:7,width:4,height:4,borderRadius:'50%',background:C.terra}}/>
+                    {it}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 /* ══════════════════════════════════════════════════════════════════
    PAGE
 ══════════════════════════════════════════════════════════════════ */
@@ -625,7 +994,7 @@ export default function OpsDashboardPage() {
 
   return (
     <div style={{margin:'-2rem',minHeight:'calc(100vh - 101px)',background:C.bg,fontFamily:'var(--font-jost, sans-serif)',color:C.text}}>
-      <style>{`@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-track{background:${C.bg}} ::-webkit-scrollbar-thumb{background:${C.border};border-radius:2px} button:focus{outline:none} select,input,textarea{background:${C.faint};color:${C.text}} option{background:#1A1613}`}</style>
+      <style>{`@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-track{background:${C.bg}} ::-webkit-scrollbar-thumb{background:${C.border};border-radius:2px} button:focus{outline:none} select,input,textarea{background:${C.faint};color:${C.text}} option{background:#1A1613} @media print{body,html{background:#fff!important;color:#111!important}.sops-panel{color:#111!important}.sops-panel *{color:#111!important;background:#fff!important;border-color:#ddd!important}.sops-panel button{display:none!important}}`}</style>
 
       <FounderToast notification={founderNotif} onDismiss={()=>setFounderNotif(null)}/>
 
@@ -673,7 +1042,7 @@ export default function OpsDashboardPage() {
           <div>
             {/* Tabs */}
             <div style={{display:'flex',gap:2,marginBottom:13,background:C.card,borderRadius:9,padding:3,border:`0.5px solid ${C.border}`}}>
-              {(['pipeline','risk','outcomes','alerts','journeys','cohorts'] as const).map(t=>(
+              {(['pipeline','risk','outcomes','alerts','journeys','cohorts','sops'] as const).map(t=>(
                 <button key={t} onClick={()=>setTab(t)} style={{flex:1,padding:'6px 0',borderRadius:7,border:'none',background:tab===t?C.surf:'transparent',color:tab===t?C.text:C.dim,fontSize:10,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',cursor:'pointer',transition:'all .15s',position:'relative'}}>
                   {t}{t==='alerts'&&(critCount+highCount)>0&&<span style={{position:'absolute',top:4,right:8,width:5,height:5,borderRadius:'50%',background:critCount?C.crit:C.high}}/>}
                 </button>
@@ -854,6 +1223,7 @@ export default function OpsDashboardPage() {
             )}
             {tab==='journeys'&&<JourneyScheduler />}
             {tab==='cohorts'&&<CohortManager />}
+            {tab==='sops'&&<SopsPanel />}
           </div>
 
           {/* SIDEBAR */}
