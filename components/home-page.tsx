@@ -306,7 +306,6 @@ export function HomePage() {
             loop
             playsInline
             preload="auto"
-            poster="/images/hanalei2.jpg"
             className={styles.heroVideo}
           >
             <source src="/videos/hero-loop.webm" type="video/webm" />
