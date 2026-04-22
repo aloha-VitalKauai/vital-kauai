@@ -138,7 +138,7 @@ export const members: Member[] = [
     id: "lizzy",
     name: "Lizzy Benson",
     role: "Yoga · Somatic Bodywork · Lymphatic",
-    cat: "healers",
+    cat: "hidden",
     photo: "/images/lizzybenson.jpeg",
     shortBio:
       "Lizzy Benson's relationship with yoga reaches all the way back to childhood, deepening into a devoted healing path after a pivotal period of personal transformation. She holds over 800 hours of yoga training and is a licensed massage therapist, certified posture educator, and birth doula. Her offerings weave yoga, somatic bodywork, and lymphatic support into a holistic and fully embodied practice. Each session is a cocktail of self-inquiry, functional movement, and playful sequencing. Her teaching mantra is simple: teach to learn.",
@@ -168,7 +168,7 @@ export const members: Member[] = [
     id: "samantha",
     name: "Samantha Nordstrom",
     role: "Sound Healing · Hatha Yoga · Reiki",
-    cat: "healers",
+    cat: "hidden",
     photo: "/images/samanthanordstrom.jpeg",
     shortBio:
       "Samantha Nordstrom's offering is intuitive and heart-led, born from her own deep healing journey. She draws on yoga, meditation, breathwork, Reiki, and the power of crystal sound bowls to bring guests into a deeply restorative, meditative state of being. Her offerings are a blend of nourishing movement and soothing sounds — each session a loving prayer and an invitation to joy. Sam is inspired by the power of each unique individual to access wholeness through ancient practices. She brings her gifts to Vital Kauaʻi as a devoted member of the healing circle.",
@@ -178,7 +178,7 @@ export const members: Member[] = [
     id: "jenny_z",
     name: "Jenny Zoberg",
     role: "Breathwork · Yoga · Sound Healing",
-    cat: "healers",
+    cat: "hidden",
     photo: "/images/jennyzoberg.jpeg",
     shortBio:
       "Jenny Zoberg is a breathwork, yoga, and sound healing facilitator who guides practices that reconnect guests with their inner world. She trained as a breathwork facilitator with David Elliott, deepened her yoga studies with Bhavani Silvia Maki, and became certified in Sound Healing through her sensitivity to vibration and harmony. In 2022 she sat a 10-day Vipassana meditation in South Africa — an experience that continues to inform how she holds space. Her sessions are breath-led and music-connected, encouraging guests to move beyond the surface into a felt experience of body, mind, and soul. She brings her full gifts to the intimate containers of Vital Kauaʻi.",
