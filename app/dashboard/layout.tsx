@@ -29,15 +29,18 @@ export default async function DashboardLayout({ children }: { children: React.Re
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span
+          <a
+            href="/"
             style={{
               fontFamily: "var(--font-display, serif)",
               fontSize: 18,
               letterSpacing: "-0.01em",
+              color: "inherit",
+              textDecoration: "none",
             }}
           >
             Vital Kaua&#699;i
-          </span>
+          </a>
           <span
             style={{
               fontSize: 10,
