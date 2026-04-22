@@ -2,14 +2,15 @@
 
 import { useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { fetchPublicCohorts, formatCohortRange, spotsLeftLabel } from "@/lib/cohorts";
+import { fetchPublicCohorts, formatCohortRange, groupCohortsByDate, spotsLeftLabel } from "@/lib/cohorts";
 
 export function StayPage() {
   useEffect(() => {
     let cancelled = false;
     const supabase = createClient();
-    fetchPublicCohorts(supabase).then((cohorts) => {
+    fetchPublicCohorts(supabase).then((rawCohorts) => {
       if (cancelled) return;
+      const cohorts = groupCohortsByDate(rawCohorts);
       for (let i = 0; i < 3; i++) {
         const el = document.getElementById(`upcoming-ceremony-card-${i}`);
         if (!el) continue;
