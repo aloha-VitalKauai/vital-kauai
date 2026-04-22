@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { fetchPublicCohorts, formatCohortRange, spotsLeftLabel, type PublicCohort } from "@/lib/cohorts";
+import { fetchPublicCohorts, formatCohortRange, groupCohortsByDate, spotsLeftLabel, type PublicCohort } from "@/lib/cohorts";
 import styles from "./home-page.module.css";
 
 const testimonialQuote = "If anyone is considering going here, do it. As an expert in the fields of healing and spirituality, traveling the world experiencing the best modalities for the past 18 years, this is by far one of the most profound and effective experiences that you can\u2019t find anywhere else. I can\u2019t imagine such a positive future for myself if I hadn\u2019t gone here first. Eternally grateful.";
@@ -623,7 +623,8 @@ export function HomePage() {
           </p>
           <div className={`${styles.ceremoniesGrid} ${styles.reveal}`}>
             {(() => {
-              const slots = [...publicCohorts.slice(0, 3)];
+              const grouped = groupCohortsByDate(publicCohorts);
+              const slots = [...grouped.slice(0, 3)];
               while (slots.length < 3) slots.push(null as unknown as PublicCohort);
               return slots.map((c, i) => {
                 if (!c) {

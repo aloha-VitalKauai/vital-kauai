@@ -17,6 +17,56 @@ export async function fetchPublicCohorts(
   return data as PublicCohort[]
 }
 
+function combineTitles(titles: string[]): string {
+  if (titles.length <= 1) return titles[0] ?? ''
+  const split = titles.map(t => t.split(/\s+/))
+  const minLen = Math.min(...split.map(s => s.length))
+  let commonSuffix = 0
+  for (let i = 1; i <= minLen; i++) {
+    const word = split[0][split[0].length - i].toLowerCase()
+    if (split.every(s => s[s.length - i].toLowerCase() === word)) commonSuffix = i
+    else break
+  }
+  if (commonSuffix === 0) return titles.join(' / ')
+  const suffixWords = split[0].slice(split[0].length - commonSuffix)
+  const prefixes = split.map(s => s.slice(0, s.length - commonSuffix).join(' ')).filter(Boolean)
+  const last = suffixWords[suffixWords.length - 1]
+  const pluralized = /s$/i.test(last) ? last : last + 's'
+  const suffixPart = [...suffixWords.slice(0, -1), pluralized].join(' ')
+  return prefixes.length ? `${prefixes.join(' / ')} ${suffixPart}` : suffixPart
+}
+
+/**
+ * Merges cohorts that share the same start/end dates into a single display row
+ * (e.g. a Men's + Women's journey on the same week become one card titled
+ * "Men's / Women's Iboga Journeys"). Capacity and assigned_count are summed.
+ * Use for public card rendering only — the scheduling form should stay ungrouped.
+ */
+export function groupCohortsByDate(cohorts: PublicCohort[]): PublicCohort[] {
+  const groups = new Map<string, PublicCohort[]>()
+  for (const c of cohorts) {
+    const key = `${c.start_at}|${c.end_at ?? ''}`
+    const list = groups.get(key)
+    if (list) list.push(c)
+    else groups.set(key, [c])
+  }
+  const out: PublicCohort[] = []
+  for (const group of groups.values()) {
+    if (group.length === 1) { out.push(group[0]); continue }
+    const totalCap = group.reduce((n, g) => n + (g.capacity ?? 0), 0)
+    out.push({
+      id: group.map(g => g.id).join(','),
+      title: combineTitles(group.map(g => g.title)),
+      start_at: group[0].start_at,
+      end_at: group[0].end_at,
+      capacity: totalCap > 0 ? totalCap : null,
+      assigned_count: group.reduce((n, g) => n + (g.assigned_count ?? 0), 0),
+    })
+  }
+  out.sort((a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime())
+  return out
+}
+
 /** Returns a short 'X spots left' phrase when only 3 or fewer remain, else null. */
 export function spotsLeftLabel(cohort: PublicCohort): string | null {
   if (cohort.capacity == null) return null

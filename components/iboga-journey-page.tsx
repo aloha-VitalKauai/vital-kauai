@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { fetchPublicCohorts, formatCohortRange, spotsLeftLabel, type PublicCohort } from "@/lib/cohorts";
+import { fetchPublicCohorts, formatCohortRange, groupCohortsByDate, spotsLeftLabel, type PublicCohort } from "@/lib/cohorts";
 import styles from "./iboga-journey-page.module.css";
 
 export function IbogaJourneyPage() {
@@ -453,7 +453,7 @@ export function IbogaJourneyPage() {
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 1, marginBottom: 32, background: "rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.06)" }}>
             {(() => {
-              const slots: (PublicCohort | null)[] = [...publicCohorts.slice(0, 3)];
+              const slots: (PublicCohort | null)[] = [...groupCohortsByDate(publicCohorts).slice(0, 3)];
               while (slots.length < 3) slots.push(null);
               return slots.map((c, i) => {
                 const isNext = i === 0 && c;
