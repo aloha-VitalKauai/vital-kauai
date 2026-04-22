@@ -530,7 +530,7 @@
   font-size: 9px;
   letter-spacing: 0.4em;
   text-transform: uppercase;
-  color: rgba(200, 169, 110, 0.35);
+  color: rgba(200, 169, 110, 0.75);
   margin-bottom: 10px;
 }
 
@@ -546,13 +546,13 @@
   font-family: var(--font-display), serif;
   font-size: 24px;
   font-weight: 300;
-  color: rgba(245, 240, 232, 0.35);
+  color: rgba(245, 240, 232, 0.6);
   margin-bottom: 4px;
 }
 
 .ceremonySub {
   font-size: 11px;
-  color: rgba(245, 240, 232, 0.4);
+  color: rgba(245, 240, 232, 0.7);
   letter-spacing: 0.08em;
 }
 
@@ -564,7 +564,7 @@
 
 .ceremonyStatusMuted {
   font-size: 10px;
-  color: rgba(245, 240, 232, 0.2);
+  color: rgba(245, 240, 232, 0.55);
   margin-top: 12px;
 }
 

@@ -36,9 +36,9 @@ export function StayPage() {
         const statusText = spots ?? (isNext ? "Filling Now" : "Open");
         const statusColor = isNext || spots ? "var(--terra-light)" : "rgba(245,240,232,0.55)";
         el.innerHTML = [
-          `<p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:${isNext ? "var(--terra)" : "rgba(200,169,110,0.7)"};margin-bottom:10px;">${isNext ? "Next Ceremony" : "Upcoming"}</p>`,
+          `<p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:${isNext ? "var(--terra)" : "rgba(200,169,110,0.85)"};margin-bottom:10px;">${isNext ? "Next Ceremony" : "Upcoming"}</p>`,
           `<p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--cream);margin-bottom:4px;">${mainLine}</p>`,
-          `<p style="font-size:11px;color:rgba(245,240,232,0.4);letter-spacing:0.08em;">${subLine}</p>`,
+          `<p style="font-size:11px;color:rgba(245,240,232,0.7);letter-spacing:0.08em;">${subLine}</p>`,
           `<p style="font-size:10px;color:${statusColor};margin-top:12px;letter-spacing:0.05em;">${statusText}</p>`,
         ].join("");
         el.style.background = isNext ? "rgba(28,43,30,0.8)" : "rgba(28,43,30,0.65)";
@@ -1576,22 +1576,22 @@ const BODY_CONTENT = `
     <p class="reveal" style="font-size:14px;color:rgba(245,240,232,0.6);line-height:1.95;margin-bottom:48px;max-width:600px;margin-left:auto;margin-right:auto;">Each ceremony is a small, held gathering — six members, seven days, one sacred arc. Book a discovery call to learn about the next available date.</p>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-bottom:44px;" class="reveal">
       <div id="upcoming-ceremony-card-0" style="background:rgba(28,43,30,0.5);padding:28px 20px;">
-        <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.35);margin-bottom:10px;">Upcoming</p>
-        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.35);margin-bottom:4px;">TBA</p>
-        <p style="font-size:11px;color:rgba(245,240,232,0.2);letter-spacing:0.08em;">Hanalei, Kauaʻi</p>
-        <p style="font-size:10px;color:rgba(245,240,232,0.2);margin-top:12px;">Dates Coming</p>
+        <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.75);margin-bottom:10px;">Upcoming</p>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.6);margin-bottom:4px;">TBA</p>
+        <p style="font-size:11px;color:rgba(245,240,232,0.55);letter-spacing:0.08em;">Hanalei, Kauaʻi</p>
+        <p style="font-size:10px;color:rgba(245,240,232,0.55);margin-top:12px;">Dates Coming</p>
       </div>
       <div id="upcoming-ceremony-card-1" style="background:rgba(28,43,30,0.5);padding:28px 20px;">
-        <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.35);margin-bottom:10px;">Upcoming</p>
-        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.35);margin-bottom:4px;">TBA</p>
-        <p style="font-size:11px;color:rgba(245,240,232,0.2);letter-spacing:0.08em;">Hanalei, Kauaʻi</p>
-        <p style="font-size:10px;color:rgba(245,240,232,0.2);margin-top:12px;">Dates Coming</p>
+        <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.75);margin-bottom:10px;">Upcoming</p>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.6);margin-bottom:4px;">TBA</p>
+        <p style="font-size:11px;color:rgba(245,240,232,0.55);letter-spacing:0.08em;">Hanalei, Kauaʻi</p>
+        <p style="font-size:10px;color:rgba(245,240,232,0.55);margin-top:12px;">Dates Coming</p>
       </div>
       <div id="upcoming-ceremony-card-2" style="background:rgba(28,43,30,0.5);padding:28px 20px;">
-        <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.35);margin-bottom:10px;">Upcoming</p>
-        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.35);margin-bottom:4px;">TBA</p>
-        <p style="font-size:11px;color:rgba(245,240,232,0.2);letter-spacing:0.08em;">Hanalei, Kauaʻi</p>
-        <p style="font-size:10px;color:rgba(245,240,232,0.2);margin-top:12px;">Dates Coming</p>
+        <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.75);margin-bottom:10px;">Upcoming</p>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.6);margin-bottom:4px;">TBA</p>
+        <p style="font-size:11px;color:rgba(245,240,232,0.55);letter-spacing:0.08em;">Hanalei, Kauaʻi</p>
+        <p style="font-size:10px;color:rgba(245,240,232,0.55);margin-top:12px;">Dates Coming</p>
       </div>
     </div>
     <a href="/begin-your-journey" target="_blank" style="display:inline-block;font-size:10px;font-weight:400;letter-spacing:0.3em;text-transform:uppercase;color:var(--forest);background:var(--gold);padding:18px 44px;text-decoration:none;">Book a Discovery Call to Join Our Next Group Ceremony</a>
