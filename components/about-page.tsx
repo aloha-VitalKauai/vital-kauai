@@ -301,8 +301,8 @@ export function AboutPage() {
             I&apos;ve learned so much from my own surrender — to Spirit, to the unknown, to the medicine, to love. That&apos;s what I bring into every space I hold. The ceremonies I&apos;m blessed to guide are known to be powerful, trustworthy, and radically transformative — weaving intention, play, and grounded spirituality into an experience that meets each person exactly where they are. I am so grateful to be of service to others&apos; awakening and homecoming — in this place, with the people I love, doing the work I was born for.
           </p>
           <div className={styles.pullPlaceholder}>
-            <p>&ldquo;Rachel holds a space that feels so safe. She just has a magic about her and I trust her completely. I&apos;ve spent my whole life calling in healing for a deep ancestral wound, and Rachel&apos;s guidance finally brought me the freedom I&apos;ve been seeking.&rdquo;</p>
-            <span>&mdash; Jacque S.</span>
+            <p>&ldquo;I carried an ancestral wound for decades, never quite finding the courage to face it. It was in the space you facilitated that something finally shifted. I was able to free myself! I am forever grateful for all the teachings you shared. Rachel &mdash; you have a magic that unlocked something deep in me.&rdquo;</p>
+            <span>&mdash; Jacque Shockley, Hanalei, Kauaʻi</span>
           </div>
         </div>
       </section>
