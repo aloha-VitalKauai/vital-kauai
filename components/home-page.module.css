@@ -11,6 +11,8 @@
   --stone: #8b8070;
   --text-dark: #1a1a18;
   --text-mid: #3d3d38;
+  --terra: #b8694a;
+  --terra-light: #d4917a;
   background: var(--warm-white);
   color: var(--text-dark);
   overflow-x: hidden;
