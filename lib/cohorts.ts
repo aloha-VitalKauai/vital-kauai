@@ -67,8 +67,26 @@ export function groupCohortsByDate(cohorts: PublicCohort[]): PublicCohort[] {
   return out
 }
 
+/**
+ * Cohorts to display as 'Full' publicly regardless of assigned_count.
+ * Keyed by the UTC YYYY-MM-DD of start_at. Use when a ceremony is closed to
+ * new bookings but names haven't been entered in the backend yet.
+ */
+const FORCED_FULL_START_DATES = new Set<string>([
+  '2026-07-05', // Jul 5–11, 2026 · Hanalei
+])
+
+function utcDateKey(iso: string): string {
+  const d = new Date(iso)
+  const y = d.getUTCFullYear()
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0')
+  const day = String(d.getUTCDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
+
 /** Returns a short 'X spots left' phrase when only 3 or fewer remain, else null. */
 export function spotsLeftLabel(cohort: PublicCohort): string | null {
+  if (FORCED_FULL_START_DATES.has(utcDateKey(cohort.start_at))) return 'Full'
   if (cohort.capacity == null) return null
   const assigned = cohort.assigned_count ?? 0
   const left = cohort.capacity - assigned
