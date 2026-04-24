@@ -5,6 +5,16 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { PRE_CEREMONY_WEEKS } from '@/lib/journal-prompts'
+import SectionIndex, { type SectionIndexItem } from '@/components/portal/SectionIndex'
+
+// Section index for Week 1. When Weeks 2+ are styled to match, add their own
+// arrays here and render the matching <SectionIndex /> for the active week.
+const WEEK_1_SECTIONS: SectionIndexItem[] = [
+  { label: 'Principle', anchor: '#principle' },
+  { label: 'Video',     anchor: '#week-video' },
+  { label: 'PNE',       anchor: '#pne-perspective' },
+  { label: 'Journal',   anchor: '#journal-prompts' },
+]
 
 // ─── Types ────────────────────────────────────────────────
 type Progress = {
@@ -771,6 +781,10 @@ export default function PreCeremonyPage() {
           </p>
         </div>
       </div>
+
+      {/* SECTION INDEX — Week 1 only for now. Weeks 2+ stay on the week-tabs
+          alone until each week's content is restyled to match. */}
+      {activeWeek === 0 && <SectionIndex sections={WEEK_1_SECTIONS} />}
 
       {/* WEEK NAV */}
       <div className="pc-week-nav">
