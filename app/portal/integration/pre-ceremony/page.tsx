@@ -7,13 +7,17 @@ import Link from 'next/link'
 import { PRE_CEREMONY_WEEKS } from '@/lib/journal-prompts'
 import SectionIndex, { type SectionIndexItem } from '@/components/portal/SectionIndex'
 
-// Section index for Week 1. When Weeks 2+ are styled to match, add their own
-// arrays here and render the matching <SectionIndex /> for the active week.
+// Section index for Week 1. Order matches the on-page section order so the
+// IntersectionObserver-driven active highlight tracks naturally as members
+// scroll. When Weeks 2+ are styled to match, add their own arrays here and
+// render the matching <SectionIndex /> for the active week.
 const WEEK_1_SECTIONS: SectionIndexItem[] = [
   { label: 'Principle', anchor: '#principle' },
   { label: 'Video',     anchor: '#week-video' },
+  { label: 'Actions',   anchor: '#action-items' },
   { label: 'PNE',       anchor: '#pne-perspective' },
   { label: 'Journal',   anchor: '#journal-prompts' },
+  { label: 'Community', anchor: '#community' },
 ]
 
 // ─── Types ────────────────────────────────────────────────
@@ -788,10 +792,6 @@ export default function PreCeremonyPage() {
         </div>
       </div>
 
-      {/* SECTION INDEX — Week 1 only for now. Weeks 2+ stay on the week-tabs
-          alone until each week's content is restyled to match. */}
-      {activeWeek === 0 && <SectionIndex sections={WEEK_1_SECTIONS} />}
-
       {/* WEEK NAV */}
       <div className="pc-week-nav">
         {WEEKS.map((w, i) => (
@@ -804,6 +804,14 @@ export default function PreCeremonyPage() {
           </button>
         ))}
       </div>
+
+      {/* SECTION INDEX — Week 1 only. Sticky right under the week-tabs (60 +
+          ~52 = 112) so it stays in view as members scroll through sections.
+          Weeks 2+ stay on the week-tabs alone until each week's content is
+          restyled to match. */}
+      {activeWeek === 0 && (
+        <SectionIndex sections={WEEK_1_SECTIONS} stickyTop={112} scrollOffset={170} />
+      )}
 
       {/* MAIN */}
       <main className="pc-main">
