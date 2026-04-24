@@ -50,6 +50,12 @@ low-risk, proceed straight through merge + deploy.
 - Use Hawaiian orthography: `Kauaʻi` (with ʻokina), `Kauaʻi`-based, etc.
 - Do not use "shaman" or "trip" — prefer guide / holder / practitioner
   and journey / medicine.
+- **Affirmative voice only.** Describe what something *is*, not what it
+  isn't. Avoid "not X" constructions, hedging negations, and defensive
+  disclaimers. Prefer "offered with care" over "not instruction";
+  "we gather X when Y" over "we won't ask for X"; "open to beginners"
+  over "not only for advanced practitioners." Negatives foreground the
+  wrong thing.
 - Paul Heffernan's plant-medicine title is **"Director of Plant
   Regeneration / Medicine Guide"**; his BodyTalk role is separate.
 - Dr. Liz is **"Director of On-Island Integration"**.

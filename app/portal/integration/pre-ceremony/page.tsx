@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment, useState, useEffect, useCallback } from 'react'
+import { Fragment, useState, useEffect, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -450,7 +450,7 @@ export default function PreCeremonyPage() {
     await supabase.from('member_journals').upsert({ member_id: userId, responses: merged, last_saved_at: new Date().toISOString() }, { onConflict: 'member_id' })
   }, [userId])
 
-  const journalTimerRef = { current: null as ReturnType<typeof setTimeout> | null }
+  const journalTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const updateJournal = (key: string, value: string) => {
     const next = { ...journal, [key]: value }
     setJournal(next)
@@ -458,11 +458,27 @@ export default function PreCeremonyPage() {
     journalTimerRef.current = setTimeout(() => {
       save(completed, checklist, next)
       syncToMainJournal(next, key)
+      journalTimerRef.current = null
     }, 1500)
+  }
+
+  // Flush any pending debounced journal save immediately and wait for it to finish.
+  const flushJournalSave = useCallback(async () => {
+    if (journalTimerRef.current) {
+      clearTimeout(journalTimerRef.current)
+      journalTimerRef.current = null
+      await save(completed, checklist, journal)
+    }
+  }, [save, completed, checklist, journal])
+
+  const saveAndExit = async () => {
+    await flushJournalSave()
+    router.push('/portal')
   }
 
   const markComplete = async (weekIdx: number) => {
     if (completed.has(weekIdx)) return
+    await flushJournalSave()
     const next = new Set(completed)
     next.add(weekIdx)
     setCompleted(next)
@@ -694,6 +710,10 @@ export default function PreCeremonyPage() {
         .btn-complete { padding:12px 28px;background:var(--sage);border:none;border-radius:3px;color:var(--deep);font-family:inherit;font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap; }
         .btn-complete:hover { background:var(--sage-lt); }
         .btn-complete.done { background:rgba(122,158,126,.12);border:.5px solid var(--sage);color:var(--sage);cursor:default; }
+        .btn-save-exit { padding:12px 26px;background:transparent;border:1px solid var(--sage);border-radius:3px;color:var(--forest);font-family:inherit;font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s;white-space:nowrap; }
+        .btn-save-exit:hover { background:rgba(122,158,126,.1); }
+        .wc-actions { display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end; }
+        .w1-autosave { font-size:11.5px;color:var(--stone);font-style:italic;margin:4px 0 20px; }
 
         /* SAVE STATUS */
         .save-pill { position:fixed;bottom:24px;right:24px;padding:10px 18px;border-radius:4px;font-size:11px;letter-spacing:.1em;font-family:inherit;background:rgba(28,43,30,.9);color:var(--sage);opacity:0;transition:opacity .3s;pointer-events:none;z-index:200; }
@@ -830,6 +850,7 @@ export default function PreCeremonyPage() {
                 <section className="w1-section" id="journal-prompts">
                   <h3 className="w1-h3">Journal Prompts</h3>
                   <p className="w1-invite">Before you begin, close your eyes. Take a few slow breaths. Scan your body — and notice what you notice.</p>
+                  <p className="w1-autosave">Your writing saves automatically as you type. You can return any time to continue.</p>
                   {[
                     // Storage keys are preserved across display-order changes so a member's
                     // prior journal entries stay attached to the prompt they actually wrote to.
@@ -860,15 +881,13 @@ export default function PreCeremonyPage() {
                       <div className="vp-play"><span className="vp-play-icon">▶</span></div>
                       <div>
                         <div className="vp-label">A Reflection from the Community · Week 1</div>
-                        <div className="vp-text">A short transmission from a member who has walked this path — their experience with perception, with Ike, and with the first week of preparation. Offered in the spirit of companionship, not instruction.</div>
+                        <div className="vp-text">A short transmission from a member who has walked this path — their experience with perception, with Ike, and with the first week of preparation.</div>
                         <div className="vp-coming-soon">Coming Soon</div>
                       </div>
                     </div>
                   </div>
                 </section>
 
-                {/* Section 7 — Closing */}
-                <p className="w1-closing">Begin when you&apos;re ready.</p>
               </>
             ) : (
               <>
@@ -1047,15 +1066,24 @@ export default function PreCeremonyPage() {
             <div className="wc-wrap">
               <div className="wc-text">
                 <strong>{i === 5 ? 'You\'ve completed all six weeks.' : `Finished with Week ${i + 1}?`}</strong><br />
-                {i === 5 ? 'Mark your preparation complete. You are ready.' : 'Mark it complete and your progress is saved. You can return any time.'}
+                {i === 5 ? 'Mark your preparation complete. You are ready.' : 'Your progress is saved. You can return any time.'}
               </div>
-              <button
-                className={`btn-complete${completed.has(i) ? ' done' : ''}`}
-                onClick={() => markComplete(i)}
-                disabled={completed.has(i)}
-              >
-                {completed.has(i) ? '✓ Completed' : i === 5 ? 'Mark Preparation Complete' : `Mark Week ${i + 1} Complete`}
-              </button>
+              <div className="wc-actions">
+                <button
+                  type="button"
+                  className="btn-save-exit"
+                  onClick={saveAndExit}
+                >
+                  Save &amp; Continue Later
+                </button>
+                <button
+                  className={`btn-complete${completed.has(i) ? ' done' : ''}`}
+                  onClick={() => markComplete(i)}
+                  disabled={completed.has(i)}
+                >
+                  {completed.has(i) ? '✓ Completed' : i === 5 ? 'Mark Preparation Complete' : `Mark Week ${i + 1} Complete`}
+                </button>
+              </div>
             </div>
 
           </div>
