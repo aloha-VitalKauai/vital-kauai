@@ -18,10 +18,12 @@
 
 alter table public.intake_forms
   -- Section 1 · Basic Information
+  -- (email intentionally omitted — auth.users + public.members already hold
+  -- the canonical address; duplicating it on intake_forms would just drift.
+  -- The Email field is also being removed from the intake form itself.)
   add column if not exists legal_name text,
   add column if not exists preferred_name text,
   add column if not exists location text,
-  add column if not exists email text,
   add column if not exists physician_name text,
   add column if not exists physician_phone text,
 
