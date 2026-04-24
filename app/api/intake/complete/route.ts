@@ -65,6 +65,21 @@ function normalizeIntake(body: Record<string, unknown>) {
   return out;
 }
 
+// Build the verbatim `responses` jsonb payload — every non-empty field the
+// member submitted, so the founders dashboard can review answers even for
+// questions without a dedicated typed column. We strip the typed `signature`
+// blob (already stored in its own column) to avoid duplicating it.
+function buildResponsesPayload(body: Record<string, unknown>) {
+  const out: Record<string, unknown> = {};
+  for (const [key, v] of Object.entries(body)) {
+    if (key === "signature") continue;
+    if (v === undefined || v === null) continue;
+    if (typeof v === "string" && v.trim() === "") continue;
+    out[key] = v;
+  }
+  return Object.keys(out).length ? out : null;
+}
+
 function serviceDb() {
   return createServiceClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -116,6 +131,7 @@ export async function POST(req: NextRequest) {
     }
 
     const intakeFields = normalizeIntake(body);
+    const responsesPayload = buildResponsesPayload(body);
     const nowIso = new Date().toISOString();
     const db = serviceDb();
 
@@ -140,6 +156,7 @@ export async function POST(req: NextRequest) {
         .from("intake_forms")
         .update({
           ...intakeFields,
+          responses: responsesPayload,
           submission_date: nowIso,
           signed_at: nowIso,
         })
@@ -152,6 +169,7 @@ export async function POST(req: NextRequest) {
       const { error: insErr } = await db.from("intake_forms").insert({
         member_id: user.id,
         ...intakeFields,
+        responses: responsesPayload,
         submission_date: nowIso,
         signed_at: nowIso,
         created_at: nowIso,
