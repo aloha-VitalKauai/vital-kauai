@@ -160,10 +160,10 @@ const WEEKS = [
     actions: [
       {
         color: 'green',
-        text: 'Read the Nervous System Safety Guide',
+        text: 'Read The Somatic Companion',
         note: 'Understanding your polyvagal states before ceremony is one of the most valuable things you can do. It gives you a map for what you\'ll encounter in your own body during the experience.',
         links: [
-          { text: 'Read the Nervous System Safety Guide', href: '/portal/nervous-system' },
+          { text: 'Read The Somatic Companion', href: '/portal/somatic-companion' },
         ],
       },
       {
@@ -171,7 +171,7 @@ const WEEKS = [
         text: 'Begin Coherent Heart Breath — 10 minutes, every morning',
         note: 'This single practice does more for your ceremony readiness than almost anything else on this list. It is the minimum. Do it every day.',
         links: [
-          { text: 'Begin Coherent Heart Breath — 10 minutes, every morning', href: '/portal/nervous-system#coherent-heart-breath' },
+          { text: 'Begin Coherent Heart Breath — 10 minutes, every morning', href: '/portal/somatic-companion#coherent-heart-breath' },
         ],
       },
       {
@@ -397,18 +397,30 @@ export default function PreCeremonyPage() {
   }, [])
 
   // ── Hash navigation: deep-link to a specific week's journal section
+  // Weeks 2–6 use #journal-w{n}; Week 1 uses named section anchors (#principle,
+  // #week-video, #pne-perspective, #journal-prompts, #action-items, #community).
   useEffect(() => {
     if (loading) return
     if (typeof window === 'undefined') return
     const hash = window.location.hash
+    const WEEK1_ANCHORS = ['principle', 'week-video', 'pne-perspective', 'journal-prompts', 'action-items', 'community']
     const match = hash.match(/^#journal-w(\d)$/)
-    if (!match) return
-    const weekNum = parseInt(match[1], 10)
-    if (weekNum < 1 || weekNum > 6) return
-    setActiveWeek(weekNum - 1)
-    setTimeout(() => {
-      document.getElementById(`journal-w${weekNum}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }, 250)
+    if (match) {
+      const weekNum = parseInt(match[1], 10)
+      if (weekNum < 1 || weekNum > 6) return
+      setActiveWeek(weekNum - 1)
+      setTimeout(() => {
+        document.getElementById(`journal-w${weekNum}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 250)
+      return
+    }
+    const anchor = hash.replace(/^#/, '')
+    if (WEEK1_ANCHORS.includes(anchor)) {
+      setActiveWeek(0)
+      setTimeout(() => {
+        document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 250)
+    }
   }, [loading])
 
   // ── Save
@@ -563,8 +575,36 @@ export default function PreCeremonyPage() {
         .wh-italic { font-size:13px;color:var(--sage);font-style:italic;margin-top:16px;letter-spacing:.02em; }
 
         /* SECTION */
-        .section { margin-bottom:44px; }
+        .section { margin-bottom:44px;scroll-margin-top:130px; }
         .section-label { font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--sage);margin-bottom:16px;display:block; }
+
+        /* WEEK 1 — custom layout */
+        .w1-section { margin-bottom:52px;scroll-margin-top:130px; }
+        .w1-eyebrow { font-size:9px;letter-spacing:.38em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:14px; }
+        .w1-h2 { font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3.5vw,42px);font-weight:300;line-height:1.12;color:var(--ink);margin-bottom:14px; }
+        .w1-h2 em { font-style:italic;color:var(--sage); }
+        .w1-h3 { font-family:'Cormorant Garamond',serif;font-size:clamp(22px,2.6vw,30px);font-weight:300;line-height:1.2;color:var(--ink);margin-bottom:16px; }
+        .w1-subhead { font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--sage);margin-bottom:14px; }
+        .w1-pull { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;color:var(--sage);line-height:1.5;padding:12px 0 18px;border-left:2px solid var(--sage-lt);padding-left:18px;margin-bottom:20px; }
+        .w1-body { font-size:14px;color:var(--ink-mid);line-height:1.9;max-width:640px; }
+        .w1-body + .w1-body { margin-top:14px; }
+        .w1-companion-link { display:inline-block;margin-top:18px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);text-decoration:none;border-bottom:1px dashed rgba(200,169,110,.55);padding-bottom:2px; }
+        .w1-companion-link:hover { color:var(--sage); }
+        .w1-video-placeholder { border:.5px dashed rgba(200,169,110,.4);border-radius:4px;background:rgba(122,158,126,.04);padding:56px 32px;text-align:center;color:var(--stone);font-size:12px;letter-spacing:.18em;text-transform:uppercase; }
+        .w1-video-placeholder span { display:block;margin-top:8px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.04em;color:var(--gold);text-transform:none; }
+        .w1-prompt { padding:22px 0;border-bottom:1px solid var(--border); }
+        .w1-prompt:first-child { border-top:1px solid var(--border); }
+        .w1-prompt-num { font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:10px; }
+        .w1-prompt-q { font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--ink);line-height:1.35;margin-bottom:10px; }
+        .w1-prompt-hint { font-size:12.5px;color:var(--stone);line-height:1.75;font-style:italic; }
+        .w1-actions { display:flex;flex-direction:column;gap:10px; }
+        .w1-action { display:flex;align-items:flex-start;gap:14px;padding:16px 18px;border:.5px solid var(--border);border-radius:4px;background:white;text-decoration:none;color:var(--ink);transition:border-color .2s,background .2s; }
+        .w1-action:hover { border-color:var(--sage);background:rgba(122,158,126,.04); }
+        .w1-action-dot { width:8px;height:8px;border-radius:50%;background:var(--sage);flex-shrink:0;margin-top:7px; }
+        .w1-action-text { font-size:13.5px;color:var(--ink);line-height:1.55; }
+        .w1-community { background:rgba(122,158,126,.05);border:.5px solid rgba(122,158,126,.2);border-radius:4px;padding:28px 32px;text-align:center; }
+        .w1-community-text { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--stone);line-height:1.7; }
+        .w1-closing { margin-top:24px;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;color:var(--sage);letter-spacing:.02em; }
 
         /* VIDEO */
         .video-frame { border:.5px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:14px; }
@@ -681,11 +721,11 @@ export default function PreCeremonyPage() {
       <div className="pc-hero">
         <div className="pc-hero-inner">
           <span className="pc-hero-eyebrow">Member Portal · Iboga Journey · Confidential</span>
-          <h1>Six Weeks of<br /><em>Preparation</em></h1>
+          <h1>Six Weeks of <em>Preparation</em></h1>
           <p className="pc-hero-desc">
-            What you do in these six weeks is part of the medicine itself.
-            The preparation is the first dose. Each week has one theme, one video transmission, and a small number of clear actions.
-            Move through them in order. Trust the arc.
+            This portal is your companion through an evidence-based and deeply personal arc of preparation and integration.
+            Each week draws on a Hawaiian principle, paired with a teaching from psychoneuroenergetics (PNE) to support the body, mind, and spirit.
+            You&apos;ll find journal prompts, action items, and voices from the Vital Kauaʻi community — those who have walked this path.
           </p>
         </div>
       </div>
@@ -708,6 +748,105 @@ export default function PreCeremonyPage() {
         {WEEKS.map((w, i) => (
           <div key={w.id} className={`pc-panel${activeWeek === i ? ' active' : ''}`}>
 
+            {i === 0 ? (
+              <>
+                {/* Section 1 — Principle */}
+                <section className="w1-section" id="principle">
+                  <span className="w1-eyebrow">Week 1 · Ike · Perception</span>
+                  <h2 className="w1-h2"><em>Seeing clearly.</em></h2>
+                  <div className="w1-subhead">The Principle: Ike</div>
+                  <p className="w1-pull">I create my reality.</p>
+                  <p className="w1-body">What you perceive shapes what you experience — attention, assumptions, the stories carried without noticing. This week is an invitation to look at the lens itself.</p>
+                </section>
+
+                {/* Section 2 — Week Video */}
+                <section className="w1-section" id="week-video">
+                  <h3 className="w1-h3">Week 1 Video</h3>
+                  <div className="w1-video-placeholder">
+                    Video transmission · Week 1
+                    <span>Coming Soon</span>
+                  </div>
+                </section>
+
+                {/* Section 3 — PNE Perspective */}
+                <section className="w1-section" id="pne-perspective">
+                  <h3 className="w1-h3">PNE Perspective: <em>The Language of the Body</em></h3>
+                  <p className="w1-body">
+                    Before any thought, the body is already speaking. Sensation — tightening, loosening, warmth, pressure — is the nervous system&apos;s first language, arriving long before words or meaning. What we call a &ldquo;feeling&rdquo; is actually three layers stacked: sensation in the body, charge in the emotional system, and story in the mind. The mind&apos;s story is often the loudest, but it&apos;s the last layer to arrive. This week, the invitation from PNE is to notice what&apos;s underneath the story — the raw data of the body — before the mind names it.
+                  </p>
+                  <div className="w1-video-placeholder" style={{ marginTop: 24 }}>
+                    PNE teaching · Week 1
+                    <span>Coming Soon</span>
+                  </div>
+                  <Link href="/portal/somatic-companion#week-1" className="w1-companion-link">
+                    Read the full teaching in The Somatic Companion → Week 1: The Language of the Body
+                  </Link>
+                </section>
+
+                {/* Section 4 — Journal Prompts */}
+                <section className="w1-section" id="journal-prompts">
+                  <h3 className="w1-h3">Journal Prompts</h3>
+                  {[
+                    { q: 'What sensations am I currently noticing in my body?', hint: 'A tightness in the jaw, warmth in the chest, buzzing in the hands, a heaviness behind the eyes.' },
+                    { q: 'If I create my reality, what’s possible for my life after this journey?' },
+                    { q: 'What thoughts about myself, others, or the world am I mistaking for truth?' },
+                  ].map((p, pi) => {
+                    const jKey = `w0-p${pi}`
+                    return (
+                      <div className="w1-prompt" key={pi}>
+                        <span className="w1-prompt-num">0{pi + 1}</span>
+                        <p className="w1-prompt-q">{p.q}</p>
+                        {p.hint && <p className="w1-prompt-hint">{p.hint}</p>}
+                        <textarea
+                          className="journal-textarea"
+                          value={journal[jKey] ?? ''}
+                          onChange={(e) => updateJournal(jKey, e.target.value)}
+                          placeholder="Write freely..."
+                          rows={4}
+                        />
+                      </div>
+                    )
+                  })}
+                </section>
+
+                {/* Section 5 — Action Items */}
+                <section className="w1-section" id="action-items">
+                  <h3 className="w1-h3">Action Items</h3>
+                  <div className="w1-actions">
+                    {/* TODO: confirm canonical intake form route once the portal intake page ships. */}
+                    <Link href="/intake-form" className="w1-action">
+                      <span className="w1-action-dot" />
+                      <span className="w1-action-text">Fill out the remaining questions on your intake form</span>
+                    </Link>
+                    <a href="#journal-prompts" className="w1-action">
+                      <span className="w1-action-dot" />
+                      <span className="w1-action-text">Respond to this week&apos;s journal prompts</span>
+                    </a>
+                    {/* TODO: /portal/questions-for-the-medicine is a placeholder alias; the live page currently lives at /portal/questions. Wire this up when the dedicated page is ready. */}
+                    <Link href="/portal/questions-for-the-medicine" className="w1-action">
+                      <span className="w1-action-dot" />
+                      <span className="w1-action-text">Begin writing your questions for the medicine — stream of consciousness, no editing. Write freely what truths you want to know.</span>
+                    </Link>
+                    <Link href="/portal/somatic-companion#week-1" className="w1-action">
+                      <span className="w1-action-dot" />
+                      <span className="w1-action-text">Read Week 1: The Language of the Body in The Somatic Companion</span>
+                    </Link>
+                  </div>
+                </section>
+
+                {/* Section 6 — Voices from the Community */}
+                <section className="w1-section" id="community">
+                  <h3 className="w1-h3">Voices from the Community</h3>
+                  <div className="w1-community">
+                    <p className="w1-community-text">A reflection from someone who has walked this path — coming soon.</p>
+                  </div>
+                </section>
+
+                {/* Section 7 — Closing */}
+                <p className="w1-closing">Begin when you&apos;re ready.</p>
+              </>
+            ) : (
+              <>
             {/* Carry forward thread */}
             {w.carryForward && (
               <div className="continuity">
@@ -874,6 +1013,8 @@ export default function PreCeremonyPage() {
                   <h3 className="bridge-title">The preparation is complete.</h3>
                   <p className="bridge-text">In the weeks following ceremony, this portal will continue to guide you through integration — with the same rhythm, the same depth, and the same care you've experienced here. You will be held through every phase of what comes next.</p>
                 </div>
+              </>
+            )}
               </>
             )}
 
