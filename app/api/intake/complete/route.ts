@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 // Columns we accept from the intake form. Anything else in the payload is ignored.
+// Names must match existing columns on public.intake_forms — unknown names
+// would trigger a Postgres error on insert.
 const INTAKE_COLUMNS = [
+  // Pre-existing clinical / contact columns
   "date_of_birth",
   "phone",
   "emergency_contact",
@@ -26,6 +29,26 @@ const INTAKE_COLUMNS = [
   "medical_notes",
   "supplements",
   "previous_psychedelic_experience",
+  // Added via migration 20260424220000_intake_forms_expanded_columns.sql
+  "legal_name",
+  "preferred_name",
+  "location",
+  "physician_name",
+  "physician_phone",
+  "body_relationship",
+  "grounding_practices",
+  "emotional_patterns",
+  "current_therapy",
+  "personal_growth",
+  "childhood_history",
+  "integration_history",
+  "mental_health_status",
+  "home_support_selection",
+  "home_support_people",
+  "boundaries_needs",
+  "additional_notes",
+  "signer_name",
+  "signed_date",
 ] as const;
 
 function pickIntakeFields(body: Record<string, unknown>) {
