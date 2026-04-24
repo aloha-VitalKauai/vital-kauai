@@ -831,26 +831,25 @@ export default function PreCeremonyPage() {
                   <h3 className="w1-h3">Journal Prompts</h3>
                   <p className="w1-invite">Before you begin, close your eyes. Take a few slow breaths. Scan your body — and notice what you notice.</p>
                   {[
-                    { q: 'What sensations am I currently noticing in my body?', hint: 'A tightness in the jaw, warmth in the chest, buzzing in the hands, a heaviness behind the eyes.' },
-                    { q: 'If I create my reality, what’s possible for my life after this journey?' },
-                    { q: 'What thoughts about myself, others, or the world am I mistaking for truth?' },
-                  ].map((p, pi) => {
-                    const jKey = `w0-p${pi}`
-                    return (
-                      <div className="w1-prompt" key={pi}>
-                        <span className="w1-prompt-num">0{pi + 1}</span>
-                        <p className="w1-prompt-q">{p.q}</p>
-                        {p.hint && <p className="w1-prompt-hint">{p.hint}</p>}
-                        <textarea
-                          className="journal-textarea"
-                          value={journal[jKey] ?? ''}
-                          onChange={(e) => updateJournal(jKey, e.target.value)}
-                          placeholder="Write freely..."
-                          rows={4}
-                        />
-                      </div>
-                    )
-                  })}
+                    // Storage keys are preserved across display-order changes so a member's
+                    // prior journal entries stay attached to the prompt they actually wrote to.
+                    { key: 'w0-p1', q: 'If I create my reality, what’s possible for my life after this journey?' },
+                    { key: 'w0-p2', q: 'What thoughts about myself, others, or the world am I mistaking for truth?' },
+                    { key: 'w0-p0', q: 'What sensations am I currently noticing in my body?', hint: 'A tightness in the jaw, warmth in the chest, buzzing in the hands, a heaviness behind the eyes.' },
+                  ].map((p, pi) => (
+                    <div className="w1-prompt" key={p.key}>
+                      <span className="w1-prompt-num">0{pi + 1}</span>
+                      <p className="w1-prompt-q">{p.q}</p>
+                      {p.hint && <p className="w1-prompt-hint">{p.hint}</p>}
+                      <textarea
+                        className="journal-textarea"
+                        value={journal[p.key] ?? ''}
+                        onChange={(e) => updateJournal(p.key, e.target.value)}
+                        placeholder="Write freely..."
+                        rows={4}
+                      />
+                    </div>
+                  ))}
                 </section>
 
                 {/* Section 6 — Voices from the Community (formatted as a video transmission) */}
