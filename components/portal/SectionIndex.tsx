@@ -23,11 +23,22 @@ type Props = {
    * used on the pre-ceremony page.
    */
   scrollOffset?: number
+  /**
+   * Optional — when set, the index becomes `position: sticky` at this top
+   * offset (in pixels). Use when stacking under another sticky bar so the
+   * index stays in view while members scroll through sections.
+   */
+  stickyTop?: number
 }
 
 const idOf = (anchor: string) => anchor.replace(/^#/, '')
 
-export default function SectionIndex({ sections, activeSection, scrollOffset = 130 }: Props) {
+export default function SectionIndex({
+  sections,
+  activeSection,
+  scrollOffset = 130,
+  stickyTop,
+}: Props) {
   const [observed, setObserved] = useState<string | null>(null)
   const controlled = activeSection !== undefined
 
@@ -86,7 +97,11 @@ export default function SectionIndex({ sections, activeSection, scrollOffset = 1
           .si-link.active::after { left: 14px; right: 14px; bottom: 6px; }
         }
       `}</style>
-      <nav className="si-wrap" aria-label="Section index">
+      <nav
+        className="si-wrap"
+        aria-label="Section index"
+        style={stickyTop !== undefined ? { position: 'sticky', top: stickyTop, zIndex: 80 } : undefined}
+      >
         <div className="si-inner">
           {sections.map(s => {
             const id = idOf(s.anchor)
