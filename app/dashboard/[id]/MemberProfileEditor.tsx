@@ -93,192 +93,6 @@ const TEXTAREA: React.CSSProperties = {
   resize: "vertical" as const,
 };
 
-/* ── Full intake responses panel ───────────────────────────────── */
-// Section groupings + friendly labels for every question on the
-// member-facing intake form (public/intake-form-legacy.html). Values are
-// pulled from the typed column first, then fall back to intake.responses
-// (jsonb captured by /api/intake/complete) for questions without a
-// dedicated column.
-const INTAKE_SECTIONS: { title: string; fields: [string, string][] }[] = [
-  {
-    title: "Basic information",
-    fields: [
-      ["legal_name", "Full legal name"],
-      ["preferred_name", "Preferred name / pronouns"],
-      ["email", "Email"],
-      ["location", "Location"],
-    ],
-  },
-  {
-    title: "Intention & orientation",
-    fields: [
-      ["primary_intention", "What is calling you to this work"],
-      ["what_brings_you_here", "What brings you here"],
-      ["life_purpose", "Purpose or mission"],
-      ["ideal_life", "Ideal life / magic wand"],
-      ["sacred_practice", "Relationship to sacred practice"],
-    ],
-  },
-  {
-    title: "Body & somatic awareness",
-    fields: [
-      ["body_relationship", "Relationship with your body"],
-      ["physical_symptoms", "Physical symptoms / sensitivities"],
-      ["grounding_practices", "What helps you feel safe & grounded"],
-    ],
-  },
-  {
-    title: "Emotional & psycho-spiritual",
-    fields: [
-      ["emotional_patterns", "Emotional patterns most present"],
-      ["psychiatric_history", "Psychiatric history"],
-      ["current_therapy", "Current therapist / coach / healer"],
-    ],
-  },
-  {
-    title: "Experience & history",
-    fields: [
-      ["personal_growth", "Personal growth / healing work"],
-      ["previous_psychedelic_experience", "Past plant medicine / altered-state experience"],
-      ["childhood_history", "Childhood & primary caregivers"],
-      ["integration_history", "Past integration support"],
-    ],
-  },
-  {
-    title: "Health & safety",
-    fields: [
-      ["health_history", "Medical / health conditions"],
-      ["current_medications", "Medications & supplements"],
-      ["mental_health_status", "Current mental & emotional health"],
-      ["substance_history", "Substance history"],
-    ],
-  },
-  {
-    title: "Support & environment",
-    fields: [
-      ["support_systems", "Support systems"],
-      ["home_support_selection", "People holding space at home"],
-      ["home_support_people", "Who they are"],
-      ["ideal_integration_support", "Ideal integration support"],
-    ],
-  },
-  {
-    title: "Readiness & sovereignty",
-    fields: [
-      ["readiness_signals", "Signals of readiness for inner work"],
-      ["self_care_practices", "Self-care during intensity"],
-      ["boundaries_needs", "Boundaries / needs to know"],
-      ["additional_notes", "Anything else for the care team"],
-    ],
-  },
-  {
-    title: "Acknowledgment & signature",
-    fields: [
-      ["signer_name", "Signed name"],
-      ["signature", "Typed signature"],
-      ["signed_date", "Signed date"],
-    ],
-  },
-];
-
-const MENTAL_HEALTH_LABELS: Record<string, string> = {
-  stable: "Stable & resourced",
-  in_process: "In process — actively working",
-  significant: "Significant challenges right now",
-  crisis: "In crisis",
-};
-
-const HOME_SUPPORT_LABELS: Record<string, string> = {
-  one: "One trusted person",
-  few: "A few people",
-  help: "Need help identifying support",
-};
-
-function readIntakeValue(intake: Record<string, any>, key: string): string {
-  // Typed column first, then jsonb responses fallback.
-  const raw =
-    intake[key] !== undefined && intake[key] !== null && intake[key] !== ""
-      ? intake[key]
-      : intake.responses && typeof intake.responses === "object"
-        ? (intake.responses as Record<string, unknown>)[key]
-        : undefined;
-  if (raw === undefined || raw === null || raw === "") return "";
-  if (key === "mental_health_status") return MENTAL_HEALTH_LABELS[String(raw)] || String(raw);
-  if (key === "home_support_selection") return HOME_SUPPORT_LABELS[String(raw)] || String(raw);
-  if (key === "signed_date") return fmtDate(String(raw));
-  if (typeof raw === "string") return raw;
-  return JSON.stringify(raw);
-}
-
-function FullIntakeResponses({ intake }: { intake: Record<string, any> }) {
-  // Collect every key we'll display so we can find anything in `responses`
-  // that isn't covered by INTAKE_SECTIONS (forward-compat for new questions).
-  const knownKeys = new Set<string>();
-  for (const sec of INTAKE_SECTIONS) for (const [k] of sec.fields) knownKeys.add(k);
-
-  const extras: [string, string][] = [];
-  if (intake.responses && typeof intake.responses === "object") {
-    for (const [k, v] of Object.entries(intake.responses as Record<string, unknown>)) {
-      if (knownKeys.has(k)) continue;
-      if (v === null || v === undefined || v === "") continue;
-      extras.push([k, typeof v === "string" ? v : JSON.stringify(v)]);
-    }
-  }
-
-  return (
-    <details style={{ marginTop: 16, borderTop: "0.5px solid rgba(0,0,0,0.08)", paddingTop: 12 }}>
-      <summary
-        style={{
-          cursor: "pointer",
-          fontSize: 12,
-          fontWeight: 500,
-          color: "#3D5A2E",
-          listStyle: "none",
-          userSelect: "none",
-        }}
-      >
-        View full submitted responses
-      </summary>
-      <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 18 }}>
-        {INTAKE_SECTIONS.map((sec) => {
-          const rows = sec.fields
-            .map(([key, label]) => [key, label, readIntakeValue(intake, key)] as const)
-            .filter(([, , value]) => value !== "");
-          if (!rows.length) return null;
-          return (
-            <div key={sec.title}>
-              <p style={{ ...LABEL, marginBottom: 8 }}>{sec.title}</p>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13 }}>
-                {rows.map(([key, label, value]) => (
-                  <div key={key}>
-                    <p style={{ color: "#6B6B67", margin: "0 0 2px" }}>{label}</p>
-                    <p style={{ color: "#1A1A18", margin: 0, whiteSpace: "pre-wrap" }}>{value}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-        {extras.length > 0 && (
-          <div>
-            <p style={{ ...LABEL, marginBottom: 8 }}>Additional responses</p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13 }}>
-              {extras.map(([key, value]) => (
-                <div key={key}>
-                  <p style={{ color: "#6B6B67", margin: "0 0 2px" }}>
-                    {key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}
-                  </p>
-                  <p style={{ color: "#1A1A18", margin: 0, whiteSpace: "pre-wrap" }}>{value}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </details>
-  );
-}
-
 /* ── Component ─────────────────────────────────────────────────── */
 type Commitment = { id: string; expected_amount_cents: number; status: string; journey_id?: string | null | undefined; kind?: string | null | undefined } | null;
 type PaymentToken = { token: string; expires_at: string; consumed_at: string | null; created_at: string };
@@ -1087,7 +901,24 @@ export default function MemberProfileEditor({
                 </div>
               </div>
             )}
-            {intake && <FullIntakeResponses intake={intake} />}
+            {intake && (
+              <a
+                href={`/dashboard/${member.id}/intake`}
+                style={{
+                  display: "inline-block",
+                  marginTop: 16,
+                  fontSize: 12,
+                  fontWeight: 500,
+                  color: "#3D5A2E",
+                  textDecoration: "none",
+                  borderTop: "0.5px solid rgba(0,0,0,0.08)",
+                  paddingTop: 12,
+                  width: "100%",
+                }}
+              >
+                Review their full intake →
+              </a>
+            )}
           </div>
 
           {/* Preparation checklist */}
