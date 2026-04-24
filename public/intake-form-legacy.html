@@ -42,6 +42,15 @@ body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm
 .progress-track { flex: 1; height: 2px; background: rgba(28,43,30,0.08); }
 .progress-fill { height: 100%; background: var(--sage); width: 0%; transition: width 0.4s ease; }
 .progress-pct { font-size: 9px; letter-spacing: 0.2em; color: var(--stone); white-space: nowrap; }
+.autosave-pill { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sage); white-space: nowrap; opacity: 0.85; transition: opacity 0.3s; }
+.autosave-pill[data-state="saving"] { color: var(--stone); }
+.autosave-pill[data-state="saved"] { color: var(--sage); }
+.autosave-pill[data-state="error"] { color: var(--rose); }
+.restored-banner { max-width: 840px; margin: 24px auto 0; padding: 14px 20px 14px 22px; background: rgba(122,158,126,0.07); border: 1px solid rgba(122,158,126,0.22); border-left: 3px solid var(--sage); font-size: 13px; color: var(--text-mid); line-height: 1.7; display: none; }
+.restored-banner.visible { display: block; }
+.restored-banner .rb-label { font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--sage); margin-right: 6px; }
+.restored-banner button { background: none; border: none; color: var(--sage); font-family: inherit; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; margin-left: 10px; border-bottom: 1px dashed var(--sage); padding: 0 0 1px; }
+.restored-banner button:hover { color: var(--forest); }
 .form-wrap { max-width: 840px; margin: 0 auto; padding: 0 60px 120px; }
 .form-section { padding: 64px 0; border-bottom: 1px solid var(--border); }
 .form-section:last-of-type { border-bottom: none; }
@@ -121,6 +130,13 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
   <span class="progress-label">Form completion</span>
   <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
   <span class="progress-pct" id="progressPct">0%</span>
+  <span id="autosaveStatus" class="autosave-pill" data-state="idle">Your answers save automatically</span>
+</div>
+
+<div id="restoredBanner" class="restored-banner">
+  <span class="rb-label">Welcome back.</span>
+  Your earlier answers have been restored — keep going where you left off.
+  <button type="button" onclick="discardRestoredDraft()">Start over</button>
 </div>
 
 <div class="form-wrap">
@@ -465,6 +481,169 @@ function flagField(field, message) {
   }
 }
 
+// ─── Autosave (localStorage, scoped to the logged-in member) ────────────
+// We key the draft by member id so that a shared browser doesn't spill one
+// member's draft into another member's form. The id is fetched once via
+// /api/me; if the request fails (offline / not logged in) we skip autosave.
+const DRAFT_KEY_PREFIX = 'vital-kauai:intake-draft:';
+let draftKey = null;
+let draftSaveTimer = null;
+let draftLoaded = false;
+
+function setAutosaveStatus(state, text) {
+  const pill = document.getElementById('autosaveStatus');
+  if (!pill) return;
+  pill.dataset.state = state;
+  if (text) pill.textContent = text;
+}
+
+function getFormStateSnapshot() {
+  const inputs = {};
+  document.querySelectorAll('input[name], textarea[name]').forEach(el => {
+    // Skip sigDate — it's auto-populated on load and there's no value in
+    // restoring a stale signing date.
+    if (el.id === 'sigDate') return;
+    inputs[el.name] = el.value || '';
+  });
+  const choices = [];
+  document.querySelectorAll('.choice-item.chosen').forEach(el => {
+    const handler = el.getAttribute('onclick') || '';
+    const groupMatch = handler.match(/'([^']+)'/g);
+    const group = groupMatch && groupMatch[1] ? groupMatch[1].replace(/'/g, '') : null;
+    const hiddenMatch = groupMatch && groupMatch[2] ? groupMatch[2].replace(/'/g, '') : null;
+    choices.push({
+      group,
+      hiddenId: hiddenMatch,
+      value: el.getAttribute('data-value') || '',
+    });
+  });
+  const acks = Array.from(document.querySelectorAll('.ack-box')).map(a => a.classList.contains('checked'));
+  return { inputs, choices, acks };
+}
+
+function saveDraft() {
+  if (!draftKey || !draftLoaded) return;
+  if (draftSaveTimer) clearTimeout(draftSaveTimer);
+  setAutosaveStatus('saving', 'Saving…');
+  draftSaveTimer = setTimeout(() => {
+    try {
+      localStorage.setItem(draftKey, JSON.stringify({
+        savedAt: new Date().toISOString(),
+        state: getFormStateSnapshot(),
+      }));
+      setAutosaveStatus('saved', 'Saved ✓');
+    } catch (e) {
+      console.warn('[intake] draft save failed', e);
+      setAutosaveStatus('error', 'Autosave unavailable');
+    }
+  }, 500);
+}
+
+function applyChoiceSelection(choice) {
+  if (!choice || !choice.group) return;
+  // Clear prior chosen for this group
+  document.querySelectorAll('.choice-item').forEach(el => {
+    const h = el.getAttribute('onclick') || '';
+    if (h.indexOf("'" + choice.group + "'") !== -1) el.classList.remove('chosen');
+  });
+  // Restore the hidden input value
+  if (choice.hiddenId) {
+    const hidden = document.getElementById(choice.hiddenId);
+    if (hidden) hidden.value = choice.value || '';
+  }
+  // Set chosen on the matching item (by data-value)
+  document.querySelectorAll('.choice-item').forEach(el => {
+    const h = el.getAttribute('onclick') || '';
+    if (h.indexOf("'" + choice.group + "'") !== -1 && el.getAttribute('data-value') === choice.value) {
+      el.classList.add('chosen');
+    }
+  });
+}
+
+function restoreDraft() {
+  if (!draftKey) return false;
+  let raw;
+  try { raw = localStorage.getItem(draftKey); } catch (_) { return false; }
+  if (!raw) return false;
+  let snapshot;
+  try { snapshot = JSON.parse(raw); } catch (_) { return false; }
+  const state = snapshot && snapshot.state;
+  if (!state) return false;
+  if (state.inputs) {
+    document.querySelectorAll('input[name], textarea[name]').forEach(el => {
+      if (el.id === 'sigDate') return;
+      if (Object.prototype.hasOwnProperty.call(state.inputs, el.name)) {
+        el.value = state.inputs[el.name] || '';
+      }
+    });
+  }
+  if (Array.isArray(state.choices)) state.choices.forEach(applyChoiceSelection);
+  if (Array.isArray(state.acks)) {
+    const boxes = document.querySelectorAll('.ack-box');
+    state.acks.forEach((checked, i) => {
+      if (boxes[i]) boxes[i].classList.toggle('checked', !!checked);
+    });
+  }
+  updateProgress();
+  return true;
+}
+
+function clearDraft() {
+  if (!draftKey) return;
+  try { localStorage.removeItem(draftKey); } catch (_) {}
+}
+
+function discardRestoredDraft() {
+  if (!confirm('This will clear your saved answers and start fresh. Continue?')) return;
+  clearDraft();
+  document.querySelectorAll('input[name], textarea[name]').forEach(el => {
+    if (el.id === 'sigDate') { el.value = new Date().toISOString().split('T')[0]; return; }
+    el.value = '';
+  });
+  document.querySelectorAll('.choice-item.chosen').forEach(el => el.classList.remove('chosen'));
+  document.querySelectorAll('.ack-box.checked').forEach(el => el.classList.remove('checked'));
+  document.querySelectorAll('input[type="hidden"][name]').forEach(el => { el.value = ''; });
+  updateProgress();
+  const banner = document.getElementById('restoredBanner');
+  if (banner) banner.classList.remove('visible');
+  setAutosaveStatus('idle', 'Your answers save automatically');
+}
+
+async function initAutosave() {
+  let memberId = null;
+  try {
+    const res = await fetch('/api/me', { credentials: 'include' });
+    if (res.ok) {
+      const data = await res.json();
+      memberId = data && data.id;
+    }
+  } catch (_) {}
+  if (!memberId) {
+    // Not logged in / offline — skip autosave silently.
+    setAutosaveStatus('idle', '');
+    return;
+  }
+  draftKey = DRAFT_KEY_PREFIX + memberId;
+  const restored = restoreDraft();
+  draftLoaded = true;
+  if (restored) {
+    const banner = document.getElementById('restoredBanner');
+    if (banner) banner.classList.add('visible');
+    setAutosaveStatus('saved', 'Saved ✓');
+  } else {
+    setAutosaveStatus('idle', 'Your answers save automatically');
+  }
+  // Wire up save triggers
+  document.querySelectorAll('input[name], textarea[name]').forEach(el => {
+    el.addEventListener('input', saveDraft);
+    el.addEventListener('change', saveDraft);
+  });
+  document.querySelectorAll('.choice-item, .ack-item').forEach(el => {
+    el.addEventListener('click', () => setTimeout(saveDraft, 0));
+  });
+}
+initAutosave();
+
 async function submitForm() {
   // Clear any prior error state
   document.querySelectorAll('.field-error').forEach(el => el.remove());
@@ -518,7 +697,10 @@ async function submitForm() {
     return;
   }
 
+  clearDraft();
   document.getElementById('intakeForm').style.display = 'none';
+  const banner = document.getElementById('restoredBanner');
+  if (banner) banner.classList.remove('visible');
   document.getElementById('success-msg').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
