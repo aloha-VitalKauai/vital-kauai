@@ -481,14 +481,19 @@ function flagField(field, message) {
   }
 }
 
-// ─── Autosave (localStorage, scoped to the logged-in member) ────────────
-// We key the draft by member id so that a shared browser doesn't spill one
-// member's draft into another member's form. The id is fetched once via
-// /api/me; if the request fails (offline / not logged in) we skip autosave.
+// ─── Autosave (local-first + server sync when available) ────────────────
+// Drafts save to localStorage immediately (fast, offline-safe) and are also
+// mirrored to the server via /api/intake/draft so a member can start on one
+// device and pick up on another. We key localStorage by member id so a
+// shared browser never spills one member's draft into another member's form.
+// The id is fetched once via /api/me; if that fails we skip autosave.
+// If the server endpoint returns 503 (table not migrated yet), we quietly
+// fall back to localStorage-only for the session.
 const DRAFT_KEY_PREFIX = 'vital-kauai:intake-draft:';
 let draftKey = null;
 let draftSaveTimer = null;
 let draftLoaded = false;
+let serverDraftAvailable = false;  // set to true after a successful GET
 
 function setAutosaveStatus(state, text) {
   const pill = document.getElementById('autosaveStatus');
@@ -521,21 +526,49 @@ function getFormStateSnapshot() {
   return { inputs, choices, acks };
 }
 
+async function pushDraftToServer(snapshot) {
+  if (!serverDraftAvailable) return;
+  try {
+    const res = await fetch('/api/intake/draft', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        savedAt: new Date().toISOString(),
+        state: snapshot,
+      }),
+    });
+    if (res.status === 503) {
+      // Migration not applied yet — stop trying for the rest of the session.
+      serverDraftAvailable = false;
+    } else if (!res.ok) {
+      console.warn('[intake] server draft save returned', res.status);
+    }
+  } catch (e) {
+    console.warn('[intake] server draft save failed', e);
+  }
+}
+
 function saveDraft() {
   if (!draftKey || !draftLoaded) return;
   if (draftSaveTimer) clearTimeout(draftSaveTimer);
   setAutosaveStatus('saving', 'Saving…');
   draftSaveTimer = setTimeout(() => {
+    const snapshot = getFormStateSnapshot();
+    const envelope = JSON.stringify({
+      savedAt: new Date().toISOString(),
+      state: snapshot,
+    });
+    // localStorage first — always fast, always offline-safe.
     try {
-      localStorage.setItem(draftKey, JSON.stringify({
-        savedAt: new Date().toISOString(),
-        state: getFormStateSnapshot(),
-      }));
-      setAutosaveStatus('saved', 'Saved ✓');
+      localStorage.setItem(draftKey, envelope);
     } catch (e) {
-      console.warn('[intake] draft save failed', e);
-      setAutosaveStatus('error', 'Autosave unavailable');
+      console.warn('[intake] local draft save failed', e);
     }
+    // Then best-effort server mirror.
+    pushDraftToServer(snapshot).finally(() => {
+      setAutosaveStatus('saved', 'Saved ✓');
+    });
   }, 500);
 }
 
@@ -560,13 +593,33 @@ function applyChoiceSelection(choice) {
   });
 }
 
-function restoreDraft() {
-  if (!draftKey) return false;
+function readLocalDraft() {
+  if (!draftKey) return null;
   let raw;
-  try { raw = localStorage.getItem(draftKey); } catch (_) { return false; }
-  if (!raw) return false;
-  let snapshot;
-  try { snapshot = JSON.parse(raw); } catch (_) { return false; }
+  try { raw = localStorage.getItem(draftKey); } catch (_) { return null; }
+  if (!raw) return null;
+  try { return JSON.parse(raw); } catch (_) { return null; }
+}
+
+async function readServerDraft() {
+  try {
+    const res = await fetch('/api/intake/draft', { credentials: 'include' });
+    if (res.status === 503) {
+      serverDraftAvailable = false;
+      return null;
+    }
+    if (!res.ok) return null;
+    serverDraftAvailable = true;
+    const body = await res.json();
+    // Server returns { draft: { payload: { savedAt, state }, updated_at } | null }
+    if (!body || !body.draft || !body.draft.payload) return null;
+    return body.draft.payload;
+  } catch (_) {
+    return null;
+  }
+}
+
+function applySnapshotToForm(snapshot) {
   const state = snapshot && snapshot.state;
   if (!state) return false;
   if (state.inputs) {
@@ -588,14 +641,21 @@ function restoreDraft() {
   return true;
 }
 
-function clearDraft() {
+async function clearDraft() {
   if (!draftKey) return;
   try { localStorage.removeItem(draftKey); } catch (_) {}
+  if (!serverDraftAvailable) return;
+  try {
+    await fetch('/api/intake/draft', { method: 'DELETE', credentials: 'include' });
+  } catch (e) {
+    // Server-side clear failed — not fatal; we'll try again on next submit.
+    console.warn('[intake] server draft clear failed', e);
+  }
 }
 
-function discardRestoredDraft() {
+async function discardRestoredDraft() {
   if (!confirm('This will clear your saved answers and start fresh. Continue?')) return;
-  clearDraft();
+  await clearDraft();
   document.querySelectorAll('input[name], textarea[name]').forEach(el => {
     if (el.id === 'sigDate') { el.value = new Date().toISOString().split('T')[0]; return; }
     el.value = '';
@@ -607,6 +667,14 @@ function discardRestoredDraft() {
   const banner = document.getElementById('restoredBanner');
   if (banner) banner.classList.remove('visible');
   setAutosaveStatus('idle', 'Your answers save automatically');
+}
+
+function pickNewerDraft(localDraft, serverDraft) {
+  if (!localDraft) return serverDraft;
+  if (!serverDraft) return localDraft;
+  const ls = localDraft.savedAt ? Date.parse(localDraft.savedAt) : 0;
+  const ss = serverDraft.savedAt ? Date.parse(serverDraft.savedAt) : 0;
+  return ss > ls ? serverDraft : localDraft;
 }
 
 async function initAutosave() {
@@ -624,7 +692,23 @@ async function initAutosave() {
     return;
   }
   draftKey = DRAFT_KEY_PREFIX + memberId;
-  const restored = restoreDraft();
+  // Pull from both sources and use the newer one. Server wins ties so
+  // cross-device edits converge.
+  const [localDraft, serverDraft] = await Promise.all([
+    Promise.resolve(readLocalDraft()),
+    readServerDraft(),
+  ]);
+  const draft = pickNewerDraft(localDraft, serverDraft);
+  let restored = false;
+  if (draft) restored = applySnapshotToForm(draft);
+  // Make local and server agree on whichever draft won.
+  if (draft) {
+    try { localStorage.setItem(draftKey, JSON.stringify(draft)); } catch (_) {}
+    if (serverDraftAvailable && draft === localDraft) {
+      // Local was newer than server — push it up.
+      pushDraftToServer(draft.state);
+    }
+  }
   draftLoaded = true;
   if (restored) {
     const banner = document.getElementById('restoredBanner');
@@ -697,7 +781,7 @@ async function submitForm() {
     return;
   }
 
-  clearDraft();
+  await clearDraft();
   document.getElementById('intakeForm').style.display = 'none';
   const banner = document.getElementById('restoredBanner');
   if (banner) banner.classList.remove('visible');

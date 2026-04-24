@@ -793,7 +793,7 @@ export default function PreCeremonyPage() {
                       <div className="vp-play"><span className="vp-play-icon">▶</span></div>
                       <div>
                         <div className="vp-label">A Message from Rachel &amp; Josh · Week 1</div>
-                        <div className="vp-text">Rachel and Josh open the six-week preparation arc with a conversation about perception — how what we see shapes what we experience, why attention matters, and what it means to look at the lens itself before anything else. Watch this before you read further.</div>
+                        <div className="vp-text">Rachel and Josh open the six-week preparation arc with a conversation about perception — how what we see shapes what we experience, why attention matters, and what it means to look at the lens and meet your perception with curiosity and compassion. Watch this before you read further.</div>
                         <div className="vp-coming-soon">Coming Soon</div>
                       </div>
                     </div>
@@ -816,7 +816,7 @@ export default function PreCeremonyPage() {
                     {/* TODO: /portal/questions-for-the-medicine is a placeholder alias; the live page currently lives at /portal/questions. Wire this up when the dedicated page is ready. */}
                     <Link href="/portal/questions-for-the-medicine" className="w1-action">
                       <span className="w1-action-dot" />
-                      <span className="w1-action-text">Begin writing your questions for the medicine — stream of consciousness, no editing. Write freely what truths you want to know.</span>
+                      <span className="w1-action-text">Begin writing your questions for the medicine.</span>
                     </Link>
                     <Link href="/portal/somatic-companion#week-1" className="w1-action">
                       <span className="w1-action-dot" />
