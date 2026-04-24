@@ -228,7 +228,7 @@ export function AboutPage() {
             I arrived at my first iboga retreat freshly off a detox — physically clean, emotionally open, and extraordinarily receptive. The experience lacked preparation, safety, and proper integration, and I left more fragmented than I arrived. That experience clarified everything that would shape my work: the medicine itself is only as whole as the people and ceremony that hold it.
           </p>
           <div className={styles.pullPlaceholder}>
-            <p>&ldquo;Working with Joshua was life-changing. After nearly 15 years of deep healing work and countless sessions with experts worldwide, Josh didn&rsquo;t just provide breakthroughs; he equipped me with practical, actionable steps to integrate these profound realizations into my daily life. This level of mastery is rare, and I do not say that lightly. Joshua is truly a master of his craft, and I cannot recommend his work highly enough.&rdquo;</p>
+            <p>&ldquo;Working with Josh was life-changing. This level of mastery is rare, and I do not say that lightly. Josh is truly a master of his craft, and I cannot recommend his work highly enough.&rdquo;</p>
             <span>&mdash; Simona Kay</span>
           </div>
           <div className={styles.pull}>
