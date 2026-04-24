@@ -857,7 +857,31 @@ export default function MemberProfileEditor({
 
           {/* Intake form summary */}
           <div style={CARD}>
-            <p style={{ ...LABEL, marginBottom: 12 }}>Intake form</p>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 12,
+                gap: 8,
+              }}
+            >
+              <p style={{ ...LABEL, margin: 0 }}>Intake form</p>
+              <a
+                href="/intake-form"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontSize: 12,
+                  color: "#3D5A2E",
+                  textDecoration: "none",
+                  fontWeight: 500,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                View full intake form ↗
+              </a>
+            </div>
             {!intake ? (
               <p style={{ fontSize: 13, color: "#9E9E9A" }}>No intake form submitted</p>
             ) : (

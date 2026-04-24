@@ -59,6 +59,8 @@ const WEEKS = [
   {
     id: 0,
     code: 'IKE',
+    principleName: 'Ike',
+    principle: 'I create my reality.',
     theme: 'Perception',
     title: 'Seeing clearly.',
     subtitle: 'This is the beginning of something real.',
@@ -114,6 +116,8 @@ const WEEKS = [
   {
     id: 1,
     code: 'MAKIA',
+    principleName: 'Makia',
+    principle: 'Energy flows where attention goes.',
     theme: 'Focus',
     title: 'The person who arrives at ceremony',
     subtitle: 'is being shaped right now.',
@@ -148,6 +152,8 @@ const WEEKS = [
   {
     id: 2,
     code: 'MANAWA',
+    principleName: 'Manawa',
+    principle: 'The moment of power is now.',
     theme: 'Presence',
     title: 'The body is the experience.',
     subtitle: 'This is where the medicine lands.',
@@ -198,6 +204,8 @@ const WEEKS = [
   {
     id: 3,
     code: 'KALA',
+    principleName: 'Kala',
+    principle: 'You are unlimited.',
     theme: 'Release',
     title: 'Iboga sees everything.',
     subtitle: '',
@@ -240,6 +248,8 @@ const WEEKS = [
   {
     id: 4,
     code: 'ALOHA',
+    principleName: 'Aloha',
+    principle: 'To love is to be happy with.',
     theme: 'Connection',
     title: 'You walk this with others.',
     subtitle: 'You always have.',
@@ -281,6 +291,8 @@ const WEEKS = [
   {
     id: 5,
     code: 'MANA + PONO',
+    principleName: 'Mana + Pono',
+    principle: 'All power comes from within.',
     theme: 'Sovereignty & Integrity',
     title: 'You have done the work.',
     subtitle: 'Trust your preparation.',
@@ -589,6 +601,18 @@ export default function PreCeremonyPage() {
         .wh-title em { font-style:italic;color:var(--sage); }
         .wh-sub { font-size:14px;color:var(--stone);line-height:1.9;max-width:640px;padding-bottom:32px;border-bottom:1px solid var(--border);margin-bottom:36px; }
         .wh-italic { font-size:13px;color:var(--sage);font-style:italic;margin-top:16px;letter-spacing:.02em; }
+
+        /* PRINCIPLE CARD — Hawaiian principle of the week */
+        .principle-card { background:var(--cream); border-left:3px solid var(--gold); border-radius:2px; padding:56px 60px; margin-bottom:40px; }
+        .pcard-eyebrow { font-size:9.5px; letter-spacing:.34em; text-transform:uppercase; color:var(--gold); display:block; margin-bottom:28px; font-weight:500; }
+        .pcard-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(72px,10vw,108px); font-weight:400; color:var(--gold); line-height:1; margin-bottom:34px; letter-spacing:-.01em; }
+        .pcard-sublabel { font-size:10px; letter-spacing:.3em; text-transform:uppercase; color:var(--sage); display:block; margin-bottom:20px; font-weight:500; }
+        .pcard-quote { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:24px; color:var(--sage); line-height:1.45; margin-bottom:38px; border-left:2px solid var(--sage-lt); padding-left:20px; font-weight:300; }
+        .pcard-title { font-family:'Cormorant Garamond',serif; font-size:clamp(30px,4vw,42px); font-weight:300; font-style:italic; color:var(--sage); line-height:1.15; margin-bottom:22px; }
+        .pcard-title em { color:var(--sage); font-style:italic; display:block; font-size:.68em; margin-top:8px; opacity:.85; }
+        .pcard-body { font-size:14.5px; color:var(--ink-mid); line-height:1.95; max-width:640px; }
+        .pcard-italic { font-size:13px; color:var(--sage); font-style:italic; margin-top:16px; letter-spacing:.02em; }
+        @media (max-width:640px) { .principle-card { padding:40px 28px; } .pcard-name { font-size:clamp(56px,18vw,80px); margin-bottom:26px; } .pcard-quote { font-size:20px; } }
 
         /* SECTION */
         .section { margin-bottom:44px;scroll-margin-top:130px; }
@@ -899,12 +923,17 @@ export default function PreCeremonyPage() {
               </div>
             )}
 
-            {/* Week header */}
-            <div>
-              <span className="wh-eyebrow">Week {i + 1} · {w.code} · {w.theme}</span>
-              <h2 className="wh-title">{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</h2>
-              <p className="wh-sub">{w.sub}</p>
-              {w.italic && <p className="wh-italic">{w.italic}</p>}
+            {/* Week header — Hawaiian principle card */}
+            <div className="principle-card">
+              <span className="pcard-eyebrow">Week {i + 1} · {w.theme}</span>
+              <div className="pcard-name">{w.principleName}</div>
+              <span className="pcard-sublabel">The Hawaiian Principle for Week {i + 1}</span>
+              {w.principle && (
+                <blockquote className="pcard-quote">&ldquo;{w.principle}&rdquo;</blockquote>
+              )}
+              <h2 className="pcard-title">{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</h2>
+              <p className="pcard-body">{w.sub}</p>
+              {w.italic && <p className="pcard-italic">{w.italic}</p>}
             </div>
 
             {/* Re-entry */}

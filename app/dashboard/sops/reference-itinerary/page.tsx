@@ -1,10 +1,17 @@
+import DownloadItineraryButton from '@/components/dashboard/DownloadItineraryButton'
+
 const FONTS = "'Cormorant Garamond', var(--font-cormorant-garamond), serif"
 const BODY = "'Jost', var(--font-jost), sans-serif"
 
 const STYLES = `
-.ref-itinerary { background:#f5f0e8; color:#2a2a26; font-family:${BODY}; font-weight:300; line-height:1.7; letter-spacing:.01em; -webkit-font-smoothing:antialiased; min-height:100vh; }
+.ref-itinerary { background:#f5f0e8; color:#2a2a26; font-family:${BODY}; font-weight:300; line-height:1.7; letter-spacing:.01em; -webkit-font-smoothing:antialiased; min-height:100vh; position:relative; }
 .ref-itinerary * { box-sizing:border-box; margin:0; padding:0; }
-.ref-itinerary .wrapper { max-width:920px; margin:0 auto; padding:80px 48px 120px; }
+.ref-itinerary .wrapper { max-width:920px; margin:0 auto; padding:80px 48px 120px; position:relative; }
+.ref-itinerary .download-btn { position:absolute; top:24px; right:24px; display:inline-flex; align-items:center; gap:6px; font-family:${BODY}; font-size:10px; font-weight:500; letter-spacing:.18em; text-transform:uppercase; color:#b08d5a; background:rgba(176,141,90,.08); border:1px solid rgba(176,141,90,.35); border-radius:4px; padding:8px 14px; cursor:pointer; transition:background .15s ease, border-color .15s ease; z-index:10; }
+.ref-itinerary .download-btn:hover { background:rgba(176,141,90,.16); border-color:rgba(176,141,90,.6); }
+.ref-itinerary .download-btn svg { stroke:#b08d5a; }
+@media print { .ref-itinerary .download-btn { display:none !important; } }
+@media (max-width:720px) { .ref-itinerary .download-btn { top:12px; right:12px; padding:6px 10px; font-size:9px; letter-spacing:.14em; } }
 
 .ref-itinerary header { text-align:center; padding-bottom:64px; border-bottom:1px solid rgba(42,42,38,.14); margin-bottom:72px; }
 .ref-itinerary .eyebrow { font-family:${BODY}; font-size:10px; letter-spacing:.32em; text-transform:uppercase; color:#b08d5a; font-weight:500; margin-bottom:24px; }
@@ -83,6 +90,7 @@ export default function ReferenceItineraryPage() {
       <style>{STYLES}</style>
       <div className="ref-itinerary">
         <div className="wrapper">
+          <DownloadItineraryButton />
           <header>
             <div className="eyebrow">Founders Dashboard · Ceremony Arc</div>
             <h1>The Seven-Day <em>Ceremony Arc</em></h1>
