@@ -584,14 +584,19 @@ export default function PreCeremonyPage() {
         .w1-h2 { font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3.5vw,42px);font-weight:300;line-height:1.12;color:var(--ink);margin-bottom:14px; }
         .w1-h2 em { font-style:italic;color:var(--sage); }
         .w1-h3 { font-family:'Cormorant Garamond',serif;font-size:clamp(22px,2.6vw,30px);font-weight:300;line-height:1.2;color:var(--ink);margin-bottom:16px; }
-        .w1-subhead { font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--sage);margin-bottom:14px; }
-        .w1-pull { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;color:var(--sage);line-height:1.5;padding:12px 0 18px;border-left:2px solid var(--sage-lt);padding-left:18px;margin-bottom:20px; }
         .w1-body { font-size:14px;color:var(--ink-mid);line-height:1.9;max-width:640px; }
         .w1-body + .w1-body { margin-top:14px; }
-        .w1-companion-link { display:inline-block;margin-top:18px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);text-decoration:none;border-bottom:1px dashed rgba(200,169,110,.55);padding-bottom:2px; }
+        .w1-companion-link { display:inline-block;margin-top:20px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);text-decoration:none;border-bottom:1px dashed rgba(200,169,110,.55);padding-bottom:2px; }
         .w1-companion-link:hover { color:var(--sage); }
-        .w1-video-placeholder { border:.5px dashed rgba(200,169,110,.4);border-radius:4px;background:rgba(122,158,126,.04);padding:56px 32px;text-align:center;color:var(--stone);font-size:12px;letter-spacing:.18em;text-transform:uppercase; }
-        .w1-video-placeholder span { display:block;margin-top:8px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.04em;color:var(--gold);text-transform:none; }
+        /* Principle — give Week 1's Hawaiian word real visual weight */
+        .w1-principle { padding:48px 44px 44px;background:rgba(122,158,126,.05);border:.5px solid rgba(200,169,110,.22);border-left:3px solid var(--gold);border-radius:4px; }
+        .w1-principle-eyebrow { font-size:10px;letter-spacing:.46em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:24px; }
+        .w1-principle-word { display:block;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(72px,11vw,140px);font-weight:300;line-height:.95;color:var(--gold);letter-spacing:-.01em;margin:0 0 12px; }
+        .w1-principle-trans { display:block;font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--sage);margin-bottom:28px; }
+        .w1-principle-pull { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(20px,2.4vw,28px);color:var(--sage);line-height:1.45;margin:0 0 28px;padding-left:20px;border-left:2px solid var(--sage-lt); }
+        .w1-principle .w1-h2 { margin-top:0; }
+        /* Centering invitation before journal prompts */
+        .w1-invite { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:var(--sage);line-height:1.7;margin:4px 0 28px;padding-left:20px;border-left:2px solid var(--sage-lt); }
         .w1-prompt { padding:22px 0;border-bottom:1px solid var(--border); }
         .w1-prompt:first-child { border-top:1px solid var(--border); }
         .w1-prompt-num { font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:10px; }
@@ -751,65 +756,31 @@ export default function PreCeremonyPage() {
             {i === 0 ? (
               <>
                 {/* Section 1 — Principle */}
-                <section className="w1-section" id="principle">
-                  <span className="w1-eyebrow">Week 1 · Ike · Perception</span>
+                <section className="w1-section w1-principle" id="principle">
+                  <span className="w1-principle-eyebrow">Week 1 · Perception</span>
+                  <span className="w1-principle-word">Ike</span>
+                  <span className="w1-principle-trans">The Hawaiian principle for Week 1</span>
+                  <p className="w1-principle-pull">&ldquo;I create my reality.&rdquo;</p>
                   <h2 className="w1-h2"><em>Seeing clearly.</em></h2>
-                  <div className="w1-subhead">The Principle: Ike</div>
-                  <p className="w1-pull">I create my reality.</p>
                   <p className="w1-body">What you perceive shapes what you experience — attention, assumptions, the stories carried without noticing. This week is an invitation to look at the lens itself.</p>
                 </section>
 
-                {/* Section 2 — Week Video */}
+                {/* Section 2 — Week Video (Rachel & Josh transmission) */}
                 <section className="w1-section" id="week-video">
-                  <h3 className="w1-h3">Week 1 Video</h3>
-                  <div className="w1-video-placeholder">
-                    Video transmission · Week 1
-                    <span>Coming Soon</span>
-                  </div>
-                </section>
-
-                {/* Section 3 — PNE Perspective */}
-                <section className="w1-section" id="pne-perspective">
-                  <h3 className="w1-h3">PNE Perspective: <em>The Language of the Body</em></h3>
-                  <p className="w1-body">
-                    Before any thought, the body is already speaking. Sensation — tightening, loosening, warmth, pressure — is the nervous system&apos;s first language, arriving long before words or meaning. What we call a &ldquo;feeling&rdquo; is actually three layers stacked: sensation in the body, charge in the emotional system, and story in the mind. The mind&apos;s story is often the loudest, but it&apos;s the last layer to arrive. This week, the invitation from PNE is to notice what&apos;s underneath the story — the raw data of the body — before the mind names it.
-                  </p>
-                  <div className="w1-video-placeholder" style={{ marginTop: 24 }}>
-                    PNE teaching · Week 1
-                    <span>Coming Soon</span>
-                  </div>
-                  <Link href="/portal/somatic-companion#week-1" className="w1-companion-link">
-                    Read the full teaching in The Somatic Companion → Week 1: The Language of the Body
-                  </Link>
-                </section>
-
-                {/* Section 4 — Journal Prompts */}
-                <section className="w1-section" id="journal-prompts">
-                  <h3 className="w1-h3">Journal Prompts</h3>
-                  {[
-                    { q: 'What sensations am I currently noticing in my body?', hint: 'A tightness in the jaw, warmth in the chest, buzzing in the hands, a heaviness behind the eyes.' },
-                    { q: 'If I create my reality, what’s possible for my life after this journey?' },
-                    { q: 'What thoughts about myself, others, or the world am I mistaking for truth?' },
-                  ].map((p, pi) => {
-                    const jKey = `w0-p${pi}`
-                    return (
-                      <div className="w1-prompt" key={pi}>
-                        <span className="w1-prompt-num">0{pi + 1}</span>
-                        <p className="w1-prompt-q">{p.q}</p>
-                        {p.hint && <p className="w1-prompt-hint">{p.hint}</p>}
-                        <textarea
-                          className="journal-textarea"
-                          value={journal[jKey] ?? ''}
-                          onChange={(e) => updateJournal(jKey, e.target.value)}
-                          placeholder="Write freely..."
-                          rows={4}
-                        />
+                  <span className="section-label">Video transmission — watch before anything else</span>
+                  <div className="video-frame">
+                    <div className="video-primer">
+                      <div className="vp-play"><span className="vp-play-icon">▶</span></div>
+                      <div>
+                        <div className="vp-label">A Message from Rachel &amp; Josh · Week 1</div>
+                        <div className="vp-text">Rachel and Josh open the six-week arc with a conversation about perception — how what we see shapes what we experience, why attention is the first act of medicine, and what it means to look at the lens itself before anything else. Watch this before you read further.</div>
+                        <div className="vp-coming-soon">Coming Soon</div>
                       </div>
-                    )
-                  })}
+                    </div>
+                  </div>
                 </section>
 
-                {/* Section 5 — Action Items */}
+                {/* Section 3 — Action Items (moved up per Rachel's note) */}
                 <section className="w1-section" id="action-items">
                   <h3 className="w1-h3">Action Items</h3>
                   <div className="w1-actions">
@@ -834,11 +805,66 @@ export default function PreCeremonyPage() {
                   </div>
                 </section>
 
-                {/* Section 6 — Voices from the Community */}
+                {/* Section 4 — PNE Perspective */}
+                <section className="w1-section" id="pne-perspective">
+                  <h3 className="w1-h3">PNE Perspective: <em>The Language of the Body</em></h3>
+                  <p className="w1-body">
+                    Before any thought, the body is already speaking. Sensation — tightening, loosening, warmth, pressure — is the nervous system&apos;s first language, arriving long before words or meaning. What we call a &ldquo;feeling&rdquo; is actually three layers stacked: sensation in the body, charge in the emotional system, and story in the mind. The mind&apos;s story is often the loudest, but it&apos;s the last layer to arrive. This week, the invitation from PNE is to notice what&apos;s underneath the story — the raw data of the body — before the mind names it.
+                  </p>
+                  <div className="video-frame" style={{ marginTop: 24 }}>
+                    <div className="video-primer">
+                      <div className="vp-play"><span className="vp-play-icon">▶</span></div>
+                      <div>
+                        <div className="vp-label">PNE Teaching · Week 1</div>
+                        <div className="vp-text">A short teaching on the three layers of feeling — sensation in the body, charge in the emotional system, and story in the mind — and why the body&apos;s raw data arrives before the mind names it. The foundational practice of Week 1: listening underneath.</div>
+                        <div className="vp-coming-soon">Coming Soon</div>
+                      </div>
+                    </div>
+                  </div>
+                  <Link href="/portal/somatic-companion#week-1" className="w1-companion-link">
+                    Read the full teaching in The Somatic Companion → Week 1: The Language of the Body
+                  </Link>
+                </section>
+
+                {/* Section 5 — Journal Prompts */}
+                <section className="w1-section" id="journal-prompts">
+                  <h3 className="w1-h3">Journal Prompts</h3>
+                  <p className="w1-invite">Before you begin, close your eyes. Take a few slow breaths. Scan your body — and notice what you notice.</p>
+                  {[
+                    { q: 'What sensations am I currently noticing in my body?', hint: 'A tightness in the jaw, warmth in the chest, buzzing in the hands, a heaviness behind the eyes.' },
+                    { q: 'If I create my reality, what’s possible for my life after this journey?' },
+                    { q: 'What thoughts about myself, others, or the world am I mistaking for truth?' },
+                  ].map((p, pi) => {
+                    const jKey = `w0-p${pi}`
+                    return (
+                      <div className="w1-prompt" key={pi}>
+                        <span className="w1-prompt-num">0{pi + 1}</span>
+                        <p className="w1-prompt-q">{p.q}</p>
+                        {p.hint && <p className="w1-prompt-hint">{p.hint}</p>}
+                        <textarea
+                          className="journal-textarea"
+                          value={journal[jKey] ?? ''}
+                          onChange={(e) => updateJournal(jKey, e.target.value)}
+                          placeholder="Write freely..."
+                          rows={4}
+                        />
+                      </div>
+                    )
+                  })}
+                </section>
+
+                {/* Section 6 — Voices from the Community (formatted as a video transmission) */}
                 <section className="w1-section" id="community">
                   <h3 className="w1-h3">Voices from the Community</h3>
-                  <div className="w1-community">
-                    <p className="w1-community-text">A reflection from someone who has walked this path — coming soon.</p>
+                  <div className="video-frame">
+                    <div className="video-primer">
+                      <div className="vp-play"><span className="vp-play-icon">▶</span></div>
+                      <div>
+                        <div className="vp-label">A Reflection from the Community · Week 1</div>
+                        <div className="vp-text">A short transmission from a member who has walked this path — their experience with perception, with Ike, and with the first week of preparation. Offered in the spirit of companionship, not instruction.</div>
+                        <div className="vp-coming-soon">Coming Soon</div>
+                      </div>
+                    </div>
                   </div>
                 </section>
 
