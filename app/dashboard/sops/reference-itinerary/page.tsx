@@ -287,7 +287,7 @@ export default function ReferenceItineraryPage() {
               </div>
             </div>
 
-            <p className="full-guide">For the full guide — polyvagal theory, the three nervous-system states, the Coherent Heart Breath, and the complete practice kit — see <a href="/portal/nervous-system">the Nervous System Safety Guide</a>.</p>
+            <p className="full-guide">For the full guide — polyvagal theory, the three nervous-system states, the Coherent Heart Breath, and the complete practice kit — see <a href="/portal/somatic-companion">The Somatic Companion</a>.</p>
           </div>
 
           <div className="team-block">

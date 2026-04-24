@@ -1,9 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
-export const metadata = { title: "Nervous System Safety Guide — Vital Kauaʻi" };
+export const metadata = { title: "The Somatic Companion — Vital Kauaʻi" };
 
-export default async function NervousSystemPage() {
+export default async function SomaticCompanionPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -29,7 +29,7 @@ export default async function NervousSystemPage() {
         <div style={{ position: "relative", zIndex: 1, maxWidth: 780 }}>
           <span style={{ fontSize: 9, letterSpacing: "0.42em", textTransform: "uppercase", color: gold, display: "block", marginBottom: 16 }}>Iboga Journey &middot; Member Resource</span>
           <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(36px, 4vw, 54px)", fontWeight: 300, color: cream, lineHeight: 1.06, marginBottom: 20 }}>
-            Your Nervous System<br /><em style={{ fontStyle: "italic", color: sageLt }}>is Wise</em>
+            The <em style={{ fontStyle: "italic", color: sageLt }}>Somatic Companion</em>
           </h1>
           <p style={{ fontSize: 14.5, color: "rgba(245,240,232,0.58)", lineHeight: 1.95, maxWidth: 620, marginBottom: 28 }}>
             A foundational guide prepared for Iboga Journey participants &mdash; polyvagal theory, somatic self-resourcing, and breath practices to support your preparation, ceremony, and integration.
@@ -79,7 +79,7 @@ export default async function NervousSystemPage() {
         {/* ── Tracking Sensations ── */}
         <div style={{ height: 1, background: `linear-gradient(90deg, ${sageLt}, transparent)`, margin: "64px 0", opacity: 0.4 }} />
 
-        <span style={{ fontSize: 8.5, letterSpacing: "0.44em", textTransform: "uppercase", color: gold, display: "block", marginBottom: 10 }}>The Foundation of Somatic Awareness</span>
+        <span id="week-1" style={{ scrollMarginTop: 80, fontSize: 8.5, letterSpacing: "0.44em", textTransform: "uppercase", color: gold, display: "block", marginBottom: 10 }}>Week 1 &middot; The Language of the Body</span>
         <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(30px, 3.5vw, 44px)", fontWeight: 300, lineHeight: 1.1, marginBottom: 12 }}>
           Tracking Sensations <em style={{ fontStyle: "italic", color: sage }}>in the Body</em>
         </h2>
@@ -277,7 +277,7 @@ export default async function NervousSystemPage() {
       <footer style={{ background: deep, padding: "40px 60px", display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid rgba(200,169,110,0.07)" }}>
         <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 17, letterSpacing: "0.15em", color: cream, textTransform: "uppercase", fontWeight: 300 }}>Vital Kaua&#699;i</p>
         <p style={{ fontSize: 11, color: "rgba(245,240,232,0.22)", lineHeight: 1.7, textAlign: "right" }}>
-          Nervous System Safety Guide &middot; Confidential<br />
+          The Somatic Companion &middot; Confidential<br />
           <a href="/portal" style={{ color: "rgba(200,169,110,0.38)", textDecoration: "none" }}>Return to Portal</a>
         </p>
       </footer>

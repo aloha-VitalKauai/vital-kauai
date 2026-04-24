@@ -17,6 +17,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/portal/nervous-system",
+        destination: "/portal/somatic-companion",
+        permanent: true,
+      },
+      {
+        source: "/portal/nervous-system/:path*",
+        destination: "/portal/somatic-companion/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
