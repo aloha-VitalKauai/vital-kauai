@@ -628,13 +628,6 @@ export default function PreCeremonyPage() {
         .w1-body + .w1-body { margin-top:14px; }
         .w1-companion-link { display:inline-block;margin-top:20px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);text-decoration:none;border-bottom:1px dashed rgba(200,169,110,.55);padding-bottom:2px; }
         .w1-companion-link:hover { color:var(--sage); }
-        /* Principle — give Week 1's Hawaiian word real visual weight */
-        .w1-principle { padding:48px 44px 44px;background:rgba(122,158,126,.05);border:.5px solid rgba(200,169,110,.22);border-left:3px solid var(--gold);border-radius:4px; }
-        .w1-principle-eyebrow { font-size:10px;letter-spacing:.46em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:24px; }
-        .w1-principle-word { display:block;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(72px,11vw,140px);font-weight:300;line-height:.95;color:var(--gold);letter-spacing:-.01em;margin:0 0 12px; }
-        .w1-principle-trans { display:block;font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--sage);margin-bottom:28px; }
-        .w1-principle-pull { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(20px,2.4vw,28px);color:var(--sage);line-height:1.45;margin:0 0 28px;padding-left:20px;border-left:2px solid var(--sage-lt); }
-        .w1-principle .w1-h2 { margin-top:0; }
         /* Centering invitation before journal prompts */
         .w1-invite { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:var(--sage);line-height:1.7;margin:4px 0 28px;padding-left:20px;border-left:2px solid var(--sage-lt); }
         .w1-prompt { padding:22px 0;border-bottom:1px solid var(--border); }
@@ -799,14 +792,13 @@ export default function PreCeremonyPage() {
 
             {i === 0 ? (
               <>
-                {/* Section 1 — Principle */}
-                <section className="w1-section w1-principle" id="principle">
-                  <span className="w1-principle-eyebrow">Week 1 · Perception</span>
-                  <span className="w1-principle-word">Ike</span>
-                  <span className="w1-principle-trans">The Hawaiian principle for Week 1</span>
-                  <p className="w1-principle-pull">&ldquo;I create my reality.&rdquo;</p>
-                  <h2 className="w1-h2"><em>Seeing clearly.</em></h2>
-                  <p className="w1-body">What you perceive shapes what you experience — attention, assumptions, the stories carried without noticing. This week is an invitation to look at the lens itself.</p>
+                {/* Section 1 — Principle (matches the Weeks 2–6 wh-* type pattern
+                    so Week 1 reads cohesively with the rest of the arc). */}
+                <section className="w1-section" id="principle">
+                  <span className="wh-eyebrow">Week 1 · Ike · Perception</span>
+                  <h2 className="wh-title">Seeing <em>clearly.</em></h2>
+                  <p className="wh-sub">What you perceive shapes what you experience — attention, assumptions, the stories carried without noticing. This week is an invitation to look at the lens itself.</p>
+                  <p className="wh-italic">&ldquo;I create my reality.&rdquo; — Ike</p>
                 </section>
 
                 {/* Section 2 — Week Video (Rachel & Josh transmission) */}
