@@ -1,55 +1,112 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient as createServerClient } from "@/lib/supabase/server";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 
-// Columns we accept from the intake form. Anything else in the payload is ignored.
+// Columns the form is allowed to write. Anything else in the payload is ignored.
+// Keep in sync with the `intake_forms` table schema and the `name` attributes
+// in public/intake-form-legacy.html.
 const INTAKE_COLUMNS = [
+  "legal_name",
+  "preferred_name",
   "date_of_birth",
+  "location",
   "phone",
   "emergency_contact",
   "emergency_phone",
-  "health_history",
-  "current_medications",
-  "psychiatric_history",
-  "substance_history",
   "primary_intention",
   "what_brings_you_here",
-  "dietary_restrictions",
-  "accommodation_requests",
-  "signature",
-  "heart_conditions",
-  "blood_pressure_systolic",
-  "blood_pressure_diastolic",
-  "resting_heart_rate",
-  "current_supplements",
+  "body_relationship",
+  "grounding_practices",
+  "emotional_patterns",
+  "psychiatric_history",
+  "current_therapy",
+  "personal_growth",
+  "previous_psychedelic_experience",
   "previous_psychedelic_exp",
+  "substance_history",
+  "childhood_history",
+  "integration_history",
+  "health_history",
+  "current_medications",
+  "current_supplements",
+  "supplements",
   "medication_interactions",
   "medical_notes",
-  "supplements",
-  "previous_psychedelic_experience",
+  "heart_conditions",
+  "mental_health_status",
+  "home_support_selection",
+  "home_support_people",
+  "boundaries_needs",
+  "additional_notes",
+  "dietary_restrictions",
+  "accommodation_requests",
+  "signer_name",
+  "signature",
+  "signed_date",
 ] as const;
 
-function pickIntakeFields(body: Record<string, unknown>) {
+// Check-constraint whitelists — anything outside these becomes null.
+const MENTAL_HEALTH_VALUES = new Set(["stable", "in_process", "significant", "crisis"]);
+const HOME_SUPPORT_VALUES = new Set(["one", "few", "help"]);
+
+function normalizeIntake(body: Record<string, unknown>) {
   const out: Record<string, unknown> = {};
   for (const key of INTAKE_COLUMNS) {
-    if (body[key] !== undefined && body[key] !== null && body[key] !== "") {
-      out[key] = body[key];
-    }
+    const v = body[key];
+    if (v === undefined || v === null || v === "") continue;
+    out[key] = v;
+  }
+  if (out.mental_health_status && !MENTAL_HEALTH_VALUES.has(String(out.mental_health_status))) {
+    delete out.mental_health_status;
+  }
+  if (out.home_support_selection && !HOME_SUPPORT_VALUES.has(String(out.home_support_selection))) {
+    delete out.home_support_selection;
   }
   return out;
 }
 
+function serviceDb() {
+  return createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
+}
+
+async function requireUser() {
+  const supabase = await createServerClient();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+  if (error || !user) return null;
+  return user;
+}
+
+export async function GET() {
+  const user = await requireUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const db = serviceDb();
+  const { data, error } = await db
+    .from("intake_forms")
+    .select("*")
+    .eq("member_id", user.id)
+    .order("submission_date", { ascending: false, nullsFirst: false })
+    .order("created_at", { ascending: false, nullsFirst: false })
+    .limit(1);
+
+  if (error) {
+    console.error("[intake/complete GET] read error:", error.message);
+    return NextResponse.json({ error: "Failed to load intake" }, { status: 500 });
+  }
+
+  return NextResponse.json({ intake: data && data.length ? data[0] : null });
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const supabase = await createClient();
-
-    const {
-      data: { user },
-      error: userErr,
-    } = await supabase.auth.getUser();
-
-    if (userErr || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const user = await requireUser();
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     let body: Record<string, unknown> = {};
     try {
@@ -58,30 +115,55 @@ export async function POST(req: NextRequest) {
       body = {};
     }
 
-    const intakeFields = pickIntakeFields(body);
+    const intakeFields = normalizeIntake(body);
     const nowIso = new Date().toISOString();
+    const db = serviceDb();
 
-    // Does the member already have an intake_forms row? (user can't UPDATE under RLS,
-    // only founders/guides can — but we don't need to: the profile flag is the source
-    // of truth for "completed", and first-submission captures the payload.)
-    // We can't SELECT either (founders/guides only), but INSERT policy is open with check=true.
-    // The intake_forms.member_id will rely on a DB unique index if one exists; otherwise
-    // we may produce duplicate rows on re-submit, which is fine — ops dashboards just look
-    // for existence.
-    const { error: insErr } = await supabase.from("intake_forms").insert({
-      member_id: user.id,
-      ...intakeFields,
-      submission_date: nowIso,
-      signed_at: nowIso,
-      created_at: nowIso,
-    });
-    if (insErr && insErr.code !== "23505") {
-      // 23505 = unique_violation: already submitted, that's fine — continue to flip flag.
-      console.error("[intake/complete] intake insert error:", insErr.message);
+    // Find the most-recent existing row for this member. If one exists we
+    // UPDATE it in place so re-submissions replace the prior answers rather
+    // than piling up duplicate rows. If none exists, INSERT a fresh row.
+    const { data: existing, error: findErr } = await db
+      .from("intake_forms")
+      .select("id")
+      .eq("member_id", user.id)
+      .order("submission_date", { ascending: false, nullsFirst: false })
+      .order("created_at", { ascending: false, nullsFirst: false })
+      .limit(1);
+
+    if (findErr) {
+      console.error("[intake/complete] lookup error:", findErr.message);
       return NextResponse.json({ error: "Failed to save intake form" }, { status: 500 });
     }
 
-    // Flip flag on member_profiles (user can update own row).
+    if (existing && existing.length) {
+      const { error: updErr } = await db
+        .from("intake_forms")
+        .update({
+          ...intakeFields,
+          submission_date: nowIso,
+          signed_at: nowIso,
+        })
+        .eq("id", existing[0].id);
+      if (updErr) {
+        console.error("[intake/complete] update error:", updErr.message);
+        return NextResponse.json({ error: "Failed to save intake form" }, { status: 500 });
+      }
+    } else {
+      const { error: insErr } = await db.from("intake_forms").insert({
+        member_id: user.id,
+        ...intakeFields,
+        submission_date: nowIso,
+        signed_at: nowIso,
+        created_at: nowIso,
+      });
+      if (insErr) {
+        console.error("[intake/complete] insert error:", insErr.message);
+        return NextResponse.json({ error: "Failed to save intake form" }, { status: 500 });
+      }
+    }
+
+    // Flip the profile flag (user owns this row and can update it under RLS).
+    const supabase = await createServerClient();
     const { error: profErr } = await supabase
       .from("member_profiles")
       .update({

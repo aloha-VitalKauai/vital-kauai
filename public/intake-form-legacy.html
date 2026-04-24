@@ -133,35 +133,35 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
   <div class="field-grid">
     <div class="field-group">
       <label class="field-label">Full Legal Name <span style="color:var(--rose)">*</span></label>
-      <input type="text" class="field-input tracked" placeholder="As it appears on your ID">
+      <input type="text" name="legal_name" class="field-input tracked" placeholder="As it appears on your ID">
     </div>
     <div class="field-group">
       <label class="field-label">Preferred Name / Pronouns</label>
-      <input type="text" class="field-input tracked" placeholder="What we call you, your pronouns">
+      <input type="text" name="preferred_name" class="field-input tracked" placeholder="What we call you, your pronouns">
     </div>
     <div class="field-group">
       <label class="field-label">Date of Birth <span style="color:var(--rose)">*</span></label>
-      <input type="date" class="field-input tracked">
+      <input type="date" name="date_of_birth" class="field-input tracked">
     </div>
     <div class="field-group">
       <label class="field-label">Location <span style="color:var(--rose)">*</span></label>
-      <input type="text" class="field-input tracked" placeholder="City, Country">
+      <input type="text" name="location" class="field-input tracked" placeholder="City, Country">
     </div>
     <div class="field-group">
       <label class="field-label">Email Address <span style="color:var(--rose)">*</span></label>
-      <input type="email" class="field-input tracked" placeholder="Your email">
+      <input type="email" name="email" class="field-input tracked" placeholder="Your email">
     </div>
     <div class="field-group">
       <label class="field-label">Phone Number <span style="color:var(--rose)">*</span></label>
-      <input type="tel" class="field-input tracked" placeholder="Including country code">
+      <input type="tel" name="phone" class="field-input tracked" placeholder="Including country code">
     </div>
     <div class="field-group">
       <label class="field-label">Emergency Contact Name <span style="color:var(--rose)">*</span></label>
-      <input type="text" class="field-input tracked" placeholder="Full name">
+      <input type="text" name="emergency_contact" class="field-input tracked" placeholder="Full name">
     </div>
     <div class="field-group">
       <label class="field-label">Emergency Contact Phone <span style="color:var(--rose)">*</span></label>
-      <input type="tel" class="field-input tracked" placeholder="Phone number + relationship">
+      <input type="tel" name="emergency_phone" class="field-input tracked" placeholder="Phone number + relationship">
     </div>
   </div>
 </div>
@@ -173,25 +173,25 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
   <div class="field-grid">
     <div class="field-group field-full">
       <label class="field-label">What is calling you to this work at this time? <span style="color:var(--rose)">*</span></label>
-      <textarea class="field-textarea tall tracked" placeholder="What has brought you here — be as specific or as open as feels right..."></textarea>
+      <textarea name="primary_intention" class="field-textarea tall tracked" placeholder="What has brought you here — be as specific or as open as feels right..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">What qualities, changes, or capacities are you hoping to cultivate?</label>
-      <textarea class="field-textarea tracked" placeholder="What would you like to grow into, release, or come home to..."></textarea>
+      <textarea name="what_brings_you_here" class="field-textarea tracked" placeholder="What would you like to grow into, release, or come home to..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">If you had a magic wand and could create your ideal life — what would that look and feel like?</label>
-      <textarea class="field-textarea tracked" placeholder="Be generous with yourself here..."></textarea>
+      <textarea name="ideal_life" class="field-textarea tracked" placeholder="Be generous with yourself here..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">What do you feel is your purpose or mission in life?</label>
       <p class="field-hint">Even a partial or uncertain answer is welcome.</p>
-      <textarea class="field-textarea tracked" placeholder="As you understand it right now..."></textarea>
+      <textarea name="life_purpose" class="field-textarea tracked" placeholder="As you understand it right now..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">How do you relate to sacred practice, ceremony, or spiritual inquiry?</label>
       <p class="field-hint">What practices do you currently hold? What is your relationship with the unseen?</p>
-      <textarea class="field-textarea tracked" placeholder="Meditation, prayer, nature, movement — all are welcome..."></textarea>
+      <textarea name="sacred_practice" class="field-textarea tracked" placeholder="Meditation, prayer, nature, movement — all are welcome..."></textarea>
     </div>
   </div>
 </div>
@@ -204,16 +204,16 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
     <div class="field-group field-full">
       <label class="field-label">How would you describe your current relationship with your body?</label>
       <p class="field-hint">How do you care for it? How well do you listen to it?</p>
-      <textarea class="field-textarea tracked" placeholder="Comfortable, disconnected, in process — describe what is true..."></textarea>
+      <textarea name="body_relationship" class="field-textarea tracked" placeholder="Comfortable, disconnected, in process — describe what is true..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">What current physical symptoms, sensitivities, or limitations do you experience?</label>
-      <textarea class="field-textarea tracked" placeholder="Chronic pain, fatigue, digestive issues, sensory sensitivities, anything relevant..."></textarea>
+      <textarea name="physical_symptoms" class="field-textarea tracked" placeholder="Chronic pain, fatigue, digestive issues, sensory sensitivities, anything relevant..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">What helps you feel safe, regulated, and grounded?</label>
       <p class="field-hint">Movement, nature, music, breath, touch, solitude — whatever brings you back to yourself.</p>
-      <textarea class="field-textarea tracked" placeholder="What are your anchors?"></textarea>
+      <textarea name="grounding_practices" class="field-textarea tracked" placeholder="What are your anchors?"></textarea>
     </div>
   </div>
 </div>
@@ -225,16 +225,16 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
   <div class="field-grid">
     <div class="field-group field-full">
       <label class="field-label">What emotional patterns or experiences are most present in your life right now?</label>
-      <textarea class="field-textarea tracked" placeholder="Anxiety, grief, numbness, anger, joy, confusion — describe what is alive..."></textarea>
+      <textarea name="emotional_patterns" class="field-textarea tracked" placeholder="Anxiety, grief, numbness, anger, joy, confusion — describe what is alive..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">What trauma — major or minor — have you experienced? What are your biggest stressors? Have you experienced significant loss?</label>
       <p class="field-hint">Share only what feels right at this stage. You will have space to go deeper in conversation with us.</p>
-      <textarea class="field-textarea tall tracked" placeholder="Take your time with this one..."></textarea>
+      <textarea name="psychiatric_history" class="field-textarea tall tracked" placeholder="Take your time with this one..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">Are you currently working with a therapist, coach, or healer?</label>
-      <textarea class="field-textarea tracked" placeholder="If yes, describe the modality and how long you have been working together..."></textarea>
+      <textarea name="current_therapy" class="field-textarea tracked" placeholder="If yes, describe the modality and how long you have been working together..."></textarea>
     </div>
   </div>
 </div>
@@ -247,22 +247,22 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
     <div class="field-group field-full">
       <label class="field-label">What personal growth, healing, or development work have you done?</label>
       <p class="field-hint">Programs, trainings, certifications, therapy modalities, retreats, educational paths.</p>
-      <textarea class="field-textarea tracked" placeholder="Formal or informal — all of it counts..."></textarea>
+      <textarea name="personal_growth" class="field-textarea tracked" placeholder="Formal or informal — all of it counts..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">Have you participated in ceremony, plant medicine, or altered-state practices before? <span style="color:var(--rose)">*</span></label>
       <p class="field-hint">Please be specific — substance, setting, number of times, your experience.</p>
-      <textarea class="field-textarea tall tracked" placeholder="Ayahuasca, psilocybin, iboga, cannabis ceremonies, breathwork, holotropic states, etc..."></textarea>
+      <textarea name="previous_psychedelic_experience" class="field-textarea tall tracked" placeholder="Ayahuasca, psilocybin, iboga, cannabis ceremonies, breathwork, holotropic states, etc..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">Briefly describe your childhood and relationship with your primary caregivers.</label>
       <p class="field-hint">Were you breastfed? Were your emotional needs generally met? Any significant early experiences worth noting?</p>
-      <textarea class="field-textarea tall tracked" placeholder="A few sentences is enough — this gives us important context..."></textarea>
+      <textarea name="childhood_history" class="field-textarea tall tracked" placeholder="A few sentences is enough — this gives us important context..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">What has supported your integration after healing work in the past?</label>
       <p class="field-hint">What helps you digest and ground new experiences?</p>
-      <textarea class="field-textarea tracked" placeholder="Nature, journaling, community, somatic practices, time alone..."></textarea>
+      <textarea name="integration_history" class="field-textarea tracked" placeholder="Nature, journaling, community, somatic practices, time alone..."></textarea>
     </div>
   </div>
 </div>
@@ -278,31 +278,32 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
     <div class="field-group field-full">
       <label class="field-label">Please list any relevant medical or health conditions, challenges, or concerns <span style="color:var(--rose)">*</span></label>
       <p class="field-hint">Include physical, mental, and neurological. Include anything currently managed or historical.</p>
-      <textarea class="field-textarea tall tracked" placeholder="Cardiac conditions, seizure history, psychiatric diagnoses, autoimmune conditions, chronic illness, etc. Write 'none known' if applicable..."></textarea>
+      <textarea name="health_history" class="field-textarea tall tracked" placeholder="Cardiac conditions, seizure history, psychiatric diagnoses, autoimmune conditions, chronic illness, etc. Write 'none known' if applicable..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">Please list all medications and supplements you are currently taking <span style="color:var(--rose)">*</span></label>
       <p class="field-hint">Include dose and frequency. SSRIs, MAOIs, antipsychotics, and psychiatric medications are particularly important to disclose for iboga work.</p>
-      <textarea class="field-textarea tall tracked" placeholder="Name, dose, frequency — write 'none' if not applicable..."></textarea>
+      <textarea name="current_medications" class="field-textarea tall tracked" placeholder="Name, dose, frequency — write 'none' if not applicable..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">Are there any contraindications or health considerations specific to iboga we should know about? <span style="color:var(--rose)">*</span></label>
       <p class="field-hint">Heart conditions, prolonged QT interval, liver concerns, history of psychosis, recent substance use — please be thorough.</p>
-      <textarea class="field-textarea tracked" placeholder="Share anything that feels relevant — more is always better here..."></textarea>
+      <textarea name="medication_interactions" class="field-textarea tracked" placeholder="Share anything that feels relevant — more is always better here..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">How would you describe your current mental and emotional health?</label>
+      <input type="hidden" name="mental_health_status" data-radio-group="mental-health" value="">
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
-        <div class="choice-item" style="flex:1;min-width:140px;" onclick="toggleChoice(this,'radio','mental-health')">
+        <div class="choice-item" data-value="stable" style="flex:1;min-width:140px;" onclick="toggleChoice(this,'radio','mental-health')">
           <div class="choice-dot"></div><span class="choice-text">Stable and well</span>
         </div>
-        <div class="choice-item" style="flex:1;min-width:140px;" onclick="toggleChoice(this,'radio','mental-health')">
+        <div class="choice-item" data-value="in_process" style="flex:1;min-width:140px;" onclick="toggleChoice(this,'radio','mental-health')">
           <div class="choice-dot"></div><span class="choice-text">In process — some difficulty</span>
         </div>
-        <div class="choice-item" style="flex:1;min-width:140px;" onclick="toggleChoice(this,'radio','mental-health')">
+        <div class="choice-item" data-value="significant" style="flex:1;min-width:140px;" onclick="toggleChoice(this,'radio','mental-health')">
           <div class="choice-dot"></div><span class="choice-text">Navigating something significant</span>
         </div>
-        <div class="choice-item" style="flex:1;min-width:140px;" onclick="toggleChoice(this,'radio','mental-health')">
+        <div class="choice-item" data-value="crisis" style="flex:1;min-width:140px;" onclick="toggleChoice(this,'radio','mental-health')">
           <div class="choice-dot"></div><span class="choice-text">In crisis or acute distress</span>
         </div>
       </div>
@@ -318,27 +319,28 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
     <div class="field-group field-full">
       <label class="field-label">What support systems do you have in your life right now?</label>
       <p class="field-hint">Friends, family, community, professional support — who is in your corner?</p>
-      <textarea class="field-textarea tracked" placeholder="Describe what is available to you..."></textarea>
+      <textarea name="support_systems" class="field-textarea tracked" placeholder="Describe what is available to you..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">Who are the people in your life who will hold space for you when you return home?</label>
       <p class="field-hint">Integration is richest when it happens in community. Even one person makes a real difference. If you are still identifying the right people, we love helping with that too.</p>
+      <input type="hidden" name="home_support_selection" data-radio-group="support-person" value="">
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;margin-bottom:16px;">
-        <div class="choice-item" style="flex:1;min-width:180px;" onclick="toggleChoice(this,'radio','support-person')">
+        <div class="choice-item" data-value="one" style="flex:1;min-width:180px;" onclick="toggleChoice(this,'radio','support-person')">
           <div class="choice-dot"></div><span class="choice-text">I have one person in mind</span>
         </div>
-        <div class="choice-item" style="flex:1;min-width:180px;" onclick="toggleChoice(this,'radio','support-person')">
+        <div class="choice-item" data-value="few" style="flex:1;min-width:180px;" onclick="toggleChoice(this,'radio','support-person')">
           <div class="choice-dot"></div><span class="choice-text">I have a few people in mind</span>
         </div>
-        <div class="choice-item" style="flex:1;min-width:180px;" onclick="toggleChoice(this,'radio','support-person')">
+        <div class="choice-item" data-value="help" style="flex:1;min-width:180px;" onclick="toggleChoice(this,'radio','support-person')">
           <div class="choice-dot"></div><span class="choice-text">I would love help identifying someone</span>
         </div>
       </div>
-      <textarea class="field-textarea tracked" placeholder="Tell us who you are thinking of — or tell us a little about your community and we will explore together..."></textarea>
+      <textarea name="home_support_people" class="field-textarea tracked" placeholder="Tell us who you are thinking of — or tell us a little about your community and we will explore together..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">What would your ideal integration support look like after the journey?</label>
-      <textarea class="field-textarea tracked" placeholder="What do you know about what helps you land and integrate after deep work?"></textarea>
+      <textarea name="ideal_integration_support" class="field-textarea tracked" placeholder="What do you know about what helps you land and integrate after deep work?"></textarea>
     </div>
   </div>
 </div>
@@ -350,20 +352,20 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
   <div class="field-grid">
     <div class="field-group field-full">
       <label class="field-label">What helps you know when you are ready for deep inner work?</label>
-      <textarea class="field-textarea tracked" placeholder="What internal signals, conditions, or preparations tell you the timing is right?"></textarea>
+      <textarea name="readiness_signals" class="field-textarea tracked" placeholder="What internal signals, conditions, or preparations tell you the timing is right?"></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">How do you care for yourself when intensity or difficulty arises?</label>
-      <textarea class="field-textarea tracked" placeholder="What are your practices, go-to anchors, or sources of support when things get hard?"></textarea>
+      <textarea name="self_care_practices" class="field-textarea tracked" placeholder="What are your practices, go-to anchors, or sources of support when things get hard?"></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">What boundaries or needs would you like us to be aware of before we begin?</label>
       <p class="field-hint">Physical, emotional, relational, communication style — anything that supports you feeling safe and met.</p>
-      <textarea class="field-textarea tracked" placeholder="Everything is welcome here..."></textarea>
+      <textarea name="boundaries_needs" class="field-textarea tracked" placeholder="Everything is welcome here..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">Is there anything else you would like your care team to know before your first preparation call?</label>
-      <textarea class="field-textarea tracked" placeholder="Anything that did not have a clear home in the form above..."></textarea>
+      <textarea name="additional_notes" class="field-textarea tracked" placeholder="Anything that did not have a clear home in the form above..."></textarea>
     </div>
   </div>
 </div>
@@ -376,12 +378,12 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
     <div class="field-group field-full">
       <label class="field-label">Dietary Preferences & Restrictions</label>
       <p class="field-hint">All meals are prepared fresh and tailored to your preparation protocol. Share anything we should know — allergies, intolerances, ethical choices, or preferences. Everything is relevant.</p>
-      <textarea class="field-textarea tall tracked" placeholder="e.g. gluten-free, nut allergy, vegan, no pork, intermittent fasting, specific dislikes..."></textarea>
+      <textarea name="dietary_restrictions" class="field-textarea tall tracked" placeholder="e.g. gluten-free, nut allergy, vegan, no pork, intermittent fasting, specific dislikes..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">Accommodation Requests</label>
       <p class="field-hint">Our accommodations are crafted for rest, privacy, and deep integration. Share any specific needs — physical, sensory, relational, or otherwise.</p>
-      <textarea class="field-textarea tracked" placeholder="e.g. ground-floor room, extra quiet space, preference for solitude, sharing with a partner..."></textarea>
+      <textarea name="accommodation_requests" class="field-textarea tracked" placeholder="e.g. ground-floor room, extra quiet space, preference for solitude, sharing with a partner..."></textarea>
     </div>
   </div>
 </div>
@@ -427,15 +429,15 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
     <div class="sig-grid">
       <div>
         <p class="sig-label">Full Name <span style="color:var(--rose)">*</span></p>
-        <input type="text" class="sig-input tracked" placeholder="Type your full name">
+        <input type="text" name="signer_name" class="sig-input tracked" placeholder="Type your full name">
       </div>
       <div>
         <p class="sig-label">Signature (type to sign) <span style="color:var(--rose)">*</span></p>
-        <input type="text" class="sig-input tracked" placeholder="Type your name as your signature" style="font-style:italic;">
+        <input type="text" name="signature" class="sig-input tracked" placeholder="Type your name as your signature" style="font-style:italic;">
       </div>
       <div>
         <p class="sig-label">Date <span style="color:var(--rose)">*</span></p>
-        <input type="date" class="sig-input tracked" id="sigDate">
+        <input type="date" name="signed_date" class="sig-input tracked" id="sigDate">
       </div>
     </div>
   </div>
@@ -464,16 +466,85 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
 </footer>
 
 <script>
+// ---- Draft persistence ----------------------------------------------------
+// The form auto-saves to localStorage as the member types AND fetches any
+// previous submission from the server. When they return (even after
+// submitting), their previous answers are restored so they can continue
+// editing and resubmit without refilling from scratch.
+const DRAFT_KEY = 'vk_intake_draft_v1';
+const ACK_KEY = 'vk_intake_acks_v1';
+
+function syncRadioHidden(group) {
+  const hidden = document.querySelector(`input[data-radio-group="${group}"]`);
+  if (!hidden) return;
+  const chosen = document.querySelector(`.choice-item.chosen[onclick*="'${group}'"]`);
+  hidden.value = chosen ? (chosen.dataset.value || '') : '';
+}
+
+function collectPayload() {
+  // Use FormData so every named input/textarea is captured in one pass.
+  const fd = new FormData(document.getElementById('intakeForm'));
+  const out = {};
+  fd.forEach((v, k) => { out[k] = typeof v === 'string' ? v : String(v); });
+  return out;
+}
+
+function saveDraft() {
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(collectPayload()));
+    const acks = [];
+    document.querySelectorAll('.ack-item').forEach(el => {
+      acks.push(el.querySelector('.ack-box').classList.contains('checked'));
+    });
+    localStorage.setItem(ACK_KEY, JSON.stringify(acks));
+  } catch (e) { /* ignore quota / privacy-mode errors */ }
+}
+
+function populateFromData(data) {
+  if (!data) return false;
+  let anyApplied = false;
+  Object.keys(data).forEach(name => {
+    const v = data[name];
+    if (v === null || v === undefined || v === '') return;
+    const el = document.querySelector(`[name="${name}"]`);
+    if (el) {
+      el.value = v;
+      anyApplied = true;
+      if (el.dataset.radioGroup) {
+        // Restore the chosen state of the matching choice-item.
+        document.querySelectorAll(`.choice-item[onclick*="'${el.dataset.radioGroup}'"]`).forEach(c => {
+          if (c.dataset.value === v) c.classList.add('chosen');
+          else c.classList.remove('chosen');
+        });
+      }
+    }
+  });
+  return anyApplied;
+}
+
+function restoreLocalAcks() {
+  try {
+    const acks = JSON.parse(localStorage.getItem(ACK_KEY) || 'null');
+    if (!Array.isArray(acks)) return;
+    document.querySelectorAll('.ack-item').forEach((el, i) => {
+      if (acks[i]) el.querySelector('.ack-box').classList.add('checked');
+    });
+  } catch { /* ignore */ }
+}
+
 function toggleChoice(el, type, group) {
   if (type === 'radio') {
     document.querySelectorAll('[onclick*="' + "'" + group + "'" + '"]').forEach(c => c.classList.remove('chosen'));
   }
   el.classList.toggle('chosen');
+  syncRadioHidden(group);
   updateProgress();
+  saveDraft();
 }
 function toggleAck(el) {
   el.querySelector('.ack-box').classList.toggle('checked');
   updateProgress();
+  saveDraft();
 }
 function updateProgress() {
   const tracked = document.querySelectorAll('.tracked');
@@ -483,9 +554,60 @@ function updateProgress() {
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('progressPct').textContent = pct + '%';
 }
-document.querySelectorAll('.tracked').forEach(el => { el.addEventListener('input', updateProgress); });
+document.querySelectorAll('.tracked').forEach(el => {
+  el.addEventListener('input', () => { updateProgress(); saveDraft(); });
+  el.addEventListener('change', saveDraft);
+});
 const sigDate = document.getElementById('sigDate');
-if (sigDate) sigDate.value = new Date().toISOString().split('T')[0];
+if (sigDate && !sigDate.value) sigDate.value = new Date().toISOString().split('T')[0];
+
+function showRestoredBanner() {
+  if (document.getElementById('vk-restored-banner')) return;
+  const note = document.createElement('div');
+  note.id = 'vk-restored-banner';
+  note.style.cssText = 'max-width:840px;margin:20px auto 0;padding:14px 20px;background:rgba(122,158,126,0.08);border-left:3px solid var(--sage);font-size:12.5px;color:var(--text-mid);line-height:1.7;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;';
+  note.innerHTML = '<span>Your previous answers have been restored. Update anything you\u2019d like and submit again.</span><button type="button" id="clearDraftBtn" style="font-family:inherit;font-size:9px;letter-spacing:0.25em;text-transform:uppercase;background:transparent;border:1px solid var(--sage);color:var(--sage);padding:8px 16px;cursor:pointer;">Start fresh</button>';
+  const wrap = document.querySelector('.form-wrap');
+  wrap.parentNode.insertBefore(note, wrap);
+  document.getElementById('clearDraftBtn').addEventListener('click', async () => {
+    if (!confirm('Clear your saved answers and start a blank form? Your previously submitted answers will remain on file until you submit again.')) return;
+    localStorage.removeItem(DRAFT_KEY);
+    localStorage.removeItem(ACK_KEY);
+    window.location.reload();
+  });
+}
+
+// On load: restore local draft first (fast), then fetch server record and
+// fill any fields the local draft didn't cover (useful on a new device).
+(async function hydrate() {
+  let restored = false;
+  try {
+    const local = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
+    if (local && populateFromData(local)) restored = true;
+  } catch { /* ignore */ }
+  restoreLocalAcks();
+
+  try {
+    const res = await fetch('/api/intake/complete', { credentials: 'include' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.intake) {
+        // Only fill fields that are still empty — don't clobber unsaved local edits.
+        const toFill = {};
+        Object.keys(data.intake).forEach(k => {
+          const el = document.querySelector(`[name="${k}"]`);
+          if (el && (!el.value || el.value === '')) toFill[k] = data.intake[k];
+        });
+        if (populateFromData(toFill)) restored = true;
+      }
+    }
+  } catch { /* offline / not signed in — localStorage still serves */ }
+
+  // Ensure hidden radio inputs reflect any restored .chosen state.
+  document.querySelectorAll('input[data-radio-group]').forEach(h => syncRadioHidden(h.dataset.radioGroup));
+  updateProgress();
+  if (restored) showRestoredBanner();
+})();
 async function submitForm() {
   const acks = document.querySelectorAll('.ack-box');
   let allChecked = true;
@@ -493,15 +615,12 @@ async function submitForm() {
   if (!allChecked) { alert('Please confirm all acknowledgment items before submitting.'); return; }
 
   const btn = document.querySelector('.btn-submit');
+  const originalLabel = btn ? btn.textContent : 'Submit Intake Form';
   if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
 
-  // Collect everything named in the form into a flat payload.
-  const formEl = document.getElementById('intakeForm');
-  const payload = {};
-  if (formEl) {
-    const fd = new FormData(formEl);
-    fd.forEach((v, k) => { payload[k] = typeof v === 'string' ? v : String(v); });
-  }
+  // Sync any radio-group hidden inputs one last time before collecting.
+  document.querySelectorAll('input[data-radio-group]').forEach(h => syncRadioHidden(h.dataset.radioGroup));
+  const payload = collectPayload();
 
   try {
     const res = await fetch('/api/intake/complete', {
@@ -514,16 +633,21 @@ async function submitForm() {
       const data = await res.json().catch(() => ({}));
       const msg = data && data.error ? data.error : 'Could not save your intake form. Please try again.';
       alert(msg);
-      if (btn) { btn.disabled = false; btn.textContent = 'Submit Intake Form'; }
+      if (btn) { btn.disabled = false; btn.textContent = originalLabel; }
       return;
     }
   } catch (err) {
     alert('Network error. Please check your connection and try again.');
-    if (btn) { btn.disabled = false; btn.textContent = 'Submit Intake Form'; }
+    if (btn) { btn.disabled = false; btn.textContent = originalLabel; }
     return;
   }
 
+  // Keep the local draft so returning to the page shows the filled form.
+  saveDraft();
+
   document.getElementById('intakeForm').style.display = 'none';
+  const banner = document.getElementById('vk-restored-banner');
+  if (banner) banner.style.display = 'none';
   document.getElementById('success-msg').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
