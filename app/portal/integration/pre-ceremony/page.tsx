@@ -793,7 +793,7 @@ export default function PreCeremonyPage() {
                       <div className="vp-play"><span className="vp-play-icon">▶</span></div>
                       <div>
                         <div className="vp-label">A Message from Rachel &amp; Josh · Week 1</div>
-                        <div className="vp-text">Rachel and Josh open the six-week preparation arc with a conversation about perception — how what we see shapes what we experience, why attention is the first act of medicine, and what it means to look at the lens itself before anything else. Watch this before you read further.</div>
+                        <div className="vp-text">Rachel and Josh open the six-week preparation arc with a conversation about perception — how what we see shapes what we experience, why attention matters, and what it means to look at the lens itself before anything else. Watch this before you read further.</div>
                         <div className="vp-coming-soon">Coming Soon</div>
                       </div>
                     </div>
