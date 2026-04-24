@@ -611,6 +611,12 @@ export default function PreCeremonyPage() {
         .wh-title em { font-style:italic;color:var(--sage); }
         .wh-sub { font-size:14px;color:var(--stone);line-height:1.9;max-width:640px;padding-bottom:32px;border-bottom:1px solid var(--border);margin-bottom:36px; }
         .wh-italic { font-size:13px;color:var(--sage);font-style:italic;margin-top:16px;letter-spacing:.02em; }
+        /* Week 1 principle — same hierarchy as wh-* but bumped to read as the theme of the week. */
+        .w1p-eyebrow { font-size:10px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:20px; }
+        .w1p-title { font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5.2vw,58px);font-weight:300;line-height:1.06;margin:0 0 18px;color:var(--ink); }
+        .w1p-title em { font-style:italic;color:var(--sage); }
+        .w1p-pull { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(17px,1.8vw,21px);color:var(--sage);line-height:1.55;margin:0 0 26px;letter-spacing:.015em; }
+        .w1p-body { font-size:15.5px;color:var(--stone);line-height:1.95;max-width:680px;padding-bottom:40px;border-bottom:1px solid var(--border);margin:0; }
 
         /* PRINCIPLE CARD — Hawaiian principle of the week */
         .principle-card { background:var(--cream); border-left:3px solid var(--gold); border-radius:2px; padding:56px 60px; margin-bottom:40px; }
@@ -806,18 +812,19 @@ export default function PreCeremonyPage() {
 
             {i === 0 ? (
               <>
-                {/* Section 1 — Principle (matches the Weeks 2–6 wh-* type pattern
-                    so Week 1 reads cohesively with the rest of the arc). */}
+                {/* Section 1 — Principle. Mirrors the Weeks 2–6 type stack
+                    (eyebrow → title → pull → body) but on its own slightly
+                    larger w1p-* scale so the principle reads as the theme. */}
                 <section className="w1-section" id="principle">
-                  <span className="wh-eyebrow">Week 1 · Ike · Perception</span>
-                  <h2 className="wh-title">Seeing <em>clearly.</em></h2>
-                  <p className="wh-sub">What you perceive shapes what you experience — attention, assumptions, the stories carried without noticing. This week is an invitation to look at the lens itself.</p>
-                  <p className="wh-italic">&ldquo;I create my reality.&rdquo; — Ike</p>
+                  <span className="w1p-eyebrow">Week 1 · Ike · Perception</span>
+                  <h2 className="w1p-title">Seeing <em>clearly.</em></h2>
+                  <p className="w1p-pull">&ldquo;I create my reality.&rdquo; — Ike</p>
+                  <p className="w1p-body">What you perceive shapes what you experience — attention, assumptions, the stories carried without noticing. This week is an invitation to look at the lens itself.</p>
                 </section>
 
                 {/* Section 2 — Week Video (Rachel & Josh transmission) */}
                 <section className="w1-section" id="week-video">
-                  <span className="section-label">Video transmission — watch before anything else</span>
+                  <span className="section-label">Message from the Founders</span>
                   <div className="video-frame">
                     <div className="video-primer">
                       <div className="vp-play"><span className="vp-play-icon">▶</span></div>
@@ -952,7 +959,7 @@ export default function PreCeremonyPage() {
 
             {/* Video */}
             <div className="section" style={{ marginTop: 36 }}>
-              <span className="section-label">Video transmission{i === 0 ? ' — watch before anything else' : ''}</span>
+              <span className="section-label">Video transmission</span>
               <div className="video-frame">
                 <div className="video-primer">
                   <div className="vp-play"><span className="vp-play-icon">▶</span></div>
