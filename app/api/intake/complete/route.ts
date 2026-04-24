@@ -61,6 +61,21 @@ function pickIntakeFields(body: Record<string, unknown>) {
   return out;
 }
 
+// Build the verbatim `responses` jsonb payload — every non-empty field the
+// member submitted, so the founders dashboard can review answers even for
+// questions without a dedicated typed column. We strip the typed `signature`
+// blob (already stored in its own column) to avoid duplicating it.
+function buildResponsesPayload(body: Record<string, unknown>) {
+  const out: Record<string, unknown> = {};
+  for (const [key, v] of Object.entries(body)) {
+    if (key === "signature") continue;
+    if (v === undefined || v === null) continue;
+    if (typeof v === "string" && v.trim() === "") continue;
+    out[key] = v;
+  }
+  return Object.keys(out).length ? out : null;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const supabase = await createClient();
@@ -82,6 +97,7 @@ export async function POST(req: NextRequest) {
     }
 
     const intakeFields = pickIntakeFields(body);
+    const responsesPayload = buildResponsesPayload(body);
     const nowIso = new Date().toISOString();
 
     // Does the member already have an intake_forms row? (user can't UPDATE under RLS,
@@ -94,6 +110,7 @@ export async function POST(req: NextRequest) {
     const { error: insErr } = await supabase.from("intake_forms").insert({
       member_id: user.id,
       ...intakeFields,
+      responses: responsesPayload,
       submission_date: nowIso,
       signed_at: nowIso,
       created_at: nowIso,
