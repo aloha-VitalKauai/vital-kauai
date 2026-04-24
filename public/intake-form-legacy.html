@@ -197,10 +197,6 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
       <textarea id="f-body-rel" name="body_relationship" class="field-textarea tracked" placeholder="Comfortable, disconnected, in process — describe what is true..."></textarea>
     </div>
     <div class="field-group field-full">
-      <label class="field-label" for="f-physical">What current physical symptoms, sensitivities, or limitations do you experience?</label>
-      <textarea id="f-physical" name="physical_symptoms" class="field-textarea tracked" placeholder="Chronic pain, fatigue, digestive issues, sensory sensitivities, anything relevant..."></textarea>
-    </div>
-    <div class="field-group field-full">
       <label class="field-label" for="f-grounding">What helps you feel safe, regulated, and grounded?</label>
       <p class="field-hint">Movement, nature, music, breath, touch, solitude — whatever brings you back to yourself.</p>
       <textarea id="f-grounding" name="grounding_practices" class="field-textarea tracked" placeholder="What are your anchors?"></textarea>
@@ -264,19 +260,14 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
   </div>
   <div class="field-grid">
     <div class="field-group field-full">
-      <label class="field-label" for="f-health">Please list any relevant medical or health conditions, challenges, or concerns <span style="color:var(--rose)">*</span></label>
-      <p class="field-hint">Include physical, mental, and neurological. Include anything currently managed or historical.</p>
-      <textarea id="f-health" name="health_history" class="field-textarea tall tracked" data-required placeholder="Cardiac conditions, seizure history, psychiatric diagnoses, autoimmune conditions, chronic illness, etc. Write 'none known' if applicable..."></textarea>
+      <label class="field-label" for="f-health">Please list any relevant medical or health conditions, symptoms, sensitivities, or limitations <span style="color:var(--rose)">*</span></label>
+      <p class="field-hint">Physical, mental, and neurological. Currently managed or historical. Include anything specifically relevant to iboga — heart conditions, prolonged QT interval, liver concerns, history of psychosis, recent substance use.</p>
+      <textarea id="f-health" name="health_history" class="field-textarea tall tracked" data-required placeholder="Cardiac conditions, seizure history, psychiatric diagnoses, autoimmune conditions, chronic illness, chronic pain, fatigue, digestive issues, sensory sensitivities. Write 'none known' if applicable..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label" for="f-meds">Please list all medications and supplements you are currently taking <span style="color:var(--rose)">*</span></label>
       <p class="field-hint">Include dose and frequency. SSRIs, MAOIs, antipsychotics, and psychiatric medications are particularly important to disclose for iboga work.</p>
       <textarea id="f-meds" name="current_medications" class="field-textarea tall tracked" data-required placeholder="Name, dose, frequency — write 'none' if not applicable..."></textarea>
-    </div>
-    <div class="field-group field-full">
-      <label class="field-label" for="f-contra">Are there any contraindications or health considerations specific to iboga we should know about? <span style="color:var(--rose)">*</span></label>
-      <p class="field-hint">Heart conditions, prolonged QT interval, liver concerns, history of psychosis, recent substance use — please be thorough.</p>
-      <textarea id="f-contra" name="medication_interactions" class="field-textarea tracked" data-required placeholder="Share anything that feels relevant — more is always better here..."></textarea>
     </div>
     <div class="field-group field-full">
       <label class="field-label">How would you describe your current mental and emotional health?</label>
@@ -305,13 +296,8 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
   <p class="fs-desc">Integration happens in the context of your life. Understanding your environment helps us prepare you well.</p>
   <div class="field-grid">
     <div class="field-group field-full">
-      <label class="field-label" for="f-support-systems">What support systems do you have in your life right now?</label>
-      <p class="field-hint">Friends, family, community, professional support — who is in your corner?</p>
-      <textarea id="f-support-systems" name="support_systems" class="field-textarea tracked" placeholder="Describe what is available to you..."></textarea>
-    </div>
-    <div class="field-group field-full">
-      <label class="field-label" for="f-home-support-people">Who are the people in your life who will hold space for you when you return home?</label>
-      <p class="field-hint">Integration is richest when it happens in community. Even one person makes a real difference. If you are still identifying the right people, we love helping with that too.</p>
+      <label class="field-label" for="f-home-support-people">Who will support you — in your corner now, and holding space when you return home?</label>
+      <p class="field-hint">Friends, family, community, professional support. Integration is richest when it happens in community, and even one person makes a real difference. If you are still identifying the right people, we love helping with that too.</p>
       <input type="hidden" name="home_support_selection" id="f-home-support-selection" value="">
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;margin-bottom:16px;">
         <div class="choice-item" style="flex:1;min-width:180px;" data-value="one" onclick="toggleChoice(this,'radio','support-person','f-home-support-selection')">
@@ -378,7 +364,7 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
       </div>
       <div class="ack-item" onclick="toggleAck(this)">
         <div class="ack-box"></div>
-        <span>I am responsible for honest and complete disclosure — including all health history, medications, and supplements — and will follow any discontinuation guidance from Rachel, Josh, and my own physician.</span>
+        <span>I am responsible for honest and complete disclosure — including all health history, medications, and supplements — and will follow any discontinuation guidance from Vital Kauaʻi and my own physician.</span>
       </div>
       <div class="ack-item" onclick="toggleAck(this)">
         <div class="ack-box"></div>
@@ -411,7 +397,7 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
   </div>
 
   <div class="submit-area">
-    <p class="submit-note">Once submitted, your form will be reviewed personally. Thank you for your honesty and trust.</p>
+    <p class="submit-note">Your form will be reviewed personally by Rachel and Josh once submitted. Thank you for your honesty and trust.</p>
     <button type="button" class="btn-submit" onclick="submitForm()">Submit Intake Form</button>
     <p style="font-size:11px;color:var(--stone);margin-top:16px;">Questions before submitting? <a href="mailto:aloha@vitalkauai.com" style="color:var(--sage);text-decoration:none;">aloha@vitalkauai.com</a></p>
   </div>
