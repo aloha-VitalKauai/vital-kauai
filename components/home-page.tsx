@@ -545,14 +545,32 @@ export function HomePage() {
               <br />
               <em>the Work?</em>
             </h2>
-            <p className={`${styles.sectionSub} ${styles.reveal} ${styles.revealDelay1}`}>
-              We offer support at every level. Internal cleansing, detoxification, and deep restoration
-              prepare the body to receive. Somatic therapy draws out and integrates what the medicine
-              reveals. Breathwork, movement, sound, and energetic practice open presence and aliveness
-              across every dimension of the experience. Most importantly, we offer full preparation
-              and post-ceremony integration support over the course of months, so the transformation
-              that begins here continues to deepen long after you leave.
-            </p>
+            <div className={`${styles.sectionSub} ${styles.reveal} ${styles.revealDelay1}`}>
+              <p>We offer support at every level.</p>
+              <p>
+                Internal cleansing, detoxification, and deep restoration prepare the body to
+                receive.
+              </p>
+              <p>
+                Somatic support and guidance prepares the body, mind, and spirit to work with the
+                medicine and to move with what arises. You build the capacity to feel safe, to
+                track the nervous system, to self-resource, and to integrate what the medicine
+                reveals.
+              </p>
+              <p>
+                Breathwork, movement, sound, and energetic practice open presence and aliveness
+                across every dimension of the experience.
+              </p>
+              <p>
+                The land and waters of Kauaʻi are part of the medicine, too. Time in the ocean, on
+                the ʻāina, and in the elements is woven through your stay.
+              </p>
+              <p>
+                Most importantly, we offer full preparation and integration support across months,
+                a six-week arc before ceremony and a six-week arc after, so the depth that opens
+                here continues to deepen long after you leave.
+              </p>
+            </div>
           </div>
           <div className={`${styles.offeringsImageWrap} ${styles.reveal}`}>
             <Image

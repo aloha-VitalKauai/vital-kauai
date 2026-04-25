@@ -961,6 +961,10 @@
   color: rgb(245 240 232 / 0.6);
 }
 
+.sectionSub p + p {
+  margin-top: 1.1em;
+}
+
 .offeringTags {
   display: flex;
   flex-wrap: wrap;
