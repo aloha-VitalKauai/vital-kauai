@@ -842,6 +842,12 @@
   padding: 120px 60px;
 }
 
+/* Tighten the transition between the Medicine section above and the
+   Nature's Most Ancient Medicine feature so they read as one piece. */
+.rivers {
+  padding-top: 64px;
+}
+
 .riverFeature {
   position: relative;
   min-height: 520px;
@@ -1039,7 +1045,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 100px 80px;
+  padding: 100px 80px 60px;
 }
 
 .medicineBody {
