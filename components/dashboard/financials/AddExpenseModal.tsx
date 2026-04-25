@@ -33,16 +33,28 @@ export default function AddExpenseModal({
   onClose,
   cohorts,
   journeys,
+  lockedJourney,
+  lockedCohort,
 }: {
   open: boolean;
   onClose: () => void;
   cohorts: { id: string; title: string }[];
   journeys: { id: string; label: string }[];
+  /** When set, the modal is pre-filled to this journey, the scope
+   *  dropdown is hidden, and the journey field is read-only. */
+  lockedJourney?: { id: string; label: string };
+  /** Same idea for cohorts. */
+  lockedCohort?: { id: string; title: string };
 }) {
   const router = useRouter();
-  const [scope, setScope] = useState<ExpenseScope>("cohort");
-  const [journeyId, setJourneyId] = useState("");
-  const [cohortId, setCohortId] = useState("");
+  const initialScope: ExpenseScope = lockedJourney
+    ? "journey"
+    : lockedCohort
+      ? "cohort"
+      : "cohort";
+  const [scope, setScope] = useState<ExpenseScope>(initialScope);
+  const [journeyId, setJourneyId] = useState(lockedJourney?.id ?? "");
+  const [cohortId, setCohortId] = useState(lockedCohort?.id ?? "");
   const [category, setCategory] = useState<ExpenseCategory>("supplies");
   const [dollars, setDollars] = useState("");
   const [vendor, setVendor] = useState("");
@@ -52,6 +64,8 @@ export default function AddExpenseModal({
   );
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+
+  const locked = !!(lockedJourney || lockedCohort);
 
   async function submit() {
     setErr(null);
@@ -109,23 +123,37 @@ export default function AddExpenseModal({
             color: "#1A1A18",
           }}
         >
-          Add Expense
+          {lockedJourney
+            ? `Add Expense — ${lockedJourney.label}`
+            : lockedCohort
+              ? `Add Expense — ${lockedCohort.title}`
+              : "Add Expense"}
         </h2>
 
-        <label style={LABEL}>
-          Scope
-          <select
-            style={INPUT}
-            value={scope}
-            onChange={(e) => setScope(e.target.value as ExpenseScope)}
-          >
-            <option value="cohort">Cohort</option>
-            <option value="journey">Journey</option>
-            <option value="overhead">Overhead (no cohort/journey)</option>
-          </select>
-        </label>
+        {!locked && (
+          <label style={LABEL}>
+            Scope
+            <select
+              style={INPUT}
+              value={scope}
+              onChange={(e) => setScope(e.target.value as ExpenseScope)}
+            >
+              <option value="cohort">Cohort</option>
+              <option value="journey">Journey</option>
+              <option value="overhead">Overhead (no cohort/journey)</option>
+            </select>
+          </label>
+        )}
 
-        {scope === "cohort" && (
+        {scope === "cohort" && lockedCohort && (
+          <label style={LABEL}>
+            Cohort
+            <div style={{ ...INPUT, background: "#F4EFE5", color: "#1A1A18" }}>
+              {lockedCohort.title}
+            </div>
+          </label>
+        )}
+        {scope === "cohort" && !lockedCohort && (
           <label style={LABEL}>
             Cohort
             <select
@@ -142,7 +170,15 @@ export default function AddExpenseModal({
             </select>
           </label>
         )}
-        {scope === "journey" && (
+        {scope === "journey" && lockedJourney && (
+          <label style={LABEL}>
+            Journey
+            <div style={{ ...INPUT, background: "#F4EFE5", color: "#1A1A18" }}>
+              {lockedJourney.label}
+            </div>
+          </label>
+        )}
+        {scope === "journey" && !lockedJourney && (
           <label style={LABEL}>
             Journey
             <select
