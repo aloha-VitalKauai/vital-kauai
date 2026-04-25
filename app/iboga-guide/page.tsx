@@ -510,7 +510,7 @@ const BODY_CONTENT = `
 
   <div class="two-col">
     <div>
-      <p class="body-text">The Vital Kauaʻi Iboga Journey begins with six weeks of dedicated preparation, body, nervous system, and inner landscape, followed by your ceremony in week seven. Integration support continues for months afterward. Every phase is held with full guidance and care. You are in ongoing relationship with your care team from the moment you say yes through the full arc of your integration.</p>
+      <p class="body-text">The Vital Kauaʻi Iboga Journey begins with six weeks of dedicated preparation for the body, nervous system, and inner landscape, and is followed by your ceremony in week seven. Integration support continues for months afterward. Every phase is held with full guidance and care. You are in ongoing relationship with your care team from the moment you say yes through the full arc of your integration.</p>
       <p class="body-text">Your ceremony is held on the sacred North Shore of Kauaʻi, in living relationship with the mana of the land, the water, and the forest. The medicine is whole-plant iboga root bark, titrated, conscious, and responsive. Sacred fire, water, music, and ancestral honoring open and hold the container, drawing on the wisdom traditions that have carried this plant for thousands of years.</p>
       <p class="body-text">This work is nature-based, somatic, and psycho-spiritual. We offer a living ceremonial container, held by people who have walked this path themselves, in a place that is itself a healer.</p>
     </div>
