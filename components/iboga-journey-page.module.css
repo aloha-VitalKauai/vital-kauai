@@ -458,8 +458,7 @@
 /* ── Medicine ── */
 .medicine {
   background: #ECF1ED;
-  border-top: 1px solid rgb(122 158 126 / 0.18);
-  padding: 120px 100px;
+  padding: 128px 100px;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -555,73 +554,96 @@
   margin: 0;
 }
 
-/* ── Comparison Table ── */
+/* ── Comparison Table — editorial typography on the sage section ── */
 .comparisonTable {
-  max-width: 900px;
+  max-width: 880px;
   margin: 0 auto;
-  background: white;
-  border: 1px solid rgb(28 43 30 / 0.08);
-  box-shadow: 0 8px 28px rgb(14 26 16 / 0.08);
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .comparisonTableTitle {
   font-family: var(--font-display), serif;
-  font-size: 20px;
+  font-size: clamp(20px, 2.4vw, 28px);
   font-weight: 400;
+  font-style: italic;
   color: var(--text-dark);
-  margin: 0 0 28px;
+  margin: 0 0 40px;
   text-align: center;
+  letter-spacing: 0.005em;
 }
 
 .comparisonTable table {
   width: 100%;
   border-collapse: collapse;
+  border-spacing: 0;
 }
 
 .comparisonTable th {
   font-size: 10px;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
-  padding: 20px 22px;
+  padding: 18px 24px;
   text-align: left;
   font-weight: 600;
-  border-bottom: 2px solid transparent;
+  border-bottom: 1.5px solid transparent;
+  background: transparent;
 }
 
 /* Root Bark column — sage */
 .comparisonTable th:first-child {
   color: var(--forest);
   border-bottom-color: var(--sage);
-  background: rgb(122 158 126 / 0.18);
 }
 
 /* Ibogaine column — gold */
 .comparisonTable th:last-child {
-  color: #8a6a2c;
+  color: #7a5c20;
   border-bottom-color: var(--gold);
-  background: rgb(200 169 110 / 0.16);
 }
 
 .comparisonTable td {
-  font-size: 14px;
+  font-size: 14.5px;
   line-height: 1.75;
-  padding: 18px 22px;
-  border-bottom: 1px solid rgb(28 43 30 / 0.06);
+  padding: 20px 24px;
+  border-bottom: 1px solid rgb(28 43 30 / 0.07);
   color: var(--text-mid);
   vertical-align: top;
+  background: transparent;
 }
 
 .comparisonTable td:first-child {
   color: var(--text-dark);
-  background: rgb(122 158 126 / 0.08);
-  border-left: 3px solid var(--sage);
   font-weight: 400;
+  position: relative;
+}
+
+.comparisonTable td:first-child::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--sage);
+  opacity: 0.55;
 }
 
 .comparisonTable td:last-child {
   color: var(--text-mid);
-  background: rgb(200 169 110 / 0.06);
-  border-right: 3px solid var(--gold);
+  position: relative;
+}
+
+.comparisonTable td:last-child::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--gold);
+  opacity: 0.5;
 }
 
 .comparisonTable tr:last-child td {
