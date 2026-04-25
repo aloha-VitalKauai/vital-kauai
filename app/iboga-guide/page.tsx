@@ -675,10 +675,6 @@ const BODY_CONTENT = `
             <span style="font-size:11px;color:rgba(220,168,152,0.5);flex-shrink:0;margin-top:3px;">—</span>
             <p style="font-size:13px;color:rgba(245,240,232,0.68);line-height:1.75;">Unwillingness to answer direct questions about safety protocols</p>
           </div>
-          <div style="display:flex;gap:14px;align-items:flex-start;margin-top:8px;">
-            <span style="font-size:11px;color:var(--sage-light);flex-shrink:0;margin-top:3px;">→</span>
-            <p style="font-size:12px;color:rgba(245,240,232,0.4);line-height:1.75;font-style:italic;">These are signals worth honoring. Trust what you notice.</p>
-          </div>
         </div>
       </div>
     </div>
