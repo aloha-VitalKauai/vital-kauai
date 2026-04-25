@@ -156,37 +156,46 @@ function AssessmentsPageInner() {
   // Keyframe animations
   const keyframes = `@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}`;
 
+  // Page wrapper — ensures cards render on the intended dark earth surface,
+  // independent of the surrounding portal layout's background.
+  const pageWrap: React.CSSProperties = { background: T.earth, minHeight: '100vh' };
+
   if (state === 'loading') {
     return (
-      <main style={{ maxWidth: 740, margin: '0 auto', padding: '3rem 2rem 6rem' }}>
-        <style>{keyframes}</style>
-        <style>{`@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}`}</style>
-        {[...Array(4)].map((_, i) => (
-          <div key={i} style={{
-            height: 86, marginBottom: '1.25rem', borderRadius: 3,
-            background: `linear-gradient(90deg,${T.earthMid} 25%,${T.earthSurface} 50%,${T.earthMid} 75%)`,
-            backgroundSize: '800px 100%', animation: 'shimmer 1.4s linear infinite',
-            animationDelay: `${i * 0.1}s`,
-          }} />
-        ))}
-      </main>
+      <div style={pageWrap}>
+        <main style={{ maxWidth: 740, margin: '0 auto', padding: '3rem 2rem 6rem' }}>
+          <style>{keyframes}</style>
+          <style>{`@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}`}</style>
+          {[...Array(4)].map((_, i) => (
+            <div key={i} style={{
+              height: 86, marginBottom: '1.25rem', borderRadius: 3,
+              background: `linear-gradient(90deg,${T.earthMid} 25%,${T.earthSurface} 50%,${T.earthMid} 75%)`,
+              backgroundSize: '800px 100%', animation: 'shimmer 1.4s linear infinite',
+              animationDelay: `${i * 0.1}s`,
+            }} />
+          ))}
+        </main>
+      </div>
     );
   }
 
   if (state === 'error') {
     return (
-      <main style={{ maxWidth: 740, margin: '0 auto', padding: '3rem 2rem 6rem' }}>
-        <div style={{ padding: '3rem 2rem', textAlign: 'center', border: `1px solid ${T.borderLight}`, borderRadius: 3, background: T.earthMid }}>
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.3rem', color: T.creamDim, marginBottom: '0.5rem' }}>Could not load your assessments</p>
-          <p style={{ fontSize: '0.8rem', color: T.creamMuted, maxWidth: 340, margin: '0 auto', lineHeight: 1.9 }}>{errorMessage || 'Please refresh the page or contact support.'}</p>
-        </div>
-      </main>
+      <div style={pageWrap}>
+        <main style={{ maxWidth: 740, margin: '0 auto', padding: '3rem 2rem 6rem' }}>
+          <div style={{ padding: '3rem 2rem', textAlign: 'center', border: `1px solid ${T.borderLight}`, borderRadius: 3, background: T.earthMid }}>
+            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.3rem', color: T.creamDim, marginBottom: '0.5rem' }}>Could not load your assessments</p>
+            <p style={{ fontSize: '0.8rem', color: T.creamMuted, maxWidth: 340, margin: '0 auto', lineHeight: 1.9 }}>{errorMessage || 'Please refresh the page or contact support.'}</p>
+          </div>
+        </main>
+      </div>
     );
   }
 
   if (state === 'empty') {
     const previewTimepoints = ['baseline', 'post_72h', 'post_1m', 'post_3m', 'post_6m', 'post_12m'];
     return (
+      <div style={pageWrap}>
       <main style={{ maxWidth: 740, margin: '0 auto', padding: '3rem 2rem 6rem' }}>
         <style>{keyframes}</style>
         <p style={{ fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: T.goldDim, marginBottom: '0.75rem' }}>Member Portal &middot; Outcomes</p>
@@ -256,12 +265,14 @@ function AssessmentsPageInner() {
           })}
         </div>
       </main>
+      </div>
     );
   }
 
   const showCeremonyHeader = ceremonies.length > 1;
 
   return (
+    <div style={pageWrap}>
     <main style={{ maxWidth: 740, margin: '0 auto', padding: '3rem 2rem 6rem' }}>
       <style>{keyframes}</style>
       <p style={{ fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: T.goldDim, marginBottom: '0.75rem' }}>Member Portal &middot; Outcomes</p>
@@ -296,5 +307,6 @@ function AssessmentsPageInner() {
         </div>
       )}
     </main>
+    </div>
   );
 }
