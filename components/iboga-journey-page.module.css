@@ -457,14 +457,16 @@
 
 /* ── Medicine ── */
 .medicine {
-  background: var(--warm-white);
+  background: #ECF1ED;
+  border-top: 1px solid rgb(122 158 126 / 0.18);
   padding: 120px 100px;
   max-width: 1400px;
   margin: 0 auto;
 }
 
 .medicine .sectionLabel {
-  color: var(--gold);
+  color: var(--sage);
+  font-weight: 500;
 }
 
 .medicine .sectionTitle {
@@ -588,16 +590,16 @@
 
 /* Root Bark column — sage */
 .comparisonTable th:first-child {
-  color: var(--sage);
+  color: var(--forest);
   border-bottom-color: var(--sage);
-  background: rgb(122 158 126 / 0.12);
+  background: rgb(122 158 126 / 0.18);
 }
 
 /* Ibogaine column — gold */
 .comparisonTable th:last-child {
-  color: var(--gold);
+  color: #8a6a2c;
   border-bottom-color: var(--gold);
-  background: rgb(200 169 110 / 0.1);
+  background: rgb(200 169 110 / 0.16);
 }
 
 .comparisonTable td {
@@ -611,14 +613,14 @@
 
 .comparisonTable td:first-child {
   color: var(--text-dark);
-  background: rgb(122 158 126 / 0.06);
+  background: rgb(122 158 126 / 0.08);
   border-left: 3px solid var(--sage);
   font-weight: 400;
 }
 
 .comparisonTable td:last-child {
   color: var(--text-mid);
-  background: rgb(200 169 110 / 0.04);
+  background: rgb(200 169 110 / 0.06);
   border-right: 3px solid var(--gold);
 }
 
