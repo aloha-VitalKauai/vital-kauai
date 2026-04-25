@@ -158,6 +158,7 @@ body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm
   .works-card-title { font-size: 18px !important; margin-bottom: 6px !important; }
   .works-card-body { font-size: 12px !important; line-height: 1.7 !important; }
   .whom-card, .works-card, .research-block, .pull-quote, .resource-item { page-break-inside: avoid; }
+  .whom-grid > .whom-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
   .guide-footer, .disclaimer { page-break-before: auto; }
   .choosing-section { padding-top: 32px !important; padding-bottom: 32px !important; }
   .choosing-section .section-intro { font-size: 13px !important; line-height: 1.75 !important; margin-bottom: 20px !important; }
