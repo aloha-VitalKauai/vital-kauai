@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { SurveyShell } from '@/components/survey/SurveyShell';
 
 const T = {
-  earthMid: '#2a2620', earthSurface: '#332e27', creamDim: '#b8ac96', creamMuted: '#6e6558',
+  earthMid: '#2a2620', earthSurface: '#332e27', creamDim: '#d4c8ae', creamMuted: '#a89c84',
   borderLight: 'rgba(201,169,110,0.10)',
 };
 

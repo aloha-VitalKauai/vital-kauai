@@ -1,6 +1,6 @@
 const T = {
-  earthMid: '#2a2620', earthSurface: '#332e27', cream: '#f2ead8', creamDim: '#b8ac96',
-  creamMuted: '#6e6558', goldDim: '#8a7250', goldLight: '#dfc49a',
+  earthMid: '#2a2620', earthSurface: '#332e27', cream: '#f2ead8', creamDim: '#d4c8ae',
+  creamMuted: '#a89c84', goldDim: '#a4886a', goldLight: '#dfc49a',
   border: 'rgba(201,169,110,0.18)', borderLight: 'rgba(201,169,110,0.10)',
 };
 
