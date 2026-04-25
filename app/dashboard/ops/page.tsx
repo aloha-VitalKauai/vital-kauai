@@ -510,6 +510,7 @@ export default function OpsDashboardPage() {
   const [outcomes,   setOutcomes]   = useState<Record<string,any>>({})
   const [ceremonies, setCeremonies] = useState<any[]>([])
   const [timelines,  setTimelines]  = useState<Record<string,any[]>>({})
+  const [finOverview,setFinOverview]= useState<any|null>(null)
 
   useEffect(() => {
     const supabase = createClient()
@@ -519,7 +520,7 @@ export default function OpsDashboardPage() {
 
       const [
         {data:td},{data:md},{data:rd},{data:ad},
-        {data:od},{data:outd},{data:cd},{data:tld},
+        {data:od},{data:outd},{data:cd},{data:tld},{data:fo},
       ] = await Promise.all([
         supabase.from('ops_tasks').select('*').in('status',['open','in_progress']).order('created_at',{ascending:false}),
         supabase.from('member_pipeline_view').select('*'),
@@ -529,6 +530,7 @@ export default function OpsDashboardPage() {
         supabase.from('member_outcomes_summary_view').select('*'),
         supabase.from('ceremony_schedule_view').select('*').order('ceremony_date'),
         supabase.from('member_timelines').select('*').order('event_date',{ascending:true}),
+        supabase.from('financials_overview').select('*').single(),
       ])
 
       setTasks(td??[])
@@ -539,6 +541,7 @@ export default function OpsDashboardPage() {
       const oMap:Record<string,any>={}; for(const o of outd??[]) oMap[o.member_id]=o; setOutcomes(oMap)
       setCeremonies(cd??[])
       const tMap:Record<string,any[]>={}; for(const t of tld??[]){if(!tMap[t.member_id])tMap[t.member_id]=[]; tMap[t.member_id].push(t)}; setTimelines(tMap)
+      setFinOverview(fo??null)
       setLoading(false)
     }
     load()
@@ -616,8 +619,18 @@ export default function OpsDashboardPage() {
   const highCount  = alerts.filter(a=>a.severity==='high'&&!a.acknowledged).length
   const warnCount  = alerts.filter(a=>a.severity==='warning'&&!a.acknowledged).length
   const upcoming   = ceremonies.filter(c=>c.days_until_ceremony!=null&&c.days_until_ceremony>0)
-  const totalRev   = members.reduce((s:number,m:any)=>s+(m.program_price??0),0)
-  const totalProfit= members.reduce((s:number,m:any)=>s+((m.program_price??0)-(m.cost_of_service??0)),0)
+  // Revenue is reported in two clearly-labeled buckets, matching /dashboard
+  // and /dashboard/financials so the three pages reconcile:
+  //   • Booked    — sum of program_price across enrolled members (expected)
+  //   • Collected — completed donations from financials_overview (cash in)
+  // Margin is computed against Collected, net of real expenses + active payouts,
+  // not the per-member cost_of_service heuristic the old card used.
+  const bookedRev    = members.reduce((s:number,m:any)=>s+Number(m.program_price??0),0)
+  const collectedRev = (finOverview?.total_revenue_cents??0)/100
+  const expensesRev  = (finOverview?.total_expenses_cents??0)/100
+  const payoutsRev   = ((finOverview?.payouts_pending_cents??0)+(finOverview?.payouts_scheduled_cents??0)+(finOverview?.payouts_paid_cents??0))/100
+  const marginRev    = collectedRev - expensesRev - payoutsRev
+  const marginPctRev = collectedRev>0 ? Math.round((marginRev/collectedRev)*100) : null
   const sortedMembers=[...members].sort((a:any,b:any)=>(STAGE_META[a.pipeline_stage]?.order??9)-(STAGE_META[b.pipeline_stage]?.order??9))
   const visibleRisk=riskFilter==='all'?sortedMembers:sortedMembers.filter((m:any)=>(riskScores[m.member_id]?.risk_level??m.risk_level)===riskFilter)
   const cohortTrend=[{label:'Baseline',phq9:21.0,gad7:15.0},{label:'1 wk',phq9:12.5,gad7:9.8},{label:'1 mo',phq9:9.0,gad7:7.0}]
@@ -899,11 +912,30 @@ export default function OpsDashboardPage() {
                 </div>
               ))}
             </div>
-            {totalRev>0&&<div style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:12,padding:'14px 16px'}}>
+            {(bookedRev>0||collectedRev>0)&&<div style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:12,padding:'14px 16px'}}>
               <div style={{fontSize:9,color:C.dim,letterSpacing:'.1em',textTransform:'uppercase',marginBottom:9}}>Revenue · Cohort</div>
-              <div style={{fontSize:24,fontWeight:600,color:C.text,fontFamily:'var(--font-cormorant-garamond,serif)'}}>${totalRev.toLocaleString()}</div>
-              <div style={{fontSize:10,color:C.dim,marginTop:2,marginBottom:9}}>{members.length} members · avg ${Math.round(totalRev/members.length).toLocaleString()}</div>
-              {totalProfit>0&&<div style={{display:'flex',justifyContent:'space-between',paddingTop:9,borderTop:`0.5px solid ${C.border}`}}><div><div style={{fontSize:9,color:C.dim,letterSpacing:'.08em',textTransform:'uppercase',marginBottom:2}}>Net profit</div><div style={{fontSize:15,fontWeight:600,color:C.low}}>${totalProfit.toLocaleString()}</div></div><div style={{textAlign:'right'}}><div style={{fontSize:9,color:C.dim,letterSpacing:'.08em',textTransform:'uppercase',marginBottom:2}}>Margin</div><div style={{fontSize:15,fontWeight:600,color:C.low}}>{Math.round((totalProfit/totalRev)*100)}%</div></div></div>}
+              <div style={{display:'flex',justifyContent:'space-between',gap:10}}>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:9,color:C.dim,letterSpacing:'.08em',textTransform:'uppercase',marginBottom:3}}>Booked</div>
+                  <div style={{fontSize:20,fontWeight:600,color:C.text,fontFamily:'var(--font-cormorant-garamond,serif)',lineHeight:1}}>${bookedRev.toLocaleString()}</div>
+                  <div style={{fontSize:9,color:C.dim,marginTop:3}}>{members.length} member{members.length===1?'':'s'}{members.length>0&&` · avg $${Math.round(bookedRev/members.length).toLocaleString()}`}</div>
+                </div>
+                <div style={{flex:1,textAlign:'right'}}>
+                  <div style={{fontSize:9,color:C.dim,letterSpacing:'.08em',textTransform:'uppercase',marginBottom:3}}>Collected</div>
+                  <div style={{fontSize:20,fontWeight:600,color:C.low,fontFamily:'var(--font-cormorant-garamond,serif)',lineHeight:1}}>${collectedRev.toLocaleString()}</div>
+                  <div style={{fontSize:9,color:C.dim,marginTop:3}}>cash received</div>
+                </div>
+              </div>
+              <div style={{display:'flex',justifyContent:'space-between',paddingTop:9,marginTop:9,borderTop:`0.5px solid ${C.border}`}}>
+                <div>
+                  <div style={{fontSize:9,color:C.dim,letterSpacing:'.08em',textTransform:'uppercase',marginBottom:2}}>Margin</div>
+                  <div style={{fontSize:15,fontWeight:600,color:marginRev>=0?C.low:C.high}}>${marginRev.toLocaleString()}</div>
+                </div>
+                <div style={{textAlign:'right'}}>
+                  <div style={{fontSize:9,color:C.dim,letterSpacing:'.08em',textTransform:'uppercase',marginBottom:2}}>On collected</div>
+                  <div style={{fontSize:15,fontWeight:600,color:marginRev>=0?C.low:C.high}}>{marginPctRev!=null?`${marginPctRev}%`:'—'}</div>
+                </div>
+              </div>
             </div>}
           </div>
         </div>

@@ -4,9 +4,13 @@ import type { FinancialsOverview } from "@/lib/financials/types";
 export default function FinancialKpiRow({
   overview,
   marginCents,
+  bookedCents,
+  enrolledMembers,
 }: {
   overview: FinancialsOverview;
   marginCents: number;
+  bookedCents: number;
+  enrolledMembers: number;
 }) {
   const pendingScheduled =
     overview.payouts_pending_cents + overview.payouts_scheduled_cents;
@@ -15,15 +19,20 @@ export default function FinancialKpiRow({
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+        gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
         gap: 10,
         marginBottom: "1.75rem",
       }}
     >
       <Kpi
-        label="Total Revenue"
+        label="Booked Revenue"
+        value={formatMoney(bookedCents)}
+        sub={`${enrolledMembers} member${enrolledMembers === 1 ? "" : "s"} enrolled`}
+      />
+      <Kpi
+        label="Collected Revenue"
         value={formatMoney(overview.total_revenue_cents)}
-        sub="Collected to date"
+        sub="Cash received to date"
       />
       <Kpi
         label="Total Expenses"
@@ -40,7 +49,7 @@ export default function FinancialKpiRow({
       <Kpi
         label="Gross Margin"
         value={formatMoney(marginCents)}
-        sub="Revenue minus costs"
+        sub="Collected minus costs"
         negative={marginCents < 0}
       />
     </div>
