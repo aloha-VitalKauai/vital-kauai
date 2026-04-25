@@ -636,12 +636,14 @@ export default function OpsDashboardPage() {
   const warnCount  = alerts.filter(a=>a.severity==='warning'&&!a.acknowledged).length
   const upcoming   = ceremonies.filter(c=>c.days_until_ceremony!=null&&c.days_until_ceremony>0)
   // Revenue is reported in two clearly-labeled buckets, matching /dashboard
-  // and /dashboard/financials so the three pages reconcile:
-  //   • Booked    — sum of program_price across enrolled members (expected)
-  //   • Collected — completed donations from financials_overview (cash in)
-  // Margin is computed against Collected, net of real expenses + active payouts,
-  // not the per-member cost_of_service heuristic the old card used.
-  const bookedRev    = members.reduce((s:number,m:any)=>s+Number(m.program_price??0),0)
+  // and /dashboard/financials so the three pages reconcile.
+  // Both numbers come from financials_overview, which prefers active
+  // financial_commitments per member and falls back to legacy program_price:
+  //   • Booked    — sum of active commitments (or fallback program_price)
+  //   • Collected — completed donations (cash in)
+  // Margin is Collected − real expenses − active payouts.
+  const bookedRev    = (finOverview?.booked_revenue_cents??0)/100
+  const enrolledRev  = finOverview?.enrolled_members ?? members.length
   const collectedRev = (finOverview?.total_revenue_cents??0)/100
   const expensesRev  = (finOverview?.total_expenses_cents??0)/100
   const payoutsRev   = ((finOverview?.payouts_pending_cents??0)+(finOverview?.payouts_scheduled_cents??0)+(finOverview?.payouts_paid_cents??0))/100
@@ -942,7 +944,7 @@ export default function OpsDashboardPage() {
                 <div style={{flex:1}}>
                   <div style={{fontSize:9,color:C.dim,letterSpacing:'.08em',textTransform:'uppercase',marginBottom:3}}>Booked</div>
                   <div style={{fontSize:20,fontWeight:600,color:C.text,fontFamily:'var(--font-cormorant-garamond,serif)',lineHeight:1}}>${bookedRev.toLocaleString()}</div>
-                  <div style={{fontSize:9,color:C.dim,marginTop:3}}>{members.length} member{members.length===1?'':'s'}{members.length>0&&` · avg $${Math.round(bookedRev/members.length).toLocaleString()}`}</div>
+                  <div style={{fontSize:9,color:C.dim,marginTop:3}}>{enrolledRev} member{enrolledRev===1?'':'s'}{enrolledRev>0&&` · avg $${Math.round(bookedRev/enrolledRev).toLocaleString()}`}</div>
                 </div>
                 <div style={{flex:1,textAlign:'right'}}>
                   <div style={{fontSize:9,color:C.dim,letterSpacing:'.08em',textTransform:'uppercase',marginBottom:3}}>Collected</div>

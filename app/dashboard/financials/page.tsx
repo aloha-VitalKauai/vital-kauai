@@ -33,7 +33,6 @@ export default async function FinancialsPage() {
     { data: recentExpenses },
     { data: cohorts },
     { data: journeys },
-    { data: bookedMembers },
   ] = await Promise.all([
     supabase.from("financials_overview").select("*").single(),
     supabase
@@ -60,7 +59,6 @@ export default async function FinancialsPage() {
       .from("journeys")
       .select("id, start_at, member_id, member:member_profiles(full_name)")
       .order("created_at", { ascending: false }),
-    supabase.from("members").select("id, program_price"),
   ]);
 
   const ov: FinancialsOverview = (overview as FinancialsOverview | null) ?? {
@@ -72,6 +70,8 @@ export default async function FinancialsPage() {
     payouts_pending_cents: 0,
     payouts_scheduled_cents: 0,
     payouts_paid_cents: 0,
+    booked_revenue_cents: 0,
+    enrolled_members: 0,
   };
 
   const activePayoutsCents =
@@ -81,15 +81,10 @@ export default async function FinancialsPage() {
   const marginCents =
     ov.total_revenue_cents - ov.total_expenses_cents - activePayoutsCents;
 
-  // Booked = sum of program prices across enrolled members (expected revenue).
-  // Collected lives in `ov.total_revenue_cents` and only counts donations marked completed.
-  const bookedDollars = (bookedMembers ?? []).reduce(
-    (s: number, m: { program_price: number | null }) =>
-      s + Number(m.program_price ?? 0),
-    0,
-  );
-  const bookedCents = Math.round(bookedDollars * 100);
-  const enrolledMembers = (bookedMembers ?? []).length;
+  // Booked + enrolled members come straight from the view so this page
+  // matches Overview and Ops without any client-side math.
+  const bookedCents = ov.booked_revenue_cents;
+  const enrolledMembers = ov.enrolled_members;
 
   const cohortList: CohortRow[] = (cohorts ?? []) as CohortRow[];
   const cohortTitles = Object.fromEntries(cohortList.map((c) => [c.id, c.title]));

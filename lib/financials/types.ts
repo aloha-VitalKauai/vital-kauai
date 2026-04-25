@@ -71,4 +71,8 @@ export interface FinancialsOverview {
   payouts_pending_cents: number;
   payouts_scheduled_cents: number;
   payouts_paid_cents: number;
+  // Booked = sum of active financial_commitments per member, falling back
+  // to legacy members.program_price * 100 when no commitment exists.
+  booked_revenue_cents: number;
+  enrolled_members: number;
 }
