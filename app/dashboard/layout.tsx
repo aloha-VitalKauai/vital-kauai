@@ -60,7 +60,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <a href="/portal" style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", background: "none", border: "0.5px solid rgba(0,0,0,0.2)", borderRadius: 6, padding: "5px 12px", cursor: "pointer", fontFamily: "var(--font-body, sans-serif)", color: "#3d3d3a", textDecoration: "none" }}>Member Portal</a>
           <a href="/dashboard/ops" style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", background: "#0E0C0A", border: "0.5px solid rgba(0,0,0,0.35)", borderRadius: 6, padding: "5px 12px", cursor: "pointer", fontFamily: "var(--font-body, sans-serif)", color: "#F0EBE0", textDecoration: "none" }}>Ops Dashboard</a>
-          <a href="/founders/outcomes" style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", background: "#0E0C0A", border: "0.5px solid rgba(0,0,0,0.35)", borderRadius: 6, padding: "5px 12px", cursor: "pointer", fontFamily: "var(--font-body, sans-serif)", color: "#F0EBE0", textDecoration: "none" }}>Outcomes Portal</a>
+          {/* Outcomes Portal link hidden while the outcomes experience is being refined. */}
           <span style={{ fontSize: 13, color: "#6B6B67", fontFamily: "var(--font-body, sans-serif)" }}>{user.email}</span>
           <SignOutButton />
         </div>
