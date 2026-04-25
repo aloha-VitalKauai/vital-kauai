@@ -403,7 +403,7 @@ export function HomePage() {
                 reached the deeper places and dissolved patterns, programs, and tendencies we had
                 been carrying our whole lives. What it gave back was freedom: freedom from the
                 weight of anxiety and depression, freedom to create, to serve, and to live in
-                unconditional love and peace.
+                unconditional love.
               </p>
               <p className={styles.storyBody}>
                 Iboga is unlike any plant we have known. We feel it is needed at this time and
@@ -462,26 +462,6 @@ export function HomePage() {
               Our approach honors the Bwiti tradition from which Iboga comes, and draws from the whole-plant intelligence of
               Iboga root bark, titrated consciously with care, safety, and deep presence. As guests on this ʻāina, we hold Kauaʻi with kuleana, the deep responsibility of care for land, water, and lineage.
             </p>
-            <div className={styles.medicineDistinction}>
-              <p>
-                &quot;Most providers work with isolated ibogaine, a single alkaloid. We work with the
-                whole root bark, honoring the ancient wisdom in which this plant has been used for
-                millennia. The difference is the difference between a symphony and a single
-                note.&quot;
-              </p>
-              <p style={{ marginTop: 16, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(245,240,232,0.45)", fontStyle: "normal" }}>
-                — Vital Kaua&#699;i
-              </p>
-            </div>
-            <div className={styles.medicinePills}>
-              {["Whole-Plant Protocol", "Titrated Dosing", "Ancient Lineage", "Integration Support", "Responsibility for Land, Water, and Culture"].map(
-                (pill) => (
-                  <span key={pill} className={styles.pill}>
-                    {pill}
-                  </span>
-                ),
-              )}
-            </div>
           </div>
         </div>
       </section>
@@ -510,6 +490,26 @@ export function HomePage() {
               The Medicine →
             </Link>
           </div>
+        </div>
+        <div className={`${styles.medicineDistinction} ${styles.reveal}`} style={{ maxWidth: 920, margin: "64px auto 0", padding: "0 32px" }}>
+          <p>
+            &quot;Most providers work with isolated ibogaine, a single alkaloid. We work with the
+            whole root bark, honoring the ancient wisdom in which this plant has been used for
+            millennia. The difference is the difference between a symphony and a single
+            note.&quot;
+          </p>
+          <p style={{ marginTop: 16, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(245,240,232,0.45)", fontStyle: "normal" }}>
+            — Vital Kaua&#699;i
+          </p>
+        </div>
+        <div className={`${styles.medicinePills} ${styles.reveal}`} style={{ maxWidth: 920, margin: "32px auto 0", padding: "0 32px" }}>
+          {["Whole-Plant Protocol", "Titrated Dosing", "Ancient Lineage", "Integration Support", "Responsibility for Land, Water, and Culture"].map(
+            (pill) => (
+              <span key={pill} className={styles.pill}>
+                {pill}
+              </span>
+            ),
+          )}
         </div>
       </section>
 
