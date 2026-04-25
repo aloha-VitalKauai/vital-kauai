@@ -8,7 +8,7 @@ const tenets = [
   {
     numeral: "I",
     title: "The Sacred Nature of Healing",
-    body: "We believe that healing — of body, mind, and spirit — is a sacred act. The restoration of wholeness in a human being is among the most holy endeavors a community can undertake together.",
+    body: "We believe that healing, of body, mind, and spirit, is a sacred act. The restoration of wholeness in a human being is among the most holy endeavors a community can undertake together.",
   },
   {
     numeral: "II",
@@ -23,7 +23,7 @@ const tenets = [
   {
     numeral: "IV",
     title: "Community as Practice",
-    body: "We believe that genuine spiritual community — people in covenant with one another, committed to mutual growth and accountability — is itself a form of worship and a source of healing.",
+    body: "We believe that genuine spiritual community, people in covenant with one another, committed to mutual growth and accountability, is itself a form of worship and a source of healing.",
   },
   {
     numeral: "V",
@@ -167,8 +167,8 @@ export function ChurchInformationPage() {
           <p className={styles.bodyText}>
             Vital Kauai Church is a sincerely held unincorporated private religious organization
             operating as a Private Membership Association. Our work rests on a foundational belief:
-            that the direct encounter with the sacred — through ceremony, sacramental practice, and
-            intentional spiritual work — is among the most ancient and protected forms of human
+            that the direct encounter with the sacred, through ceremony, sacramental practice, and
+            intentional spiritual work, is among the most ancient and protected forms of human
             worship.
           </p>
           <p className={styles.bodyText}>
@@ -179,7 +179,7 @@ export function ChurchInformationPage() {
           </p>
           <p className={styles.bodyText}>
             Operating as a church allows us to hold this work within the legal and spiritual
-            protections afforded to religious organizations — and, more importantly, it affirms the
+            protections afforded to religious organizations, and, more importantly, it affirms the
             sacred nature of what takes place here. This is not a workaround. It is an accurate
             description of what we are and what we do.
           </p>
@@ -192,7 +192,7 @@ export function ChurchInformationPage() {
             Participation in sacramental ceremonies at Vital Kaua&#699;i requires membership in
             Vital Kauai Church. Membership is open to adults who share our values, affirm our
             Statement of Belief, and complete the membership process. Church membership is a
-            meaningful step — an acknowledgment that you are entering sacred space as a member of a
+            meaningful step, an acknowledgment that you are entering sacred space as a member of a
             spiritual community, not a consumer of a service.
           </p>
         </div>
@@ -216,13 +216,13 @@ export function ChurchInformationPage() {
           </p>
           <p className={styles.bodyText}>
             The highest intention of Vital Kauai Church is to create a world where people are
-            profoundly connected — to themselves, to each other, and to nature. Through our work,
+            profoundly connected, to themselves, to each other, and to nature. Through our work,
             people emerge remembering their power to create any reality they choose, and engage with
             the world through greater love, offering creative solutions for a more peaceful,
             sustainable, and thriving global community.
           </p>
           <p className={styles.bodyText}>
-            Vital Kauai Church is a living organism — revealed through practice, presence, and
+            Vital Kauai Church is a living organism, revealed through practice, presence, and
             relationship. We intend to stand as a place of refuge and renewal, where people reconnect
             with what matters most, where community is strengthened, and where the intelligence of
             Life is trusted to lead.
@@ -268,7 +268,7 @@ export function ChurchInformationPage() {
         </h2>
         <p className={styles.membershipBody}>
           Membership in Vital Kauai Church is the threshold through which all sacramental ceremony
-          takes place. It is a meaningful commitment — to yourself, to your healing, and to this
+          takes place. It is a meaningful commitment, to yourself, to your healing, and to this
           community. The membership process is woven into your journey preparation, and our team
           guides you through each step with care.
         </p>
@@ -304,7 +304,7 @@ export function ChurchInformationPage() {
           </div>
           <p className={styles.policyNote}>
             Questions about any of our policies? Write to us at{" "}
-            <Link href="/#contact">our contact form</Link> — we are happy to clarify anything.
+            <Link href="/#contact">our contact form</Link>, we are happy to clarify anything.
           </p>
         </div>
       </div>

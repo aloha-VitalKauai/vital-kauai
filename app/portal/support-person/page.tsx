@@ -36,7 +36,7 @@ export default async function SupportPersonPage() {
           You are part of <em style={{ fontStyle: "italic", color: rose }}>this journey</em> too.
         </h1>
         <p style={{ fontSize: 16, color: textMid, maxWidth: 560, margin: "0 auto 44px", lineHeight: 1.85 }}>
-          Someone you love is doing something courageous. This guide is here to help you understand what to expect &mdash; and how to show up well, before and after they return.
+          Someone you love is doing something courageous. This guide is here to help you understand what to expect, and how to show up well, before and after they return.
         </p>
         <div style={{ width: 48, height: 1, background: gold, margin: "0 auto", opacity: 0.5 }} />
       </section>
@@ -56,18 +56,18 @@ export default async function SupportPersonPage() {
 
       {/* Section 1: Understanding Iboga */}
       <Section id="understanding" num="01" label="The Foundation" title="Understanding" titleEm="Iboga" rose={rose} border={border} sage={sage}>
-        <p style={prose}>Iboga is a sacred root medicine from the Bwiti tradition of Central Africa. At Vital Kaua&#699;i, ceremonies are held with deep reverence &mdash; rooted in lineage, conducted by trained guides, within a carefully prepared container on the North Shore of Kaua&#699;i.</p>
-        <p style={prose}>Iboga works on a profound level &mdash; moving through the nervous system, the emotional body, and the unconscious over a ceremony that typically spans 12 to 36 hours. People come for many reasons: to release addiction, to metabolize grief or trauma, to step into a new chapter.</p>
-        <p style={prose}>The medicine&rsquo;s work does not end with ceremony. In the days and weeks that follow, it continues &mdash; reorganizing how a person relates to themselves and the world. This is called integration, and your role during this time matters enormously.</p>
+        <p style={prose}>Iboga is a sacred root medicine from the Bwiti tradition of Central Africa. At Vital Kaua&#699;i, ceremonies are held with deep reverence, rooted in lineage, conducted by trained guides, within a carefully prepared container on the North Shore of Kaua&#699;i.</p>
+        <p style={prose}>Iboga works on a profound level, moving through the nervous system, the emotional body, and the unconscious over a ceremony that typically spans 12 to 36 hours. People come for many reasons: to release addiction, to metabolize grief or trauma, to step into a new chapter.</p>
+        <p style={prose}>The medicine&rsquo;s work does not end with ceremony. In the days and weeks that follow, it continues, reorganizing how a person relates to themselves and the world. This is called integration, and your role during this time matters enormously.</p>
       </Section>
 
       <Divider />
 
       {/* Section 2: Before They Leave */}
       <Section id="before" num="02" label="Preparation" title="Before" titleEm="They Leave" rose={rose} border={border} sage={sage}>
-        <p style={prose}>Your person is following a rigorous preparation protocol &mdash; dietary changes, emotional introspection, physical preparation. They may already feel quieter or more inward than usual. A steady, calm presence from you is one of the most meaningful things you can offer.</p>
+        <p style={prose}>Your person is following a rigorous preparation protocol, dietary changes, emotional introspection, physical preparation. They may already feel quieter or more inward than usual. A steady, calm presence from you is one of the most meaningful things you can offer.</p>
         <Callout color={sage} bg={sageLt} label="How You Might Support">
-          Lighten their logistical load where you can. If they want to talk, listen without needing to fix anything. If they are pulling inward, let that be okay. Your genuine send-off &mdash; a simple expression of love and support as they leave &mdash; becomes part of the container they carry into ceremony.
+          Lighten their logistical load where you can. If they want to talk, listen without needing to fix anything. If they are pulling inward, let that be okay. Your genuine send-off, a simple expression of love and support as they leave, becomes part of the container they carry into ceremony.
         </Callout>
       </Section>
 
@@ -75,18 +75,18 @@ export default async function SupportPersonPage() {
 
       {/* Section 3: During the Ceremony */}
       <Section id="during" num="03" label="The Ceremony Days" title="While They Are" titleEm="in Ceremony" rose={rose} border={border} sage={sage}>
-        <p style={prose}>Ceremony typically begins in the evening and continues through the night and into the following day. During this time, your person will have no access to their phone and will be in a fully darkened ceremonial space. You will hear nothing from them &mdash; and that silence is by design.</p>
+        <p style={prose}>Ceremony typically begins in the evening and continues through the night and into the following day. During this time, your person will have no access to their phone and will be in a fully darkened ceremonial space. You will hear nothing from them, and that silence is by design.</p>
         <Callout color={rose} bg={roseLt} label="For You, While You Wait">
           The waiting is its own experience. You may feel restless, concerned, or simply aware of an open space. This is a meaningful time to hold them in your heart, to pray or set an intention for their wellbeing, or simply to go about your life knowing they are cared for.
         </Callout>
-        <p style={prose}>After ceremony concludes, there is typically a period of profound stillness and rest before your person is ready to connect. They will most likely reach out after 48 hours have passed &mdash; please allow that timeline to unfold naturally.</p>
+        <p style={prose}>After ceremony concludes, there is typically a period of profound stillness and rest before your person is ready to connect. They will most likely reach out after 48 hours have passed, please allow that timeline to unfold naturally.</p>
       </Section>
 
       <Divider />
 
       {/* Section 4: When They Return */}
       <Section id="return" num="04" label="Integration" title="When They" titleEm="Return Home" rose={rose} border={border} sage={sage}>
-        <p style={prose}>This is the phase that calls most upon your patience and understanding. In the days and weeks after ceremony, the person who returns is genuinely tender &mdash; rebuilding from a more honest foundation. They may seem slower, quieter, and less available for ordinary connection.</p>
+        <p style={prose}>This is the phase that calls most upon your patience and understanding. In the days and weeks after ceremony, the person who returns is genuinely tender, rebuilding from a more honest foundation. They may seem slower, quieter, and less available for ordinary connection.</p>
         <Callout color={gold} bg={goldLt} label="The Most Important Thing to Know">
           If your person seems unreachable or less relational than usual, this is a sign of deep processing. It is temporary and will shift.
         </Callout>
@@ -147,7 +147,7 @@ export default async function SupportPersonPage() {
           <span style={{ display: "inline-block", fontSize: 9, letterSpacing: "0.38em", textTransform: "uppercase", color: gold, opacity: 0.8, marginBottom: 28 }}>We Are Here for You Too</span>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(30px, 4.5vw, 48px)", fontWeight: 300, lineHeight: 1.25, marginBottom: 20 }}>You do not have to navigate this alone.</h2>
           <p style={{ fontSize: 15, color: "rgba(247,243,238,0.65)", lineHeight: 1.85, marginBottom: 40 }}>
-            Questions, concerns, or simply need to talk &mdash; we are here for you at any point in this journey.
+            Questions, concerns, or simply need to talk, we are here for you at any point in this journey.
           </p>
           <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
             <span style={{ fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color: gold, opacity: 0.7 }}>Reach Rachel & Josh</span>

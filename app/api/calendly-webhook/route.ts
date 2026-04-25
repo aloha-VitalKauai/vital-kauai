@@ -14,7 +14,7 @@ function getSupabase() {
 }
 
 // ---------------------------------------------------------------------------
-// EXTRACT — pull invitee data from any known Calendly payload shape
+// EXTRACT, pull invitee data from any known Calendly payload shape
 // ---------------------------------------------------------------------------
 function extractInviteeData(body: any): {
   email: string | null
@@ -26,7 +26,7 @@ function extractInviteeData(body: any): {
 } {
   const p = body?.payload || {}
 
-  // Email — try every known location
+  // Email, try every known location
   const email: string | null =
     p.invitee?.email || p.email || body.email || null
 
@@ -34,7 +34,7 @@ function extractInviteeData(body: any): {
   const fullName: string =
     p.invitee?.name || p.name || body.name || 'Unknown'
 
-  // Event details — V1: object, V2: URL string
+  // Event details, V1: object, V2: URL string
   let eventName = 'Discovery Call'
   let startTime: string | null = null
   let calendlyEventId: string | null = null
@@ -61,18 +61,18 @@ function extractInviteeData(body: any): {
 }
 
 // ---------------------------------------------------------------------------
-// SIGNATURE — optional Calendly webhook signature verification
+// SIGNATURE, optional Calendly webhook signature verification
 // ---------------------------------------------------------------------------
 function verifySignature(req: NextRequest, rawBody: string): boolean {
   const signingKey = process.env.CALENDLY_WEBHOOK_SIGNING_KEY
   if (!signingKey) {
-    console.warn('[webhook] STEP:signature — no CALENDLY_WEBHOOK_SIGNING_KEY configured, skipping verification')
+    console.warn('[webhook] STEP:signature, no CALENDLY_WEBHOOK_SIGNING_KEY configured, skipping verification')
     return true // TODO: set CALENDLY_WEBHOOK_SIGNING_KEY in production to enforce
   }
 
   const signature = req.headers.get('calendly-webhook-signature')
   if (!signature) {
-    console.warn('[webhook] STEP:signature — no header but signing key is set')
+    console.warn('[webhook] STEP:signature, no header but signing key is set')
     return false
   }
 
@@ -95,26 +95,26 @@ function verifySignature(req: NextRequest, rawBody: string): boolean {
 // MAIN HANDLER
 // ---------------------------------------------------------------------------
 export async function POST(req: NextRequest) {
-  // ALWAYS return 200 to Calendly — even on errors.
+  // ALWAYS return 200 to Calendly, even on errors.
   const supabase = getSupabase()
   let rawBody = ''
   let body: any = null
 
   // === STEP 1: Read raw body ===
-  console.log('[webhook] STEP:receive — incoming POST /api/calendly-webhook')
+  console.log('[webhook] STEP:receive, incoming POST /api/calendly-webhook')
   try {
     rawBody = await req.text()
   } catch {
-    console.error('[webhook] STEP:receive — FAILED to read body')
+    console.error('[webhook] STEP:receive, FAILED to read body')
     return NextResponse.json({ ok: false, reason: 'body_read_error' }, { status: 200 })
   }
 
   // === STEP 2: Parse JSON ===
   try {
     body = JSON.parse(rawBody)
-    console.log('[webhook] STEP:parse — OK, event:', body.event)
+    console.log('[webhook] STEP:parse, OK, event:', body.event)
   } catch {
-    console.error('[webhook] STEP:parse — FAILED, invalid JSON')
+    console.error('[webhook] STEP:parse, FAILED, invalid JSON')
     await saveReceipt(supabase, {
       event_type: 'parse_error',
       raw_body: { raw: rawBody.slice(0, 5000) },
@@ -134,19 +134,19 @@ export async function POST(req: NextRequest) {
     raw_headers: extractHeaders(req),
     processing_status: 'received',
   })
-  console.log(`[webhook] STEP:receipt — saved id: ${receiptId}`)
+  console.log(`[webhook] STEP:receipt, saved id: ${receiptId}`)
 
   // === STEP 4: Signature verification ===
   if (!verifySignature(req, rawBody)) {
-    console.error('[webhook] STEP:signature — FAILED verification')
+    console.error('[webhook] STEP:signature, FAILED verification')
     await updateReceipt(supabase, receiptId, 'failed', 'Signature verification failed')
     return NextResponse.json({ ok: false, reason: 'invalid_signature' }, { status: 200 })
   }
-  console.log('[webhook] STEP:signature — OK')
+  console.log('[webhook] STEP:signature, OK')
 
   // === STEP 5: Filter event type ===
   if (eventType !== 'invitee.created') {
-    console.log(`[webhook] STEP:filter — ignored event type: ${eventType}`)
+    console.log(`[webhook] STEP:filter, ignored event type: ${eventType}`)
     await updateReceipt(supabase, receiptId, 'ignored', `Event type: ${eventType}`)
     return NextResponse.json({ ok: true, ignored: true })
   }
@@ -154,19 +154,19 @@ export async function POST(req: NextRequest) {
   // === STEP 6: Extract invitee data ===
   const { email, fullName, eventName, startTime, calendlyEventId, inviteeUri } =
     extractInviteeData(body)
-  console.log(`[webhook] STEP:extract — email=${email}, name=${fullName}, eventId=${calendlyEventId}, inviteeUri=${inviteeUri}`)
+  console.log(`[webhook] STEP:extract, email=${email}, name=${fullName}, eventId=${calendlyEventId}, inviteeUri=${inviteeUri}`)
 
   if (!email) {
     const keys = JSON.stringify(Object.keys(body.payload || {}))
-    console.error(`[webhook] STEP:extract — FAILED, no email. Payload keys: ${keys}`)
+    console.error(`[webhook] STEP:extract, FAILED, no email. Payload keys: ${keys}`)
     await updateReceipt(supabase, receiptId, 'failed', `Missing email. Keys: ${keys}`)
     return NextResponse.json({ ok: false, reason: 'missing_email' }, { status: 200 })
   }
 
-  // === STEP 7: Idempotency — use DB UNIQUE constraint to block race conditions ===
+  // === STEP 7: Idempotency, use DB UNIQUE constraint to block race conditions ===
   // Calendly sends duplicate webhooks within milliseconds. The application-level
   // check can't catch them because both arrive before either is marked processed.
-  // Instead, try to claim the idempotency_key via INSERT — if it conflicts, it's a dupe.
+  // Instead, try to claim the idempotency_key via INSERT, if it conflicts, it's a dupe.
   if (inviteeUri) {
     const { error: claimErr } = await supabase
       .from('webhook_receipts')
@@ -174,8 +174,8 @@ export async function POST(req: NextRequest) {
       .eq('id', receiptId)
 
     if (claimErr && claimErr.code === '23505') {
-      // UNIQUE violation — another webhook already claimed this inviteeUri
-      console.log(`[webhook] STEP:idempotency — duplicate (DB constraint), skipping: ${inviteeUri}`)
+      // UNIQUE violation, another webhook already claimed this inviteeUri
+      console.log(`[webhook] STEP:idempotency, duplicate (DB constraint), skipping: ${inviteeUri}`)
       await updateReceipt(supabase, receiptId, 'ignored', `Duplicate: ${inviteeUri}`)
       return NextResponse.json({ ok: true, deduplicated: true })
     }
@@ -190,14 +190,14 @@ export async function POST(req: NextRequest) {
       .single()
 
     if (existing) {
-      console.log(`[webhook] STEP:idempotency — duplicate (existing receipt), skipping: ${inviteeUri}`)
+      console.log(`[webhook] STEP:idempotency, duplicate (existing receipt), skipping: ${inviteeUri}`)
       await updateReceipt(supabase, receiptId, 'ignored', `Duplicate: ${inviteeUri}`)
       return NextResponse.json({ ok: true, deduplicated: true })
     }
   }
-  console.log('[webhook] STEP:idempotency — OK, not a duplicate')
+  console.log('[webhook] STEP:idempotency, OK, not a duplicate')
 
-  // === STEP 8: Smart upsert — preserve approval_token if lead already exists ===
+  // === STEP 8: Smart upsert, preserve approval_token if lead already exists ===
   const { data: existingLead } = await supabase
     .from('leads')
     .select('id, approval_status, approval_token')
@@ -211,8 +211,8 @@ export async function POST(req: NextRequest) {
   let leadError: any
 
   if (existingLead && existingLead.approval_status !== 'pending') {
-    // Already approved/declined — update booking info only, preserve decision
-    console.log(`[webhook] STEP:upsert — existing lead (${existingLead.approval_status}), updating booking fields only`)
+    // Already approved/declined, update booking info only, preserve decision
+    console.log(`[webhook] STEP:upsert, existing lead (${existingLead.approval_status}), updating booking fields only`)
     const { data, error } = await supabase
       .from('leads')
       .update({
@@ -228,8 +228,8 @@ export async function POST(req: NextRequest) {
     lead = data
     leadError = error
   } else if (existingLead) {
-    // Existing pending lead — update booking info, keep existing token (or backfill if missing)
-    console.log(`[webhook] STEP:upsert — existing pending lead, token ${existingLead.approval_token ? 'preserved' : 'backfilled'}`)
+    // Existing pending lead, update booking info, keep existing token (or backfill if missing)
+    console.log(`[webhook] STEP:upsert, existing pending lead, token ${existingLead.approval_token ? 'preserved' : 'backfilled'}`)
     const { data, error } = await supabase
       .from('leads')
       .update({
@@ -249,7 +249,7 @@ export async function POST(req: NextRequest) {
     leadError = error
   } else {
     // Brand new lead
-    console.log(`[webhook] STEP:upsert — new lead`)
+    console.log(`[webhook] STEP:upsert, new lead`)
     const { data, error } = await supabase
       .from('leads')
       .insert({
@@ -270,12 +270,12 @@ export async function POST(req: NextRequest) {
   }
 
   if (leadError) {
-    console.error(`[webhook] STEP:upsert — FAILED: ${JSON.stringify(leadError)}`)
+    console.error(`[webhook] STEP:upsert, FAILED: ${JSON.stringify(leadError)}`)
     await updateReceipt(supabase, receiptId, 'failed', `Lead upsert: ${leadError.message}`)
     return NextResponse.json({ ok: false, reason: 'db_error' }, { status: 200 })
   }
 
-  console.log(`[webhook] STEP:upsert — OK, lead id: ${lead.id}, status: ${lead.approval_status}`)
+  console.log(`[webhook] STEP:upsert, OK, lead id: ${lead.id}, status: ${lead.approval_status}`)
 
   // Link receipt to lead + mark processed
   await supabase
@@ -300,15 +300,15 @@ export async function POST(req: NextRequest) {
 
   try {
     await sendFounderNotification({ fullName, email, eventName, startTime, approvalToken: tokenForEmail })
-    console.log(`[webhook] STEP:notify — SENT founder email for ${fullName}`)
+    console.log(`[webhook] STEP:notify, SENT founder email for ${fullName}`)
     await updateNotification(supabase, notificationId, 'sent')
   } catch (emailErr: any) {
-    console.error(`[webhook] STEP:notify — FAILED: ${emailErr.message}`)
+    console.error(`[webhook] STEP:notify, FAILED: ${emailErr.message}`)
     await updateNotification(supabase, notificationId, 'failed', emailErr.message)
-    // Lead is saved — founders can still approve from /ops/pending
+    // Lead is saved, founders can still approve from /ops/pending
   }
 
-  console.log(`[webhook] DONE — lead: ${lead.id}, receipt: ${receiptId}`)
+  console.log(`[webhook] DONE, lead: ${lead.id}, receipt: ${receiptId}`)
   return NextResponse.json({ ok: true, leadId: lead.id })
 }
 

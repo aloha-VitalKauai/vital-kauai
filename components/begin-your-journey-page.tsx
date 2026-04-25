@@ -254,7 +254,7 @@ function LeadForm() {
   }
 
   if (submitted) {
-    return <p className={styles.leadSuccess}>&#10003; We&apos;ll be in touch — check your inbox.</p>;
+    return <p className={styles.leadSuccess}>&#10003; We&apos;ll be in touch, check your inbox.</p>;
   }
 
   return (

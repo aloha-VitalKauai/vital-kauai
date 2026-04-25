@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { PRE_CEREMONY_WEEKS } from '@/lib/journal-prompts'
 import SectionIndex, { type SectionIndexItem } from '@/components/portal/SectionIndex'
 
-// Section index — same six anchors for every week, plus an extra "Readiness"
+// Section index, same six anchors for every week, plus an extra "Readiness"
 // entry on Week 6 (which has the readiness gate appended to its panel).
 const BASE_SECTIONS: SectionIndexItem[] = [
   { label: 'Principle', anchor: '#principle' },
@@ -21,7 +21,7 @@ const READINESS_SECTION: SectionIndexItem = { label: 'Readiness', anchor: '#read
 const sectionsForWeek = (weekIdx: number): SectionIndexItem[] =>
   weekIdx === 5 ? [...BASE_SECTIONS, READINESS_SECTION] : BASE_SECTIONS
 
-// Journal prompt entries — Week 1 has explicit storage keys (so the display
+// Journal prompt entries, Week 1 has explicit storage keys (so the display
 // order can swap without re-attaching members' existing entries to the wrong
 // prompt) plus a custom centering placeholder on prompt 3. Weeks 2–6 use the
 // implicit `w${weekIdx}-p${promptIdx}` key pattern that's been in place since
@@ -34,7 +34,7 @@ const WEEK_1_PROMPTS: PromptEntry[] = [
     key: 'w0-p0',
     q: 'What sensations am I currently noticing in my body?',
     hint: 'A tightness in the jaw, warmth in the chest, buzzing in the hands, a heaviness behind the eyes.',
-    placeholder: 'Before you begin, close your eyes. Take a few slow breaths. Scan your body — and notice what you notice. Then write freely…',
+    placeholder: 'Before you begin, close your eyes. Take a few slow breaths. Scan your body, and notice what you notice. Then write freely…',
   },
 ]
 const promptsForWeek = (
@@ -77,7 +77,7 @@ const actionsForWeek = (
     ]
   }
   // Weeks 2–6 derive from the existing actions data. Notes are dropped (per
-  // Rachel) — only the action text + first link survive.
+  // Rachel), only the action text + first link survive.
   return actions.map(a => {
     const links = a.links ?? []
     if (links.length === 0) return { kind: 'static', text: a.text }
@@ -151,11 +151,11 @@ const WEEKS = [
     italic: 'This week calls for presence. Just begin.',
     video: { label: 'A Message from Rachel & Josh · Week 1', text: 'A real conversation about what you are walking into, why the next six weeks matter, and the one thing that protects you more than any lab result or dietary protocol. Watch this before you read anything else this week.' },
     box: { type: 'info', label: 'The most important safety factor is your honesty.', text: 'Your labs, your diet, and your supplement plan all matter—but it\'s your willingness to see yourself clearly that shapes how the medicine meets you. Iboga brings truth to the surface. When you arrive having already begun that process with yourself, the experience becomes something you can move through with awareness. This is how the medicine meets you.' },
-    actionLabel: 'Actions this week — 4 only',
+    actionLabel: 'Actions this week, 4 only',
     actions: [
       {
         color: 'blue',
-        text: 'Sign both required documents — Membership Agreement, Medical Disclaimer',
+        text: 'Sign both required documents, Membership Agreement, Medical Disclaimer',
         note: 'Each document is an act of commitment. Read them with care.',
         links: [
           { text: 'Membership Agreement', href: '/portal#agreement-card' },
@@ -185,7 +185,7 @@ const WEEKS = [
       {
         color: 'red',
         text: 'Complete your Baseline Outcome',
-        note: 'A 5-minute anonymized survey covering mood, anxiety, sleep, and quality of life. This creates your before-picture — your starting point in the standardized outcomes framework adapted for iboga.',
+        note: 'A 5-minute anonymized survey covering mood, anxiety, sleep, and quality of life. This creates your before-picture, your starting point in the standardized outcomes framework adapted for iboga.',
         links: [
           { text: 'Complete your Baseline Outcome', href: '/portal/assessments' },
         ],
@@ -193,12 +193,12 @@ const WEEKS = [
       // Week 1's actual rendered actions are hardcoded in actionsForWeek (since
       // the items here are mostly Stripe / signup steps, not the writing-prompt
       // flow shown on Week 1). The integration-guide reminder lives in that
-      // hardcoded list — see actionsForWeek(weekIdx === 0).
+      // hardcoded list, see actionsForWeek(weekIdx === 0).
     ],
-    dataset: 'Your wellbeing assessments — taken at baseline, 72 hours, 1 month, 3 months, 6 months, and 12 months — follow a standardized outcomes framework adapted for iboga from the validated instruments used in psychedelic research worldwide. Your responses, fully anonymized, contribute to one of the most comprehensive iboga datasets being built anywhere in the world — adding rigor to the field, helping legitimize this medicine, and giving future participants, clinicians, and researchers a clearer picture of how iboga actually works across hundreds of journeys. Your experience becomes part of something larger.',
+    dataset: 'Your wellbeing assessments, taken at baseline, 72 hours, 1 month, 3 months, 6 months, and 12 months, follow a standardized outcomes framework adapted for iboga from the validated instruments used in psychedelic research worldwide. Your responses, fully anonymized, contribute to one of the most comprehensive iboga datasets being built anywhere in the world, adding rigor to the field, helping legitimize this medicine, and giving future participants, clinicians, and researchers a clearer picture of how iboga actually works across hundreds of journeys. Your experience becomes part of something larger.',
     datasetLink: { text: 'Open your Outcomes →', href: '/portal/assessments' },
     prompts: PRE_CEREMONY_WEEKS[0].prompts,
-    thread: 'Your answers here are the raw material of your Questions for the Medicine — the specific questions you\'ll bring into ceremony. Write honestly. Over the coming weeks, these words will sharpen into something you can carry in. This is where that conversation begins.',
+    thread: 'Your answers here are the raw material of your Questions for the Medicine, the specific questions you\'ll bring into ceremony. Write honestly. Over the coming weeks, these words will sharpen into something you can carry in. This is where that conversation begins.',
   },
   {
     id: 1,
@@ -208,12 +208,12 @@ const WEEKS = [
     theme: 'Focus',
     title: 'The person who arrives at ceremony',
     subtitle: 'is being shaped right now.',
-    carryForward: 'You named what you want and what is asking to change. That honesty is already in motion. This week you begin aligning your whole life — your body, your choices, your attention — toward what\'s coming.',
-    sub: 'Makia means energy flows where attention goes. This week is about the quiet recognition that everything you do between now and ceremony — every choice, every conversation, every moment of honesty or avoidance — is preparation. You are already in the work.',
-    video: { label: 'A Message from Rachel & Josh · Week 2', text: 'Something shifts the moment you say yes. This week Rachel and Josh talk about what that shift means, how the preparation window works as active medicine, and the question that matters more than "what do I need to learn?" — who am I becoming?' },
-    box: { type: 'info', label: 'The identity shift', text: 'You are no longer the person who was considering this. The moment you committed, something changed. This week\'s job is to feel that shift — as a lived, embodied orientation. The portal, this video, and the prompts below all serve one thing: moving you from "I signed up for something" to "I am inside a process."' },
-    actionLabel: 'Actions this week — 3 only',
-    actionIntro: 'Identity shifts happen in the noticing. This week your job is to begin seeing clearly — the changes will follow.',
+    carryForward: 'You named what you want and what is asking to change. That honesty is already in motion. This week you begin aligning your whole life, your body, your choices, your attention, toward what\'s coming.',
+    sub: 'Makia means energy flows where attention goes. This week is about the quiet recognition that everything you do between now and ceremony, every choice, every conversation, every moment of honesty or avoidance, is preparation. You are already in the work.',
+    video: { label: 'A Message from Rachel & Josh · Week 2', text: 'Something shifts the moment you say yes. This week Rachel and Josh talk about what that shift means, how the preparation window works as active medicine, and the question that matters more than "what do I need to learn?", who am I becoming?' },
+    box: { type: 'info', label: 'The identity shift', text: 'You are no longer the person who was considering this. The moment you committed, something changed. This week\'s job is to feel that shift, as a lived, embodied orientation. The portal, this video, and the prompts below all serve one thing: moving you from "I signed up for something" to "I am inside a process."' },
+    actionLabel: 'Actions this week, 3 only',
+    actionIntro: 'Identity shifts happen in the noticing. This week your job is to begin seeing clearly, the changes will follow.',
     actions: [
       {
         color: 'blue',
@@ -227,7 +227,7 @@ const WEEKS = [
       {
         color: 'blue',
         text: 'Schedule your required medical appointments and labs',
-        note: 'EKG and labs must be completed before Week 5. Schedule now — medical appointments take time. This protects you.',
+        note: 'EKG and labs must be completed before Week 5. Schedule now, medical appointments take time. This protects you.',
         links: [
           { text: 'Schedule your required medical appointments and labs', href: '/portal/physician-guide' },
         ],
@@ -241,7 +241,7 @@ const WEEKS = [
       },
     ],
     prompts: PRE_CEREMONY_WEEKS[1].prompts,
-    thread: '"What must change" becomes the spine of your Week 4 shadow work and your Week 6 ceremony questions. Start a running list anywhere — the specific questions you want to bring to the medicine will take shape over the next four weeks. You\'ll draft them formally in Week 4.',
+    thread: '"What must change" becomes the spine of your Week 4 shadow work and your Week 6 ceremony questions. Start a running list anywhere, the specific questions you want to bring to the medicine will take shape over the next four weeks. You\'ll draft them formally in Week 4.',
   },
   {
     id: 2,
@@ -252,11 +252,11 @@ const WEEKS = [
     title: 'The body is the experience.',
     subtitle: 'This is where the medicine lands.',
     carryForward: 'You named what must change and what you\'re committing to. This week the work moves from mind into body. The clarity you found last week needs a regulated nervous system to land in. That\'s what this week builds.',
-    reentry: { strong: 'Arriving at this week behind?', text: ' If you haven\'t yet completed Week 2\'s integration call, do that first — before starting anything here. One real conversation with your guide is worth more than moving forward alone. If you\'re behind on journaling, write just five minutes on Week 1\'s prompts before opening Week 3. Start here: one integration call scheduled, one journal prompt written.' },
-    sub: 'Iboga works through the body — the gut, the heart, the nervous system, the tissue where unresolved experience lives. The more regulated and resourced your nervous system is when you arrive, the more cleanly the medicine can do its work. This week, you begin building that foundation.',
-    video: { label: 'A Message from Rachel & Josh · Week 3', text: 'Something may already be coming up — old feelings, vivid dreams, unexpected heaviness. This is the medicine already in relationship with you. In this week\'s transmission, Rachel and Josh explain why this happens, what it means, and how to stay with what arises without being swept away by it.' },
-    box: { type: 'info', label: 'If something surfaces this week', text: 'Iboga is intelligent and relational. It begins its work the moment you say yes. If difficult material arises — old grief, anxiety, somatic intensity — here is what to do: slow down deliberately. Bring your attention to one physical sensation at a time. Breathe. Place both feet on the floor. Be with what is arising — presence is enough. Your integration guide is available between sessions. Reach out whenever you need support.\n\nSome days will feel harder to begin. Noticing that — naming it honestly — is itself the practice.' },
-    actionLabel: 'Actions this week — 4 only',
+    reentry: { strong: 'Arriving at this week behind?', text: ' If you haven\'t yet completed Week 2\'s integration call, do that first, before starting anything here. One real conversation with your guide is worth more than moving forward alone. If you\'re behind on journaling, write just five minutes on Week 1\'s prompts before opening Week 3. Start here: one integration call scheduled, one journal prompt written.' },
+    sub: 'Iboga works through the body, the gut, the heart, the nervous system, the tissue where unresolved experience lives. The more regulated and resourced your nervous system is when you arrive, the more cleanly the medicine can do its work. This week, you begin building that foundation.',
+    video: { label: 'A Message from Rachel & Josh · Week 3', text: 'Something may already be coming up, old feelings, vivid dreams, unexpected heaviness. This is the medicine already in relationship with you. In this week\'s transmission, Rachel and Josh explain why this happens, what it means, and how to stay with what arises without being swept away by it.' },
+    box: { type: 'info', label: 'If something surfaces this week', text: 'Iboga is intelligent and relational. It begins its work the moment you say yes. If difficult material arises, old grief, anxiety, somatic intensity, here is what to do: slow down deliberately. Bring your attention to one physical sensation at a time. Breathe. Place both feet on the floor. Be with what is arising, presence is enough. Your integration guide is available between sessions. Reach out whenever you need support.\n\nSome days will feel harder to begin. Noticing that, naming it honestly, is itself the practice.' },
+    actionLabel: 'Actions this week, 4 only',
     actions: [
       {
         color: 'blue',
@@ -275,18 +275,18 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Begin Coherent Heart Breath — 10 minutes, every morning',
+        text: 'Begin Coherent Heart Breath, 10 minutes, every morning',
         note: 'This single practice does more for your ceremony readiness than almost anything else on this list. It is the minimum. Do it every day.',
         links: [
-          { text: 'Begin Coherent Heart Breath — 10 minutes, every morning', href: '/portal/somatic-companion#coherent-heart-breath' },
+          { text: 'Begin Coherent Heart Breath, 10 minutes, every morning', href: '/portal/somatic-companion#coherent-heart-breath' },
         ],
       },
       {
         color: 'amber',
-        text: 'Begin dietary protocol — you are now 4 weeks out',
-        note: 'Read the Dietary Preparation guide. The body you bring to ceremony is built in these four weeks. This is about arriving as a clear vessel — prepared, open, and ready to receive.',
+        text: 'Begin dietary protocol, you are now 4 weeks out',
+        note: 'Read the Dietary Preparation guide. The body you bring to ceremony is built in these four weeks. This is about arriving as a clear vessel, prepared, open, and ready to receive.',
         links: [
-          { text: 'Begin dietary protocol — you are now 4 weeks out', href: '/portal/dietary' },
+          { text: 'Begin dietary protocol, you are now 4 weeks out', href: '/portal/dietary' },
         ],
       },
       {
@@ -305,7 +305,7 @@ const WEEKS = [
         ],
       },
     ],
-    safetyBox: { label: 'Physiological preparation — safety note', text: 'Magnesium is cardiac-critical for iboga. Adequate magnesium levels directly affect cardiac function during the medicine, particularly QT interval regulation. This supplementation is cardiac-critical preparation — part of your physiological safety protocol. If you have any cardiac history, confirm dosing with your physician and inform the Vital Kauaʻi team before proceeding.' },
+    safetyBox: { label: 'Physiological preparation, safety note', text: 'Magnesium is cardiac-critical for iboga. Adequate magnesium levels directly affect cardiac function during the medicine, particularly QT interval regulation. This supplementation is cardiac-critical preparation, part of your physiological safety protocol. If you have any cardiac history, confirm dosing with your physician and inform the Vital Kauaʻi team before proceeding.' },
     prompts: PRE_CEREMONY_WEEKS[2].prompts,
     thread: 'The body awareness you\'re building this week is what carries you through ceremony. When the medicine is at its most intense, your capacity to track sensation without being consumed by it is the skill that matters most. You are practicing it now.',
   },
@@ -317,14 +317,14 @@ const WEEKS = [
     theme: 'Release',
     title: 'Iboga sees everything.',
     subtitle: '',
-    carryForward: 'Your nervous system is more regulated. Your body has begun its preparation. You have a map of your own inner states. You are ready for what this week asks — trust what you\'ve built.',
-    reentry: { strong: 'A note on pacing:', text: ' Let the Coherent Heart Breath be with you this week. Return to it before each journal prompt — let it settle you before you begin, and steady you when the material goes deep.' },
-    sub: 'Kala means release — and release requires honesty. Kala also means that there are no limits, and the boundaries you experience are essentially self-imposed — as you untie those blocks you realize your ultimate, unlimited potential.',
+    carryForward: 'Your nervous system is more regulated. Your body has begun its preparation. You have a map of your own inner states. You are ready for what this week asks, trust what you\'ve built.',
+    reentry: { strong: 'A note on pacing:', text: ' Let the Coherent Heart Breath be with you this week. Return to it before each journal prompt, let it settle you before you begin, and steady you when the material goes deep.' },
+    sub: 'Kala means release, and release requires honesty. Kala also means that there are no limits, and the boundaries you experience are essentially self-imposed, as you untie those blocks you realize your ultimate, unlimited potential.',
     video: { label: 'A Message from Rachel & Josh · Week 4', text: 'Rachel and Josh designed this week to hold you. In this transmission they explain why the shadow work you do here changes what ceremony will ask of you, and how to go slow while staying grounded.' },
-    box: { type: 'warn', label: 'Pacing permission — read this before you begin', text: 'This week\'s journaling may bring up old grief, anger, shame, or material you haven\'t touched in years. That is appropriate. It is a sign the process is working. Write for ten minutes. Stop. Breathe. Come back tomorrow. Go slow on purpose. If something feels too large to hold alone, reach out to your integration guide before your next scheduled call.\n\nAnd know this: this process moves in waves. Feeling more unsettled now than you did in Week 1 — more uncertain, more raw — is often a sign something is genuinely moving. Regression before breakthrough is real.' },
-    actionLabel: 'Actions this week — 4 only',
+    box: { type: 'warn', label: 'Pacing permission, read this before you begin', text: 'This week\'s journaling may bring up old grief, anger, shame, or material you haven\'t touched in years. That is appropriate. It is a sign the process is working. Write for ten minutes. Stop. Breathe. Come back tomorrow. Go slow on purpose. If something feels too large to hold alone, reach out to your integration guide before your next scheduled call.\n\nAnd know this: this process moves in waves. Feeling more unsettled now than you did in Week 1, more uncertain, more raw, is often a sign something is genuinely moving. Regression before breakthrough is real.' },
+    actionLabel: 'Actions this week, 4 only',
     actions: [
-      { color: 'red', text: 'Deep journaling — this is the primary work of this week', note: 'An act of honesty. Approach the prompts below as if the medicine is already in the room with you — because in a real sense, it is.' },
+      { color: 'red', text: 'Deep journaling, this is the primary work of this week', note: 'An act of honesty. Approach the prompts below as if the medicine is already in the room with you, because in a real sense, it is.' },
       {
         color: 'blue',
         text: 'Connect with your integration guide',
@@ -335,16 +335,16 @@ const WEEKS = [
       },
       {
         color: 'blue',
-        text: 'Draft your Questions for the Medicine — first version',
+        text: 'Draft your Questions for the Medicine, first version',
         note: 'You\'ve been gathering the raw material for four weeks. What do you most want to ask? What do you most need to be shown? Write freely. These will be refined in Week 6.',
         links: [
-          { text: 'Draft your Questions for the Medicine — first version', href: '/portal/questions' },
+          { text: 'Draft your Questions for the Medicine, first version', href: '/portal/questions' },
         ],
       },
       {
         color: 'amber',
         text: 'Begin clearing contraindicated substances per your protocol timeline',
-        note: 'Cannabis: clear fully 2 weeks before ceremony. All other substances: review the Preparedness Guide. Questions about specific medications — reach out to the team now, not later.',
+        note: 'Cannabis: clear fully 2 weeks before ceremony. All other substances: review the Preparedness Guide. Questions about specific medications, reach out to the team now, not later.',
         links: [
           { text: 'Begin clearing contraindicated substances per your protocol timeline', href: '/iboga-preparedness-guide.html#contraindications', external: true },
         ],
@@ -361,19 +361,19 @@ const WEEKS = [
     theme: 'Connection',
     title: 'You walk this with others.',
     subtitle: 'You always have.',
-    carryForward: 'You looked at the shadow. You named what you\'ve been avoiding. That took courage. This week the work moves outward — into your relationships, your home, and the people who will hold you from a distance while you\'re in ceremony.',
-    reentry: { strong: 'Arriving at this week without having done Week 4\'s journaling?', text: ' Do one prompt from Week 4 — just one — before you move forward. The shadow work and the relational work are connected. Ten minutes of Week 4 journaling is where to begin.' },
-    sub: 'Aloha is a way of being in relationship. This week, you turn outward. Even as the inner work continues — because transformation that touches your relationships is transformation that lands. The people who love you are part of this process. Let them be.',
-    video: { label: 'A Message from Rachel & Josh · Week 5', text: 'The ceremony container is powerful. But the integration that follows lives or dies in your relationships and your home environment. This week Rachel and Josh talk about the most common reason people lose their ceremony gains after returning home — and what you can do right now to protect against it.' },
-    box: { type: 'info', label: 'Why the relational field is the foundation of your return', text: 'The relational preparation you do this week is a structural protection for integration. The weeks and months after ceremony are when the insights are tender and the old world is asking you to return to who you were. The relational preparation you do this week is a structural protection against that pull. Share the Support Person Guide. Have the real conversations. Let your circle know you\'re asking for something from them — and be specific about what.' },
-    actionLabel: 'Actions this week — 3 only',
+    carryForward: 'You looked at the shadow. You named what you\'ve been avoiding. That took courage. This week the work moves outward, into your relationships, your home, and the people who will hold you from a distance while you\'re in ceremony.',
+    reentry: { strong: 'Arriving at this week without having done Week 4\'s journaling?', text: ' Do one prompt from Week 4, just one, before you move forward. The shadow work and the relational work are connected. Ten minutes of Week 4 journaling is where to begin.' },
+    sub: 'Aloha is a way of being in relationship. This week, you turn outward. Even as the inner work continues, because transformation that touches your relationships is transformation that lands. The people who love you are part of this process. Let them be.',
+    video: { label: 'A Message from Rachel & Josh · Week 5', text: 'The ceremony container is powerful. But the integration that follows lives or dies in your relationships and your home environment. This week Rachel and Josh talk about the most common reason people lose their ceremony gains after returning home, and what you can do right now to protect against it.' },
+    box: { type: 'info', label: 'Why the relational field is the foundation of your return', text: 'The relational preparation you do this week is a structural protection for integration. The weeks and months after ceremony are when the insights are tender and the old world is asking you to return to who you were. The relational preparation you do this week is a structural protection against that pull. Share the Support Person Guide. Have the real conversations. Let your circle know you\'re asking for something from them, and be specific about what.' },
+    actionLabel: 'Actions this week, 3 only',
     actions: [
       {
         color: 'green',
-        text: 'Share the Support Person Guide with your home circle — this week',
+        text: 'Share the Support Person Guide with your home circle, this week',
         note: 'Not after ceremony. Now. So they have time to read it, ask questions, and show up prepared for your return.',
         links: [
-          { text: 'Share the Support Person Guide with your home circle — this week', href: '/portal/support-person' },
+          { text: 'Share the Support Person Guide with your home circle, this week', href: '/portal/support-person' },
         ],
       },
       {
@@ -387,7 +387,7 @@ const WEEKS = [
       {
         color: 'blue',
         text: 'Complete the What to Bring packing checklist',
-        note: 'Practical, yes — and also a ritualized act of arrival. Let the packing be intentional.',
+        note: 'Practical, yes, and also a ritualized act of arrival. Let the packing be intentional.',
         links: [
           { text: 'Complete the What to Bring packing checklist', href: '/portal/what-to-bring' },
         ],
@@ -401,7 +401,7 @@ const WEEKS = [
       },
     ],
     prompts: PRE_CEREMONY_WEEKS[4].prompts,
-    thread: 'The forgiveness work you begin here continues in ceremony and for months afterward. Begin it this week — the medicine will carry it forward from wherever you start. One week remains.',
+    thread: 'The forgiveness work you begin here continues in ceremony and for months afterward. Begin it this week, the medicine will carry it forward from wherever you start. One week remains.',
   },
   {
     id: 5,
@@ -412,15 +412,15 @@ const WEEKS = [
     title: 'You have done the work.',
     subtitle: 'Trust your preparation.',
     carryForward: 'You have opened to your people. You have begun the forgiveness work. You have tended your home. This final week calls for completion, alignment, and the willingness to arrive.',
-    sub: 'Mana is the power that comes from within. Pono is right relationship — with yourself, with others, with what\'s coming. This week you are being asked to arrive. The work of preparation is complete. What remains is alignment — meeting yourself honestly about what you are ready to receive.',
-    video: { label: 'A Message from Rachel & Josh · Week 6', text: 'Five weeks ago you were a person who was thinking about doing this. Today you are a person who has done the preparation. In this week\'s transmission, Rachel and Josh speak to the power within that got you here — and to the invitation to set down the preparation and trust that you are ready.' },
-    box: { type: 'close', label: 'Emotional closure — the arc completes here', text: 'Five weeks ago this process asked you to see clearly. Then to commit. Then to tend your body. Then to meet your shadow. Then to open to your people. You have done all of that. Whatever remains unresolved — the medicine will meet it. Your job this week is to arrive with openness, trust your team, and let yourself be held. That is enough. That is everything.\n\nIf you feel uncertain right now — more unsettled than you expected to feel at the end of six weeks of preparation — that feeling often means you have done real work. Uncertainty is a form of readiness.' },
-    actionLabel: 'Actions this week — 5 operational completions',
+    sub: 'Mana is the power that comes from within. Pono is right relationship, with yourself, with others, with what\'s coming. This week you are being asked to arrive. The work of preparation is complete. What remains is alignment, meeting yourself honestly about what you are ready to receive.',
+    video: { label: 'A Message from Rachel & Josh · Week 6', text: 'Five weeks ago you were a person who was thinking about doing this. Today you are a person who has done the preparation. In this week\'s transmission, Rachel and Josh speak to the power within that got you here, and to the invitation to set down the preparation and trust that you are ready.' },
+    box: { type: 'close', label: 'Emotional closure, the arc completes here', text: 'Five weeks ago this process asked you to see clearly. Then to commit. Then to tend your body. Then to meet your shadow. Then to open to your people. You have done all of that. Whatever remains unresolved, the medicine will meet it. Your job this week is to arrive with openness, trust your team, and let yourself be held. That is enough. That is everything.\n\nIf you feel uncertain right now, more unsettled than you expected to feel at the end of six weeks of preparation, that feeling often means you have done real work. Uncertainty is a form of readiness.' },
+    actionLabel: 'Actions this week, 5 operational completions',
     actions: [
       {
         color: 'red',
         text: 'Confirm labs are submitted and reviewed by the medical team',
-        note: 'If you haven\'t received confirmation, reach out now and confirm directly. This is a safety step — it directly affects whether your ceremony proceeds as planned.',
+        note: 'If you haven\'t received confirmation, reach out now and confirm directly. This is a safety step, it directly affects whether your ceremony proceeds as planned.',
         links: [
           { text: 'labs are submitted', href: '/portal#lab-upload-panel' },
           { text: 'reviewed by the medical team', href: '/portal/physician-guide' },
@@ -444,9 +444,9 @@ const WEEKS = [
       },
       {
         color: 'amber',
-        text: 'Schedule your post-ceremony integration-guide call — within 48 hours of ceremony, while still on Kauaʻi',
+        text: 'Schedule your post-ceremony integration-guide call, within 48 hours of ceremony, while still on Kauaʻi',
         links: [
-          { text: 'Schedule your post-ceremony integration-guide call — within 48 hours of ceremony, while still on Kauaʻi', href: '/portal#integration-specialist' },
+          { text: 'Schedule your post-ceremony integration-guide call, within 48 hours of ceremony, while still on Kauaʻi', href: '/portal#integration-specialist' },
         ],
       },
       {
@@ -458,10 +458,10 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Finalize your Questions for the Medicine — land on what feels most true',
-        note: 'The truest question — that is the one. Hold it with open hands.',
+        text: 'Finalize your Questions for the Medicine, land on what feels most true',
+        note: 'The truest question, that is the one. Hold it with open hands.',
         links: [
-          { text: 'Finalize your Questions for the Medicine — land on what feels most true', href: '/portal/questions' },
+          { text: 'Finalize your Questions for the Medicine, land on what feels most true', href: '/portal/questions' },
         ],
       },
     ],
@@ -672,7 +672,7 @@ export default function PreCeremonyPage() {
         .pc-dropdown-item:hover { color:var(--cream);background:rgba(122,158,126,.06); }
         .pc-dropdown-item.current { color:var(--sage-lt);border-left-color:var(--sage); }
         .pc-dropdown-item.soon { color:rgba(245,240,232,.22);cursor:default;pointer-events:none; }
-        .pc-dropdown-item.soon::after { content:' — soon';font-size:8px;color:rgba(200,169,110,.4); }
+        .pc-dropdown-item.soon::after { content:', soon';font-size:8px;color:rgba(200,169,110,.4); }
 
         .pc-nav-right { display:flex;align-items:center;gap:14px; }
         .pc-nav-email { font-size:9px;letter-spacing:.1em;color:rgba(245,240,232,.3);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
@@ -723,14 +723,14 @@ export default function PreCeremonyPage() {
         .wh-title em { font-style:italic;color:var(--sage); }
         .wh-sub { font-size:14px;color:var(--stone);line-height:1.9;max-width:640px;padding-bottom:32px;border-bottom:1px solid var(--border);margin-bottom:36px; }
         .wh-italic { font-size:13px;color:var(--sage);font-style:italic;margin-top:16px;letter-spacing:.02em; }
-        /* Week 1 principle — same hierarchy as wh-* but bumped to read as the theme of the week. */
+        /* Week 1 principle, same hierarchy as wh-* but bumped to read as the theme of the week. */
         .w1p-eyebrow { font-size:10px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:20px; }
         .w1p-title { font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5.2vw,58px);font-weight:300;line-height:1.06;margin:0 0 18px;color:var(--ink); }
         .w1p-title em { font-style:italic;color:var(--sage); }
         .w1p-pull { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(17px,1.8vw,21px);color:var(--sage);line-height:1.55;margin:0 0 26px;letter-spacing:.015em; }
         .w1p-body { font-size:15.5px;color:var(--stone);line-height:1.95;max-width:680px;padding-bottom:40px;border-bottom:1px solid var(--border);margin:0; }
 
-        /* PRINCIPLE CARD — Hawaiian principle of the week */
+        /* PRINCIPLE CARD, Hawaiian principle of the week */
         .principle-card { background:var(--cream); border-left:3px solid var(--gold); border-radius:2px; padding:56px 60px; margin-bottom:40px; }
         .pcard-eyebrow { font-size:9.5px; letter-spacing:.34em; text-transform:uppercase; color:var(--gold); display:block; margin-bottom:28px; font-weight:500; }
         .pcard-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(72px,10vw,108px); font-weight:400; color:var(--gold); line-height:1; margin-bottom:34px; letter-spacing:-.01em; }
@@ -746,7 +746,7 @@ export default function PreCeremonyPage() {
         .section { margin-bottom:44px;scroll-margin-top:130px; }
         .section-label { font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--sage);margin-bottom:16px;display:block; }
 
-        /* WEEK 1 — custom layout */
+        /* WEEK 1, custom layout */
         .w1-section { margin-bottom:52px;scroll-margin-top:130px; }
         .w1-eyebrow { font-size:9px;letter-spacing:.38em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:14px; }
         .w1-h2 { font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3.5vw,42px);font-weight:300;line-height:1.12;color:var(--ink);margin-bottom:14px; }
@@ -895,7 +895,7 @@ export default function PreCeremonyPage() {
           <p className="pc-hero-desc">
             This portal is your companion through an evidence-based and deeply personal arc of preparation and integration.
             Each week draws on a Hawaiian principle, paired with a teaching from psychoneuroenergetics (PNE) to support the body, mind, and spirit.
-            You&apos;ll find journal prompts, action items, and voices from the Vital Kauaʻi community — those who have walked this path.
+            You&apos;ll find journal prompts, action items, and voices from the Vital Kauaʻi community, those who have walked this path.
           </p>
         </div>
       </div>
@@ -913,7 +913,7 @@ export default function PreCeremonyPage() {
         ))}
       </div>
 
-      {/* SECTION INDEX — Week 1 only. Sticky right under the week-tabs (60 +
+      {/* SECTION INDEX, Week 1 only. Sticky right under the week-tabs (60 +
           ~52 = 112) so it stays in view as members scroll through sections.
           Weeks 2+ stay on the week-tabs alone until each week's content is
           restyled to match. */}
@@ -932,15 +932,15 @@ export default function PreCeremonyPage() {
                   ? <>Seeing <em>clearly.</em></>
                   : <>{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</>}
               </h2>
-              <p className="w1p-pull">&ldquo;{w.principle}&rdquo; — {w.principleName}</p>
+              <p className="w1p-pull">&ldquo;{w.principle}&rdquo;, {w.principleName}</p>
               <p className="w1p-body">
                 {i === 0
-                  ? 'What you perceive shapes what you experience — attention, assumptions, the stories carried without noticing. This week is an invitation to look at the lens itself.'
+                  ? 'What you perceive shapes what you experience, attention, assumptions, the stories carried without noticing. This week is an invitation to look at the lens itself.'
                   : w.sub}
               </p>
             </section>
 
-            {/* VIDEO — Message from the Founders */}
+            {/* VIDEO, Message from the Founders */}
             <section className="w1-section" id="week-video">
               <span className="section-label">Message from the Founders</span>
               <div className="video-frame">
@@ -998,7 +998,7 @@ export default function PreCeremonyPage() {
                 return (
                   <div className="dataset-note" style={{ marginTop: 18 }}>
                     <div className="dn-header">
-                      <span className="dn-label">Outcomes — your contribution to the field</span>
+                      <span className="dn-label">Outcomes, your contribution to the field</span>
                       {dl && <Link href={dl.href} className="dn-cta">{dl.text}</Link>}
                     </div>
                     <div className="dn-body">{dataset}</div>
@@ -1019,7 +1019,7 @@ export default function PreCeremonyPage() {
               </h3>
               {i === 0 && (
                 <p className="w1-body">
-                  Before any thought, the body is already speaking. Sensation — tightening, loosening, warmth, pressure — is the nervous system&apos;s first language, arriving long before words or meaning. What we call a &ldquo;feeling&rdquo; is actually three layers stacked: sensation in the body, charge in the emotional system, and story in the mind. The mind&apos;s story is often the loudest, but it&apos;s the last layer to arrive. This week, the invitation from PNE is to notice what&apos;s underneath the story — the raw data of the body — before the mind names it.
+                  Before any thought, the body is already speaking. Sensation, tightening, loosening, warmth, pressure, is the nervous system&apos;s first language, arriving long before words or meaning. What we call a &ldquo;feeling&rdquo; is actually three layers stacked: sensation in the body, charge in the emotional system, and story in the mind. The mind&apos;s story is often the loudest, but it&apos;s the last layer to arrive. This week, the invitation from PNE is to notice what&apos;s underneath the story, the raw data of the body, before the mind names it.
                 </p>
               )}
               <div className="video-frame" style={{ marginTop: i === 0 ? 24 : 0 }}>
@@ -1029,7 +1029,7 @@ export default function PreCeremonyPage() {
                     <div className="vp-label">PNE Teaching · Week {i + 1}</div>
                     <div className="vp-text">
                       {i === 0
-                        ? 'A short teaching on the three layers of feeling — sensation in the body, charge in the emotional system, and story in the mind — and why the body’s raw data arrives before the mind names it. The foundational practice of Week 1: listening underneath.'
+                        ? 'A short teaching on the three layers of feeling, sensation in the body, charge in the emotional system, and story in the mind, and why the body’s raw data arrives before the mind names it. The foundational practice of Week 1: listening underneath.'
                         : 'A short teaching paired with this week’s principle and the body’s lived response to it.'}
                     </div>
                     <div className="vp-coming-soon">Coming Soon</div>
@@ -1078,14 +1078,14 @@ export default function PreCeremonyPage() {
               </div>
             </section>
 
-            {/* READINESS GATE — Week 6 only, anchored for the section index */}
+            {/* READINESS GATE, Week 6 only, anchored for the section index */}
             {w.readinessGate && (
               <section className="w1-section" id="readiness">
                 <h3 className="w1-h3">Readiness</h3>
                 <div className="rg-wrap">
                   <div className="rg-header">
                     <div className="rg-dot" />
-                    <div className="rg-title">Readiness confirmation — complete before arrival</div>
+                    <div className="rg-title">Readiness confirmation, complete before arrival</div>
                   </div>
                   <div className="rg-body">
                     {[
@@ -1119,7 +1119,7 @@ export default function PreCeremonyPage() {
                 <div className="bridge">
                   <span className="bridge-eyebrow">What comes next</span>
                   <h3 className="bridge-title">The preparation is complete.</h3>
-                  <p className="bridge-text">In the weeks following ceremony, this portal will continue to guide you through integration — with the same rhythm, the same depth, and the same care you&apos;ve experienced here. You will be held through every phase of what comes next.</p>
+                  <p className="bridge-text">In the weeks following ceremony, this portal will continue to guide you through integration, with the same rhythm, the same depth, and the same care you&apos;ve experienced here. You will be held through every phase of what comes next.</p>
                 </div>
               </section>
             )}

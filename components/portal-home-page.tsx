@@ -105,7 +105,7 @@ const STRIPE_LOVE_OFFERING_URL = "https://buy.stripe.com/test_cNi4gzcoG3ZBeQUcmZ
 
 const PREP_ITEMS: { text: string; link?: string; external?: boolean; isLab?: boolean }[] = [
   { text: "Complete all three required steps (Donation, Membership Agreement, Medical Disclaimer)", link: "/portal" },
-  { text: "Fill out the Intake Form — basic information required (emergency contact, etc.); all other questions optional", link: "/intake-form" },
+  { text: "Fill out the Intake Form, basic information required (emergency contact, etc.); all other questions optional", link: "/intake-form" },
   { text: "Submit your Love Offering / Membership Donation", link: STRIPE_LOVE_OFFERING_URL, external: true },
   { text: "Read Iboga Preparedness Guide", link: "/iboga-preparedness-guide.html" },
   { text: "Book your preparation calls with your integration guide", link: "/portal#integration-specialist" },
@@ -465,7 +465,7 @@ export function PortalHomePage({
               {firstName}.
             </h1>
             <p className={styles.heroSub}>
-              This is your private sanctuary within Vital Kaua&#699;i &mdash; a living guide
+              This is your private sanctuary within Vital Kaua&#699;i, a living guide
               through every phase of your journey. Everything you need lives here, organized by
               where you are in the arc of your transformation.
             </p>
@@ -549,9 +549,9 @@ export function PortalHomePage({
               from Your Guides
             </h2>
             <p className={styles.videoText}>
-              Welcome — we&rsquo;re so grateful you have arrived. Watch this video where we share
+              Welcome, we&rsquo;re so grateful you have arrived. Watch this video where we share
               what this portal holds for you, how to move through it, and what to reach out about
-              as you prepare. Our doors are always open &mdash; and so are our hearts.
+              as you prepare. Our doors are always open, and so are our hearts.
             </p>
             <p className={styles.videoSignature}>&mdash; Rachel &amp; Josh</p>
           </div>
@@ -615,7 +615,7 @@ export function PortalHomePage({
                   Church Membership <em>Agreement</em>
                 </div>
                 <div className={styles.docDesc}>
-                  Your membership agreement with Vital Kaua&#699;i Church &mdash; the private
+                  Your membership agreement with Vital Kaua&#699;i Church, the private
                   religious context within which all ceremonial work is held. Required for all members.
                 </div>
                 <div className={styles.docFooter}>
@@ -658,7 +658,7 @@ export function PortalHomePage({
                   Member <em>Intake Form</em>
                 </div>
                 <div className={styles.docDesc}>
-                  A deeper look at who you are and what you are bringing to this work &mdash; your
+                  A deeper look at who you are and what you are bringing to this work, your
                   intentions, personal history, somatic awareness, and health context. Basic
                   information is required (emergency contact, key health disclosures); all other
                   questions are optional. The more you share, the more precisely we can hold you.
@@ -828,7 +828,7 @@ export function PortalHomePage({
                   Book Your <em>Integration Calls</em>
                 </div>
                 <div className={styles.docDesc}>
-                  Schedule your post-ceremony integration sessions with Rachel and Josh &mdash; and connect with your assigned integration specialist if applicable.
+                  Schedule your post-ceremony integration sessions with Rachel and Josh, and connect with your assigned integration specialist if applicable.
                 </div>
                 <div className={styles.docFooter}>
                   <span className={`${styles.docTag} ${styles.tagIntegration}`}>Integration Support</span>
@@ -990,7 +990,7 @@ export function PortalHomePage({
               <p className={styles.teamRole}>Somatic Integration Guide, Co-Creatress</p>
               <p className={styles.teamName}>Rachel Nelson</p>
               <p className={styles.teamBio}>
-                Rachel is with you from your very first conversation &mdash; answering questions,
+                Rachel is with you from your very first conversation, answering questions,
                 holding space through preparation, guiding the onset of ceremony, and returning for
                 early integration work. She stays present through the full arc of your journey and
                 continues to check in long after you&apos;ve returned home.
@@ -1039,13 +1039,13 @@ export function PortalHomePage({
               ) : (
                 <p className={styles.teamBio}>
                   Your integration specialist walks with you as guide, facilitator, coach, and
-                  teammate &mdash; meeting you in preparation, within the 48 hours after ceremony,
+                  teammate, meeting you in preparation, within the 48 hours after ceremony,
                   and ongoing as you return home and carry the work forward.
                 </p>
               )}
               <p className={styles.teamBio}>
                 The arc of your journey includes six sessions with your integration guide, used
-                on your timing &mdash; we suggest weaving some before and some after ceremony,
+                on your timing, we suggest weaving some before and some after ceremony,
                 and the rhythm is yours to choose.
               </p>
               {specialist?.calendly_url ? (
@@ -1065,7 +1065,7 @@ export function PortalHomePage({
         {/* EMERGENCY CARD */}
         <div className={styles.emergencyCard}>
           <div className={styles.emergencyText}>
-            <p className={styles.emergencyLabel}>During Your Stay &mdash; Always Reach Out</p>
+            <p className={styles.emergencyLabel}>During Your Stay, Always Reach Out</p>
             <p className={styles.emergencyTitle}>We Are Here for You</p>
             <p className={styles.emergencyDetails}>
               You are never alone in this. Rachel and Josh are present throughout your stay and

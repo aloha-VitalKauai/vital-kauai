@@ -190,7 +190,7 @@ export function HealingCirclePage() {
             <em>Circle</em>
           </h1>
           <p className={styles.heroSub}>
-            Every practitioner in our circle is a devoted healer in their own right — drawn here by
+            Every practitioner in our circle is a devoted healer in their own right, drawn here by
             devotion, shaped by the land, and honored to walk this path with you.
           </p>
         </div>
@@ -327,7 +327,7 @@ export function HealingCirclePage() {
             className={`${styles.ctaBody} ${styles.reveal}`}
           >
             When you arrive at Vital Kauaʻi, you are held by an entire lineage of healing
-            intelligence — woven together with care, and activated by the land herself.
+            intelligence, woven together with care, and activated by the land herself.
           </p>
           <Link href="/#contact" className={`${styles.btnPrimary} ${styles.reveal} ${styles.revealDelay1}`}>
             Begin the Journey

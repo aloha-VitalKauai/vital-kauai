@@ -52,24 +52,24 @@ async function handleApproval(token: string, source: string) {
   if (lead.approval_status === 'approved') return respond(source, true, null, lead.full_name, true)
   if (lead.approval_status === 'declined') return respond(source, false, `${lead.full_name} was previously declined. Update from the ops dashboard if needed.`)
 
-  // Token expiration — 7 days from when the lead was created
+  // Token expiration, 7 days from when the lead was created
   const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000
   const createdAt = new Date(lead.created_at || lead.calendly_booked_at || 0).getTime()
   if (Date.now() - createdAt > TOKEN_TTL_MS) {
     return respond(source, false, 'This approval link has expired (7 day limit). Use the ops dashboard to approve.')
   }
 
-  // === STEP 1: Create Supabase auth user (no password — member sets it themselves) ===
+  // === STEP 1: Create Supabase auth user (no password, member sets it themselves) ===
   let userId: string
   try {
     userId = await getOrCreateAuthUser(lead.email, lead.full_name)
-    console.log(`[approve-member] STEP:auth — user ready: ${userId}`)
+    console.log(`[approve-member] STEP:auth, user ready: ${userId}`)
   } catch (err: any) {
-    console.error('[approve-member] STEP:auth — FAILED:', err.message || err)
+    console.error('[approve-member] STEP:auth, FAILED:', err.message || err)
     return respond(source, false, 'Failed to create account. Check Supabase logs.')
   }
 
-  // === STEP 2: Create members row (main operational table — all FKs point here) ===
+  // === STEP 2: Create members row (main operational table, all FKs point here) ===
   const { data: existingMember } = await db().from('members').select('id').eq('id', userId).single()
   if (!existingMember) {
     const { error: memberErr } = await db().from('members').upsert({
@@ -78,15 +78,15 @@ async function handleApproval(token: string, source: string) {
       email:     lead.email,
       phone:     lead.phone || null,
       lead_id:   lead.id,
-      status:    'Signed — Awaiting Intake',
+      status:    'Signed, Awaiting Intake',
     }, { onConflict: 'id' })
     if (memberErr) {
-      console.error('[approve-member] STEP:members — FAILED:', JSON.stringify(memberErr))
+      console.error('[approve-member] STEP:members, FAILED:', JSON.stringify(memberErr))
       return respond(source, false, `Failed to create member record: ${memberErr.message}`)
     }
-    console.log(`[approve-member] STEP:members — created for ${lead.email}`)
+    console.log(`[approve-member] STEP:members, created for ${lead.email}`)
   } else {
-    console.log(`[approve-member] STEP:members — already exists for ${lead.email}`)
+    console.log(`[approve-member] STEP:members, already exists for ${lead.email}`)
   }
 
   // === STEP 3: Create member_profiles row (onboarding checklist) ===
@@ -104,30 +104,30 @@ async function handleApproval(token: string, source: string) {
     onboarding_complete:         false,
   }, { onConflict: 'id' })
   if (profileErr) {
-    console.error('[approve-member] STEP:profiles — FAILED:', JSON.stringify(profileErr))
+    console.error('[approve-member] STEP:profiles, FAILED:', JSON.stringify(profileErr))
     return respond(source, false, `Failed to create member profile: ${profileErr.message}`)
   }
-  console.log(`[approve-member] STEP:profiles — OK`)
+  console.log(`[approve-member] STEP:profiles, OK`)
 
   // === STEP 4: Assign member role (never overwrite founder) ===
   // Halt on failure: without the 'member' role, RLS blocks all portal reads/writes.
   const { data: existingRole } = await db().from('user_roles').select('role').eq('user_id', userId).single()
   if (existingRole?.role === 'founder') {
-    console.log(`[approve-member] STEP:role — skipping, already founder`)
+    console.log(`[approve-member] STEP:role, skipping, already founder`)
   } else {
     const { error: roleErr } = await db().from('user_roles').upsert(
       { user_id: userId, role: 'member' },
       { onConflict: 'user_id' }
     )
     if (roleErr) {
-      console.error('[approve-member] STEP:role — FAILED:', JSON.stringify(roleErr))
+      console.error('[approve-member] STEP:role, FAILED:', JSON.stringify(roleErr))
       return respond(source, false, `Failed to assign member role: ${roleErr.message}`)
     }
-    console.log(`[approve-member] STEP:role — assigned member`)
+    console.log(`[approve-member] STEP:role, assigned member`)
   }
 
   // === STEP 5: Mark lead approved (member_id FK now valid because members row exists) ===
-  // If this fails we MUST stop — continuing leaves the lead stuck in "pending"
+  // If this fails we MUST stop, continuing leaves the lead stuck in "pending"
   // even though the auth user + members row exist, and the user would still see
   // a success page while the dashboard shows them as un-approved.
   const { error: leadErr } = await db().from('leads').update({
@@ -139,14 +139,14 @@ async function handleApproval(token: string, source: string) {
     invite_sent_at:      new Date().toISOString(),
   }).eq('approval_token', token)
   if (leadErr) {
-    console.error('[approve-member] STEP:lead — FAILED:', JSON.stringify(leadErr))
+    console.error('[approve-member] STEP:lead, FAILED:', JSON.stringify(leadErr))
     return respond(source, false, `Failed to mark lead approved: ${leadErr.message}`)
   }
-  console.log(`[approve-member] STEP:lead — marked approved`)
+  console.log(`[approve-member] STEP:lead, marked approved`)
 
   // === STEP 6: Log timeline event ===
   // Lead is already marked approved at this point, but we still surface timeline
-  // failures so ops notices audit gaps — the approval has committed, caller should
+  // failures so ops notices audit gaps, the approval has committed, caller should
   // investigate the audit trail rather than re-trying approval.
   const { error: timelineErr } = await db().from('member_timelines').insert({
     member_id:    userId,
@@ -156,14 +156,14 @@ async function handleApproval(token: string, source: string) {
     is_system:    true,
   })
   if (timelineErr) {
-    console.error('[approve-member] STEP:timeline — FAILED (lead already approved):', JSON.stringify(timelineErr))
+    console.error('[approve-member] STEP:timeline, FAILED (lead already approved):', JSON.stringify(timelineErr))
     return respond(source, false, `Approval committed but timeline log failed: ${timelineErr.message}. Check audit trail manually.`)
   }
-  console.log(`[approve-member] STEP:timeline — logged`)
+  console.log(`[approve-member] STEP:timeline, logged`)
 
   // === STEP 7: Seed journey + draft commitment (non-blocking) ===
   // Gives the founder something to attach a program_price to immediately after
-  // approval — saving program_price in the member editor updates this draft
+  // approval, saving program_price in the member editor updates this draft
   // commitment's expected_amount_cents via /api/payments/sync-program-price,
   // which then flows to the member's Love Exchange page as "Pledged / Remaining".
   // Log-and-continue: approval has already committed, and these rows can be
@@ -190,13 +190,13 @@ async function handleApproval(token: string, source: string) {
         .select('id')
         .single()
       if (journeyErr || !journeyRow) {
-        console.error('[approve-member] STEP:journey — FAILED (non-blocking):', JSON.stringify(journeyErr))
+        console.error('[approve-member] STEP:journey, FAILED (non-blocking):', JSON.stringify(journeyErr))
       } else {
         journeyId = journeyRow.id
-        console.log(`[approve-member] STEP:journey — created ${journeyId}`)
+        console.log(`[approve-member] STEP:journey, created ${journeyId}`)
       }
     } else {
-      console.log(`[approve-member] STEP:journey — already exists ${journeyId}`)
+      console.log(`[approve-member] STEP:journey, already exists ${journeyId}`)
     }
 
     if (journeyId) {
@@ -219,16 +219,16 @@ async function handleApproval(token: string, source: string) {
             status:                'draft',
           })
         if (commitErr) {
-          console.error('[approve-member] STEP:commitment — FAILED (non-blocking):', JSON.stringify(commitErr))
+          console.error('[approve-member] STEP:commitment, FAILED (non-blocking):', JSON.stringify(commitErr))
         } else {
-          console.log(`[approve-member] STEP:commitment — draft created for journey ${journeyId}`)
+          console.log(`[approve-member] STEP:commitment, draft created for journey ${journeyId}`)
         }
       } else {
-        console.log(`[approve-member] STEP:commitment — already exists for journey ${journeyId}`)
+        console.log(`[approve-member] STEP:commitment, already exists for journey ${journeyId}`)
       }
     }
   } catch (err: any) {
-    console.error('[approve-member] STEP:journey+commitment — unexpected error (non-blocking):', err?.message || err)
+    console.error('[approve-member] STEP:journey+commitment, unexpected error (non-blocking):', err?.message || err)
   }
 
   // Generate one-time setup link -> /setup-account
@@ -267,7 +267,7 @@ async function getOrCreateAuthUser(email: string, fullName: string): Promise<str
 }
 
 async function generatePasswordSetupLink(email: string, fullName: string): Promise<string | null> {
-  // Use Supabase JS admin client — raw adminFetch wasn't encoding redirect_to properly
+  // Use Supabase JS admin client, raw adminFetch wasn't encoding redirect_to properly
   const supabase = db()
   const redirectTo = `${env().appUrl}/setup-account`
 
@@ -278,17 +278,17 @@ async function generatePasswordSetupLink(email: string, fullName: string): Promi
   })
 
   let link = data?.properties?.action_link
-  console.log(`[approve-member] STEP:setuplink — redirectTo=${redirectTo}, has_link=${!!link}, error=${error?.message || 'none'}`)
+  console.log(`[approve-member] STEP:setuplink, redirectTo=${redirectTo}, has_link=${!!link}, error=${error?.message || 'none'}`)
   if (link) {
-    // generateLink doesn't always encode redirect_to in the action_link — append it
+    // generateLink doesn't always encode redirect_to in the action_link, append it
     const url = new URL(link)
     url.searchParams.set('redirect_to', redirectTo)
     link = url.toString()
-    console.log(`[approve-member] STEP:setuplink — final link redirect_to=${redirectTo}`)
+    console.log(`[approve-member] STEP:setuplink, final link redirect_to=${redirectTo}`)
     return link
   }
 
-  console.error('[approve-member] STEP:setuplink — FAILED:', error?.message || 'no action_link')
+  console.error('[approve-member] STEP:setuplink, FAILED:', error?.message || 'no action_link')
   return null
 }
 

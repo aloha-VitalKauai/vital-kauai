@@ -322,7 +322,7 @@ body { background: var(--page-bg); color: var(--ink); font-family: var(--sans); 
 `;
 
 const BODY_CONTENT = `
-<!-- PROGRESS — personal only -->
+<!-- PROGRESS, personal only -->
 <div class="prog">
   <span class="prog-lbl">Your journey progress</span>
   <div class="prog-track"><div class="prog-fill" style="width:33%"></div></div>
@@ -334,7 +334,7 @@ const BODY_CONTENT = `
   <div class="hero-in">
     <p class="hero-eye">Member Portal · <span>Community</span> · April 13, 2026</p>
     <h1 class="hero-h1">The Shared<br><em>Field</em></h1>
-    <p class="hero-p">Each person here is walking their own arc — at different weeks, in different phases, carrying different things. Once a week, the community gathers around a shared theme — to remember that everyone here is walking alongside you.</p>
+    <p class="hero-p">Each person here is walking their own arc, at different weeks, in different phases, carrying different things. Once a week, the community gathers around a shared theme, to remember that everyone here is walking alongside you.</p>
   </div>
 </div>
 
@@ -345,7 +345,7 @@ const BODY_CONTENT = `
   <div class="card yp">
     <div class="continuity">
       <span class="cont-lbl">Last week</span>
-      <span class="cont-txt">You were sitting with <strong>Lōkahi — Unity.</strong> What did you carry forward from that?</span>
+      <span class="cont-txt">You were sitting with <strong>Lōkahi, Unity.</strong> What did you carry forward from that?</span>
     </div>
     <div class="yp-grid">
       <div>
@@ -387,10 +387,10 @@ const BODY_CONTENT = `
       </div>
     </div>
     <div class="yp-note">
-      You are three weeks into preparation. The medicine is already listening. This is the time when patterns begin to surface — from your own awareness that something is arriving. <strong>What you are noticing right now is real preparation.</strong> Trust what is rising.
+      You are three weeks into preparation. The medicine is already listening. This is the time when patterns begin to surface, from your own awareness that something is arriving. <strong>What you are noticing right now is real preparation.</strong> Trust what is rising.
     </div>
     <div class="yp-callout">
-      The community theme below belongs to everyone — regardless of where each person is in their own journey. Others here are in Week 1 of integration, Week 6 of preparation, or anywhere in between. The shared theme transcends week numbers — it is what the community is sitting with together right now.
+      The community theme below belongs to everyone, regardless of where each person is in their own journey. Others here are in Week 1 of integration, Week 6 of preparation, or anywhere in between. The shared theme transcends week numbers, it is what the community is sitting with together right now.
     </div>
   </div>
 
@@ -399,10 +399,10 @@ const BODY_CONTENT = `
   <div class="card theme-card">
     <div class="t-dark">
       <p class="t-tag">Community rhythm · Week of April 13, 2026</p>
-      <h2 class="t-h2">HAʻAHAʻA — <em>Meeting What Returns</em></h2>
+      <h2 class="t-h2">HAʻAHAʻA, <em>Meeting What Returns</em></h2>
       <p class="t-meaning">Humility in the presence of what comes back</p>
       <p class="t-plbl">This week's reflection prompt</p>
-      <p class="t-prompt">"What has returned for you this week — and what might it be asking of you?"</p>
+      <p class="t-prompt">"What has returned for you this week, and what might it be asking of you?"</p>
       <div class="pips">
         <div class="pip done"></div><div class="pip done"></div><div class="pip done"></div>
         <div class="pip done"></div><div class="pip done"></div><div class="pip done"></div>
@@ -413,7 +413,7 @@ const BODY_CONTENT = `
       <div class="lens-grid">
         <div class="lens">
           <p class="lens-tag">If you are preparing</p>
-          <p class="lens-txt">Old patterns are returning as inventory, as information. The medicine asks you to know them. Notice what keeps showing up this week — simply observing.</p>
+          <p class="lens-txt">Old patterns are returning as inventory, as information. The medicine asks you to know them. Notice what keeps showing up this week, simply observing.</p>
         </div>
         <div class="lens">
           <p class="lens-tag">If you are integrating</p>
@@ -424,9 +424,9 @@ const BODY_CONTENT = `
         <p class="prac-lbl">This week's collective practice</p>
         <p class="prac-title">What the community is doing together this week</p>
         <ul class="prac-steps">
-          <li>When a pattern returns, pause before responding — even for thirty seconds</li>
-          <li>Pause before interrupting or resolving — let it complete its movement</li>
-          <li>Return to your practice at least once after noticing — even briefly</li>
+          <li>When a pattern returns, pause before responding, even for thirty seconds</li>
+          <li>Pause before interrupting or resolving, let it complete its movement</li>
+          <li>Return to your practice at least once after noticing, even briefly</li>
         </ul>
         <div class="prac-footer">
           <p class="prac-stat"><strong id="prac-count">11</strong> members have marked this practice today</p>
@@ -442,7 +442,7 @@ const BODY_CONTENT = `
     <p class="team-lbl">This week's holding</p>
     <div class="team-layout">
       <div>
-        <p class="team-note">"This theme always arrives like a quiet tide — felt before it is fully seen. This week, we are less interested in what you are doing in your practice, and more in what you are simply allowing yourself to notice. You have permission to let it be. Just see it clearly."</p>
+        <p class="team-note">"This theme always arrives like a quiet tide, felt before it is fully seen. This week, we are less interested in what you are doing in your practice, and more in what you are simply allowing yourself to notice. You have permission to let it be. Just see it clearly."</p>
         <p class="team-sig">— Rachel &amp; Josh · Vital Kauaʻi</p>
         <p class="team-anchor">This week, <strong>stay with what arises rather than resolve it.</strong> The impulse to fix or explain is the thing to notice. Let the pattern show itself fully before you decide what to do with it.</p>
       </div>
@@ -452,7 +452,7 @@ const BODY_CONTENT = `
 
   <!-- ━━ 04  OTHERS ON THIS PATH ━━ -->
   <div class="sec"><span>Others on this path</span></div>
-  <p class="ref-intro">Curated, anonymized reflections from members sitting with this same theme — some preparing, some integrating, each at their own place in the arc. Shared as resonance.</p>
+  <p class="ref-intro">Curated, anonymized reflections from members sitting with this same theme, some preparing, some integrating, each at their own place in the arc. Shared as resonance.</p>
   <div class="ref-toolbar">
     <div class="ref-tabs">
       <button class="ref-tab active" onclick="switchTab('pre',this)">Those preparing</button>
@@ -466,11 +466,11 @@ const BODY_CONTENT = `
   <div class="ref-stack">
     <div class="ref-panel on" id="tab-pre">
       <div class="ref-card">
-        <p class="ref-q">I thought I was past this pattern. It surfaced again this week — quieter than before, but unmistakably itself. There was something almost tender in recognizing it without the old urgency to push it away.</p>
+        <p class="ref-q">I thought I was past this pattern. It surfaced again this week, quieter than before, but unmistakably itself. There was something almost tender in recognizing it without the old urgency to push it away.</p>
         <p class="ref-meta">Preparing · <span class="ref-theme">HAʻAHAʻA</span></p>
       </div>
       <div class="ref-card">
-        <p class="ref-q">I have been avoiding the evening sitting practice. Not dramatically — just sliding past it each night. Today I sat anyway and the first thing I felt was relief. I had not realized how much I was carrying the avoidance itself.</p>
+        <p class="ref-q">I have been avoiding the evening sitting practice. Not dramatically, just sliding past it each night. Today I sat anyway and the first thing I felt was relief. I had not realized how much I was carrying the avoidance itself.</p>
         <p class="ref-meta">Preparing · <span class="ref-theme">HAʻAHAʻA</span> <span class="ref-new">Today</span></p>
       </div>
       <div class="ref-card">
@@ -480,7 +480,7 @@ const BODY_CONTENT = `
     </div>
     <div class="ref-panel" id="tab-post">
       <div class="ref-card">
-        <p class="ref-q">The ceremony showed me something I thought I understood about my father. Three weeks out, it has returned — but now I can sit in front of it without the heat. That is new for me.</p>
+        <p class="ref-q">The ceremony showed me something I thought I understood about my father. Three weeks out, it has returned, but now I can sit in front of it without the heat. That is new for me.</p>
         <p class="ref-meta">Integrating · <span class="ref-theme">HAʻAHAʻA</span> <span class="ref-new">Today</span></p>
       </div>
       <div class="ref-card">
@@ -488,7 +488,7 @@ const BODY_CONTENT = `
         <p class="ref-meta">Integrating · <span class="ref-theme">HAʻAHAʻA</span></p>
       </div>
       <div class="ref-card">
-        <p class="ref-q">More emotion than I expected. The medicine keeps showing me the same door. I am beginning to understand it is not asking me to break it down — it wants me to learn to stand in front of it differently.</p>
+        <p class="ref-q">More emotion than I expected. The medicine keeps showing me the same door. I am beginning to understand it is not asking me to break it down, it wants me to learn to stand in front of it differently.</p>
         <p class="ref-meta">Integrating · <span class="ref-theme">HAʻAHAʻA</span></p>
       </div>
     </div>
@@ -502,12 +502,12 @@ const BODY_CONTENT = `
 
       <p class="call-lbl">This week's community gathering</p>
       <h3 class="call-h3">Community Integration Circle</h3>
-      <p class="call-theme-ln">HAʻAHAʻA — Meeting What Returns</p>
-      <p class="call-why">The call is the real center. Not because anything will be fixed or explained, but because there is something that only happens when voices come together around the same theme in the same moment — regardless of where each person is in their own arc. What you are carrying this week, bring it. You do not need to have it sorted.</p>
+      <p class="call-theme-ln">HAʻAHAʻA, Meeting What Returns</p>
+      <p class="call-why">The call is the real center. Not because anything will be fixed or explained, but because there is something that only happens when voices come together around the same theme in the same moment, regardless of where each person is in their own arc. What you are carrying this week, bring it. You do not need to have it sorted.</p>
       <div class="call-details">
         <div class="call-dt"><div class="call-dot"></div><span>Thursday, April 17 · 5:00 PM HST · 60–75 minutes</span></div>
         <div class="call-dt"><div class="call-dot"></div><span>Held by Rachel &amp; Josh · Zoom link sent to your email 24 hours prior</span></div>
-        <div class="call-dt"><div class="call-dot"></div><span>Open to all members — wherever you are in your journey</span></div>
+        <div class="call-dt"><div class="call-dot"></div><span>Open to all members, wherever you are in your journey</span></div>
       </div>
       <div class="call-cta">
         <button class="btn-rsvp" id="rsvp-btn" onclick="doRSVP()">I'll be there →</button>
@@ -526,7 +526,7 @@ const BODY_CONTENT = `
         <div class="live-dot" id="ldot"></div>
         <div>
           <div class="live-hdr-title">Shared Reflection Space</div>
-          <div class="live-hdr-sub">Opens around the weekly call — a quiet, prompt-locked room</div>
+          <div class="live-hdr-sub">Opens around the weekly call, a quiet, prompt-locked room</div>
         </div>
       </div>
       <span class="live-status" id="lstat">Opens Thursday · 3:30 PM HST</span>
@@ -534,11 +534,11 @@ const BODY_CONTENT = `
     <div id="lv-closed" class="live-closed-view">
       <div class="live-cl-icon">◦ ◦ ◦</div>
       <div class="live-cl-title">The space is not yet open</div>
-      <div class="live-cl-sub">This room opens 90 minutes before the Thursday call and remains open for 90 minutes after. It is a ritual space — not an ongoing chat. When it opens: one prompt, one response per person, no threads.</div>
+      <div class="live-cl-sub">This room opens 90 minutes before the Thursday call and remains open for 90 minutes after. It is a ritual space, not an ongoing chat. When it opens: one prompt, one response per person, no threads.</div>
       <div class="live-opens">Opens in 3 days, 5 hours, 30 minutes</div>
     </div>
     <div id="lv-open" class="live-open-view" style="display:none;">
-      <p class="live-prompt-q">"What has returned for you this week — and what might it be asking of you?"</p>
+      <p class="live-prompt-q">"What has returned for you this week, and what might it be asking of you?"</p>
       <div class="live-rules">
         <span class="live-rule">One reflection per person</span>
         <span class="live-rule">240 characters max</span>
@@ -547,7 +547,7 @@ const BODY_CONTENT = `
       </div>
       <div class="live-voices" id="lv-voices">
         <div class="live-voice"><div class="lv-txt">The same impatience I thought I had moved past. It arrived on Tuesday. I sat with it longer than I wanted to.</div><div class="lv-meta">Preparing · 4 min ago</div></div>
-        <div class="live-voice"><div class="lv-txt">An old grief. Different texture this time — softer. The ceremony changed how I can hold it even when it returns.</div><div class="lv-meta">Integrating · 11 min ago</div></div>
+        <div class="live-voice"><div class="lv-txt">An old grief. Different texture this time, softer. The ceremony changed how I can hold it even when it returns.</div><div class="lv-meta">Integrating · 11 min ago</div></div>
       </div>
       <div class="live-input" id="lv-input">
         <textarea class="live-ta" id="lv-ta" placeholder="Respond to the prompt…" maxlength="240"></textarea>
@@ -566,7 +566,7 @@ const BODY_CONTENT = `
   <!-- ━━ 07  THE FIELD ━━ -->
   <div class="sec"><span>The field this week</span></div>
   <div class="card field">
-    <p class="field-open">Across all members — at every stage, every week of their own arc — this is what the community is collectively moving through under this theme.</p>
+    <p class="field-open">Across all members, at every stage, every week of their own arc, this is what the community is collectively moving through under this theme.</p>
     <div class="f-row">
       <p class="f-txt">Members encountering <em>returning patterns</em></p>
       <div class="f-bar-col"><div class="f-track"><div class="f-fill" style="width:68%"></div></div><div class="f-pct">68%</div></div>
@@ -587,7 +587,7 @@ const BODY_CONTENT = `
       <div class="f-bar-col"><div class="f-track"><div class="f-fill" style="width:81%"></div></div><div class="f-pct">81%</div></div>
       <div class="f-trend"><div class="trend-up">↑ +4%</div><div class="trend-lbl">vs last wk</div></div>
     </div>
-    <p class="field-close">If you are feeling the intensity of this week — you are not alone in it. Two thirds of the community are encountering the same return, from all different places in their own arc. And the field is moving in the right direction: practice is up, emotional intensity is easing.</p>
+    <p class="field-close">If you are feeling the intensity of this week, you are not alone in it. Two thirds of the community are encountering the same return, from all different places in their own arc. And the field is moving in the right direction: practice is up, emotional intensity is easing.</p>
   </div>
 
   <!-- ━━ 08  OFFER YOUR VOICE ━━ -->
@@ -596,19 +596,19 @@ const BODY_CONTENT = `
     <div id="s-form">
       <h3 class="s-title">Add your reflection</h3>
       <p class="s-sub">Your words, offered here, may become the line someone else needed to read. Nothing is required. If something is alive in you around this week's theme, this is a place to set it down.</p>
-      <p class="s-prompt">"What has returned for you this week — and what might it be asking of you?"</p>
+      <p class="s-prompt">"What has returned for you this week, and what might it be asking of you?"</p>
       <div style="margin-bottom:1.4rem;">
         <label class="f-label" for="s-ta">Your reflection</label>
         <textarea class="f-ta" id="s-ta" placeholder="Write freely. There is no right way to say it…" maxlength="480"></textarea>
       </div>
       <div class="s-footer">
-        <p class="s-assur">Your name is never attached. The team reads and curates before anything is shared. You may also keep this only for yourself — it still counts.</p>
+        <p class="s-assur">Your name is never attached. The team reads and curates before anything is shared. You may also keep this only for yourself, it still counts.</p>
         <button class="btn-sub" onclick="doSubmit()">Offer This →</button>
       </div>
     </div>
     <div class="s-confirm" id="s-confirm">
       <div class="s-conf-title">Your reflection has been received.</div>
-      <div class="s-conf-txt">It has been passed to Rachel and Josh. If it resonates with others walking this path, it may be shared anonymously in a future week — as a thread in the shared weaving. Either way, it is held.</div>
+      <div class="s-conf-txt">It has been passed to Rachel and Josh. If it resonates with others walking this path, it may be shared anonymously in a future week, as a thread in the shared weaving. Either way, it is held.</div>
     </div>
   </div>
 
@@ -618,7 +618,7 @@ const BODY_CONTENT = `
 function switchTab(s,el){document.querySelectorAll('.ref-tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.ref-panel').forEach(p=>p.classList.remove('on'));el.classList.add('active');document.getElementById('tab-'+s).classList.add('on');}
 function switchSort(el){document.querySelectorAll('.rsb').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
 var rsvpd=false;
-function doRSVP(){if(rsvpd)return;rsvpd=true;var b=document.getElementById('rsvp-btn');b.textContent="You're on the list ✓";b.classList.add('on');document.getElementById('rsvp-txt').textContent='10 attending — including you';document.getElementById('attend-num').textContent='10';}
+function doRSVP(){if(rsvpd)return;rsvpd=true;var b=document.getElementById('rsvp-btn');b.textContent="You're on the list ✓";b.classList.add('on');document.getElementById('rsvp-txt').textContent='10 attending, including you';document.getElementById('attend-num').textContent='10';}
 var pracd=false;
 function markPrac(){if(pracd)return;pracd=true;var b=document.getElementById('prac-btn');b.textContent='Marked for today ✓';b.classList.add('on');document.getElementById('prac-count').textContent='12';}
 var lopen=false;

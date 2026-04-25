@@ -122,7 +122,7 @@ function DietaryContent() {
           <SectionHeader dot={universal} title="Proper Preparation of Whole Foods" />
           <div style={{ marginBottom: 24 }}>
             <p style={{ fontSize: 14, color: inkLight, lineHeight: 1.75, maxWidth: 680 }}>
-              Beans, grains, nuts, and seeds are deeply nourishing &mdash; and they carry natural compounds called phytic acid, lectins, and enzyme inhibitors that block mineral absorption and cause gas and bloating when left unprepared. Traditional food cultures have always soaked, sprouted, or fermented these foods before eating them.
+              Beans, grains, nuts, and seeds are deeply nourishing, and they carry natural compounds called phytic acid, lectins, and enzyme inhibitors that block mineral absorption and cause gas and bloating when left unprepared. Traditional food cultures have always soaked, sprouted, or fermented these foods before eating them.
             </p>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
@@ -208,7 +208,7 @@ function DietaryContent() {
         <div style={{ background: warmWhite, border: `1px solid ${border}`, borderRadius: 8, padding: "28px 32px", textAlign: "center" }}>
           <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 400, marginBottom: 12, letterSpacing: "0.03em" }}>The Day You Arrive</h3>
           <p style={{ fontSize: 13.5, color: inkLight, maxWidth: 540, margin: "0 auto", lineHeight: 1.75 }}>
-            On your arrival day and the day of ceremony, eat lightly &mdash; easy-to-digest whole foods, fresh fruit, soups, or broths. Give your digestive system space to rest. You will be fully nourished and cared for throughout your stay. Arrive as clear, hydrated, and rested as you can.
+            On your arrival day and the day of ceremony, eat lightly, easy-to-digest whole foods, fresh fruit, soups, or broths. Give your digestive system space to rest. You will be fully nourished and cared for throughout your stay. Arrive as clear, hydrated, and rested as you can.
           </p>
         </div>
       </div>

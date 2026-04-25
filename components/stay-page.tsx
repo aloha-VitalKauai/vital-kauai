@@ -1208,7 +1208,7 @@ const BODY_CONTENT = `
   <div class="hero-content">
     <p class="hero-eyebrow">Hanalei, Kauaʻi's North Shore</p>
     <h1 class="hero-title">Come,<br><em>Stay & Transform</em></h1>
-    <p class="hero-sub">Iboga ceremony in service of whole-being transformation — held in a private home on Kauaʻi's North Shore, by the land itself.</p>
+    <p class="hero-sub">Iboga ceremony in service of whole-being transformation, held in a private home on Kauaʻi's North Shore, by the land itself.</p>
   </div>
 </section>
 
@@ -1219,13 +1219,13 @@ const BODY_CONTENT = `
   <p style="font-size:16px;color:rgba(245,240,232,0.7);letter-spacing:0.08em;margin-bottom:36px;">Next Group Ceremony · September 6 – 13, 2026 · Hanalei, Kauaʻi</p>
   <a href="/begin-your-journey" target="_blank" style="display:inline-block;font-size:10px;font-weight:400;letter-spacing:0.3em;text-transform:uppercase;color:var(--forest);background:var(--gold);padding:18px 44px;text-decoration:none;transition:background 0.3s;">Book a Discovery Call to Join Our Next Group Ceremony</a>
   <div style="margin-top:48px;padding-top:40px;border-top:1px solid rgba(200,169,110,0.1);max-width:820px;margin-left:auto;margin-right:auto;">
-    <p style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:rgba(245,240,232,0.75);line-height:1.9;">We come together as a church — a small circle, deep transformation, a sacred plant, and this land. People arrive carrying something. They leave lighter. That is the work. You are welcome here.</p>
+    <p style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:rgba(245,240,232,0.75);line-height:1.9;">We come together as a church, a small circle, deep transformation, a sacred plant, and this land. People arrive carrying something. They leave lighter. That is the work. You are welcome here.</p>
   </div>
 </div>
 
 <!-- INTRO -->
 <section id="intro">
-  <p class="intro-quote reveal">"When you arrive, you are stepping into something that has been prepared for you — a private home in Hanalei, a circle of fellow church members, and a land that has been holding people through transformation for a very long time."</p>
+  <p class="intro-quote reveal">"When you arrive, you are stepping into something that has been prepared for you, a private home in Hanalei, a circle of fellow church members, and a land that has been holding people through transformation for a very long time."</p>
   <div class="intro-rule reveal reveal-delay-1"></div>
 </section>
 
@@ -1249,12 +1249,12 @@ const BODY_CONTENT = `
     <div class="homes-text">
       <span class="section-label reveal">Where You Will Stay</span>
       <h2 class="section-title reveal">A Private Home<br><em>in Hanalei</em></h2>
-      <p class="homes-body reveal">You will be staying in a private home in Hanalei — carefully selected for comfort, space, and proximity to the land and the bay. Each home sits within walking distance of the water, cradled by the mountains, and prepared with intention for the people who will move through it.</p>
+      <p class="homes-body reveal">You will be staying in a private home in Hanalei, carefully selected for comfort, space, and proximity to the land and the bay. Each home sits within walking distance of the water, cradled by the mountains, and prepared with intention for the people who will move through it.</p>
       <p class="homes-body reveal reveal-delay-1">The specific home for your ceremony date will be shared with you personally after our discovery call.</p>
       <div class="homes-pull reveal reveal-delay-2">
-        <p>"The home is the first layer of the medicine — arriving somewhere clean, quiet, and prepared for you, in a deeply healing place."</p>
+        <p>"The home is the first layer of the medicine, arriving somewhere clean, quiet, and prepared for you, in a deeply healing place."</p>
       </div>
-      <p class="homes-body reveal">Members share a spacious, welcoming home — a private, intimate container of up to six members at a time, so the space and the care remain deeply personal.</p>
+      <p class="homes-body reveal">Members share a spacious, welcoming home, a private, intimate container of up to six members at a time, so the space and the care remain deeply personal.</p>
     </div>
   </div>
 </section>
@@ -1276,7 +1276,7 @@ const BODY_CONTENT = `
   <div style="margin-bottom:48px;">
     <span class="section-label reveal">The Setting</span>
     <h2 class="section-title reveal" style="color:var(--text-dark);">Hanalei —<br><em>Your Backyard</em></h2>
-    <p class="reveal" style="font-size:14px;color:var(--text-mid);line-height:2.0;font-weight:300;max-width:640px;margin-top:16px;">This is where you will wake up. The bay, the mountains, the rivers — all of it within walking distance, woven into every day of your stay.</p>
+    <p class="reveal" style="font-size:14px;color:var(--text-mid);line-height:2.0;font-weight:300;max-width:640px;margin-top:16px;">This is where you will wake up. The bay, the mountains, the rivers, all of it within walking distance, woven into every day of your stay.</p>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
     <div class="gallery-item" style="height:360px;grid-row:span 2;" >
@@ -1311,12 +1311,12 @@ const BODY_CONTENT = `
     <div class="included-card reveal">
       <div class="included-rule"></div>
       <h3 class="included-title">Private Sessions & Ceremonies</h3>
-      <p class="included-body">Your ceremony stay is a fully held and coordinated arc — each day intentionally designed. Iboga ceremony, yoga, breathwork, massage, nervous system support session (acupuncture, biogeometry, bodytalk, and more), sound healing ceremony, and integration work — held in our dedicated space or in nature itself.</p>
+      <p class="included-body">Your ceremony stay is a fully held and coordinated arc, each day intentionally designed. Iboga ceremony, yoga, breathwork, massage, nervous system support session (acupuncture, biogeometry, bodytalk, and more), sound healing ceremony, and integration work, held in our dedicated space or in nature itself.</p>
     </div>
     <div class="included-card reveal reveal-delay-1">
       <div class="included-rule"></div>
       <h3 class="included-title">Your Private Sanctuary</h3>
-      <p class="included-body">A private room within a carefully selected home in Hanalei — clean, nature-integrated, and prepared with care. Your own space to rest, reflect, and integrate between sessions.</p>
+      <p class="included-body">A private room within a carefully selected home in Hanalei, clean, nature-integrated, and prepared with care. Your own space to rest, reflect, and integrate between sessions.</p>
     </div>
     <div class="included-card reveal reveal-delay-2">
       <div class="included-rule"></div>
@@ -1326,7 +1326,7 @@ const BODY_CONTENT = `
     <div class="included-card reveal">
       <div class="included-rule"></div>
       <h3 class="included-title">Nature Immersion Daily</h3>
-      <p class="included-body">Ocean swims, river floats, grounding practices — woven into your days with intention. A guided walk along the Nā Pali Coast to release and receive, in communion with the elements before ceremony.</p>
+      <p class="included-body">Ocean swims, river floats, grounding practices, woven into your days with intention. A guided walk along the Nā Pali Coast to release and receive, in communion with the elements before ceremony.</p>
     </div>
     <div class="included-card reveal reveal-delay-1">
       <div class="included-rule"></div>
@@ -1336,7 +1336,7 @@ const BODY_CONTENT = `
     <div class="included-card reveal reveal-delay-2">
       <div class="included-rule"></div>
       <h3 class="included-title">Arrival & Departure</h3>
-      <p class="included-body">Arrival pickup and departure drop-off are available through us — simply let us know and we will have everything coordinated. Members are also welcome to arrange their own transportation.</p>
+      <p class="included-body">Arrival pickup and departure drop-off are available through us, simply let us know and we will have everything coordinated. Members are also welcome to arrange their own transportation.</p>
     </div>
   </div>
 
@@ -1355,7 +1355,7 @@ const BODY_CONTENT = `
           <div class="setting-feature-line"></div>
           <div class="setting-feature-text">
             <p class="setting-feature-name">Hanalei Bay</p>
-            <p class="setting-feature-desc">Steps from one of the most beautiful bays in all of Hawaiʻi — warm, clear, and deeply restorative</p>
+            <p class="setting-feature-desc">Steps from one of the most beautiful bays in all of Hawaiʻi, warm, clear, and deeply restorative</p>
           </div>
         </div>
         <div class="setting-feature">
@@ -1421,7 +1421,7 @@ const BODY_CONTENT = `
         </div>
       </div>
 
-      <!-- Day 03 — CEREMONY (highlighted) -->
+      <!-- Day 03, CEREMONY (highlighted) -->
       <div class="reveal" style="display:grid;grid-template-columns:80px 1fr;gap:32px;align-items:start;margin-bottom:36px;">
         <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;">
           <div style="width:22px;height:22px;border-radius:50%;background:var(--terra);border:2px solid var(--terra-light);position:relative;z-index:1;flex-shrink:0;margin-left:-3px;"></div>
@@ -1432,7 +1432,7 @@ const BODY_CONTENT = `
             <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Ceremony</span>
           </div>
           <h3 style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">The Iboga Ceremony</h3>
-          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">The heart of the journey. You enter with intention. You leave having been met by the medicine — changed at the root.</p>
+          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">The heart of the journey. You enter with intention. You leave having been met by the medicine, changed at the root.</p>
         </div>
       </div>
 
@@ -1492,7 +1492,7 @@ const BODY_CONTENT = `
             <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Return</span>
           </div>
           <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Closing & Going Home</h3>
-          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">A closing ceremony and a gentle transition — carried by what Iboga opened in you and what Kauaʻi gave you.</p>
+          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">A closing ceremony and a gentle transition, carried by what Iboga opened in you and what Kauaʻi gave you.</p>
         </div>
       </div>
 
@@ -1509,7 +1509,7 @@ const BODY_CONTENT = `
       <div class="local-rule reveal"></div>
     </div>
     <div>
-      <p class="local-body reveal">Transformation arrives right where you are. If you live on Kauaʻi and feel the pull of this work — the medicine, somatic healing, energy work, or simply a reset — we are here, and we come to you.</p>
+      <p class="local-body reveal">Transformation arrives right where you are. If you live on Kauaʻi and feel the pull of this work, the medicine, somatic healing, energy work, or simply a reset, we are here, and we come to you.</p>
       <p class="local-body reveal reveal-delay-1">Rachel and Josh work with a quiet circle of island residents who seek the depth of a Vital Kauaʻi journey without leaving home. Sessions happen in your space. The container is just as held.</p>
       <p class="local-body reveal reveal-delay-2">If you are local and something in you is ready, reach out. The conversation is always the beginning.</p>
       <a href="/begin-your-journey" class="local-cta reveal reveal-delay-3">Reach Out →</a>
@@ -1535,7 +1535,7 @@ const BODY_CONTENT = `
         </div>
         <h3 style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--text-dark);margin-bottom:3px;">Waipā Foundation</h3>
         <p style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;">Hanalei Bay</p>
-        <p style="font-size:12px;color:var(--stone);line-height:1.7;">Living ahupuaʻa — taro fields, canoes, and weekly poi day.</p>
+        <p style="font-size:12px;color:var(--stone);line-height:1.7;">Living ahupuaʻa, taro fields, canoes, and weekly poi day.</p>
         <a href="https://waipafoundation.org" target="_blank" style="display:inline-block;margin-top:10px;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--terra);text-decoration:none;border-bottom:1px solid rgba(184,105,74,0.3);padding-bottom:2px;">Visit →</a>
       </div>
 
@@ -1545,7 +1545,7 @@ const BODY_CONTENT = `
         </div>
         <h3 style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--text-dark);margin-bottom:3px;">Limahuli Garden</h3>
         <p style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;">Hāʻena</p>
-        <p style="font-size:12px;color:var(--stone);line-height:1.7;">Ancient taro terraces and native forest. A puʻuhonua — place of refuge.</p>
+        <p style="font-size:12px;color:var(--stone);line-height:1.7;">Ancient taro terraces and native forest. A puʻuhonua, place of refuge.</p>
         <a href="https://ntbg.org/gardens/limahuli" target="_blank" style="display:inline-block;margin-top:10px;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--terra);text-decoration:none;border-bottom:1px solid rgba(184,105,74,0.3);padding-bottom:2px;">Visit →</a>
       </div>
 
@@ -1578,7 +1578,7 @@ const BODY_CONTENT = `
   <div style="max-width:860px;margin:0 auto;">
     <span class="section-label reveal" style="color:var(--terra);">Come As You Are</span>
     <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,52px);font-weight:300;color:var(--cream);line-height:1.1;margin-bottom:16px;" class="reveal">Upcoming<br><em style="font-style:italic;color:var(--terra-pale);">Ceremonies</em></h2>
-    <p class="reveal" style="font-size:14px;color:rgba(245,240,232,0.6);line-height:1.95;margin-bottom:48px;max-width:600px;margin-left:auto;margin-right:auto;">Each ceremony is a small, held gathering — six members, seven days, one sacred arc. Book a discovery call to learn about the next available date.</p>
+    <p class="reveal" style="font-size:14px;color:rgba(245,240,232,0.6);line-height:1.95;margin-bottom:48px;max-width:600px;margin-left:auto;margin-right:auto;">Each ceremony is a small, held gathering, six members, seven days, one sacred arc. Book a discovery call to learn about the next available date.</p>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-bottom:44px;" class="reveal">
       <div id="upcoming-ceremony-card-0" style="background:rgba(28,43,30,0.5);padding:28px 20px;">
         <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.75);margin-bottom:10px;">Upcoming</p>
@@ -1611,7 +1611,7 @@ const BODY_CONTENT = `
         <span class="section-label reveal">Before You Ask</span>
         <h2 class="section-title reveal">Common<br><em>Questions</em></h2>
       </div>
-      <p class="reveal">Your questions are important and we are here to answer them. Reach out — we are always happy to connect.</p>
+      <p class="reveal">Your questions are important and we are here to answer them. Reach out, we are always happy to connect.</p>
     </div>
     <div class="faq-list reveal">
 
@@ -1621,7 +1621,7 @@ const BODY_CONTENT = `
           <span class="faq-icon" aria-hidden="true"></span>
         </summary>
         <div class="faq-answer">
-          <p>Our group ceremony is a seven-day arc — arriving on Day 1, two days of preparation, ceremony on Day 3, three days of integration, and a closing on Day 7. We discuss your specific journey and any additional support you may need on your discovery call.</p>
+          <p>Our group ceremony is a seven-day arc, arriving on Day 1, two days of preparation, ceremony on Day 3, three days of integration, and a closing on Day 7. We discuss your specific journey and any additional support you may need on your discovery call.</p>
         </div>
       </details>
 
@@ -1631,7 +1631,7 @@ const BODY_CONTENT = `
           <span class="faq-icon" aria-hidden="true"></span>
         </summary>
         <div class="faq-answer">
-          <p>The first step is a discovery call — a real conversation with Rachel and/or Josh, bookable directly through our Calendly. We want to understand what brings you here, what you are carrying, your health history, and what support will serve you best. This is how we begin to know you, so that the container we hold for you is built for who you actually are.</p>
+          <p>The first step is a discovery call, a real conversation with Rachel and/or Josh, bookable directly through our Calendly. We want to understand what brings you here, what you are carrying, your health history, and what support will serve you best. This is how we begin to know you, so that the container we hold for you is built for who you actually are.</p>
         </div>
       </details>
 
@@ -1641,7 +1641,7 @@ const BODY_CONTENT = `
           <span class="faq-icon" aria-hidden="true"></span>
         </summary>
         <div class="faq-answer">
-          <p>Yes. We work with couples and close companions who wish to move through a journey together. Co-journeying can be deeply powerful — and it does require its own kind of preparation and intentionality. Let us know on your discovery call that you are coming with someone, and we will discuss what serves you both best. We also welcome groups — intimate gatherings of friends, family, or community who feel called to transform together.</p>
+          <p>Yes. We work with couples and close companions who wish to move through a journey together. Co-journeying can be deeply powerful, and it does require its own kind of preparation and intentionality. Let us know on your discovery call that you are coming with someone, and we will discuss what serves you both best. We also welcome groups, intimate gatherings of friends, family, or community who feel called to transform together.</p>
         </div>
       </details>
 
@@ -1661,7 +1661,7 @@ const BODY_CONTENT = `
           <span class="faq-icon" aria-hidden="true"></span>
         </summary>
         <div class="faq-answer">
-          <p>Meals are prepared with the same intentionality as everything else at Vital Kauaʻi. We source locally and seasonally — farms, farmers' markets, and the ocean. All dietary needs, allergies, and protocol-specific requirements are gathered on your discovery call and honored throughout your stay. Your nutrition is held with care across all seven days.</p>
+          <p>Meals are prepared with the same intentionality as everything else at Vital Kauaʻi. We source locally and seasonally, farms, farmers' markets, and the ocean. All dietary needs, allergies, and protocol-specific requirements are gathered on your discovery call and honored throughout your stay. Your nutrition is held with care across all seven days.</p>
         </div>
       </details>
 
@@ -1671,7 +1671,7 @@ const BODY_CONTENT = `
           <span class="faq-icon" aria-hidden="true"></span>
         </summary>
         <div class="faq-answer">
-          <p>Līhuʻe Airport (LIH) is approximately one hour from Hanalei along Kauaʻi's scenic North Shore highway. Ground transportation can be arranged through us — simply let us know on your discovery call and we will have everything coordinated. Members are also welcome to arrange their own transportation and make their own way north.</p>
+          <p>Līhuʻe Airport (LIH) is approximately one hour from Hanalei along Kauaʻi's scenic North Shore highway. Ground transportation can be arranged through us, simply let us know on your discovery call and we will have everything coordinated. Members are also welcome to arrange their own transportation and make their own way north.</p>
         </div>
       </details>
 
@@ -1681,7 +1681,7 @@ const BODY_CONTENT = `
           <span class="faq-icon" aria-hidden="true"></span>
         </summary>
         <div class="faq-answer">
-          <p>Yes, WiFi is available in the homes. Many members find that their relationship with devices naturally shifts once they are here — Hanalei has a way of drawing you fully into the present. Your relationship with devices is yours to navigate, and we fully support a digital reset if that is something you want to explore as part of your journey.</p>
+          <p>Yes, WiFi is available in the homes. Many members find that their relationship with devices naturally shifts once they are here, Hanalei has a way of drawing you fully into the present. Your relationship with devices is yours to navigate, and we fully support a digital reset if that is something you want to explore as part of your journey.</p>
         </div>
       </details>
 
@@ -1704,7 +1704,7 @@ const BODY_CONTENT = `
   <div class="intake-inner">
     <span class="section-label reveal">Before You Arrive</span>
     <h2 class="intake-title reveal">Your Needs<br><em>Are Heard</em></h2>
-    <p class="intake-body reveal">Every member who joins us completes a discovery call before arrival. This is where we listen — to what you need, what supports you, and what will make this container feel most like home. Your accommodations are matched with care and intention.</p>
+    <p class="intake-body reveal">Every member who joins us completes a discovery call before arrival. This is where we listen, to what you need, what supports you, and what will make this container feel most like home. Your accommodations are matched with care and intention.</p>
     <div class="intake-features reveal">
       <div class="intake-feature">
         <div class="intake-rule"></div>
@@ -1719,7 +1719,7 @@ const BODY_CONTENT = `
       <div class="intake-feature">
         <div class="intake-rule"></div>
         <p class="intake-feature-title">Anything Else</p>
-        <p class="intake-feature-desc">Sensitivities, co-journeying with a partner, children, timing — we listen to all of it</p>
+        <p class="intake-feature-desc">Sensitivities, co-journeying with a partner, children, timing, we listen to all of it</p>
       </div>
     </div>
     <a href="/begin-your-journey" class="btn-primary reveal">Begin Your Inquiry</a>

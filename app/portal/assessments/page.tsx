@@ -203,7 +203,7 @@ function AssessmentsPageInner() {
           Your outcomes <em style={{ fontStyle: 'italic', color: T.sage }}>journey</em>
         </h1>
         <p style={{ fontSize: '0.875rem', color: T.creamMuted, lineHeight: 1.8, maxWidth: 500, marginBottom: '2rem' }}>
-          These surveys are the evidence &mdash; for you first, for the broader understanding of iboga second. Your responses form one of the most honest records of what this experience produced in a real human life.
+          These surveys are the evidence, for you first, for the broader understanding of iboga second. Your responses form one of the most honest records of what this experience produced in a real human life.
         </p>
         <div style={{
           padding: '1rem 1.25rem', marginBottom: '2.5rem',
@@ -280,7 +280,7 @@ function AssessmentsPageInner() {
         Your outcomes <em style={{ fontStyle: 'italic', color: T.sage }}>journey</em>
       </h1>
       <p style={{ fontSize: '0.875rem', color: T.creamMuted, lineHeight: 1.8, maxWidth: 500, marginBottom: '3rem' }}>
-        These surveys are the evidence &mdash; for you first, for the broader understanding of iboga second. Your responses form one of the most honest records of what this experience produced in a real human life.
+        These surveys are the evidence, for you first, for the broader understanding of iboga second. Your responses form one of the most honest records of what this experience produced in a real human life.
       </p>
 
       {ceremonies.map((group) => (

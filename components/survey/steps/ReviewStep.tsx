@@ -72,7 +72,7 @@ export function ReviewStep({ steps, responses, readOnly, isSubmitting, canSubmit
                 title={`Missing: ${missing.map(f => FIELD_LABELS[f] ?? f).join(', ')}`}
                 style={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', padding: '0.15rem 0.55rem', borderRadius: 2, background: 'rgba(196,132,106,0.18)', color: T.rose, border: 'none', cursor: 'pointer', fontFamily: "'Jost', sans-serif" }}
               >
-                Incomplete &mdash; go back
+                Incomplete, go back
               </button>
             )}
           </div>

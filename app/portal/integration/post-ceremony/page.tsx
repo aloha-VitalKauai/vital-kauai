@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { POST_CEREMONY_WEEKS } from '@/lib/journal-prompts'
 import SectionIndex, { type SectionIndexItem } from '@/components/portal/SectionIndex'
 
-// Section index per week — same six entries every week, plus a Completion
+// Section index per week, same six entries every week, plus a Completion
 // anchor on Week 6 (the integration-statement + checklist + monthly-arc
 // block is rendered there).
 const BASE_SECTIONS: SectionIndexItem[] = [
@@ -22,7 +22,7 @@ const COMPLETION_SECTION: SectionIndexItem = { label: 'Completion', anchor: '#co
 const sectionsForWeek = (weekIdx: number): SectionIndexItem[] =>
   weekIdx === 5 ? [...BASE_SECTIONS, COMPLETION_SECTION] : BASE_SECTIONS
 
-// Action-item card shape — matches pre-ceremony's renderer so cards look and
+// Action-item card shape, matches pre-ceremony's renderer so cards look and
 // behave identically across the 12-week arc.
 type ActionLinkArr = { text: string; href: string; external?: boolean }[]
 type ActionCard =
@@ -141,7 +141,7 @@ function downloadReturnICS() {
 
 function returnMailto(): string {
   const fmt = (d: Date) => d.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
-  const lines = returnDates().map((r) => `• ${r.label} — ${fmt(r.date)}`).join('\n')
+  const lines = returnDates().map((r) => `• ${r.label}, ${fmt(r.date)}`).join('\n')
   const body =
     'A gentle reminder to return to your Vital Kauaʻi integration portal at these three markers:\n\n' +
     lines +
@@ -176,29 +176,29 @@ const WEEKS = [
     eyebrow: 'Week 1 · LŌKAHI · Unity',
     title: 'The medicine is still\nmoving in you.',
     subtitle: '',
-    intro: 'Lōkahi means unity — the integration of all that was shown into the whole of who you are. This week asks almost nothing of you except presence. Rest after ceremony is active integration. Your nervous system is processing. Trust it.',
+    intro: 'Lōkahi means unity, the integration of all that was shown into the whole of who you are. This week asks almost nothing of you except presence. Rest after ceremony is active integration. Your nervous system is processing. Trust it.',
     safetyNote: {
       type: 'gold',
-      label: 'The 48-hour window — read this first',
-      text: 'The first 48 hours after ceremony are the most neurologically plastic of your entire journey. What you allow yourself to feel, what you speak aloud, what you write — is being encoded more deeply than at almost any other moment in your life. This is a time for receiving what was shown — set aside decisions, analysis, and explanation.',
+      label: 'The 48-hour window, read this first',
+      text: 'The first 48 hours after ceremony are the most neurologically plastic of your entire journey. What you allow yourself to feel, what you speak aloud, what you write, is being encoded more deeply than at almost any other moment in your life. This is a time for receiving what was shown, set aside decisions, analysis, and explanation.',
     },
-    video: { label: 'A Message from Rachel & Josh · Week 1', text: 'You made it through. In this first transmission Rachel and Josh speak directly to where you are right now — the tenderness, the strange combination of exhaustion and aliveness. They want to meet you exactly here, before you do anything else.' },
-    actionLabel: 'This week — 4 things',
+    video: { label: 'A Message from Rachel & Josh · Week 1', text: 'You made it through. In this first transmission Rachel and Josh speak directly to where you are right now, the tenderness, the strange combination of exhaustion and aliveness. They want to meet you exactly here, before you do anything else.' },
+    actionLabel: 'This week, 4 things',
     actions: [
       {
         color: 'sage',
-        text: 'Connect with your integration guide — your post-ceremony call, within 48 hours of ceremony (while still on Kauaʻi)',
-        note: 'Your first integration-guide call. Held within 48 hours of ceremony so what was shown is still alive in the body. Bring whatever you need to bring — questions, gratitude, exhaustion. They are there to meet you.',
+        text: 'Connect with your integration guide, your post-ceremony call, within 48 hours of ceremony (while still on Kauaʻi)',
+        note: 'Your first integration-guide call. Held within 48 hours of ceremony so what was shown is still alive in the body. Bring whatever you need to bring, questions, gratitude, exhaustion. They are there to meet you.',
         links: [
-          { text: 'Connect with your integration guide — your post-ceremony call, within 48 hours of ceremony (while still on Kauaʻi)', href: '/portal#integration-specialist' },
+          { text: 'Connect with your integration guide, your post-ceremony call, within 48 hours of ceremony (while still on Kauaʻi)', href: '/portal#integration-specialist' },
         ],
       },
       { color: 'green', text: 'Rest completely for the first 48 hours', note: 'Let the experience settle. Rest before sharing. Allow what happened to remain wordless a little longer.' },
-      { color: 'blue', text: 'Journal what arose — images, moments, what the medicine showed you', note: 'Don\'t interpret it yet. Just record it. The meaning arrives in its own time. What you write now will be the material you return to for months.' },
+      { color: 'blue', text: 'Journal what arose, images, moments, what the medicine showed you', note: 'Don\'t interpret it yet. Just record it. The meaning arrives in its own time. What you write now will be the material you return to for months.' },
       {
         color: 'gold',
         text: 'Complete your 72-hour Outcome',
-        note: 'A brief, anonymized assessment taken within the first few days after ceremony. This is part of the standardized outcomes framework adapted for iboga from the validated instruments used in psychedelic research worldwide — your responses help establish legitimacy for this medicine and contribute to one of the most comprehensive iboga datasets being built anywhere in the world.',
+        note: 'A brief, anonymized assessment taken within the first few days after ceremony. This is part of the standardized outcomes framework adapted for iboga from the validated instruments used in psychedelic research worldwide, your responses help establish legitimacy for this medicine and contribute to one of the most comprehensive iboga datasets being built anywhere in the world.',
         links: [
           { text: 'Complete your 72-hour Outcome', href: '/portal/assessments' },
         ],
@@ -211,7 +211,7 @@ const WEEKS = [
         ],
       },
     ],
-    dataset: 'Your wellbeing assessments — taken at baseline, 72 hours, 1 month, 3 months, 6 months, and 12 months — follow a standardized outcomes framework adapted for iboga from the validated instruments used in psychedelic research worldwide. Your responses, fully anonymized, contribute to one of the most comprehensive iboga datasets being built anywhere in the world — adding rigor to the field, helping legitimize this medicine, and giving future participants, clinicians, and researchers a clearer picture of how iboga actually works across hundreds of journeys. Your experience becomes part of something larger.',
+    dataset: 'Your wellbeing assessments, taken at baseline, 72 hours, 1 month, 3 months, 6 months, and 12 months, follow a standardized outcomes framework adapted for iboga from the validated instruments used in psychedelic research worldwide. Your responses, fully anonymized, contribute to one of the most comprehensive iboga datasets being built anywhere in the world, adding rigor to the field, helping legitimize this medicine, and giving future participants, clinicians, and researchers a clearer picture of how iboga actually works across hundreds of journeys. Your experience becomes part of something larger.',
     datasetLink: { text: 'Open your Outcomes →', href: '/portal/assessments' },
     prompts: POST_CEREMONY_WEEKS[0].prompts,
     thread: 'What you record this week becomes the foundation of the integration work ahead. Let it exist on the page. Next week you begin to live it.',
@@ -225,27 +225,27 @@ const WEEKS = [
     eyebrow: 'Week 2 · MĀLAMA · Tending',
     title: 'The insights are alive.',
     subtitle: 'Now you tend them.',
-    carryForward: 'You rested. You recorded what arose. You checked in with your guide. This week the work moves from receiving into tending — the slow, deliberate act of bringing what was shown into how you actually live.',
-    intro: 'Mālama means to care for, to tend, to preserve. The noribogaine window — your brain\'s heightened state of plasticity — is at its most open right now. This is the most important behavioral window of your entire process. What you practice this week is being written more deeply than usual.',
+    carryForward: 'You rested. You recorded what arose. You checked in with your guide. This week the work moves from receiving into tending, the slow, deliberate act of bringing what was shown into how you actually live.',
+    intro: 'Mālama means to care for, to tend, to preserve. The noribogaine window, your brain\'s heightened state of plasticity, is at its most open right now. This is the most important behavioral window of your entire process. What you practice this week is being written more deeply than usual.',
     safetyNote: {
       type: 'gold',
-      label: 'The noribogaine window — this is urgent',
+      label: 'The noribogaine window, this is urgent',
       text: 'Noribogaine, iboga\'s primary metabolite, keeps your brain in a state of heightened neuroplasticity for approximately 4–6 weeks post-ceremony. Right now you are at peak plasticity. What you practice consistently this week becomes your new baseline faster than at almost any other time in your adult life. This is the most important behavioral window of your entire process. Use it deliberately.',
     },
-    video: { label: 'A Message from Rachel & Josh · Week 2', text: 'The neuroplasticity window is real — and this week is its peak. Rachel and Josh talk about what that actually means in practice, why this week\'s small daily choices matter more than they appear, and how to tend what the medicine opened without forcing it into shape too quickly.' },
-    actionLabel: 'This week — 4 things',
+    video: { label: 'A Message from Rachel & Josh · Week 2', text: 'The neuroplasticity window is real, and this week is its peak. Rachel and Josh talk about what that actually means in practice, why this week\'s small daily choices matter more than they appear, and how to tend what the medicine opened without forcing it into shape too quickly.' },
+    actionLabel: 'This week, 4 things',
     actions: [
       {
         color: 'sage',
         text: 'Connect with your integration guide',
-        note: 'Your weekly call. Bring whatever is alive — what is settling, what is surprising you, what is asking for tending.',
+        note: 'Your weekly call. Bring whatever is alive, what is settling, what is surprising you, what is asking for tending.',
         links: [
           { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
         ],
       },
-      { color: 'gold', text: 'Establish one morning practice — and do it every day, tracking your days below', note: 'Coherent Heart Breath. Journaling. Movement. Prayer. One thing. Done every morning. The medicine opened the door. Repetition is how you walk through it. You are contributing to one of the most comprehensive iboga outcome datasets in the world — your practice days matter.' },
+      { color: 'gold', text: 'Establish one morning practice, and do it every day, tracking your days below', note: 'Coherent Heart Breath. Journaling. Movement. Prayer. One thing. Done every morning. The medicine opened the door. Repetition is how you walk through it. You are contributing to one of the most comprehensive iboga outcome datasets in the world, your practice days matter.' },
       { color: 'green', text: 'Continue magnesium glycinate (300–400mg) and DHA/EPA (2–4g) daily', note: 'The supplement protocol from your preparation does not end at ceremony. Magnesium supports nervous system regulation during the post-ceremony window. DHA/EPA supports the neuroplasticity process. Continue both for at minimum 30 days post-ceremony.' },
-      { color: 'sage', text: 'Continue full sobriety — minimum 30 days, 3 months strongly recommended', note: 'Iboga resets tolerance. Returning to any substance before the window closes undermines what the medicine worked to open. The noribogaine window is your most protected asset right now.' },
+      { color: 'sage', text: 'Continue full sobriety, minimum 30 days, 3 months strongly recommended', note: 'Iboga resets tolerance. Returning to any substance before the window closes undermines what the medicine worked to open. The noribogaine window is your most protected asset right now.' },
       {
         color: 'blue',
         text: 'Schedule a check-in call with Rachel & Josh',
@@ -274,14 +274,14 @@ const WEEKS = [
     eyebrow: 'Week 3 · HAʻAHAʻA · Humility',
     title: 'The familiar is returning.',
     subtitle: 'Meet it differently.',
-    carryForward: 'You\'ve been tending new practices. You\'ve begun to bring the insights into your days. This week something will shift — old patterns may begin to resurface. This is the real integration beginning.',
-    intro: 'Haʻahaʻa means humility — the willingness to be exactly where you are without pretending to be further along. By week three, the acute aliveness of ceremony has softened. The ordinary world has returned. And with it, the familiar — however slightly — may start to return. Your ability to notice it, welcome it, and shift it with greater awareness is alive. This week asks you to meet all of that with humility rather than shame.',
+    carryForward: 'You\'ve been tending new practices. You\'ve begun to bring the insights into your days. This week something will shift, old patterns may begin to resurface. This is the real integration beginning.',
+    intro: 'Haʻahaʻa means humility, the willingness to be exactly where you are without pretending to be further along. By week three, the acute aliveness of ceremony has softened. The ordinary world has returned. And with it, the familiar, however slightly, may start to return. Your ability to notice it, welcome it, and shift it with greater awareness is alive. This week asks you to meet all of that with humility rather than shame.',
     reentry: {
-      strong: 'When the pattern hits — do this:',
-      text: ' (1) Name it aloud or in writing: "This is the [fear / avoidance / contraction] pattern." (2) Feet flat on the floor. One hand on your heart. One slow breath — in for 5, hold for 2, out for 7. (3) Name it openly — tell your guide, your support person, or write it here. (4) Return to your practice — even for five minutes. The pattern yields to your sustained attention and your practice. This is neuroscience.',
+      strong: 'When the pattern hits, do this:',
+      text: ' (1) Name it aloud or in writing: "This is the [fear / avoidance / contraction] pattern." (2) Feet flat on the floor. One hand on your heart. One slow breath, in for 5, hold for 2, out for 7. (3) Name it openly, tell your guide, your support person, or write it here. (4) Return to your practice, even for five minutes. The pattern yields to your sustained attention and your practice. This is neuroscience.',
     },
-    video: { label: 'A Message from Rachel & Josh · Week 3', text: 'Rachel and Josh speak directly to the return of the familiar — why it happens, what it means, and why the people who stay with the practice through this week are the ones who see lasting change.' },
-    actionLabel: 'This week — 3 things',
+    video: { label: 'A Message from Rachel & Josh · Week 3', text: 'Rachel and Josh speak directly to the return of the familiar, why it happens, what it means, and why the people who stay with the practice through this week are the ones who see lasting change.' },
+    actionLabel: 'This week, 3 things',
     actions: [
       {
         color: 'gold',
@@ -291,8 +291,8 @@ const WEEKS = [
           { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
         ],
       },
-      { color: 'blue', text: 'Name one old pattern that has returned — write about it', note: 'To see it clearly. Naming with precision is itself a form of integration. Your guide can see your weekly tracking and will reach out if they notice something that needs support.' },
-      { color: 'sage', text: 'Continue your daily practice — especially on the days you least want to', note: 'The days you least want to show up are the days it matters most.' },
+      { color: 'blue', text: 'Name one old pattern that has returned, write about it', note: 'To see it clearly. Naming with precision is itself a form of integration. Your guide can see your weekly tracking and will reach out if they notice something that needs support.' },
+      { color: 'sage', text: 'Continue your daily practice, especially on the days you least want to', note: 'The days you least want to show up are the days it matters most.' },
       {
         color: 'amber',
         text: 'Schedule next week\'s integration-guide call',
@@ -313,17 +313,17 @@ const WEEKS = [
     eyebrow: 'Week 4 · KULEANA · Responsibility',
     title: 'The knowing is yours now.',
     subtitle: 'Let it become how you live.',
-    carryForward: 'You met the return of the familiar with humility. You kept your practice. You stayed honest with your guide. This week the work becomes a choice — a deliberate, daily act of accountability to the person the medicine showed you that you could be.',
-    intro: 'Kuleana means sacred accountability — responsibility that serves your deepest transformation. The medicine showed you something. You have seen it clearly. Week four is where the seeing becomes choosing. The noribogaine window is beginning to narrow. What you anchor into behavior now is what will carry forward.',
+    carryForward: 'You met the return of the familiar with humility. You kept your practice. You stayed honest with your guide. This week the work becomes a choice, a deliberate, daily act of accountability to the person the medicine showed you that you could be.',
+    intro: 'Kuleana means sacred accountability, responsibility that serves your deepest transformation. The medicine showed you something. You have seen it clearly. Week four is where the seeing becomes choosing. The noribogaine window is beginning to narrow. What you anchor into behavior now is what will carry forward.',
     safetyNote: {
       type: 'gold',
-      label: 'The window is beginning to close — anchor now',
-      text: 'By the end of week four, the peak neuroplasticity driven by noribogaine begins to narrow. The extraordinary ease of new pattern formation that characterized weeks 1–3 is shifting toward normal — and what you have practiced is becoming structural. What you have yet to commit to in behavior will ask more of you after this week. Your practice days logged here are one of the strongest predictors of long-term outcomes. This week matters.',
+      label: 'The window is beginning to close, anchor now',
+      text: 'By the end of week four, the peak neuroplasticity driven by noribogaine begins to narrow. The extraordinary ease of new pattern formation that characterized weeks 1–3 is shifting toward normal, and what you have practiced is becoming structural. What you have yet to commit to in behavior will ask more of you after this week. Your practice days logged here are one of the strongest predictors of long-term outcomes. This week matters.',
     },
-    video: { label: 'A Message from Rachel & Josh · Week 4', text: 'Kuleana is one of the most important Hawaiian concepts for understanding what integration actually requires. In this transmission Rachel and Josh talk about the difference between insight and accountability — and what it looks like to take full responsibility for the change you\'ve been shown is possible.' },
-    actionLabel: 'This week — 4 things',
+    video: { label: 'A Message from Rachel & Josh · Week 4', text: 'Kuleana is one of the most important Hawaiian concepts for understanding what integration actually requires. In this transmission Rachel and Josh talk about the difference between insight and accountability, and what it looks like to take full responsibility for the change you\'ve been shown is possible.' },
+    actionLabel: 'This week, 4 things',
     actions: [
-      { color: 'gold', text: 'Write your three non-negotiables for the next three months', note: 'Three things you are committing to — in your body, your relationships, your daily life — that reflect who you are becoming. Specific, liveable, honest.' },
+      { color: 'gold', text: 'Write your three non-negotiables for the next three months', note: 'Three things you are committing to, in your body, your relationships, your daily life, that reflect who you are becoming. Specific, liveable, honest.' },
       { color: 'blue', text: 'Share your non-negotiables with one person in your life', note: 'Accountability held by another person anchors differently than accountability held alone. Be specific about what you are asking them to hold with you.' },
       { color: 'sage', text: 'Audit one thing in your environment that actively works against your new self \u2014 and change it this week', note: 'Physical environment. Social environment. Digital environment. What in each is pulling you back toward who you were? Make one concrete change this week.' },
       {
@@ -342,10 +342,10 @@ const WEEKS = [
         ],
       },
     ],
-    dataset: 'Your 1-month wellbeing assessment, taken as the noribogaine window closes, is among the most clinically significant data points in the entire dataset — predicting long-term integration outcomes more reliably than any other timepoint. Built on the standardized framework used in psychedelic outcomes research worldwide and adapted for iboga, your fully anonymized responses help establish what works, for whom, and over what arc. What you submit here matters beyond your own journey.',
+    dataset: 'Your 1-month wellbeing assessment, taken as the noribogaine window closes, is among the most clinically significant data points in the entire dataset, predicting long-term integration outcomes more reliably than any other timepoint. Built on the standardized framework used in psychedelic outcomes research worldwide and adapted for iboga, your fully anonymized responses help establish what works, for whom, and over what arc. What you submit here matters beyond your own journey.',
     datasetLink: { text: 'Open your Outcomes →', href: '/portal/assessments' },
     prompts: POST_CEREMONY_WEEKS[3].prompts,
-    thread: 'Kuleana is an honor — the recognition that you have been shown something real and that you are capable of living it. Next week the work moves outward, into your relationships.',
+    thread: 'Kuleana is an honor, the recognition that you have been shown something real and that you are capable of living it. Next week the work moves outward, into your relationships.',
   },
   {
     id: 4,
@@ -356,14 +356,14 @@ const WEEKS = [
     eyebrow: 'Week 5 · ALOHA · Love in Action',
     title: 'You have changed.',
     subtitle: 'Your relationships are noticing.',
-    carryForward: 'You have anchored your non-negotiables. You have taken responsibility for what you know. This week the work moves outward — into the relational field, where transformation either lands or dissolves.',
+    carryForward: 'You have anchored your non-negotiables. You have taken responsibility for what you know. This week the work moves outward, into the relational field, where transformation either lands or dissolves.',
     intro: 'Aloha as genuine, embodied presence in relationship. By week five, the people in your life are responding to a changed version of you. This week you learn how to hold your new ground with love rather than armor.',
     reentry: {
       strong: 'If people in your life are struggling with your changes:',
-      text: ' When one person does deep transformational work, the entire relational system around them reorganizes. This is a sign the change is real. The people closest to you have built their relationship with the previous version of you. Give them time. Hold your changes clearly without needing their immediate understanding or approval. The skill here is patience without self-abandonment — staying present to the relationship while remaining your changed self. Bring specific relationships to your guide this week.',
+      text: ' When one person does deep transformational work, the entire relational system around them reorganizes. This is a sign the change is real. The people closest to you have built their relationship with the previous version of you. Give them time. Hold your changes clearly without needing their immediate understanding or approval. The skill here is patience without self-abandonment, staying present to the relationship while remaining your changed self. Bring specific relationships to your guide this week.',
     },
-    video: { label: 'A Message from Rachel & Josh · Week 5', text: 'The integration that happens in relationship is some of the most important integration of all. Rachel and Josh talk about what it looks like to bring a changed self back into existing relationships — how to hold new ground without disconnecting from the people you love, and how to let the medicine\'s work deepen through honest contact with others.' },
-    actionLabel: 'This week — 4 things',
+    video: { label: 'A Message from Rachel & Josh · Week 5', text: 'The integration that happens in relationship is some of the most important integration of all. Rachel and Josh talk about what it looks like to bring a changed self back into existing relationships, how to hold new ground without disconnecting from the people you love, and how to let the medicine\'s work deepen through honest contact with others.' },
+    actionLabel: 'This week, 4 things',
     actions: [
       { color: 'blue', text: 'Have one honest conversation you have been postponing', note: 'The medicine may have shown you something about a relationship that needs to be spoken. Come from the changed place. Bring what comes up to your next call with your guide.' },
       { color: 'sage', text: 'Practice being your changed self in the presence of people who knew you before', note: 'Notice when you contract back into who you were in someone\'s presence. That noticing is the practice. You can only keep showing up as the person you are becoming.' },
@@ -385,7 +385,7 @@ const WEEKS = [
       },
     ],
     prompts: POST_CEREMONY_WEEKS[4].prompts,
-    thread: 'The integration that holds in relationship is the integration that holds in life. What you are practicing this week — being your changed self in the presence of people who knew you before — is some of the most important work of the entire arc.',
+    thread: 'The integration that holds in relationship is the integration that holds in life. What you are practicing this week, being your changed self in the presence of people who knew you before, is some of the most important work of the entire arc.',
   },
   {
     id: 5,
@@ -396,10 +396,10 @@ const WEEKS = [
     eyebrow: 'Week 6 · PONO · Right Relationship',
     title: 'Six weeks in.',
     subtitle: 'This is who you are now.',
-    carryForward: 'You have moved through the full arc — from the raw tenderness of emergence to the relational work of week five. This final week is a transition from active integration into sustained living.',
-    intro: 'Pono means right relationship — with yourself, with others, with the life you are building. Week six marks the close of the intensive integration window and the opening of a longer, quieter arc. The medicine\'s most dramatic effects have passed, but its work continues — in your dreams, your relationships, your daily choices, and in the moments you catch yourself responding differently than you used to.',
+    carryForward: 'You have moved through the full arc, from the raw tenderness of emergence to the relational work of week five. This final week is a transition from active integration into sustained living.',
+    intro: 'Pono means right relationship, with yourself, with others, with the life you are building. Week six marks the close of the intensive integration window and the opening of a longer, quieter arc. The medicine\'s most dramatic effects have passed, but its work continues, in your dreams, your relationships, your daily choices, and in the moments you catch yourself responding differently than you used to.',
     video: { label: 'A Message from Rachel & Josh · Week 6', text: 'Six weeks ago you came home from ceremony. In this final weekly transmission Rachel and Josh want to mark what you have done. The long integration is beginning. They want you to know what to expect, and how to hold yourself through the months ahead.' },
-    actionLabel: 'This week — 4 completions',
+    actionLabel: 'This week, 4 completions',
     actions: [
       {
         color: 'blue',
@@ -417,8 +417,8 @@ const WEEKS = [
           { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
         ],
       },
-      { color: 'sage', text: 'Write your integration statement — guided below', note: 'Three questions, one page. What changed. What you know now. What you are committed to. Date it. You will want to read it in six months.' },
-      { color: 'green', text: 'Establish your monthly rhythm — one practice, one question, one connection', note: 'One thing you do every day. One honest question each month. One conversation with someone who knows what you went through. Simple enough to sustain.' },
+      { color: 'sage', text: 'Write your integration statement, guided below', note: 'Three questions, one page. What changed. What you know now. What you are committed to. Date it. You will want to read it in six months.' },
+      { color: 'green', text: 'Establish your monthly rhythm, one practice, one question, one connection', note: 'One thing you do every day. One honest question each month. One conversation with someone who knows what you went through. Simple enough to sustain.' },
     ],
     integrationStatement: [
       { q: 'What genuinely changed?', hint: 'Actual, lived change. How do you move through the world differently now? Name specific behaviors, responses, ways of being.' },
@@ -430,7 +430,7 @@ const WEEKS = [
       'Monthly rhythm established',
     ],
     prompts: POST_CEREMONY_WEEKS[5].prompts,
-    thread: 'The medicine opened a window. You chose to walk through it — week by week, practice by practice, honest conversation by honest conversation. What you have built is a foundation. The work continues. We continue with you.',
+    thread: 'The medicine opened a window. You chose to walk through it, week by week, practice by practice, honest conversation by honest conversation. What you have built is a foundation. The work continues. We continue with you.',
     monthlyArc: true,
   },
 ]
@@ -471,7 +471,7 @@ function WeeklyCheckIn({
           Weekly check-in
         </h3>
         <p style={{ fontSize: 12.5, color: '#8B8070', marginBottom: 28, lineHeight: 1.7 }}>
-          Your responses contribute to clinical data on iboga integration outcomes. Be honest — this is for you and for the field.
+          Your responses contribute to clinical data on iboga integration outcomes. Be honest, this is for you and for the field.
         </p>
 
         {/* Previous week context */}
@@ -566,7 +566,7 @@ function WeeklyCheckIn({
             onChange={e => setHonest(e.target.checked)}
             style={{ marginTop: 3, accentColor: '#C8A96E', flexShrink: 0 }} />
           <label htmlFor="honest" style={{ fontSize: 12.5, color: '#3D3D38', lineHeight: 1.65, cursor: 'pointer' }}>
-            I completed this week honestly — including the actions that were most difficult, and the parts I would rather have skipped.
+            I completed this week honestly, including the actions that were most difficult, and the parts I would rather have skipped.
           </label>
         </div>
 
@@ -683,7 +683,7 @@ function ProgressInsights({ tracking }: { tracking: Record<number, WeekTracking>
         </div>
       )}
 
-      {/* Encouragement line — contextual */}
+      {/* Encouragement line, contextual */}
       {hasMultiple && (
         <span style={{
           marginLeft: 'auto', fontSize: 11.5, color: '#8B8070',
@@ -708,7 +708,7 @@ const POST_TO_JOURNAL_MAP: Record<string, string> = {
   'w1-p2': 'p1-4',  // "What did the medicine show me about my own nature..."
   'w2-p2': 'p1-8',  // "Looking back at the intentions I set before ceremony..."
   'w4-p4': 'p2-6',  // "Where is forgiveness still alive..."
-  'w5-p0': 'p2-9',  // "Who am I now — compared to who I was when I arrived at ceremony?"
+  'w5-p0': 'p2-9',  // "Who am I now, compared to who I was when I arrived at ceremony?"
   'w5-p2': 'p2-8',  // "How has my sense of purpose or direction shifted?"
 }
 
@@ -871,7 +871,7 @@ export default function PostCeremonyPage() {
         .w1-action:hover { border-color:var(--gold);background:rgba(200,169,110,.05); }
         .w1-action-dot { width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:7px; }
         .w1-action-text { font-size:13.5px;color:var(--ink);line-height:1.55; }
-        /* Week 1 principle display — scaled up so the principle reads as the theme */
+        /* Week 1 principle display, scaled up so the principle reads as the theme */
         .w1p-eyebrow { font-size:10px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:20px; }
         .w1p-title { font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5.2vw,58px);font-weight:300;line-height:1.06;margin:0 0 18px;color:var(--ink); }
         .w1p-title em { font-style:italic;color:var(--gold); }
@@ -918,7 +918,7 @@ export default function PostCeremonyPage() {
         <span className="pc-prog-week">{completed.size === 6 ? 'Integration Complete ✓' : `Week ${Math.min(completed.size + 1, 6)} of 6`}</span>
       </div>
 
-      {/* PROGRESS INSIGHTS — only renders when ≥1 week tracked */}
+      {/* PROGRESS INSIGHTS, only renders when ≥1 week tracked */}
       <ProgressInsights tracking={weeklyTracking} />
 
       {/* HERO */}
@@ -939,7 +939,7 @@ export default function PostCeremonyPage() {
         ))}
       </div>
 
-      {/* SECTION INDEX — sticky under the week-tabs so members can jump between
+      {/* SECTION INDEX, sticky under the week-tabs so members can jump between
           Principle / Video / Actions / PNE / Journal / Community (+ Completion
           on Week 6) while they scroll. */}
       <SectionIndex sections={sectionsForWeek(activeWeek)} stickyTop={112} scrollOffset={170} />
@@ -952,11 +952,11 @@ export default function PostCeremonyPage() {
             <section className="w1-section" id="principle">
               <span className="w1p-eyebrow">Week {i + 1} · {w.principleName} · {w.theme}</span>
               <h2 className="w1p-title">{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</h2>
-              <p className="w1p-pull">&ldquo;{w.principle}&rdquo; — {w.principleName}</p>
+              <p className="w1p-pull">&ldquo;{w.principle}&rdquo;, {w.principleName}</p>
               <p className="w1p-body">{w.intro}</p>
             </section>
 
-            {/* VIDEO — Message from the Founders */}
+            {/* VIDEO, Message from the Founders */}
             <section className="w1-section" id="week-video">
               <span className="section-label">Message from the Founders</span>
               <div className="video-frame">
@@ -1013,7 +1013,7 @@ export default function PostCeremonyPage() {
                 return (
                   <div className="dataset-note" style={{ marginTop: 18 }}>
                     <div className="dn-header">
-                      <span className="dn-label">Outcomes — your contribution to the field</span>
+                      <span className="dn-label">Outcomes, your contribution to the field</span>
                       {dl && <Link href={dl.href} className="dn-cta">{dl.text}</Link>}
                     </div>
                     <div className="dn-body">{w.dataset}</div>
@@ -1080,14 +1080,14 @@ export default function PostCeremonyPage() {
               </div>
             </section>
 
-            {/* COMPLETION — Week 6 only: integration statement + six-week
+            {/* COMPLETION, Week 6 only: integration statement + six-week
                 checklist + monthly arc + return-practice + closing bridge. */}
             {w.integrationStatement && (
               <section className="w1-section" id="completion">
                 <h3 className="w1-h3">Completion</h3>
                 <div className="integration-qs">
                   <div className="iq-header">
-                    <span className="iq-label">Your integration statement — three questions, one page</span>
+                    <span className="iq-label">Your integration statement, three questions, one page</span>
                   </div>
                   {w.integrationStatement.map((q, qi) => (
                     <div className="iq-item" key={qi}>
@@ -1102,7 +1102,7 @@ export default function PostCeremonyPage() {
             {w.checklist && (
               <div className="rg-wrap" style={{ marginTop: 24 }}>
                 <div className="rg-header">
-                  <div className="rg-dot" /><div className="rg-title">Six-week integration — completions</div>
+                  <div className="rg-dot" /><div className="rg-title">Six-week integration, completions</div>
                 </div>
                 <div className="rg-body">
                   {w.checklist.map((txt, ri) => (
@@ -1119,13 +1119,13 @@ export default function PostCeremonyPage() {
 
             {w.monthlyArc && (
               <div className="monthly-arc">
-                <span className="ma-eyebrow">What comes next — months 2 & 3</span>
+                <span className="ma-eyebrow">What comes next, months 2 & 3</span>
                 <h3 className="ma-title">The intensive arc is complete.<br /><em>The living continues.</em></h3>
-                <p className="ma-text">The six-week window is the most important period of your integration. What follows is a lighter, steadier rhythm — one practice, one honest question, one connection each month. Your integration guide remains available.</p>
+                <p className="ma-text">The six-week window is the most important period of your integration. What follows is a lighter, steadier rhythm, one practice, one honest question, one connection each month. Your integration guide remains available.</p>
                 <div className="ma-grid">
                   <div className="ma-card">
                     <span className="ma-card-label">One daily practice</span>
-                    <div className="ma-card-text">The practice you established in week 2. Continue it — consistently. It is the thread that connects ceremony to the life you are building.</div>
+                    <div className="ma-card-text">The practice you established in week 2. Continue it, consistently. It is the thread that connects ceremony to the life you are building.</div>
                   </div>
                   <div className="ma-card">
                     <span className="ma-card-label">One monthly check-in</span>
@@ -1133,12 +1133,12 @@ export default function PostCeremonyPage() {
                   </div>
                   <div className="ma-card">
                     <span className="ma-card-label">One monthly connection</span>
-                    <div className="ma-card-text">One conversation per month with someone who knows what you went through — your integration guide, your support person, or another who can hold the fuller picture of you.</div>
+                    <div className="ma-card-text">One conversation per month with someone who knows what you went through, your integration guide, your support person, or another who can hold the fuller picture of you.</div>
                   </div>
                 </div>
                 <div className="ma-question">
                   <span className="ma-q-label">Your monthly question</span>
-                  <div className="ma-q-text">What is still alive from what the medicine showed me — and how am I living that this month?</div>
+                  <div className="ma-q-text">What is still alive from what the medicine showed me, and how am I living that this month?</div>
                 </div>
               </div>
             )}
@@ -1147,7 +1147,7 @@ export default function PostCeremonyPage() {
               <div className="return-practice">
                 <span className="rp-eyebrow">A practice of return</span>
                 <h3 className="rp-title">Mark the returns.</h3>
-                <p className="rp-text">Integration happens in waves. Before you close this tab, take a moment to place three gentle markers on your own calendar — three months, six months, and one year from today. When each arrives, return here. Revisit your outcomes. Notice what has moved, what has deepened, what still asks for attention.</p>
+                <p className="rp-text">Integration happens in waves. Before you close this tab, take a moment to place three gentle markers on your own calendar, three months, six months, and one year from today. When each arrives, return here. Revisit your outcomes. Notice what has moved, what has deepened, what still asks for attention.</p>
                 <p className="rp-text">We will also reach out. But the most important return is the one you promise yourself.</p>
                 <div className="rp-actions">
                   <button type="button" className="rp-btn" onClick={downloadReturnICS}>Add all three to my calendar</button>
@@ -1160,7 +1160,7 @@ export default function PostCeremonyPage() {
               <div className="bridge">
                 <span className="bridge-eyebrow">You are held</span>
                 <h3 className="bridge-title">The work continues.<br /><em>So do we.</em></h3>
-                <p className="bridge-text">Vital Kauaʻi does not end at the ceremony gate or the close of this program. Your integration guide, your care team, and this portal remain with you. If something arises — six weeks from now, six months from now — reach out. <strong style={{ color: 'var(--gold)' }}>aloha@vitalkauai.com</strong></p>
+                <p className="bridge-text">Vital Kauaʻi does not end at the ceremony gate or the close of this program. Your integration guide, your care team, and this portal remain with you. If something arises, six weeks from now, six months from now, reach out. <strong style={{ color: 'var(--gold)' }}>aloha@vitalkauai.com</strong></p>
               </div>
             )}
 
