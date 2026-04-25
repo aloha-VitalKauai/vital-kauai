@@ -171,7 +171,7 @@ body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm
   .cover { padding: 48px 44px; }
   .section { padding: 72px 44px; }
   .whom-grid { grid-template-columns: 1fr 1fr; }
-  .two-col, .two-col-wide { grid-template-columns: 1fr; gap: 40px; }
+  .two-col, .two-col-wide { grid-template-columns: 1fr; gap: 22px; }
   .works-grid { grid-template-columns: 1fr; }
   .guide-footer { padding: 40px 44px; flex-direction: column; gap: 18px; }
   .guide-footer p { text-align: center; }
@@ -268,7 +268,7 @@ const BODY_CONTENT = `
     </div>
     <div>
       <div class="pull-quote" style="margin-top:0;">
-        <p>"Iboga gives you what you need."</p>
+        <p>"Iboga gives you what you need, not what you want."</p>
         <cite>Bwiti saying · Gabon</cite>
       </div>
       <p class="body-text" style="margin-top:20px;">The Pygmy tribes of Gabon and Cameroon are widely recognized as the original discoverers of iboga's healing and visionary properties, passing this knowledge to the Bwiti across countless generations. The Bwiti understand the plant as a being, a teacher with intelligence and the capacity to perceive exactly what each person needs. The medicine shows you the truth of your life. The clearer you arrive, the deeper it goes.</p>
@@ -302,7 +302,7 @@ const BODY_CONTENT = `
       <p class="body-text">Perhaps the most essential thing to understand: the Bwiti experience iboga as a being, a plant teacher with intelligence and intention. It shows the truth of your life. The clearer you arrive, the deeper it goes. The more open your hands, the more the medicine can place in them.</p>
     </div>
     <div>
-      <p class="body-text">Josh Perdue, co-founder of Vital Kauaʻi, has spent time in Gabon in deep relationship with the plant and the people who have carried it for generations. That reverence, for the land, the medicine, and the wisdom traditions that have held iboga across millennia, is woven into everything we do.</p>
+      <p class="body-text">Josh Perdue, co-founder of Vital Kauaʻi, was initiated in Gabon in deep relationship with the plant and the people who have carried it for generations. That reverence, for the land, the medicine, and the wisdom traditions that have held iboga across millennia, is woven into everything we do.</p>
       <p class="body-text">We bring this reverence into our work on the North Shore of Kauaʻi, allowing African initiatory wisdom to inspire the container while remaining grounded in our own ceremonial path. The ceremony opens around the fire. The medicine meets you in the dark. And the land of Kauaʻi holds everything.</p>
       <div class="pull-quote" style="border-left-color:var(--sage-light);">
         <p>"Ceremony opens around a sacred fire, drawing on the wisdom of those who have carried iboga for thousands of years, where fire illuminates what is ready to be released and calls in what wants to arrive."</p>
