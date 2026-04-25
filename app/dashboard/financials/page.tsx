@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import FinancialKpiRow from "@/components/dashboard/financials/FinancialKpiRow";
 import FinancialActions from "@/components/dashboard/financials/FinancialActions";
-import CohortMarginsTable from "@/components/dashboard/financials/CohortMarginsTable";
+import CohortAndPrivateTabs from "@/components/dashboard/financials/CohortAndPrivateTabs";
 import PendingPayoutsTable from "@/components/dashboard/financials/PendingPayoutsTable";
 import RecentExpensesTable from "@/components/dashboard/financials/RecentExpensesTable";
 import type {
@@ -9,6 +9,7 @@ import type {
   FinancialsOverview,
   PayoutCommitment,
   ExpenseEntry,
+  PrivateCeremonyMargin,
 } from "@/lib/financials/types";
 
 export const metadata = { title: "Financials — Vital Kauaʻi" };
@@ -29,6 +30,7 @@ export default async function FinancialsPage() {
   const [
     { data: overview },
     { data: cohortMargins },
+    { data: privateCeremonies },
     { data: pendingPayouts },
     { data: recentExpenses },
     { data: cohorts },
@@ -39,6 +41,10 @@ export default async function FinancialsPage() {
       .from("cohort_margin_summary")
       .select("*")
       .order("start_at", { ascending: false }),
+    supabase
+      .from("private_ceremony_summary")
+      .select("*")
+      .order("start_at", { ascending: false, nullsFirst: false }),
     supabase
       .from("payout_commitments")
       .select("*")
@@ -150,7 +156,10 @@ export default async function FinancialsPage() {
         enrolledMembers={enrolledMembers}
       />
 
-      <CohortMarginsTable rows={(cohortMargins ?? []) as CohortMargin[]} />
+      <CohortAndPrivateTabs
+        cohortRows={(cohortMargins ?? []) as CohortMargin[]}
+        privateRows={(privateCeremonies ?? []) as PrivateCeremonyMargin[]}
+      />
 
       <PendingPayoutsTable
         payouts={(pendingPayouts ?? []) as PayoutCommitment[]}

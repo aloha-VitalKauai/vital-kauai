@@ -62,6 +62,20 @@ export interface CohortMargin {
   margin_pct: number | null;
 }
 
+export interface PrivateCeremonyMargin {
+  journey_id: string;
+  member_id: string;
+  member_name: string;
+  journey_status: string;
+  schedule_type: string;
+  start_at: string | null;
+  end_at: string | null;
+  booked_cents: number;
+  revenue_cents: number;
+  expense_cents: number;
+  payout_cents: number;
+}
+
 export interface FinancialsOverview {
   total_revenue_cents: number;
   onboarding_revenue_cents: number;
