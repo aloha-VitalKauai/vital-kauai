@@ -985,12 +985,9 @@ export default function PreCeremonyPage() {
                   </div>
                 </div>
               </div>
-              {w.box && (
-                <div className={`box box-${w.box.type}`}>
-                  <div className="box-label">{w.box.label}</div>
-                  <div className="box-text">{w.box.text}</div>
-                </div>
-              )}
+              {/* Per-week info / warn / close box dropped per Rachel — felt like
+                  too much text alongside the journal prompts. Data kept on each
+                  WEEK entry for now in case we want it back. */}
             </div>
 
             {/* Actions */}
@@ -1007,12 +1004,7 @@ export default function PreCeremonyPage() {
                   </div>
                 ))}
               </div>
-              {w.safetyBox && (
-                <div className="box box-safe" style={{ marginTop: 14 }}>
-                  <div className="box-label">{w.safetyBox.label}</div>
-                  <div className="box-text">{w.safetyBox.text}</div>
-                </div>
-              )}
+              {/* Per-week safety box dropped per Rachel — same reasoning. */}
               {(w as { dataset?: string }).dataset && (() => {
                 const dataset = (w as { dataset?: string }).dataset as string
                 const dl = (w as { datasetLink?: { text: string; href: string } }).datasetLink
