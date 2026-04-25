@@ -444,8 +444,8 @@ export function HomePage() {
               <em>The Root of All Roots</em>
             </h2>
             <p className={styles.medicineBody}>
-              Iboga is a sacred root bark from the forests of West and Central Africa, used for
-              millennia by the Bwiti people of Gabon as a sacrament of initiation, healing, and
+              Iboga (considered a teacher plant, also known as the Tree of Life) is a sacred root bark from the forests of West and Central Africa, used for
+              millennia by the Bwiti people of Gabon (whose name translates as &ldquo;the study of life&rdquo;) as a sacrament of initiation, healing, and
               spiritual revelation. Unlike any other plant medicine, Iboga works at the level of
               the deepest self, interrupting patterns of addiction, trauma, and unconscious
               conditioning at their root.
