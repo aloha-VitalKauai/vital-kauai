@@ -238,7 +238,7 @@ export function IbogaJourneyPage() {
             &ldquo;Ibogaine is like seeing the color red. Whole-plant Iboga root bark is seeing the
             entire rainbow.&rdquo;
           </p>
-          <p style={{ marginTop: 12, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(245,240,232,0.45)", fontStyle: "normal" }}>
+          <p style={{ marginTop: 12, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "#8b8070", fontStyle: "normal" }}>
             — Troy Valencia, Root &amp; Wisdom
           </p>
         </blockquote>
