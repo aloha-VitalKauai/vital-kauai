@@ -140,6 +140,8 @@ export function PortalHomePage({
   const [modalChecked, setModalChecked] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
   const [modalMsg, setModalMsg] = useState<{ type: string; text: string } | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "venmo">("card");
+  const [venmoOpened, setVenmoOpened] = useState(false);
 
   // Lab upload state
   const [showLabUpload, setShowLabUpload] = useState(false);
@@ -1098,7 +1100,7 @@ export function PortalHomePage({
 
       {/* ── MODALS ── */}
       {modal && (
-        <div className={styles.modalOverlay} onClick={() => { setModal(null); setModalChecked(false); setModalMsg(null); }}>
+        <div className={styles.modalOverlay} onClick={() => { setModal(null); setModalChecked(false); setModalMsg(null); setPaymentMethod("card"); setVenmoOpened(false); }}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             {modal === "agreement" && (
               <>
@@ -1204,19 +1206,63 @@ export function PortalHomePage({
                     ))}
                   </div>
                   {modalMsg && <div className={`${styles.alert} ${styles.alertError}`}>{modalMsg.text}</div>}
-                  <div className={styles.stripePlaceholder}>
-                    <p>
-                      &#128179; Stripe payment integration goes here. Connect your Stripe account
-                      and replace this with Stripe Elements or a Checkout Session redirect.
-                    </p>
+                  <div className={styles.payMethodTabs}>
                     <button
-                      className={styles.btnStripe}
-                      onClick={handleDonation}
-                      disabled={modalLoading}
+                      type="button"
+                      className={`${styles.payMethodTab} ${paymentMethod === "card" ? styles.payMethodTabActive : ""}`}
+                      onClick={() => { setPaymentMethod("card"); setVenmoOpened(false); }}
                     >
-                      {modalLoading ? "Processing\u2026" : "\uD83D\uDCB3 Simulate Payment \u2014 $250"}
+                      &#128179; Card
+                    </button>
+                    <button
+                      type="button"
+                      className={`${styles.payMethodTab} ${paymentMethod === "venmo" ? styles.payMethodTabActive : ""}`}
+                      onClick={() => setPaymentMethod("venmo")}
+                    >
+                      Venmo
                     </button>
                   </div>
+                  {paymentMethod === "card" && (
+                    <div className={styles.stripePlaceholder}>
+                      <p>
+                        &#128179; Stripe payment integration goes here. Connect your Stripe account
+                        and replace this with Stripe Elements or a Checkout Session redirect.
+                      </p>
+                      <button
+                        className={styles.btnStripe}
+                        onClick={handleDonation}
+                        disabled={modalLoading}
+                      >
+                        {modalLoading ? "Processing\u2026" : "\uD83D\uDCB3 Simulate Payment \u2014 $250"}
+                      </button>
+                    </div>
+                  )}
+                  {paymentMethod === "venmo" && (
+                    <div className={styles.stripePlaceholder}>
+                      <p>
+                        Send <strong>$250</strong> to <strong>@Rachel-Nelson-05</strong> on Venmo,
+                        then return here and confirm.
+                      </p>
+                      <a
+                        className={styles.btnStripe}
+                        href="https://venmo.com/u/Rachel-Nelson-05"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setVenmoOpened(true)}
+                        style={{ textDecoration: "none", marginBottom: 12 }}
+                      >
+                        Open Venmo &rarr; @Rachel-Nelson-05
+                      </a>
+                      <button
+                        className={styles.btnStripe}
+                        onClick={handleDonation}
+                        disabled={modalLoading || !venmoOpened}
+                        title={!venmoOpened ? "Open Venmo first to send your $250" : undefined}
+                      >
+                        {modalLoading ? "Processing\u2026" : "I\u2019ve sent my Venmo payment"}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </>
             )}
