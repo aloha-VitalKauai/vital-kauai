@@ -975,21 +975,23 @@
 
 .tagGold,
 .tagSage {
-  padding: 6px 14px;
+  padding: 8px 16px;
   border-radius: 0;
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.32em;
   text-transform: uppercase;
 }
 
 .tagGold {
-  color: rgb(200 169 110 / 0.45);
-  border: 1px solid rgb(200 169 110 / 0.15);
+  color: rgb(212 184 130 / 0.95);
+  border: 1px solid rgb(200 169 110 / 0.55);
+  background: rgb(200 169 110 / 0.08);
 }
 
 .tagSage {
-  color: rgb(168 197 172 / 0.45);
-  border: 1px solid rgb(168 197 172 / 0.12);
+  color: rgb(196 220 200 / 0.95);
+  border: 1px solid rgb(168 197 172 / 0.5);
+  background: rgb(168 197 172 / 0.08);
 }
 
 .offeringQuote {
