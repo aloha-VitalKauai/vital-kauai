@@ -33,7 +33,23 @@ const tenets = [
   {
     numeral: "VI",
     title: "The Earth as Sacred Ground",
-    body: "We believe the natural world is not a backdrop to spiritual life but an active participant in it. Kauaʻi's land, waters, and living systems are part of our congregation.",
+    body: (
+      <>
+        <p style={{ margin: 0 }}>
+          We believe the natural world is an active participant in spiritual life. Kauaʻi&apos;s
+          land, waters, and living systems are part of our congregation.
+        </p>
+        <p style={{ margin: "14px 0 0" }}>
+          While you are here, we invite you to{" "}
+          <Link href="/stay#explore-land" style={{ color: "var(--gold)", textDecoration: "underline", textUnderlineOffset: 3 }}>
+            tour the land, spend time in the soil, or make a donation to one of our local
+            nonprofits
+          </Link>
+          . As Vital Kauaʻi grows, we are building toward direct support of the organizations
+          protecting this ʻāina.
+        </p>
+      </>
+    ),
   },
 ];
 
@@ -71,7 +87,7 @@ export function ChurchInformationPage() {
             <span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/stay#local">Work With Us</Link></span></span>
           </li>
           <li className={styles.navDropdown}>
-            <span className={styles.navDropdownLabel}>About</span>
+            <Link href="/church-information" className={styles.navDropdownLabel}>About</Link>
             <ul className={styles.navDropdownMenu}>
               <li>
                 <Link href="/about">About the Founders</Link>
@@ -180,8 +196,8 @@ export function ChurchInformationPage() {
           <p className={styles.bodyText}>
             Operating as a church allows us to hold this work within the legal and spiritual
             protections afforded to religious organizations, and, more importantly, it affirms the
-            sacred nature of what takes place here. This is not a workaround. It is an accurate
-            description of what we are and what we do.
+            sacred nature of what takes place here. It is the accurate description of what we are
+            and what we do, held with full sincerity.
           </p>
 
           <div className={styles.ornamentalDivider}>
@@ -193,7 +209,7 @@ export function ChurchInformationPage() {
             Vital Kauai Church. Membership is open to adults who share our values, affirm our
             Statement of Belief, and complete the membership process. Church membership is a
             meaningful step, an acknowledgment that you are entering sacred space as a member of a
-            spiritual community, not a consumer of a service.
+            spiritual community, in covenant with this work.
           </p>
         </div>
       </section>
