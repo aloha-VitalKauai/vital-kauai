@@ -360,7 +360,7 @@
 
 /* ── Lead Capture ── */
 .leadCapture {
-  background: var(--forest-dark);
+  background: var(--cream);
   padding: 120px 100px;
 }
 
@@ -373,15 +373,27 @@
   align-items: center;
 }
 
+.leadCapture .sectionLabel {
+  color: var(--gold);
+}
+
+.leadCapture .sectionTitle {
+  color: var(--text-dark);
+}
+
+.leadCapture .sectionTitle em {
+  color: var(--sage);
+}
+
 .leadBody {
-  font-size: 15px;
-  line-height: 1.9;
-  color: rgb(245 240 232 / 0.65);
-  margin: 0;
+  color: var(--text-mid);
 }
 
 .leadCard {
-  border: 1px solid rgb(200 169 110 / 0.2);
+  background: var(--warm-white);
+  border: 1px solid rgb(200 169 110 / 0.35);
+  border-left: 3px solid var(--gold);
+  box-shadow: 0 12px 40px rgb(28 43 30 / 0.08);
   padding: 48px 40px;
   display: flex;
   flex-direction: column;
@@ -393,15 +405,15 @@
   font-family: var(--font-display), serif;
   font-size: 22px;
   font-weight: 300;
-  color: var(--cream);
+  color: var(--text-dark);
 }
 
 .leadInput {
   width: 100%;
   padding: 14px 18px;
-  background: rgb(14 26 16 / 0.6);
-  border: 1px solid rgb(245 240 232 / 0.12);
-  color: var(--cream);
+  background: white;
+  border: 1px solid rgb(28 43 30 / 0.15);
+  color: var(--text-dark);
   font-family: var(--font-body), sans-serif;
   font-size: 14px;
   font-weight: 300;
@@ -410,7 +422,7 @@
 }
 
 .leadInput::placeholder {
-  color: rgb(245 240 232 / 0.35);
+  color: rgb(28 43 30 / 0.35);
 }
 
 .leadInput:focus {
@@ -439,7 +451,7 @@
 .leadDisclaimer {
   margin: 0;
   font-size: 11px;
-  color: rgb(245 240 232 / 0.35);
+  color: rgb(28 43 30 / 0.45);
   text-align: center;
 }
 
@@ -551,25 +563,45 @@
   font-size: 10px;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: var(--gold);
-  padding: 16px 20px;
+  padding: 18px 22px;
   text-align: left;
-  border-bottom: 1px solid rgb(200 169 110 / 0.25);
-  font-weight: 400;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+}
+
+/* Root Bark column — sage */
+.comparisonTable th:first-child {
+  color: var(--sage-light);
+  border-bottom-color: rgb(168 197 172 / 0.55);
+  background: rgb(122 158 126 / 0.08);
+}
+
+/* Ibogaine column — gold */
+.comparisonTable th:last-child {
+  color: var(--gold-light);
+  border-bottom-color: rgb(200 169 110 / 0.5);
+  background: rgb(200 169 110 / 0.05);
 }
 
 .comparisonTable td {
   font-size: 14px;
   line-height: 1.75;
-  padding: 18px 20px;
+  padding: 18px 22px;
   border-bottom: 1px solid rgb(245 240 232 / 0.06);
-  color: rgb(245 240 232 / 0.7);
+  color: rgb(245 240 232 / 0.72);
   vertical-align: top;
 }
 
 .comparisonTable td:first-child {
   color: var(--cream);
+  background: rgb(122 158 126 / 0.06);
+  border-left: 2px solid rgb(168 197 172 / 0.35);
+}
+
+.comparisonTable td:last-child {
+  color: rgb(245 240 232 / 0.78);
   background: rgb(200 169 110 / 0.04);
+  border-right: 2px solid rgb(200 169 110 / 0.3);
 }
 
 /* ── Science ── */
@@ -601,37 +633,42 @@
 
 .scienceCard {
   padding: 36px 32px;
-  background: rgb(14 26 16 / 0.5);
-  border: 1px solid rgb(245 240 232 / 0.06);
-  border-top: 2px solid transparent;
-  transition: border-top-color 0.4s;
+  background: var(--warm-white);
+  border: 1px solid rgb(200 169 110 / 0.22);
+  border-top: 3px solid var(--gold);
+  border-radius: 2px;
+  box-shadow: 0 8px 24px rgb(14 26 16 / 0.25);
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .scienceCard:hover {
-  border-top-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgb(14 26 16 / 0.35);
 }
 
 .scienceCardTitle {
   margin: 0 0 16px;
   font-family: var(--font-display), serif;
   font-size: 20px;
-  font-weight: 300;
-  color: var(--cream);
+  font-weight: 400;
+  color: var(--text-dark);
 }
 
 .scienceCardBody {
   margin: 0 0 20px;
   font-size: 14px;
   line-height: 1.85;
-  color: rgb(245 240 232 / 0.6);
+  color: var(--text-mid);
 }
 
 .scienceCardStat {
   margin: 0;
+  padding-top: 14px;
+  border-top: 1px solid rgb(28 43 30 / 0.12);
   font-style: italic;
   font-size: 12px;
   line-height: 1.6;
-  color: var(--gold);
+  color: var(--stone);
 }
 
 /* ── Stanford Box ── */
@@ -641,9 +678,11 @@
   gap: 64px;
   max-width: 1000px;
   margin: 72px auto 0;
-  padding: 52px 56px;
-  border: 1px solid var(--gold);
-  background: rgb(14 26 16 / 0.4);
+  padding: 56px 60px;
+  border: 1px solid rgb(200 169 110 / 0.5);
+  border-left: 4px solid var(--gold);
+  background: var(--warm-white);
+  box-shadow: 0 16px 48px rgb(14 26 16 / 0.35);
   align-items: center;
 }
 
@@ -661,7 +700,7 @@
 
 .stanfordStatNumber {
   font-family: var(--font-display), serif;
-  font-size: 48px;
+  font-size: 52px;
   font-weight: 300;
   color: var(--gold);
   line-height: 1;
@@ -671,22 +710,23 @@
   font-size: 11px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgb(245 240 232 / 0.55);
+  color: var(--stone);
+  font-weight: 500;
 }
 
 .stanfordTitle {
   margin: 0 0 16px;
   font-family: var(--font-display), serif;
   font-size: 24px;
-  font-weight: 300;
-  color: var(--cream);
+  font-weight: 400;
+  color: var(--text-dark);
 }
 
 .stanfordBody {
   margin: 0 0 16px;
   font-size: 14px;
   line-height: 1.9;
-  color: rgb(245 240 232 / 0.65);
+  color: var(--text-mid);
 }
 
 .stanfordSource {
