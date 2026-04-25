@@ -52,16 +52,25 @@ export default async function DashboardPage() {
   const conversionRate = totalLeads > 0 ? Math.round((converted / totalLeads) * 100) : 0;
 
   // Revenue & margin pulled from the same source as /dashboard/financials
-  const totalRevenueCents = overview?.total_revenue_cents ?? 0;
+  // Two distinct numbers, intentionally:
+  //   • Booked    — sum of program prices across active members (expected)
+  //   • Collected — completed donations (cash in the bank, from financials_overview)
+  // Margin is computed against Collected (the only thing actually realized).
+  const collectedCents = overview?.total_revenue_cents ?? 0;
+  const bookedDollars = (members ?? []).reduce(
+    (s, m: any) => s + Number(m.program_price ?? 0),
+    0,
+  );
+  const bookedCents = Math.round(bookedDollars * 100);
   const totalExpensesCents = overview?.total_expenses_cents ?? 0;
   const activePayoutsCents =
     (overview?.payouts_pending_cents ?? 0) +
     (overview?.payouts_scheduled_cents ?? 0) +
     (overview?.payouts_paid_cents ?? 0);
-  const marginCents = totalRevenueCents - totalExpensesCents - activePayoutsCents;
-  const hasRevenue = totalRevenueCents > 0;
+  const marginCents = collectedCents - totalExpensesCents - activePayoutsCents;
+  const hasCollected = collectedCents > 0;
   const marginPct =
-    hasRevenue ? Math.round((marginCents / totalRevenueCents) * 100) : null;
+    hasCollected ? Math.round((marginCents / collectedCents) * 100) : null;
 
   const medCleared = rows.filter((r) => r.medical_cleared).length;
   const cardiacCleared = rows.filter((r) => r.cardiac_cleared).length;
@@ -108,14 +117,15 @@ export default async function DashboardPage() {
         </h1>
       </div>
 
-      {/* KPI Cards — 6 columns */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(6, minmax(0, 1fr))", gap: 10, marginBottom: "1.25rem" }}>
+      {/* KPI Cards — 7 columns: members, leads, conversion, booked, collected, margin, medical */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: 10, marginBottom: "1.25rem" }}>
         {[
           { label: "Total members", value: String(rows.length), sub: "active members" },
           { label: "Total leads", value: String(totalLeads), up: totalLeads > 0 ? `${totalLeads} tracked` : undefined },
           { label: "Conversion", value: `${conversionRate}%`, sub: "leads → members" },
-          { label: "Total revenue", value: fmt(totalRevenueCents / 100, "$"), sub: "Collected to date" },
-          { label: "Gross margin", value: fmt(marginCents / 100, "$"), up: marginPct != null ? `${marginPct}% margin` : undefined },
+          { label: "Booked revenue", value: fmt(bookedCents / 100, "$"), sub: `${rows.length} members enrolled` },
+          { label: "Collected revenue", value: fmt(collectedCents / 100, "$"), sub: "Cash received to date" },
+          { label: "Gross margin", value: fmt(marginCents / 100, "$"), up: marginPct != null ? `${marginPct}% on collected` : undefined },
           { label: "Medically cleared", value: `${medCleared}/${rows.length}`, sub: `cardiac screened: ${cardiacCleared}/${rows.length}` },
         ].map((c) => (
           <div key={c.label} style={{ background: "#fff", border: "0.5px solid rgba(0,0,0,0.1)", borderRadius: 10, padding: "1rem 1.1rem" }}>

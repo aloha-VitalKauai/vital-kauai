@@ -33,6 +33,7 @@ export default async function FinancialsPage() {
     { data: recentExpenses },
     { data: cohorts },
     { data: journeys },
+    { data: bookedMembers },
   ] = await Promise.all([
     supabase.from("financials_overview").select("*").single(),
     supabase
@@ -59,6 +60,7 @@ export default async function FinancialsPage() {
       .from("journeys")
       .select("id, start_at, member_id, member:member_profiles(full_name)")
       .order("created_at", { ascending: false }),
+    supabase.from("members").select("id, program_price"),
   ]);
 
   const ov: FinancialsOverview = (overview as FinancialsOverview | null) ?? {
@@ -78,6 +80,16 @@ export default async function FinancialsPage() {
     ov.payouts_paid_cents;
   const marginCents =
     ov.total_revenue_cents - ov.total_expenses_cents - activePayoutsCents;
+
+  // Booked = sum of program prices across enrolled members (expected revenue).
+  // Collected lives in `ov.total_revenue_cents` and only counts donations marked completed.
+  const bookedDollars = (bookedMembers ?? []).reduce(
+    (s: number, m: { program_price: number | null }) =>
+      s + Number(m.program_price ?? 0),
+    0,
+  );
+  const bookedCents = Math.round(bookedDollars * 100);
+  const enrolledMembers = (bookedMembers ?? []).length;
 
   const cohortList: CohortRow[] = (cohorts ?? []) as CohortRow[];
   const cohortTitles = Object.fromEntries(cohortList.map((c) => [c.id, c.title]));
@@ -136,7 +148,12 @@ export default async function FinancialsPage() {
         <FinancialActions cohorts={cohortList} journeys={journeyOptions} />
       </div>
 
-      <FinancialKpiRow overview={ov} marginCents={marginCents} />
+      <FinancialKpiRow
+        overview={ov}
+        marginCents={marginCents}
+        bookedCents={bookedCents}
+        enrolledMembers={enrolledMembers}
+      />
 
       <CohortMarginsTable rows={(cohortMargins ?? []) as CohortMargin[]} />
 
