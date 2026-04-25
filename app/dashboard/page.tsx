@@ -51,17 +51,15 @@ export default async function DashboardPage() {
   const converted = (leads ?? []).filter((l) => l.converted_to_member).length;
   const conversionRate = totalLeads > 0 ? Math.round((converted / totalLeads) * 100) : 0;
 
-  // Revenue & margin pulled from the same source as /dashboard/financials
-  // Two distinct numbers, intentionally:
-  //   • Booked    — sum of program prices across active members (expected)
-  //   • Collected — completed donations (cash in the bank, from financials_overview)
+  // Revenue & margin pulled from `financials_overview` so all three dashboards
+  // (Overview, Financials, Ops) reconcile.
+  //   • Booked    — sum of active financial_commitments per member, falling
+  //                 back to legacy members.program_price when no commitment
+  //                 exists. Computed in the view → reflects edits live.
+  //   • Collected — completed donations (cash in the bank).
   // Margin is computed against Collected (the only thing actually realized).
   const collectedCents = overview?.total_revenue_cents ?? 0;
-  const bookedDollars = (members ?? []).reduce(
-    (s, m: any) => s + Number(m.program_price ?? 0),
-    0,
-  );
-  const bookedCents = Math.round(bookedDollars * 100);
+  const bookedCents = overview?.booked_revenue_cents ?? 0;
   const totalExpensesCents = overview?.total_expenses_cents ?? 0;
   const activePayoutsCents =
     (overview?.payouts_pending_cents ?? 0) +
