@@ -1048,13 +1048,14 @@ function HomeLeadCard() {
     setSubmitting(true);
     setError("");
     // Fire and forget — never block redirect
-    const supabase = createClient();
     try {
-      await supabase.from("leads").insert({
-        full_name: name.trim(),
-        email: email.trim().toLowerCase(),
-        source: "Free Guide",
-        lead_date: new Date().toISOString(),
+      await fetch("/api/free-guide", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: name.trim(),
+          email: email.trim().toLowerCase(),
+        }),
       });
     } catch {}
 
