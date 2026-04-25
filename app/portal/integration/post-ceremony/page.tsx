@@ -835,12 +835,9 @@ export default function PostCeremonyPage() {
               <p className="wh-sub">{w.intro}</p>
             </div>
 
-            {w.safetyNote && (
-              <div className={`box box-${w.safetyNote.type}`}>
-                <div className="box-label">{w.safetyNote.label}</div>
-                <div className="box-text">{w.safetyNote.text}</div>
-              </div>
-            )}
+            {/* Per-week safety / info box dropped per Rachel — felt like too
+                much text alongside the journal prompts. Data on each WEEK entry
+                kept for now in case we want it back. */}
 
             {w.reentry && (
               <div className="reentry">
