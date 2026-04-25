@@ -7,11 +7,9 @@ import Link from 'next/link'
 import { PRE_CEREMONY_WEEKS } from '@/lib/journal-prompts'
 import SectionIndex, { type SectionIndexItem } from '@/components/portal/SectionIndex'
 
-// Section index for Week 1. Order matches the on-page section order so the
-// IntersectionObserver-driven active highlight tracks naturally as members
-// scroll. When Weeks 2+ are styled to match, add their own arrays here and
-// render the matching <SectionIndex /> for the active week.
-const WEEK_1_SECTIONS: SectionIndexItem[] = [
+// Section index — same six anchors for every week, plus an extra "Readiness"
+// entry on Week 6 (which has the readiness gate appended to its panel).
+const BASE_SECTIONS: SectionIndexItem[] = [
   { label: 'Principle', anchor: '#principle' },
   { label: 'Video',     anchor: '#week-video' },
   { label: 'Actions',   anchor: '#action-items' },
@@ -19,6 +17,76 @@ const WEEK_1_SECTIONS: SectionIndexItem[] = [
   { label: 'Journal',   anchor: '#journal-prompts' },
   { label: 'Community', anchor: '#community' },
 ]
+const READINESS_SECTION: SectionIndexItem = { label: 'Readiness', anchor: '#readiness' }
+const sectionsForWeek = (weekIdx: number): SectionIndexItem[] =>
+  weekIdx === 5 ? [...BASE_SECTIONS, READINESS_SECTION] : BASE_SECTIONS
+
+// Journal prompt entries — Week 1 has explicit storage keys (so the display
+// order can swap without re-attaching members' existing entries to the wrong
+// prompt) plus a custom centering placeholder on prompt 3. Weeks 2–6 use the
+// implicit `w${weekIdx}-p${promptIdx}` key pattern that's been in place since
+// the original launch.
+type PromptEntry = { key: string; q: string; hint?: string; placeholder?: string }
+const WEEK_1_PROMPTS: PromptEntry[] = [
+  { key: 'w0-p1', q: 'If I create my reality, what’s possible for my life after this journey?' },
+  { key: 'w0-p2', q: 'What thoughts about myself, others, or the world am I mistaking for truth?' },
+  {
+    key: 'w0-p0',
+    q: 'What sensations am I currently noticing in my body?',
+    hint: 'A tightness in the jaw, warmth in the chest, buzzing in the hands, a heaviness behind the eyes.',
+    placeholder: 'Before you begin, close your eyes. Take a few slow breaths. Scan your body — and notice what you notice. Then write freely…',
+  },
+]
+const promptsForWeek = (
+  weekIdx: number,
+  weekPrompts: { q: string; hint?: string }[],
+): PromptEntry[] => {
+  if (weekIdx === 0) return WEEK_1_PROMPTS
+  return weekPrompts.map((p, pi) => ({
+    key: `w${weekIdx}-p${pi}`,
+    q: p.q,
+    hint: p.hint,
+  }))
+}
+
+// Action-item card shape for the new Week 1 layout. Single-link actions
+// render as a clickable card; multi-link actions fall back to inline links
+// inside a static card; no-link actions render as static text.
+type ActionLinkArr = { text: string; href: string; external?: boolean }[]
+type ActionCard =
+  | { kind: 'internal'; href: string; text: string }
+  | { kind: 'hash';     href: string; text: string }
+  | { kind: 'external'; href: string; text: string }
+  | { kind: 'static';   text: string; links?: ActionLinkArr }
+
+const actionsForWeek = (
+  weekIdx: number,
+  actions: ReadonlyArray<{ text: string; links?: ActionLinkArr }>,
+): ActionCard[] => {
+  // Week 1 has its own hand-tuned action set (intake, prompts anchor,
+  // questions-for-the-medicine, somatic companion link) that doesn't live in
+  // the WEEKS array. Hard-code it so the display matches what we built in
+  // earlier iterations.
+  if (weekIdx === 0) {
+    return [
+      { kind: 'internal', href: '/intake-form',                        text: 'Fill out the remaining questions on your intake form' },
+      { kind: 'hash',     href: '#journal-prompts',                    text: 'Respond to this week’s journal prompts' },
+      { kind: 'internal', href: '/portal/questions-for-the-medicine',  text: 'Begin writing your questions for the medicine.' },
+      { kind: 'internal', href: '/portal/somatic-companion#week-1',    text: 'Read Week 1: The Language of the Body in The Somatic Companion' },
+    ]
+  }
+  // Weeks 2–6 derive from the existing actions data. Notes are dropped (per
+  // Rachel) — only the action text + first link survive.
+  return actions.map(a => {
+    const links = a.links ?? []
+    if (links.length === 0) return { kind: 'static', text: a.text }
+    if (links.length > 1)   return { kind: 'static', text: a.text, links }
+    const lnk = links[0]
+    if (lnk.external)              return { kind: 'external', href: lnk.href, text: a.text }
+    if (lnk.href.startsWith('#'))  return { kind: 'hash',     href: lnk.href, text: a.text }
+    return { kind: 'internal', href: lnk.href, text: a.text }
+  })
+}
 
 // ─── Types ────────────────────────────────────────────────
 type Progress = {
@@ -809,172 +877,32 @@ export default function PreCeremonyPage() {
           ~52 = 112) so it stays in view as members scroll through sections.
           Weeks 2+ stay on the week-tabs alone until each week's content is
           restyled to match. */}
-      {activeWeek === 0 && (
-        <SectionIndex sections={WEEK_1_SECTIONS} stickyTop={112} scrollOffset={170} />
-      )}
+      <SectionIndex sections={sectionsForWeek(activeWeek)} stickyTop={112} scrollOffset={170} />
 
       {/* MAIN */}
       <main className="pc-main">
         {WEEKS.map((w, i) => (
           <div key={w.id} className={`pc-panel${activeWeek === i ? ' active' : ''}`}>
 
-            {i === 0 ? (
-              <>
-                {/* Section 1 — Principle. Mirrors the Weeks 2–6 type stack
-                    (eyebrow → title → pull → body) but on its own slightly
-                    larger w1p-* scale so the principle reads as the theme. */}
-                <section className="w1-section" id="principle">
-                  <span className="w1p-eyebrow">Week 1 · Ike · Perception</span>
-                  <h2 className="w1p-title">Seeing <em>clearly.</em></h2>
-                  <p className="w1p-pull">&ldquo;I create my reality.&rdquo; — Ike</p>
-                  <p className="w1p-body">What you perceive shapes what you experience — attention, assumptions, the stories carried without noticing. This week is an invitation to look at the lens itself.</p>
-                </section>
+            {/* PRINCIPLE */}
+            <section className="w1-section" id="principle">
+              <span className="w1p-eyebrow">Week {i + 1} · {w.principleName} · {w.theme}</span>
+              <h2 className="w1p-title">
+                {i === 0
+                  ? <>Seeing <em>clearly.</em></>
+                  : <>{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</>}
+              </h2>
+              <p className="w1p-pull">&ldquo;{w.principle}&rdquo; — {w.principleName}</p>
+              <p className="w1p-body">
+                {i === 0
+                  ? 'What you perceive shapes what you experience — attention, assumptions, the stories carried without noticing. This week is an invitation to look at the lens itself.'
+                  : w.sub}
+              </p>
+            </section>
 
-                {/* Section 2 — Week Video (Rachel & Josh transmission) */}
-                <section className="w1-section" id="week-video">
-                  <span className="section-label">Message from the Founders</span>
-                  <div className="video-frame">
-                    <div className="video-primer">
-                      <div className="vp-play"><span className="vp-play-icon">▶</span></div>
-                      <div>
-                        <div className="vp-label">A Message from Rachel &amp; Josh · Week 1</div>
-                        <div className="vp-text">Rachel and Josh open the six-week preparation arc with a conversation about perception — how what we see shapes what we experience, why attention matters, and what it means to look at the lens and meet your perception with curiosity and compassion. Watch this before you read further.</div>
-                        <div className="vp-coming-soon">Coming Soon</div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 3 — Action Items (moved up per Rachel's note) */}
-                <section className="w1-section" id="action-items">
-                  <h3 className="w1-h3">Action Items</h3>
-                  <div className="w1-actions">
-                    {/* TODO: confirm canonical intake form route once the portal intake page ships. */}
-                    <Link href="/intake-form" className="w1-action">
-                      <span className="w1-action-dot" />
-                      <span className="w1-action-text">Fill out the remaining questions on your intake form</span>
-                    </Link>
-                    <a href="#journal-prompts" className="w1-action">
-                      <span className="w1-action-dot" />
-                      <span className="w1-action-text">Respond to this week&apos;s journal prompts</span>
-                    </a>
-                    {/* TODO: /portal/questions-for-the-medicine is a placeholder alias; the live page currently lives at /portal/questions. Wire this up when the dedicated page is ready. */}
-                    <Link href="/portal/questions-for-the-medicine" className="w1-action">
-                      <span className="w1-action-dot" />
-                      <span className="w1-action-text">Begin writing your questions for the medicine.</span>
-                    </Link>
-                    <Link href="/portal/somatic-companion#week-1" className="w1-action">
-                      <span className="w1-action-dot" />
-                      <span className="w1-action-text">Read Week 1: The Language of the Body in The Somatic Companion</span>
-                    </Link>
-                  </div>
-                </section>
-
-                {/* Section 4 — PNE Perspective */}
-                <section className="w1-section" id="pne-perspective">
-                  <h3 className="w1-h3">PNE Perspective: <em>The Language of the Body</em></h3>
-                  <p className="w1-body">
-                    Before any thought, the body is already speaking. Sensation — tightening, loosening, warmth, pressure — is the nervous system&apos;s first language, arriving long before words or meaning. What we call a &ldquo;feeling&rdquo; is actually three layers stacked: sensation in the body, charge in the emotional system, and story in the mind. The mind&apos;s story is often the loudest, but it&apos;s the last layer to arrive. This week, the invitation from PNE is to notice what&apos;s underneath the story — the raw data of the body — before the mind names it.
-                  </p>
-                  <div className="video-frame" style={{ marginTop: 24 }}>
-                    <div className="video-primer">
-                      <div className="vp-play"><span className="vp-play-icon">▶</span></div>
-                      <div>
-                        <div className="vp-label">PNE Teaching · Week 1</div>
-                        <div className="vp-text">A short teaching on the three layers of feeling — sensation in the body, charge in the emotional system, and story in the mind — and why the body&apos;s raw data arrives before the mind names it. The foundational practice of Week 1: listening underneath.</div>
-                        <div className="vp-coming-soon">Coming Soon</div>
-                      </div>
-                    </div>
-                  </div>
-                  <Link href="/portal/somatic-companion#week-1" className="w1-companion-link">
-                    Read the full teaching in The Somatic Companion → Week 1: The Language of the Body
-                  </Link>
-                </section>
-
-                {/* Section 5 — Journal Prompts */}
-                <section className="w1-section" id="journal-prompts">
-                  <h3 className="w1-h3">Journal Prompts</h3>
-                  <p className="w1-autosave">Your writing saves automatically as you type. You can return any time to continue.</p>
-                  {[
-                    // Storage keys are preserved across display-order changes so a member's
-                    // prior journal entries stay attached to the prompt they actually wrote to.
-                    { key: 'w0-p1', q: 'If I create my reality, what’s possible for my life after this journey?' },
-                    { key: 'w0-p2', q: 'What thoughts about myself, others, or the world am I mistaking for truth?' },
-                    {
-                      key: 'w0-p0',
-                      q: 'What sensations am I currently noticing in my body?',
-                      hint: 'A tightness in the jaw, warmth in the chest, buzzing in the hands, a heaviness behind the eyes.',
-                      // Centering invitation lives here as the textarea placeholder so it
-                      // arrives right where members are about to write, instead of as a
-                      // big italic line above all three prompts.
-                      placeholder: 'Before you begin, close your eyes. Take a few slow breaths. Scan your body — and notice what you notice. Then write freely…',
-                    },
-                  ].map((p, pi) => (
-                    <div className="w1-prompt" key={p.key}>
-                      <span className="w1-prompt-num">0{pi + 1}</span>
-                      <p className="w1-prompt-q">{p.q}</p>
-                      {p.hint && <p className="w1-prompt-hint">{p.hint}</p>}
-                      <textarea
-                        className="journal-textarea"
-                        value={journal[p.key] ?? ''}
-                        onChange={(e) => updateJournal(p.key, e.target.value)}
-                        placeholder={p.placeholder ?? 'Write freely...'}
-                        rows={4}
-                      />
-                    </div>
-                  ))}
-                </section>
-
-                {/* Section 6 — Voices from the Vital Kauaʻi Community (formatted as a video transmission) */}
-                <section className="w1-section" id="community">
-                  <h3 className="w1-h3">Voices from the Vital Kauaʻi Community</h3>
-                  <div className="video-frame">
-                    <div className="video-primer">
-                      <div className="vp-play"><span className="vp-play-icon">▶</span></div>
-                      <div>
-                        <div className="vp-label">A Reflection from the Vital Kauaʻi Community · Week 1</div>
-                        <div className="vp-text">A short transmission from a member who has walked this path — their experience with perception, with Ike, and with the first week of preparation.</div>
-                        <div className="vp-coming-soon">Coming Soon</div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-              </>
-            ) : (
-              <>
-            {/* Carry forward thread */}
-            {w.carryForward && (
-              <div className="continuity">
-                <div className="ct-arrow">↩</div>
-                <div className="ct-text"><strong>Carrying forward from Week {i}:</strong> {w.carryForward}</div>
-              </div>
-            )}
-
-            {/* Week header — Hawaiian principle card */}
-            <div className="principle-card">
-              <span className="pcard-eyebrow">Week {i + 1} · {w.theme}</span>
-              <div className="pcard-name">{w.principleName}</div>
-              <span className="pcard-sublabel">The Hawaiian Principle for Week {i + 1}</span>
-              {w.principle && (
-                <blockquote className="pcard-quote">&ldquo;{w.principle}&rdquo;</blockquote>
-              )}
-              <h2 className="pcard-title">{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</h2>
-              <p className="pcard-body">{w.sub}</p>
-              {w.italic && <p className="pcard-italic">{w.italic}</p>}
-            </div>
-
-            {/* Re-entry */}
-            {w.reentry && (
-              <div className="reentry" style={{ marginTop: 24 }}>
-                <div className="reentry-icon">◎</div>
-                <div className="reentry-text"><strong>{w.reentry.strong}</strong>{w.reentry.text}</div>
-              </div>
-            )}
-
-            {/* Video */}
-            <div className="section" style={{ marginTop: 36 }}>
-              <span className="section-label">Video transmission</span>
+            {/* VIDEO — Message from the Founders */}
+            <section className="w1-section" id="week-video">
+              <span className="section-label">Message from the Founders</span>
               <div className="video-frame">
                 <div className="video-primer">
                   <div className="vp-play"><span className="vp-play-icon">▶</span></div>
@@ -985,83 +913,135 @@ export default function PreCeremonyPage() {
                   </div>
                 </div>
               </div>
-              {/* Per-week info / warn / close box dropped per Rachel — felt like
-                  too much text alongside the journal prompts. Data kept on each
-                  WEEK entry for now in case we want it back. */}
-            </div>
+            </section>
 
-            {/* Actions */}
-            <div className="section">
-              <span className="section-label">{w.actionLabel}</span>
-              {w.actionIntro && <p className="actions-intro">{w.actionIntro}</p>}
-              <div className="actions-list">
-                {w.actions.map((a, ai) => (
-                  <div className="action-item" key={ai}>
-                    <div className="action-dot" style={{ background: DOT_COLORS[a.color] }} />
-                    <div>
-                      <div className="action-text">{renderActionText(a.text, (a as { links?: { text: string; href: string; external?: boolean }[] }).links)}</div>
-                    </div>
-                  </div>
-                ))}
+            {/* ACTIONS */}
+            <section className="w1-section" id="action-items">
+              <h3 className="w1-h3">Action Items</h3>
+              <div className="w1-actions">
+                {actionsForWeek(i, w.actions).map((card, ai) => {
+                  if (card.kind === 'static') {
+                    return (
+                      <div key={ai} className="w1-action">
+                        <span className="w1-action-dot" />
+                        <span className="w1-action-text">{renderActionText(card.text, card.links)}</span>
+                      </div>
+                    )
+                  }
+                  if (card.kind === 'hash') {
+                    return (
+                      <a key={ai} href={card.href} className="w1-action">
+                        <span className="w1-action-dot" />
+                        <span className="w1-action-text">{card.text}</span>
+                      </a>
+                    )
+                  }
+                  if (card.kind === 'external') {
+                    return (
+                      <a key={ai} href={card.href} target="_blank" rel="noopener noreferrer" className="w1-action">
+                        <span className="w1-action-dot" />
+                        <span className="w1-action-text">{card.text}</span>
+                      </a>
+                    )
+                  }
+                  return (
+                    <Link key={ai} href={card.href} className="w1-action">
+                      <span className="w1-action-dot" />
+                      <span className="w1-action-text">{card.text}</span>
+                    </Link>
+                  )
+                })}
               </div>
-              {/* Per-week safety box dropped per Rachel — same reasoning. */}
               {(w as { dataset?: string }).dataset && (() => {
                 const dataset = (w as { dataset?: string }).dataset as string
                 const dl = (w as { datasetLink?: { text: string; href: string } }).datasetLink
                 return (
-                  <div className="dataset-note">
+                  <div className="dataset-note" style={{ marginTop: 18 }}>
                     <div className="dn-header">
                       <span className="dn-label">Outcomes — your contribution to the field</span>
-                      {dl && (
-                        <Link href={dl.href} className="dn-cta">
-                          {dl.text}
-                        </Link>
-                      )}
+                      {dl && <Link href={dl.href} className="dn-cta">{dl.text}</Link>}
                     </div>
                     <div className="dn-body">{dataset}</div>
                     {dl && (
                       <div className="dn-footer">
-                        <Link href={dl.href} className="dn-cta">
-                          {dl.text}
-                        </Link>
+                        <Link href={dl.href} className="dn-cta">{dl.text}</Link>
                       </div>
                     )}
                   </div>
                 )
               })()}
-            </div>
+            </section>
 
-            {/* Journal prompts */}
-            <div className="section" id={`journal-w${i + 1}`}>
-              <span className="section-label">Journal prompts</span>
-              <div className="prompts-list">
-                {w.prompts.map((p, pi) => {
-                  const jKey = `w${i}-p${pi}`
-                  return (
-                    <div className="prompt-item" key={pi}>
-                      <span className="prompt-num">0{pi + 1}</span>
-                      <p className="prompt-q">{p.q}</p>
-                      <p className="prompt-hint">{p.hint}</p>
-                      <textarea
-                        className="journal-textarea"
-                        value={journal[jKey] ?? ''}
-                        onChange={(e) => updateJournal(jKey, e.target.value)}
-                        placeholder="Write freely..."
-                        rows={4}
-                      />
+            {/* PNE PERSPECTIVE */}
+            <section className="w1-section" id="pne-perspective">
+              <h3 className="w1-h3">
+                {i === 0 ? <>PNE Perspective: <em>The Language of the Body</em></> : 'PNE Perspective'}
+              </h3>
+              {i === 0 && (
+                <p className="w1-body">
+                  Before any thought, the body is already speaking. Sensation — tightening, loosening, warmth, pressure — is the nervous system&apos;s first language, arriving long before words or meaning. What we call a &ldquo;feeling&rdquo; is actually three layers stacked: sensation in the body, charge in the emotional system, and story in the mind. The mind&apos;s story is often the loudest, but it&apos;s the last layer to arrive. This week, the invitation from PNE is to notice what&apos;s underneath the story — the raw data of the body — before the mind names it.
+                </p>
+              )}
+              <div className="video-frame" style={{ marginTop: i === 0 ? 24 : 0 }}>
+                <div className="video-primer">
+                  <div className="vp-play"><span className="vp-play-icon">▶</span></div>
+                  <div>
+                    <div className="vp-label">PNE Teaching · Week {i + 1}</div>
+                    <div className="vp-text">
+                      {i === 0
+                        ? 'A short teaching on the three layers of feeling — sensation in the body, charge in the emotional system, and story in the mind — and why the body’s raw data arrives before the mind names it. The foundational practice of Week 1: listening underneath.'
+                        : 'A short teaching paired with this week’s principle and the body’s lived response to it.'}
                     </div>
-                  )
-                })}
+                    <div className="vp-coming-soon">Coming Soon</div>
+                  </div>
+                </div>
               </div>
-              <div className="continuity" style={{ marginTop: 20, marginBottom: 0 }}>
-                <div className="ct-arrow">→</div>
-                <div className="ct-text"><strong>What this builds:</strong> {w.thread}</div>
-              </div>
-            </div>
+              {i === 0 && (
+                <Link href="/portal/somatic-companion#week-1" className="w1-companion-link">
+                  Read the full teaching in The Somatic Companion → Week 1: The Language of the Body
+                </Link>
+              )}
+            </section>
 
-            {/* Week 6 readiness gate */}
+            {/* JOURNAL PROMPTS */}
+            <section className="w1-section" id="journal-prompts">
+              <h3 className="w1-h3">Journal Prompts</h3>
+              <p className="w1-autosave">Your writing saves automatically as you type. You can return any time to continue.</p>
+              {promptsForWeek(i, w.prompts).map((p, pi) => (
+                <div className="w1-prompt" key={p.key}>
+                  <span className="w1-prompt-num">0{pi + 1}</span>
+                  <p className="w1-prompt-q">{p.q}</p>
+                  {p.hint && <p className="w1-prompt-hint">{p.hint}</p>}
+                  <textarea
+                    className="journal-textarea"
+                    value={journal[p.key] ?? ''}
+                    onChange={(e) => updateJournal(p.key, e.target.value)}
+                    placeholder={p.placeholder ?? 'Write freely...'}
+                    rows={4}
+                  />
+                </div>
+              ))}
+            </section>
+
+            {/* VOICES FROM THE VITAL KAUAʻI COMMUNITY */}
+            <section className="w1-section" id="community">
+              <h3 className="w1-h3">Voices from the Vital Kauaʻi Community</h3>
+              <div className="video-frame">
+                <div className="video-primer">
+                  <div className="vp-play"><span className="vp-play-icon">▶</span></div>
+                  <div>
+                    <div className="vp-label">A Reflection from the Vital Kauaʻi Community · Week {i + 1}</div>
+                    <div className="vp-text">A short transmission from someone who has walked this path.</div>
+                    <div className="vp-coming-soon">Coming Soon</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* READINESS GATE — Week 6 only, anchored for the section index */}
             {w.readinessGate && (
-              <>
+              <section className="w1-section" id="readiness">
+                <h3 className="w1-h3">Readiness</h3>
                 <div className="rg-wrap">
                   <div className="rg-header">
                     <div className="rg-dot" />
@@ -1089,26 +1069,19 @@ export default function PreCeremonyPage() {
                         <div className={`rg-check${checklist[`rg-${ri}`] ? ' checked' : ''}`} onClick={() => toggleCheck(`rg-${ri}`)}>
                           <span className="rg-check-icon">✓</span>
                         </div>
-                        <div
-                          className="rg-item-text"
-                          onClick={(e) => e.stopPropagation()}
-                          style={{ cursor: 'default' }}
-                        >
+                        <div className="rg-item-text" onClick={(e) => e.stopPropagation()} style={{ cursor: 'default' }}>
                           {renderActionText(item.text, item.links)}
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-
                 <div className="bridge">
                   <span className="bridge-eyebrow">What comes next</span>
                   <h3 className="bridge-title">The preparation is complete.</h3>
-                  <p className="bridge-text">In the weeks following ceremony, this portal will continue to guide you through integration — with the same rhythm, the same depth, and the same care you've experienced here. You will be held through every phase of what comes next.</p>
+                  <p className="bridge-text">In the weeks following ceremony, this portal will continue to guide you through integration — with the same rhythm, the same depth, and the same care you&apos;ve experienced here. You will be held through every phase of what comes next.</p>
                 </div>
-              </>
-            )}
-              </>
+              </section>
             )}
 
             {/* Mark complete */}
