@@ -115,6 +115,7 @@ export default function MemberProfileEditor({
   journeyTitle = null,
   journeyEndAt = null,
   specialists = [],
+  outcomesRows = [],
 }: {
   member: Member;
   profile: Profile;
@@ -132,6 +133,7 @@ export default function MemberProfileEditor({
   journeyTitle?: string | null;
   journeyEndAt?: string | null;
   specialists?: string[];
+  outcomesRows?: Array<Record<string, any>>;
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -909,6 +911,81 @@ export default function MemberProfileEditor({
                     )}
                   </div>
                 ))}
+              </div>
+            )}
+          </div>
+
+          {/* Outcomes — assessment timeline; auto-populates once a ceremony is scheduled */}
+          <div style={CARD}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+              <p style={{ ...LABEL, margin: 0 }}>Outcomes</p>
+              {outcomesRows.length > 0 && (
+                <a
+                  href={`/founders/outcomes/${member.id}`}
+                  style={{ fontSize: 11, color: "#085041", textDecoration: "none" }}
+                >
+                  Full timeline →
+                </a>
+              )}
+            </div>
+            {outcomesRows.length === 0 ? (
+              <p style={{ fontSize: 13, color: "#9E9E9A" }}>
+                Assessment timeline appears here once a ceremony date is set.
+              </p>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {outcomesRows.map((r) => {
+                  const sLabel: Record<string, { label: string; bg: string; color: string }> = {
+                    locked:    { label: "Locked",     bg: "#F1EFE8", color: "#6B6B67" },
+                    available: { label: "Open",       bg: "#FAEEDA", color: "#633806" },
+                    overdue:   { label: "Past due",   bg: "#FCEBEB", color: "#A32D2D" },
+                    draft:     { label: "In progress", bg: "#EAF3DE", color: "#27500A" },
+                    completed: { label: "Completed",  bg: "#E1F5EE", color: "#085041" },
+                    closed:    { label: "Closed",     bg: "#F1EFE8", color: "#6B6B67" },
+                  };
+                  const s = sLabel[r.status] ?? sLabel.locked;
+                  return (
+                    <div
+                      key={`${r.ceremony_id}-${r.timepoint}`}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: "8px 12px",
+                        background: "#FAFAF8",
+                        borderRadius: 6,
+                        opacity: r.status === "locked" || r.status === "closed" ? 0.65 : 1,
+                      }}
+                    >
+                      <div>
+                        <p style={{ fontSize: 13, fontWeight: 500, color: "#1A1A18", margin: 0 }}>
+                          {r.timepoint_label || (r.timepoint as string).replace(/_/g, " ")}
+                        </p>
+                        {r.status === "completed" && r.submitted_at && (
+                          <p style={{ fontSize: 11, color: "#9E9E9A", margin: "2px 0 0" }}>
+                            {fmtDate(r.submitted_at)}
+                            {r.phq9_total != null && <> &middot; PHQ-9 {r.phq9_total}</>}
+                            {r.gad7_total != null && <> &middot; GAD-7 {r.gad7_total}</>}
+                          </p>
+                        )}
+                      </div>
+                      <span
+                        style={{
+                          fontSize: 11,
+                          padding: "2px 8px",
+                          borderRadius: 99,
+                          background: s.bg,
+                          color: s.color,
+                          fontWeight: 500,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.04em",
+                        }}
+                      >
+                        {s.label}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

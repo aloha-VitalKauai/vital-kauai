@@ -70,6 +70,13 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
     postProgress = post;
   }
 
+  // Outcomes timeline — every approved member with a scheduled ceremony has rows here.
+  const { data: outcomesRows } = await supabase
+    .from("member_assessment_status")
+    .select("ceremony_id, ceremony_date, timepoint, timepoint_label, sort_order, status, submitted_at, phq9_total, phq9_severity, gad7_total, gad7_severity")
+    .eq("member_id", id)
+    .order("sort_order", { ascending: true });
+
   // Financial detail: allocations, tokens, journey+cohort title
   let collectedCents = 0;
   let tokens: Array<{ token: string; expires_at: string; consumed_at: string | null; created_at: string }> = [];
@@ -155,6 +162,7 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       journeyTitle={journeyTitle}
       journeyEndAt={journeyEndAt}
       specialists={specialists}
+      outcomesRows={outcomesRows ?? []}
     />
   );
 }
