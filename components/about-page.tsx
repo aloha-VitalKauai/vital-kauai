@@ -145,7 +145,7 @@ export function AboutPage() {
       <section className={styles.bridge} id="bridge">
         <p className={`${styles.eyebrow} ${styles.reveal}`}>Our Story</p>
         <blockquote className={`${styles.bridgeQuote} ${styles.reveal}`}>
-          Kaua&#699;i has a way of calling people &mdash; we were called here to remember.
+          Kaua&#699;i has a way of calling people, we were called here to remember.
         </blockquote>
         <div className={`${styles.rule} ${styles.reveal}`} />
       </section>
@@ -170,13 +170,13 @@ export function AboutPage() {
             </p>
             <p className={`${styles.meetingPara} ${styles.reveal} ${styles.d1}`}>
               Months passed, and then our fields began weaving organically, merging daily without
-              plan &mdash; on the beach, in town, in the surf. We started talking and immediately
+              plan, on the beach, in town, in the surf. We started talking and immediately
               knew we had work to do together.
             </p>
             <p className={`${styles.meetingPara} ${styles.reveal} ${styles.d2}`}>
-              This sanctuary is the culmination of our life paths brought together &mdash; to be in
+              This sanctuary is the culmination of our life paths brought together, to be in
               loving service of others&apos; healing and transformation. What we carry into this work
-              is everything we have genuinely lived &mdash; the depths we have touched, the healing
+              is everything we have genuinely lived, the depths we have touched, the healing
               we have done, the love we have built here on the North Shore.
             </p>
             <p className={`${styles.meetingPara} ${styles.reveal} ${styles.d3}`}>
@@ -222,10 +222,10 @@ export function AboutPage() {
             In my twenties, I was day trading and living a life of excess. The escapes eventually stopped working; I either was going to die or move through the pain and find my true self again. That knowing sent me searching.
           </p>
           <p className={styles.storyPara}>
-            I found myself in the Stanford Design School program to prototype one of my soul-led businesses, Best Life Ever, and built conscious communities and transformational networks — The Mycelium Network and Trade with Traders.
+            I found myself in the Stanford Design School program to prototype one of my soul-led businesses, Best Life Ever, and built conscious communities and transformational networks, The Mycelium Network and Trade with Traders.
           </p>
           <p className={styles.storyPara}>
-            I arrived at my first iboga retreat freshly off a detox — physically clean, emotionally open, and extraordinarily receptive. The experience lacked preparation, safety, and proper integration, and I left more fragmented than I arrived. That experience clarified everything that would shape my work: the medicine itself is only as whole as the people and ceremony that hold it.
+            I arrived at my first iboga retreat freshly off a detox, physically clean, emotionally open, and extraordinarily receptive. The experience lacked preparation, safety, and proper integration, and I left more fragmented than I arrived. That experience clarified everything that would shape my work: the medicine itself is only as whole as the people and ceremony that hold it.
           </p>
           <div className={styles.pullPlaceholder}>
             <p>&ldquo;Working with Josh was life-changing. This level of mastery is rare, and I do not say that lightly. Josh is truly a master of his craft, and I cannot recommend his work highly enough.&rdquo;</p>
@@ -233,7 +233,7 @@ export function AboutPage() {
           </div>
           <div className={styles.pull}>
             <p>
-              &ldquo;What healed me was Africa itself — the real initiation, held in its original lineage, with the people who have tended it for centuries.&rdquo;
+              &ldquo;What healed me was Africa itself, the real initiation, held in its original lineage, with the people who have tended it for centuries.&rdquo;
             </p>
           </div>
           <div className={styles.africaPair}>
@@ -283,25 +283,25 @@ export function AboutPage() {
             <em>Nelson</em>
           </h2>
           <p className={styles.storyPara}>
-            Growing up as a dedicated athlete, I understood the body as a vehicle for excellence — the focus, the discipline, the endless refinement of technique. But beneath that drive, I was quietly losing myself.
+            Growing up as a dedicated athlete, I understood the body as a vehicle for excellence, the focus, the discipline, the endless refinement of technique. But beneath that drive, I was quietly losing myself.
           </p>
           <p className={styles.storyPara}>
-            A corporate career that hollowed my soul. A debilitating autoimmune condition. And then the completion of a seventeen-year relationship — the greatest unraveling of my life. I became a single mother, carrying the weight of what felt like failure, resentment I didn&apos;t know what to do with, and a grief so heavy I knew my boys could feel it too.
+            A corporate career that hollowed my soul. A debilitating autoimmune condition. And then the completion of a seventeen-year relationship, the greatest unraveling of my life. I became a single mother, carrying the weight of what felt like failure, resentment I didn&apos;t know what to do with, and a grief so heavy I knew my boys could feel it too.
           </p>
           <p className={styles.storyPara}>
-            Iboga had been calling me — in my dreams, and in the spaces I was holding for others. When I finally answered, something ancient and precise moved through everything I had been holding — the anger, the blame, the feeling that I was less than the mother my boys deserved. I emerged lighter — more present and authentically me.
+            Iboga had been calling me, in my dreams, and in the spaces I was holding for others. When I finally answered, something ancient and precise moved through everything I had been holding, the anger, the blame, the feeling that I was less than the mother my boys deserved. I emerged lighter, more present and authentically me.
           </p>
           <p className={styles.storyPara}>
-            That experience re-oriented me. Everything I had trained in across three decades — naturopathic medicine, transpersonal psychology, consciousness and spirituality, Tantra and other Eastern wisdom traditions, mind-body nutrition, energy work, life coaching, hypnotherapy — came together as a calling into this work, with my beloved.
+            That experience re-oriented me. Everything I had trained in across three decades, naturopathic medicine, transpersonal psychology, consciousness and spirituality, Tantra and other Eastern wisdom traditions, mind-body nutrition, energy work, life coaching, hypnotherapy, came together as a calling into this work, with my beloved.
           </p>
           <p className={styles.storyPara}>
-            My deepest passion is holding space for couples — helping them find their way back to themselves first, and meet each other with fresh eyes and hearts, to feel truly safe, loved, and seen in one another&apos;s presence. I know what it is to lose that thread, and I know what it takes to find it again.
+            My deepest passion is holding space for couples, helping them find their way back to themselves first, and meet each other with fresh eyes and hearts, to feel truly safe, loved, and seen in one another&apos;s presence. I know what it is to lose that thread, and I know what it takes to find it again.
           </p>
           <p className={styles.storyPara}>
-            I&apos;ve learned so much from my own surrender — to Spirit, to the unknown, to the medicine, to love. That&apos;s what I bring into every space I hold. The ceremonies I&apos;m blessed to guide are known to be powerful, trustworthy, and radically transformative — weaving intention, play, and grounded spirituality into an experience that meets each person exactly where they are. I am so grateful to be of service to others&apos; awakening and homecoming — in this place, with the people I love, doing the work I was born for.
+            I&apos;ve learned so much from my own surrender, to Spirit, to the unknown, to the medicine, to love. That&apos;s what I bring into every space I hold. The ceremonies I&apos;m blessed to guide are known to be powerful, trustworthy, and radically transformative, weaving intention, play, and grounded spirituality into an experience that meets each person exactly where they are. I am so grateful to be of service to others&apos; awakening and homecoming, in this place, with the people I love, doing the work I was born for.
           </p>
           <div className={styles.pullPlaceholder}>
-            <p>&ldquo;I carried an ancestral wound for decades, never quite finding the courage to face it. It was in the space you facilitated that something finally shifted. I was able to free myself! I am forever grateful for all the teachings you shared. Rachel &mdash; you have a magic that unlocked something deep in me.&rdquo;</p>
+            <p>&ldquo;I carried an ancestral wound for decades, never quite finding the courage to face it. It was in the space you facilitated that something finally shifted. I was able to free myself! I am forever grateful for all the teachings you shared. Rachel, you have a magic that unlocked something deep in me.&rdquo;</p>
             <span>&mdash; Jacque Shockley, Hanalei, Kauaʻi</span>
           </div>
         </div>
@@ -318,11 +318,11 @@ export function AboutPage() {
       <section className={styles.close} id="close">
         <p className={`${styles.closeEyebrow} ${styles.reveal}`}>An Invitation</p>
         <blockquote className={`${styles.closeQuote} ${styles.reveal}`}>
-          We offer what we have genuinely walked &mdash; the full arc of healing, coming home to the
+          We offer what we have genuinely walked, the full arc of healing, coming home to the
           body, and living in devotion to this work and to each other.
         </blockquote>
         <p className={`${styles.closeBody} ${styles.reveal}`}>
-          Together we hold a rare dual intelligence &mdash; the feminine and masculine, the ancient
+          Together we hold a rare dual intelligence, the feminine and masculine, the ancient
           and the visionary, the deeply personal and the rigorously trained. Vital Kaua&#699;i is the
           natural expression of the life we are living.
         </p>

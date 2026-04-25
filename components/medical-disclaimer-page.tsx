@@ -141,8 +141,8 @@ export function MedicalDisclaimerPage() {
           <em>Nature</em> of Our Work
         </h2>
         <p>
-          Nothing offered by Vital Kauai Church — on this website, in written materials, or in direct
-          communication with our Stewards or practitioners — constitutes medical advice, psychiatric
+          Nothing offered by Vital Kauai Church, on this website, in written materials, or in direct
+          communication with our Stewards or practitioners, constitutes medical advice, psychiatric
           treatment, clinical diagnosis, or therapeutic intervention as defined by state or federal
           law. Vital Kauai Church does not practice medicine. Our Stewards and practitioners offer
           ceremony, sacred presence, somatic guidance, and spiritual support within a religious
@@ -153,7 +153,7 @@ export function MedicalDisclaimerPage() {
         <div className={styles.highlightBox}>
           <p>
             All practices within Vital Kauai Church are sacramental and ecclesiastical in nature.
-            They are expressions of sincere religious belief — not medical treatments, clinical
+            They are expressions of sincere religious belief, not medical treatments, clinical
             therapies, or health interventions. Membership in this Church is a voluntary spiritual
             commitment, entered freely by consenting adults.
           </p>
@@ -229,7 +229,7 @@ export function MedicalDisclaimerPage() {
         </h2>
         <p>
           The Iboga Journey at Vital Kauai Church is a sacramental ceremony rooted in sincere
-          religious practice. Iboga — the root bark of <em>Tabernanthe iboga</em> — is a sacred plant
+          religious practice. Iboga, the root bark of <em>Tabernanthe iboga</em>, is a sacred plant
           sacrament used within our church as an act of worship, in accordance with our Statement of
           Belief and under the protections afforded to religious organizations by the First Amendment
           and the Religious Freedom Restoration Act.
@@ -247,7 +247,7 @@ export function MedicalDisclaimerPage() {
         <p>
           Vital Kauai Church takes the physiological seriousness of Iboga ceremony with the utmost
           gravity. The Iboga sacrament carries meaningful physical risk, particularly for individuals
-          with cardiac conditions, liver conditions, or certain medication interactions — including
+          with cardiac conditions, liver conditions, or certain medication interactions, including
           but not limited to SSRIs, MAOIs, opioids, stimulants, and QT-prolonging medications. For
           this reason, Vital Kauai Church requires all members participating in the Iboga Journey to
           complete thorough medical screening prior to ceremony, including ECG/cardiac evaluation and
@@ -275,7 +275,7 @@ export function MedicalDisclaimerPage() {
         </p>
 
         <p>
-          We are a private religious community — not a medical facility, retreat center, or clinical
+          We are a private religious community, not a medical facility, retreat center, or clinical
           program. We are transparent about what we are and what we are not. We invite every member to
           enter sacramental work with full awareness, honest self-disclosure, clear consent, and the
           ongoing support of their own healthcare providers.
@@ -340,7 +340,7 @@ export function MedicalDisclaimerPage() {
           </div>
           <p className={styles.policyNote}>
             Questions about any of our policies? Write to us at{" "}
-            <Link href="/#contact">our contact form</Link> — we are happy to clarify anything.
+            <Link href="/#contact">our contact form</Link>, we are happy to clarify anything.
           </p>
         </div>
       </div>

@@ -32,10 +32,10 @@ export default async function SomaticCompanionPage() {
             The <em style={{ fontStyle: "italic", color: sageLt }}>Somatic Companion</em>
           </h1>
           <p style={{ fontSize: 14.5, color: "rgba(245,240,232,0.58)", lineHeight: 1.95, maxWidth: 620, marginBottom: 28 }}>
-            A foundational guide prepared for Iboga Journey participants &mdash; polyvagal theory, somatic self-resourcing, and breath practices to support your preparation, ceremony, and integration.
+            A foundational guide prepared for Iboga Journey participants, polyvagal theory, somatic self-resourcing, and breath practices to support your preparation, ceremony, and integration.
           </p>
           <p style={{ fontSize: 12, color: "rgba(245,240,232,0.3)", borderLeft: "2px solid rgba(168,197,172,0.2)", paddingLeft: 14, lineHeight: 1.7 }}>
-            The Iboga journey asks everything of you &mdash; and it gives back more than you can imagine. This guide offers you a foundation before, during, and after ceremony.
+            The Iboga journey asks everything of you, and it gives back more than you can imagine. This guide offers you a foundation before, during, and after ceremony.
           </p>
         </div>
       </div>
@@ -72,7 +72,7 @@ export default async function SomaticCompanionPage() {
 
         <div style={{ background: forest, padding: "28px 36px", borderLeft: `3px solid ${sageLt}`, marginBottom: 64 }}>
           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 16, fontStyle: "italic", color: "rgba(245,240,232,0.7)", lineHeight: 1.8 }}>
-            &ldquo;Your body is always doing its best with the information it has. Every state you have ever moved through has been a form of intelligence &mdash; a faithful attempt to keep you alive and whole.&rdquo;
+            &ldquo;Your body is always doing its best with the information it has. Every state you have ever moved through has been a form of intelligence, a faithful attempt to keep you alive and whole.&rdquo;
           </p>
         </div>
 
@@ -84,10 +84,10 @@ export default async function SomaticCompanionPage() {
           Tracking Sensations <em style={{ fontStyle: "italic", color: sage }}>in the Body</em>
         </h2>
         <p style={{ fontSize: 13.5, color: stone, lineHeight: 1.85, maxWidth: 640, paddingBottom: 48, borderBottom: `1px solid ${border}`, marginBottom: 48 }}>
-          In somatic therapy, tracking means turning your attention inward to notice what the body is doing &mdash; without needing to change or fix anything. It is the doorway to every other practice in this guide. The nervous system speaks in a language older than words: sensation, image, feeling, impulse. Learning to listen is the work of a lifetime, and every moment of listening is enough.
+          In somatic therapy, tracking means turning your attention inward to notice what the body is doing, without needing to change or fix anything. It is the doorway to every other practice in this guide. The nervous system speaks in a language older than words: sensation, image, feeling, impulse. Learning to listen is the work of a lifetime, and every moment of listening is enough.
         </p>
 
-        {/* SIBAM — Peter Levine's 5 channels */}
+        {/* SIBAM, Peter Levine's 5 channels */}
         <div style={{ background: "rgba(122,158,126,0.06)", border: "1px solid rgba(122,158,126,0.15)", borderRadius: 12, padding: "36px 40px", marginBottom: 48 }}>
           <span style={{ fontSize: 8.5, letterSpacing: "0.4em", textTransform: "uppercase", color: sage, display: "block", marginBottom: 8 }}>The Five Channels · SIBAM</span>
           <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 26, fontWeight: 300, marginBottom: 8 }}>How <em style={{ fontStyle: "italic", color: sage }}>Experience</em> Arrives</h3>
@@ -99,7 +99,7 @@ export default async function SomaticCompanionPage() {
             { letter: "I", word: "Image", text: "The visual: pictures, memories, colors, symbols, shapes that arrive in the mind&apos;s eye. Sometimes clear, sometimes fleeting." },
             { letter: "B", word: "Behavior", text: "The impulse: the movement, gesture, posture, or sound the body wants to make. A slight turn of the head. A hand wanting to lift." },
             { letter: "A", word: "Affect", text: "The emotional: sadness, joy, fear, anger, tenderness, grief, awe. Felt in the body before it is named in the mind." },
-            { letter: "M", word: "Meaning", text: "The mental: thoughts, stories, interpretations — &ldquo;this means X.&rdquo; Meaning arrives last in the sequence and is held lightly, as one truth among many." },
+            { letter: "M", word: "Meaning", text: "The mental: thoughts, stories, interpretations, &ldquo;this means X.&rdquo; Meaning arrives last in the sequence and is held lightly, as one truth among many." },
           ].map((ch) => (
             <div key={ch.letter} style={{ display: "flex", gap: 20, padding: "16px 0", borderTop: `1px solid ${border}` }}>
               <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 300, color: gold, fontStyle: "italic", lineHeight: 1, width: 32, flexShrink: 0 }}>{ch.letter}</div>
@@ -111,7 +111,7 @@ export default async function SomaticCompanionPage() {
           ))}
         </div>
 
-        {/* How to track — numbered steps */}
+        {/* How to track, numbered steps */}
         <span style={{ fontSize: 8.5, letterSpacing: "0.44em", textTransform: "uppercase", color: gold, display: "block", marginBottom: 10 }}>The Practice</span>
         <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(24px, 3vw, 34px)", fontWeight: 300, lineHeight: 1.15, marginBottom: 32 }}>
           How to <em style={{ fontStyle: "italic", color: sage }}>Listen</em>
@@ -119,12 +119,12 @@ export default async function SomaticCompanionPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: 0, marginBottom: 48 }}>
           {[
             { num: "I", title: "Arrive", text: "Settle the body. Place your feet. Soften your gaze or close your eyes. Take one slower exhale. You do not need to find anything; you are simply here." },
-            { num: "II", title: "Scan", text: "Let your attention move slowly through the body — head, throat, chest, belly, pelvis, arms, legs, feet. Not searching, not diagnosing. Just passing through like a gentle light." },
-            { num: "III", title: "Notice What Calls", text: "Rest your attention wherever there is the most presence — whatever has weight, warmth, tension, movement. The body always has something it is asking you to meet." },
+            { num: "II", title: "Scan", text: "Let your attention move slowly through the body, head, throat, chest, belly, pelvis, arms, legs, feet. Not searching, not diagnosing. Just passing through like a gentle light." },
+            { num: "III", title: "Notice What Calls", text: "Rest your attention wherever there is the most presence, whatever has weight, warmth, tension, movement. The body always has something it is asking you to meet." },
             { num: "IV", title: "Describe Without Judgment", text: "Use the body&apos;s own vocabulary. Rather than &ldquo;I feel anxious,&rdquo; try &ldquo;there is a tight band across my chest.&rdquo; Rather than &ldquo;I feel sad,&rdquo; try &ldquo;there is heaviness behind my eyes and a pulling in my throat.&rdquo; Sensation before story." },
             { num: "V", title: "Stay with It", text: "Rest your attention there, with curiosity. The sensation may shift, soften, grow, move, or stay still. All of it is information. Your job is only to accompany, not to change." },
-            { num: "VI", title: "Let Other Channels Arrive", text: "A sensation may bring an image. The image may bring a feeling. The feeling may bring an impulse — a gesture the body wants to make. Allow the movement between S, I, B, A, M without forcing any channel to be &ldquo;the point.&rdquo;" },
-            { num: "VII", title: "Pendulate When It Grows", text: "If what you are tracking becomes too much, return to a resource — feet on the ground, hand on the heart, a breath, a gaze on something soft in the room. Touch the edge, then return to safety. Touch the edge, then return. This is how the nervous system digests." },
+            { num: "VI", title: "Let Other Channels Arrive", text: "A sensation may bring an image. The image may bring a feeling. The feeling may bring an impulse, a gesture the body wants to make. Allow the movement between S, I, B, A, M without forcing any channel to be &ldquo;the point.&rdquo;" },
+            { num: "VII", title: "Pendulate When It Grows", text: "If what you are tracking becomes too much, return to a resource, feet on the ground, hand on the heart, a breath, a gaze on something soft in the room. Touch the edge, then return to safety. Touch the edge, then return. This is how the nervous system digests." },
           ].map((step) => (
             <div key={step.num} style={{ padding: "28px 0", borderBottom: `1px solid ${border}` }}>
               <span style={{ fontSize: 9, letterSpacing: "0.35em", textTransform: "uppercase", color: sage, display: "block", marginBottom: 10 }}>{step.num}</span>
@@ -140,7 +140,7 @@ export default async function SomaticCompanionPage() {
           Words to Describe <em style={{ fontStyle: "italic", color: sage }}>What You Feel</em>
         </h3>
         <p style={{ fontSize: 13, color: stone, lineHeight: 1.85, maxWidth: 640, marginBottom: 28 }}>
-          When the body is hard to describe, reach for precision rather than labels. These are companion words — not a checklist. Use whichever meet the sensation honestly.
+          When the body is hard to describe, reach for precision rather than labels. These are companion words, not a checklist. Use whichever meet the sensation honestly.
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 40 }}>
           {[
@@ -160,7 +160,7 @@ export default async function SomaticCompanionPage() {
 
         <div style={{ background: forest, padding: "28px 36px", borderLeft: `3px solid ${sageLt}`, marginBottom: 64 }}>
           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 16, fontStyle: "italic", color: "rgba(245,240,232,0.7)", lineHeight: 1.8 }}>
-            &ldquo;There is no right way to track. Whatever arises is valuable. The more you practice, the more fluent the body becomes in telling you what it needs &mdash; and the more fluent you become in listening.&rdquo;
+            &ldquo;There is no right way to track. Whatever arises is valuable. The more you practice, the more fluent the body becomes in telling you what it needs, and the more fluent you become in listening.&rdquo;
           </p>
         </div>
 
@@ -172,7 +172,7 @@ export default async function SomaticCompanionPage() {
           Somatic Self-Resourcing: <em style={{ fontStyle: "italic", color: sage }}>Coming Back to the Body</em>
         </h2>
         <p style={{ fontSize: 13.5, color: stone, lineHeight: 1.85, maxWidth: 640, paddingBottom: 48, borderBottom: `1px solid ${border}`, marginBottom: 48 }}>
-          Somatic means &ldquo;of the body.&rdquo; Somatic self-resourcing is the practice of using your own body &mdash; its sensations, its breath, its contact with gravity and the ground &mdash; to create a felt sense of safety within yourself.
+          Somatic means &ldquo;of the body.&rdquo; Somatic self-resourcing is the practice of using your own body, its sensations, its breath, its contact with gravity and the ground, to create a felt sense of safety within yourself.
         </p>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 0, marginBottom: 64 }}>
@@ -209,7 +209,7 @@ export default async function SomaticCompanionPage() {
           <p style={{ fontSize: 13, color: stone, lineHeight: 1.8, marginBottom: 28 }}>A complete cycle of breath that fills, stills, and releases</p>
 
           <p style={{ fontSize: 13, color: inkMid, lineHeight: 1.8, marginBottom: 24, fontStyle: "italic" }}>
-            Begin with placement &mdash; Bring one hand to rest over your heart and the other over your belly. Feel the warmth of your palms meeting your body. This contact establishes presence.
+            Begin with placement, Bring one hand to rest over your heart and the other over your belly. Feel the warmth of your palms meeting your body. This contact establishes presence.
           </p>
 
           {[
@@ -246,7 +246,7 @@ export default async function SomaticCompanionPage() {
             { title: "Temperature Anchor", text: "Hold something warm \u2014 a mug of tea, a warm cloth, your own palms pressed together. Temperature is one of the fastest pathways to the present-moment body." },
             { title: "Name What You Notice", text: "Gently label the sensations you experience with openness and curiosity: tingling, warmth, tightness, expansion. This practice activates the prefrontal cortex and creates stabilizing distance." },
             { title: "Sound & Tone", text: "Humming, chanting, or toning directly vibrates the vagus nerve. A simple sustained hum activates your parasympathetic system and creates resonance in the body." },
-            { title: "The Inner Witness", text: "When activation rises, invite the quiet, steady part of yourself to simply observe. Say inwardly: I see what is happening. I am here with it. The witness accompanies — it holds space." },
+            { title: "The Inner Witness", text: "When activation rises, invite the quiet, steady part of yourself to simply observe. Say inwardly: I see what is happening. I am here with it. The witness accompanies, it holds space." },
           ].map((p) => (
             <div key={p.title} style={{ background: "rgba(122,158,126,0.04)", border: `1px solid rgba(122,158,126,0.12)`, borderRadius: 8, padding: "24px 28px" }}>
               <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 19, fontWeight: 400, marginBottom: 10 }}>{p.title}</h4>
@@ -268,7 +268,7 @@ export default async function SomaticCompanionPage() {
             If you remember one thing, remember your breath.
           </p>
           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 17, fontStyle: "italic", color: "rgba(245,240,232,0.38)", letterSpacing: "0.05em" }}>
-            With deep reverence &mdash; Rachel & Josh &middot; Vital Kaua&#699;i
+            With deep reverence, Rachel & Josh &middot; Vital Kaua&#699;i
           </p>
         </div>
       </div>

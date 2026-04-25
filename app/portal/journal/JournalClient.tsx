@@ -132,7 +132,7 @@ export default function JournalClient() {
             Your Journey<br /><em style={{ fontStyle: "italic", color: "#A8C5AC" }}>Journal</em>
           </h1>
           <p style={{ fontSize: 14.5, color: "rgba(245,240,232,0.58)", lineHeight: 1.95, maxWidth: 580, marginBottom: 28 }}>
-            Every prompt from your weekly preparation and integration work, in one place. Write here or in the weekly pages — your responses sync across both views.
+            Every prompt from your weekly preparation and integration work, in one place. Write here or in the weekly pages, your responses sync across both views.
           </p>
           <p style={{ fontSize: 12, color: "rgba(245,240,232,0.3)", borderLeft: "2px solid rgba(168,197,172,0.2)", paddingLeft: 14, lineHeight: 1.7 }}>
             Take what serves you. Leave the rest. Return as often as you wish.
@@ -243,10 +243,10 @@ export default function JournalClient() {
             A Hui Hou &mdash;<br /><em style={{ fontStyle: "italic", color: "#A8C5AC" }}>Until We Meet Again</em>
           </h2>
           <p style={{ fontSize: 14, color: "rgba(245,240,232,0.55)", lineHeight: 1.95, maxWidth: 500, margin: "0 auto 20px" }}>
-            You walked through something real. The medicine chose you as much as you chose it. Whatever continues to unfold &mdash; we are here. Your integration team remains available, and this journal is always open.
+            You walked through something real. The medicine chose you as much as you chose it. Whatever continues to unfold, we are here. Your integration team remains available, and this journal is always open.
           </p>
           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 17, fontStyle: "italic", color: "rgba(245,240,232,0.38)", letterSpacing: "0.05em" }}>
-            With deep reverence &mdash; Rachel & Josh &middot; Vital Kaua&#699;i
+            With deep reverence, Rachel & Josh &middot; Vital Kaua&#699;i
           </p>
         </div>
       </div>

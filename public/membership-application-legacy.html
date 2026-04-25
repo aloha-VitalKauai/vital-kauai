@@ -510,7 +510,7 @@ footer p { font-size: 10px; color: rgba(245,240,232,0.2); }
   <div class="agreement-panel" id="agreementPanel">
     <div class="agreement-header">
       <p class="agreement-title">Vital Kauai · A Private Church Association</p>
-      <p class="agreement-subtitle">Membership Application & Agreement — Read in full before signing</p>
+      <p class="agreement-subtitle">Membership Application & Agreement, Read in full before signing</p>
     </div>
 
     <div class="agreement-text">
@@ -673,7 +673,7 @@ window.addEventListener('scroll', () => {
   if (progress >= 92 && !hasScrolled) {
     hasScrolled = true;
     readDot.classList.add('active');
-    readText.textContent = 'Agreement read — ready to sign';
+    readText.textContent = 'Agreement read, ready to sign';
     readText.style.color = 'var(--sage)';
   }
 });
@@ -696,7 +696,7 @@ function validateForm() {
   const ready = name.length > 2 && emailOk && sig.length > 2 && agreed;
   document.getElementById('submitBtn').disabled = !ready;
   if (ready) {
-    document.getElementById('statusMsg').textContent = 'Ready to submit — click to sign';
+    document.getElementById('statusMsg').textContent = 'Ready to submit, click to sign';
     document.getElementById('statusMsg').className = 'status-msg';
   }
 }
@@ -784,7 +784,7 @@ async function handleSubmit() {
   } catch (err) {
     btn.classList.remove('loading');
     btn.disabled = false;
-    status.textContent = 'Something went wrong — please try again or contact us directly.';
+    status.textContent = 'Something went wrong, please try again or contact us directly.';
     status.className = 'status-msg error';
   }
 }

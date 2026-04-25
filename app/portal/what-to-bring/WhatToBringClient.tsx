@@ -98,7 +98,7 @@ export default function WhatToBringClient() {
 
       {/* Header */}
       <div style={{ background: ink, color: "#F7F3ED", padding: "70px 40px 60px", textAlign: "center" }}>
-        <p style={{ fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(247,243,237,0.4)", marginBottom: 18 }}>Vital Kaua&#699;i &mdash; Member Portal</p>
+        <p style={{ fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(247,243,237,0.4)", marginBottom: 18 }}>Vital Kaua&#699;i, Member Portal</p>
         <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 50, fontWeight: 300, letterSpacing: "0.03em", lineHeight: 1.1, marginBottom: 10 }}>
           What to Bring<br /><em style={{ fontStyle: "italic", color: "rgba(247,243,237,0.55)" }}>to Kaua&#699;i</em>
         </h1>
@@ -109,7 +109,7 @@ export default function WhatToBringClient() {
         {/* Intro */}
         <div style={{ textAlign: "center", marginBottom: 56, paddingBottom: 48, borderBottom: `1px solid ${border}` }}>
           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 400, lineHeight: 1.8, maxWidth: 640, margin: "0 auto 18px" }}>
-            Your time here is an invitation to arrive fully &mdash; body, spirit, and the things that make you feel most like yourself. Pack lightly and intentionally.
+            Your time here is an invitation to arrive fully, body, spirit, and the things that make you feel most like yourself. Pack lightly and intentionally.
           </p>
           <p style={{ fontSize: 13, color: inkLight, letterSpacing: "0.03em" }}>
             Kaua&#699;i&rsquo;s North Shore is warm and lush, with afternoon rain and everything in between. Pack accordingly.
@@ -160,9 +160,9 @@ export default function WhatToBringClient() {
 
           <div style={{ background: goldBg, borderLeft: `3px solid ${gold}`, borderRadius: 8, padding: "20px 24px", marginBottom: 16 }}>
             <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 500, marginBottom: 10, letterSpacing: "0.02em" }}>Iboga Journey</h3>
-            <p style={{ fontSize: 13.5, lineHeight: 1.65, color: inkLight }}>Please bring all-white clothing for ceremony. White is worn as a reflection of openness and intention &mdash; bring enough for the full ceremony period.</p>
+            <p style={{ fontSize: 13.5, lineHeight: 1.65, color: inkLight }}>Please bring all-white clothing for ceremony. White is worn as a reflection of openness and intention, bring enough for the full ceremony period.</p>
             <div style={{ marginTop: 16, background: "rgba(139,105,20,0.1)", borderLeft: `3px solid ${gold}`, borderRadius: 4, padding: "12px 16px", fontSize: 13.5, lineHeight: 1.65 }}>
-              Iboga is a stimulant and sleep in the days following ceremony can be challenging. Before your arrival, consult with your doctor about a sleep aid or prescription sleep support &mdash; and fill it in advance so you have it on hand.
+              Iboga is a stimulant and sleep in the days following ceremony can be challenging. Before your arrival, consult with your doctor about a sleep aid or prescription sleep support, and fill it in advance so you have it on hand.
             </div>
           </div>
         </div>

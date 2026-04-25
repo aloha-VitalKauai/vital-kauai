@@ -43,14 +43,14 @@ export default async function CeremonyGuidelinesPage() {
           <span style={{ display: "block", fontWeight: 400, fontSize: "0.7rem", letterSpacing: "0.22em", textTransform: "uppercase", color: gold, marginBottom: "0.75rem" }}>Member Portal</span>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2rem, 5vw, 2.75rem)", lineHeight: 1.2, marginBottom: "1.25rem" }}>Ceremony Guidelines</h2>
           <p style={{ fontSize: "0.95rem", color: inkSoft, maxWidth: 580, margin: "0 auto", lineHeight: 1.8 }}>
-            These guidelines exist to support your deepest transformation. They are a living invitation &mdash; held with care by your facilitators and by each person who enters this space.
+            These guidelines exist to support your deepest transformation. They are a living invitation, held with care by your facilitators and by each person who enters this space.
           </p>
           <div style={{ width: 48, height: 1, background: gold, margin: "1.5rem auto 0" }} />
         </div>
 
         {/* 1. Sacred Agreements */}
         <Card accent={gold} icon="&#9671;" title="Sacred Agreements">
-          <p style={p}>Entering this container is an act of sacred commitment &mdash; to yourself, to those sharing the space with you, and to the work we are here to do together.</p>
+          <p style={p}>Entering this container is an act of sacred commitment, to yourself, to those sharing the space with you, and to the work we are here to do together.</p>
           <ul style={{ listStyle: "none", padding: 0, margin: "0.75rem 0 0" }}>
             {[
               "I align with my highest positive intention for the good of all.",
@@ -112,7 +112,7 @@ export default async function CeremonyGuidelinesPage() {
 
         {/* 4. Presence Within the Space */}
         <Card accent={inkSoft} icon="&#10022;" title="Presence Within the Space">
-          <p style={p}>Ceremony and deep work call for a quality of awareness &mdash; a sustained turning inward, even when held in the company of others.</p>
+          <p style={p}>Ceremony and deep work call for a quality of awareness, a sustained turning inward, even when held in the company of others.</p>
           <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0" }}>
             {[
               { bold: "Alone Together:", text: " Imagine a soft energy bubble around you. Stay anchored in your own process." },
@@ -133,7 +133,7 @@ export default async function CeremonyGuidelinesPage() {
 
         {/* 5. Facilitator Presence */}
         <Card accent={gold} icon="&#9672;" title="Facilitator Presence & Boundaries">
-          <p style={p}>Your facilitators hold this space as mirrors, guides, and fellow travelers &mdash; never as authority over your experience.</p>
+          <p style={p}>Your facilitators hold this space as mirrors, guides, and fellow travelers, never as authority over your experience.</p>
           <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0" }}>
             {[
               { bold: "Healer as Mirror:", text: " Your facilitators are human. When personal material arises in us, we name it internally and return our full presence to you." },
@@ -176,7 +176,7 @@ export default async function CeremonyGuidelinesPage() {
         {/* Closing */}
         <div style={{ textAlign: "center", marginTop: "3rem", padding: "2.5rem", border: `1px solid ${goldLight}`, borderRadius: 2, background: "linear-gradient(135deg, rgba(184,149,106,0.06), rgba(122,140,110,0.06))" }}>
           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "clamp(1.05rem, 2.5vw, 1.3rem)", color: inkSoft, lineHeight: 1.7, maxWidth: 520, margin: "0 auto" }}>
-            Be on purpose. Align with your highest intention for the good of all &mdash; and trust that this space, these guides, and the wisdom of your own body will carry you exactly where you need to go.
+            Be on purpose. Align with your highest intention for the good of all, and trust that this space, these guides, and the wisdom of your own body will carry you exactly where you need to go.
           </p>
         </div>
       </div>

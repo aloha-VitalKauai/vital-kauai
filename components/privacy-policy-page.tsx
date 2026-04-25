@@ -104,7 +104,7 @@ export function PrivacyPolicyPage() {
           </h1>
           <div className={styles.heroRule} />
           <p className={styles.heroSub}>
-            Your information is held as sacred — with care, discretion, and the full weight of our
+            Your information is held as sacred, with care, discretion, and the full weight of our
             commitment to your trust.
           </p>
         </div>
@@ -146,7 +146,7 @@ export function PrivacyPolicyPage() {
         </p>
 
         <p>
-          Privacy is not merely a legal obligation for us — it is a sacred value, rooted in our
+          Privacy is not merely a legal obligation for us, it is a sacred value, rooted in our
           Covenant of Silence and our deepest commitment to the dignity of every member. The
           information you share with us is held as confidential, used with care, and never exploited.
           This Privacy Policy describes how Vital Kauai Church (&quot;we,&quot; &quot;us,&quot;
@@ -160,7 +160,7 @@ export function PrivacyPolicyPage() {
             By becoming a member of Vital Kauai Church, all information you share with the Church
             enters the private domain of a religious organization. It is protected by the
             Church&apos;s Covenant of Silence, our ecclesiastical obligations, and applicable
-            religious freedom law — not merely by standard data protection frameworks.
+            religious freedom law, not merely by standard data protection frameworks.
           </p>
         </div>
 
@@ -241,8 +241,8 @@ export function PrivacyPolicyPage() {
           <em>How We Protect</em> Your Information
         </h2>
         <p>
-          Member information — particularly health disclosures, personal history, and sacramental
-          communications — is treated as confidential, sacred, and protected by multiple overlapping
+          Member information, particularly health disclosures, personal history, and sacramental
+          communications, is treated as confidential, sacred, and protected by multiple overlapping
           frameworks.
         </p>
         <div className={styles.highlightBox}>
@@ -250,7 +250,7 @@ export function PrivacyPolicyPage() {
             Information shared with Vital Kauai Church in the context of sacramental preparation,
             religious counsel, or church membership is protected by the Covenant of Silence
             established in our Church Charter. This is a binding ecclesiastical obligation on all
-            Stewards, practitioners, and staff — not merely an internal policy. Health and personal
+            Stewards, practitioners, and staff, not merely an internal policy. Health and personal
             disclosures made in the context of religious practice may additionally carry
             ecclesiastical privilege protections under applicable law.
           </p>
@@ -280,20 +280,20 @@ export function PrivacyPolicyPage() {
         </p>
         <ul>
           <li>
-            <strong>With your explicit consent</strong> — when you directly authorize specific
+            <strong>With your explicit consent</strong>, when you directly authorize specific
             disclosure in writing
           </li>
           <li>
-            <strong>With your care providers</strong> — when coordination with a licensed medical
+            <strong>With your care providers</strong>, when coordination with a licensed medical
             professional is necessary to protect your safety, and only with your knowledge
           </li>
           <li>
-            <strong>With bound service providers</strong> — limited technical vendors such as payment
+            <strong>With bound service providers</strong>, limited technical vendors such as payment
             processors and scheduling tools, all of whom are contractually bound to confidentiality
             obligations consistent with our ecclesiastical standards
           </li>
           <li>
-            <strong>When legally compelled</strong> — only when disclosure is required by a court of
+            <strong>When legally compelled</strong>, only when disclosure is required by a court of
             competent jurisdiction and after the Church has exhausted all available ecclesiastical and
             legal protections against compelled disclosure. The Church will notify affected members of
             any such compelled disclosure to the extent legally permitted
@@ -315,7 +315,7 @@ export function PrivacyPolicyPage() {
         </p>
         <p>
           All Stewards and practitioners of Vital Kauai Church are bound by the Covenant of Silence
-          established in our Church Charter — a sacred and contractual obligation of confidentiality
+          established in our Church Charter, a sacred and contractual obligation of confidentiality
           that exists independently of, and in addition to, any legal protections.
         </p>
 
@@ -425,7 +425,7 @@ export function PrivacyPolicyPage() {
           </div>
           <p className={styles.policyNote}>
             Questions about any of our policies? Write to us at{" "}
-            <Link href="/#contact">our contact form</Link> — we are happy to clarify anything.
+            <Link href="/#contact">our contact form</Link>, we are happy to clarify anything.
           </p>
         </div>
       </div>

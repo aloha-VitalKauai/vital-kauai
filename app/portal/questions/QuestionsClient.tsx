@@ -7,7 +7,7 @@ const SECTIONS = [
     num: "1",
     label: "Healing & the Body",
     title: "What do you want to heal?",
-    subtitle: "Physical, emotional, relational — what are you carrying that is ready to be released?",
+    subtitle: "Physical, emotional, relational, what are you carrying that is ready to be released?",
     examples: [
       "How can I heal my chronic pain?",
       "What is the root of my anxiety, and how do I release it?",
@@ -19,7 +19,7 @@ const SECTIONS = [
     num: "2",
     label: "Blind Spots & Shadows",
     title: "What do I most need to see?",
-    subtitle: "What patterns, beliefs, or truths are ready to come into the light — about yourself, others, or the life you are living?",
+    subtitle: "What patterns, beliefs, or truths are ready to come into the light, about yourself, others, or the life you are living?",
     examples: [
       "What do I most need to see right now?",
       "Where am I lying to myself?",
@@ -31,7 +31,7 @@ const SECTIONS = [
     num: "3",
     label: "Forgiveness & Relationships",
     title: "Who do you need to forgive?",
-    subtitle: "Toward yourself and others — where is there unresolved pain, resentment, or grief that is ready to be met with grace?",
+    subtitle: "Toward yourself and others, where is there unresolved pain, resentment, or grief that is ready to be met with grace?",
     examples: [
       "How can I forgive myself for _____?",
       "What do I need to understand about _____ in order to release what happened between us?",
@@ -43,7 +43,7 @@ const SECTIONS = [
     num: "4",
     label: "Purpose & Becoming",
     title: "Who are you becoming?",
-    subtitle: "Beyond healing — what are you moving toward? What life, version of yourself, or quality of being are you called to step into?",
+    subtitle: "Beyond healing, what are you moving toward? What life, version of yourself, or quality of being are you called to step into?",
     examples: [
       "What is my purpose, and am I living it fully?",
       "What do I need to let go of in order to live a more whole and vital life?",
@@ -55,7 +55,7 @@ const SECTIONS = [
     num: "5",
     label: "Your Own Voice",
     title: "What else is in your heart?",
-    subtitle: "Any question that arises from your own knowing — trust it. Write it down exactly as it comes.",
+    subtitle: "Any question that arises from your own knowing, trust it. Write it down exactly as it comes.",
     examples: [],
     count: 6,
   },
@@ -118,7 +118,7 @@ export default function QuestionsClient() {
             Questions for<br /><em style={{ fontStyle: "italic", color: "#8B8070" }}>the Medicine</em>
           </h1>
           <p style={{ fontSize: 14, lineHeight: 1.85, color: "#3D3D38", maxWidth: 620 }}>
-            Iboga listens. Before you arrive, take time to clarify what you are truly asking — both what you hope to resolve and what you are willing to see, feel, and be shown. These questions are seeds. Write them with sincerity and as much specificity as you can. The medicine will meet you exactly where you are.
+            Iboga listens. Before you arrive, take time to clarify what you are truly asking, both what you hope to resolve and what you are willing to see, feel, and be shown. These questions are seeds. Write them with sincerity and as much specificity as you can. The medicine will meet you exactly where you are.
           </p>
         </div>
 
@@ -144,7 +144,7 @@ export default function QuestionsClient() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {section.examples.map((ex, i) => (
                     <p key={i} style={{ fontSize: 12, fontStyle: "italic", color: "#8B8070", fontFamily: "'Cormorant Garamond', serif", lineHeight: 1.5 }}>
-                      &mdash; {ex}
+                     , {ex}
                     </p>
                   ))}
                 </div>
@@ -174,7 +174,7 @@ export default function QuestionsClient() {
         <div style={{ textAlign: "center", paddingTop: 40 }}>
           <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: "#C8A96E", marginBottom: 16 }}>&#10022;</div>
           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 16, fontStyle: "italic", lineHeight: 2, color: "#8B8070", maxWidth: 480, margin: "0 auto" }}>
-            Bring these questions with you &mdash; written, held, and felt in your body.<br />
+            Bring these questions with you, written, held, and felt in your body.<br />
             The medicine already knows. You are simply learning to ask.
           </p>
         </div>

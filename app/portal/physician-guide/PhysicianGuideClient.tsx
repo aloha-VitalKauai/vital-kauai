@@ -105,7 +105,7 @@ export default function PhysicianGuideClient() {
         {/* Header */}
         <div className="print-hero" style={{ background: ink, color: cream, padding: "56px 40px 48px", textAlign: "center" }}>
           <p style={{ fontSize: 10, letterSpacing: "0.24em", textTransform: "uppercase", color: "rgba(247,243,237,0.4)", marginBottom: 16 }}>
-            Vital Kaua&#699;i Church &mdash; Confidential Medical Reference
+            Vital Kaua&#699;i Church, Confidential Medical Reference
           </p>
           <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 46, fontWeight: 300, letterSpacing: "0.03em", lineHeight: 1.1, marginBottom: 10 }}>
             Physician Reference<br /><em style={{ color: "rgba(247,243,237,0.55)" }}>Guide</em>
@@ -152,7 +152,7 @@ export default function PhysicianGuideClient() {
           {/* Two-column layout (single column in print) */}
           <div className="print-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, alignItems: "start" }}>
 
-            {/* LEFT — Required Labs */}
+            {/* LEFT, Required Labs */}
             <div>
               {/* Required */}
               <div className="print-card" style={{ background: warmWhite, border: `1px solid ${border}`, borderRadius: 10, padding: "28px 28px 24px", marginBottom: 24 }}>
@@ -161,7 +161,7 @@ export default function PhysicianGuideClient() {
                 </p>
                 {[
                   { label: "EKG", note: "Cardiac function and QT interval assessment. QTc must be within normal range." },
-                  { label: "Electrolyte Panel", note: "Potassium and magnesium levels — both cardiac-critical. Correct any deficiencies before ceremony." },
+                  { label: "Electrolyte Panel", note: "Potassium and magnesium levels, both cardiac-critical. Correct any deficiencies before ceremony." },
                   { label: "Full Medical Review", note: "Comprehensive physician review of health history, medications, and contraindications." },
                 ].map((item, idx, arr) => (
                   <div className="print-card-item" key={item.label} style={{ display: "flex", gap: 14, paddingBottom: 16, marginBottom: idx < arr.length - 1 ? 16 : 0, borderBottom: idx < arr.length - 1 ? `1px solid ${border}` : "none" }}>
@@ -177,7 +177,7 @@ export default function PhysicianGuideClient() {
               {/* Suggested */}
               <div className="print-card" style={{ background: warmWhite, border: `1px solid ${border}`, borderRadius: 10, padding: "28px 28px 24px", marginBottom: 24 }}>
                 <p style={{ fontSize: 9.5, letterSpacing: "0.26em", textTransform: "uppercase", color: gold, fontWeight: 600, marginBottom: 18 }}>
-                  Suggested — At Physician Discretion
+                  Suggested, At Physician Discretion
                 </p>
                 {[
                   "Cardiac stress test",
@@ -185,7 +185,7 @@ export default function PhysicianGuideClient() {
                   "Liver function panel",
                   "Thyroid function panel",
                   "Serum magnesium level",
-                  "CYP450 genotype — metabolic enzyme profile",
+                  "CYP450 genotype, metabolic enzyme profile",
                   "Any additional tests you recommend",
                 ].map((label) => (
                   <div className="print-card-item" key={label} style={{ display: "flex", gap: 14, marginBottom: 12 }}>
@@ -198,7 +198,7 @@ export default function PhysicianGuideClient() {
               {/* Sleep support */}
               <div className="print-card" style={{ background: goldBg, border: `1px solid #DDD0A8`, borderRadius: 10, padding: "20px 24px" }}>
                 <p style={{ fontSize: 9.5, letterSpacing: "0.22em", textTransform: "uppercase", color: gold, fontWeight: 600, marginBottom: 10 }}>
-                  Sleep Support — Please Discuss
+                  Sleep Support, Please Discuss
                 </p>
                 <p style={{ fontSize: 13, color: inkLight, lineHeight: 1.7, margin: 0 }}>
                   Iboga carries residual stimulation that can affect sleep in the weeks following ceremony. Please discuss gentle, non-addictive sleep support options your patient may bring with them if needed during integration.
@@ -206,7 +206,7 @@ export default function PhysicianGuideClient() {
               </div>
             </div>
 
-            {/* RIGHT — Contraindications */}
+            {/* RIGHT, Contraindications */}
             <div>
               <div className="print-card" style={{ background: warmWhite, border: `1px solid ${border}`, borderRadius: 10, padding: "28px 28px 24px" }}>
                 <p style={{ fontSize: 9.5, letterSpacing: "0.26em", textTransform: "uppercase", color: red, fontWeight: 600, marginBottom: 6 }}>
@@ -217,7 +217,7 @@ export default function PhysicianGuideClient() {
                 </p>
 
                 <p style={{ fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: red, fontWeight: 700, marginBottom: 10 }}>
-                  Absolute — Ceremony not possible
+                  Absolute, Ceremony not possible
                 </p>
                 {[
                   "History of heart disease or long QT syndrome",
@@ -232,16 +232,16 @@ export default function PhysicianGuideClient() {
                 ))}
 
                 <p style={{ fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: gold, fontWeight: 700, margin: "20px 0 10px" }}>
-                  Relative — Clearance / Taper Required
+                  Relative, Clearance / Taper Required
                 </p>
                 {[
                   { item: "Cannabis", note: "Clear fully 1–4 weeks before ceremony" },
                   { item: "Grapefruit and turmeric", note: "Clear 1–2 weeks before ceremony" },
-                  { item: "Antifungals", note: "Ketoconazole, itraconazole — discuss timeline" },
-                  { item: "Antibiotics", note: "Erythromycin, clarithromycin — discuss timeline" },
+                  { item: "Antifungals", note: "Ketoconazole, itraconazole, discuss timeline" },
+                  { item: "Antibiotics", note: "Erythromycin, clarithromycin, discuss timeline" },
                   { item: "SSRIs and antidepressants", note: "Clearance varies: most clear in 5–14 days; fluoxetine requires 4–8 weeks. Please advise based on specific prescription." },
-                  { item: "HIV protease inhibitors", note: "Ritonavir — discuss timeline" },
-                  { item: "Calcium channel blockers", note: "Diltiazem, verapamil — discuss timeline" },
+                  { item: "HIV protease inhibitors", note: "Ritonavir, discuss timeline" },
+                  { item: "Calcium channel blockers", note: "Diltiazem, verapamil, discuss timeline" },
                   { item: "Amiodarone", note: "Discuss timeline with patient" },
                   { item: "Psychiatric medications", note: "Taper under physician supervision only. Some require up to one year to clear fully." },
                 ].map(({ item, note }) => (
@@ -260,7 +260,7 @@ export default function PhysicianGuideClient() {
           {/* After ceremony note */}
           <div className="print-after-note" style={{ background: warmWhite, border: `1px solid ${border}`, borderRadius: 10, padding: "24px 28px", marginTop: 32 }}>
             <p style={{ fontSize: 9.5, letterSpacing: "0.22em", textTransform: "uppercase", color: sage, fontWeight: 600, marginBottom: 10 }}>
-              After Ceremony — Important for Patient&rsquo;s Physician
+              After Ceremony, Important for Patient&rsquo;s Physician
             </p>
             <p style={{ fontSize: 14, color: ink, lineHeight: 1.75, margin: 0 }}>
               Iboga resets substance tolerance significantly. A full month of sobriety after ceremony supports the medicine&rsquo;s work and gives the nervous system the space it needs to integrate. Three months is what we most often recommend. Noribogaine (the primary metabolite) remains active in the body for weeks to months and continues its work during this window.
@@ -273,7 +273,7 @@ export default function PhysicianGuideClient() {
               Recommended Supplementation to Begin 4 Weeks Prior
             </p>
             <p style={{ fontSize: 13.5, color: ink, lineHeight: 1.75, margin: 0 }}>
-              <strong>DHA + EPA</strong> and <strong>magnesium glycinate</strong> daily — supports new synaptic connection formation, neuronal signaling, and nervous system regulation. Recommend continuing through and after ceremony.
+              <strong>DHA + EPA</strong> and <strong>magnesium glycinate</strong> daily, supports new synaptic connection formation, neuronal signaling, and nervous system regulation. Recommend continuing through and after ceremony.
             </p>
           </div>
 
@@ -282,10 +282,10 @@ export default function PhysicianGuideClient() {
             <p style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: inkLight, marginBottom: 8 }}>Questions or Concerns</p>
             <p style={{ fontSize: 14, color: inkLight, lineHeight: 1.7 }}>
               Please reach out to our team at <strong style={{ color: ink }}>aloha@vitalkauai.com</strong><br />
-              Medical Advisor: Jon Allen, PA-C &mdash; Yale School of Medicine
+              Medical Advisor: Jon Allen, PA-C, Yale School of Medicine
             </p>
             <p style={{ fontSize: 11, color: "#AAA", marginTop: 20 }}>
-              Vital Kaua&#699;i Church &mdash; Kaua&#699;i&rsquo;s North Shore, Hawai&#699;i
+              Vital Kaua&#699;i Church, Kaua&#699;i&rsquo;s North Shore, Hawai&#699;i
             </p>
           </div>
 

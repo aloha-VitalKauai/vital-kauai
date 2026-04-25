@@ -184,8 +184,8 @@ export function TermsOfUsePage() {
           Content <em>& Intellectual Property</em>
         </h2>
         <p>
-          All content on this Website — including text, images, design, graphics, and the Vital Kauai
-          Church name and mark — is the property of Vital Kauai Church and is protected by applicable
+          All content on this Website, including text, images, design, graphics, and the Vital Kauai
+          Church name and mark, is the property of Vital Kauai Church and is protected by applicable
           intellectual property laws. You may share links to our Website and quote brief passages for
           non-commercial purposes with proper attribution.
         </p>
@@ -202,7 +202,7 @@ export function TermsOfUsePage() {
         <p>
           The content on this Website is provided for informational and spiritual purposes only.
           Nothing on this Website constitutes medical, psychiatric, psychological, legal, or financial
-          advice. Vital Kauai Church is a spiritual organization — our offerings are ceremonial and
+          advice. Vital Kauai Church is a spiritual organization, our offerings are ceremonial and
           wellness-oriented in nature.
         </p>
         <div className={styles.highlightBox}>
@@ -222,7 +222,7 @@ export function TermsOfUsePage() {
           Vital Kauai Church makes no representations or warranties regarding the outcomes of
           participation in our programs, ceremonies, or offerings. Transformation is a deeply personal
           process. Results vary by individual and depend on many factors beyond our control. We offer
-          presence, care, and a sacred container — not guarantees.
+          presence, care, and a sacred container, not guarantees.
         </p>
 
         <hr className={styles.sectionRule} />
@@ -316,7 +316,7 @@ export function TermsOfUsePage() {
           </div>
           <p className={styles.policyNote}>
             Questions about any of our policies? Write to us at{" "}
-            <Link href="/#contact">our contact form</Link> — we are happy to clarify anything.
+            <Link href="/#contact">our contact form</Link>, we are happy to clarify anything.
           </p>
         </div>
       </div>

@@ -132,7 +132,7 @@ export function IbogaJourneyPage() {
             Journey
           </h1>
           <p className={styles.heroSubtitle}>
-            Imagine waking up on the other side &mdash; clearer, freer, more yourself than you have
+            Imagine waking up on the other side, clearer, freer, more yourself than you have
             ever been. This is our offering: a fully held, carefully titrated Iboga ceremony woven
             into months of preparation, ceremony, and integration.
           </p>
@@ -150,18 +150,18 @@ export function IbogaJourneyPage() {
           </div>
           <div className={styles.introBody}>
             <p>
-              The Iboga Journey is a profound reorganization of self &mdash; one that requires your
+              The Iboga Journey is a profound reorganization of self, one that requires your
               full commitment, careful preparation, and deep trust in the process. Each journey is
               given our complete attention.
             </p>
             <p>
               You will be supported from your first conversation through the months of integration
               that follow. The ceremony is held in living relationship with the mana of Mama
-              Kaua&#699;i &mdash; the land, the water, the forest &mdash; so that nature itself
+              Kaua&#699;i, the land, the water, the forest, so that nature itself
               becomes an active participant in your healing.
             </p>
             <p>
-              This is a deeply held container &mdash; guided with love, rigor, and decades of
+              This is a deeply held container, guided with love, rigor, and decades of
               combined experience in plant medicine, somatic healing, and consciousness work.
             </p>
           </div>
@@ -191,7 +191,7 @@ export function IbogaJourneyPage() {
       <section className={styles.medicine} id="medicine">
         <span className={styles.sectionLabel}>Godparent Medicine</span>
         <h2 className={styles.sectionTitle}>
-          Iboga &mdash; <em className={styles.sageLightItalic}>The Teacher Plant</em>
+          Iboga, <em className={styles.sageLightItalic}>The Teacher Plant</em>
         </h2>
 
         <div className={styles.medicineGrid}>
@@ -206,9 +206,9 @@ export function IbogaJourneyPage() {
           </div>
           <div className={styles.medicineRight}>
             <p className={styles.medicineBody}>
-              Iboga is one of humanity&apos;s oldest plant allies &mdash; used for millennia in the
+              Iboga is one of humanity&apos;s oldest plant allies, used for millennia in the
               Bwiti tradition of Central Africa as a sacrament of initiation, healing, and spiritual
-              awakening. It is a teacher &mdash; a living
+              awakening. It is a teacher, a living
               intelligence that works with the whole human system: body, mind, emotion, and spirit.
             </p>
             <blockquote className={styles.medicineDistinction}>
@@ -217,7 +217,7 @@ export function IbogaJourneyPage() {
               the unique healing intelligence of this island.
             </blockquote>
             <p className={styles.medicineBody}>
-              Whole-plant root bark contains the full alkaloid profile of Iboga &mdash; not just
+              Whole-plant root bark contains the full alkaloid profile of Iboga, not just
               ibogaine, but dozens of synergistic compounds that buffer the experience, reduce
               cardiac risk, and allow for a deeper, more nuanced journey.
             </p>
@@ -245,7 +245,7 @@ export function IbogaJourneyPage() {
 
         <div className={styles.comparisonTable}>
           <h3 className={styles.comparisonTableTitle}>
-            Understanding the Medicine &mdash; Iboga Root Bark vs. Ibogaine
+            Understanding the Medicine, Iboga Root Bark vs. Ibogaine
           </h3>
           <table>
             <thead>
@@ -256,11 +256,11 @@ export function IbogaJourneyPage() {
             </thead>
             <tbody>
               <tr>
-                <td>Full-spectrum whole plant &mdash; all alkaloids intact</td>
+                <td>Full-spectrum whole plant, all alkaloids intact</td>
                 <td>Single isolated alkaloid</td>
               </tr>
               <tr>
-                <td>Slower, titrated onset &mdash; gradual, conscious unfolding</td>
+                <td>Slower, titrated onset, gradual, conscious unfolding</td>
                 <td>Fast onset, more abrupt</td>
               </tr>
               <tr>
@@ -269,7 +269,7 @@ export function IbogaJourneyPage() {
               </tr>
               <tr>
                 <td>Buffered cardiovascular effect</td>
-                <td>Stronger cardiotoxic profile &mdash; can prolong QT interval</td>
+                <td>Stronger cardiotoxic profile, can prolong QT interval</td>
               </tr>
             </tbody>
           </table>
@@ -287,7 +287,7 @@ export function IbogaJourneyPage() {
           <p className={styles.scienceBody}>
             Modern neuroscience is beginning to validate what indigenous traditions have known for
             centuries. Iboga works on virtually every major neurotransmitter system simultaneously
-            &mdash; a pharmacological profile unlike any other substance on Earth.
+           , a pharmacological profile unlike any other substance on Earth.
           </p>
         </div>
 
@@ -295,8 +295,8 @@ export function IbogaJourneyPage() {
           <div className={styles.scienceCard}>
             <h4 className={styles.scienceCardTitle}>Neuroplasticity &amp; Neurogenesis</h4>
             <p className={styles.scienceCardBody}>
-              Iboga triggers a surge in BDNF and GDNF &mdash; the brain&apos;s own growth factors
-              &mdash; promoting new neural connections and the repair of damaged pathways.
+              Iboga triggers a surge in BDNF and GDNF, the brain&apos;s own growth factors
+             , promoting new neural connections and the repair of damaged pathways.
             </p>
             <p className={styles.scienceCardStat}>
               Research: Marton et al., Frontiers in Pharmacology, 2019
@@ -305,11 +305,11 @@ export function IbogaJourneyPage() {
           <div className={styles.scienceCard}>
             <h4 className={styles.scienceCardTitle}>Breaking Looping Thoughts &amp; Rumination</h4>
             <p className={styles.scienceCardBody}>
-              Iboga quiets the Default Mode Network (DMN) &mdash; the brain region responsible for
+              Iboga quiets the Default Mode Network (DMN), the brain region responsible for
               repetitive self-referential thinking, worry loops, and the inner critic.
             </p>
             <p className={styles.scienceCardStat}>
-              A measurable shift in brain network dynamics &mdash; the &lsquo;reset&rsquo; so many
+              A measurable shift in brain network dynamics, the &lsquo;reset&rsquo; so many
               describe
             </p>
           </div>
@@ -338,7 +338,7 @@ export function IbogaJourneyPage() {
           <div className={styles.scienceCard}>
             <h4 className={styles.scienceCardTitle}>The Neuroplasticity Window</h4>
             <p className={styles.scienceCardBody}>
-              The weeks following ceremony represent a period of heightened plasticity &mdash; a rare
+              The weeks following ceremony represent a period of heightened plasticity, a rare
               window where new patterns can be established and old ones released with less resistance.
             </p>
             <p className={styles.scienceCardStat}>
@@ -348,8 +348,8 @@ export function IbogaJourneyPage() {
           <div className={styles.scienceCard}>
             <h4 className={styles.scienceCardTitle}>Reward System Recalibration</h4>
             <p className={styles.scienceCardBody}>
-              Iboga resets dopaminergic signaling in the mesolimbic pathway &mdash; the brain&apos;s
-              reward circuitry &mdash; restoring natural motivation and reducing compulsive behavior.
+              Iboga resets dopaminergic signaling in the mesolimbic pathway, the brain&apos;s
+              reward circuitry, restoring natural motivation and reducing compulsive behavior.
             </p>
             <p className={styles.scienceCardStat}>
               Research: Frontiers in Pharmacology, 2025
@@ -374,12 +374,12 @@ export function IbogaJourneyPage() {
           </div>
           <div className={styles.stanfordContent}>
             <h3 className={styles.stanfordTitle}>
-              Stanford University &mdash; The Landmark TBI Study
+              Stanford University, The Landmark TBI Study
             </h3>
             <p className={styles.stanfordBody}>
               In 2024, Stanford University published the first controlled clinical study of ibogaine
               in U.S. military veterans with traumatic brain injury. Thirty Special Operations
-              veterans received a single ibogaine treatment &mdash; and the results were
+              veterans received a single ibogaine treatment, and the results were
               unprecedented.
             </p>
             <p className={styles.stanfordSource}>
@@ -422,7 +422,7 @@ export function IbogaJourneyPage() {
             <p className={styles.phaseBody}>
               Your ceremony takes place in a private home in Hanalei. You will be guided by
               experienced facilitators through a multi-day process rooted in evidence-based
-              research and held with deep personal care &mdash; from the first dose through full
+              research and held with deep personal care, from the first dose through full
               integration on the land.
             </p>
           </div>
@@ -432,9 +432,9 @@ export function IbogaJourneyPage() {
             <span className={styles.phaseWeek}>6+ Weeks &amp; Beyond</span>
             <p className={styles.phaseBody}>
               Calls with your integration guide and guided reflection. This is
-              where the real work takes root &mdash; establishing new patterns, processing what
+              where the real work takes root, establishing new patterns, processing what
               arose, and anchoring your transformation into daily life. Beyond formal integration,
-              you join an ongoing community of those who have walked this path &mdash; connection
+              you join an ongoing community of those who have walked this path, connection
               and support that continues as long as you choose.
             </p>
           </div>
@@ -451,7 +451,7 @@ export function IbogaJourneyPage() {
             Upcoming <em style={{ fontStyle: "italic", color: "var(--sage, #7A9E7E)" }}>Ceremonies</em>
           </h2>
           <p style={{ fontSize: 16, color: "var(--ink-soft, #6B6B67)", lineHeight: 1.7, maxWidth: 580, margin: "0 auto 56px", fontStyle: "italic", fontFamily: "'Cormorant Garamond', serif" }}>
-            Each ceremony is a small, held gathering — six members, seven days, one sacred arc.
+            Each ceremony is a small, held gathering, six members, seven days, one sacred arc.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 24, marginBottom: 48 }}>
             {(() => {
@@ -542,10 +542,10 @@ export function IbogaJourneyPage() {
         <div className={styles.testimonialsGrid}>
           <div className={styles.testimonialCard}>
             <blockquote className={styles.testimonialQuote}>
-              <p>[Client quote placeholder &mdash; add your testimonial here.]</p>
+              <p>[Client quote placeholder, add your testimonial here.]</p>
             </blockquote>
             <p className={styles.testimonialAttribution}>
-              &mdash; [Name], [Location]
+             , [Name], [Location]
             </p>
           </div>
           <div className={styles.testimonialVideoCard}>
@@ -674,7 +674,7 @@ function LeadCaptureCard() {
     setSubmitting(true);
     setError("");
 
-    // Fire and forget — never block redirect
+    // Fire and forget, never block redirect
     try {
       await supabase.from("leads").insert({
         full_name: name.trim(),
