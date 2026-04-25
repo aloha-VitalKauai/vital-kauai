@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata = { title: "Ceremonies — Vital Kauaʻi" };
@@ -32,7 +33,12 @@ export default async function CeremoniesPage() {
   return (
     <div style={{ fontFamily: "var(--font-body, sans-serif)" }}>
       <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.07em", color: "#9E9E9A", marginBottom: 3 }}>Ceremony records</p>
-      <h1 style={{ fontFamily: "var(--font-display, serif)", fontSize: 26, fontWeight: 400, letterSpacing: "-0.02em", color: "#1A1A18", marginBottom: "1.5rem" }}>Ceremonies</h1>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "1.5rem", gap: 16, flexWrap: "wrap" }}>
+        <h1 style={{ fontFamily: "var(--font-display, serif)", fontSize: 26, fontWeight: 400, letterSpacing: "-0.02em", color: "#1A1A18", margin: 0 }}>Ceremonies</h1>
+        <Link href="/dashboard/ceremonies/audit" style={{ fontSize: 12, fontWeight: 500, color: "#1D6B4A", textDecoration: "underline", textUnderlineOffset: 2 }}>
+          Alignment audit →
+        </Link>
+      </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 10, marginBottom: "1.25rem" }}>
         {[

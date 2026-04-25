@@ -311,6 +311,237 @@ export async function approveJourney(
   return createJourney({ memberId, bookingType, scheduleType: 'tbd' })
 }
 
+// ── Ceremony alignment audit + heal ──────────────────────────
+//
+// `journeys` is canonical, but `members.ceremony_date` and
+// `ceremony_records.ceremony_date` are mirror tables that the
+// founders dashboard reads. The sync helpers above run on every
+// mutation — but if a sync ever fails (network blip, partial
+// write, manual SQL edit), the three tables drift apart and the
+// portal/dashboard show different things to the same member.
+//
+// auditCeremonyAlignment() finds drift; reconcileMemberAlignment()
+// re-runs both sync helpers for a single member; reconcileAll()
+// does the whole roster in one pass. All founder-only.
+//
+// Drift kinds:
+//   member_date_mismatch — members.ceremony_date != latest scheduled journey date
+//   record_missing       — a scheduled journey has no ceremony_records row
+//   record_date_mismatch — ceremony_records.ceremony_date != journey start_at
+//   record_status_mismatch — Canceled journey still shows Scheduled, etc.
+
+export type DriftKind =
+  | 'member_date_mismatch'
+  | 'record_missing'
+  | 'record_date_mismatch'
+  | 'record_status_mismatch'
+
+export interface DriftRow {
+  memberId:        string
+  memberName:      string | null
+  memberEmail:     string | null
+  journeyId:       string | null
+  journeyStatus:   string | null
+  kind:            DriftKind
+  expected:        string | null   // YYYY-MM-DD or status string
+  actual:          string | null
+  detail:          string          // human-readable summary
+}
+
+export async function auditCeremonyAlignment(): Promise<
+  ActionResult<{ drift: DriftRow[]; checkedMembers: number; checkedJourneys: number }>
+> {
+  const { supabase, error: authErr } = await getFounderClient()
+  if (!supabase) return { ok: false, error: authErr! }
+
+  const [{ data: members }, { data: journeys }, { data: records }] = await Promise.all([
+    supabase.from('members').select('id, full_name, email, ceremony_date'),
+    supabase.from('journeys').select('id, member_id, status, start_at'),
+    supabase.from('ceremony_records').select('id, journey_id, member_id, ceremony_date, status'),
+  ])
+
+  const drift: DriftRow[] = []
+  const memberById = new Map<string, any>()
+  for (const m of members ?? []) memberById.set(m.id, m)
+
+  // Index journeys by member
+  const journeysByMember = new Map<string, any[]>()
+  for (const j of journeys ?? []) {
+    const arr = journeysByMember.get(j.member_id) ?? []
+    arr.push(j)
+    journeysByMember.set(j.member_id, arr)
+  }
+
+  // Index ceremony_records by journey_id
+  const recordByJourney = new Map<string, any>()
+  for (const r of records ?? []) {
+    if (r.journey_id) recordByJourney.set(r.journey_id, r)
+  }
+
+  // ── Check member.ceremony_date matches latest scheduled journey ──
+  for (const m of members ?? []) {
+    const myJourneys = journeysByMember.get(m.id) ?? []
+    const scheduled = myJourneys
+      .filter((j) => j.status === 'scheduled' && j.start_at)
+      .sort((a, b) => (b.start_at > a.start_at ? 1 : -1))
+    const latest = scheduled[0] ?? null
+    const expected = latest ? journeyDateToInputValue(latest.start_at) : null
+    const actual = m.ceremony_date ?? null
+
+    if ((expected ?? null) !== (actual ?? null)) {
+      drift.push({
+        memberId:      m.id,
+        memberName:    m.full_name ?? null,
+        memberEmail:   m.email ?? null,
+        journeyId:     latest?.id ?? null,
+        journeyStatus: latest?.status ?? null,
+        kind:          'member_date_mismatch',
+        expected,
+        actual,
+        detail: `members.ceremony_date should be ${expected ?? 'NULL'} (from latest scheduled journey) but is ${actual ?? 'NULL'}`,
+      })
+    }
+  }
+
+  // ── Check ceremony_records vs journeys ──
+  for (const j of journeys ?? []) {
+    const m = memberById.get(j.member_id)
+    const rec = recordByJourney.get(j.id)
+
+    if (j.status === 'scheduled' && j.start_at) {
+      const expectedDate = journeyDateToInputValue(j.start_at)
+
+      if (!rec) {
+        drift.push({
+          memberId:      j.member_id,
+          memberName:    m?.full_name ?? null,
+          memberEmail:   m?.email ?? null,
+          journeyId:     j.id,
+          journeyStatus: j.status,
+          kind:          'record_missing',
+          expected:      expectedDate,
+          actual:        null,
+          detail: `Scheduled journey on ${expectedDate} has no ceremony_records row`,
+        })
+        continue
+      }
+
+      if (rec.ceremony_date !== expectedDate) {
+        drift.push({
+          memberId:      j.member_id,
+          memberName:    m?.full_name ?? null,
+          memberEmail:   m?.email ?? null,
+          journeyId:     j.id,
+          journeyStatus: j.status,
+          kind:          'record_date_mismatch',
+          expected:      expectedDate,
+          actual:        rec.ceremony_date,
+          detail: `ceremony_records.ceremony_date is ${rec.ceremony_date} but journey says ${expectedDate}`,
+        })
+      }
+
+      if (rec.status !== 'Scheduled' && rec.status !== 'Complete') {
+        drift.push({
+          memberId:      j.member_id,
+          memberName:    m?.full_name ?? null,
+          memberEmail:   m?.email ?? null,
+          journeyId:     j.id,
+          journeyStatus: j.status,
+          kind:          'record_status_mismatch',
+          expected:      'Scheduled',
+          actual:        rec.status,
+          detail: `Journey is scheduled but ceremony_records.status is ${rec.status}`,
+        })
+      }
+    } else if (j.status === 'canceled' && rec && rec.status !== 'Canceled') {
+      drift.push({
+        memberId:      j.member_id,
+        memberName:    m?.full_name ?? null,
+        memberEmail:   m?.email ?? null,
+        journeyId:     j.id,
+        journeyStatus: j.status,
+        kind:          'record_status_mismatch',
+        expected:      'Canceled',
+        actual:        rec.status,
+        detail: `Journey is canceled but ceremony_records.status is ${rec.status}`,
+      })
+    }
+  }
+
+  return {
+    ok: true,
+    data: {
+      drift,
+      checkedMembers:  (members ?? []).length,
+      checkedJourneys: (journeys ?? []).length,
+    },
+  }
+}
+
+/**
+ * reconcileMemberAlignment
+ * Re-runs both sync helpers for a single member, bringing
+ * ceremony_records and members.ceremony_date back in line with
+ * the canonical journeys table.
+ */
+export async function reconcileMemberAlignment(
+  memberId: string
+): Promise<ActionResult<{ healed: number }>> {
+  const { supabase, error: authErr } = await getFounderClient()
+  if (!supabase) return { ok: false, error: authErr! }
+
+  const { data: js } = await supabase
+    .from('journeys')
+    .select('id, status, start_at')
+    .eq('member_id', memberId)
+
+  let healed = 0
+  for (const j of js ?? []) {
+    await syncJourneyCeremonyRecord(supabase, j.id, memberId, j.status, j.start_at)
+    healed += 1
+  }
+  await syncMemberCeremonyDate(supabase, memberId)
+
+  return { ok: true, data: { healed } }
+}
+
+/**
+ * reconcileAllAlignment
+ * Walks every member with at least one journey and reconciles.
+ * Use sparingly — full table sweep.
+ */
+export async function reconcileAllAlignment(): Promise<
+  ActionResult<{ membersHealed: number; journeysSynced: number }>
+> {
+  const { supabase, error: authErr } = await getFounderClient()
+  if (!supabase) return { ok: false, error: authErr! }
+
+  const { data: js } = await supabase
+    .from('journeys')
+    .select('id, member_id, status, start_at')
+
+  const byMember = new Map<string, any[]>()
+  for (const j of js ?? []) {
+    const arr = byMember.get(j.member_id) ?? []
+    arr.push(j)
+    byMember.set(j.member_id, arr)
+  }
+
+  let journeysSynced = 0
+  for (const [memberId, list] of byMember) {
+    for (const j of list) {
+      await syncJourneyCeremonyRecord(supabase, j.id, memberId, j.status, j.start_at)
+      journeysSynced += 1
+    }
+    await syncMemberCeremonyDate(supabase, memberId)
+  }
+
+  return {
+    ok: true,
+    data: { membersHealed: byMember.size, journeysSynced },
+  }
+}
+
 // ── Scheduling request mutations ──────────────────────────────
 
 export interface SchedulingRequestInput {
