@@ -217,6 +217,22 @@ export function HomePage() {
     return () => observer.disconnect();
   }, []);
 
+  // Hero video plays the first 5 seconds and loops back to the start.
+  // Native loop= would replay the entire clip; we want a tight short loop.
+  const heroVideoRef = useRef<HTMLVideoElement | null>(null);
+  useEffect(() => {
+    const v = heroVideoRef.current;
+    if (!v) return;
+    const onTime = () => {
+      if (v.currentTime >= 5) {
+        v.currentTime = 0;
+        v.play().catch(() => {});
+      }
+    };
+    v.addEventListener("timeupdate", onTime);
+    return () => v.removeEventListener("timeupdate", onTime);
+  }, []);
+
   return (
     <main ref={pageRef} className={styles.page}>
       <nav className={`${styles.nav} ${isScrolled ? styles.navScrolled : ""}`} id="nav">
@@ -302,9 +318,9 @@ export function HomePage() {
       <div className={styles.heroWrap}>
         <section id="hero" className={styles.hero}>
           <video
+            ref={heroVideoRef}
             autoPlay
             muted
-            loop
             playsInline
             preload="auto"
             className={styles.heroVideo}
