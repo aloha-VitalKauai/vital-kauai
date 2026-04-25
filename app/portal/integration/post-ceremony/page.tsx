@@ -5,6 +5,44 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { POST_CEREMONY_WEEKS } from '@/lib/journal-prompts'
+import SectionIndex, { type SectionIndexItem } from '@/components/portal/SectionIndex'
+
+// Section index per week — same six entries every week, plus a Completion
+// anchor on Week 6 (the integration-statement + checklist + monthly-arc
+// block is rendered there).
+const BASE_SECTIONS: SectionIndexItem[] = [
+  { label: 'Principle', anchor: '#principle' },
+  { label: 'Video',     anchor: '#week-video' },
+  { label: 'Actions',   anchor: '#action-items' },
+  { label: 'PNE',       anchor: '#pne-perspective' },
+  { label: 'Journal',   anchor: '#journal-prompts' },
+  { label: 'Community', anchor: '#community' },
+]
+const COMPLETION_SECTION: SectionIndexItem = { label: 'Completion', anchor: '#completion' }
+const sectionsForWeek = (weekIdx: number): SectionIndexItem[] =>
+  weekIdx === 5 ? [...BASE_SECTIONS, COMPLETION_SECTION] : BASE_SECTIONS
+
+// Action-item card shape — matches pre-ceremony's renderer so cards look and
+// behave identically across the 12-week arc.
+type ActionLinkArr = { text: string; href: string; external?: boolean }[]
+type ActionCard =
+  | { kind: 'internal'; href: string; text: string }
+  | { kind: 'hash';     href: string; text: string }
+  | { kind: 'external'; href: string; text: string }
+  | { kind: 'static';   text: string; links?: ActionLinkArr }
+
+const actionsForWeek = (
+  actions: ReadonlyArray<{ text: string; links?: ActionLinkArr }>,
+): ActionCard[] =>
+  actions.map(a => {
+    const links = a.links ?? []
+    if (links.length === 0) return { kind: 'static', text: a.text }
+    if (links.length > 1)   return { kind: 'static', text: a.text, links }
+    const lnk = links[0]
+    if (lnk.external)              return { kind: 'external', href: lnk.href, text: a.text }
+    if (lnk.href.startsWith('#'))  return { kind: 'hash',     href: lnk.href, text: a.text }
+    return { kind: 'internal', href: lnk.href, text: a.text }
+  })
 
 // Render an action's text with optional inline links. Each link matches a
 // substring in `text` and is replaced with an anchor tag in place.
@@ -132,6 +170,8 @@ const WEEKS = [
   {
     id: 0,
     code: 'LŌKAHI',
+    principleName: 'Lōkahi',
+    principle: 'All things are connected. Act in unity.',
     theme: 'Unity',
     eyebrow: 'Week 1 · LŌKAHI · Unity',
     title: 'The medicine is still\nmoving in you.',
@@ -179,6 +219,8 @@ const WEEKS = [
   {
     id: 1,
     code: 'MĀLAMA',
+    principleName: 'Mālama',
+    principle: 'Tend what is precious.',
     theme: 'Tending',
     eyebrow: 'Week 2 · MĀLAMA · Tending',
     title: 'The insights are alive.',
@@ -226,6 +268,8 @@ const WEEKS = [
   {
     id: 2,
     code: 'HAʻAHAʻA',
+    principleName: 'Haʻahaʻa',
+    principle: 'Remain humble. Stay teachable.',
     theme: 'Humility',
     eyebrow: 'Week 3 · HAʻAHAʻA · Humility',
     title: 'The familiar is returning.',
@@ -263,6 +307,8 @@ const WEEKS = [
   {
     id: 3,
     code: 'KULEANA',
+    principleName: 'Kuleana',
+    principle: 'Carry your responsibility with honor.',
     theme: 'Responsibility',
     eyebrow: 'Week 4 · KULEANA · Responsibility',
     title: 'The knowing is yours now.',
@@ -304,6 +350,8 @@ const WEEKS = [
   {
     id: 4,
     code: 'ALOHA',
+    principleName: 'Aloha',
+    principle: 'Let love be the way you act.',
     theme: 'Love in Action',
     eyebrow: 'Week 5 · ALOHA · Love in Action',
     title: 'You have changed.',
@@ -342,6 +390,8 @@ const WEEKS = [
   {
     id: 5,
     code: 'PONO',
+    principleName: 'Pono',
+    principle: 'Stand in right relationship.',
     theme: 'Right Relationship',
     eyebrow: 'Week 6 · PONO · Right Relationship',
     title: 'Six weeks in.',
@@ -803,6 +853,34 @@ export default function PostCeremonyPage() {
         .pc-main{max-width:860px;margin:0 auto;padding:0 48px 100px}.pc-panel{display:none;padding-top:56px}.pc-panel.active{display:block}
         .continuity{display:flex;gap:12px;align-items:flex-start;background:rgba(122,158,126,.06);border-left:2px solid var(--sage-lt);padding:14px 18px;margin-bottom:32px}.ct-arrow{font-size:13px;color:var(--sage);flex-shrink:0;margin-top:1px}.ct-text{font-size:12.5px;color:var(--stone);line-height:1.75}.ct-text strong{color:var(--ink-mid);font-weight:500}
         .wh-eyebrow{font-size:9px;letter-spacing:.38em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:14px}.wh-title{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,4vw,46px);font-weight:300;line-height:1.1;margin-bottom:16px;color:var(--ink);white-space:pre-line}.wh-title em{font-style:italic;color:var(--gold)}.wh-sub{font-size:14px;color:var(--stone);line-height:1.9;max-width:640px;padding-bottom:32px;border-bottom:1px solid var(--border);margin-bottom:36px}
+        /* Week 1 shared layout (matched to pre-ceremony so the 12-week arc reads as one piece) */
+        .w1-section { margin-bottom:52px;scroll-margin-top:130px; }
+        .w1-h3 { font-family:'Cormorant Garamond',serif;font-size:clamp(22px,2.6vw,30px);font-weight:300;line-height:1.2;color:var(--ink);margin-bottom:16px; }
+        .w1-h3 em { font-style:italic;color:var(--gold); }
+        .w1-body { font-size:14px;color:var(--ink-mid);line-height:1.9;max-width:640px; }
+        .w1-companion-link { display:inline-block;margin-top:20px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);text-decoration:none;border-bottom:1px dashed rgba(200,169,110,.55);padding-bottom:2px; }
+        .w1-companion-link:hover { color:var(--sage); }
+        .w1-autosave { font-size:11.5px;color:var(--stone);font-style:italic;margin:4px 0 20px; }
+        .w1-prompt { padding:22px 0;border-bottom:1px solid var(--border); }
+        .w1-prompt:first-child { border-top:1px solid var(--border); }
+        .w1-prompt-num { font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:10px; }
+        .w1-prompt-q { font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--ink);line-height:1.35;margin-bottom:10px; }
+        .w1-prompt-hint { font-size:12.5px;color:var(--stone);line-height:1.75;font-style:italic; }
+        .w1-actions { display:flex;flex-direction:column;gap:10px; }
+        .w1-action { display:flex;align-items:flex-start;gap:14px;padding:16px 18px;border:.5px solid var(--border);border-radius:4px;background:white;text-decoration:none;color:var(--ink);transition:border-color .2s,background .2s; }
+        .w1-action:hover { border-color:var(--gold);background:rgba(200,169,110,.05); }
+        .w1-action-dot { width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:7px; }
+        .w1-action-text { font-size:13.5px;color:var(--ink);line-height:1.55; }
+        /* Week 1 principle display — scaled up so the principle reads as the theme */
+        .w1p-eyebrow { font-size:10px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:20px; }
+        .w1p-title { font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5.2vw,58px);font-weight:300;line-height:1.06;margin:0 0 18px;color:var(--ink); }
+        .w1p-title em { font-style:italic;color:var(--gold); }
+        .w1p-pull { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(17px,1.8vw,21px);color:var(--gold);line-height:1.55;margin:0 0 26px;letter-spacing:.015em; }
+        .w1p-body { font-size:15.5px;color:var(--stone);line-height:1.95;max-width:680px;padding-bottom:40px;border-bottom:1px solid var(--border);margin:0; }
+        /* Save & continue secondary button */
+        .btn-save-exit { padding:12px 26px;background:transparent;border:1px solid var(--gold);border-radius:3px;color:var(--forest);font-family:inherit;font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:background .2s;white-space:nowrap; }
+        .btn-save-exit:hover { background:rgba(200,169,110,.08); }
+        .wc-actions { display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end; }
         .section{margin-bottom:44px}.section-label{font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:block}
         .video-frame{border:.5px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:14px}.video-primer{background:var(--forest);padding:24px 28px;display:flex;align-items:center;gap:20px}.vp-play{width:44px;height:44px;border-radius:50%;border:1px solid rgba(200,169,110,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}.vp-play-icon{color:var(--gold);font-size:14px;margin-left:3px}.vp-label{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}.vp-text{font-size:13.5px;color:rgba(245,240,232,.75);line-height:1.7}.vp-coming-soon{margin-top:12px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.04em;color:var(--gold)}
         .box{margin-top:0;border-radius:2px;padding:16px 20px;margin-bottom:28px}.box-label{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:8px;font-weight:500}.box-text{font-size:13px;line-height:1.8;color:var(--ink-mid)}.box-gold{background:rgba(200,169,110,.08);border:.5px solid rgba(200,169,110,.28)}.box-gold .box-label{color:var(--gold)}.box-sage{background:rgba(122,158,126,.07);border:.5px solid rgba(122,158,126,.25)}.box-sage .box-label{color:var(--sage)}
@@ -861,36 +939,26 @@ export default function PostCeremonyPage() {
         ))}
       </div>
 
+      {/* SECTION INDEX — sticky under the week-tabs so members can jump between
+          Principle / Video / Actions / PNE / Journal / Community (+ Completion
+          on Week 6) while they scroll. */}
+      <SectionIndex sections={sectionsForWeek(activeWeek)} stickyTop={112} scrollOffset={170} />
+
       <main className="pc-main">
         {WEEKS.map((w, i) => (
           <div key={w.id} className={`pc-panel${activeWeek===i?' active':''}`}>
 
-            {w.carryForward && (
-              <div className="continuity">
-                <div className="ct-arrow">↩</div>
-                <div className="ct-text"><strong>Carrying forward from Week {i}:</strong> {w.carryForward}</div>
-              </div>
-            )}
+            {/* PRINCIPLE */}
+            <section className="w1-section" id="principle">
+              <span className="w1p-eyebrow">Week {i + 1} · {w.principleName} · {w.theme}</span>
+              <h2 className="w1p-title">{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</h2>
+              <p className="w1p-pull">&ldquo;{w.principle}&rdquo; — {w.principleName}</p>
+              <p className="w1p-body">{w.intro}</p>
+            </section>
 
-            <div>
-              <span className="wh-eyebrow">{w.eyebrow}</span>
-              <h2 className="wh-title">{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</h2>
-              <p className="wh-sub">{w.intro}</p>
-            </div>
-
-            {/* Per-week safety / info box dropped per Rachel — felt like too
-                much text alongside the journal prompts. Data on each WEEK entry
-                kept for now in case we want it back. */}
-
-            {w.reentry && (
-              <div className="reentry">
-                <div className="reentry-icon">◎</div>
-                <div className="reentry-text"><strong>{w.reentry.strong}</strong> {w.reentry.text}</div>
-              </div>
-            )}
-
-            <div className="section">
-              <span className="section-label">Video transmission</span>
+            {/* VIDEO — Message from the Founders */}
+            <section className="w1-section" id="week-video">
+              <span className="section-label">Message from the Founders</span>
               <div className="video-frame">
                 <div className="video-primer">
                   <div className="vp-play"><span className="vp-play-icon">▶</span></div>
@@ -901,89 +969,138 @@ export default function PostCeremonyPage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </section>
 
-            <div className="section">
-              <span className="section-label">{w.actionLabel}</span>
-              <div className="actions-list">
-                {w.actions.map((a, ai) => (
-                  <div className="action-item" key={ai}>
-                    <div className="action-dot" style={{ background: DOT[a.color] }} />
-                    <div>
-                      <div className="action-text">{renderActionText(a.text, (a as { links?: { text: string; href: string; external?: boolean }[] }).links)}</div>
-                    </div>
-                  </div>
-                ))}
+            {/* ACTIONS */}
+            <section className="w1-section" id="action-items">
+              <h3 className="w1-h3">Action Items</h3>
+              <div className="w1-actions">
+                {actionsForWeek(w.actions).map((card, ai) => {
+                  if (card.kind === 'static') {
+                    return (
+                      <div key={ai} className="w1-action">
+                        <span className="w1-action-dot" />
+                        <span className="w1-action-text">{renderActionText(card.text, card.links)}</span>
+                      </div>
+                    )
+                  }
+                  if (card.kind === 'hash') {
+                    return (
+                      <a key={ai} href={card.href} className="w1-action">
+                        <span className="w1-action-dot" />
+                        <span className="w1-action-text">{card.text}</span>
+                      </a>
+                    )
+                  }
+                  if (card.kind === 'external') {
+                    return (
+                      <a key={ai} href={card.href} target="_blank" rel="noopener noreferrer" className="w1-action">
+                        <span className="w1-action-dot" />
+                        <span className="w1-action-text">{card.text}</span>
+                      </a>
+                    )
+                  }
+                  return (
+                    <Link key={ai} href={card.href} className="w1-action">
+                      <span className="w1-action-dot" />
+                      <span className="w1-action-text">{card.text}</span>
+                    </Link>
+                  )
+                })}
               </div>
               {w.dataset && (() => {
                 const dl = (w as { datasetLink?: { text: string; href: string } }).datasetLink
                 return (
-                  <div className="dataset-note">
+                  <div className="dataset-note" style={{ marginTop: 18 }}>
                     <div className="dn-header">
                       <span className="dn-label">Outcomes — your contribution to the field</span>
-                      {dl && (
-                        <Link href={dl.href} className="dn-cta">
-                          {dl.text}
-                        </Link>
-                      )}
+                      {dl && <Link href={dl.href} className="dn-cta">{dl.text}</Link>}
                     </div>
                     <div className="dn-body">{w.dataset}</div>
                     {dl && (
                       <div className="dn-footer">
-                        <Link href={dl.href} className="dn-cta">
-                          {dl.text}
-                        </Link>
+                        <Link href={dl.href} className="dn-cta">{dl.text}</Link>
                       </div>
                     )}
                   </div>
                 )
               })()}
-            </div>
+            </section>
 
-            <div className="section">
-              <span className="section-label">Journal prompts — 2 only</span>
-              <div className="prompts-list">
-                {w.prompts.map((p, pi) => {
-                  const jKey = `w${i}-p${pi}`
-                  return (
-                    <div className="prompt-item" key={pi}>
-                      <span className="prompt-num">0{pi+1}</span>
-                      <p className="prompt-q">{p.q}</p>
-                      <p className="prompt-hint">{p.hint}</p>
-                      <textarea
-                        className="journal-textarea"
-                        value={journal[jKey] ?? ''}
-                        onChange={(e) => updateJournal(jKey, e.target.value)}
-                        placeholder="Write freely..."
-                        rows={4}
-                      />
-                    </div>
-                  )
-                })}
-              </div>
-              <div className="continuity" style={{ marginTop: 20, marginBottom: 0 }}>
-                <div className="ct-arrow">→</div>
-                <div className="ct-text"><strong>What this builds:</strong> {w.thread}</div>
-              </div>
-            </div>
-
-            {/* Week 6 extras */}
-            {w.integrationStatement && (
-              <div className="integration-qs">
-                <div className="iq-header">
-                  <span className="iq-label">Your integration statement — three questions, one page</span>
-                </div>
-                {w.integrationStatement.map((q, qi) => (
-                  <div className="iq-item" key={qi}>
-                    <div className="iq-q">{qi + 1}. {q.q}</div>
-                    <div className="iq-hint">{q.hint}</div>
+            {/* PNE PERSPECTIVE (placeholder until per-week content ships) */}
+            <section className="w1-section" id="pne-perspective">
+              <h3 className="w1-h3">PNE Perspective</h3>
+              <div className="video-frame">
+                <div className="video-primer">
+                  <div className="vp-play"><span className="vp-play-icon">▶</span></div>
+                  <div>
+                    <div className="vp-label">PNE Teaching · Week {i + 1}</div>
+                    <div className="vp-text">A short teaching paired with this week&apos;s principle and the body&apos;s lived response to it.</div>
+                    <div className="vp-coming-soon">Coming Soon</div>
                   </div>
-                ))}
+                </div>
               </div>
+            </section>
+
+            {/* JOURNAL PROMPTS */}
+            <section className="w1-section" id="journal-prompts">
+              <h3 className="w1-h3">Journal Prompts</h3>
+              <p className="w1-autosave">Your writing saves automatically as you type. You can return any time to continue.</p>
+              {w.prompts.map((p, pi) => {
+                const jKey = `w${i}-p${pi}`
+                return (
+                  <div className="w1-prompt" key={pi}>
+                    <span className="w1-prompt-num">0{pi + 1}</span>
+                    <p className="w1-prompt-q">{p.q}</p>
+                    {p.hint && <p className="w1-prompt-hint">{p.hint}</p>}
+                    <textarea
+                      className="journal-textarea"
+                      value={journal[jKey] ?? ''}
+                      onChange={(e) => updateJournal(jKey, e.target.value)}
+                      placeholder="Write freely..."
+                      rows={4}
+                    />
+                  </div>
+                )
+              })}
+            </section>
+
+            {/* VOICES FROM THE VITAL KAUAʻI COMMUNITY */}
+            <section className="w1-section" id="community">
+              <h3 className="w1-h3">Voices from the Vital Kauaʻi Community</h3>
+              <div className="video-frame">
+                <div className="video-primer">
+                  <div className="vp-play"><span className="vp-play-icon">▶</span></div>
+                  <div>
+                    <div className="vp-label">A Reflection from the Vital Kauaʻi Community · Week {i + 1}</div>
+                    <div className="vp-text">A short transmission from someone who has walked this path.</div>
+                    <div className="vp-coming-soon">Coming Soon</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* COMPLETION — Week 6 only: integration statement + six-week
+                checklist + monthly arc + return-practice + closing bridge. */}
+            {w.integrationStatement && (
+              <section className="w1-section" id="completion">
+                <h3 className="w1-h3">Completion</h3>
+                <div className="integration-qs">
+                  <div className="iq-header">
+                    <span className="iq-label">Your integration statement — three questions, one page</span>
+                  </div>
+                  {w.integrationStatement.map((q, qi) => (
+                    <div className="iq-item" key={qi}>
+                      <div className="iq-q">{qi + 1}. {q.q}</div>
+                      <div className="iq-hint">{q.hint}</div>
+                    </div>
+                  ))}
+                </div>
+              </section>
             )}
 
             {w.checklist && (
-              <div className="rg-wrap" style={{ marginTop: w.integrationStatement ? 24 : 40 }}>
+              <div className="rg-wrap" style={{ marginTop: 24 }}>
                 <div className="rg-header">
                   <div className="rg-dot" /><div className="rg-title">Six-week integration — completions</div>
                 </div>
