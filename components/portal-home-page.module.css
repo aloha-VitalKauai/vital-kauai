@@ -1261,6 +1261,37 @@
   margin-top: 2px;
 }
 
+.payMethodTabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.payMethodTab {
+  flex: 1;
+  padding: 10px 14px;
+  background: transparent;
+  color: var(--ink-faint);
+  border: 1.5px solid var(--gold-rule);
+  border-radius: 8px;
+  font-family: var(--font-body), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.payMethodTab:hover { background: var(--gold-bg); }
+
+.payMethodTabActive {
+  background: var(--forest);
+  color: white;
+  border-color: var(--forest);
+}
+
+.payMethodTabActive:hover { background: var(--forest); }
+
 .stripePlaceholder {
   border: 1.5px dashed var(--gold-rule);
   border-radius: 10px;
