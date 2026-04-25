@@ -106,9 +106,6 @@ export function BeginYourJourneyPage() {
           The Medicine Shows You the Door.
           <em>We Walk Through It With You.</em>
         </h1>
-        <p className={styles.heroSub}>
-          Watch our welcome and book a discovery call — we&apos;d love to sit with you.
-        </p>
       </section>
 
       {/* ── Main Grid: Video + Calendly ── */}
@@ -128,17 +125,9 @@ export function BeginYourJourneyPage() {
           </div>
 
           <p className={styles.videoCaption}>
-            Rachel and Josh share what Vital Kaua&#699;i is, what iboga has meant in their own lives,
-            and what it means to hold this work on the sacred North Shore of Kaua&#699;i.
+            The discovery call is a conversation where we get to meet you, hear what is calling
+            you, and answer whatever questions are alive in you.
           </p>
-
-          <div className={styles.videoNote}>
-            <span className={styles.videoNoteLabel}>Whole-plant iboga &middot; North Shore, Kaua&#699;i</span>
-            <p>
-              We work exclusively with whole-plant iboga root bark, held in ceremony in living
-              relationship with the land, water, and forest.
-            </p>
-          </div>
         </div>
 
         {/* Calendly Side */}
