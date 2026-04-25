@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { fetchPublicCohorts, formatCohortRange, groupCohortsByDate, spotsLeftLabel } from "@/lib/cohorts";
+import { fetchPublicCohorts, formatCohortRange, groupCohortsByDate, isCohortFull, spotsLeftLabel } from "@/lib/cohorts";
 
 export function StayPage() {
   useEffect(() => {
@@ -11,6 +11,10 @@ export function StayPage() {
     fetchPublicCohorts(supabase).then((rawCohorts) => {
       if (cancelled) return;
       const cohorts = groupCohortsByDate(rawCohorts);
+      // "Next Ceremony" treatment lands on the first non-Full slot so a
+      // forced-full upcoming ceremony reads as Full instead of carrying
+      // the gold spotlight.
+      const nextIdx = cohorts.findIndex(c => c && !isCohortFull(c));
       for (let i = 0; i < 3; i++) {
         const el = document.getElementById(`upcoming-ceremony-card-${i}`);
         if (!el) continue;
@@ -25,7 +29,7 @@ export function StayPage() {
           el.style.background = "rgba(28,43,30,0.5)";
           continue;
         }
-        const isNext = i === 0;
+        const isNext = i === nextIdx;
         const year = new Date(c.start_at).getUTCFullYear();
         const dateText = formatCohortRange(c.start_at, c.end_at).replace(`, ${year}`, "");
         const titleIsGeneric = /^[A-Za-z]+\s+\d+.*Ceremony$/.test(c.title);
