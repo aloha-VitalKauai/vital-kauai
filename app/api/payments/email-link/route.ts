@@ -263,7 +263,7 @@ async function sendPaymentEmail(input: {
     <div class="top-bar"></div>
     <div class="inner">
       <p class="eyebrow">Vital Kaua\u02BBi \u00B7 Journey Contribution</p>
-      <h1>Thank you for your Love Offering, <em>${firstName}.</em></h1>
+      <h1>Thank you for your contribution, <em>${firstName}.</em></h1>
       <p>Here\u2019s a single-use payment link for your journey contribution. It opens a secure Stripe checkout pre-filled with your amount.</p>
       <div class="amount-box">
         <p class="amount-label">Amount</p>

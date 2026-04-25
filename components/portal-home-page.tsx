@@ -494,7 +494,7 @@ export function PortalHomePage({
                 }}
                 disabled={donationDone}
               >
-                Donation{donationDone ? " \u2713" : ""}
+                Contribution{donationDone ? " \u2713" : ""}
               </button>
               <button
                 className={`${styles.reqLink} ${agreementDone ? styles.reqLinkSigned : ""}`}
@@ -524,7 +524,7 @@ export function PortalHomePage({
               <p className={styles.lockedIcon}>&#128274;</p>
               <h2>Complete Your Required Steps</h2>
               <p>
-                Finish your Donation, Membership Agreement, and Medical Disclaimer above
+                Finish your Contribution, Membership Agreement, and Medical Disclaimer above
                 to unlock your full member portal.
               </p>
               <p className={styles.lockedProgress}>
