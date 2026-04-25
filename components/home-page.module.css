@@ -918,8 +918,9 @@
 .offeringsImageWrap {
   flex-shrink: 0;
   width: 340px;
-  border-radius: 12px;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .offeringsImage {
