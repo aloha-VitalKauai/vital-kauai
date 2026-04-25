@@ -687,7 +687,7 @@ const BODY_CONTENT = `
     <span class="eyebrow" style="display:block;text-align:center;margin-bottom:24px;">Kauaʻi, Hawaiʻi</span>
     <h2 class="cta-heading">The Medicine Shows<br>You the Door.<br><em>We Walk Through It With You.</em></h2>
     <p class="cta-body">If you feel called, we encourage you to book a discovery session with us through our website.</p>
-    <span class="cta-sub">vitalkauai.com · aloha&#64;vitalkauai.com</span>
+    <span class="cta-sub"><a href="https://vital-kauai.vercel.app/begin-your-journey" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(245,240,232,0.25);">vitalkauai.com</a> · <a href="mailto:aloha&#64;vitalkauai.com" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(245,240,232,0.25);">aloha&#64;vitalkauai.com</a></span>
   </div>
 </section>
 
