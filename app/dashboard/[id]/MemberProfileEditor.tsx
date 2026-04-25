@@ -153,6 +153,31 @@ export default function MemberProfileEditor({
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  const [resendingSetup, setResendingSetup] = useState(false);
+  const [setupResendMsg, setSetupResendMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
+
+  async function handleResendSetupLink() {
+    if (resendingSetup) return;
+    if (!confirm(`Send a fresh password setup link to ${member.email}?`)) return;
+    setResendingSetup(true);
+    setSetupResendMsg(null);
+    try {
+      const res = await fetch("/api/resend-setup-link", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ member_id: member.id }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error || `HTTP ${res.status}`);
+      setSetupResendMsg({ kind: "ok", text: `Setup link sent to ${member.email}` });
+    } catch (e: any) {
+      setSetupResendMsg({ kind: "err", text: e?.message || "Failed to resend setup link" });
+    } finally {
+      setResendingSetup(false);
+      setTimeout(() => setSetupResendMsg(null), 6000);
+    }
+  }
+
   async function handleSave() {
     setSaving(true);
     setSaved(false);
@@ -233,7 +258,40 @@ export default function MemberProfileEditor({
             >
               {member.full_name}
             </h1>
-            <p style={{ fontSize: 14, color: "#6B6B67", margin: "4px 0 0" }}>{member.email}</p>
+            <p style={{ fontSize: 14, color: "#6B6B67", margin: "4px 0 0" }}>
+              {member.email}
+              <button
+                type="button"
+                onClick={handleResendSetupLink}
+                disabled={resendingSetup}
+                title="Email this member a fresh password-setup link (use if their welcome link expired)"
+                style={{
+                  marginLeft: 10,
+                  padding: "3px 10px",
+                  fontSize: 11,
+                  letterSpacing: "0.04em",
+                  background: "transparent",
+                  color: "#6B6B67",
+                  border: "1px solid #D9D6CC",
+                  borderRadius: 99,
+                  cursor: resendingSetup ? "not-allowed" : "pointer",
+                  fontFamily: "inherit",
+                }}
+              >
+                {resendingSetup ? "Sending\u2026" : "Resend setup link"}
+              </button>
+              {setupResendMsg && (
+                <span
+                  style={{
+                    marginLeft: 10,
+                    fontSize: 12,
+                    color: setupResendMsg.kind === "ok" ? "#1D9E75" : "#A32D2D",
+                  }}
+                >
+                  {setupResendMsg.text}
+                </span>
+              )}
+            </p>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <span
