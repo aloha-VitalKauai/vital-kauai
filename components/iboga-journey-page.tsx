@@ -442,28 +442,40 @@ export function IbogaJourneyPage() {
       </section>
 
       {/* ── Upcoming Ceremonies ── */}
-      <section style={{ padding: "80px 60px", background: "var(--cream, #F5F0E8)", textAlign: "center" }}>
-        <div style={{ maxWidth: 880, margin: "0 auto" }}>
-          <span className={styles.sectionLabel} style={{ display: "block", marginBottom: 14 }}>Come As You Are</span>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(28px, 3.6vw, 44px)", fontWeight: 300, color: "var(--ink, #1A1A18)", lineHeight: 1.15, marginBottom: 14 }}>
-            Upcoming <em style={{ fontStyle: "italic", color: "var(--gold, #C8A96E)" }}>Ceremonies</em>
+      <section style={{ padding: "112px 32px", background: "var(--cream, #F5F0E8)", textAlign: "center" }}>
+        <div style={{ maxWidth: 1080, margin: "0 auto" }}>
+          {/* Decorative gold rule above the eyebrow */}
+          <div style={{ width: 36, height: 1, background: "var(--gold, #C8A96E)", margin: "0 auto 20px", opacity: 0.6 }} />
+          <span className={styles.sectionLabel} style={{ display: "block", marginBottom: 14, color: "var(--gold, #C8A96E)" }}>Come As You Are</span>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 300, color: "var(--ink, #1A1A18)", lineHeight: 1.1, marginBottom: 16 }}>
+            Upcoming <em style={{ fontStyle: "italic", color: "var(--sage, #7A9E7E)" }}>Ceremonies</em>
           </h2>
-          <p style={{ fontSize: 14, color: "var(--ink-soft, #6B6B67)", lineHeight: 1.85, maxWidth: 580, margin: "0 auto 36px" }}>
+          <p style={{ fontSize: 16, color: "var(--ink-soft, #6B6B67)", lineHeight: 1.7, maxWidth: 580, margin: "0 auto 56px", fontStyle: "italic", fontFamily: "'Cormorant Garamond', serif" }}>
             Each ceremony is a small, held gathering — six members, seven days, one sacred arc.
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 1, marginBottom: 32, background: "rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.06)" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 24, marginBottom: 48 }}>
             {(() => {
               const slots: (PublicCohort | null)[] = [...groupCohortsByDate(publicCohorts).slice(0, 3)];
               while (slots.length < 3) slots.push(null);
               return slots.map((c, i) => {
                 const isNext = i === 0 && c;
+                const cardBase: React.CSSProperties = {
+                  background: "var(--warm-white, #FDFBF7)",
+                  border: "1px solid rgba(28,43,30,0.08)",
+                  borderRadius: 4,
+                  padding: "44px 28px 32px",
+                  textAlign: "center",
+                  position: "relative",
+                  boxShadow: "0 8px 24px rgba(14,26,16,0.06)",
+                };
                 if (!c) {
                   return (
-                    <div key={`tba-${i}`} style={{ background: "#FAFAF8", padding: "26px 20px" }}>
-                      <p style={{ fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: "rgba(0,0,0,0.35)", marginBottom: 10 }}>Upcoming</p>
-                      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 300, color: "rgba(0,0,0,0.4)", marginBottom: 4 }}>TBA</p>
-                      <p style={{ fontSize: 11, color: "rgba(0,0,0,0.35)", letterSpacing: "0.06em" }}>Hanalei, Kauaʻi</p>
-                      <p style={{ fontSize: 10, color: "rgba(0,0,0,0.3)", marginTop: 12 }}>Dates Coming</p>
+                    <div key={`tba-${i}`} style={{ ...cardBase, opacity: 0.55, borderStyle: "dashed", boxShadow: "none" }}>
+                      <p style={{ fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color: "rgba(0,0,0,0.4)", marginBottom: 18 }}>Upcoming</p>
+                      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "clamp(28px, 3.4vw, 36px)", fontWeight: 300, color: "rgba(0,0,0,0.42)", lineHeight: 1.1, marginBottom: 10 }}>TBA</p>
+                      <p style={{ fontSize: 11, color: "rgba(0,0,0,0.4)", letterSpacing: "0.08em", marginBottom: 18 }}>Hanalei, Kauaʻi</p>
+                      <div style={{ width: 28, height: 1, background: "rgba(0,0,0,0.18)", margin: "0 auto 14px" }} />
+                      <p style={{ fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.38)" }}>Dates Coming</p>
                     </div>
                   );
                 }
@@ -472,18 +484,33 @@ export function IbogaJourneyPage() {
                 const titleIsGeneric = /^[A-Za-z]+\s+\d+.*Ceremony$/.test(c.title);
                 const spots = spotsLeftLabel(c);
                 const statusText = spots ?? (isNext ? "Filling Now" : "Open");
+                const isFull = !isNext && /full/i.test(statusText);
+                const statusColor = isNext || spots
+                  ? "var(--gold, #C8A96E)"
+                  : isFull
+                    ? "var(--sage, #7A9E7E)"
+                    : "rgba(0,0,0,0.55)";
                 return (
-                  <div key={c.id} style={{ background: isNext ? "#FFFFFF" : "#FAFAF8", padding: "26px 20px" }}>
-                    <p style={{ fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: isNext ? "var(--gold, #C8A96E)" : "rgba(0,0,0,0.45)", marginBottom: 10 }}>
+                  <div
+                    key={c.id}
+                    style={{
+                      ...cardBase,
+                      borderTop: isNext ? "3px solid var(--gold, #C8A96E)" : cardBase.border,
+                      boxShadow: isNext ? "0 18px 44px rgba(14,26,16,0.16)" : cardBase.boxShadow,
+                      transform: isNext ? "translateY(-4px)" : undefined,
+                    }}
+                  >
+                    <p style={{ fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color: isNext ? "var(--gold, #C8A96E)" : "rgba(0,0,0,0.5)", marginBottom: 18, fontWeight: 500 }}>
                       {isNext ? "Next Ceremony" : "Upcoming"}
                     </p>
-                    <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 300, color: "var(--ink, #1A1A18)", marginBottom: 4 }}>
+                    <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "clamp(28px, 3.4vw, 36px)", fontWeight: 300, color: "var(--ink, #1A1A18)", lineHeight: 1.1, marginBottom: 10 }}>
                       {titleIsGeneric ? dateText : c.title}
                     </p>
-                    <p style={{ fontSize: 11, color: "rgba(0,0,0,0.55)", letterSpacing: "0.06em" }}>
+                    <p style={{ fontSize: 11, color: "rgba(0,0,0,0.55)", letterSpacing: "0.08em", marginBottom: 18 }}>
                       {titleIsGeneric ? `${year} · Hanalei, Kauaʻi` : `${dateText}, ${year} · Hanalei, Kauaʻi`}
                     </p>
-                    <p style={{ fontSize: 10, color: isNext || spots ? "var(--gold, #C8A96E)" : "rgba(0,0,0,0.5)", marginTop: 12, letterSpacing: "0.05em" }}>
+                    <div style={{ width: 28, height: 1, background: "rgba(28,43,30,0.18)", margin: "0 auto 14px" }} />
+                    <p style={{ fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: statusColor, fontWeight: 500 }}>
                       {statusText}
                     </p>
                   </div>
@@ -495,7 +522,7 @@ export function IbogaJourneyPage() {
             href="/begin-your-journey"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ display: "inline-block", fontSize: 10, fontWeight: 500, letterSpacing: "0.28em", textTransform: "uppercase", color: "var(--ink, #1A1A18)", background: "var(--gold, #C8A96E)", padding: "16px 38px", textDecoration: "none", borderRadius: 2 }}
+            style={{ display: "inline-block", fontSize: 10, fontWeight: 500, letterSpacing: "0.28em", textTransform: "uppercase", color: "var(--ink, #1A1A18)", background: "var(--gold, #C8A96E)", padding: "18px 40px", textDecoration: "none", borderRadius: 2, boxShadow: "0 4px 16px rgba(200,169,110,0.28)" }}
           >
             Book a Discovery Call
           </a>
