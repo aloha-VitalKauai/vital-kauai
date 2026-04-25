@@ -524,7 +524,7 @@ const BODY_CONTENT = `
           </div>
           <div style="display:flex;gap:18px;align-items:flex-start;">
             <span style="font-family:'Cormorant Garamond',serif;font-size:28px;color:rgba(200,169,110,0.3);line-height:1;flex-shrink:0;">02</span>
-            <div><p style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage-light);margin-bottom:5px;">Week 7 · Kauaʻi · Ceremony</p><p style="font-size:13px;color:rgba(245,240,232,0.6);line-height:1.7;">Opened at the fire, held in sacred indoor space in harmony with the land. 12–36 hours of deep work with your care team present throughout. Integration in the days that follow happens in nature, on the land, in the water, under the sky.</p></div>
+            <div><p style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage-light);margin-bottom:5px;">Week 7 · Kauaʻi · Ceremony</p><p style="font-size:13px;color:rgba(245,240,232,0.6);line-height:1.7;">Opened at the fire, held in sacred indoor space in harmony with the land. 12–36 hours of deep work with your care team present throughout. Integration in the days that follow happens in nature.</p></div>
           </div>
           <div style="display:flex;gap:18px;align-items:flex-start;">
             <span style="font-family:'Cormorant Garamond',serif;font-size:28px;color:rgba(200,169,110,0.3);line-height:1;flex-shrink:0;">03</span>
