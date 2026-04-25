@@ -1101,6 +1101,13 @@
   color: var(--text-dark);
 }
 
+.stay .sectionLabel {
+  font-size: 12px;
+  letter-spacing: 0.36em;
+  font-weight: 600;
+  color: #9a7a3e;
+}
+
 .stay .storyLink {
   margin-top: 12px;
   padding: 14px 28px;
