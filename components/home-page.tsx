@@ -217,8 +217,12 @@ export function HomePage() {
     return () => observer.disconnect();
   }, []);
 
-  // Hero video plays the first 5 seconds and loops back to the start.
-  // Native loop= would replay the entire clip; we want a tight short loop.
+  // Hero video plays the first 5 seconds and snaps back to the start.
+  // We keep loop= on the <video> as a safety net so playback never stops at
+  // the natural end of the clip; the timeupdate handler shortens that to a
+  // tight 5-second loop. Setting currentTime=0 mid-play continues without
+  // calling play(), which previously raced with the seek and stopped the
+  // video on some browsers.
   const heroVideoRef = useRef<HTMLVideoElement | null>(null);
   useEffect(() => {
     const v = heroVideoRef.current;
@@ -226,7 +230,6 @@ export function HomePage() {
     const onTime = () => {
       if (v.currentTime >= 5) {
         v.currentTime = 0;
-        v.play().catch(() => {});
       }
     };
     v.addEventListener("timeupdate", onTime);
@@ -321,6 +324,7 @@ export function HomePage() {
             ref={heroVideoRef}
             autoPlay
             muted
+            loop
             playsInline
             preload="auto"
             className={styles.heroVideo}
