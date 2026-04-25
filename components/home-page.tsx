@@ -444,7 +444,7 @@ export function HomePage() {
               <em>The Root of All Roots</em>
             </h2>
             <p className={styles.medicineBody}>
-              Iboga (considered a teacher plant, also known as the Tree of Life) is a sacred root bark from the forests of West and Central Africa, used for
+              Iboga (considered a teacher plant, also known as the &ldquo;Tree of Life&rdquo;) is a sacred root bark from the forests of West and Central Africa, used for
               millennia by the Bwiti people of Gabon (whose name translates as &ldquo;the study of life&rdquo;) as a sacrament of initiation, healing, and
               spiritual revelation. Unlike any other plant medicine, Iboga works at the level of
               the deepest self, interrupting patterns of addiction, trauma, and unconscious
@@ -452,8 +452,8 @@ export function HomePage() {
             </p>
             <p className={styles.medicineBody}>
               Vital Kauaʻi is a ceremonial container: a living relationship between practitioner,
-              plant, participant, and land. Our approach draws from the whole-plant intelligence of
-              Iboga root bark, titrated consciously with care, safety, and deep presence.
+              plant, participant, and land. Our approach honors the Bwiti tradition from which Iboga comes, and draws from the whole-plant intelligence of
+              Iboga root bark, titrated consciously with care, safety, and deep presence. As guests on this ʻāina, we hold Kauaʻi with kuleana, the deep responsibility of care for land, water, and lineage.
             </p>
             <div className={styles.medicineDistinction}>
               <p>
