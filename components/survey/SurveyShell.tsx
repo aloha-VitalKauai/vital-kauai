@@ -25,8 +25,8 @@ import { ReviewStep } from './steps/ReviewStep';
 import { createClient } from '@/lib/supabase/client';
 
 const T = {
-  earth: '#1a1712', earthLight: '#4a4338', goldDim: '#8a7250', goldLight: '#dfc49a',
-  gold: '#c9a96e', cream: '#f2ead8', creamDim: '#b8ac96', creamMuted: '#6e6558',
+  earth: '#1a1712', earthLight: '#4a4338', goldDim: '#a4886a', goldLight: '#dfc49a',
+  gold: '#c9a96e', cream: '#f2ead8', creamDim: '#d4c8ae', creamMuted: '#a89c84',
   sage: '#8fa882', sageDark: '#4e7250', borderLight: 'rgba(201,169,110,0.10)',
   borderSage: 'rgba(143,168,130,0.35)',
 };
