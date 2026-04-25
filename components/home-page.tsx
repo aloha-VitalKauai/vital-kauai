@@ -580,6 +580,13 @@ export function HomePage() {
               height={600}
               className={styles.offeringsImage}
             />
+            <Image
+              src="/images/napali.jpeg"
+              alt="Nā Pali coast"
+              width={500}
+              height={500}
+              className={styles.offeringsImage}
+            />
           </div>
         </div>
 
