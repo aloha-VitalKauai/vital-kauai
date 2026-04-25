@@ -73,6 +73,7 @@ const actionsForWeek = (
       { kind: 'hash',     href: '#journal-prompts',                    text: 'Respond to this week’s journal prompts' },
       { kind: 'internal', href: '/portal/questions-for-the-medicine',  text: 'Begin writing your questions for the medicine.' },
       { kind: 'internal', href: '/portal/somatic-companion#week-1',    text: 'Read Week 1: The Language of the Body in The Somatic Companion' },
+      { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule your first call with your integration guide' },
     ]
   }
   // Weeks 2–6 derive from the existing actions data. Notes are dropped (per
@@ -189,13 +190,10 @@ const WEEKS = [
           { text: 'Complete your Baseline Outcome', href: '/portal/assessments' },
         ],
       },
-      {
-        color: 'amber',
-        text: 'Schedule next week\'s integration-guide call',
-        links: [
-          { text: 'Schedule next week\'s integration-guide call', href: '/portal#integration-specialist' },
-        ],
-      },
+      // Week 1's actual rendered actions are hardcoded in actionsForWeek (since
+      // the items here are mostly Stripe / signup steps, not the writing-prompt
+      // flow shown on Week 1). The integration-guide reminder lives in that
+      // hardcoded list — see actionsForWeek(weekIdx === 0).
     ],
     dataset: 'Your wellbeing assessments — taken at baseline, 72 hours, 1 month, 3 months, 6 months, and 12 months — follow a standardized outcomes framework adapted for iboga from the validated instruments used in psychedelic research worldwide. Your responses, fully anonymized, contribute to one of the most comprehensive iboga datasets being built anywhere in the world — adding rigor to the field, helping legitimize this medicine, and giving future participants, clinicians, and researchers a clearer picture of how iboga actually works across hundreds of journeys. Your experience becomes part of something larger.',
     datasetLink: { text: 'Open your Outcomes →', href: '/portal/assessments' },
