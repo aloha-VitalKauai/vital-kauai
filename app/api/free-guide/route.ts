@@ -177,7 +177,7 @@ async function sendFreeGuideEmail(input: {
         • <a href="${esc(pdfUrl)}">Download the PDF</a> (also attached)
       </p>
       <hr>
-      <p>If, after reading, you sense this work may be for you, the next step is a quiet conversation. We hold short discovery calls with everyone before they enter ceremony — no pressure, just listening for fit.</p>
+      <p>If, after reading, you sense this work may be for you, the next step is a conversation. We hold discovery calls with everyone before they enter ceremony, and we would be honored to connect with you.</p>
       <div class="cta-wrap">
         <a class="cta" href="${esc(discoveryUrl)}">Book a Discovery Call →</a>
       </div>

@@ -71,9 +71,9 @@ body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm
 .cover-title em { font-style: italic; color: var(--sage-light); display: block; }
 .cover-subtitle { font-size: 16px; color: rgba(245,240,232,0.52); line-height: 1.9; max-width: 520px; font-weight: 300; }
 .cover-footer { display: flex; justify-content: space-between; align-items: flex-end; position: relative; z-index: 1; padding-top: 56px; border-top: 1px solid rgba(200,169,110,0.1); }
-.cover-botanical { font-family: 'Cormorant Garamond', serif; font-size: 13px; font-style: italic; color: rgba(245,240,232,0.2); }
+.cover-botanical { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-style: italic; color: rgba(245,240,232,0.55); }
 .cover-footer-right { text-align: right; }
-.cover-footer-right p { font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,240,232,0.18); line-height: 1.9; }
+.cover-footer-right p { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,240,232,0.6); line-height: 1.9; }
 
 .section { padding: 64px 80px; border-bottom: 1px solid var(--border); }
 .section-cream { background: #F3EEE6; }
@@ -81,7 +81,7 @@ body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm
 .section-forest { background: var(--forest); border-bottom-color: rgba(255,255,255,0.04); }
 .section-deep { background: var(--deep); border-bottom-color: rgba(255,255,255,0.03); }
 
-.eyebrow { font-size: 8.5px; letter-spacing: 0.44em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 16px; }
+.eyebrow { font-size: 11px; letter-spacing: 0.36em; text-transform: uppercase; color: #9a7a3e; font-weight: 600; display: block; margin-bottom: 16px; }
 .section-heading { font-family: 'Cormorant Garamond', serif; font-size: clamp(34px, 4vw, 54px); font-weight: 300; color: var(--text-dark); line-height: 1.05; margin-bottom: 12px; }
 .section-heading em { font-style: italic; color: var(--sage); }
 .section-forest .section-heading, .section-deep .section-heading { color: var(--cream); }
@@ -93,7 +93,7 @@ body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm
 
 .pull-quote { border-left: 2px solid var(--gold); padding: 16px 28px; margin: 16px 0; max-width: 640px; }
 .pull-quote p { font-family: 'Cormorant Garamond', serif; font-size: 21px; font-weight: 300; font-style: italic; color: var(--text-dark); line-height: 1.5; margin-bottom: 8px; }
-.pull-quote cite { font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--stone); font-style: normal; }
+.pull-quote cite { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-mid); font-style: normal; font-weight: 500; }
 .section-forest .pull-quote p, .section-deep .pull-quote p { color: var(--cream); }
 .section-forest .pull-quote cite, .section-deep .pull-quote cite { color: var(--sage-light); }
 
@@ -134,14 +134,14 @@ body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm
 .cta-body { font-size: 15px; color: rgba(245,240,232,0.55); line-height: 1.9; margin-bottom: 40px; }
 .cta-btn { display: inline-block; font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--forest); background: var(--gold); padding: 18px 52px; text-decoration: none; transition: background 0.3s; }
 .cta-btn:hover { background: var(--gold-light); }
-.cta-sub { display: block; margin-top: 18px; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,240,232,0.22); }
+.cta-sub { display: block; margin-top: 18px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,240,232,0.55); }
 
 .guide-footer { background: var(--deep); padding: 48px 80px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(200,169,110,0.07); }
 .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 17px; letter-spacing: 0.18em; color: var(--cream); text-transform: uppercase; font-weight: 300; }
-.guide-footer p { font-size: 10.5px; color: rgba(245,240,232,0.2); line-height: 1.8; text-align: right; }
+.guide-footer p { font-size: 11.5px; color: rgba(245,240,232,0.55); line-height: 1.85; text-align: right; }
 .guide-footer a { color: rgba(200,169,110,0.35); text-decoration: none; }
 .disclaimer { background: var(--deep); border-top: 1px solid rgba(200,169,110,0.06); padding: 28px 80px; }
-.disclaimer p { font-size: 10.5px; color: rgba(245,240,232,0.18); line-height: 1.85; max-width: 860px; }
+.disclaimer p { font-size: 11.5px; color: rgba(245,240,232,0.55); line-height: 1.85; max-width: 860px; }
 
 .reveal { opacity: 1; }
 .reveal.visible { opacity: 1; }
@@ -158,6 +158,7 @@ body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm
   .works-card-title { font-size: 18px !important; margin-bottom: 6px !important; }
   .works-card-body { font-size: 12px !important; line-height: 1.7 !important; }
   .whom-card, .works-card, .research-block, .pull-quote, .resource-item { page-break-inside: avoid; }
+  .whom-grid > .whom-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
   .guide-footer, .disclaimer { page-break-before: auto; }
   .choosing-section { padding-top: 32px !important; padding-bottom: 32px !important; }
   .choosing-section .section-intro { font-size: 13px !important; line-height: 1.75 !important; margin-bottom: 20px !important; }
@@ -171,7 +172,7 @@ body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm
   .cover { padding: 48px 44px; }
   .section { padding: 72px 44px; }
   .whom-grid { grid-template-columns: 1fr 1fr; }
-  .two-col, .two-col-wide { grid-template-columns: 1fr; gap: 40px; }
+  .two-col, .two-col-wide { grid-template-columns: 1fr; gap: 22px; }
   .works-grid { grid-template-columns: 1fr; }
   .guide-footer { padding: 40px 44px; flex-direction: column; gap: 18px; }
   .guide-footer p { text-align: center; }
@@ -268,7 +269,7 @@ const BODY_CONTENT = `
     </div>
     <div>
       <div class="pull-quote" style="margin-top:0;">
-        <p>"Iboga gives you what you need."</p>
+        <p>"Iboga gives you what you need, not what you want."</p>
         <cite>Bwiti saying · Gabon</cite>
       </div>
       <p class="body-text" style="margin-top:20px;">The Pygmy tribes of Gabon and Cameroon are widely recognized as the original discoverers of iboga's healing and visionary properties, passing this knowledge to the Bwiti across countless generations. The Bwiti understand the plant as a being, a teacher with intelligence and the capacity to perceive exactly what each person needs. The medicine shows you the truth of your life. The clearer you arrive, the deeper it goes.</p>
@@ -302,7 +303,7 @@ const BODY_CONTENT = `
       <p class="body-text">Perhaps the most essential thing to understand: the Bwiti experience iboga as a being, a plant teacher with intelligence and intention. It shows the truth of your life. The clearer you arrive, the deeper it goes. The more open your hands, the more the medicine can place in them.</p>
     </div>
     <div>
-      <p class="body-text">Josh Perdue, co-founder of Vital Kauaʻi, has spent time in Gabon in deep relationship with the plant and the people who have carried it for generations. That reverence, for the land, the medicine, and the wisdom traditions that have held iboga across millennia, is woven into everything we do.</p>
+      <p class="body-text">Josh Perdue, co-founder of Vital Kauaʻi, was initiated in Gabon in deep relationship with the plant and the people who have carried it for generations. That reverence, for the land, the medicine, and the wisdom traditions that have held iboga across millennia, is woven into everything we do.</p>
       <p class="body-text">We bring this reverence into our work on the North Shore of Kauaʻi, allowing African initiatory wisdom to inspire the container while remaining grounded in our own ceremonial path. The ceremony opens around the fire. The medicine meets you in the dark. And the land of Kauaʻi holds everything.</p>
       <div class="pull-quote" style="border-left-color:var(--sage-light);">
         <p>"Ceremony opens around a sacred fire, drawing on the wisdom of those who have carried iboga for thousands of years, where fire illuminates what is ready to be released and calls in what wants to arrive."</p>
@@ -484,10 +485,10 @@ const BODY_CONTENT = `
   <div style="background:var(--forest);padding:40px 44px;max-width:860px;page-break-inside:avoid;">
     <span style="font-size:8.5px;letter-spacing:0.38em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:14px;">The Most Important Distinction</span>
     <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--cream);line-height:1.15;margin-bottom:14px;">With iboga, <em style="font-style:italic;color:var(--sage-light);">you remain yourself.</em></h3>
-    <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;margin-bottom:12px;">Ayahuasca, psilocybin, and ketamine each, in their own way, move you away from ordinary consciousness. They dissolve the ego, reshape perception, or carry you somewhere else entirely. You surrender the wheel. The medicine decides where you go.</p>
+    <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;margin-bottom:12px;">Ayahuasca, psilocybin, and ketamine each, in their own way, move you away from ordinary consciousness. They dissolve the ego, reshape perception, or carry you somewhere else entirely. The medicine decides where you go.</p>
     <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;margin-bottom:12px;">Iboga is classified by researchers as an <strong style="color:var(--sage-light);font-weight:400;">oneirogen</strong>, a substance that produces dream-like states while the person remains fully awake. EEG studies confirm that iboga generates REM-sleep brainwave signatures in waking participants, a neurological phenomenon found in no other known medicine. Psychiatrist Claudio Naranjo coined the term <em style="color:rgba(245,240,232,0.82);">oneirophrenic state</em> to describe it: a conscious dreamy state where individuals remain fully open, remember everything, and possess heightened capacity for self-reflection.</p>
-    <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;">You close your eyes and visions arise. Memories surface with extraordinary clarity. You witness your own life as if watching it unfold before you, scenes, patterns, moments, truths. But throughout all of it, you remain lucid, coherent, and present. Your identity stays intact. You are the observer, clear-eyed, awake, and very much yourself. This is what makes iboga unlike anything else available.</p>
-    <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;margin-top:12px;">What makes iboga singular is precisely this quality of retained selfhood. You do not lose yourself in the experience, you find yourself in it. The visions and insights feel sovereign and wholly owned. You return by the clarity of what was always inside you.</p>
+    <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;">Memories surface with extraordinary clarity. You witness your own life as if watching it unfold, alongside archetypal visitations and meetings beyond the self. But throughout all of it, you remain lucid, coherent, and present. Your identity stays intact. You are the observer, clear-eyed, awake, and very much yourself. This is what makes iboga unlike anything else available.</p>
+    <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;margin-top:12px;">What makes iboga singular is precisely this quality of retained selfhood. You do not lose yourself in the experience, you find yourself in it. The visions and insights feel sovereign and wholly owned.</p>
   </div>
 
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:28px;">
@@ -506,12 +507,12 @@ const BODY_CONTENT = `
 <section class="section section-forest">
   <span class="eyebrow">How We Work</span>
   <h2 class="section-heading">The Vital Kauaʻi <em>Approach</em></h2>
-  <p class="section-intro">The medicine shows you the door. We walk through it with you. This is what distinguishes deeply held ceremonial iboga work from any other healing modality available.</p>
+  <p class="section-intro">The medicine shows you the door. We walk through it with you.</p>
 
   <div class="two-col">
     <div>
-      <p class="body-text">The Vital Kauaʻi Iboga Journey begins with six weeks of dedicated preparation, body, nervous system, and inner landscape, followed by your ceremony in week seven. Integration support continues for months afterward. Every phase is held with full guidance and care. You are in ongoing relationship with your care team from the moment you say yes through the full arc of your integration.</p>
-      <p class="body-text">Your ceremony is held on the sacred North Shore of Kauaʻi, in living relationship with the mana of the land, the water, and the forest. The medicine is whole-plant iboga root bark, titrated, conscious, and responsive. Sacred fire, water, music, and ancestral honoring open and hold the container, drawing on the wisdom traditions that have carried this plant for thousands of years.</p>
+      <p class="body-text">The Vital Kauaʻi Iboga Journey begins with six weeks of dedicated preparation for the body, nervous system, and inner landscape, and is followed by your ceremony in week seven. Integration support continues for months afterward. Every phase is held with full guidance and care. You are in ongoing relationship with your care team from the moment you say yes through the full arc of your integration.</p>
+      <p class="body-text">Your ceremony is held on the sacred North Shore of Kauaʻi, in living relationship with the mana of the land, the water, and the forest. The medicine we offer is whole-plant iboga root bark, dosed according to your particular constitution and titrated as a slow build in your system rather than a steep onset. Sacred fire, water, music, and ancestral honoring open and hold the container, drawing on the wisdom traditions that have carried this plant for thousands of years.</p>
       <p class="body-text">This work is nature-based, somatic, and psycho-spiritual. We offer a living ceremonial container, held by people who have walked this path themselves, in a place that is itself a healer.</p>
     </div>
     <div>
@@ -524,7 +525,7 @@ const BODY_CONTENT = `
           </div>
           <div style="display:flex;gap:18px;align-items:flex-start;">
             <span style="font-family:'Cormorant Garamond',serif;font-size:28px;color:rgba(200,169,110,0.3);line-height:1;flex-shrink:0;">02</span>
-            <div><p style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage-light);margin-bottom:5px;">Week 7 · Kauaʻi · Ceremony</p><p style="font-size:13px;color:rgba(245,240,232,0.6);line-height:1.7;">Opened at the fire, held in sacred indoor space in harmony with the land. 12–36 hours of deep work with your care team present throughout. Integration in the days that follow happens in nature, on the land, in the water, under the sky.</p></div>
+            <div><p style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage-light);margin-bottom:5px;">Week 7 · Kauaʻi · Ceremony</p><p style="font-size:13px;color:rgba(245,240,232,0.6);line-height:1.7;">Opened at the fire, held in sacred indoor space in harmony with the land. 12–36 hours of deep work with your care team present throughout. Integration in the days that follow happens in nature.</p></div>
           </div>
           <div style="display:flex;gap:18px;align-items:flex-start;">
             <span style="font-family:'Cormorant Garamond',serif;font-size:28px;color:rgba(200,169,110,0.3);line-height:1;flex-shrink:0;">03</span>
@@ -675,10 +676,6 @@ const BODY_CONTENT = `
             <span style="font-size:11px;color:rgba(220,168,152,0.5);flex-shrink:0;margin-top:3px;">—</span>
             <p style="font-size:13px;color:rgba(245,240,232,0.68);line-height:1.75;">Unwillingness to answer direct questions about safety protocols</p>
           </div>
-          <div style="display:flex;gap:14px;align-items:flex-start;margin-top:8px;">
-            <span style="font-size:11px;color:var(--sage-light);flex-shrink:0;margin-top:3px;">→</span>
-            <p style="font-size:12px;color:rgba(245,240,232,0.4);line-height:1.75;font-style:italic;">These are signals worth honoring. Trust what you notice.</p>
-          </div>
         </div>
       </div>
     </div>
@@ -691,7 +688,7 @@ const BODY_CONTENT = `
     <span class="eyebrow" style="display:block;text-align:center;margin-bottom:24px;">Kauaʻi, Hawaiʻi</span>
     <h2 class="cta-heading">The Medicine Shows<br>You the Door.<br><em>We Walk Through It With You.</em></h2>
     <p class="cta-body">If you feel called, we encourage you to book a discovery session with us through our website.</p>
-    <span class="cta-sub">vitalkauai.com · aloha&#64;vitalkauai.com</span>
+    <span class="cta-sub"><a href="https://vital-kauai.vercel.app/begin-your-journey" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(245,240,232,0.25);">vitalkauai.com</a> · <a href="mailto:aloha&#64;vitalkauai.com" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(245,240,232,0.25);">aloha&#64;vitalkauai.com</a></span>
   </div>
 </section>
 
