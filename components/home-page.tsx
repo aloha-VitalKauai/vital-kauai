@@ -399,19 +399,18 @@ export function HomePage() {
               <span className={styles.storyEyebrow}>Why Iboga</span>
               <p className={styles.storyLead}>&quot;Nothing we have ever encountered goes this deep.&quot;</p>
               <p className={styles.storyBody}>
-                We came to this medicine through our own searching, through years of therapy,
-                practice, study, and healing that touched the surface but could not fully reach what
-                was underneath. Iboga could. It showed us what was actually there: the patterns
-                carried since childhood, the stories built into identity, and the places where we had
-                drifted from ourselves. What it gave back was our freedom — freedom from the
-                background noise of anxiety and depression, freedom to create, to serve, and to live
-                with lightness and peace.
+                We came to this medicine through years of therapy, practice, and study. Iboga
+                reached the deeper places and dissolved patterns, programs, and tendencies we had
+                been carrying our whole lives. What it gave back was freedom: freedom from the
+                weight of anxiety and depression, freedom to create, to serve, and to live in
+                unconditional love and peace.
               </p>
               <p className={styles.storyBody}>
-                We built Vital Kauaʻi around this medicine because we could not imagine doing
-                anything else. Everything here exists to serve the depth of what Iboga makes
-                possible: the land, the team, the preparation, the branches that support the root
-                of our work.
+                Iboga is unlike any plant we have known. We feel it is needed at this time and
+                it is our calling to share it. We built Vital Kauaʻi because this is the only
+                work we can imagine doing. Everything here exists to serve the depth this medicine
+                makes possible: the land, the team, the preparation, and every branch that
+                supports it.
               </p>
               <Link href="/iboga-journey" className={styles.storyLink}>
                 Explore the Iboga Journey →
