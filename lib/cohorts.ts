@@ -73,6 +73,7 @@ export function groupCohortsByDate(cohorts: PublicCohort[]): PublicCohort[] {
  * new bookings but names haven't been entered in the backend yet.
  */
 const FORCED_FULL_START_DATES = new Set<string>([
+  '2026-06-21', // Jun 21–27, 2026 · Hanalei
   '2026-07-05', // Jul 5–11, 2026 · Hanalei
 ])
 
@@ -93,6 +94,11 @@ export function spotsLeftLabel(cohort: PublicCohort): string | null {
   if (left <= 0) return 'Full'
   if (left > 3) return null
   return left === 1 ? '1 spot left' : `${left} spots left`
+}
+
+/** True if the cohort is publicly displayed as Full (forced or sold out). */
+export function isCohortFull(cohort: PublicCohort): boolean {
+  return spotsLeftLabel(cohort) === 'Full'
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']

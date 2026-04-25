@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { fetchPublicCohorts, formatCohortRange, groupCohortsByDate, spotsLeftLabel, type PublicCohort } from "@/lib/cohorts";
+import { fetchPublicCohorts, formatCohortRange, groupCohortsByDate, isCohortFull, spotsLeftLabel, type PublicCohort } from "@/lib/cohorts";
 import styles from "./iboga-journey-page.module.css";
 
 export function IbogaJourneyPage() {
@@ -457,8 +457,12 @@ export function IbogaJourneyPage() {
             {(() => {
               const slots: (PublicCohort | null)[] = [...groupCohortsByDate(publicCohorts).slice(0, 3)];
               while (slots.length < 3) slots.push(null);
+              // "Next Ceremony" treatment lands on the first slot that is
+              // actually bookable, so a forced-full upcoming ceremony reads
+              // as Full instead of carrying the gold spotlight.
+              const nextIdx = slots.findIndex(s => s && !isCohortFull(s));
               return slots.map((c, i) => {
-                const isNext = i === 0 && c;
+                const isNext = i === nextIdx && c;
                 const cardBase: React.CSSProperties = {
                   background: "var(--warm-white, #FDFBF7)",
                   border: "1px solid rgba(28,43,30,0.08)",
