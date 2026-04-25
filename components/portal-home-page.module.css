@@ -1010,6 +1010,23 @@
   user-select: none;
 }
 
+/* Per-section blur — used to dim everything except the Required
+   Documents tab until the three onboarding steps are signed. */
+.lockedSection {
+  filter: blur(4px);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Locked phase tabs (everything except "Required Documents" until
+   onboarding is complete). */
+.phaseTabLocked {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: blur(2px);
+  pointer-events: none;
+}
+
 .lockedOverlay {
   position: absolute;
   inset: 0;
