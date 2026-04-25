@@ -81,7 +81,7 @@ body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm
 .section-forest { background: var(--forest); border-bottom-color: rgba(255,255,255,0.04); }
 .section-deep { background: var(--deep); border-bottom-color: rgba(255,255,255,0.03); }
 
-.eyebrow { font-size: 8.5px; letter-spacing: 0.44em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 16px; }
+.eyebrow { font-size: 11px; letter-spacing: 0.36em; text-transform: uppercase; color: #9a7a3e; font-weight: 600; display: block; margin-bottom: 16px; }
 .section-heading { font-family: 'Cormorant Garamond', serif; font-size: clamp(34px, 4vw, 54px); font-weight: 300; color: var(--text-dark); line-height: 1.05; margin-bottom: 12px; }
 .section-heading em { font-style: italic; color: var(--sage); }
 .section-forest .section-heading, .section-deep .section-heading { color: var(--cream); }
@@ -484,9 +484,9 @@ const BODY_CONTENT = `
   <div style="background:var(--forest);padding:40px 44px;max-width:860px;page-break-inside:avoid;">
     <span style="font-size:8.5px;letter-spacing:0.38em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:14px;">The Most Important Distinction</span>
     <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--cream);line-height:1.15;margin-bottom:14px;">With iboga, <em style="font-style:italic;color:var(--sage-light);">you remain yourself.</em></h3>
-    <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;margin-bottom:12px;">Ayahuasca, psilocybin, and ketamine each, in their own way, move you away from ordinary consciousness. They dissolve the ego, reshape perception, or carry you somewhere else entirely. You surrender the wheel. The medicine decides where you go.</p>
+    <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;margin-bottom:12px;">Ayahuasca, psilocybin, and ketamine each, in their own way, move you away from ordinary consciousness. They dissolve the ego, reshape perception, or carry you somewhere else entirely. The medicine decides where you go.</p>
     <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;margin-bottom:12px;">Iboga is classified by researchers as an <strong style="color:var(--sage-light);font-weight:400;">oneirogen</strong>, a substance that produces dream-like states while the person remains fully awake. EEG studies confirm that iboga generates REM-sleep brainwave signatures in waking participants, a neurological phenomenon found in no other known medicine. Psychiatrist Claudio Naranjo coined the term <em style="color:rgba(245,240,232,0.82);">oneirophrenic state</em> to describe it: a conscious dreamy state where individuals remain fully open, remember everything, and possess heightened capacity for self-reflection.</p>
-    <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;">You close your eyes and visions arise. Memories surface with extraordinary clarity. You witness your own life as if watching it unfold before you, scenes, patterns, moments, truths. But throughout all of it, you remain lucid, coherent, and present. Your identity stays intact. You are the observer, clear-eyed, awake, and very much yourself. This is what makes iboga unlike anything else available.</p>
+    <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;">Memories surface with extraordinary clarity. You witness your own life as if watching it unfold, alongside archetypal visitations and meetings beyond the self. But throughout all of it, you remain lucid, coherent, and present. Your identity stays intact. You are the observer, clear-eyed, awake, and very much yourself. This is what makes iboga unlike anything else available.</p>
     <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;margin-top:12px;">What makes iboga singular is precisely this quality of retained selfhood. You do not lose yourself in the experience, you find yourself in it. The visions and insights feel sovereign and wholly owned. You return by the clarity of what was always inside you.</p>
   </div>
 
