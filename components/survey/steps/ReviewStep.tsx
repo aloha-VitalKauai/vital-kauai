@@ -3,8 +3,8 @@ import type { StepConfig } from '@/lib/assessments/surveyConfig';
 import { FIELD_LABELS, SubmitError } from '@/lib/assessments/submitErrorHelpers';
 
 const T = {
-  earthMid: '#2a2620', earthLight: '#4a4338', cream: '#f2ead8', creamDim: '#b8ac96',
-  creamMuted: '#6e6558', goldDim: '#8a7250', goldLight: '#dfc49a',
+  earthMid: '#2a2620', earthLight: '#4a4338', cream: '#f2ead8', creamDim: '#d4c8ae',
+  creamMuted: '#a89c84', goldDim: '#a4886a', goldLight: '#dfc49a',
   sage: '#8fa882', sageDark: '#4e7250', rose: '#c4846a', roseDim: '#7a4f3a',
   borderLight: 'rgba(201,169,110,0.10)', borderSage: 'rgba(143,168,130,0.35)',
   borderRose: 'rgba(196,132,106,0.40)',

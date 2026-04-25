@@ -10,7 +10,9 @@ const TABS = [
   { label: "Ceremonies", href: "/dashboard/ceremonies" },
   { label: "Integration", href: "/dashboard/integration" },
   { label: "Medical", href: "/dashboard/medical" },
-  { label: "Outcomes", href: "/dashboard/outcomes" },
+  // Outcomes tab hidden while the outcomes experience is being refined.
+  // Restore by uncommenting this line.
+  // { label: "Outcomes", href: "/dashboard/outcomes" },
   { label: "Dosing", href: "/dashboard/dosing" },
   { label: "Financials", href: "/dashboard/financials" },
   { label: "SOPs", href: "/dashboard/sops" },
