@@ -1169,6 +1169,8 @@ export default function MemberProfileEditor({
         donations={donations}
         journeyTitle={journeyTitle}
         journeyEndAt={journeyEndAt}
+        memberName={member.full_name ?? null}
+        memberEmail={member.email ?? null}
       />
     </div>
   );

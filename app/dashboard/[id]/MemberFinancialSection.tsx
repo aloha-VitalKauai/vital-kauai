@@ -34,6 +34,8 @@ type Props = {
   tokens: PaymentToken[];
   tokenAmounts: Record<string, number>;
   donations: DonationRow[];
+  memberName: string | null;
+  memberEmail: string | null;
 };
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -91,6 +93,8 @@ export default function MemberFinancialSection({
   tokens,
   tokenAmounts,
   donations,
+  memberName,
+  memberEmail,
 }: Props) {
   const supabase = createClient();
   const router = useRouter();
@@ -120,6 +124,9 @@ export default function MemberFinancialSection({
   // Link generation
   const [linkLoading, setLinkLoading] = useState(false);
 
+  // Email link
+  const [emailLoading, setEmailLoading] = useState(false);
+
   // Revoke token
   const [revokingToken, setRevokingToken] = useState<string | null>(null);
 
@@ -147,6 +154,30 @@ export default function MemberFinancialSection({
     }
     await navigator.clipboard.writeText(url);
     flash(`Link copied — expires ${fmtDate(expires_at)}`);
+    startTransition(() => router.refresh());
+  }
+
+  async function handleEmailLink() {
+    if (!commitment) return;
+    if (!memberEmail) {
+      flash("No email on file for this member", true);
+      return;
+    }
+    const who = memberName ?? memberEmail;
+    if (!confirm(`Email a ${fmt(remainingCents)} payment link to ${who}?`)) return;
+    setEmailLoading(true);
+    const res = await fetch("/api/payments/email-link", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ commitment_id: commitment.id }),
+    });
+    const { sent_to, message, error } = await res.json();
+    setEmailLoading(false);
+    if (error) {
+      flash(error, true);
+      return;
+    }
+    flash(message ?? `Payment link emailed to ${sent_to}`);
     startTransition(() => router.refresh());
   }
 
@@ -460,6 +491,35 @@ export default function MemberFinancialSection({
                       }}
                     >
                       Copies a single-use {fmt(remainingCents)} link
+                    </p>
+                  </div>
+                  <span style={{ color: "#B8683D", fontSize: 16, flexShrink: 0 }}>→</span>
+                </button>
+
+                {/* Email payment link */}
+                <button
+                  onClick={handleEmailLink}
+                  disabled={!canAct || emailLoading || !memberEmail}
+                  style={{
+                    ...ACTION_CARD,
+                    opacity: !canAct || !memberEmail ? 0.4 : 1,
+                  }}
+                >
+                  <div style={{ flex: 1, textAlign: "left" }}>
+                    <p style={{ margin: 0, fontSize: 14, fontWeight: 500, color: "#E8DDC8" }}>
+                      {emailLoading ? "Sending…" : "Email payment link"}
+                    </p>
+                    <p
+                      style={{
+                        margin: "3px 0 0",
+                        fontSize: 11,
+                        color: "rgba(232,221,200,0.45)",
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {memberEmail
+                        ? `Sends ${fmt(remainingCents)} link to ${memberEmail}`
+                        : "No email on file"}
                     </p>
                   </div>
                   <span style={{ color: "#B8683D", fontSize: 16, flexShrink: 0 }}>→</span>
