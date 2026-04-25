@@ -73,12 +73,13 @@ async function handleApproval(token: string, source: string) {
   const { data: existingMember } = await db().from('members').select('id').eq('id', userId).single()
   if (!existingMember) {
     const { error: memberErr } = await db().from('members').upsert({
-      id:        userId,
-      full_name: lead.full_name,
-      email:     lead.email,
-      phone:     lead.phone || null,
-      lead_id:   lead.id,
-      status:    'Signed — Awaiting Intake',
+      id:         userId,
+      profile_id: userId,
+      full_name:  lead.full_name,
+      email:      lead.email,
+      phone:      lead.phone || null,
+      lead_id:    lead.id,
+      status:     'Signed — Awaiting Intake',
     }, { onConflict: 'id' })
     if (memberErr) {
       console.error('[approve-member] STEP:members — FAILED:', JSON.stringify(memberErr))
