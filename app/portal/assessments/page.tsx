@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { getMemberAssessmentStatus, CeremonyGroup } from '@/lib/assessments/getMemberAssessmentStatus';
 import { startOrResumeAssessment } from '@/lib/assessments/startOrResumeAssessment';
 import { AssessmentTimeline } from '@/components/assessments/AssessmentTimeline';
+import { TIMEPOINT_META } from '@/lib/assessments/timepointMeta';
 
 const T = {
   earth: '#1a1712',
@@ -184,17 +185,75 @@ function AssessmentsPageInner() {
   }
 
   if (state === 'empty') {
+    const previewTimepoints = ['baseline', 'post_72h', 'post_1m', 'post_3m', 'post_6m', 'post_12m'];
     return (
       <main style={{ maxWidth: 740, margin: '0 auto', padding: '3rem 2rem 6rem' }}>
+        <style>{keyframes}</style>
         <p style={{ fontSize: '0.65rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: T.goldDim, marginBottom: '0.75rem' }}>Member Portal &middot; Outcomes</p>
         <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2.6rem', fontWeight: 300, color: T.cream, marginBottom: '0.6rem', lineHeight: 1.1 }}>
           Your outcomes <em style={{ fontStyle: 'italic', color: T.sage }}>journey</em>
         </h1>
-        <div style={{ padding: '3rem 2rem', textAlign: 'center', border: `1px solid ${T.borderLight}`, borderRadius: 3, background: T.earthMid }}>
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.3rem', color: T.creamDim, marginBottom: '0.5rem' }}>No ceremony scheduled yet</p>
-          <p style={{ fontSize: '0.8rem', color: T.creamMuted, maxWidth: 340, margin: '0 auto', lineHeight: 1.9 }}>
-            Your assessment timeline will appear here once your ceremony date is confirmed. Reach out to your guide if you have questions.
-          </p>
+        <p style={{ fontSize: '0.875rem', color: T.creamMuted, lineHeight: 1.8, maxWidth: 500, marginBottom: '2rem' }}>
+          These surveys are the evidence &mdash; for you first, for the broader understanding of iboga second. Your responses form one of the most honest records of what this experience produced in a real human life.
+        </p>
+        <div style={{
+          padding: '1rem 1.25rem', marginBottom: '2.5rem',
+          border: `1px solid ${T.borderLight}`, borderRadius: 3,
+          background: T.earthMid,
+          fontSize: '0.78rem', color: T.creamDim, lineHeight: 1.7,
+        }}>
+          Your timeline opens once your ceremony date is confirmed. Here is the full arc of what you&rsquo;ll be invited to share.
+        </div>
+
+        <div role="list" aria-label="Assessment timeline preview" style={{ position: 'relative', paddingLeft: '2.5rem' }}>
+          <div style={{
+            position: 'absolute', left: 7, top: 16, bottom: 16, width: 1,
+            background: 'linear-gradient(to bottom, transparent 0%, rgba(201,169,110,0.18) 8%, rgba(201,169,110,0.18) 92%, transparent 100%)',
+          }} />
+          {previewTimepoints.map((tp, i) => {
+            const meta = TIMEPOINT_META[tp];
+            return (
+              <article
+                key={tp}
+                role="listitem"
+                aria-label={`${meta.label} — locked until ceremony scheduled`}
+                style={{ position: 'relative', marginBottom: '1.25rem', animation: 'fadeUp 0.4s ease both', animationDelay: `${i * 0.07}s` }}
+              >
+                <div style={{
+                  position: 'absolute', left: '-2.5rem', top: '1.15rem', width: 15, height: 15,
+                  borderRadius: '50%', background: T.earthSurface, border: `1.5px solid rgba(74,67,56,1)`,
+                }} />
+                <div style={{
+                  background: T.earthMid, border: `1px solid ${T.borderLight}`, borderRadius: 3,
+                  padding: '1.25rem 1.5rem', display: 'grid', gridTemplateColumns: '1fr auto',
+                  gap: '1rem', alignItems: 'center', opacity: 0.55,
+                }}>
+                  <div>
+                    <p style={{ fontSize: '0.6rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: T.goldDim, marginBottom: '0.3rem' }}>{meta.label}</p>
+                    <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.25rem', fontWeight: 400, color: T.cream, lineHeight: 1.2, marginBottom: '0.5rem' }}>{meta.description}</p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem 1.2rem', alignItems: 'center' }}>
+                      <span style={{ display: 'inline-flex', fontSize: '0.6rem', letterSpacing: '0.18em', textTransform: 'uppercase', padding: '0.2rem 0.65rem', borderRadius: 2, background: 'rgba(110,101,88,0.25)', color: T.creamMuted, whiteSpace: 'nowrap' }}>
+                        Locked
+                      </span>
+                      <span style={{ fontSize: '0.7rem', letterSpacing: '0.04em', color: T.creamMuted }}>
+                        {tp === 'baseline' ? 'Opens once your ceremony is scheduled' : 'Opens after ceremony'}
+                      </span>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem', flexShrink: 0 }}>
+                    <button disabled style={{
+                      fontFamily: "'Jost', sans-serif", fontSize: '0.68rem', fontWeight: 400,
+                      letterSpacing: '0.18em', textTransform: 'uppercase', padding: '0.55rem 1.2rem',
+                      borderRadius: 2, border: `1px solid ${T.earthSurface}`, background: 'transparent',
+                      color: T.creamMuted, opacity: 0.3, cursor: 'not-allowed',
+                    }}>
+                      Not yet open
+                    </button>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </main>
     );
