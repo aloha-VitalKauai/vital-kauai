@@ -85,6 +85,52 @@ function validateJourneyInput(input: CreateJourneyInput): string | null {
   return null
 }
 
+// ── Financial commitment provisioning ────────────────────────
+//
+// Mirrors the insert in app/api/approve-member/route.ts (the
+// Leads → Approve flow) so members scheduled directly from the
+// Journey Scheduling tab also get a draft commitment row. Without
+// it, the dark "Active Commitment" panel on the member profile
+// is hidden and we can't generate Stripe payment links.
+//
+// Idempotent on (member_id, journey_id) — safe to call from
+// createJourney(), reschedule paths, and any future entry point.
+// Non-blocking: a failed insert is logged but does not abort the
+// journey mutation, matching approve-member's behavior.
+
+async function ensureFinancialCommitment(
+  supabase: any,
+  memberId: string,
+  journeyId: string,
+) {
+  const { data: existing } = await supabase
+    .from('financial_commitments')
+    .select('id')
+    .eq('member_id', memberId)
+    .eq('journey_id', journeyId)
+    .limit(1)
+    .maybeSingle()
+
+  if (existing) return
+
+  const { error } = await supabase
+    .from('financial_commitments')
+    .insert({
+      member_id:             memberId,
+      journey_id:            journeyId,
+      kind:                  'journey_contribution',
+      expected_amount_cents: 0,
+      status:                'draft',
+    })
+
+  if (error) {
+    console.error(
+      '[journeys.ensureFinancialCommitment] insert failed (non-blocking):',
+      error.message,
+    )
+  }
+}
+
 // ── Ceremony mirror sync ─────────────────────────────────────
 //
 // `journeys` is the canonical scheduling table, but two legacy
@@ -185,6 +231,7 @@ export async function createJourney(
 
   if (error) return { ok: false, error: error.message }
 
+  await ensureFinancialCommitment(supabase, input.memberId, data.id)
   await syncJourneyCeremonyRecord(
     supabase, data.id, input.memberId, status,
     inputValueToJourneyIso(input.startDate ?? null),
@@ -233,6 +280,7 @@ export async function rescheduleJourney(
 
     if (error) return { ok: false, error: error.message }
 
+    await ensureFinancialCommitment(supabase, summary.member_id, data.id)
     await syncJourneyCeremonyRecord(supabase, data.id, summary.member_id, newStatus, startIso)
     await syncMemberCeremonyDate(supabase, summary.member_id)
 
