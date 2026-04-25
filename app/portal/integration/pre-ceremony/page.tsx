@@ -189,6 +189,13 @@ const WEEKS = [
           { text: 'Complete your Baseline Outcome', href: '/portal/assessments' },
         ],
       },
+      {
+        color: 'amber',
+        text: 'Schedule next week\'s integration-guide call',
+        links: [
+          { text: 'Schedule next week\'s integration-guide call', href: '/portal#integration-specialist' },
+        ],
+      },
     ],
     dataset: 'Your wellbeing assessments — taken at baseline, 72 hours, 1 month, 3 months, 6 months, and 12 months — follow a standardized outcomes framework adapted for iboga from the validated instruments used in psychedelic research worldwide. Your responses, fully anonymized, contribute to one of the most comprehensive iboga datasets being built anywhere in the world — adding rigor to the field, helping legitimize this medicine, and giving future participants, clinicians, and researchers a clearer picture of how iboga actually works across hundreds of journeys. Your experience becomes part of something larger.',
     datasetLink: { text: 'Open your Outcomes →', href: '/portal/assessments' },
@@ -212,10 +219,10 @@ const WEEKS = [
     actions: [
       {
         color: 'blue',
-        text: 'Call with your integration guide',
+        text: 'Connect with your integration guide',
         note: 'Come with your intentions from Week 1. Come with your questions. Come as you are. This call is the beginning of a relationship that will hold you through the hardest parts of what\'s ahead.',
         links: [
-          { text: 'Call with your integration guide', href: '/portal#integration-specialist' },
+          { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
         ],
       },
       { color: 'amber', text: 'Begin noticing your daily habits', note: 'Observe alcohol, sleep, screens, food, substances. Honest observation is all that\u2019s asked. What you notice this week becomes data for your body to begin working with.' },
@@ -225,6 +232,13 @@ const WEEKS = [
         note: 'EKG and labs must be completed before Week 5. Schedule now — medical appointments take time. This protects you.',
         links: [
           { text: 'Schedule your required medical appointments and labs', href: '/portal/physician-guide' },
+        ],
+      },
+      {
+        color: 'amber',
+        text: 'Schedule next week\'s call with Rachel & Josh',
+        links: [
+          { text: 'Schedule next week\'s call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true },
         ],
       },
     ],
@@ -246,6 +260,13 @@ const WEEKS = [
     box: { type: 'info', label: 'If something surfaces this week', text: 'Iboga is intelligent and relational. It begins its work the moment you say yes. If difficult material arises — old grief, anxiety, somatic intensity — here is what to do: slow down deliberately. Bring your attention to one physical sensation at a time. Breathe. Place both feet on the floor. Be with what is arising — presence is enough. Your integration guide is available between sessions. Reach out whenever you need support.\n\nSome days will feel harder to begin. Noticing that — naming it honestly — is itself the practice.' },
     actionLabel: 'Actions this week — 4 only',
     actions: [
+      {
+        color: 'blue',
+        text: 'Connect with Rachel & Josh',
+        links: [
+          { text: 'Connect with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true },
+        ],
+      },
       {
         color: 'green',
         text: 'Read The Somatic Companion',
@@ -278,6 +299,13 @@ const WEEKS = [
           { text: 'Begin DHA/EPA and magnesium glycinate supplementation daily', href: '/portal/dietary#supplement-protocol' },
         ],
       },
+      {
+        color: 'amber',
+        text: 'Schedule next week\'s integration-guide call',
+        links: [
+          { text: 'Schedule next week\'s integration-guide call', href: '/portal#integration-specialist' },
+        ],
+      },
     ],
     safetyBox: { label: 'Physiological preparation — safety note', text: 'Magnesium is cardiac-critical for iboga. Adequate magnesium levels directly affect cardiac function during the medicine, particularly QT interval regulation. This supplementation is cardiac-critical preparation — part of your physiological safety protocol. If you have any cardiac history, confirm dosing with your physician and inform the Vital Kauaʻi team before proceeding.' },
     prompts: PRE_CEREMONY_WEEKS[2].prompts,
@@ -301,10 +329,10 @@ const WEEKS = [
       { color: 'red', text: 'Deep journaling — this is the primary work of this week', note: 'An act of honesty. Approach the prompts below as if the medicine is already in the room with you — because in a real sense, it is.' },
       {
         color: 'blue',
-        text: 'Call with your integration guide',
+        text: 'Connect with your integration guide',
         note: 'Bring the material that is surfacing. Your guide is trained to hold exactly this territory.',
         links: [
-          { text: 'Call with your integration guide', href: '/portal#integration-specialist' },
+          { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
         ],
       },
       {
@@ -366,6 +394,13 @@ const WEEKS = [
           { text: 'Complete the What to Bring packing checklist', href: '/portal/what-to-bring' },
         ],
       },
+      {
+        color: 'amber',
+        text: 'Schedule next week\'s call with Rachel & Josh',
+        links: [
+          { text: 'Schedule next week\'s call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true },
+        ],
+      },
     ],
     prompts: PRE_CEREMONY_WEEKS[4].prompts,
     thread: 'The forgiveness work you begin here continues in ceremony and for months afterward. Begin it this week — the medicine will carry it forward from wherever you start. One week remains.',
@@ -395,18 +430,25 @@ const WEEKS = [
       },
       {
         color: 'blue',
-        text: 'Preparation call with Rachel & Josh',
+        text: 'Connect with Rachel & Josh',
         note: 'Bring your finalized Questions for the Medicine. Bring anything still alive. Speak everything that is ready to be said.',
         links: [
-          { text: 'Preparation call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true },
+          { text: 'Connect with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true },
         ],
       },
       {
         color: 'amber',
-        text: 'Call with your integration guide',
+        text: 'Connect with your integration guide',
         note: 'A final pre-ceremony touchpoint with the guide who will walk with you through integration. Bring what is asking to be spoken before you arrive.',
         links: [
-          { text: 'Call with your integration guide', href: '/portal#integration-specialist' },
+          { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
+        ],
+      },
+      {
+        color: 'amber',
+        text: 'Schedule your post-ceremony integration-guide call — within 48 hours of ceremony, while still on Kauaʻi',
+        links: [
+          { text: 'Schedule your post-ceremony integration-guide call — within 48 hours of ceremony, while still on Kauaʻi', href: '/portal#integration-specialist' },
         ],
       },
       {
