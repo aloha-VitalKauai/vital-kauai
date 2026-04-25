@@ -506,7 +506,7 @@ const BODY_CONTENT = `
 <section class="section section-forest">
   <span class="eyebrow">How We Work</span>
   <h2 class="section-heading">The Vital Kauaʻi <em>Approach</em></h2>
-  <p class="section-intro">The medicine shows you the door. We walk through it with you. This is what distinguishes deeply held ceremonial iboga work from any other healing modality available.</p>
+  <p class="section-intro">The medicine shows you the door. We walk through it with you.</p>
 
   <div class="two-col">
     <div>
