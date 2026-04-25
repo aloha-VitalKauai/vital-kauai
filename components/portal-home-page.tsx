@@ -256,8 +256,6 @@ export function PortalHomePage({
   const agreementDone = profile?.membership_agreement_signed ?? false;
   const medicalDone = profile?.medical_disclaimer_signed ?? false;
   const allRequiredDone = donationDone && agreementDone && medicalDone;
-  const requiredCount = [donationDone, agreementDone, medicalDone].filter(Boolean).length;
-  const requiredTotal = 3;
 
   const firstName = profile?.full_name?.split(" ")[0] || userEmail.split("@")[0];
   const initials = profile?.full_name
@@ -476,66 +474,10 @@ export function PortalHomePage({
         </div>
       </section>
 
-      {/* ── REQUIRED STEPS BANNER ── */}
-      {!allRequiredDone && (
-        <div className={styles.requiredBanner}>
-          <div className={styles.requiredInner}>
-            <div className={styles.requiredDot} />
-            <p className={styles.requiredText}>
-              <strong>Action Required &mdash;</strong> Three steps are required before your journey
-              begins.
-            </p>
-            <div className={styles.requiredLinks}>
-              <button
-                className={`${styles.reqLink} ${donationDone ? styles.reqLinkSigned : ""}`}
-                onClick={() => {
-                  if (donationDone) return;
-                  window.open(STRIPE_LOVE_OFFERING_URL, "_blank", "noopener,noreferrer");
-                }}
-                disabled={donationDone}
-              >
-                Contribution{donationDone ? " \u2713" : ""}
-              </button>
-              <button
-                className={`${styles.reqLink} ${agreementDone ? styles.reqLinkSigned : ""}`}
-                onClick={() => !agreementDone && setModal("agreement")}
-                disabled={agreementDone}
-              >
-                Membership Agreement{agreementDone ? " \u2713" : ""}
-              </button>
-              <button
-                className={`${styles.reqLink} ${medicalDone ? styles.reqLinkSigned : ""}`}
-                onClick={() => !medicalDone && setModal("medical")}
-                disabled={medicalDone}
-              >
-                Medical Disclaimer{medicalDone ? " \u2713" : ""}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* ── MAIN PORTAL BODY ── */}
-      <main className={`${styles.portalBody} ${!allRequiredDone ? styles.portalBodyLocked : ""}`}>
-        {/* Locked overlay */}
-        {!allRequiredDone && (
-          <div className={styles.lockedOverlay}>
-            <div className={styles.lockedMessage}>
-              <p className={styles.lockedIcon}>&#128274;</p>
-              <h2>Complete Your Required Steps</h2>
-              <p>
-                Finish your Contribution, Membership Agreement, and Medical Disclaimer above
-                to unlock your full member portal.
-              </p>
-              <p className={styles.lockedProgress}>
-                {requiredCount} of {requiredTotal} completed
-              </p>
-            </div>
-          </div>
-        )}
-
+      <main className={styles.portalBody}>
         {/* WELCOME VIDEO */}
-        <div className={styles.videoBlock}>
+        <div className={`${styles.videoBlock} ${!allRequiredDone ? styles.lockedSection : ""}`}>
           <div className={styles.videoWrap}>
             <div className={styles.videoPlay}>&#9654;</div>
             <span className={styles.videoComingSoon}>Coming Soon</span>
@@ -567,20 +509,26 @@ export function PortalHomePage({
           </div>
 
           <div className={styles.phaseTabs}>
-            {["Required Documents", "Prepare", "Ceremony", "Integration"].map((label, i) => (
-              <button
-                key={i}
-                className={`${styles.phaseTab} ${activePhase === i ? styles.phaseTabActive : ""}`}
-                onClick={() => setActivePhase(i)}
-              >
-                <span className={styles.phaseNum}>0{i + 1}</span>
-                {label}
-              </button>
-            ))}
+            {["Required Documents", "Prepare", "Ceremony", "Integration"].map((label, i) => {
+              const locked = !allRequiredDone && i !== 0;
+              const isActive = !allRequiredDone ? i === 0 : activePhase === i;
+              return (
+                <button
+                  key={i}
+                  className={`${styles.phaseTab} ${isActive ? styles.phaseTabActive : ""} ${locked ? styles.phaseTabLocked : ""}`}
+                  onClick={() => { if (!locked) setActivePhase(i); }}
+                  disabled={locked}
+                  aria-disabled={locked}
+                >
+                  <span className={styles.phaseNum}>0{i + 1}</span>
+                  {label}
+                </button>
+              );
+            })}
           </div>
 
           {/* PHASE 0: REQUIRED DOCUMENTS */}
-          <div className={`${styles.phasePanel} ${activePhase === 0 ? styles.phasePanelActive : ""}`}>
+          <div className={`${styles.phasePanel} ${(!allRequiredDone || activePhase === 0) ? styles.phasePanelActive : ""}`}>
             <div className={styles.docGrid}>
               <button
                 className={`${styles.docCard} ${donationDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
@@ -840,7 +788,7 @@ export function PortalHomePage({
         </div>
 
         {/* PREPARATION CHECKLIST */}
-        <div className={styles.checklistBlock}>
+        <div className={`${styles.checklistBlock} ${!allRequiredDone ? styles.lockedSection : ""}`}>
           <div className={styles.checklistHead}>
             <p className={styles.checklistEyebrow}>Before You Arrive</p>
             <h2 className={styles.checklistTitle}>
@@ -971,7 +919,7 @@ export function PortalHomePage({
         </div>
 
         {/* JOURNEY TEAM */}
-        <div id="team" className={styles.teamSection}>
+        <div id="team" className={`${styles.teamSection} ${!allRequiredDone ? styles.lockedSection : ""}`}>
           <div className={styles.sectionHead}>
             <span className={styles.sectionEyebrow}>Your Team</span>
             <h2 className={styles.sectionTitle}>
@@ -1063,7 +1011,7 @@ export function PortalHomePage({
         </div>
 
         {/* EMERGENCY CARD */}
-        <div className={styles.emergencyCard}>
+        <div className={`${styles.emergencyCard} ${!allRequiredDone ? styles.lockedSection : ""}`}>
           <div className={styles.emergencyText}>
             <p className={styles.emergencyLabel}>During Your Stay, Always Reach Out</p>
             <p className={styles.emergencyTitle}>We Are Here for You</p>
