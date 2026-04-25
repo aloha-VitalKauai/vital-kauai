@@ -601,8 +601,8 @@ export function HomePage() {
         </div>
 
         <p className={`${styles.offeringQuote} ${styles.reveal}`}>
-          The land and water of Kauaʻi herself — the rivers, the ocean, the red earth, the rain,
-          holding and amplifying everything.
+          The ocean, rivers, and red earth of Kauaʻi herself hold you during your stay, and long
+          after.
         </p>
       </section>
 
