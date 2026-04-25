@@ -1101,6 +1101,23 @@
   color: var(--text-dark);
 }
 
+.stay .storyLink {
+  margin-top: 12px;
+  padding: 14px 28px;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  color: var(--cream);
+  background: var(--forest);
+  border: 1px solid var(--forest);
+  border-bottom-color: var(--forest);
+}
+
+.stay .storyLink:hover {
+  background: var(--gold);
+  color: var(--forest);
+  border-color: var(--gold);
+}
+
 .team .sectionLabel,
 .reciprocity .sectionLabel {
   color: var(--gold);
