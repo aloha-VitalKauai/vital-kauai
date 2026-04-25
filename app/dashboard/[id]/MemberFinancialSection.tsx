@@ -497,33 +497,43 @@ export default function MemberFinancialSection({
                 </button>
 
                 {/* Email payment link */}
-                <button
-                  onClick={handleEmailLink}
-                  disabled={!canAct || emailLoading || !memberEmail}
-                  style={{
-                    ...ACTION_CARD,
-                    opacity: !canAct || !memberEmail ? 0.4 : 1,
-                  }}
-                >
-                  <div style={{ flex: 1, textAlign: "left" }}>
-                    <p style={{ margin: 0, fontSize: 14, fontWeight: 500, color: "#E8DDC8" }}>
-                      {emailLoading ? "Sending…" : "Email payment link"}
-                    </p>
-                    <p
+                {(() => {
+                  const noEmail = !memberEmail;
+                  const noBalance = remainingCents <= 0;
+                  const emailDisabled = !canAct || emailLoading || noEmail || noBalance;
+                  const subline = noEmail
+                    ? "No email on file"
+                    : noBalance
+                      ? "Set a pledge amount first"
+                      : `Sends ${fmt(remainingCents)} link to ${memberEmail}`;
+                  return (
+                    <button
+                      onClick={handleEmailLink}
+                      disabled={emailDisabled}
                       style={{
-                        margin: "3px 0 0",
-                        fontSize: 11,
-                        color: "rgba(232,221,200,0.45)",
-                        lineHeight: 1.4,
+                        ...ACTION_CARD,
+                        opacity: emailDisabled ? 0.4 : 1,
                       }}
                     >
-                      {memberEmail
-                        ? `Sends ${fmt(remainingCents)} link to ${memberEmail}`
-                        : "No email on file"}
-                    </p>
-                  </div>
-                  <span style={{ color: "#B8683D", fontSize: 16, flexShrink: 0 }}>→</span>
-                </button>
+                      <div style={{ flex: 1, textAlign: "left" }}>
+                        <p style={{ margin: 0, fontSize: 14, fontWeight: 500, color: "#E8DDC8" }}>
+                          {emailLoading ? "Sending…" : "Email payment link"}
+                        </p>
+                        <p
+                          style={{
+                            margin: "3px 0 0",
+                            fontSize: 11,
+                            color: "rgba(232,221,200,0.45)",
+                            lineHeight: 1.4,
+                          }}
+                        >
+                          {subline}
+                        </p>
+                      </div>
+                      <span style={{ color: "#B8683D", fontSize: 16, flexShrink: 0 }}>→</span>
+                    </button>
+                  );
+                })()}
 
                 {/* Record offline payment */}
                 <button

@@ -73,28 +73,35 @@ export async function POST(req: Request) {
     { auth: { persistSession: false } },
   );
 
-  // Load commitment + member in one shot
-  const { data: commit } = await service
+  // Load commitment
+  const { data: commit, error: commitErr } = await service
     .from("financial_commitments")
-    .select(
-      "id, status, expected_amount_cents, member_id, member:members(full_name, email, lead_id)",
-    )
+    .select("id, status, expected_amount_cents, member_id")
     .eq("id", commitment_id)
     .single();
 
-  if (
-    !commit ||
-    !["draft", "active", "partially_paid"].includes(commit.status)
-  ) {
+  if (commitErr || !commit) {
     return NextResponse.json(
-      { error: "commitment not open" },
+      { error: "Commitment not found" },
+      { status: 404 },
+    );
+  }
+
+  if (!["draft", "active", "partially_paid"].includes(commit.status)) {
+    return NextResponse.json(
+      { error: `Commitment status is "${commit.status}" — must be draft, active, or partially_paid` },
       { status: 400 },
     );
   }
 
-  const member = (commit as unknown as {
-    member: { full_name: string | null; email: string | null; lead_id: string | null } | null;
-  }).member;
+  // Look up member separately. financial_commitments.member_id FKs to
+  // member_profiles.id, but members.id == member_profiles.id == auth user id,
+  // so a direct lookup on members gives us full_name, email, and lead_id.
+  const { data: member } = await service
+    .from("members")
+    .select("full_name, email, lead_id")
+    .eq("id", commit.member_id)
+    .maybeSingle();
 
   if (!member?.email) {
     return NextResponse.json(
@@ -124,7 +131,10 @@ export async function POST(req: Request) {
 
   if (remainingCents <= 0) {
     return NextResponse.json(
-      { error: "Nothing remaining to charge on this commitment" },
+      {
+        error:
+          "Nothing remaining to charge — set a pledge amount on this commitment first",
+      },
       { status: 400 },
     );
   }
