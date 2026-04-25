@@ -20,7 +20,7 @@
  */
 
 import { createClient } from '@/lib/supabase/server'
-import { inputValueToJourneyIso } from '@/lib/journeyDates'
+import { inputValueToJourneyIso, journeyDateToInputValue } from '@/lib/journeyDates'
 
 // ── Types ─────────────────────────────────────────────────────
 
@@ -85,6 +85,73 @@ function validateJourneyInput(input: CreateJourneyInput): string | null {
   return null
 }
 
+// ── Ceremony mirror sync ─────────────────────────────────────
+//
+// `journeys` is the canonical scheduling table, but two legacy
+// surfaces still drive the founders dashboard:
+//   • `members.ceremony_date`  → ceremony_schedule_view (filters
+//     out members where this is NULL)
+//   • `ceremony_records`       → /dashboard/ceremonies table
+//
+// Every journey mutation must keep both in sync, or scheduled
+// members silently disappear from those views.
+
+async function syncMemberCeremonyDate(supabase: any, memberId: string) {
+  const { data: latest } = await supabase
+    .from('journeys')
+    .select('start_at')
+    .eq('member_id', memberId)
+    .eq('status', 'scheduled')
+    .not('start_at', 'is', null)
+    .order('start_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  const dateOnly = latest?.start_at ? journeyDateToInputValue(latest.start_at) : null
+  await supabase
+    .from('members')
+    .update({ ceremony_date: dateOnly || null })
+    .eq('id', memberId)
+}
+
+async function syncJourneyCeremonyRecord(
+  supabase: any,
+  journeyId: string,
+  memberId: string,
+  status: JourneyStatus,
+  startAtIso: string | null,
+) {
+  if (status === 'scheduled' && startAtIso) {
+    const dateOnly = journeyDateToInputValue(startAtIso)
+    const { data: existing } = await supabase
+      .from('ceremony_records')
+      .select('id')
+      .eq('journey_id', journeyId)
+      .maybeSingle()
+
+    if (existing) {
+      await supabase
+        .from('ceremony_records')
+        .update({ ceremony_date: dateOnly, status: 'Scheduled' })
+        .eq('id', existing.id)
+    } else {
+      await supabase
+        .from('ceremony_records')
+        .insert({
+          member_id:     memberId,
+          journey_id:    journeyId,
+          ceremony_date: dateOnly,
+          status:        'Scheduled',
+        })
+    }
+  } else if (status === 'canceled') {
+    await supabase
+      .from('ceremony_records')
+      .update({ status: 'Canceled' })
+      .eq('journey_id', journeyId)
+  }
+}
+
 // ── Journey mutations (founder-only) ─────────────────────────
 
 export async function createJourney(
@@ -117,6 +184,13 @@ export async function createJourney(
     .single()
 
   if (error) return { ok: false, error: error.message }
+
+  await syncJourneyCeremonyRecord(
+    supabase, data.id, input.memberId, status,
+    inputValueToJourneyIso(input.startDate ?? null),
+  )
+  await syncMemberCeremonyDate(supabase, input.memberId)
+
   return { ok: true, data: { journeyId: data.id } }
 }
 
@@ -158,6 +232,10 @@ export async function rescheduleJourney(
       .single()
 
     if (error) return { ok: false, error: error.message }
+
+    await syncJourneyCeremonyRecord(supabase, data.id, summary.member_id, newStatus, startIso)
+    await syncMemberCeremonyDate(supabase, summary.member_id)
+
     return { ok: true, data: { journeyId: data.id, action: 'updated' } }
   }
 
@@ -168,6 +246,8 @@ export async function rescheduleJourney(
     .eq('id', journeyId)
 
   if (cancelErr) return { ok: false, error: `Failed to cancel old journey: ${cancelErr.message}` }
+
+  await syncJourneyCeremonyRecord(supabase, journeyId, summary.member_id, 'canceled', null)
 
   const result = await createJourney({
     memberId:     summary.member_id,
@@ -194,12 +274,21 @@ export async function cancelJourney(journeyId: string): Promise<ActionResult> {
   if (['in_progress','completed','canceled'].includes(j.status))
     return { ok: false, error: `Cannot cancel a journey with status: ${j.status}` }
 
+  const { data: jRow } = await supabase
+    .from('journeys').select('member_id').eq('id', journeyId).single()
+
   const { error } = await supabase
     .from('journeys')
     .update({ status: 'canceled', canceled_at: new Date().toISOString() })
     .eq('id', journeyId)
 
   if (error) return { ok: false, error: error.message }
+
+  if (jRow?.member_id) {
+    await syncJourneyCeremonyRecord(supabase, journeyId, jRow.member_id, 'canceled', null)
+    await syncMemberCeremonyDate(supabase, jRow.member_id)
+  }
+
   return { ok: true }
 }
 
