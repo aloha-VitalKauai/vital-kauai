@@ -915,7 +915,9 @@ export default function MemberProfileEditor({
             )}
           </div>
 
-          {/* Outcomes — assessment timeline; auto-populates once a ceremony is scheduled */}
+          {/* Outcomes card hidden while the outcomes experience is being refined.
+              Restore by removing the `false &&` guard. */}
+          {false && (
           <div style={CARD}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
               <p style={{ ...LABEL, margin: 0 }}>Outcomes</p>
@@ -989,6 +991,7 @@ export default function MemberProfileEditor({
               </div>
             )}
           </div>
+          )}
 
           {/* Intake form summary */}
           <div style={CARD}>
