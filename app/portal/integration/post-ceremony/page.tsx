@@ -147,10 +147,10 @@ const WEEKS = [
     actions: [
       {
         color: 'sage',
-        text: 'Check in with your guide within 48 hours of returning home',
-        note: 'A brief check-in to let them know you arrived safely, how you\'re doing, and what you most need right now.',
+        text: 'Connect with your integration guide — your post-ceremony call, within 48 hours of ceremony (while still on Kauaʻi)',
+        note: 'Your first integration-guide call. Held within 48 hours of ceremony so what was shown is still alive in the body. Bring whatever you need to bring — questions, gratitude, exhaustion. They are there to meet you.',
         links: [
-          { text: 'Check in with your guide', href: '/portal#integration-specialist' },
+          { text: 'Connect with your integration guide — your post-ceremony call, within 48 hours of ceremony (while still on Kauaʻi)', href: '/portal#integration-specialist' },
         ],
       },
       { color: 'green', text: 'Rest completely for the first 48 hours', note: 'Let the experience settle. Rest before sharing. Allow what happened to remain wordless a little longer.' },
@@ -161,6 +161,13 @@ const WEEKS = [
         note: 'A brief, anonymized assessment taken within the first few days after ceremony. This is part of the standardized outcomes framework adapted for iboga from the validated instruments used in psychedelic research worldwide — your responses help establish legitimacy for this medicine and contribute to one of the most comprehensive iboga datasets being built anywhere in the world.',
         links: [
           { text: 'Complete your 72-hour Outcome', href: '/portal/assessments' },
+        ],
+      },
+      {
+        color: 'amber',
+        text: 'Schedule next week\'s integration-guide call',
+        links: [
+          { text: 'Schedule next week\'s integration-guide call', href: '/portal#integration-specialist' },
         ],
       },
     ],
@@ -186,6 +193,14 @@ const WEEKS = [
     video: { label: 'A Message from Rachel & Josh · Week 2', text: 'The neuroplasticity window is real — and this week is its peak. Rachel and Josh talk about what that actually means in practice, why this week\'s small daily choices matter more than they appear, and how to tend what the medicine opened without forcing it into shape too quickly.' },
     actionLabel: 'This week — 4 things',
     actions: [
+      {
+        color: 'sage',
+        text: 'Connect with your integration guide',
+        note: 'Your weekly call. Bring whatever is alive — what is settling, what is surprising you, what is asking for tending.',
+        links: [
+          { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
+        ],
+      },
       { color: 'gold', text: 'Establish one morning practice — and do it every day, tracking your days below', note: 'Coherent Heart Breath. Journaling. Movement. Prayer. One thing. Done every morning. The medicine opened the door. Repetition is how you walk through it. You are contributing to one of the most comprehensive iboga outcome datasets in the world — your practice days matter.' },
       { color: 'green', text: 'Continue magnesium glycinate (300–400mg) and DHA/EPA (2–4g) daily', note: 'The supplement protocol from your preparation does not end at ceremony. Magnesium supports nervous system regulation during the post-ceremony window. DHA/EPA supports the neuroplasticity process. Continue both for at minimum 30 days post-ceremony.' },
       { color: 'sage', text: 'Continue full sobriety — minimum 30 days, 3 months strongly recommended', note: 'Iboga resets tolerance. Returning to any substance before the window closes undermines what the medicine worked to open. The noribogaine window is your most protected asset right now.' },
@@ -195,6 +210,13 @@ const WEEKS = [
         note: 'An optional mid-integration touchpoint to bring what is still moving, notice what has anchored, and speak honestly about what is alive.',
         links: [
           { text: 'Schedule a check-in call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-check-in-call', external: true },
+        ],
+      },
+      {
+        color: 'amber',
+        text: 'Schedule next week\'s integration-guide call',
+        links: [
+          { text: 'Schedule next week\'s integration-guide call', href: '/portal#integration-specialist' },
         ],
       },
     ],
@@ -219,14 +241,21 @@ const WEEKS = [
     actions: [
       {
         color: 'gold',
-        text: 'Call with your integration guide',
+        text: 'Connect with your integration guide',
         note: 'This is the most important call of the integration arc. Bring the return of the familiar. Bring what is still unresolved. Your guide is trained to work with exactly this territory. Book via the Integration Specialist section on your Dashboard.',
         links: [
-          { text: 'Call with your integration guide', href: '/portal#integration-specialist' },
+          { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
         ],
       },
       { color: 'blue', text: 'Name one old pattern that has returned — write about it', note: 'To see it clearly. Naming with precision is itself a form of integration. Your guide can see your weekly tracking and will reach out if they notice something that needs support.' },
       { color: 'sage', text: 'Continue your daily practice — especially on the days you least want to', note: 'The days you least want to show up are the days it matters most.' },
+      {
+        color: 'amber',
+        text: 'Schedule next week\'s integration-guide call',
+        links: [
+          { text: 'Schedule next week\'s integration-guide call', href: '/portal#integration-specialist' },
+        ],
+      },
     ],
     prompts: POST_CEREMONY_WEEKS[2].prompts,
     thread: 'Every person who has done deep transformational work meets this week. The ones who move through it are the ones who keep showing up to their practice. You are in the long arc now.',
@@ -253,10 +282,17 @@ const WEEKS = [
       { color: 'sage', text: 'Audit one thing in your environment that actively works against your new self \u2014 and change it this week', note: 'Physical environment. Social environment. Digital environment. What in each is pulling you back toward who you were? Make one concrete change this week.' },
       {
         color: 'amber',
-        text: 'Call with your integration guide',
+        text: 'Connect with your integration guide',
         note: 'Bring your non-negotiables. Name the pattern you are auditing. This is the call that anchors Week 4 accountability into behavior.',
         links: [
-          { text: 'Call with your integration guide', href: '/portal#integration-specialist' },
+          { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
+        ],
+      },
+      {
+        color: 'amber',
+        text: 'Schedule next week\'s integration-guide call',
+        links: [
+          { text: 'Schedule next week\'s integration-guide call', href: '/portal#integration-specialist' },
         ],
       },
     ],
@@ -286,10 +322,17 @@ const WEEKS = [
       { color: 'green', text: 'Practice Ho\'oponopono with anyone you are still carrying', note: 'I\'m sorry. Please forgive me. Thank you. I love you. The forgiveness work from ceremony continues here. It does not require the other person to be present or to know. This is an internal release.' },
       {
         color: 'amber',
-        text: 'Call with your integration guide',
+        text: 'Connect with your integration guide',
         note: 'Bring the relationships that are reorganizing around your change. Your guide can help you stay present to what is arising without abandoning yourself or the people you love.',
         links: [
-          { text: 'Call with your integration guide', href: '/portal#integration-specialist' },
+          { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
+        ],
+      },
+      {
+        color: 'amber',
+        text: 'Schedule next week\'s integration-guide call',
+        links: [
+          { text: 'Schedule next week\'s integration-guide call', href: '/portal#integration-specialist' },
         ],
       },
     ],
@@ -318,10 +361,10 @@ const WEEKS = [
       },
       {
         color: 'blue',
-        text: 'Consider ongoing calls with your integration guide',
+        text: 'Connect with your integration guide',
         note: 'You have sessions remaining in your six-session arc, and you can also continue beyond that as a living practice. Your guide can help you establish a monthly rhythm or meet you as the work keeps moving. Book via the Integration Specialist section on your Dashboard.',
         links: [
-          { text: 'Consider ongoing calls with your integration guide', href: '/portal#integration-specialist' },
+          { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
         ],
       },
       { color: 'sage', text: 'Write your integration statement — guided below', note: 'Three questions, one page. What changed. What you know now. What you are committed to. Date it. You will want to read it in six months.' },
