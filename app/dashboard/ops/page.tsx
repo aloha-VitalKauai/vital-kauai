@@ -9,6 +9,7 @@ import CohortManager from '@/components/dashboard/CohortManager'
 import SchedulingRequestQueue from '@/components/dashboard/SchedulingRequestQueue'
 import SopsPanel from '@/components/dashboard/SopsPanel'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import { refreshOpsAlerts } from '@/app/actions/opsAlerts'
 
 /* ── DESIGN TOKENS ──────────────────────────────────────────────── */
 const C = {
@@ -607,6 +608,21 @@ export default function OpsDashboardPage() {
     addActivity(`Alert acknowledged · ${m?.full_name?.split(' ')[0]??'member'}`,C.muted)
   },[alerts,members,addActivity])
 
+  const [refreshingAlerts, setRefreshingAlerts] = useState(false)
+  const refreshAlerts = useCallback(async()=>{
+    setRefreshingAlerts(true)
+    const result = await refreshOpsAlerts()
+    if (result.ok) {
+      const supabase = createClient()
+      const { data } = await supabase.from('ops_alerts').select('*').eq('is_active',true).order('created_at',{ascending:false})
+      setAlerts(data ?? [])
+      addActivity(`Alerts refreshed · ${result.activeCount ?? 0} active`, C.amber)
+    } else {
+      addActivity(`Alert refresh failed: ${result.error ?? 'unknown'}`, C.high)
+    }
+    setRefreshingAlerts(false)
+  },[addActivity])
+
   const onNotifySent = useCallback((r:any)=>{
     addActivity(`${r.channel==='sms'?'📱 Text':'✉ Email'} sent to ${r.to_name??'member'}`,C.blue)
   },[addActivity])
@@ -861,6 +877,14 @@ export default function OpsDashboardPage() {
             {/* ALERTS TAB */}
             {tab==='alerts'&&(
               <div style={{display:'flex',flexDirection:'column',gap:8}}>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
+                  <span style={{fontSize:11,color:C.dim,letterSpacing:'.05em'}}>
+                    Auto-refreshes every 15 minutes · {alerts.filter(a=>a.is_active).length} active
+                  </span>
+                  <button onClick={refreshAlerts} disabled={refreshingAlerts} style={{fontSize:11,fontWeight:500,padding:'6px 12px',border:`0.5px solid ${C.border}`,background:C.faint,color:C.text,borderRadius:6,cursor:refreshingAlerts?'wait':'pointer',opacity:refreshingAlerts?0.6:1}}>
+                    {refreshingAlerts?'Refreshing…':'Refresh now'}
+                  </button>
+                </div>
                 {alerts.length===0&&<div style={{fontSize:12,color:C.dim,padding:'20px 0'}}>No active alerts.</div>}
                 {[...alerts].filter(a=>a.is_active).sort((a:any,b:any)=>({critical:0,high:1,warning:2,info:3}[a.severity as string]??4)-({critical:0,high:1,warning:2,info:3}[b.severity as string]??4)).map((a:any)=>(
                   <AlertCard key={a.id} alert={a} memberName={memberLookup[a.member_id]?.full_name??''} onAcknowledge={ackAlert} onCreateTask={createTaskFromAlert} taskLinked={!!(a.linked_task_id&&tasks.find((t:any)=>t.id===a.linked_task_id))}/>
