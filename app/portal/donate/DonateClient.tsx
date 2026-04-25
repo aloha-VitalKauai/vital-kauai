@@ -66,6 +66,9 @@ export default function DonateClient({
   );
   const [showCancelled] = useState(paymentParam === "cancelled");
 
+  // Payment method (shared by pledge & gift cards — only one renders at a time)
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "venmo">("card");
+
   // Pledge payment state
   const [pledgeMode, setPledgeMode] = useState<"full" | "custom">("full");
   const [customAmount, setCustomAmount] = useState("");
@@ -320,31 +323,50 @@ export default function DonateClient({
 
             {pledgeError && <p style={errorStyle}>{pledgeError}</p>}
 
-            <button
-              style={{
-                ...primaryBtnStyle,
-                opacity:
+            <PaymentMethodTabs
+              method={paymentMethod}
+              onChange={setPaymentMethod}
+            />
+
+            {paymentMethod === "card" && (
+              <button
+                style={{
+                  ...primaryBtnStyle,
+                  opacity:
+                    pledgeLoading || (pledgeMode === "custom" && !customValid)
+                      ? 0.5
+                      : 1,
+                  cursor:
+                    pledgeLoading || (pledgeMode === "custom" && !customValid)
+                      ? "default"
+                      : "pointer",
+                }}
+                disabled={
                   pledgeLoading || (pledgeMode === "custom" && !customValid)
-                    ? 0.5
-                    : 1,
-                cursor:
-                  pledgeLoading || (pledgeMode === "custom" && !customValid)
-                    ? "default"
-                    : "pointer",
-              }}
-              disabled={
-                pledgeLoading || (pledgeMode === "custom" && !customValid)
-              }
-              onClick={payPledge}
-            >
-              {pledgeLoading
-                ? "Opening Stripe…"
-                : pledgeMode === "full"
-                  ? `Pay ${fmt(remaining)}`
-                  : customValid
-                    ? `Pay ${fmt(customCents)}`
-                    : "Pay"}
-            </button>
+                }
+                onClick={payPledge}
+              >
+                {pledgeLoading
+                  ? "Opening Stripe…"
+                  : pledgeMode === "full"
+                    ? `Pay ${fmt(remaining)}`
+                    : customValid
+                      ? `Pay ${fmt(customCents)}`
+                      : "Pay"}
+              </button>
+            )}
+
+            {paymentMethod === "venmo" && (
+              <VenmoBlock
+                amountLabel={
+                  pledgeMode === "full"
+                    ? fmt(remaining)
+                    : customValid
+                      ? fmt(customCents)
+                      : null
+                }
+              />
+            )}
           </div>
         )}
 
@@ -421,22 +443,35 @@ export default function DonateClient({
 
             {giftError && <p style={errorStyle}>{giftError}</p>}
 
-            <button
-              style={{
-                ...primaryBtnStyle,
-                marginTop: 16,
-                opacity: giftLoading || !giftValid ? 0.5 : 1,
-                cursor: giftLoading || !giftValid ? "default" : "pointer",
-              }}
-              disabled={giftLoading || !giftValid}
-              onClick={payGift}
-            >
-              {giftLoading
-                ? "Opening Stripe…"
-                : giftValid && giftAmount
-                  ? `Give ${fmt(giftAmount)}`
-                  : "Give"}
-            </button>
+            <PaymentMethodTabs
+              method={paymentMethod}
+              onChange={setPaymentMethod}
+            />
+
+            {paymentMethod === "card" && (
+              <button
+                style={{
+                  ...primaryBtnStyle,
+                  marginTop: 16,
+                  opacity: giftLoading || !giftValid ? 0.5 : 1,
+                  cursor: giftLoading || !giftValid ? "default" : "pointer",
+                }}
+                disabled={giftLoading || !giftValid}
+                onClick={payGift}
+              >
+                {giftLoading
+                  ? "Opening Stripe…"
+                  : giftValid && giftAmount
+                    ? `Give ${fmt(giftAmount)}`
+                    : "Give"}
+              </button>
+            )}
+
+            {paymentMethod === "venmo" && (
+              <VenmoBlock
+                amountLabel={giftValid && giftAmount ? fmt(giftAmount) : null}
+              />
+            )}
           </div>
         )}
 
@@ -534,6 +569,96 @@ function StatCard({
         }}
       >
         {value}
+      </p>
+    </div>
+  );
+}
+
+function PaymentMethodTabs({
+  method,
+  onChange,
+}: {
+  method: "card" | "venmo";
+  onChange: (m: "card" | "venmo") => void;
+}) {
+  const tab = (active: boolean): React.CSSProperties => ({
+    flex: 1,
+    padding: "10px 12px",
+    fontSize: 13,
+    fontWeight: 500,
+    background: active ? "rgba(184,104,61,0.15)" : "rgba(255,255,255,0.04)",
+    color: active ? "#F4A57A" : "rgba(232,221,200,0.7)",
+    border: `1px solid ${active ? "rgba(184,104,61,0.55)" : "rgba(232,221,200,0.12)"}`,
+    borderRadius: 8,
+    cursor: "pointer",
+    transition: "background 0.15s, border-color 0.15s, color 0.15s",
+  });
+  return (
+    <div style={{ display: "flex", gap: 8, marginTop: 20 }}>
+      <button type="button" style={tab(method === "card")} onClick={() => onChange("card")}>
+        💳 Card
+      </button>
+      <button type="button" style={tab(method === "venmo")} onClick={() => onChange("venmo")}>
+        Venmo
+      </button>
+    </div>
+  );
+}
+
+function VenmoBlock({ amountLabel }: { amountLabel: string | null }) {
+  return (
+    <div
+      style={{
+        marginTop: 16,
+        padding: "1rem 1.1rem",
+        background: "rgba(255,255,255,0.04)",
+        border: "1px solid rgba(232,221,200,0.12)",
+        borderRadius: 10,
+      }}
+    >
+      <p style={{ margin: "0 0 12px", fontSize: 14, color: "#E8DDC8", lineHeight: 1.55 }}>
+        {amountLabel ? (
+          <>
+            Send <strong>{amountLabel}</strong> to{" "}
+            <strong>@Rachel-Nelson-05</strong> on Venmo.
+          </>
+        ) : (
+          <>
+            Choose an amount above, then send it to{" "}
+            <strong>@Rachel-Nelson-05</strong> on Venmo.
+          </>
+        )}
+      </p>
+      <a
+        href="https://venmo.com/u/Rachel-Nelson-05"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          display: "block",
+          width: "100%",
+          padding: "12px 16px",
+          fontSize: 14,
+          fontWeight: 500,
+          background: "#3D95CE",
+          color: "#fff",
+          borderRadius: 10,
+          textAlign: "center",
+          textDecoration: "none",
+          boxSizing: "border-box",
+        }}
+      >
+        Open Venmo → @Rachel-Nelson-05
+      </a>
+      <p
+        style={{
+          margin: "12px 0 0",
+          fontSize: 12,
+          color: "rgba(232,221,200,0.5)",
+          lineHeight: 1.55,
+        }}
+      >
+        Rachel will mark your contribution received once it lands. It may take a
+        day to reflect on this page.
       </p>
     </div>
   );
