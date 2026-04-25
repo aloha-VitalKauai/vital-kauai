@@ -55,7 +55,9 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
           <a href="/" className="pn-logo">Vital <em>Kaua&#699;i</em></a>
           <div className="pn-links">
             <a href="/portal" className="pn-link">Dashboard</a>
-            <a href="/portal/assessments" className="pn-link">Outcomes</a>
+            {/* Outcomes tab hidden while the timeline + portal experience are
+                being refined. Restore by uncommenting this line. */}
+            {/* <a href="/portal/assessments" className="pn-link">Outcomes</a> */}
             <div className="pn-dropdown">
               <button className="pn-dropdown-trigger">Integration / Support</button>
               <div className="pn-dropdown-menu">
@@ -100,7 +102,8 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
           &#10005;
         </button>
         <a href="/portal" onClick={close}>Dashboard</a>
-        <a href="/portal/assessments" onClick={close}>Outcomes</a>
+        {/* Outcomes link hidden — restore alongside the desktop link. */}
+        {/* <a href="/portal/assessments" onClick={close}>Outcomes</a> */}
         <span className="pn-mobile-section-label">Integration / Support</span>
         <a href="/portal/integration/pre-ceremony" onClick={close}>Pre-Ceremony</a>
         <a href="/portal/integration/post-ceremony" onClick={close}>Post-Ceremony</a>
