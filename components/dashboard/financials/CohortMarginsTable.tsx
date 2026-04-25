@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { formatMoney, formatPercent } from "@/lib/financials/formatMoney";
 import type { CohortMargin } from "@/lib/financials/types";
-import { PANEL, PANEL_HEAD, TH, TD, EMPTY } from "./styles";
+import { TH, TD, EMPTY } from "./styles";
 
 type SortKey = "start_at" | "margin_cents";
 
@@ -11,12 +11,7 @@ export default function CohortMarginsTable({ rows }: { rows: CohortMargin[] }) {
   const [dir, setDir] = useState<"asc" | "desc">("desc");
 
   if (rows.length === 0) {
-    return (
-      <div style={PANEL}>
-        <div style={PANEL_HEAD}>Cohort Margins</div>
-        <div style={EMPTY}>No cohorts yet.</div>
-      </div>
-    );
+    return <div style={EMPTY}>No cohorts yet.</div>;
   }
 
   const sorted = [...rows].sort((a, b) => {
@@ -47,9 +42,7 @@ export default function CohortMarginsTable({ rows }: { rows: CohortMargin[] }) {
   };
 
   return (
-    <div style={PANEL}>
-      <div style={PANEL_HEAD}>Cohort Margins</div>
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+    <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
           <tr>
             <th style={TH}>Cohort</th>
@@ -92,7 +85,6 @@ export default function CohortMarginsTable({ rows }: { rows: CohortMargin[] }) {
             </tr>
           ))}
         </tbody>
-      </table>
-    </div>
+    </table>
   );
 }
