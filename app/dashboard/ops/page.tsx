@@ -674,7 +674,8 @@ export default function OpsDashboardPage() {
           <div>
             {/* Tabs */}
             <div style={{display:'flex',gap:2,marginBottom:13,background:C.card,borderRadius:9,padding:3,border:`0.5px solid ${C.border}`}}>
-              {(['pipeline','risk','outcomes','alerts','journeys','cohorts','sops'] as const).map(t=>(
+              {/* 'outcomes' tab hidden while the outcomes experience is being refined. */}
+              {(['pipeline','risk','alerts','journeys','cohorts','sops'] as const).map(t=>(
                 <button key={t} onClick={()=>setTab(t)} style={{flex:1,padding:'6px 0',borderRadius:7,border:'none',background:tab===t?C.surf:'transparent',color:tab===t?C.text:C.dim,fontSize:10,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',cursor:'pointer',transition:'all .15s',position:'relative'}}>
                   {t}{t==='alerts'&&(critCount+highCount)>0&&<span style={{position:'absolute',top:4,right:8,width:5,height:5,borderRadius:'50%',background:critCount?C.crit:C.high}}/>}
                 </button>
