@@ -16,19 +16,19 @@ const teamMembers = [
   {
     name: "Judith Johnson",
     role: "Founder, PsychoNeuroEnergetics · Somatic Integration Director, Americans for Ibogaine",
-    bio: "A pioneer of body-oriented healing, Judith is the founder and developer of PsychoNeuroEnergetics (PNE) — a breakthrough modality that unwinds traumatic imprints held in the nervous system through the healing power of the vagus nerve. With decades of practice across Somatic Experiencing, Polyvagal Theory, and body electronics, she brings an extraordinary depth of wisdom to every container at Vital Kauaʻi.",
+    bio: "A pioneer of body-oriented healing, Judith is the founder and developer of PsychoNeuroEnergetics (PNE), a breakthrough modality that unwinds traumatic imprints held in the nervous system through the healing power of the vagus nerve. With decades of practice across Somatic Experiencing, Polyvagal Theory, and body electronics, she brings an extraordinary depth of wisdom to every container at Vital Kauaʻi.",
     image: "/images/judithjohnson.jpeg",
   },
   {
     name: "Dr. Liz Esalen",
     role: "Director of On-Island Integration",
-    bio: "A Doctor of Clinical Psychology and lineage-initiated shamanic energy medicine practitioner, Dr. Liz bridges the depth of evidence-based psychology with the precision of shamanic wisdom and embodied healing. Founder of Luminous Healing Center and The Lotus Collaborative, she brings over 25 years of transformational care — illuminating unconscious patterns, supporting psychedelic integration, and guiding members into authentic wholeness at the intersection of mind, body, and spirit.",
+    bio: "A Doctor of Clinical Psychology and lineage-initiated shamanic energy medicine practitioner, Dr. Liz bridges the depth of evidence-based psychology with the precision of shamanic wisdom and embodied healing. Founder of Luminous Healing Center and The Lotus Collaborative, she brings over 25 years of transformational care, illuminating unconscious patterns, supporting psychedelic integration, and guiding members into authentic wholeness at the intersection of mind, body, and spirit.",
     image: "/images/lizesalen.jpeg",
   },
   {
     name: "Jon Allen, PA-C",
     role: "Medical Advisor · PA-C · Yale-Trained",
-    bio: "Jon is a Yale School of Medicine-trained, board-certified Physician Assistant practicing family and cardiovascular medicine on Kauaʻi's North Shore. He reviews all participant medical records, evaluates contraindications, and provides clinical oversight throughout the preparation process. For those who wish it, Jon is available to be present during ceremony — bringing the reassurance of skilled, grounded medical presence to the container.",
+    bio: "Jon is a Yale School of Medicine-trained, board-certified Physician Assistant practicing family and cardiovascular medicine on Kauaʻi's North Shore. He reviews all participant medical records, evaluates contraindications, and provides clinical oversight throughout the preparation process. For those who wish it, Jon is available to be present during ceremony, bringing the reassurance of skilled, grounded medical presence to the container.",
     image: "/images/jonallen.jpeg",
   },
 ];
@@ -37,12 +37,12 @@ const faqs = [
   {
     question: "Where are you located?",
     answer:
-      "Kauaʻi's North Shore — Hanalei. One of the most pristine healing landscapes on Earth. Specific addresses are shared once you become a member.",
+      "Kauaʻi's North Shore, in Hanalei. One of the most pristine healing landscapes on Earth. Specific addresses are shared once you become a member.",
   },
   {
     question: "How do I get to Kauaʻi?",
     answer:
-      "Fly into Līhuʻe Airport (LIH) — about one hour from the North Shore. Direct flights from several major US cities; international guests connect through Honolulu (HNL). Ground transport can be coordinated with us or arranged independently.",
+      "Fly into Līhuʻe Airport (LIH), about one hour from the North Shore. Direct flights from several major US cities; international guests connect through Honolulu (HNL). Ground transport can be coordinated with us or arranged independently.",
   },
   {
     question: "Is Iboga legal?",
@@ -52,12 +52,12 @@ const faqs = [
   {
     question: "Who is Iboga right for?",
     answer:
-      "Those who are genuinely ready for deep inner work — whether that means deep inner work, lasting change, spiritual awakening, or a profound reset. We screen carefully and honestly. If it is right for you, we will know together.",
+      "Those who are genuinely ready for deep inner work, whether that means lasting change, spiritual awakening, or a profound reset. We screen carefully and honestly. If it is right for you, we will know together.",
   },
   {
     question: "What is whole-plant Iboga and why does it matter?",
     answer:
-      "Most providers use isolated ibogaine — a single alkaloid. We work with the whole root bark, honoring the ancient wisdom in which this plant has been used for millennia. The full plant carries an intelligence that no single compound can replicate.",
+      "Most providers use isolated ibogaine, a single alkaloid. We work with the whole root bark, honoring the ancient wisdom in which this plant has been used for millennia. The full plant carries an intelligence that no single compound can replicate.",
   },
   {
     question: "Are accommodations included?",
@@ -158,7 +158,7 @@ export function HomePage() {
         subject: `New inquiry from ${fullName}`,
         message: emailBody,
         notify_founders: true,
-        founder_subject: `New contact inquiry — ${fullName}`,
+        founder_subject: `New contact inquiry · ${fullName}`,
         founder_message: emailBody,
         to_name: fullName,
       },
@@ -168,7 +168,7 @@ export function HomePage() {
     const firstName = contactForm.firstName.trim();
     const autoReply = [
       `Aloha ${firstName},`,
-      `Thank you for reaching out. We're honored you're considering this path, and we want you to know — your message has been received and will be read personally by Rachel and Josh.`,
+      `Thank you for reaching out. We're honored you're considering this path, and we want you to know your message has been received and will be read personally by Rachel and Josh.`,
       `We'll be in touch within 48 hours.`,
       `If you're feeling ready to take the next step, you're welcome to book a discovery call with us. It's simply a space to share what's calling you and explore whether this journey is the right fit.`,
       `Book a Discovery Call: https://vital-kauai.vercel.app/begin-your-journey`,
@@ -179,7 +179,7 @@ export function HomePage() {
       body: {
         channel: "email",
         to: contactForm.email.trim().toLowerCase(),
-        subject: "We received your message — mahalo",
+        subject: "We received your message · Mahalo",
         message: autoReply,
         to_name: fullName,
       },
@@ -394,9 +394,9 @@ export function HomePage() {
               <span className={styles.storyEyebrow}>Why Iboga</span>
               <p className={styles.storyLead}>&quot;Nothing we have ever encountered goes this deep.&quot;</p>
               <p className={styles.storyBody}>
-                We came to this medicine through our own searching — through years of therapy,
+                We came to this medicine through our own searching, through years of therapy,
                 practice, study, and healing that touched the surface but could not fully reach what
-                was underneath. Iboga could. It showed us what was actually there — the patterns
+                was underneath. Iboga could. It showed us what was actually there: the patterns
                 carried since childhood, the stories built into identity, and the places where we had
                 drifted from ourselves. What it gave back was our freedom — freedom from the
                 background noise of anxiety and depression, freedom to create, to serve, and to live
@@ -404,9 +404,9 @@ export function HomePage() {
               </p>
               <p className={styles.storyBody}>
                 We built Vital Kauaʻi around this medicine because we could not imagine doing
-                anything else. Everything here — the land, the team, the preparation, the branches
-                that support the root of our work — exists to serve the depth of what Iboga makes
-                possible.
+                anything else. Everything here exists to serve the depth of what Iboga makes
+                possible: the land, the team, the preparation, the branches that support the root
+                of our work.
               </p>
               <Link href="/iboga-journey" className={styles.storyLink}>
                 Explore the Iboga Journey →
@@ -419,7 +419,7 @@ export function HomePage() {
       <section id="medicine" className={styles.medicine}>
         <div className={styles.medicineIntro}>
           <p className={styles.medicineIntroQuote}>
-            &quot;Every journey here is a one-of-a-kind creation — shaped by who you are, what you
+            &quot;Every journey here is a one-of-a-kind creation, shaped by who you are, what you
             carry, what you are moving toward, and what this moment in your life is asking of you.
             We are present with you from the very first conversation through the months of
             integration that follow.&quot;
@@ -447,17 +447,17 @@ export function HomePage() {
               Iboga is a sacred root bark from the forests of West and Central Africa, used for
               millennia by the Bwiti people of Gabon as a sacrament of initiation, healing, and
               spiritual revelation. Unlike any other plant medicine, Iboga works at the level of
-              the deepest self — interrupting patterns of addiction, trauma, and unconscious
+              the deepest self, interrupting patterns of addiction, trauma, and unconscious
               conditioning at their root.
             </p>
             <p className={styles.medicineBody}>
-              Vital Kauaʻi is a ceremonial container — a living relationship between practitioner,
+              Vital Kauaʻi is a ceremonial container: a living relationship between practitioner,
               plant, participant, and land. Our approach draws from the whole-plant intelligence of
               Iboga root bark, titrated consciously with care, safety, and deep presence.
             </p>
             <div className={styles.medicineDistinction}>
               <p>
-                &quot;Most providers work with isolated ibogaine — a single alkaloid. We work with the
+                &quot;Most providers work with isolated ibogaine, a single alkaloid. We work with the
                 whole root bark, honoring the ancient wisdom in which this plant has been used for
                 millennia. The difference is the difference between a symphony and a single
                 note.&quot;
@@ -494,7 +494,7 @@ export function HomePage() {
               Nature&apos;s Most Ancient Medicine
             </h3>
             <p className={styles.riverFeatureBody}>
-              Iboga goes deep — interrupting long-held patterns and unconscious conditioning. Many
+              Iboga goes deep, interrupting long-held patterns and unconscious conditioning. Many
               describe it as fifty years of therapy in a single night. Those who journey emerge
               with a clarity of purpose, a freedom from patterns that once felt permanent, and a
               felt sense of themselves they had forgotten was possible.
@@ -538,7 +538,7 @@ export function HomePage() {
               prepare the body to receive. Somatic therapy draws out and integrates what the medicine
               reveals. Breathwork, movement, sound, and energetic practice open presence and aliveness
               across every dimension of the experience. Most importantly, we offer full preparation
-              and post-ceremony integration support over the course of months — so the transformation
+              and post-ceremony integration support over the course of months, so the transformation
               that begins here continues to deepen long after you leave.
             </p>
           </div>
@@ -564,7 +564,7 @@ export function HomePage() {
         </div>
 
         <p className={`${styles.offeringQuote} ${styles.reveal}`}>
-          The land and water of Kauaʻi herself — the rivers, the ocean, the red earth, the rain —
+          The land and water of Kauaʻi herself — the rivers, the ocean, the red earth, the rain,
           holding and amplifying everything.
         </p>
       </section>
@@ -595,21 +595,21 @@ export function HomePage() {
               <em className={styles.sageEmphasis}>Visitorship</em>
             </h2>
             <p className={`${styles.sectionSubDark} ${styles.reveal}`}>
-              Your accommodations are private homes on the North Shore — intimate, nature-integrated, steps from Hanalei Bay.
+              Your accommodations are private homes on the North Shore: intimate, nature-integrated, steps from Hanalei Bay.
             </p>
             <div className={styles.stayFeatures}>
               {[
                 [
                   "Private North Shore Homes",
-                  "Stay in private homes in Hanalei — intimate, nature-integrated, steps from Hanalei Bay",
+                  "Stay in private homes in Hanalei: intimate, nature-integrated, steps from Hanalei Bay",
                 ],
                 [
                   "ʻĀina-Based Nourishment",
-                  "Farm-to-table meals sourced from Kauaʻi's living land — high-vibration, deeply nourishing",
+                  "Farm-to-table meals sourced from Kauaʻi's living land: high-vibration, deeply nourishing",
                 ],
                 [
                   "Nature Immersion Daily",
-                  "Ocean swims, barefoot beach walks, grounding practices — held by the wild beauty of the North Shore",
+                  "Ocean swims, barefoot beach walks, grounding practices, held by the wild beauty of the North Shore",
                 ],
                 [
                   "For Island Residents",
@@ -639,7 +639,7 @@ export function HomePage() {
             <em style={{ color: "var(--terra-pale)" }}>Ceremonies</em>
           </h2>
           <p className={`${styles.sectionSub} ${styles.reveal}`} style={{ maxWidth: 600, margin: "0 auto 48px" }}>
-            Each ceremony is a small, held gathering — six members, seven days, one sacred arc. Book a
+            Each ceremony is a small, held gathering: six members, seven days, one sacred arc. Book a
             discovery call to learn about the next available date.
           </p>
           <div className={`${styles.ceremoniesGrid} ${styles.reveal}`}>
@@ -708,7 +708,7 @@ export function HomePage() {
             {
               name: "Rachel",
               title: "Co-Founder · Healer · Somatic Integration Guide",
-              bio: "Rachel weaves over two decades of devotion to embodied awakening — bridging yogic and tantric philosophy with doctorate and masters-level education in naturopathic medicine and transpersonal psychology, consciousness, and spirituality. Rachel's passion is helping guide people back to their own self-love and couples back to one another. Her containers are known to be powerful, deeply trustworthy, and radically transformative.",
+              bio: "Rachel weaves over two decades of devotion to embodied awakening, bridging yogic and tantric philosophy with doctorate and masters-level education in naturopathic medicine and transpersonal psychology, consciousness, and spirituality. Rachel's passion is helping guide people back to their own self-love and couples back to one another. Her containers are known to be powerful, deeply trustworthy, and radically transformative.",
               image: "/images/about/rachel-nelson.jpg",
             },
           ].map((founder, index) => (
@@ -725,7 +725,7 @@ export function HomePage() {
 
         <div className={`${styles.foundersStory} ${styles.reveal}`}>
           <p>
-            &quot;We found each other at exactly the right moment. This sanctuary is our offering —
+            &quot;We found each other at exactly the right moment. This sanctuary is our offering,
             built in service of something far greater than either of us.&quot;
           </p>
           <Link href="/about" className={styles.storyLink} style={{ display: "inline-block", marginTop: 40, fontSize: 11 }}>
@@ -742,7 +742,7 @@ export function HomePage() {
           <em className={styles.sageEmphasis}>Circle</em>
         </h2>
         <p className={`${styles.sectionSubDark} ${styles.reveal}`}>
-          Every member of our team is a devoted practitioner in their own right — healers,
+          Every member of our team is a devoted practitioner in their own right: healers,
           therapists, guides, and wisdom-keepers who share our commitment to whole-being
           transformation.
         </p>
@@ -800,7 +800,7 @@ export function HomePage() {
             Welcome <em>Home</em>
           </h2>
           <p className={`${styles.sectionSub} ${styles.centerSub} ${styles.reveal}`}>
-            Your membership agreement, intake form, preparation guides, and care team access — all
+            Your membership agreement, intake form, preparation guides, and care team access, all
             in one place.
           </p>
 
@@ -811,7 +811,7 @@ export function HomePage() {
                 Access Your <em>Member Portal</em>
               </h3>
               <p className={styles.gatewayCardBody}>
-                Enter with your access code — sent to you after enrollment. Your guides, journals,
+                Enter with your access code, sent to you after enrollment. Your guides, journals,
                 resources, and care team access are waiting inside.
               </p>
               <span className={styles.gatewayCardCta}>Enter the Portal →</span>
@@ -829,7 +829,7 @@ export function HomePage() {
             <em>Because of This Land</em>
           </h2>
           <p className={`${styles.reciprocityIntro} ${styles.reveal}`}>
-            We are guests on this land — and we show up accordingly. Vital Kauaʻi exists in active
+            We are guests on this land. We show up accordingly. Vital Kauaʻi exists in active
             relationship with the ʻāina, the Hawaiian people, and the North Shore community we call
             home, centering aloha ʻāina in everything we do and returning a portion of every
             offering to the regeneration of this place.
@@ -910,7 +910,7 @@ export function HomePage() {
             <label htmlFor="message">What Is Calling You?</label>
             <textarea
               id="message"
-              placeholder="Share what's alive in you — what you're ready to heal, explore, or discover..."
+              placeholder="Share what's alive in you. What you're ready to heal, explore, or discover..."
               value={contactForm.message}
               onChange={(e) => setContactForm((f) => ({ ...f, message: e.target.value }))}
             />
@@ -928,7 +928,7 @@ export function HomePage() {
           </button>
           {contactStatus === "error" && (
             <p style={{ color: "#e57373", marginTop: "0.5rem", fontSize: "0.9rem" }}>
-              Something went wrong — please try again or email us directly.
+              Something went wrong. Please try again or email us directly.
             </p>
           )}
         </form>
