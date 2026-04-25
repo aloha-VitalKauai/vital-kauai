@@ -462,6 +462,11 @@ export function HomePage() {
               Our approach honors the Bwiti tradition from which Iboga comes, and draws from the whole-plant intelligence of
               Iboga root bark, titrated consciously with care, safety, and deep presence. As guests on this ʻāina, we hold Kauaʻi with kuleana, the deep responsibility of care for land, water, and lineage.
             </p>
+            <div className={styles.medicineDistinction}>
+              <p>
+                &quot;Vital Kauaʻi offers the most in-depth preparation and integration we know in this work.&quot;
+              </p>
+            </div>
           </div>
         </div>
       </section>
