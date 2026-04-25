@@ -343,8 +343,8 @@
 }
 
 .videoCaption {
-  font-size: 13px;
-  color: rgba(245, 240, 232, 0.42);
+  font-size: 14px;
+  color: rgba(245, 240, 232, 0.78);
   line-height: 1.8;
   margin: 0;
 }
