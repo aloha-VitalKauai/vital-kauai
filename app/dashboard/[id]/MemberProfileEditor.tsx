@@ -1059,14 +1059,17 @@ export default function MemberProfileEditor({
             )}
           </div>
 
-          {/* Preparation checklist */}
+          {/* Preparation checklist — exclude post-ceremony outcome surveys */}
+          {(() => {
+            const prepItems = checklist.filter((item) => !item.item_key.startsWith("post_"));
+            return (
           <div style={CARD}>
             <p style={{ ...LABEL, marginBottom: 12 }}>Preparation checklist</p>
-            {checklist.length === 0 ? (
+            {prepItems.length === 0 ? (
               <p style={{ fontSize: 13, color: "#9E9E9A" }}>No checklist items</p>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {checklist.map((item) => (
+                {prepItems.map((item) => (
                   <div key={item.id} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <span
                       style={{
@@ -1097,6 +1100,8 @@ export default function MemberProfileEditor({
               </div>
             )}
           </div>
+            );
+          })()}
         </div>
       </div>
 
