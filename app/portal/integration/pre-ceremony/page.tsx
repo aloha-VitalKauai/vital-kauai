@@ -894,14 +894,21 @@ export default function PreCeremonyPage() {
                 {/* Section 5 — Journal Prompts */}
                 <section className="w1-section" id="journal-prompts">
                   <h3 className="w1-h3">Journal Prompts</h3>
-                  <p className="w1-invite">Before you begin, close your eyes. Take a few slow breaths. Scan your body — and notice what you notice.</p>
                   <p className="w1-autosave">Your writing saves automatically as you type. You can return any time to continue.</p>
                   {[
                     // Storage keys are preserved across display-order changes so a member's
                     // prior journal entries stay attached to the prompt they actually wrote to.
                     { key: 'w0-p1', q: 'If I create my reality, what’s possible for my life after this journey?' },
                     { key: 'w0-p2', q: 'What thoughts about myself, others, or the world am I mistaking for truth?' },
-                    { key: 'w0-p0', q: 'What sensations am I currently noticing in my body?', hint: 'A tightness in the jaw, warmth in the chest, buzzing in the hands, a heaviness behind the eyes.' },
+                    {
+                      key: 'w0-p0',
+                      q: 'What sensations am I currently noticing in my body?',
+                      hint: 'A tightness in the jaw, warmth in the chest, buzzing in the hands, a heaviness behind the eyes.',
+                      // Centering invitation lives here as the textarea placeholder so it
+                      // arrives right where members are about to write, instead of as a
+                      // big italic line above all three prompts.
+                      placeholder: 'Before you begin, close your eyes. Take a few slow breaths. Scan your body — and notice what you notice. Then write freely…',
+                    },
                   ].map((p, pi) => (
                     <div className="w1-prompt" key={p.key}>
                       <span className="w1-prompt-num">0{pi + 1}</span>
@@ -911,21 +918,21 @@ export default function PreCeremonyPage() {
                         className="journal-textarea"
                         value={journal[p.key] ?? ''}
                         onChange={(e) => updateJournal(p.key, e.target.value)}
-                        placeholder="Write freely..."
+                        placeholder={p.placeholder ?? 'Write freely...'}
                         rows={4}
                       />
                     </div>
                   ))}
                 </section>
 
-                {/* Section 6 — Voices from the Community (formatted as a video transmission) */}
+                {/* Section 6 — Voices from the Vital Kauaʻi Community (formatted as a video transmission) */}
                 <section className="w1-section" id="community">
-                  <h3 className="w1-h3">Voices from the Community</h3>
+                  <h3 className="w1-h3">Voices from the Vital Kauaʻi Community</h3>
                   <div className="video-frame">
                     <div className="video-primer">
                       <div className="vp-play"><span className="vp-play-icon">▶</span></div>
                       <div>
-                        <div className="vp-label">A Reflection from the Community · Week 1</div>
+                        <div className="vp-label">A Reflection from the Vital Kauaʻi Community · Week 1</div>
                         <div className="vp-text">A short transmission from a member who has walked this path — their experience with perception, with Ike, and with the first week of preparation.</div>
                         <div className="vp-coming-soon">Coming Soon</div>
                       </div>
