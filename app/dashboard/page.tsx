@@ -66,9 +66,18 @@ export default async function DashboardPage() {
   const medCleared = rows.filter((r) => r.medical_cleared).length;
   const cardiacCleared = rows.filter((r) => r.cardiac_cleared).length;
 
+  const upcomingCeremonies = (ceremonies ?? []).filter(
+    (c) => c.status !== "Complete" && c.ceremony_date
+  );
+  const membersWithUpcomingCeremony = new Set(
+    upcomingCeremonies.map((c) => c.member_id).filter(Boolean)
+  );
+
   const stageCounts: Record<string, number> = {};
   for (const r of rows) {
-    const s = r.status ?? "Unknown";
+    const s = membersWithUpcomingCeremony.has(r.id)
+      ? "Ceremony Scheduled"
+      : r.status ?? "Unknown";
     stageCounts[s] = (stageCounts[s] ?? 0) + 1;
   }
 
@@ -76,10 +85,6 @@ export default async function DashboardPage() {
   const agreementSigned = profileList.filter((p) => p.membership_agreement_signed).length;
   const disclaimerSigned = profileList.filter((p) => p.medical_disclaimer_signed).length;
   const depositPaid = profileList.filter((p) => p.deposit_paid).length;
-
-  const upcomingCeremonies = (ceremonies ?? []).filter(
-    (c) => c.status !== "Complete" && c.ceremony_date
-  );
   const memberMap: Record<string, string> = {};
   for (const m of members ?? []) memberMap[m.id] = m.full_name;
 
