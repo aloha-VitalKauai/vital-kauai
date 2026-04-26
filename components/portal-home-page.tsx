@@ -106,7 +106,7 @@ const STRIPE_LOVE_OFFERING_URL = "https://buy.stripe.com/test_cNi4gzcoG3ZBeQUcmZ
 const PREP_ITEMS: { text: string; link?: string; external?: boolean; isLab?: boolean }[] = [
   { text: "Complete all three required steps (Donation, Membership Agreement, Medical Disclaimer)", link: "/portal" },
   { text: "Fill out the Intake Form, basic information required (emergency contact, etc.); all other questions optional", link: "/intake-form" },
-  { text: "Submit your Love Offering / Membership Donation", link: STRIPE_LOVE_OFFERING_URL, external: true },
+  { text: "Submit your Contribution / Donation", link: STRIPE_LOVE_OFFERING_URL, external: true },
   { text: "Read Iboga Preparedness Guide", link: "/iboga-preparedness-guide.html" },
   { text: "Book your preparation calls with your integration guide", link: "/portal#integration-specialist" },
   { text: "Discuss all medications and supplements with Rachel and Josh \u2014 confirm any required washout periods" },
@@ -538,7 +538,7 @@ export function PortalHomePage({
                 }}
               >
                 <div className={styles.docTitle}>
-                  Love Offering / Membership <em>Donation</em>
+                  Contribution <em>Donation</em>
                 </div>
                 <div className={styles.docDesc}>
                   Your gift supports the ministry, our gatherings, and the work Nature is doing
