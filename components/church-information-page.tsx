@@ -84,7 +84,7 @@ export function ChurchInformationPage() {
             <Link href="/iboga-journey">The Iboga Journey</Link>
           </li>
           <li>
-            <span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/stay#local">Work With Us</Link></span></span>
+            <span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/island-residents">Island Residents</Link></span></span>
           </li>
           <li className={styles.navDropdown}>
             <Link href="/church-information" className={styles.navDropdownLabel}>About</Link>
@@ -127,8 +127,8 @@ export function ChurchInformationPage() {
         <Link href="/stay" onClick={() => setIsMobileNavOpen(false)}>
           Stay With Us
         </Link>
-        <Link href="/stay#local" onClick={() => setIsMobileNavOpen(false)}>
-          Work With Us
+        <Link href="/island-residents" onClick={() => setIsMobileNavOpen(false)}>
+          Island Residents
         </Link>
         <Link href="/about" onClick={() => setIsMobileNavOpen(false)}>
           About the Founders
@@ -342,7 +342,7 @@ export function ChurchInformationPage() {
             <li><Link href="/iboga-journey">The Iboga Journey</Link></li>
             <li><Link href="/about">Josh & Rachel</Link></li>
             <li><Link href="/healing-circle">Our Healing Circle</Link></li>
-            <li><span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/stay#local">Work With Us</Link></span></span></li>
+            <li><span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/island-residents">Island Residents</Link></span></span></li>
           </ul>
         </div>
         <div className={styles.footerCol}>

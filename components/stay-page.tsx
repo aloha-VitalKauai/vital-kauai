@@ -845,65 +845,6 @@ nav.scrolled {
 .bc-link:hover { gap: 16px; border-color: var(--gold); }
 
 /* ── LOCAL RESIDENTS ── */
-#local {
-  background: var(--warm-white);
-  padding: 120px 60px;
-}
-.local-inner {
-  max-width: 900px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  gap: 80px;
-  align-items: center;
-}
-.local-label-col .section-label { color: var(--terra); }
-.local-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(40px, 4vw, 60px);
-  font-weight: 300;
-  color: var(--text-dark);
-  line-height: 1.1;
-}
-.local-title em { font-style: italic; color: var(--terra); }
-.local-rule {
-  width: 40px;
-  height: 1px;
-  background: var(--terra);
-  margin-top: 32px;
-}
-.local-body {
-  font-size: 14px;
-  color: var(--text-mid);
-  line-height: 2.0;
-  margin-bottom: 20px;
-  font-weight: 300;
-}
-.local-body:first-of-type {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
-  font-style: italic;
-  color: var(--text-dark);
-  line-height: 1.8;
-}
-.local-cta {
-  margin-top: 32px;
-  font-size: 10px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--forest);
-  background: transparent;
-  border: 1px solid rgba(28,43,30,0.3);
-  padding: 16px 32px;
-  text-decoration: none;
-  display: inline-block;
-  transition: all 0.3s;
-}
-.local-cta:hover {
-  background: var(--forest);
-  border-color: var(--forest);
-  color: var(--cream);
-}
 
 /* ── FAQ ── */
 #faq {
@@ -1141,7 +1082,6 @@ footer {
   .setting-text { padding: 72px 48px; }
   .included-grid { grid-template-columns: 1fr 1fr; }
   .experience-days { grid-template-columns: 1fr 1fr; }
-  .local-inner { grid-template-columns: 1fr; gap: 40px; }
   .gallery-grid {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
@@ -1155,7 +1095,7 @@ footer {
 }
 @media (max-width: 768px) {
   #intro, #homes, #included, #gallery, #experience,
-  #setting, #community, #local, #faq, #intake { padding: 80px 28px; }
+  #setting, #community, #faq, #intake { padding: 80px 28px; }
   .included-grid, .intake-features,
   .experience-days { grid-template-columns: 1fr; }
   .setting-text { padding: 60px 28px; }
@@ -1179,7 +1119,7 @@ const BODY_CONTENT = `
   <a href="/" class="nav-logo">Vital Kauaʻi</a>
   <ul class="nav-links">
     <li><a href="/iboga-journey">The Iboga Journey</a></li>
-    <li class="nav-dropdown-wrap"><a href="/stay" style="opacity:1;">Stay With Us</a><span class="nav-dropdown"><a href="#local">Work With Us</a></span></li>
+    <li class="nav-dropdown-wrap"><a href="/stay" style="opacity:1;">Stay With Us</a><span class="nav-dropdown"><a href="/island-residents">Island Residents</a></span></li>
     <li class="nav-dropdown-wrap"><span class="nav-dropdown-label">About</span><ul class="nav-dropdown-menu"><li><a href="/about">About the Founders</a></li><li><a href="/church-information">About Vital Kauaʻi Church</a></li><li><a href="/healing-circle">Our Healing Circle</a></li></ul></li>
     <li><a href="/#contact">Contact</a></li>
   </ul>
@@ -1192,7 +1132,7 @@ const BODY_CONTENT = `
   <a href="/begin-your-journey" class="mobile-accent-link">Begin the Journey</a>
   <a href="/iboga-journey">The Iboga Journey</a>
   <a href="/stay">Stay With Us</a>
-  <a href="/stay#local">Work With Us</a>
+  <a href="/island-residents">Island Residents</a>
   <a href="/about">About the Founders</a>
   <a href="/church-information">About Vital Kauaʻi Church</a>
   <a href="/healing-circle">Our Healing Circle</a>
@@ -1500,22 +1440,6 @@ const BODY_CONTENT = `
   </div>
 </section>
 
-<!-- LOCAL RESIDENTS -->
-<section id="local">
-  <div class="local-inner">
-    <div class="local-label-col">
-      <span class="section-label reveal">On-Island Work</span>
-      <h2 class="local-title reveal">Already<br><em>Home</em></h2>
-      <div class="local-rule reveal"></div>
-    </div>
-    <div>
-      <p class="local-body reveal">Transformation arrives right where you are. If you live on Kauaʻi and feel the pull of this work, the medicine, somatic healing, energy work, or simply a reset, we are here, and we come to you.</p>
-      <p class="local-body reveal reveal-delay-1">Rachel and Josh work with a quiet circle of island residents who seek the depth of a Vital Kauaʻi journey without leaving home. Sessions happen in your space. The container is just as held.</p>
-      <p class="local-body reveal reveal-delay-2">If you are local and something in you is ready, reach out. The conversation is always the beginning.</p>
-      <a href="/begin-your-journey" class="local-cta reveal reveal-delay-3">Reach Out →</a>
-    </div>
-  </div>
-</section>
 
 <!-- EXPLORE THE LAND -->
 <section id="explore-land" style="background:var(--cream);padding:60px 40px;overflow:hidden;">
