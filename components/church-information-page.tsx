@@ -280,7 +280,7 @@ export function ChurchInformationPage() {
         <h2 className={styles.sectionTitle} style={{ color: "var(--cream)", marginBottom: "20px" }}>
           Become a Member of
           <br />
-          <em>Vital Kauaʻi Church</em>
+          <em>Vital Kauaʻi</em>
         </h2>
         <p className={styles.membershipBody}>
           Membership in Vital Kauaʻi Church is the threshold through which all sacramental ceremony

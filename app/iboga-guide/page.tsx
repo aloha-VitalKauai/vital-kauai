@@ -147,9 +147,10 @@ body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm
 .reveal.visible { opacity: 1; }
 
 @media print {
-  html, body { background: #F3EEE6; }
+  html, body { background: var(--deep); }
   .cover { page-break-after: always; min-height: 100vh; }
   .section { page-break-before: always; padding-top: 52px !important; padding-bottom: 52px !important; }
+  .section-cream, .section-warm { min-height: 100vh; box-sizing: border-box; }
   .section-forest { padding-top: 64px; padding-bottom: 64px; }
   .two-col { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 40px !important; }
   .two-col-wide { display: grid !important; grid-template-columns: 1.2fr 1fr !important; gap: 40px !important; }
