@@ -632,7 +632,8 @@ export function PortalHomePage({
                 { title: "The", em: "Somatic Companion", desc: "Polyvagal theory, somatic self-regulation, breathwork practices, and how to establish safety from the inside out \u2014 before, during, and after.", tag: "Self-Regulation", tagClass: styles.tagGuide, link: "/portal/somatic-companion" },
                 { title: "Support Person", em: "Guide", desc: "For the people at home who love you \u2014 what to expect, how to hold space from a distance, and how to support your integration when you return.", tag: "For Your Circle", tagClass: styles.tagGuide, link: "/portal/support-person" },
                 { title: "What to Bring", em: "& Leave Behind", desc: "An interactive packing checklist for island life \u2014 organized by what to carry and what to leave at home for the integrity of your work.", tag: "Packing", tagClass: styles.tagPrep, link: "/portal/what-to-bring" },
-                { title: "Baseline", em: "Outcome", desc: "A brief, anonymized outcome assessment that helps us understand where you are before ceremony \u2014 covering mood, anxiety, sleep, and quality of life. Takes about 3 minutes.", tag: "Outcome", tagClass: styles.tagPrep, link: "/portal/outcomes/survey?tp=baseline" },
+                // Baseline Outcome card hidden while outcomes are being reworked. Restore by uncommenting this line.
+                // { title: "Baseline", em: "Outcome", desc: "A brief, anonymized outcome assessment that helps us understand where you are before ceremony \u2014 covering mood, anxiety, sleep, and quality of life. Takes about 3 minutes.", tag: "Outcome", tagClass: styles.tagPrep, link: "/portal/outcomes/survey?tp=baseline" },
               ].flatMap((doc: any, i: number) => {
                 const card = (
                   <div
