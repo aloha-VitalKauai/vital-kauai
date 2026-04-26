@@ -1081,7 +1081,7 @@ export default function PreCeremonyPage() {
               </div>
               {i === 0 && (
                 <Link href="/portal/somatic-companion#week-1" className="w1-companion-link">
-                  Read the full teaching in The Somatic Companion → Week 1: The Language of the Body
+                  Read the full teaching in The PsychoNeuroEnergetic Companion → Week 1: The Language of the Body
                 </Link>
               )}
             </section>
