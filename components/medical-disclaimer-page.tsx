@@ -122,11 +122,11 @@ export function MedicalDisclaimerPage() {
         <span className={styles.lastUpdated}>Last Updated: March 7, 2026</span>
 
         <p>
-          Vital Kauai Church is a private, unincorporated religious organization operating as a
+          Vital Kauaʻi Church is a private, unincorporated religious organization operating as a
           Private Membership Association under the protection of the First Amendment to the U.S.
           Constitution, the Religious Freedom Restoration Act (RFRA), and the Universal Declaration
           of Human Rights. All ceremonies, practices, and sacramental work conducted within Vital
-          Kauai Church take place within an ecclesiastical context, among consenting adult members of
+          Kauaʻi Church take place within an ecclesiastical context, among consenting adult members of
           a sincerely held religious community.
         </p>
 
@@ -141,10 +141,10 @@ export function MedicalDisclaimerPage() {
           <em>Nature</em> of Our Work
         </h2>
         <p>
-          Nothing offered by Vital Kauai Church, on this website, in written materials, or in direct
+          Nothing offered by Vital Kauaʻi Church, on this website, in written materials, or in direct
           communication with our Stewards or practitioners, constitutes medical advice, psychiatric
           treatment, clinical diagnosis, or therapeutic intervention as defined by state or federal
-          law. Vital Kauai Church does not practice medicine. Our Stewards and practitioners offer
+          law. Vital Kauaʻi Church does not practice medicine. Our Stewards and practitioners offer
           ceremony, sacred presence, somatic guidance, and spiritual support within a religious
           context. They are not all licensed medical professionals, and they do not hold themselves
           out as such.
@@ -152,7 +152,7 @@ export function MedicalDisclaimerPage() {
 
         <div className={styles.highlightBox}>
           <p>
-            All practices within Vital Kauai Church are sacramental and ecclesiastical in nature.
+            All practices within Vital Kauaʻi Church are sacramental and ecclesiastical in nature.
             They are expressions of sincere religious belief, not medical treatments, clinical
             therapies, or health interventions. Membership in this Church is a voluntary spiritual
             commitment, entered freely by consenting adults.
@@ -166,7 +166,7 @@ export function MedicalDisclaimerPage() {
         </h2>
         <p>
           Participation in sacred ceremony, sacramental practice, somatic inquiry, and
-          psycho-spiritual processes involves inherent risks. As a member of Vital Kauai Church, you
+          psycho-spiritual processes involves inherent risks. As a member of Vital Kauaʻi Church, you
           acknowledge and accept that these risks may include:
         </p>
         <ul>
@@ -194,7 +194,7 @@ export function MedicalDisclaimerPage() {
           Member <em>Responsibility</em>
         </h2>
         <p>
-          Every member of Vital Kauai Church enters sacramental work as a sovereign adult, fully
+          Every member of Vital Kauaʻi Church enters sacramental work as a sovereign adult, fully
           responsible for their own health decisions and for the accuracy of the information they
           provide to the Church. This responsibility includes:
         </p>
@@ -228,7 +228,7 @@ export function MedicalDisclaimerPage() {
           The Iboga <em>Sacrament</em>
         </h2>
         <p>
-          The Iboga Journey at Vital Kauai Church is a sacramental ceremony rooted in sincere
+          The Iboga Journey at Vital Kauaʻi Church is a sacramental ceremony rooted in sincere
           religious practice. Iboga, the root bark of <em>Tabernanthe iboga</em>, is a sacred plant
           sacrament used within our church as an act of worship, in accordance with our Statement of
           Belief and under the protections afforded to religious organizations by the First Amendment
@@ -245,11 +245,11 @@ export function MedicalDisclaimerPage() {
         </div>
 
         <p>
-          Vital Kauai Church takes the physiological seriousness of Iboga ceremony with the utmost
+          Vital Kauaʻi Church takes the physiological seriousness of Iboga ceremony with the utmost
           gravity. The Iboga sacrament carries meaningful physical risk, particularly for individuals
           with cardiac conditions, liver conditions, or certain medication interactions, including
           but not limited to SSRIs, MAOIs, opioids, stimulants, and QT-prolonging medications. For
-          this reason, Vital Kauai Church requires all members participating in the Iboga Journey to
+          this reason, Vital Kauaʻi Church requires all members participating in the Iboga Journey to
           complete thorough medical screening prior to ceremony, including ECG/cardiac evaluation and
           comprehensive bloodwork. The Church care team reviews all health disclosures and screening
           results with care, and reserves the right to decline or postpone ceremony when member
@@ -268,7 +268,7 @@ export function MedicalDisclaimerPage() {
           Our <em>Ecclesiastical</em> Commitment to Safety
         </h2>
         <p>
-          Vital Kauai Church holds safety as a sacred value. Within our ecclesiastical framework we
+          Vital Kauaʻi Church holds safety as a sacred value. Within our ecclesiastical framework we
           maintain thorough member intake and screening, require appropriate health clearance prior to
           sacramental ceremony, establish and follow emergency response protocols, and ensure that
           experienced Stewards and practitioners hold all ceremonial space with care and presence.
@@ -291,7 +291,7 @@ export function MedicalDisclaimerPage() {
           the sacramental nature of our work, please reach out before applying for membership.
         </p>
         <p>
-          Vital Kauai Church
+          Vital Kauaʻi Church
           <br />
           PO Box 932
           <br />
@@ -307,7 +307,7 @@ export function MedicalDisclaimerPage() {
         </h2>
         <p>
           By signing below, I confirm that I have read and understood this Medical Disclaimer in
-          full. I acknowledge the sacramental nature of the work offered by Vital Kauai Church,
+          full. I acknowledge the sacramental nature of the work offered by Vital Kauaʻi Church,
           accept personal responsibility for my health disclosures and sovereign participation, and
           enter this community as a consenting adult member of my own free will.
         </p>
@@ -404,7 +404,7 @@ export function MedicalDisclaimerPage() {
 
       <div className={styles.footerBottom}>
         <p>
-          © 2026 Vital Kauai Church · All original content on this site is protected by U.S.
+          © 2026 Vital Kauaʻi Church · All original content on this site is protected by U.S.
           copyright law. Reproduction without written permission prohibited.
         </p>
       </div>

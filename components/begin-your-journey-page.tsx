@@ -215,7 +215,7 @@ export function BeginYourJourneyPage() {
 
       <div className={styles.footerBottom}>
         <p>
-          &copy; 2026 Vital Kauai Church &middot; All original content on this site is protected by
+          &copy; 2026 Vital Kauaʻi Church &middot; All original content on this site is protected by
           U.S. copyright law. Reproduction without written permission prohibited.
         </p>
       </div>

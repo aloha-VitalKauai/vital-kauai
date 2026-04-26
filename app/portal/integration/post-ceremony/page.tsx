@@ -124,7 +124,7 @@ function downloadReturnICS() {
   const ics = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Vital Kauai//Integration Returns//EN',
+    'PRODID:-//Vital Kauaʻi//Integration Returns//EN',
     events,
     'END:VCALENDAR',
   ].join('\r\n')

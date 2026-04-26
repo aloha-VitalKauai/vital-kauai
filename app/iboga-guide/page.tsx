@@ -503,7 +503,7 @@ const BODY_CONTENT = `
   </div>
 </section>
 
-<!-- THE VITAL KAUAI APPROACH -->
+<!-- THE VITAL KAUAʻI APPROACH -->
 <section class="section section-forest">
   <span class="eyebrow">How We Work</span>
   <h2 class="section-heading">The Vital Kauaʻi <em>Approach</em></h2>
@@ -694,7 +694,7 @@ const BODY_CONTENT = `
 
 <footer class="guide-footer">
   <p class="footer-logo">Vital Kauaʻi</p>
-  <p>© 2026 Vital Kauai Church · PO Box 932, Hanalei, HI 96714<br>
+  <p>© 2026 Vital Kauaʻi Church · PO Box 932, Hanalei, HI 96714<br>
   All original content is protected by U.S. copyright law.<br>
   Reproduction without written permission prohibited.</p>
 </footer>
