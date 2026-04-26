@@ -461,9 +461,9 @@ export function PortalHomePage({
               <em>Welcome</em> to the Portal
             </h2>
             <p className={styles.videoText}>
-              We are glad you are here. In this video we share aloha, a map of what this portal
-              holds, and how to move through it. If you have questions, know our door is always
-              open, and so are our hearts.
+              We are glad you are here. In this video we share a map of what this portal holds,
+              and how to move through it. If you have questions, know our door is always open,
+              and so are our hearts.
             </p>
             <p className={styles.videoSignature}>&mdash; Rachel &amp; Josh</p>
           </div>
@@ -578,6 +578,11 @@ export function PortalHomePage({
             </div>
           )}
         </div>
+      </main>
+
+      {/* ── LOWER BAND (forest) ─── */}
+      <section className={styles.lowerBand}>
+        <div className={styles.lowerInner}>
 
         {/* CEREMONY DATE */}
         <section className={styles.dateBlock} id="upcoming-ceremony">
@@ -588,73 +593,6 @@ export function PortalHomePage({
             </h2>
           </div>
           <PortalJourneyCard />
-        </section>
-
-        {/* LAB DOCUMENTS */}
-        <section id="lab-upload-panel" className={styles.labBlock}>
-          <div className={styles.sectionHead}>
-            <span className={styles.sectionEyebrow}>Lab Documents</span>
-            <h2 className={styles.sectionTitle}>
-              Upload <em>Your Labs</em>
-            </h2>
-          </div>
-          <p className={styles.labBlockSub}>
-            Walk through the lab requirements with your doctor. Once you have results, upload
-            them here as a single PDF or image; our medical team reviews them before ceremony.
-          </p>
-
-          {labDoc ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.04)", borderRadius: 8, padding: "14px 16px", marginBottom: 12 }}>
-              <span style={{
-                width: 10, height: 10, borderRadius: "50%", flexShrink: 0,
-                background: labDoc.status === "approved" ? "#1D9E75" : labDoc.status === "flagged" ? "#A32D2D" : labDoc.status === "processing" ? "#EF9F27" : "#378ADD",
-              }} />
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 14, color: "#F5F0E8", fontWeight: 500, margin: 0 }}>{labDoc.file_name}</p>
-                <p style={{ fontSize: 11, color: "#6B6B67", margin: "2px 0 0" }}>
-                  Uploaded {new Date(labDoc.uploaded_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                </p>
-              </div>
-              <span style={{
-                fontSize: 12, padding: "3px 10px", borderRadius: 99,
-                background: labDoc.status === "approved" ? "rgba(29,158,117,0.15)" : labDoc.status === "flagged" ? "rgba(163,45,45,0.15)" : "rgba(55,138,221,0.15)",
-                color: labDoc.status === "approved" ? "#1D9E75" : labDoc.status === "flagged" ? "#FF9E8C" : "#378ADD",
-              }}>
-                {labDoc.status === "approved" ? "Approved" : labDoc.status === "flagged" ? "Needs attention" : labDoc.status === "processing" ? "Processing..." : "Under review"}
-              </span>
-            </div>
-          ) : null}
-
-          <label
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-              background: labUploading ? "rgba(255,255,255,0.02)" : "rgba(168,197,172,0.08)",
-              border: "1px dashed rgba(168,197,172,0.25)",
-              borderRadius: 8,
-              padding: "20px",
-              cursor: labUploading ? "not-allowed" : "pointer",
-              opacity: labUploading ? 0.5 : 1,
-              transition: "all 0.15s",
-            }}
-          >
-            <span style={{ fontSize: 14, color: "#A8C5AC", fontWeight: 500 }}>
-              {labUploading ? "Uploading..." : labDoc ? "Replace with new document" : "Choose file to upload"}
-            </span>
-            <input
-              type="file"
-              accept=".pdf,.jpg,.jpeg,.png,.webp"
-              style={{ display: "none" }}
-              disabled={labUploading}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) handleLabUpload(file);
-                e.target.value = "";
-              }}
-            />
-          </label>
         </section>
 
         {/* JOURNEY TEAM */}
@@ -746,34 +684,52 @@ export function PortalHomePage({
                 </a>
               ) : null}
             </div>
+
+            {/* WIDER CIRCLE — non-personalized; signals the broader team */}
+            <div className={styles.teamCard}>
+              <div className={styles.circlePhotos}>
+                <Image
+                  src="/images/lizesalen.jpeg"
+                  alt="Dr. Liz Esalen"
+                  width={56}
+                  height={56}
+                  className={styles.circlePhoto}
+                />
+                <Image
+                  src="/images/judithjohnson.jpeg"
+                  alt="Judith Johnson"
+                  width={56}
+                  height={56}
+                  className={styles.circlePhoto}
+                />
+                <Image
+                  src="/images/jonallen.jpeg"
+                  alt="Jon Allen, PA-C"
+                  width={56}
+                  height={56}
+                  className={styles.circlePhoto}
+                />
+                <Image
+                  src="/images/robyndebonet.JPG"
+                  alt="Robyn deBonet"
+                  width={56}
+                  height={56}
+                  className={styles.circlePhoto}
+                />
+              </div>
+              <p className={styles.teamRole}>The Wider Circle</p>
+              <p className={styles.teamName}>A Whole Team</p>
+              <p className={styles.teamBio}>
+                Behind every ceremony is a circle of practitioners, somatic specialists, a
+                medical advisor, and integration guides, holding you in concert with Rachel and
+                Josh. Meet them in <Link href="/healing-circle" className={styles.teamCta} style={{ display: "inline" }}>Our Healing Circle</Link>.
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* EMERGENCY CARD */}
-        <div className={styles.emergencyCard}>
-          <div className={styles.emergencyText}>
-            <p className={styles.emergencyLabel}>During Your Stay, Always Reach Out</p>
-            <p className={styles.emergencyTitle}>We Are Here for You</p>
-            <p className={styles.emergencyDetails}>
-              You are never alone in this. Rachel and Josh are present throughout your stay and
-              reachable for whatever arises. For urgent medical support, please also call 911 or
-              reach Wilcox Medical Center.
-            </p>
-          </div>
-          <div>
-            <p className={styles.emergencyLabel}>Direct Contact</p>
-            <p className={styles.emergencyNum}>
-              Rachel&ensp;
-              <a href="tel:8088555033">808-855-5033</a>
-            </p>
-            <p className={styles.emergencyNum}>
-              Josh&ensp;
-              <a href="tel:6233308017">623-330-8017</a>
-            </p>
-            <p className={styles.emergencyEmail}>aloha@vitalkauai.com</p>
-          </div>
         </div>
-      </main>
+      </section>
 
       {/* ── FOOTER ── */}
       <footer className={styles.portalFooter}>

@@ -536,6 +536,75 @@
   max-width: 640px;
 }
 
+/* ── Lower band: forest green section that holds Date + Team ─── */
+.lowerBand {
+  background: var(--forest, #1c2b1e);
+  padding: 96px 32px 80px;
+  border-top: 1px solid rgba(168, 197, 172, 0.10);
+}
+
+.lowerInner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Override constrained section eyebrow/title colors for forest bg */
+.lowerBand .sectionEyebrow {
+  color: var(--gold);
+}
+
+.lowerBand .sectionTitle {
+  color: var(--cream);
+}
+
+.lowerBand .sectionTitle em {
+  color: var(--sage-light, #a8c5ac);
+  font-style: italic;
+}
+
+/* Team cards on forest */
+.lowerBand .teamCard {
+  background: rgba(245, 240, 232, 0.04);
+  border: 1px solid rgba(168, 197, 172, 0.14);
+  box-shadow: none;
+}
+
+.lowerBand .teamRole {
+  color: var(--gold);
+}
+
+.lowerBand .teamName {
+  color: var(--cream);
+}
+
+.lowerBand .teamBio {
+  color: rgba(245, 240, 232, 0.7);
+}
+
+.lowerBand .teamCta {
+  color: var(--gold);
+}
+
+/* Circle photos — clustered overlapping headshots for the Wider Circle card */
+.circlePhotos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  height: 64px;
+}
+
+.circlePhoto {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(245, 240, 232, 0.12);
+  background: rgba(245, 240, 232, 0.06);
+}
+
+.circlePhotos > .circlePhoto + .circlePhoto {
+  margin-left: -14px;
+}
+
 .docIcon {
   font-size: 28px;
   margin-bottom: 12px;
