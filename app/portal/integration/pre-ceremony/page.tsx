@@ -19,9 +19,7 @@ const BASE_SECTIONS: SectionIndexItem[] = [
   { label: 'Journal',   anchor: '#journal-prompts' },
   { label: 'Community', anchor: '#community' },
 ]
-const READINESS_SECTION: SectionIndexItem = { label: 'Readiness', anchor: '#readiness' }
-const sectionsForWeek = (weekIdx: number): SectionIndexItem[] =>
-  weekIdx === 5 ? [...BASE_SECTIONS, READINESS_SECTION] : BASE_SECTIONS
+const sectionsForWeek = (_weekIdx: number): SectionIndexItem[] => BASE_SECTIONS
 
 // Journal prompt entries, Week 1 has explicit storage keys (so the display
 // order can swap without re-attaching members' existing entries to the wrong
@@ -485,7 +483,6 @@ const WEEKS = [
     ],
     prompts: PRE_CEREMONY_WEEKS[5].prompts,
     thread: 'In Week 1 you named what is asking to change. In Week 2 you named what must change. In Week 4 you looked at what you were hiding. In Week 5 you opened to your people. Now you state what you are ready for and what you are committing to.',
-    readinessGate: true,
   },
 ]
 
