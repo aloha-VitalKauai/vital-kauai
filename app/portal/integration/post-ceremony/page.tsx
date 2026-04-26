@@ -167,6 +167,16 @@ type MonthlyTracking = {
   practice_maintained: boolean
 }
 
+// ─── Per-week anchor lines for the green status box ──────
+const POST_ANCHORS: readonly string[] = [
+  'The medicine is still moving in you.',
+  'Tending what arose.',
+  'Meeting the familiar differently.',
+  'Living the insight.',
+  'Turning what you received outward.',
+  'The work takes root.',
+] as const
+
 // ─── Week data ────────────────────────────────────────────
 const WEEKS = [
   {
@@ -840,17 +850,22 @@ export default function PostCeremonyPage() {
         .pc-dropdown-menu{display:none;position:absolute;top:calc(100% + 10px);left:0;background:rgba(14,26,16,.98);backdrop-filter:blur(16px);border:.5px solid rgba(200,169,110,.15);border-radius:4px;min-width:190px;padding:8px 0;box-shadow:0 16px 40px rgba(0,0,0,.4)}.pc-dropdown:hover .pc-dropdown-menu{display:block}
         .pc-dropdown-item{display:block;padding:10px 20px;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,240,232,.55);text-decoration:none;transition:color .15s,background .15s;border-left:2px solid transparent}.pc-dropdown-item:hover{color:var(--cream);background:rgba(122,158,126,.06)}.pc-dropdown-item.current{color:var(--sage-lt);border-left-color:var(--sage)}
         .pc-nav-right{display:flex;align-items:center;gap:14px}.pc-nav-email{font-size:9px;letter-spacing:.1em;color:rgba(245,240,232,.3);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pc-nav-out{font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(200,169,110,.5);background:none;border:none;cursor:pointer;font-family:inherit;transition:color .2s}.pc-nav-out:hover{color:var(--gold)}
-        .pc-prog{background:rgba(28,43,30,.06);border-bottom:1px solid var(--border-lt);padding:10px 48px;display:flex;align-items:center;gap:16px}.pc-prog-label{font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--stone)}.pc-prog-track{flex:1;height:2px;background:var(--border);border-radius:2px;max-width:300px}.pc-prog-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .6s ease}.pc-prog-week{font-size:8.5px;letter-spacing:.1em;color:var(--gold)}
+        .pc-prog{background:rgba(28,43,30,.06);border-bottom:1px solid var(--border-lt);padding:14px 48px;display:flex;align-items:center;gap:18px}.pc-prog-label{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--stone);font-weight:500}.pc-prog-track{flex:1;height:4px;background:var(--border);border-radius:3px;max-width:340px}.pc-prog-fill{height:100%;background:var(--gold);border-radius:3px;transition:width .6s ease}.pc-prog-week{font-size:12px;letter-spacing:.1em;color:var(--gold);font-weight:500}
         .pc-hero{background:linear-gradient(135deg,#1C2B1E 0%,#2E4231 60%,#1a3020 100%);padding:80px 60px 72px;position:relative;overflow:hidden}.pc-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 60%,rgba(200,169,110,.07) 0%,transparent 65%);pointer-events:none}
         .pc-hero-inner{position:relative;z-index:1;max-width:860px;margin:0 auto}.pc-hero-eyebrow{font-size:9px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:18px}.pc-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5vw,62px);font-weight:300;color:var(--cream);line-height:1.06;margin-bottom:22px}.pc-hero h1 em{font-style:italic;color:var(--gold)}.pc-hero-desc{font-size:14.5px;color:rgba(245,240,232,.55);line-height:1.95;max-width:600px;margin-bottom:32px}.pc-hero-meta{display:flex;gap:32px;flex-wrap:wrap}.hm-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--cream);line-height:1}.hm-lbl{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.35);margin-top:4px}
         .pc-week-nav{position:sticky;top:60px;z-index:90;background:rgba(253,251,247,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;display:flex;overflow-x:auto}.pc-week-nav::-webkit-scrollbar{display:none}
         .wbtn{font-family:inherit;font-size:9px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;padding:0 20px;height:52px;border:none;border-bottom:2px solid transparent;cursor:pointer;color:var(--stone);background:transparent;white-space:nowrap;transition:all .2s}.wbtn:hover{color:var(--ink)}.wbtn.active{color:var(--forest);border-bottom-color:var(--gold);font-weight:500}.wbtn.done::after{content:' ✓';font-size:8px;color:var(--gold);margin-left:4px}
         .pc-main{max-width:860px;margin:0 auto;padding:0 48px 100px}.pc-panel{display:none;padding-top:56px}.pc-panel.active{display:block}
-        .pc-countdown{display:inline-block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;padding:6px 14px;border-radius:99px;margin-bottom:24px}
-        .pc-countdown-future{color:var(--gold);background:rgba(200,169,110,.08);border:1px solid rgba(200,169,110,.22)}
-        .pc-countdown-current{color:var(--terra);background:rgba(184,105,74,.10);border:1px solid rgba(184,105,74,.30)}
-        .pc-countdown-past{color:rgba(60,75,62,.55);background:rgba(60,75,62,.05);border:1px solid rgba(60,75,62,.12)}
-        .pc-countdown-unknown{color:rgba(60,75,62,.45);background:transparent;border:1px dashed rgba(60,75,62,.18);font-style:italic;text-transform:none;letter-spacing:.04em}
+        /* Principle + week-status side-by-side rail */
+        .principle-row{display:grid;grid-template-columns:1fr 280px;gap:36px;align-items:flex-start;margin-bottom:8px}
+        .principle-row > .w1-section{margin-bottom:0}
+        .week-status{background:#1c2b1e;border:1px solid rgba(168,197,172,.18);border-radius:12px;padding:26px 28px;position:sticky;top:130px}
+        .week-status .ws-label{display:block;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px}
+        .week-status .ws-status{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#f5f0e8;line-height:1.2;margin-bottom:18px}
+        .week-status .ws-anchor{font-size:13.5px;font-style:italic;color:rgba(168,197,172,.85);line-height:1.6}
+        .week-status-past .ws-status{color:rgba(168,197,172,.7)}
+        .week-status-unknown .ws-status{font-size:18px;color:rgba(168,197,172,.55);font-style:italic}
+        @media(max-width:760px){.principle-row{grid-template-columns:1fr;gap:20px}.week-status{position:static}}
         .continuity{display:flex;gap:12px;align-items:flex-start;background:rgba(122,158,126,.06);border-left:2px solid var(--sage-lt);padding:14px 18px;margin-bottom:32px}.ct-arrow{font-size:13px;color:var(--sage);flex-shrink:0;margin-top:1px}.ct-text{font-size:12.5px;color:var(--stone);line-height:1.75}.ct-text strong{color:var(--ink-mid);font-weight:500}
         .wh-eyebrow{font-size:9px;letter-spacing:.38em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:14px}.wh-title{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,4vw,46px);font-weight:300;line-height:1.1;margin-bottom:16px;color:var(--ink);white-space:pre-line}.wh-title em{font-style:italic;color:var(--gold)}.wh-sub{font-size:14px;color:var(--stone);line-height:1.9;max-width:640px;padding-bottom:32px;border-bottom:1px solid var(--border);margin-bottom:36px}
         /* Week 1 shared layout (matched to pre-ceremony so the 12-week arc reads as one piece) */
@@ -872,7 +887,7 @@ export default function PostCeremonyPage() {
         .w1-action-dot { width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:7px; }
         .w1-action-text { font-size:13.5px;color:var(--ink);line-height:1.55; }
         /* Week 1 principle display, scaled up so the principle reads as the theme */
-        .w1p-eyebrow { font-size:10px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:20px; }
+        .w1p-eyebrow { font-size:12px;font-weight:600;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:22px; }
         .w1p-title { font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5.2vw,58px);font-weight:300;line-height:1.06;margin:0 0 18px;color:var(--ink); }
         .w1p-title em { font-style:italic;color:var(--gold); }
         .w1p-pull { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(17px,1.8vw,21px);color:var(--gold);line-height:1.55;margin:0 0 26px;letter-spacing:.015em; }
@@ -949,17 +964,21 @@ export default function PostCeremonyPage() {
           const cd = getWeekCountdown(ceremonyStartAt, 'post', i)
           return (
           <div key={w.id} className={`pc-panel${activeWeek===i?' active':''}`}>
-            <div className={`pc-countdown pc-countdown-${cd?.phase ?? 'unknown'}`}>
-              {cd ? cd.label : 'Begins once your dates are set'}
-            </div>
 
-            {/* PRINCIPLE */}
-            <section className="w1-section" id="principle">
-              <span className="w1p-eyebrow">Week {i + 1} · {w.principleName} · {w.theme}</span>
-              <h2 className="w1p-title">{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</h2>
-              <p className="w1p-pull">&ldquo;{w.principle}&rdquo;, {w.principleName}</p>
-              <p className="w1p-body">{w.intro}</p>
-            </section>
+            {/* PRINCIPLE + WEEK STATUS */}
+            <div className="principle-row">
+              <section className="w1-section" id="principle">
+                <span className="w1p-eyebrow">Week {i + 1} · {w.principleName} · {w.theme}</span>
+                <h2 className="w1p-title">{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</h2>
+                <p className="w1p-pull">&ldquo;{w.principle}&rdquo;</p>
+                <p className="w1p-body">{w.intro}</p>
+              </section>
+              <aside className={`week-status week-status-${cd?.phase ?? 'unknown'}`}>
+                <span className="ws-label">Week {i + 1}</span>
+                <div className="ws-status">{cd ? cd.label : 'Begins once your dates are set'}</div>
+                <div className="ws-anchor">{POST_ANCHORS[i]}</div>
+              </aside>
+            </div>
 
             {/* VIDEO, Message from the Founders */}
             <section className="w1-section" id="week-video">
