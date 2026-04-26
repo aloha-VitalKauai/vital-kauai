@@ -1011,23 +1011,6 @@ export default function PostCeremonyPage() {
                   )
                 })}
               </div>
-              {w.dataset && (() => {
-                const dl = (w as { datasetLink?: { text: string; href: string } }).datasetLink
-                return (
-                  <div className="dataset-note" style={{ marginTop: 18 }}>
-                    <div className="dn-header">
-                      <span className="dn-label">Outcomes, your contribution to the field</span>
-                      {dl && <Link href={dl.href} className="dn-cta">{dl.text}</Link>}
-                    </div>
-                    <div className="dn-body">{w.dataset}</div>
-                    {dl && (
-                      <div className="dn-footer">
-                        <Link href={dl.href} className="dn-cta">{dl.text}</Link>
-                      </div>
-                    )}
-                  </div>
-                )
-              })()}
             </section>
 
             {/* PNE PERSPECTIVE (placeholder until per-week content ships) */}
