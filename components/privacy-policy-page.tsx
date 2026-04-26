@@ -138,10 +138,10 @@ export function PrivacyPolicyPage() {
         <span className={styles.lastUpdated}>Last Updated: March 7, 2026</span>
 
         <p>
-          Vital Kauai Church is a private, unincorporated religious organization operating as a
+          Vital Kauaʻi Church is a private, unincorporated religious organization operating as a
           Private Membership Association. We are protected under the First Amendment to the U.S.
           Constitution, the Religious Freedom Restoration Act (RFRA), and the Universal Declaration
-          of Human Rights. All activities, ceremonies, and communications within Vital Kauai Church
+          of Human Rights. All activities, ceremonies, and communications within Vital Kauaʻi Church
           take place within a private ecclesiastical domain among consenting adult members.
         </p>
 
@@ -149,7 +149,7 @@ export function PrivacyPolicyPage() {
           Privacy is not merely a legal obligation for us, it is a sacred value, rooted in our
           Covenant of Silence and our deepest commitment to the dignity of every member. The
           information you share with us is held as confidential, used with care, and never exploited.
-          This Privacy Policy describes how Vital Kauai Church (&quot;we,&quot; &quot;us,&quot;
+          This Privacy Policy describes how Vital Kauaʻi Church (&quot;we,&quot; &quot;us,&quot;
           &quot;our,&quot; or &quot;the Church&quot;) collects, uses, and protects information when
           you visit our website at vitalkauai.com, complete our membership or intake forms, or
           participate in our sacramental ceremonies and church activities.
@@ -157,7 +157,7 @@ export function PrivacyPolicyPage() {
 
         <div className={styles.highlightBox}>
           <p>
-            By becoming a member of Vital Kauai Church, all information you share with the Church
+            By becoming a member of Vital Kauaʻi Church, all information you share with the Church
             enters the private domain of a religious organization. It is protected by the
             Church&apos;s Covenant of Silence, our ecclesiastical obligations, and applicable
             religious freedom law, not merely by standard data protection frameworks.
@@ -206,7 +206,7 @@ export function PrivacyPolicyPage() {
           <em>How We Use</em> Your Information
         </h2>
         <p>
-          All information collected by Vital Kauai Church is used exclusively within the private
+          All information collected by Vital Kauaʻi Church is used exclusively within the private
           ecclesiastical domain of the Church. We use member information solely to:
         </p>
         <ul>
@@ -247,7 +247,7 @@ export function PrivacyPolicyPage() {
         </p>
         <div className={styles.highlightBox}>
           <p>
-            Information shared with Vital Kauai Church in the context of sacramental preparation,
+            Information shared with Vital Kauaʻi Church in the context of sacramental preparation,
             religious counsel, or church membership is protected by the Covenant of Silence
             established in our Church Charter. This is a binding ecclesiastical obligation on all
             Stewards, practitioners, and staff, not merely an internal policy. Health and personal
@@ -272,7 +272,7 @@ export function PrivacyPolicyPage() {
           Sharing <em>& Disclosure</em>
         </h2>
         <p>
-          Vital Kauai Church does not sell, rent, trade, or otherwise disclose member information to
+          Vital Kauaʻi Church does not sell, rent, trade, or otherwise disclose member information to
           outside parties. The Church&apos;s position, consistent with our ecclesiastical framework,
           is that all member information exists within the private domain of a religious organization
           and is not subject to public disclosure. We share member information only in the following
@@ -306,7 +306,7 @@ export function PrivacyPolicyPage() {
           Ecclesiastical <em>Privilege</em>
         </h2>
         <p>
-          Vital Kauai Church operates as a sincerely held private religious organization.
+          Vital Kauaʻi Church operates as a sincerely held private religious organization.
           Communications between members and Stewards in the context of spiritual counsel, sacramental
           preparation, and church membership may be protected by ecclesiastical privilege under
           applicable state and federal law. The Church asserts this privilege on behalf of its members
@@ -314,7 +314,7 @@ export function PrivacyPolicyPage() {
           fullest extent permitted by law.
         </p>
         <p>
-          All Stewards and practitioners of Vital Kauai Church are bound by the Covenant of Silence
+          All Stewards and practitioners of Vital Kauaʻi Church are bound by the Covenant of Silence
           established in our Church Charter, a sacred and contractual obligation of confidentiality
           that exists independently of, and in addition to, any legal protections.
         </p>
@@ -336,7 +336,7 @@ export function PrivacyPolicyPage() {
         <h2 id="your-rights">
           Member <em>Rights</em>
         </h2>
-        <p>As a member of Vital Kauai Church, you have the right to:</p>
+        <p>As a member of Vital Kauaʻi Church, you have the right to:</p>
         <ul>
           <li>Request access to the personal information the Church holds about you</li>
           <li>Request correction of any inaccurate information in your membership record</li>
@@ -360,7 +360,7 @@ export function PrivacyPolicyPage() {
           Data <em>Retention</em>
         </h2>
         <p>
-          Vital Kauai Church retains member information for as long as necessary to fulfill the
+          Vital Kauaʻi Church retains member information for as long as necessary to fulfill the
           purposes described in this policy and to comply with our ecclesiastical and legal
           obligations. Health information, membership records, and signed ecclesiastical documents are
           retained for a minimum of seven years following the conclusion of a member&apos;s
@@ -375,7 +375,7 @@ export function PrivacyPolicyPage() {
           Adult <em>Membership Only</em>
         </h2>
         <p>
-          All sacramental participation within Vital Kauai Church is limited to adults 18 years of
+          All sacramental participation within Vital Kauaʻi Church is limited to adults 18 years of
           age and older. The Church does not knowingly collect personal information from individuals
           under the age of 18. If you believe the Church has inadvertently collected information from
           a minor, please contact us immediately at{" "}
@@ -392,7 +392,7 @@ export function PrivacyPolicyPage() {
           stewards your data are always welcome.
         </p>
         <p>
-          Vital Kauai Church
+          Vital Kauaʻi Church
           <br />
           PO Box 932
           <br />
@@ -489,7 +489,7 @@ export function PrivacyPolicyPage() {
 
       <div className={styles.footerBottom}>
         <p>
-          © 2026 Vital Kauai Church · All original content on this site is protected by U.S.
+          © 2026 Vital Kauaʻi Church · All original content on this site is protected by U.S.
           copyright law. Reproduction without written permission prohibited.
         </p>
       </div>

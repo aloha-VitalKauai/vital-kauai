@@ -575,7 +575,7 @@ export function HomePage() {
           <div className={`${styles.offeringsImageWrap} ${styles.reveal}`}>
             <Image
               src="/images/kauaiwaterfall.jpeg"
-              alt="Kauai waterfall"
+              alt="Kauaʻi waterfall"
               width={500}
               height={600}
               className={styles.offeringsImage}
@@ -1028,7 +1028,7 @@ export function HomePage() {
 
       <div className={styles.footerBottom}>
         <p>
-          © 2026 Vital Kauai Church · All original content on this site is protected by U.S.
+          © 2026 Vital Kauaʻi Church · All original content on this site is protected by U.S.
           copyright law. Reproduction without written permission prohibited.
         </p>
       </div>

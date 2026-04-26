@@ -95,7 +95,7 @@ export function ShellPage({ title, description }: ShellPageProps) {
       </div>
 
       <section className={styles.card}>
-        <p className={styles.eyebrow}>Vital Kauai</p>
+        <p className={styles.eyebrow}>Vital Kauaʻi</p>
         <h1 className={styles.title}>{title}</h1>
         <p className={styles.description}>{description}</p>
         <div className={styles.actions}>
@@ -165,7 +165,7 @@ export function ShellPage({ title, description }: ShellPageProps) {
 
       <div className={styles.footerBottom}>
         <p>
-          © 2026 Vital Kauai Church · All original content on this site is protected by U.S.
+          © 2026 Vital Kauaʻi Church · All original content on this site is protected by U.S.
           copyright law. Reproduction without written permission prohibited.
         </p>
       </div>
