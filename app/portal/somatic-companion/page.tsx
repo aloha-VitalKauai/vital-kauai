@@ -579,6 +579,7 @@ export default async function SomaticCompanionPage() {
       <style dangerouslySetInnerHTML={{ __html: PAGE_CSS }} />
 
       <div className="pne-companion-page">
+        <span id="top" />
         <header className="hero">
           <div className="vk-wrap">
             <div className="vk-eyebrow">Iboga Journey · Member Resource</div>

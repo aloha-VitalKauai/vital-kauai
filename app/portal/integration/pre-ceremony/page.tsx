@@ -83,7 +83,7 @@ const actionsForWeek = (
       { kind: 'internal', href: '/intake-form',                        text: 'Fill out the remaining questions on your intake form' },
       { kind: 'hash',     href: '#journal-prompts',                    text: 'Respond to this week’s journal prompts' },
       { kind: 'internal', href: '/portal/questions-for-the-medicine',  text: 'Begin writing your questions for the medicine.' },
-      { kind: 'internal', href: '/portal/somatic-companion',    text: 'Read Week 1: The Language of the Body in The PsychoNeuroEnergetic Companion' },
+      { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1: The Language of the Body in The PsychoNeuroEnergetic Companion' },
       { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule your first call with your integration guide' },
     ]
   }
@@ -1080,7 +1080,7 @@ export default function PreCeremonyPage() {
                 </div>
               </div>
               {i === 0 && (
-                <Link href="/portal/somatic-companion" className="w1-companion-link">
+                <Link href="/portal/somatic-companion#top" className="w1-companion-link">
                   Read the full teaching in The PsychoNeuroEnergetic Companion → Week 1: The Language of the Body
                 </Link>
               )}
