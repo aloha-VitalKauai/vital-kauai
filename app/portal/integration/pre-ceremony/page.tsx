@@ -21,6 +21,17 @@ const BASE_SECTIONS: SectionIndexItem[] = [
 ]
 const sectionsForWeek = (_weekIdx: number): SectionIndexItem[] => BASE_SECTIONS
 
+// Anchor lines, one per pre-ceremony week. Sit under the live status
+// in the green week-status box on the right rail of each principle.
+const PRE_ANCHORS: readonly string[] = [
+  'Looking at the lens itself.',
+  'What you turn toward grows.',
+  'Arriving in the body.',
+  'What is ready to leave.',
+  'Opening to your people.',
+  'Arrival week. You are ready.',
+] as const
+
 // Journal prompt entries, Week 1 has explicit storage keys (so the display
 // order can swap without re-attaching members' existing entries to the wrong
 // prompt) plus a custom centering placeholder on prompt 3. Weeks 2–6 use the
@@ -690,11 +701,11 @@ export default function PreCeremonyPage() {
         .pc-nav-out:hover { color:var(--gold); }
 
         /* PROGRESS */
-        .pc-prog { background:rgba(28,43,30,.06);border-bottom:1px solid var(--border-lt);padding:10px 48px;display:flex;align-items:center;gap:16px; }
-        .pc-prog-label { font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--stone); }
-        .pc-prog-track { flex:1;height:2px;background:var(--border);border-radius:2px;max-width:300px; }
-        .pc-prog-fill { height:100%;background:var(--sage);border-radius:2px;transition:width .6s ease; }
-        .pc-prog-week { font-size:8.5px;letter-spacing:.1em;color:var(--sage); }
+        .pc-prog { background:rgba(28,43,30,.06);border-bottom:1px solid var(--border-lt);padding:14px 48px;display:flex;align-items:center;gap:18px; }
+        .pc-prog-label { font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--stone);font-weight:500; }
+        .pc-prog-track { flex:1;height:4px;background:var(--border);border-radius:3px;max-width:340px; }
+        .pc-prog-fill { height:100%;background:var(--sage);border-radius:3px;transition:width .6s ease; }
+        .pc-prog-week { font-size:12px;letter-spacing:.1em;color:var(--sage);font-weight:500; }
 
         /* HERO */
         .pc-hero { background:var(--forest);padding:80px 60px 72px;position:relative;overflow:hidden; }
@@ -720,11 +731,19 @@ export default function PreCeremonyPage() {
         .pc-main { max-width:860px;margin:0 auto;padding:0 48px 100px; }
         .pc-panel { display:none;padding-top:56px; }
         .pc-panel.active { display:block; }
-        .pc-countdown { display:inline-block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;padding:6px 14px;border-radius:99px;margin-bottom:24px; }
-        .pc-countdown-future { color:var(--gold);background:rgba(200,169,110,.08);border:1px solid rgba(200,169,110,.22); }
-        .pc-countdown-current { color:var(--terra);background:rgba(184,105,74,.10);border:1px solid rgba(184,105,74,.30); }
-        .pc-countdown-past { color:rgba(60,75,62,.55);background:rgba(60,75,62,.05);border:1px solid rgba(60,75,62,.12); }
-        .pc-countdown-unknown { color:rgba(60,75,62,.45);background:transparent;border:1px dashed rgba(60,75,62,.18);font-style:italic;text-transform:none;letter-spacing:.04em; }
+        /* Principle + week-status side-by-side rail */
+        .principle-row { display:grid;grid-template-columns:1fr 280px;gap:36px;align-items:flex-start;margin-bottom:8px; }
+        .principle-row > .w1-section { margin-bottom:0; }
+        .week-status { background:#1c2b1e;border:1px solid rgba(168,197,172,.18);border-radius:12px;padding:26px 28px;position:sticky;top:130px; }
+        .week-status .ws-label { display:block;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px; }
+        .week-status .ws-status { font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#f5f0e8;line-height:1.2;margin-bottom:18px; }
+        .week-status .ws-anchor { font-size:13.5px;font-style:italic;color:rgba(168,197,172,.85);line-height:1.6; }
+        .week-status-past .ws-status { color:rgba(168,197,172,.7); }
+        .week-status-unknown .ws-status { font-size:18px;color:rgba(168,197,172,.55);font-style:italic; }
+        @media (max-width:760px) {
+          .principle-row { grid-template-columns:1fr;gap:20px; }
+          .week-status { position:static; }
+        }
 
         /* CONTINUITY */
         .continuity { display:flex;gap:12px;align-items:flex-start;background:rgba(122,158,126,.06);border-left:2px solid var(--sage-lt);padding:14px 18px;margin-bottom:32px; }
@@ -739,7 +758,7 @@ export default function PreCeremonyPage() {
         .wh-sub { font-size:14px;color:var(--stone);line-height:1.9;max-width:640px;padding-bottom:32px;border-bottom:1px solid var(--border);margin-bottom:36px; }
         .wh-italic { font-size:13px;color:var(--sage);font-style:italic;margin-top:16px;letter-spacing:.02em; }
         /* Week 1 principle, same hierarchy as wh-* but bumped to read as the theme of the week. */
-        .w1p-eyebrow { font-size:10px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:20px; }
+        .w1p-eyebrow { font-size:12px;font-weight:600;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:22px; }
         .w1p-title { font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5.2vw,58px);font-weight:300;line-height:1.06;margin:0 0 18px;color:var(--ink); }
         .w1p-title em { font-style:italic;color:var(--sage); }
         .w1p-pull { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(17px,1.8vw,21px);color:var(--sage);line-height:1.55;margin:0 0 26px;letter-spacing:.015em; }
@@ -941,26 +960,28 @@ export default function PreCeremonyPage() {
           return (
           <div key={w.id} className={`pc-panel${activeWeek === i ? ' active' : ''}`}>
 
-            {/* COUNTDOWN BANNER */}
-            <div className={`pc-countdown pc-countdown-${cd?.phase ?? 'unknown'}`}>
-              {cd ? cd.label : 'Begins once your dates are set'}
+            {/* PRINCIPLE + WEEK STATUS */}
+            <div className="principle-row">
+              <section className="w1-section" id="principle">
+                <span className="w1p-eyebrow">Week {i + 1} · {w.principleName} · {w.theme}</span>
+                <h2 className="w1p-title">
+                  {i === 0
+                    ? <>Seeing <em>clearly.</em></>
+                    : <>{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</>}
+                </h2>
+                <p className="w1p-pull">&ldquo;{w.principle}&rdquo;</p>
+                <p className="w1p-body">
+                  {i === 0
+                    ? 'What you perceive shapes what you experience, attention, assumptions, the stories carried without noticing. This week is an invitation to look at the lens itself.'
+                    : w.sub}
+                </p>
+              </section>
+              <aside className={`week-status week-status-${cd?.phase ?? 'unknown'}`}>
+                <span className="ws-label">Week {i + 1}</span>
+                <div className="ws-status">{cd ? cd.label : 'Begins once your dates are set'}</div>
+                <div className="ws-anchor">{PRE_ANCHORS[i]}</div>
+              </aside>
             </div>
-
-            {/* PRINCIPLE */}
-            <section className="w1-section" id="principle">
-              <span className="w1p-eyebrow">Week {i + 1} · {w.principleName} · {w.theme}</span>
-              <h2 className="w1p-title">
-                {i === 0
-                  ? <>Seeing <em>clearly.</em></>
-                  : <>{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</>}
-              </h2>
-              <p className="w1p-pull">&ldquo;{w.principle}&rdquo;, {w.principleName}</p>
-              <p className="w1p-body">
-                {i === 0
-                  ? 'What you perceive shapes what you experience, attention, assumptions, the stories carried without noticing. This week is an invitation to look at the lens itself.'
-                  : w.sub}
-              </p>
-            </section>
 
             {/* VIDEO, Message from the Founders */}
             <section className="w1-section" id="week-video">

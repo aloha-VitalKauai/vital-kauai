@@ -63,15 +63,14 @@ export function getWeekCountdown(
   let label: string;
   if (daysUntilStart > 0) {
     phase = "future";
-    label = daysUntilStart === 1 ? "In 1 day" : `In ${daysUntilStart} days`;
+    label = daysUntilStart === 1 ? "Begins tomorrow" : `Begins in ${daysUntilStart} days`;
   } else if (daysUntilEnd > 0) {
     phase = "current";
     const left = daysUntilEnd;
-    label = left === 1 ? "This week · 1 day left" : `This week · ${left} days left`;
+    label = left === 1 ? "Last day" : `${left} days remaining`;
   } else {
     phase = "past";
-    const ago = -daysUntilEnd;
-    label = ago === 0 ? "Just ended" : ago === 1 ? "1 day ago" : `${ago} days ago`;
+    label = "Complete";
   }
 
   return { phase, daysUntilStart, daysUntilEnd, label };
