@@ -94,8 +94,9 @@ export function IslandResidentsPage() {
         <div className={styles.sectionInner}>
           <p className={styles.lead}>
             Transformation arrives right where you are. If you live on Kauaʻi and feel the
-            pull of this work, the medicine, somatic healing, energy work, or simply a reset,
-            we are here, and we come to you.
+            pull of this work, we walk it with you. Six weeks of preparation, a deeply held
+            Iboga ceremony, and six weeks of integration. Somatic practice and guidance,
+            breathwork, energy work, and our attuned presence support you throughout.
           </p>
           <p className={styles.bodyText}>
             Rachel and Josh hold a quiet circle of island residents who seek the depth of a
@@ -103,8 +104,7 @@ export function IslandResidentsPage() {
             container is just as held.
           </p>
           <p className={styles.bodyText}>
-            If you are local and something in you is ready, reach out. The conversation is
-            always the beginning.
+            If you are local and something in you is ready, reach out.
           </p>
           <div className={styles.ctaRow}>
             <Link href="/begin-your-journey" className={styles.cta}>
