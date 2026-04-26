@@ -456,16 +456,14 @@ export function PortalHomePage({
             <span className={styles.videoLabel}>A Message from Rachel &amp; Josh</span>
           </div>
           <div className={styles.videoContent}>
-            <p className={styles.videoEyebrow}>You Are Welcome Here</p>
+            <p className={styles.videoEyebrow}>Aloha</p>
             <h2 className={styles.videoTitle}>
-              A Personal <em>Welcome</em>
-              <br />
-              from Your Guides
+              <em>Welcome</em> to the Portal
             </h2>
             <p className={styles.videoText}>
-              Welcome, we&rsquo;re so grateful you have arrived. Watch this video where we share
-              what this portal holds for you, how to move through it, and what to reach out about
-              as you prepare. Our doors are always open, and so are our hearts.
+              We are glad you are here. In this video we share aloha, a map of what this portal
+              holds, and how to move through it. If you have questions, know our door is always
+              open, and so are our hearts.
             </p>
             <p className={styles.videoSignature}>&mdash; Rachel &amp; Josh</p>
           </div>
