@@ -38,7 +38,7 @@ export function TermsOfUsePage() {
             <span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/stay#local">Work With Us</Link></span></span>
           </li>
           <li className={styles.navDropdown}>
-            <span className={styles.navDropdownLabel}>About</span>
+            <Link href="/church-information" className={styles.navDropdownLabel}>About</Link>
             <ul className={styles.navDropdownMenu}>
               <li>
                 <Link href="/about">About the Founders</Link>
@@ -138,7 +138,7 @@ export function TermsOfUsePage() {
         <span className={styles.lastUpdated}>Last Updated: March 7, 2026</span>
 
         <p>
-          These Terms of Use govern your access to and use of the Vital Kauai Church website at
+          These Terms of Use govern your access to and use of the Vital Kauaʻi Church website at
           vitalkauai.com (&quot;the Website&quot;). By accessing or using the Website, you agree to
           be bound by these terms. If you do not agree, please do not use the Website.
         </p>
@@ -151,7 +151,7 @@ export function TermsOfUsePage() {
         <p>
           Your use of this Website constitutes your agreement to these Terms of Use and our Privacy
           Policy. These terms apply to all visitors, regardless of whether you become a member of
-          Vital Kauai Church.
+          Vital Kauaʻi Church.
         </p>
 
         <hr className={styles.sectionRule} />
@@ -184,8 +184,8 @@ export function TermsOfUsePage() {
           Content <em>& Intellectual Property</em>
         </h2>
         <p>
-          All content on this Website, including text, images, design, graphics, and the Vital Kauai
-          Church name and mark, is the property of Vital Kauai Church and is protected by applicable
+          All content on this Website, including text, images, design, graphics, and the Vital Kauaʻi
+          Church name and mark, is the property of Vital Kauaʻi Church and is protected by applicable
           intellectual property laws. You may share links to our Website and quote brief passages for
           non-commercial purposes with proper attribution.
         </p>
@@ -202,7 +202,7 @@ export function TermsOfUsePage() {
         <p>
           The content on this Website is provided for informational and spiritual purposes only.
           Nothing on this Website constitutes medical, psychiatric, psychological, legal, or financial
-          advice. Vital Kauai Church is a spiritual organization, our offerings are ceremonial and
+          advice. Vital Kauaʻi Church is a spiritual organization, our offerings are ceremonial and
           wellness-oriented in nature.
         </p>
         <div className={styles.highlightBox}>
@@ -219,7 +219,7 @@ export function TermsOfUsePage() {
           No Guarantee <em>of Outcomes</em>
         </h2>
         <p>
-          Vital Kauai Church makes no representations or warranties regarding the outcomes of
+          Vital Kauaʻi Church makes no representations or warranties regarding the outcomes of
           participation in our programs, ceremonies, or offerings. Transformation is a deeply personal
           process. Results vary by individual and depend on many factors beyond our control. We offer
           presence, care, and a sacred container, not guarantees.
@@ -242,7 +242,7 @@ export function TermsOfUsePage() {
           <em>Limitation</em> of Liability
         </h2>
         <p>
-          To the fullest extent permitted by law, Vital Kauai Church, its Stewards, practitioners,
+          To the fullest extent permitted by law, Vital Kauaʻi Church, its Stewards, practitioners,
           and affiliates shall not be liable for any indirect, incidental, special, or consequential
           damages arising from your use of this Website or its content. Our liability for any claim
           arising from use of this Website is limited to the amount you paid, if any, for the
@@ -259,7 +259,7 @@ export function TermsOfUsePage() {
           <em>Governing</em> Framework
         </h2>
         <p>
-          Vital Kauai Church operates as a private, unincorporated religious organization. To the
+          Vital Kauaʻi Church operates as a private, unincorporated religious organization. To the
           extent that any legal dispute arises in connection with this Website, the parties agree to
           first attempt resolution through good-faith communication and, if necessary, through the
           dispute resolution procedures established in the Church Charter and Articles of Association.
@@ -283,7 +283,7 @@ export function TermsOfUsePage() {
           <em>Contact</em>
         </h2>
         <p>
-          Vital Kauai Church
+          Vital Kauaʻi Church
           <br />
           PO Box 932
           <br />
@@ -380,7 +380,7 @@ export function TermsOfUsePage() {
 
       <div className={styles.footerBottom}>
         <p>
-          © 2026 Vital Kauai Church · All original content on this site is protected by U.S.
+          © 2026 Vital Kauaʻi Church · All original content on this site is protected by U.S.
           copyright law. Reproduction without written permission prohibited.
         </p>
       </div>

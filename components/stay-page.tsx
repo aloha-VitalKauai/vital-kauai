@@ -1344,7 +1344,7 @@ const BODY_CONTENT = `
 <section id="setting">
   <div class="setting-grid">
     <div class="setting-photo">
-      <img src="/images/hanalei1.jpg" alt="Hanalei Bay, Kauai">
+      <img src="/images/hanalei1.jpg" alt="Hanalei Bay, Kauaʻi">
     </div>
     <div class="setting-text">
       <span class="section-label reveal">The Land</span>
@@ -1760,7 +1760,7 @@ const BODY_CONTENT = `
   </div>
 </footer>
 <div class="footer-bottom">
-  <p>© 2026 Vital Kauai Church · PO Box 932, Hanalei, HI 96714 · aloha@vitalkauai.com</p>
+  <p>© 2026 Vital Kauaʻi Church · PO Box 932, Hanalei, HI 96714 · aloha@vitalkauai.com</p>
   <p>All original content on this site is protected by U.S. copyright law. Reproduction without written permission prohibited.</p>
 </div>
 

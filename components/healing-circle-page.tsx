@@ -114,7 +114,7 @@ export function HealingCirclePage() {
             <span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/stay#local">Work With Us</Link></span></span>
           </li>
           <li className={styles.navDropdown}>
-            <span className={styles.navDropdownLabel}>About</span>
+            <Link href="/church-information" className={styles.navDropdownLabel}>About</Link>
             <ul className={styles.navDropdownMenu}>
               <li>
                 <Link href="/about">About the Founders</Link>
@@ -392,7 +392,7 @@ export function HealingCirclePage() {
 
       <div className={styles.footerBottom}>
         <p>
-          © 2026 Vital Kauai Church · All original content on this site is protected by U.S.
+          © 2026 Vital Kauaʻi Church · All original content on this site is protected by U.S.
           copyright law. Reproduction without written permission prohibited.
         </p>
       </div>

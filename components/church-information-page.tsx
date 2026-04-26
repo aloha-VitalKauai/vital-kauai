@@ -33,7 +33,23 @@ const tenets = [
   {
     numeral: "VI",
     title: "The Earth as Sacred Ground",
-    body: "We believe the natural world is not a backdrop to spiritual life but an active participant in it. Kauaʻi's land, waters, and living systems are part of our congregation.",
+    body: (
+      <>
+        <p style={{ margin: 0 }}>
+          We believe the natural world is an active participant in spiritual life. Kauaʻi&apos;s
+          land, waters, and living systems are part of our congregation.
+        </p>
+        <p style={{ margin: "14px 0 0" }}>
+          While you are here, we invite you to tour the land, spend time in the soil, or make a
+          donation to one of our{" "}
+          <Link href="/stay#explore-land" style={{ color: "var(--gold)", textDecoration: "underline", textUnderlineOffset: 3 }}>
+            local nonprofits
+          </Link>
+          . As Vital Kauaʻi grows, we are building toward direct support of the organizations
+          protecting this ʻāina.
+        </p>
+      </>
+    ),
   },
 ];
 
@@ -71,7 +87,7 @@ export function ChurchInformationPage() {
             <span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/stay#local">Work With Us</Link></span></span>
           </li>
           <li className={styles.navDropdown}>
-            <span className={styles.navDropdownLabel}>About</span>
+            <Link href="/church-information" className={styles.navDropdownLabel}>About</Link>
             <ul className={styles.navDropdownMenu}>
               <li>
                 <Link href="/about">About the Founders</Link>
@@ -133,7 +149,7 @@ export function ChurchInformationPage() {
       <section className={styles.hero}>
         <div className={styles.heroBg} />
         <div className={styles.heroContent}>
-          <p className={styles.heroEyebrow}>Vital Kauai Church</p>
+          <p className={styles.heroEyebrow}>Vital Kauaʻi Church</p>
           <h1 className={styles.heroTitle}>
             A Sacred <em>Community</em>
             <br />
@@ -165,7 +181,7 @@ export function ChurchInformationPage() {
             <em>is a Church</em>
           </h2>
           <p className={styles.bodyText}>
-            Vital Kauai Church is a sincerely held unincorporated private religious organization
+            Vital Kauaʻi Church is a sincerely held unincorporated private religious organization
             operating as a Private Membership Association. Our work rests on a foundational belief:
             that the direct encounter with the sacred, through ceremony, sacramental practice, and
             intentional spiritual work, is among the most ancient and protected forms of human
@@ -180,8 +196,8 @@ export function ChurchInformationPage() {
           <p className={styles.bodyText}>
             Operating as a church allows us to hold this work within the legal and spiritual
             protections afforded to religious organizations, and, more importantly, it affirms the
-            sacred nature of what takes place here. This is not a workaround. It is an accurate
-            description of what we are and what we do.
+            sacred nature of what takes place here. It is the accurate description of what we are
+            and what we do, held with full sincerity.
           </p>
 
           <div className={styles.ornamentalDivider}>
@@ -190,10 +206,10 @@ export function ChurchInformationPage() {
 
           <p className={styles.bodyText}>
             Participation in sacramental ceremonies at Vital Kaua&#699;i requires membership in
-            Vital Kauai Church. Membership is open to adults who share our values, affirm our
+            Vital Kauaʻi Church. Membership is open to adults who share our values, affirm our
             Statement of Belief, and complete the membership process. Church membership is a
             meaningful step, an acknowledgment that you are entering sacred space as a member of a
-            spiritual community, not a consumer of a service.
+            spiritual community, in covenant with this work.
           </p>
         </div>
       </section>
@@ -204,7 +220,7 @@ export function ChurchInformationPage() {
           <div className={styles.missionQuote}>
             <span className={styles.eyebrow}>Our Mission</span>
             <p className={styles.missionText}>
-              Vital Kauai Church is a living sanctuary of transformation. We support the remembrance
+              Vital Kauaʻi Church is a living sanctuary of transformation. We support the remembrance
               of our interconnectedness through the intelligence of plant medicine, somatic healing,
               and the wisdom of nature as a reflection of our true inner nature. We hold space for
               people to return to greater aliveness, truth, and wholeness.
@@ -215,14 +231,14 @@ export function ChurchInformationPage() {
             and embodied wisdom so they can live fully present, creative, and free.
           </p>
           <p className={styles.bodyText}>
-            The highest intention of Vital Kauai Church is to create a world where people are
+            The highest intention of Vital Kauaʻi Church is to create a world where people are
             profoundly connected, to themselves, to each other, and to nature. Through our work,
             people emerge remembering their power to create any reality they choose, and engage with
             the world through greater love, offering creative solutions for a more peaceful,
             sustainable, and thriving global community.
           </p>
           <p className={styles.bodyText}>
-            Vital Kauai Church is a living organism, revealed through practice, presence, and
+            Vital Kauaʻi Church is a living organism, revealed through practice, presence, and
             relationship. We intend to stand as a place of refuge and renewal, where people reconnect
             with what matters most, where community is strengthened, and where the intelligence of
             Life is trusted to lead.
@@ -241,7 +257,7 @@ export function ChurchInformationPage() {
               <em>Guide Our Practice</em>
             </h2>
             <p className={styles.bodyText} style={{ maxWidth: "600px", margin: "0 auto" }}>
-              Vital Kauai Church is anchored in these foundational convictions, held collectively by
+              Vital Kauaʻi Church is anchored in these foundational convictions, held collectively by
               our members and expressed through all aspects of our ceremonial and healing work.
             </p>
           </div>
@@ -264,10 +280,10 @@ export function ChurchInformationPage() {
         <h2 className={styles.sectionTitle} style={{ color: "var(--cream)", marginBottom: "20px" }}>
           Become a Member of
           <br />
-          <em>Vital Kauai Church</em>
+          <em>Vital Kauaʻi Church</em>
         </h2>
         <p className={styles.membershipBody}>
-          Membership in Vital Kauai Church is the threshold through which all sacramental ceremony
+          Membership in Vital Kauaʻi Church is the threshold through which all sacramental ceremony
           takes place. It is a meaningful commitment, to yourself, to your healing, and to this
           community. The membership process is woven into your journey preparation, and our team
           guides you through each step with care.
@@ -349,7 +365,7 @@ export function ChurchInformationPage() {
 
       <div className={styles.footerBottom}>
         <p>
-          © 2026 Vital Kauai Church · All original content on this site is protected by U.S.
+          © 2026 Vital Kauaʻi Church · All original content on this site is protected by U.S.
           copyright law. Reproduction without written permission prohibited.
         </p>
       </div>

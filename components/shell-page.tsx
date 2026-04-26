@@ -36,7 +36,7 @@ export function ShellPage({ title, description }: ShellPageProps) {
             <span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/stay#local">Work With Us</Link></span></span>
           </li>
           <li className={styles.navDropdown}>
-            <span className={styles.navDropdownLabel}>About</span>
+            <Link href="/church-information" className={styles.navDropdownLabel}>About</Link>
             <ul className={styles.navDropdownMenu}>
               <li>
                 <Link href="/about">About the Founders</Link>
@@ -95,7 +95,7 @@ export function ShellPage({ title, description }: ShellPageProps) {
       </div>
 
       <section className={styles.card}>
-        <p className={styles.eyebrow}>Vital Kauai</p>
+        <p className={styles.eyebrow}>Vital Kauaʻi</p>
         <h1 className={styles.title}>{title}</h1>
         <p className={styles.description}>{description}</p>
         <div className={styles.actions}>
@@ -165,7 +165,7 @@ export function ShellPage({ title, description }: ShellPageProps) {
 
       <div className={styles.footerBottom}>
         <p>
-          © 2026 Vital Kauai Church · All original content on this site is protected by U.S.
+          © 2026 Vital Kauaʻi Church · All original content on this site is protected by U.S.
           copyright law. Reproduction without written permission prohibited.
         </p>
       </div>

@@ -54,7 +54,7 @@ type Specialist = {
 const MEMBERSHIP_AGREEMENT = [
   {
     h: "Membership Overview",
-    p: "This Membership Agreement is entered into between Vital Kauai Church and the individual identified in the sign-up process. By accepting this Agreement, you agree to the terms and conditions set forth herein governing your membership and access to the Vital Kauai wellness community and its associated services.",
+    p: "This Membership Agreement is entered into between Vital Kauaʻi Church and the individual identified in the sign-up process. By accepting this Agreement, you agree to the terms and conditions set forth herein governing your membership and access to the Vital Kauaʻi wellness community and its associated services.",
   },
   {
     h: "Membership Term & Commitment",
@@ -62,11 +62,11 @@ const MEMBERSHIP_AGREEMENT = [
   },
   {
     h: "Member Responsibilities",
-    p: "Members agree to (a) use all Vital Kauai facilities, programs, and resources responsibly and in accordance with posted guidelines; (b) treat all staff, practitioners, and fellow members with respect; (c) disclose any changes to health status that may affect participation; (d) maintain timely payment of all membership fees.",
+    p: "Members agree to (a) use all Vital Kauaʻi facilities, programs, and resources responsibly and in accordance with posted guidelines; (b) treat all staff, practitioners, and fellow members with respect; (c) disclose any changes to health status that may affect participation; (d) maintain timely payment of all membership fees.",
   },
   {
     h: "Confidentiality & Privacy",
-    p: "Vital Kauai is committed to protecting your personal health and wellness information in accordance with applicable privacy laws. Member information will not be shared with third parties without explicit written consent except as required by law.",
+    p: "Vital Kauaʻi is committed to protecting your personal health and wellness information in accordance with applicable privacy laws. Member information will not be shared with third parties without explicit written consent except as required by law.",
   },
   {
     h: "Cancellation Policy",
@@ -74,30 +74,30 @@ const MEMBERSHIP_AGREEMENT = [
   },
   {
     h: "Amendments",
-    p: "Vital Kauai reserves the right to amend membership terms, pricing, and services with thirty (30) days notice to active members. Continued membership following notice of amendment constitutes acceptance of revised terms.",
+    p: "Vital Kauaʻi reserves the right to amend membership terms, pricing, and services with thirty (30) days notice to active members. Continued membership following notice of amendment constitutes acceptance of revised terms.",
   },
 ];
 
 const MEDICAL_DISCLAIMER = [
   {
     h: "Medical Information Disclaimer",
-    p: "The services, programs, and information provided by Vital Kauai are intended for general wellness support and are not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.",
+    p: "The services, programs, and information provided by Vital Kauaʻi are intended for general wellness support and are not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.",
   },
   {
     h: "Health Screening & Disclosure",
-    p: "Member acknowledges that participation in any wellness or movement program involves inherent physical risks. Member represents that they are in satisfactory physical condition, have no known medical conditions that would prevent participation, and will immediately notify Vital Kauai staff of any health changes during membership.",
+    p: "Member acknowledges that participation in any wellness or movement program involves inherent physical risks. Member represents that they are in satisfactory physical condition, have no known medical conditions that would prevent participation, and will immediately notify Vital Kauaʻi staff of any health changes during membership.",
   },
   {
     h: "Release of Liability for Health Outcomes",
-    p: "Member agrees that Vital Kauai, its owners, employees, contractors, and associated practitioners shall not be held liable for any injury, illness, adverse reaction, or health outcome arising from participation in wellness programming, functional movement, nutrition guidance, or other services offered through the membership.",
+    p: "Member agrees that Vital Kauaʻi, its owners, employees, contractors, and associated practitioners shall not be held liable for any injury, illness, adverse reaction, or health outcome arising from participation in wellness programming, functional movement, nutrition guidance, or other services offered through the membership.",
   },
   {
     h: "Assumption of Risk",
-    p: "Member voluntarily assumes all risks associated with participation in Vital Kauai programs and services, whether such risks are known or unknown. Member acknowledges that they have had the opportunity to ask questions and have received satisfactory answers before signing this disclaimer.",
+    p: "Member voluntarily assumes all risks associated with participation in Vital Kauaʻi programs and services, whether such risks are known or unknown. Member acknowledges that they have had the opportunity to ask questions and have received satisfactory answers before signing this disclaimer.",
   },
   {
     h: "Emergency Medical Authorization",
-    p: "In the event of an emergency, Vital Kauai staff is authorized to contact emergency medical services on the Member\u2019s behalf. Member acknowledges that Vital Kauai staff are not licensed medical professionals and emergency care decisions remain with the Member and qualified medical personnel.",
+    p: "In the event of an emergency, Vital Kauaʻi staff is authorized to contact emergency medical services on the Member\u2019s behalf. Member acknowledges that Vital Kauaʻi staff are not licensed medical professionals and emergency care decisions remain with the Member and qualified medical personnel.",
   },
 ];
 
@@ -1040,7 +1040,7 @@ export function PortalHomePage({
       <footer className={styles.portalFooter}>
         <p className={styles.footerLogo}>Vital Kaua&#699;i Church</p>
         <p className={styles.footerCopy}>
-          &copy; 2026 Vital Kauai Church &middot; PO Box 932, Hanalei, HI 96714 &middot;
+          &copy; 2026 Vital Kauaʻi Church &middot; PO Box 932, Hanalei, HI 96714 &middot;
           aloha@vitalkauai.com
           <br />
           All original content on this portal is protected by U.S. copyright law.
@@ -1074,7 +1074,7 @@ export function PortalHomePage({
                       onChange={(e) => setModalChecked(e.target.checked)}
                     />
                     <label htmlFor="sign-chk">
-                      I have read and agree to the Vital Kauai Membership Agreement.
+                      I have read and agree to the Vital Kauaʻi Membership Agreement.
                     </label>
                   </div>
                   {modalMsg && <div className={`${styles.alert} ${styles[`alert${modalMsg.type.charAt(0).toUpperCase() + modalMsg.type.slice(1)}`]}`}>{modalMsg.text}</div>}
