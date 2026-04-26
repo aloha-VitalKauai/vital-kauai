@@ -109,7 +109,7 @@ function downloadReturnICS() {
   if (typeof window === 'undefined') return
   const now = new Date()
   const stamp = toICSDate(now)
-  const desc = 'Return to your Vital Kauaʻi integration portal. Revisit your Outcomes. Notice what has moved, what has deepened, what still asks for attention.\\n\\nhttps://vital-kauai.vercel.app/portal/integration/post-ceremony'
+  const desc = 'Return to your Vital Kauaʻi integration portal. Notice what has moved, what has deepened, what still asks for attention.\\n\\nhttps://vital-kauai.vercel.app/portal/integration/post-ceremony'
   const events = returnDates().map((r, i) => {
     const end = new Date(r.date.getTime() + 30 * 60 * 1000)
     return [
@@ -147,7 +147,7 @@ function returnMailto(): string {
   const body =
     'A gentle reminder to return to your Vital Kauaʻi integration portal at these three markers:\n\n' +
     lines +
-    '\n\nWhen each arrives, revisit your outcomes and notice what has moved.\n\n' +
+    '\n\nWhen each arrives, return and notice what has moved.\n\n' +
     'https://vital-kauai.vercel.app/portal/integration/post-ceremony'
   return `mailto:?subject=${encodeURIComponent('Vital Kauaʻi · Integration return dates')}&body=${encodeURIComponent(body)}`
 }
@@ -196,23 +196,7 @@ const WEEKS = [
         ],
       },
       { color: 'green', text: 'Rest completely for the first 48 hours', note: 'Let the experience settle. Rest before sharing. Allow what happened to remain wordless a little longer.' },
-      {
-        color: 'sage',
-        text: 'Keep our direct contacts within reach as you return home',
-        note: 'Rachel and Josh remain a text or call away while you settle back in. Same page, same numbers, same care.',
-        links: [
-          { text: 'Keep our direct contacts within reach as you return home', href: '/portal/contact' },
-        ],
-      },
       { color: 'blue', text: 'Journal what arose, images, moments, what the medicine showed you', note: 'Don\'t interpret it yet. Just record it. The meaning arrives in its own time. What you write now will be the material you return to for months.' },
-      {
-        color: 'gold',
-        text: 'Complete your 72-hour Outcome',
-        note: 'A brief, anonymized assessment taken within the first few days after ceremony. This is part of the standardized outcomes framework adapted for iboga from the validated instruments used in psychedelic research worldwide, your responses help establish legitimacy for this medicine and contribute to one of the most comprehensive iboga datasets being built anywhere in the world.',
-        links: [
-          { text: 'Complete your 72-hour Outcome', href: '/portal/assessments' },
-        ],
-      },
       {
         color: 'amber',
         text: 'Schedule next week\'s integration-guide call',
@@ -221,8 +205,6 @@ const WEEKS = [
         ],
       },
     ],
-    dataset: 'Your wellbeing assessments, taken at baseline, 72 hours, 1 month, 3 months, 6 months, and 12 months, follow a standardized outcomes framework adapted for iboga from the validated instruments used in psychedelic research worldwide. Your responses, fully anonymized, contribute to one of the most comprehensive iboga datasets being built anywhere in the world, adding rigor to the field, helping legitimize this medicine, and giving future participants, clinicians, and researchers a clearer picture of how iboga actually works across hundreds of journeys. Your experience becomes part of something larger.',
-    datasetLink: { text: 'Open your Outcomes →', href: '/portal/assessments' },
     prompts: POST_CEREMONY_WEEKS[0].prompts,
     thread: 'What you record this week becomes the foundation of the integration work ahead. Let it exist on the page. Next week you begin to live it.',
   },
@@ -253,7 +235,7 @@ const WEEKS = [
           { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
         ],
       },
-      { color: 'gold', text: 'Establish one morning practice, and do it every day, tracking your days below', note: 'Coherent Heart Breath. Journaling. Movement. Prayer. One thing. Done every morning. The medicine opened the door. Repetition is how you walk through it. You are contributing to one of the most comprehensive iboga outcome datasets in the world, your practice days matter.' },
+      { color: 'gold', text: 'Establish one morning practice, and do it every day, tracking your days below', note: 'Coherent Heart Breath. Journaling. Movement. Prayer. One thing. Done every morning. The medicine opened the door. Repetition is how you walk through it.' },
       { color: 'green', text: 'Continue magnesium glycinate (300–400mg) and DHA/EPA (2–4g) daily', note: 'The supplement protocol from your preparation does not end at ceremony. Magnesium supports nervous system regulation during the post-ceremony window. DHA/EPA supports the neuroplasticity process. Continue both for at minimum 30 days post-ceremony.' },
       { color: 'sage', text: 'Continue full sobriety, minimum 30 days, 3 months strongly recommended', note: 'Iboga resets tolerance. Returning to any substance before the window closes undermines what the medicine worked to open. The noribogaine window is your most protected asset right now.' },
       {
@@ -328,7 +310,7 @@ const WEEKS = [
     safetyNote: {
       type: 'gold',
       label: 'The window is beginning to close, anchor now',
-      text: 'By the end of week four, the peak neuroplasticity driven by noribogaine begins to narrow. The extraordinary ease of new pattern formation that characterized weeks 1–3 is shifting toward normal, and what you have practiced is becoming structural. What you have yet to commit to in behavior will ask more of you after this week. Your practice days logged here are one of the strongest predictors of long-term outcomes. This week matters.',
+      text: 'By the end of week four, the peak neuroplasticity driven by noribogaine begins to narrow. The extraordinary ease of new pattern formation that characterized weeks 1–3 is shifting toward normal, and what you have practiced is becoming structural. What you have yet to commit to in behavior will ask more of you after this week. This week matters.',
     },
     video: { label: 'A Message from Rachel & Josh · Week 4', text: 'Kuleana is one of the most important Hawaiian concepts for understanding what integration actually requires. In this transmission Rachel and Josh talk about the difference between insight and accountability, and what it looks like to take full responsibility for the change you\'ve been shown is possible.' },
     actionLabel: 'This week, 4 things',
@@ -352,8 +334,6 @@ const WEEKS = [
         ],
       },
     ],
-    dataset: 'Your 1-month wellbeing assessment, taken as the noribogaine window closes, is among the most clinically significant data points in the entire dataset, predicting long-term integration outcomes more reliably than any other timepoint. Built on the standardized framework used in psychedelic outcomes research worldwide and adapted for iboga, your fully anonymized responses help establish what works, for whom, and over what arc. What you submit here matters beyond your own journey.',
-    datasetLink: { text: 'Open your Outcomes →', href: '/portal/assessments' },
     prompts: POST_CEREMONY_WEEKS[3].prompts,
     thread: 'Kuleana is an honor, the recognition that you have been shown something real and that you are capable of living it. Next week the work moves outward, into your relationships.',
   },
@@ -481,7 +461,7 @@ function WeeklyCheckIn({
           Weekly check-in
         </h3>
         <p style={{ fontSize: 12.5, color: '#8B8070', marginBottom: 28, lineHeight: 1.7 }}>
-          Your responses contribute to clinical data on iboga integration outcomes. Be honest, this is for you and for the field.
+          A short reflection to help you notice what is moving and surface anything that wants more support. Be honest, this is for you.
         </p>
 
         {/* Previous week context */}
@@ -1172,7 +1152,7 @@ export default function PostCeremonyPage() {
               <div className="return-practice">
                 <span className="rp-eyebrow">A practice of return</span>
                 <h3 className="rp-title">Mark the returns.</h3>
-                <p className="rp-text">Integration happens in waves. Before you close this tab, take a moment to place three gentle markers on your own calendar, three months, six months, and one year from today. When each arrives, return here. Revisit your outcomes. Notice what has moved, what has deepened, what still asks for attention.</p>
+                <p className="rp-text">Integration happens in waves. Before you close this tab, take a moment to place three gentle markers on your own calendar, three months, six months, and one year from today. When each arrives, return here. Notice what has moved, what has deepened, what still asks for attention.</p>
                 <p className="rp-text">We will also reach out. But the most important return is the one you promise yourself.</p>
                 <div className="rp-actions">
                   <button type="button" className="rp-btn" onClick={downloadReturnICS}>Add all three to my calendar</button>

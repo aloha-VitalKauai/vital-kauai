@@ -182,21 +182,11 @@ const WEEKS = [
           },
         ],
       },
-      {
-        color: 'red',
-        text: 'Complete your Baseline Outcome',
-        note: 'A 5-minute anonymized survey covering mood, anxiety, sleep, and quality of life. This creates your before-picture, your starting point in the standardized outcomes framework adapted for iboga.',
-        links: [
-          { text: 'Complete your Baseline Outcome', href: '/portal/assessments' },
-        ],
-      },
       // Week 1's actual rendered actions are hardcoded in actionsForWeek (since
       // the items here are mostly Stripe / signup steps, not the writing-prompt
       // flow shown on Week 1). The integration-guide reminder lives in that
       // hardcoded list, see actionsForWeek(weekIdx === 0).
     ],
-    dataset: 'Your wellbeing assessments, taken at baseline, 72 hours, 1 month, 3 months, 6 months, and 12 months, follow a standardized outcomes framework adapted for iboga from the validated instruments used in psychedelic research worldwide. Your responses, fully anonymized, contribute to one of the most comprehensive iboga datasets being built anywhere in the world, adding rigor to the field, helping legitimize this medicine, and giving future participants, clinicians, and researchers a clearer picture of how iboga actually works across hundreds of journeys. Your experience becomes part of something larger.',
-    datasetLink: { text: 'Open your Outcomes →', href: '/portal/assessments' },
     prompts: PRE_CEREMONY_WEEKS[0].prompts,
     thread: 'Your answers here are the raw material of your Questions for the Medicine, the specific questions you\'ll bring into ceremony. Write honestly. Over the coming weeks, these words will sharpen into something you can carry in. This is where that conversation begins.',
   },
