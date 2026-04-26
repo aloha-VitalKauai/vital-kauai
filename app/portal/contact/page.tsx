@@ -42,9 +42,6 @@ export default function PortalContactPage() {
               <a href="mailto:aloha@vitalkauai.com" style={{ fontSize: 14, color: "#E2CFA0", textDecoration: "none", letterSpacing: "0.04em" }}>aloha@vitalkauai.com</a>
             </li>
           </ul>
-          <p style={{ fontSize: 13, color: "rgba(245,240,232,0.55)", lineHeight: 1.7, marginTop: 20, marginBottom: 0 }}>
-            Text or call anytime. We hold this work as personally as you do.
-          </p>
         </section>
 
         {/* While on Kaua‘i */}
