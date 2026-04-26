@@ -1125,8 +1125,8 @@ export default function PostCeremonyPage() {
             {w.monthlyArc && (
               <div className="monthly-arc">
                 <span className="ma-eyebrow">What comes next, months 2 & 3</span>
-                <h3 className="ma-title">The intensive arc is complete.<br /><em>The living continues.</em></h3>
-                <p className="ma-text">The six-week window is the most important period of your integration. What follows is a lighter, steadier rhythm, one practice, one honest question, one connection each month. Your integration guide remains available.</p>
+                <h3 className="ma-title">After the <em>Six Weeks</em></h3>
+                <p className="ma-text">The pace softens from here. One daily practice, one honest question each month, one conversation with someone who knows the fuller picture of you. Your integration guide remains available whenever you need them.</p>
                 <div className="ma-grid">
                   <div className="ma-card">
                     <span className="ma-card-label">One daily practice</span>
@@ -1134,7 +1134,7 @@ export default function PostCeremonyPage() {
                   </div>
                   <div className="ma-card">
                     <span className="ma-card-label">One monthly check-in</span>
-                    <div className="ma-card-text">Rate your alignment (1–10). Note whether old patterns returned. Note whether you maintained your practice. One honest conversation with your guide each month.</div>
+                    <div className="ma-card-text">Rate your alignment (1–10). Notice what is holding and what is asking for renewal. One honest conversation with your guide each month.</div>
                   </div>
                   <div className="ma-card">
                     <span className="ma-card-label">One monthly connection</span>
@@ -1143,7 +1143,7 @@ export default function PostCeremonyPage() {
                 </div>
                 <div className="ma-question">
                   <span className="ma-q-label">Your monthly question</span>
-                  <div className="ma-q-text">What is still alive from what the medicine showed me, and how am I living that this month?</div>
+                  <div className="ma-q-text">What is different in how I think this month, and how am I living that in what I do?</div>
                 </div>
               </div>
             )}
@@ -1152,12 +1152,7 @@ export default function PostCeremonyPage() {
               <div className="return-practice">
                 <span className="rp-eyebrow">A practice of return</span>
                 <h3 className="rp-title">Mark the returns.</h3>
-                <p className="rp-text">Integration happens in waves. Before you close this tab, take a moment to place three gentle markers on your own calendar, three months, six months, and one year from today. When each arrives, return here. Notice what has moved, what has deepened, what still asks for attention.</p>
-                <p className="rp-text">We will also reach out. But the most important return is the one you promise yourself.</p>
-                <div className="rp-actions">
-                  <button type="button" className="rp-btn" onClick={downloadReturnICS}>Add all three to my calendar</button>
-                  <a className="rp-btn rp-btn-alt" href={returnMailto()}>Email the dates to myself</a>
-                </div>
+                <p className="rp-text">Integration happens in waves. Place three gentle markers on your own calendar, three months, six months, and one year from today. When each arrives, return here. Notice what has moved, what has deepened, what still asks for attention.</p>
               </div>
             )}
 

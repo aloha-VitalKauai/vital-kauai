@@ -417,11 +417,10 @@ const WEEKS = [
     actions: [
       {
         color: 'red',
-        text: 'Confirm labs are submitted and reviewed by the medical team',
+        text: 'Confirm labs are submitted',
         note: 'If you haven\'t received confirmation, reach out now and confirm directly. This is a safety step, it directly affects whether your ceremony proceeds as planned.',
         links: [
-          { text: 'labs are submitted', href: '/portal/labs' },
-          { text: 'reviewed by the medical team', href: '/portal/physician-guide' },
+          { text: 'Confirm labs are submitted', href: '/portal/labs' },
         ],
       },
       {
