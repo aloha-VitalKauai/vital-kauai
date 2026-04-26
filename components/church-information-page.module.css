@@ -220,7 +220,8 @@
 }
 
 .darkBand .sectionTitle { color: var(--cream); }
-.darkBand .sectionTitle em { color: var(--sage-light); }
+.darkBand .sectionTitle em,
+.membershipBand .sectionTitle em { color: var(--sage-light); }
 .darkBand .eyebrow { color: var(--gold); }
 .darkBand .bodyText { color: rgba(245, 240, 232, 0.68); }
 
