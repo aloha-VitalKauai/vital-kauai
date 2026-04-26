@@ -2,6 +2,8 @@
 
 import { Fragment, useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { getActiveJourney } from '@/lib/journeyHelpers'
+import { getWeekCountdown } from '@/lib/weekCountdown'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { POST_CEREMONY_WEEKS } from '@/lib/journal-prompts'
@@ -721,6 +723,7 @@ export default function PostCeremonyPage() {
   const [userId, setUserId] = useState<string | null>(null)
   const [userEmail, setUserEmail] = useState('')
   const [activeWeek, setActiveWeek] = useState(0)
+  const [ceremonyStartAt, setCeremonyStartAt] = useState<string | null>(null)
   const [completed, setCompleted] = useState<Set<number>>(new Set())
   const [checklist, setChecklist] = useState<Record<string, boolean>>({})
   const [weeklyTracking, setWeeklyTracking] = useState<Record<number, WeekTracking>>({})
@@ -734,6 +737,10 @@ export default function PostCeremonyPage() {
       if (!user) { router.push('/portal'); return }
       setUserId(user.id)
       setUserEmail(user.email ?? '')
+
+      const journey = await getActiveJourney(supabase, user.id).catch(() => null)
+      if (journey?.start_at) setCeremonyStartAt(journey.start_at)
+
       const { data } = await supabase
         .from('post_ceremony_progress')
         .select('*')
@@ -851,6 +858,11 @@ export default function PostCeremonyPage() {
         .pc-week-nav{position:sticky;top:60px;z-index:90;background:rgba(253,251,247,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;display:flex;overflow-x:auto}.pc-week-nav::-webkit-scrollbar{display:none}
         .wbtn{font-family:inherit;font-size:9px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;padding:0 20px;height:52px;border:none;border-bottom:2px solid transparent;cursor:pointer;color:var(--stone);background:transparent;white-space:nowrap;transition:all .2s}.wbtn:hover{color:var(--ink)}.wbtn.active{color:var(--forest);border-bottom-color:var(--gold);font-weight:500}.wbtn.done::after{content:' ✓';font-size:8px;color:var(--gold);margin-left:4px}
         .pc-main{max-width:860px;margin:0 auto;padding:0 48px 100px}.pc-panel{display:none;padding-top:56px}.pc-panel.active{display:block}
+        .pc-countdown{display:inline-block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;padding:6px 14px;border-radius:99px;margin-bottom:24px}
+        .pc-countdown-future{color:var(--gold);background:rgba(200,169,110,.08);border:1px solid rgba(200,169,110,.22)}
+        .pc-countdown-current{color:var(--terra);background:rgba(184,105,74,.10);border:1px solid rgba(184,105,74,.30)}
+        .pc-countdown-past{color:rgba(60,75,62,.55);background:rgba(60,75,62,.05);border:1px solid rgba(60,75,62,.12)}
+        .pc-countdown-unknown{color:rgba(60,75,62,.45);background:transparent;border:1px dashed rgba(60,75,62,.18);font-style:italic;text-transform:none;letter-spacing:.04em}
         .continuity{display:flex;gap:12px;align-items:flex-start;background:rgba(122,158,126,.06);border-left:2px solid var(--sage-lt);padding:14px 18px;margin-bottom:32px}.ct-arrow{font-size:13px;color:var(--sage);flex-shrink:0;margin-top:1px}.ct-text{font-size:12.5px;color:var(--stone);line-height:1.75}.ct-text strong{color:var(--ink-mid);font-weight:500}
         .wh-eyebrow{font-size:9px;letter-spacing:.38em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:14px}.wh-title{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,4vw,46px);font-weight:300;line-height:1.1;margin-bottom:16px;color:var(--ink);white-space:pre-line}.wh-title em{font-style:italic;color:var(--gold)}.wh-sub{font-size:14px;color:var(--stone);line-height:1.9;max-width:640px;padding-bottom:32px;border-bottom:1px solid var(--border);margin-bottom:36px}
         /* Week 1 shared layout (matched to pre-ceremony so the 12-week arc reads as one piece) */
@@ -945,8 +957,13 @@ export default function PostCeremonyPage() {
       <SectionIndex sections={sectionsForWeek(activeWeek)} stickyTop={112} scrollOffset={170} />
 
       <main className="pc-main">
-        {WEEKS.map((w, i) => (
+        {WEEKS.map((w, i) => {
+          const cd = getWeekCountdown(ceremonyStartAt, 'post', i)
+          return (
           <div key={w.id} className={`pc-panel${activeWeek===i?' active':''}`}>
+            <div className={`pc-countdown pc-countdown-${cd?.phase ?? 'unknown'}`}>
+              {cd ? cd.label : 'Begins once your dates are set'}
+            </div>
 
             {/* PRINCIPLE */}
             <section className="w1-section" id="principle">
@@ -1180,7 +1197,7 @@ export default function PostCeremonyPage() {
             </div>
 
           </div>
-        ))}
+        )})}
       </main>
 
       <div className={`save-pill${saveStatus!=='idle'?' visible':''}`}>

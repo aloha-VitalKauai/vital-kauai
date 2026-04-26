@@ -131,7 +131,6 @@ export function PortalHomePage({
   const [profile, setProfile] = useState<Profile | null>(null);
   const [memberData, setMemberData] = useState<MemberData | null>(null);
   const [specialist, setSpecialist] = useState<Specialist | null>(null);
-  const [activePhase, setActivePhase] = useState(0);
   const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -144,17 +143,7 @@ export function PortalHomePage({
   const [venmoOpened, setVenmoOpened] = useState(false);
 
   // Lab upload state
-  const [showLabUpload, setShowLabUpload] = useState(false);
-  const [showChecklistLabUpload, setShowChecklistLabUpload] = useState(false);
   const [memberId, setMemberId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (showLabUpload) {
-      setTimeout(() => {
-        document.getElementById("lab-upload-panel")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      }, 50);
-    }
-  }, [showLabUpload]);
   const [labDoc, setLabDoc] = useState<{ id: string; file_name: string; status: string; uploaded_at: string } | null>(null);
   const [labUploading, setLabUploading] = useState(false);
 
@@ -424,15 +413,6 @@ export function PortalHomePage({
     const hash = window.location.hash;
     if (!hash || hash.length < 2) return;
     const id = hash.slice(1);
-    // The lab upload panel lives inside the Prepare phase tab and is only
-    // rendered when the Lab Requirements card is expanded. Activate that
-    // tab and open the panel so the anchor target exists; the existing
-    // effect on showLabUpload handles the actual scroll.
-    if (id === "lab-upload-panel") {
-      setActivePhase(1);
-      setShowLabUpload(true);
-      return;
-    }
     // Defer one frame so the target element exists after render.
     requestAnimationFrame(() => {
       const el = document.getElementById(id);
@@ -454,7 +434,7 @@ export function PortalHomePage({
 
       {/* ── HERO ── */}
       <section className={styles.portalHero}>
-        <div className={styles.heroInner}>
+        <div className={`${styles.heroInner} ${styles.heroSingleCol}`}>
           <div>
             <p className={styles.heroEyebrow}>Your Member Portal</p>
             <h1 className={styles.heroTitle}>
@@ -462,14 +442,6 @@ export function PortalHomePage({
               <br />
               {firstName}.
             </h1>
-            <p className={styles.heroSub}>
-              This is your private sanctuary within Vital Kaua&#699;i, a living guide
-              through every phase of your journey. Everything you need lives here, organized by
-              where you are in the arc of your transformation.
-            </p>
-          </div>
-          <div id="upcoming-ceremony">
-            <PortalJourneyCard />
           </div>
         </div>
       </section>
@@ -477,7 +449,7 @@ export function PortalHomePage({
       {/* ── MAIN PORTAL BODY ── */}
       <main className={styles.portalBody}>
         {/* WELCOME VIDEO */}
-        <div className={`${styles.videoBlock} ${!allRequiredDone ? styles.lockedSection : ""}`}>
+        <div className={styles.videoBlock}>
           <div className={styles.videoWrap}>
             <div className={styles.videoPlay}>&#9654;</div>
             <span className={styles.videoComingSoon}>Coming Soon</span>
@@ -499,427 +471,196 @@ export function PortalHomePage({
           </div>
         </div>
 
-        {/* PHASE NAVIGATION */}
-        <div className={styles.phases}>
+        {/* THREE STEPS TO BEGIN */}
+        <section className={styles.unlockBlock}>
           <div className={styles.sectionHead}>
-            <span className={styles.sectionEyebrow}>Your Journey Arc</span>
+            <span className={styles.sectionEyebrow}>Three Steps to Begin</span>
             <h2 className={styles.sectionTitle}>
-              Everything, <em>Organized</em>
+              Sign These to <em>Open Your Journey</em>
             </h2>
-          </div>
-
-          <div className={styles.phaseTabs}>
-            {["Required Documents", "Prepare", "Ceremony", "Integration"].map((label, i) => {
-              const locked = !allRequiredDone && i !== 0;
-              const isActive = !allRequiredDone ? i === 0 : activePhase === i;
-              return (
-                <button
-                  key={i}
-                  className={`${styles.phaseTab} ${isActive ? styles.phaseTabActive : ""} ${locked ? styles.phaseTabLocked : ""}`}
-                  onClick={() => { if (!locked) setActivePhase(i); }}
-                  disabled={locked}
-                  aria-disabled={locked}
-                >
-                  <span className={styles.phaseNum}>0{i + 1}</span>
-                  {label}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* PHASE 0: REQUIRED DOCUMENTS */}
-          <div className={`${styles.phasePanel} ${(!allRequiredDone || activePhase === 0) ? styles.phasePanelActive : ""}`}>
-            <div className={styles.docGrid}>
-              <button
-                className={`${styles.docCard} ${donationDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
-                onClick={() => {
-                  if (donationDone) return;
-                  window.open(STRIPE_LOVE_OFFERING_URL, "_blank", "noopener,noreferrer");
-                }}
-              >
-                <div className={styles.docTitle}>
-                  Contribution/Donate
-                </div>
-                <div className={styles.docDesc}>
-                  Your gift supports the ministry, our gatherings, and the work Nature is doing
-                  through Vital Kaua&#699;i. Every offering is received with gratitude.
-                </div>
-                <div className={styles.docFooter}>
-                  <span className={`${styles.docTag} ${styles.tagRequired}`}>
-                    {donationDone ? "Complete" : "Payment Required"}
-                  </span>
-                  <span className={`${styles.docAction} ${donationDone ? styles.docActionSigned : ""}`}>
-                    {donationDone ? "\u2713 Complete" : "Complete \u2192"}
-                  </span>
-                </div>
-              </button>
-
-              <button
-                id="agreement-card"
-                className={`${styles.docCard} ${agreementDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
-                onClick={() => !agreementDone && setModal("agreement")}
-              >
-                <div className={styles.docTitle}>
-                  Church Membership <em>Agreement</em>
-                </div>
-                <div className={styles.docDesc}>
-                  Your membership agreement with Vital Kaua&#699;i Church, the private
-                  religious context within which all ceremonial work is held. Required for all members.
-                </div>
-                <div className={styles.docFooter}>
-                  <span className={`${styles.docTag} ${styles.tagRequired}`}>
-                    {agreementDone ? "Signed" : "Signature Required"}
-                  </span>
-                  <span className={`${styles.docAction} ${agreementDone ? styles.docActionSigned : ""}`}>
-                    {agreementDone ? "\u2713 Signed" : "Sign \u2192"}
-                  </span>
-                </div>
-              </button>
-
-              <button
-                id="medical-card"
-                className={`${styles.docCard} ${medicalDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
-                onClick={() => !medicalDone && setModal("medical")}
-              >
-                <div className={styles.docTitle}>
-                  Medical Disclaimer <em>&amp; Risk Acknowledgment</em>
-                </div>
-                <div className={styles.docDesc}>
-                  A clear acknowledgment of the nature of plant medicine work, your informed
-                  consent, and the inherent risks you understand and voluntarily accept.
-                </div>
-                <div className={styles.docFooter}>
-                  <span className={`${styles.docTag} ${styles.tagRequired}`}>
-                    {medicalDone ? "Signed" : "Signature Required"}
-                  </span>
-                  <span className={`${styles.docAction} ${medicalDone ? styles.docActionSigned : ""}`}>
-                    {medicalDone ? "\u2713 Signed" : "Sign \u2192"}
-                  </span>
-                </div>
-              </button>
-
-              <Link
-                href="/intake-form"
-                className={`${styles.docCard} ${styles.docCardGold} ${styles.fadeIn}`}
-              >
-                <div className={styles.docTitle}>
-                  Member <em>Intake Form</em>
-                </div>
-                <div className={styles.docDesc}>
-                  A deeper look at who you are and what you are bringing to this work, your
-                  intentions, personal history, somatic awareness, and health context. Basic
-                  information is required (emergency contact, key health disclosures); all other
-                  questions are optional. The more you share, the more precisely we can hold you.
-                </div>
-                <div className={styles.docFooter}>
-                  <span className={`${styles.docTag} ${styles.tagGuide}`}>Optional &middot; Recommended</span>
-                  <span className={styles.docAction}>{"Open \u2192"}</span>
-                </div>
-              </Link>
-            </div>
-          </div>
-
-          {/* PHASE 1: PREPARE */}
-          <div className={`${styles.phasePanel} ${activePhase === 1 ? styles.phasePanelActive : ""}`}>
-            <div className={styles.docGrid}>
-              {[
-                { title: "Iboga", em: "Preparedness Guide", desc: "Your complete guide to the medicine, the process, and how to arrive ready \u2014 physically, mentally, and spiritually.", tag: "Preparation", tagClass: styles.tagPrep, link: "/iboga-preparedness-guide.html" },
-                // Comprehensive Journal hidden while we re-do the weekly prompts + re-wire the sync. Restore by uncommenting this card.
-                // { title: "Your Iboga", em: "Journey Journal", desc: "Guided prompts to help you track and articulate what is moving through you \u2014 before ceremony, during your stay, and through integration. Return to it as often as you need.", tag: "Preparation \u00B7 Ceremony \u00B7 Integration", tagClass: styles.tagJournal, link: "/portal/journal" },
-                { title: "Questions for", em: "the Medicine", desc: "A space to get clear on what you most want to ask the medicine \u2014 held with openness, because the medicine will ultimately give you what you need. Your questions become prompts we use during ceremony and a practice that begins preparing your psyche long before you arrive.", tag: "Reflection", tagClass: styles.tagPrep, link: "/portal/questions" },
-                { title: "Lab Requirements", em: "& Medical Prep", desc: "Upload your required lab results \u2014 EKG, thyroid panel, liver panel, and more. Your results are reviewed by our medical team before your arrival.", tag: "Medical", tagClass: styles.tagPrep, isLab: true },
-                { title: "Dietary", em: "Preparation Protocol", desc: "What to eat, what to eliminate, and how to prepare your body as a clear vessel in the weeks and days before your arrival.", tag: "Preparation", tagClass: styles.tagPrep, link: "/portal/dietary" },
-                { title: "The", em: "Somatic Companion", desc: "Polyvagal theory, somatic self-regulation, breathwork practices, and how to establish safety from the inside out \u2014 before, during, and after.", tag: "Self-Regulation", tagClass: styles.tagGuide, link: "/portal/somatic-companion" },
-                { title: "Support Person", em: "Guide", desc: "For the people at home who love you \u2014 what to expect, how to hold space from a distance, and how to support your integration when you return.", tag: "For Your Circle", tagClass: styles.tagGuide, link: "/portal/support-person" },
-                { title: "What to Bring", em: "& Leave Behind", desc: "An interactive packing checklist for island life \u2014 organized by what to carry and what to leave at home for the integrity of your work.", tag: "Packing", tagClass: styles.tagPrep, link: "/portal/what-to-bring" },
-                { title: "Baseline", em: "Outcome", desc: "A brief, anonymized outcome assessment that helps us understand where you are before ceremony \u2014 covering mood, anxiety, sleep, and quality of life. Takes about 3 minutes.", tag: "Outcome", tagClass: styles.tagPrep, link: "/portal/outcomes/survey?tp=baseline" },
-              ].flatMap((doc: any, i: number) => {
-                const card = (
-                  <div
-                    key={i}
-                    className={`${styles.docCard} ${styles.fadeIn}`}
-                    onClick={doc.isLab ? () => setShowLabUpload(!showLabUpload) : doc.link ? () => (window.location.href = doc.link) : undefined}
-                    style={doc.isLab || doc.link ? { cursor: "pointer" } : undefined}
-                  >
-                    <div className={styles.docTitle}>
-                      {doc.title} <em>{doc.em}</em>
-                    </div>
-                    <div className={styles.docDesc}>{doc.desc}</div>
-                    <div className={styles.docFooter}>
-                      <span className={`${styles.docTag} ${doc.tagClass}`}>{doc.tag}</span>
-                      <span className={styles.docAction}>
-                        {doc.isLab
-                          ? labDoc
-                            ? `Uploaded ${showLabUpload ? "▾" : "▸"}`
-                            : `Upload ${showLabUpload ? "▾" : "▸"}`
-                          : "Open \u2192"}
-                      </span>
-                    </div>
-                  </div>
-                );
-
-                if (doc.isLab && showLabUpload) {
-                  return [card, (
-                    <div
-                      key="lab-upload"
-                      id="lab-upload-panel"
-                      className={styles.fadeIn}
-                      style={{
-                        gridColumn: "1 / -1",
-                        background: "#1A2A1C",
-                        border: "0.5px solid rgba(168,197,172,0.15)",
-                        borderRadius: 12,
-                        padding: "1.5rem",
-                      }}
-                    >
-                      <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: "#A8C5AC", marginBottom: 16, fontWeight: 500 }}>
-                        Upload Your Lab Results
-                      </p>
-
-                      {labDoc ? (
-                        <div style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.04)", borderRadius: 8, padding: "14px 16px", marginBottom: 12 }}>
-                          <span style={{
-                            width: 10, height: 10, borderRadius: "50%", flexShrink: 0,
-                            background: labDoc.status === "approved" ? "#1D9E75" : labDoc.status === "flagged" ? "#A32D2D" : labDoc.status === "processing" ? "#EF9F27" : "#378ADD",
-                          }} />
-                          <div style={{ flex: 1 }}>
-                            <p style={{ fontSize: 14, color: "#F5F0E8", fontWeight: 500, margin: 0 }}>{labDoc.file_name}</p>
-                            <p style={{ fontSize: 11, color: "#6B6B67", margin: "2px 0 0" }}>
-                              Uploaded {new Date(labDoc.uploaded_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                            </p>
-                          </div>
-                          <span style={{
-                            fontSize: 12, padding: "3px 10px", borderRadius: 99,
-                            background: labDoc.status === "approved" ? "rgba(29,158,117,0.15)" : labDoc.status === "flagged" ? "rgba(163,45,45,0.15)" : "rgba(55,138,221,0.15)",
-                            color: labDoc.status === "approved" ? "#1D9E75" : labDoc.status === "flagged" ? "#FF9E8C" : "#378ADD",
-                          }}>
-                            {labDoc.status === "approved" ? "Approved" : labDoc.status === "flagged" ? "Needs attention" : labDoc.status === "processing" ? "Processing..." : "Under review"}
-                          </span>
-                        </div>
-                      ) : null}
-
-                      <label
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: 8,
-                          background: labUploading ? "rgba(255,255,255,0.02)" : "rgba(168,197,172,0.08)",
-                          border: "1px dashed rgba(168,197,172,0.25)",
-                          borderRadius: 8,
-                          padding: "20px",
-                          cursor: labUploading ? "not-allowed" : "pointer",
-                          opacity: labUploading ? 0.5 : 1,
-                          transition: "all 0.15s",
-                        }}
-                      >
-                        <span style={{ fontSize: 14, color: "#A8C5AC", fontWeight: 500 }}>
-                          {labUploading ? "Uploading..." : labDoc ? "Replace with new document" : "Choose file to upload"}
-                        </span>
-                        <input
-                          type="file"
-                          accept=".pdf,.jpg,.jpeg,.png,.webp"
-                          style={{ display: "none" }}
-                          disabled={labUploading}
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) handleLabUpload(file);
-                            e.target.value = "";
-                          }}
-                        />
-                      </label>
-
-                      <p style={{ fontSize: 11, color: "#6B6B67", marginTop: 14, lineHeight: 1.6 }}>
-                        Upload the lab results document from your doctor as a single PDF or image. Our medical team will review the results and extract the required values (EKG, thyroid, liver, magnesium, cardiac, CYP450, CMP) internally.
-                      </p>
-                    </div>
-                  )];
-                }
-
-                return [card];
-              })}
-            </div>
-          </div>
-
-          {/* PHASE 2: CEREMONY */}
-          <div className={`${styles.phasePanel} ${activePhase === 2 ? styles.phasePanelActive : ""}`}>
-            <div className={styles.docGrid}>
-              {[
-                { title: "Ceremony", em: "Guidelines", desc: "Sacred agreements, space etiquette, facilitator roles, confidentiality, and everything that holds the container for your ceremony to go deep.", tag: "Sacred Container", tagClass: styles.tagGuide, link: "/ceremony-guidelines.html" },
-                { title: "Safety in", em: "the Body", desc: "How to orient within intense somatic experience during ceremony \u2014 what you may feel, how to work with it, and what our team is here to support.", tag: "During Ceremony", tagClass: styles.tagGuide, link: "/safety-in-the-body.html" },
-                { title: "Ceremony", em: "Day Guide", desc: "A moment-by-moment orientation for your ceremony day \u2014 what to expect from arrival through the full arc of the night and morning after.", tag: "Ceremony Day", tagClass: styles.tagGuide, link: "/ceremony-day-guide.html" },
-              ].map((doc, i) => (
-                <div
-                  key={i}
-                  className={`${styles.docCard} ${styles.fadeIn}`}
-                  onClick={doc.link ? () => (window.location.href = doc.link) : undefined}
-                  style={doc.link ? { cursor: "pointer" } : undefined}
-                >
-                  <div className={styles.docTitle}>
-                    {doc.title} <em>{doc.em}</em>
-                  </div>
-                  <div className={styles.docDesc}>{doc.desc}</div>
-                  <div className={styles.docFooter}>
-                    <span className={`${styles.docTag} ${doc.tagClass}`}>{doc.tag}</span>
-                    <span className={styles.docAction}>Open &rarr;</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* PHASE 3: INTEGRATION */}
-          <div className={`${styles.phasePanel} ${activePhase === 3 ? styles.phasePanelActive : ""}`}>
-            <div className={styles.docGrid}>
-              <Link href="/portal#integration-specialist" className={`${styles.docCard} ${styles.fadeIn}`} style={{ textDecoration: "none", color: "inherit" }}>
-                <div className={styles.docTitle}>
-                  Book Your <em>Integration Calls</em>
-                </div>
-                <div className={styles.docDesc}>
-                  Schedule your post-ceremony integration sessions with Rachel and Josh, and connect with your assigned integration specialist if applicable.
-                </div>
-                <div className={styles.docFooter}>
-                  <span className={`${styles.docTag} ${styles.tagIntegration}`}>Integration Support</span>
-                  <span className={styles.docAction}>Open &rarr;</span>
-                </div>
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* PREPARATION CHECKLIST */}
-        <div className={`${styles.checklistBlock} ${!allRequiredDone ? styles.lockedSection : ""}`}>
-          <div className={styles.checklistHead}>
-            <p className={styles.checklistEyebrow}>Before You Arrive</p>
-            <h2 className={styles.checklistTitle}>
-              Your Preparation <em>Checklist</em>
-            </h2>
-            <p className={styles.checklistSub}>
-              Track your readiness as you move through each preparation step. This checklist saves
-              automatically. The{" "}
-              <Link
-                href="/portal/integration/pre-ceremony"
-                style={{ color: "inherit", textDecoration: "none", borderBottom: "1px dashed rgba(200,169,110,.55)" }}
-              >
-                Pre-Ceremony tab
-              </Link>{" "}
-              walks you through all of this in a six-week arc.
+            <p className={styles.unlockProgress}>
+              {[donationDone, agreementDone, medicalDone].filter(Boolean).length} of 3 complete
             </p>
           </div>
-          <div className={styles.checklistProgress}>
-            <div className={styles.checklistBar} style={{ width: `${checkPct}%` }} />
-          </div>
-          <div className={styles.checklistItems}>
-            {PREP_ITEMS.flatMap((item, i) => {
-              const row = (
-                <div
-                  key={i}
-                  className={`${styles.checkItem} ${checkedItems[i] ? styles.checkItemDone : ""}`}
-                  onClick={() => toggleCheck(i)}
-                >
-                  <div className={styles.ciBox} />
-                  <div style={{ flex: 1 }}>
-                    <p className={styles.ciText} style={{ margin: 0 }}>
-                      {item.link && item.external ? (
-                        <a
-                          href={item.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ color: "inherit", textDecoration: "none", borderBottom: "1px dashed rgba(200,169,110,0.45)", paddingBottom: 1 }}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {item.text}
-                        </a>
-                      ) : (
-                        item.text
-                      )}
-                    </p>
-                    {item.isLab && (
-                      <button
-                        style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: 12, color: "#C8A96E", fontFamily: "inherit", marginTop: 5, display: "block", letterSpacing: "0.04em" }}
-                        onClick={(e) => { e.stopPropagation(); setShowChecklistLabUpload((v) => !v); }}
-                      >
-                        {labDoc ? `Uploaded · ${labDoc.status === "approved" ? "Approved ✓" : "Under review"}` : "Submit results →"}
-                      </button>
-                    )}
-                  </div>
-                  {item.isLab ? (
-                    <button
-                      className={styles.ciLink}
-                      style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
-                      onClick={(e) => { e.stopPropagation(); setShowChecklistLabUpload((v) => !v); }}
-                    >
-                      {showChecklistLabUpload ? "▾" : "→"}
-                    </button>
-                  ) : item.link ? (
-                    <a
-                      href={item.link}
-                      target={item.external ? "_blank" : "_self"}
-                      rel={item.external ? "noopener noreferrer" : undefined}
-                      className={styles.ciLink}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      →
-                    </a>
-                  ) : null}
-                </div>
-              );
 
-              if (item.isLab && showChecklistLabUpload) {
-                return [row, (
-                  <div
-                    key="checklist-lab-upload"
-                    style={{ gridColumn: "1 / -1", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(168,197,172,0.2)", borderRadius: 10, padding: "20px 24px" }}
-                  >
-                    <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.2em", color: "#A8C5AC", marginBottom: 16, fontWeight: 600 }}>
-                      Lab Requirements &amp; Medical Prep
-                    </p>
-                    <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
-                      <a
-                        href="/portal/physician-guide"
-                        style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 18px", background: "rgba(168,197,172,0.12)", border: "1px solid rgba(168,197,172,0.3)", borderRadius: 8, fontSize: 13, color: "#A8C5AC", textDecoration: "none", fontWeight: 500 }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        Physician Form →
-                      </a>
-                      <label
-                        style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 18px", background: labUploading ? "rgba(255,255,255,0.02)" : "rgba(184,149,106,0.12)", border: "1px solid rgba(184,149,106,0.3)", borderRadius: 8, fontSize: 13, color: "#C8A96E", fontWeight: 500, cursor: labUploading ? "not-allowed" : "pointer", opacity: labUploading ? 0.5 : 1 }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {labUploading ? "Uploading…" : labDoc ? "Replace Lab Results ↑" : "Upload Lab Results ↑"}
-                        <input
-                          type="file"
-                          accept=".pdf,.jpg,.jpeg,.png,.webp"
-                          style={{ display: "none" }}
-                          disabled={labUploading}
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) handleLabUpload(file);
-                            e.target.value = "";
-                          }}
-                        />
-                      </label>
-                    </div>
-                    {labDoc && (
-                      <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 12, color: "rgba(245,240,232,0.5)" }}>
-                        <span style={{ width: 8, height: 8, borderRadius: "50%", flexShrink: 0, background: labDoc.status === "approved" ? "#1D9E75" : labDoc.status === "flagged" ? "#A32D2D" : "#378ADD" }} />
-                        <span>{labDoc.file_name}</span>
-                        <span style={{ color: labDoc.status === "approved" ? "#1D9E75" : labDoc.status === "flagged" ? "#FF9E8C" : "#378ADD" }}>
-                          {labDoc.status === "approved" ? "Approved" : labDoc.status === "flagged" ? "Needs attention" : labDoc.status === "processing" ? "Processing…" : "Under review"}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                )];
-              }
+          <div className={styles.docGrid}>
+            <button
+              className={`${styles.docCard} ${donationDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
+              onClick={() => {
+                if (donationDone) return;
+                window.open(STRIPE_LOVE_OFFERING_URL, "_blank", "noopener,noreferrer");
+              }}
+            >
+              <div className={styles.docTitle}>
+                Contribution/Donate
+              </div>
+              <div className={styles.docDesc}>
+                Your gift supports the ministry, our gatherings, and the work Nature is doing
+                through Vital Kaua&#699;i. Every offering is received with gratitude.
+              </div>
+              <div className={styles.docFooter}>
+                <span className={`${styles.docTag} ${styles.tagRequired}`}>
+                  {donationDone ? "Complete" : "Payment Required"}
+                </span>
+                <span className={`${styles.docAction} ${donationDone ? styles.docActionSigned : ""}`}>
+                  {donationDone ? "\u2713 Complete" : "Complete \u2192"}
+                </span>
+              </div>
+            </button>
 
-              return [row];
-            })}
+            <button
+              id="agreement-card"
+              className={`${styles.docCard} ${agreementDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
+              onClick={() => !agreementDone && setModal("agreement")}
+            >
+              <div className={styles.docTitle}>
+                Church Membership <em>Agreement</em>
+              </div>
+              <div className={styles.docDesc}>
+                Your membership agreement with Vital Kaua&#699;i Church, the private religious
+                context within which all ceremonial work is held.
+              </div>
+              <div className={styles.docFooter}>
+                <span className={`${styles.docTag} ${styles.tagRequired}`}>
+                  {agreementDone ? "Signed" : "Signature Required"}
+                </span>
+                <span className={`${styles.docAction} ${agreementDone ? styles.docActionSigned : ""}`}>
+                  {agreementDone ? "\u2713 Signed" : "Sign \u2192"}
+                </span>
+              </div>
+            </button>
+
+            <button
+              id="medical-card"
+              className={`${styles.docCard} ${medicalDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
+              onClick={() => !medicalDone && setModal("medical")}
+            >
+              <div className={styles.docTitle}>
+                Medical Disclaimer <em>&amp; Risk Acknowledgment</em>
+              </div>
+              <div className={styles.docDesc}>
+                A clear acknowledgment of the nature of plant medicine work, your informed
+                consent, and the inherent risks you understand and voluntarily accept.
+              </div>
+              <div className={styles.docFooter}>
+                <span className={`${styles.docTag} ${styles.tagRequired}`}>
+                  {medicalDone ? "Signed" : "Signature Required"}
+                </span>
+                <span className={`${styles.docAction} ${medicalDone ? styles.docActionSigned : ""}`}>
+                  {medicalDone ? "\u2713 Signed" : "Sign \u2192"}
+                </span>
+              </div>
+            </button>
           </div>
+        </section>
+
+        {/* BEGIN WEEK 1 BANNER */}
+        <div className={`${styles.beginBanner} ${allRequiredDone ? styles.beginBannerActive : styles.beginBannerLocked}`}>
+          {allRequiredDone ? (
+            <Link href="/portal/integration/pre-ceremony" className={styles.beginBannerInner}>
+              <p className={styles.beginEyebrow}>Get Started</p>
+              <h2 className={styles.beginTitle}>
+                Begin <em>Week 1</em>
+              </h2>
+              <p className={styles.beginSub}>
+                Six weeks of preparation, then ceremony, then six weeks of integration.
+                Open Week 1 when you&apos;re ready.
+              </p>
+              <span className={styles.beginCta}>Open Week 1 &rarr;</span>
+            </Link>
+          ) : (
+            <div className={styles.beginBannerInner}>
+              <p className={styles.beginEyebrow}>Get Started</p>
+              <h2 className={styles.beginTitle}>
+                Begin <em>Week 1</em>
+              </h2>
+              <p className={styles.beginSub}>
+                Sign all three steps above to open your preparation arc.
+              </p>
+            </div>
+          )}
         </div>
 
+        {/* CEREMONY DATE */}
+        <section className={styles.dateBlock} id="upcoming-ceremony">
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionEyebrow}>Your Ceremony Date</span>
+            <h2 className={styles.sectionTitle}>
+              When You <em>Arrive</em>
+            </h2>
+          </div>
+          <PortalJourneyCard />
+        </section>
+
+        {/* LAB DOCUMENTS */}
+        <section id="lab-upload-panel" className={styles.labBlock}>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionEyebrow}>Lab Documents</span>
+            <h2 className={styles.sectionTitle}>
+              Upload <em>Your Labs</em>
+            </h2>
+          </div>
+          <p className={styles.labBlockSub}>
+            Walk through the lab requirements with your doctor. Once you have results, upload
+            them here as a single PDF or image; our medical team reviews them before ceremony.
+          </p>
+
+          {labDoc ? (
+            <div style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.04)", borderRadius: 8, padding: "14px 16px", marginBottom: 12 }}>
+              <span style={{
+                width: 10, height: 10, borderRadius: "50%", flexShrink: 0,
+                background: labDoc.status === "approved" ? "#1D9E75" : labDoc.status === "flagged" ? "#A32D2D" : labDoc.status === "processing" ? "#EF9F27" : "#378ADD",
+              }} />
+              <div style={{ flex: 1 }}>
+                <p style={{ fontSize: 14, color: "#F5F0E8", fontWeight: 500, margin: 0 }}>{labDoc.file_name}</p>
+                <p style={{ fontSize: 11, color: "#6B6B67", margin: "2px 0 0" }}>
+                  Uploaded {new Date(labDoc.uploaded_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                </p>
+              </div>
+              <span style={{
+                fontSize: 12, padding: "3px 10px", borderRadius: 99,
+                background: labDoc.status === "approved" ? "rgba(29,158,117,0.15)" : labDoc.status === "flagged" ? "rgba(163,45,45,0.15)" : "rgba(55,138,221,0.15)",
+                color: labDoc.status === "approved" ? "#1D9E75" : labDoc.status === "flagged" ? "#FF9E8C" : "#378ADD",
+              }}>
+                {labDoc.status === "approved" ? "Approved" : labDoc.status === "flagged" ? "Needs attention" : labDoc.status === "processing" ? "Processing..." : "Under review"}
+              </span>
+            </div>
+          ) : null}
+
+          <label
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              background: labUploading ? "rgba(255,255,255,0.02)" : "rgba(168,197,172,0.08)",
+              border: "1px dashed rgba(168,197,172,0.25)",
+              borderRadius: 8,
+              padding: "20px",
+              cursor: labUploading ? "not-allowed" : "pointer",
+              opacity: labUploading ? 0.5 : 1,
+              transition: "all 0.15s",
+            }}
+          >
+            <span style={{ fontSize: 14, color: "#A8C5AC", fontWeight: 500 }}>
+              {labUploading ? "Uploading..." : labDoc ? "Replace with new document" : "Choose file to upload"}
+            </span>
+            <input
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png,.webp"
+              style={{ display: "none" }}
+              disabled={labUploading}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleLabUpload(file);
+                e.target.value = "";
+              }}
+            />
+          </label>
+        </section>
+
         {/* JOURNEY TEAM */}
-        <div id="team" className={`${styles.teamSection} ${!allRequiredDone ? styles.lockedSection : ""}`}>
+        <div id="team" className={styles.teamSection}>
           <div className={styles.sectionHead}>
             <span className={styles.sectionEyebrow}>Your Team</span>
             <h2 className={styles.sectionTitle}>
@@ -1011,7 +752,7 @@ export function PortalHomePage({
         </div>
 
         {/* EMERGENCY CARD */}
-        <div className={`${styles.emergencyCard} ${!allRequiredDone ? styles.lockedSection : ""}`}>
+        <div className={styles.emergencyCard}>
           <div className={styles.emergencyText}>
             <p className={styles.emergencyLabel}>During Your Stay, Always Reach Out</p>
             <p className={styles.emergencyTitle}>We Are Here for You</p>
