@@ -2,6 +2,8 @@
 
 import { Fragment, useState, useEffect, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { getActiveJourney } from '@/lib/journeyHelpers'
+import { getWeekCountdown } from '@/lib/weekCountdown'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { PRE_CEREMONY_WEEKS } from '@/lib/journal-prompts'
@@ -494,6 +496,7 @@ export default function PreCeremonyPage() {
   const [userId, setUserId] = useState<string | null>(null)
   const [userEmail, setUserEmail] = useState<string>('')
   const [activeWeek, setActiveWeek] = useState(0)
+  const [ceremonyStartAt, setCeremonyStartAt] = useState<string | null>(null)
   const [completed, setCompleted] = useState<Set<number>>(new Set())
   const [checklist, setChecklist] = useState<Record<string, boolean>>({})
   const [journal, setJournal] = useState<Record<string, string>>({})
@@ -507,6 +510,11 @@ export default function PreCeremonyPage() {
 
       setUserId(user.id)
       setUserEmail(user.email ?? '')
+
+      // Pull the member's active journey so each week can show a
+      // countdown grounded in their actual ceremony date.
+      const journey = await getActiveJourney(supabase, user.id).catch(() => null)
+      if (journey?.start_at) setCeremonyStartAt(journey.start_at)
 
       const { data } = await supabase
         .from('pre_ceremony_progress')
@@ -710,6 +718,11 @@ export default function PreCeremonyPage() {
         .pc-main { max-width:860px;margin:0 auto;padding:0 48px 100px; }
         .pc-panel { display:none;padding-top:56px; }
         .pc-panel.active { display:block; }
+        .pc-countdown { display:inline-block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;padding:6px 14px;border-radius:99px;margin-bottom:24px; }
+        .pc-countdown-future { color:var(--gold);background:rgba(200,169,110,.08);border:1px solid rgba(200,169,110,.22); }
+        .pc-countdown-current { color:var(--terra);background:rgba(184,105,74,.10);border:1px solid rgba(184,105,74,.30); }
+        .pc-countdown-past { color:rgba(60,75,62,.55);background:rgba(60,75,62,.05);border:1px solid rgba(60,75,62,.12); }
+        .pc-countdown-unknown { color:rgba(60,75,62,.45);background:transparent;border:1px dashed rgba(60,75,62,.18);font-style:italic;text-transform:none;letter-spacing:.04em; }
 
         /* CONTINUITY */
         .continuity { display:flex;gap:12px;align-items:flex-start;background:rgba(122,158,126,.06);border-left:2px solid var(--sage-lt);padding:14px 18px;margin-bottom:32px; }
@@ -921,8 +934,15 @@ export default function PreCeremonyPage() {
 
       {/* MAIN */}
       <main className="pc-main">
-        {WEEKS.map((w, i) => (
+        {WEEKS.map((w, i) => {
+          const cd = getWeekCountdown(ceremonyStartAt, 'pre', i)
+          return (
           <div key={w.id} className={`pc-panel${activeWeek === i ? ' active' : ''}`}>
+
+            {/* COUNTDOWN BANNER */}
+            <div className={`pc-countdown pc-countdown-${cd?.phase ?? 'unknown'}`}>
+              {cd ? cd.label : 'Begins once your dates are set'}
+            </div>
 
             {/* PRINCIPLE */}
             <section className="w1-section" id="principle">
@@ -1149,7 +1169,7 @@ export default function PreCeremonyPage() {
             </div>
 
           </div>
-        ))}
+        )})}
       </main>
 
       {/* Save status */}
