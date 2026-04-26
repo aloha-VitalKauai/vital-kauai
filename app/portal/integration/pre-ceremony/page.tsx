@@ -1121,52 +1121,6 @@ export default function PreCeremonyPage() {
               </div>
             </section>
 
-            {/* READINESS GATE, Week 6 only, anchored for the section index */}
-            {w.readinessGate && (
-              <section className="w1-section" id="readiness">
-                <h3 className="w1-h3">Readiness</h3>
-                <div className="rg-wrap">
-                  <div className="rg-header">
-                    <div className="rg-dot" />
-                    <div className="rg-title">Readiness confirmation, complete before arrival</div>
-                  </div>
-                  <div className="rg-body">
-                    {[
-                      {
-                        text: 'Lab results submitted and confirmed reviewed by medical team',
-                        links: [
-                          { text: 'Lab results submitted', href: '/portal/labs' },
-                          { text: 'reviewed by medical team', href: '/portal/physician-guide' },
-                        ],
-                      },
-                      {
-                        text: 'Baseline Outcome completed',
-                        links: [{ text: 'Baseline Outcome completed', href: '/portal/assessments' }],
-                      },
-                      {
-                        text: 'Preparation call completed with Rachel & Josh',
-                        links: [{ text: 'Preparation call completed with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true }],
-                      },
-                    ].map((item, ri) => (
-                      <div className="rg-item" key={ri}>
-                        <div className={`rg-check${checklist[`rg-${ri}`] ? ' checked' : ''}`} onClick={() => toggleCheck(`rg-${ri}`)}>
-                          <span className="rg-check-icon">✓</span>
-                        </div>
-                        <div className="rg-item-text" onClick={(e) => e.stopPropagation()} style={{ cursor: 'default' }}>
-                          {renderActionText(item.text, item.links)}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="bridge">
-                  <span className="bridge-eyebrow">What comes next</span>
-                  <h3 className="bridge-title">The preparation is complete.</h3>
-                  <p className="bridge-text">In the weeks following ceremony, this portal will continue to guide you through integration, with the same rhythm, the same depth, and the same care you&apos;ve experienced here. You will be held through every phase of what comes next.</p>
-                </div>
-              </section>
-            )}
-
             {/* Mark complete */}
             <div className="wc-wrap">
               <div className="wc-text">
