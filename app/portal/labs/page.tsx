@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { PortalNav } from "@/components/portal-nav";
 
 type LabDoc = {
   id: string;
@@ -14,7 +13,6 @@ type LabDoc = {
 
 export default function PortalLabsPage() {
   const supabase = createClient();
-  const [userEmail, setUserEmail] = useState<string>("");
   const [memberId, setMemberId] = useState<string | null>(null);
   const [labDoc, setLabDoc] = useState<LabDoc | null>(null);
   const [labUploading, setLabUploading] = useState(false);
@@ -24,7 +22,6 @@ export default function PortalLabsPage() {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      setUserEmail(user.email ?? "");
 
       const { data: member } = await supabase
         .from("members")
@@ -78,7 +75,6 @@ export default function PortalLabsPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#0E1A10", color: "#F5F0E8" }}>
-      <PortalNav email={userEmail} currentPage="labs" />
       <main style={{ maxWidth: 720, margin: "0 auto", padding: "80px 32px 100px" }}>
         <Link
           href="/portal/integration/pre-ceremony"

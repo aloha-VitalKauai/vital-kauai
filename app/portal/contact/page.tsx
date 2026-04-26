@@ -1,23 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { PortalNav } from "@/components/portal-nav";
-
 export default function PortalContactPage() {
-  const supabase = createClient();
-  const [userEmail, setUserEmail] = useState<string>("");
-
-  useEffect(() => {
-    (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) setUserEmail(user.email ?? "");
-    })();
-  }, [supabase]);
-
   return (
     <div style={{ minHeight: "100vh", background: "#0E1A10", color: "#F5F0E8" }}>
-      <PortalNav email={userEmail} currentPage="contact" />
       <main style={{ maxWidth: 720, margin: "0 auto", padding: "80px 32px 100px" }}>
         <p style={{ fontSize: 11, letterSpacing: "0.32em", textTransform: "uppercase", color: "#C8A96E", fontWeight: 600, margin: "0 0 16px" }}>
           Contact
