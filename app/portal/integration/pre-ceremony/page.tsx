@@ -235,6 +235,14 @@ const WEEKS = [
         ],
       },
       {
+        color: 'blue',
+        text: 'Upload your lab results once you have them',
+        note: 'Once your doctor returns results, upload the document here as a single PDF or image. Our medical team reviews them before ceremony.',
+        links: [
+          { text: 'Upload your lab results once you have them', href: '/portal/labs' },
+        ],
+      },
+      {
         color: 'amber',
         text: 'Schedule next week\'s call with Rachel & Josh',
         links: [
@@ -424,8 +432,16 @@ const WEEKS = [
         text: 'Confirm labs are submitted and reviewed by the medical team',
         note: 'If you haven\'t received confirmation, reach out now and confirm directly. This is a safety step, it directly affects whether your ceremony proceeds as planned.',
         links: [
-          { text: 'labs are submitted', href: '/portal#lab-upload-panel' },
+          { text: 'labs are submitted', href: '/portal/labs' },
           { text: 'reviewed by the medical team', href: '/portal/physician-guide' },
+        ],
+      },
+      {
+        color: 'blue',
+        text: 'Save our direct contacts for arrival week',
+        note: 'Rachel and Josh\'s phone numbers and our email live on one page. Keep it open or take a screenshot before you fly.',
+        links: [
+          { text: 'Save our direct contacts for arrival week', href: '/portal/contact' },
         ],
       },
       {
@@ -1112,7 +1128,7 @@ export default function PreCeremonyPage() {
                       {
                         text: 'Lab results submitted and confirmed reviewed by medical team',
                         links: [
-                          { text: 'Lab results submitted', href: '/portal#lab-upload-panel' },
+                          { text: 'Lab results submitted', href: '/portal/labs' },
                           { text: 'reviewed by medical team', href: '/portal/physician-guide' },
                         ],
                       },

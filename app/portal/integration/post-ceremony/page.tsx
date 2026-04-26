@@ -196,6 +196,14 @@ const WEEKS = [
         ],
       },
       { color: 'green', text: 'Rest completely for the first 48 hours', note: 'Let the experience settle. Rest before sharing. Allow what happened to remain wordless a little longer.' },
+      {
+        color: 'sage',
+        text: 'Keep our direct contacts within reach as you return home',
+        note: 'Rachel and Josh remain a text or call away while you settle back in. Same page, same numbers, same care.',
+        links: [
+          { text: 'Keep our direct contacts within reach as you return home', href: '/portal/contact' },
+        ],
+      },
       { color: 'blue', text: 'Journal what arose, images, moments, what the medicine showed you', note: 'Don\'t interpret it yet. Just record it. The meaning arrives in its own time. What you write now will be the material you return to for months.' },
       {
         color: 'gold',
