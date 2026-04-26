@@ -722,8 +722,11 @@ export function PortalHomePage({
               <p className={styles.teamBio}>
                 Behind every ceremony is a circle of practitioners, somatic specialists, a
                 medical advisor, and integration guides, holding you in concert with Rachel and
-                Josh. Meet them in <Link href="/healing-circle" className={styles.teamCta} style={{ display: "inline" }}>Our Healing Circle</Link>.
+                Josh.
               </p>
+              <Link href="/healing-circle" className={styles.teamCta}>
+                Meet Our Healing Circle &rarr;
+              </Link>
             </div>
           </div>
         </div>
