@@ -3,10 +3,18 @@ import JourneyPaymentCard from "./JourneyPaymentCard";
 
 export default async function JourneyPaymentPage() {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+  // Filter explicitly by user.id. RLS scopes regular members to one row, but
+  // founders can read all rows — without this filter single() errors out for
+  // any founder testing the portal.
   const { data: overview } = await supabase
     .from("member_financial_overview")
     .select("*")
-    .single();
+    .eq("member_id", user.id)
+    .maybeSingle();
 
   if (!overview?.active_journey_id) {
     return <p>No active journey yet.</p>;

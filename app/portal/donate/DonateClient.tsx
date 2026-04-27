@@ -18,6 +18,7 @@ type Props = {
   paid: number;
   remaining: number;
   journeyId: string | null;
+  memberId: string;
   history: DonationRow[];
 };
 
@@ -55,6 +56,7 @@ export default function DonateClient({
   paid,
   remaining,
   journeyId,
+  memberId,
   history,
 }: Props) {
   const params = useSearchParams();
@@ -97,6 +99,7 @@ export default function DonateClient({
       const { data } = await supabase
         .from("member_financial_overview")
         .select("journey_remaining_amount_cents, financial_status")
+        .eq("member_id", memberId)
         .maybeSingle();
       if (cancelled) return;
       const cur = data?.journey_remaining_amount_cents ?? baseline;
@@ -222,7 +225,7 @@ export default function DonateClient({
 
         {state === "no-commitment" && expected === 0 && (
           <header style={headerStyle}>
-            <h1 style={h1Style}>Thank you for being with us.</h1>
+            <h1 style={h1Style}>Thank you for your contribution.</h1>
             <p style={subtitleStyle}>
               Your contribution is always welcome and entirely optional.
             </p>
@@ -247,7 +250,7 @@ export default function DonateClient({
           state === "complete" ||
           (state === "no-commitment" && expected > 0)) && (
           <div style={statGridStyle}>
-            <StatCard label="Pledged" value={fmt(expected)} />
+            <StatCard label="Contribution" value={fmt(expected)} />
             <StatCard
               label="Donated"
               value={fmt(paid)}

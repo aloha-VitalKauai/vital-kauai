@@ -2,8 +2,6 @@
 
 import { Fragment, useState, useEffect, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { getActiveJourney } from '@/lib/journeyHelpers'
-import { getWeekCountdown } from '@/lib/weekCountdown'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { PRE_CEREMONY_WEEKS } from '@/lib/journal-prompts'
@@ -21,17 +19,6 @@ const BASE_SECTIONS: SectionIndexItem[] = [
   { label: 'Community', anchor: '#community' },
 ]
 const sectionsForWeek = (_weekIdx: number): SectionIndexItem[] => BASE_SECTIONS
-
-// Anchor lines, one per pre-ceremony week. Sit under the live status
-// in the green week-status box on the right rail of each principle.
-const PRE_ANCHORS: readonly string[] = [
-  'Looking at the lens itself.',
-  'What you turn toward grows.',
-  'Arriving in the body.',
-  'What is ready to leave.',
-  'Opening to your people.',
-  'Arrival week. You are ready.',
-] as const
 
 // Journal prompt entries, Week 1 has explicit storage keys (so the display
 // order can swap without re-attaching members' existing entries to the wrong
@@ -510,7 +497,6 @@ export default function PreCeremonyPage() {
   const [userId, setUserId] = useState<string | null>(null)
   const [userEmail, setUserEmail] = useState<string>('')
   const [activeWeek, setActiveWeek] = useState(0)
-  const [ceremonyStartAt, setCeremonyStartAt] = useState<string | null>(null)
   const [completed, setCompleted] = useState<Set<number>>(new Set())
   const [checklist, setChecklist] = useState<Record<string, boolean>>({})
   const [journal, setJournal] = useState<Record<string, string>>({})
@@ -524,11 +510,6 @@ export default function PreCeremonyPage() {
 
       setUserId(user.id)
       setUserEmail(user.email ?? '')
-
-      // Pull the member's active journey so each week can show a
-      // countdown grounded in their actual ceremony date.
-      const journey = await getActiveJourney(supabase, user.id).catch(() => null)
-      if (journey?.start_at) setCeremonyStartAt(journey.start_at)
 
       // ?week=N (1–6) forces a specific week and skips the resume-where-you-
       // left-off behavior. Used by the "Open Week 1" CTA on /portal so it
@@ -758,19 +739,6 @@ export default function PreCeremonyPage() {
         .pc-main { max-width:860px;margin:0 auto;padding:0 48px 100px; }
         .pc-panel { display:none;padding-top:56px; }
         .pc-panel.active { display:block; }
-        /* Principle + week-status side-by-side rail */
-        .principle-row { display:grid;grid-template-columns:1fr 280px;gap:36px;align-items:flex-start;margin-bottom:8px; }
-        .principle-row > .w1-section { margin-bottom:0; }
-        .week-status { background:#1c2b1e;border:1px solid rgba(168,197,172,.18);border-radius:12px;padding:26px 28px;position:sticky;top:130px; }
-        .week-status .ws-label { display:block;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px; }
-        .week-status .ws-status { font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#f5f0e8;line-height:1.2;margin-bottom:18px; }
-        .week-status .ws-anchor { font-size:13.5px;font-style:italic;color:rgba(168,197,172,.85);line-height:1.6; }
-        .week-status-past .ws-status { color:rgba(168,197,172,.7); }
-        .week-status-unknown .ws-status { font-size:18px;color:rgba(168,197,172,.55);font-style:italic; }
-        @media (max-width:760px) {
-          .principle-row { grid-template-columns:1fr;gap:20px; }
-          .week-status { position:static; }
-        }
 
         /* CONTINUITY */
         .continuity { display:flex;gap:12px;align-items:flex-start;background:rgba(122,158,126,.06);border-left:2px solid var(--sage-lt);padding:14px 18px;margin-bottom:32px; }
@@ -987,33 +955,24 @@ export default function PreCeremonyPage() {
 
       {/* MAIN */}
       <main className="pc-main">
-        {WEEKS.map((w, i) => {
-          const cd = getWeekCountdown(ceremonyStartAt, 'pre', i)
-          return (
+        {WEEKS.map((w, i) => (
           <div key={w.id} className={`pc-panel${activeWeek === i ? ' active' : ''}`}>
 
-            {/* PRINCIPLE + WEEK STATUS */}
-            <div className="principle-row">
-              <section className="w1-section" id="principle">
-                <span className="w1p-eyebrow">Week {i + 1} · {w.principleName} · {w.theme}</span>
-                <h2 className="w1p-title">
-                  {i === 0
-                    ? <>Seeing <em>clearly.</em></>
-                    : <>{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</>}
-                </h2>
-                <p className="w1p-pull">&ldquo;{w.principle}&rdquo;</p>
-                <p className="w1p-body">
-                  {i === 0
-                    ? 'What you perceive shapes what you experience, attention, assumptions, the stories carried without noticing. This week is an invitation to look at the lens itself.'
-                    : w.sub}
-                </p>
-              </section>
-              <aside className={`week-status week-status-${cd?.phase ?? 'unknown'}`}>
-                <span className="ws-label">Week {i + 1}</span>
-                <div className="ws-status">{cd ? cd.label : 'Begins once your dates are set'}</div>
-                <div className="ws-anchor">{PRE_ANCHORS[i]}</div>
-              </aside>
-            </div>
+            {/* PRINCIPLE */}
+            <section className="w1-section" id="principle">
+              <span className="w1p-eyebrow">Week {i + 1} · {w.principleName} · {w.theme}</span>
+              <h2 className="w1p-title">
+                {i === 0
+                  ? <>Seeing <em>clearly.</em></>
+                  : <>{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</>}
+              </h2>
+              <p className="w1p-pull">&ldquo;{w.principle}&rdquo;</p>
+              <p className="w1p-body">
+                {i === 0
+                  ? 'What you perceive shapes what you experience, attention, assumptions, the stories carried without noticing. This week is an invitation to look at the lens itself.'
+                  : w.sub}
+              </p>
+            </section>
 
             {/* VIDEO, Message from the Founders */}
             <section className="w1-section" id="week-video">
@@ -1178,7 +1137,7 @@ export default function PreCeremonyPage() {
             </div>
 
           </div>
-        )})}
+        ))}
       </main>
 
       {/* Save status */}
