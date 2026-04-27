@@ -1079,7 +1079,11 @@ export default function PreCeremonyPage() {
             {/* PNE PERSPECTIVE */}
             <section className="w1-section" id="pne-perspective">
               <h3 className="w1-h3">
-                {i === 0 ? <>PNE (PsychoNeuroEnergetic) Perspective: <em>The Language of the Body</em></> : 'PNE (PsychoNeuroEnergetic) Perspective'}
+                {i === 0
+                  ? <>PNE (PsychoNeuroEnergetic) Perspective: <em>The Language of the Body</em></>
+                  : i < 3
+                    ? 'PNE (PsychoNeuroEnergetic) Perspective'
+                    : 'PNE Perspective'}
               </h3>
               {i === 0 && (
                 <p className="w1-body">
@@ -1090,7 +1094,7 @@ export default function PreCeremonyPage() {
                 <div className="video-primer">
                   <div className="vp-play"><span className="vp-play-icon">▶</span></div>
                   <div>
-                    <div className="vp-label">PNE (PsychoNeuroEnergetic) Teaching · Week {i + 1}</div>
+                    <div className="vp-label">{i < 3 ? 'PNE (PsychoNeuroEnergetic)' : 'PNE'} Teaching · Week {i + 1}</div>
                     <div className="vp-text">
                       {i === 0
                         ? 'A short teaching on the three layers of feeling, sensation in the body, charge in the emotional system, and story in the mind, and why the body’s raw data arrives before the mind names it. The foundational practice of Week 1: listening underneath.'

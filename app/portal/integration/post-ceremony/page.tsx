@@ -1037,12 +1037,12 @@ export default function PostCeremonyPage() {
 
             {/* PNE PERSPECTIVE (placeholder until per-week content ships) */}
             <section className="w1-section" id="pne-perspective">
-              <h3 className="w1-h3">PNE (PsychoNeuroEnergetic) Perspective</h3>
+              <h3 className="w1-h3">PNE Perspective</h3>
               <div className="video-frame">
                 <div className="video-primer">
                   <div className="vp-play"><span className="vp-play-icon">▶</span></div>
                   <div>
-                    <div className="vp-label">PNE (PsychoNeuroEnergetic) Teaching · Week {i + 1}</div>
+                    <div className="vp-label">PNE Teaching · Week {i + 1}</div>
                     <div className="vp-text">A short teaching paired with this week&apos;s principle and the body&apos;s lived response to it.</div>
                     <div className="vp-coming-soon">Coming Soon</div>
                   </div>
