@@ -44,9 +44,15 @@ export default function HeroCountdown({ mode }: Props) {
     countLabel = count === 1 ? 'Day Until Arrival' : 'Days Until Arrival'
   } else {
     const diffMs = Date.now() - new Date(journey.start_at).getTime()
-    if (diffMs <= 0) return null
-    count = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-    countLabel = count === 1 ? 'Day Since Ceremony' : 'Days Since Ceremony'
+    if (diffMs >= 0) {
+      count = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+      countLabel = count === 1 ? 'Day Since Ceremony' : 'Days Since Ceremony'
+    } else {
+      const daysUntil = getDaysUntilJourney(journey.start_at)
+      if (daysUntil === null) return null
+      count = daysUntil
+      countLabel = daysUntil === 1 ? 'Day Until Ceremony' : 'Days Until Ceremony'
+    }
   }
 
   return (
