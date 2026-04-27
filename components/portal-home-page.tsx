@@ -663,15 +663,15 @@ export function PortalHomePage({
                 <p className={styles.teamBio}>{specialist.bio}</p>
               ) : (
                 <p className={styles.teamBio}>
-                  Your integration specialist walks with you as guide, facilitator, coach, and
-                  teammate, meeting you in preparation, within the 48 hours after ceremony,
-                  and ongoing as you return home and carry the work forward.
+                  Your integration guide walks alongside you as a steady presence: someone who
+                  knows the terrain of this medicine and can hold you in it. They meet you in
+                  preparation, within the 48 hours after ceremony, and across the 6+ weeks of
+                  integration as you return home and carry the work forward.
                 </p>
               )}
               <p className={styles.teamBio}>
-                The arc of your journey includes six sessions with your integration guide, used
-                on your timing, we suggest weaving some before and some after ceremony,
-                and the rhythm is yours to choose.
+                The arc includes eight sessions with your guide: two before ceremony and six
+                after.
               </p>
               {specialist?.calendly_url ? (
                 <a
