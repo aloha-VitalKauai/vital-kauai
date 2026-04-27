@@ -1,5 +1,7 @@
 "use client";
 
+import SiteFooter from "@/components/SiteFooter";
+
 export default function PortalContactPage() {
   return (
     <div style={{ minHeight: "100vh", background: "#0E1A10", color: "#F5F0E8" }}>
@@ -11,8 +13,7 @@ export default function PortalContactPage() {
           We Are <em style={{ fontStyle: "italic", color: "#A8C5AC" }}>Here for You</em>
         </h1>
         <p style={{ fontSize: 15, color: "rgba(245,240,232,0.78)", lineHeight: 1.85, marginBottom: 48, maxWidth: 580 }}>
-          You are never alone in this. Rachel and Josh are present throughout your preparation,
-          ceremony, and integration, and reachable for whatever arises.
+          We are with you. Reach out anytime.
         </p>
 
         {/* Reach Us Directly */}
@@ -60,12 +61,9 @@ export default function PortalContactPage() {
             For urgent medical support during your stay, also call <strong style={{ color: "#F5F0E8" }}>911</strong> or
             reach <strong style={{ color: "#F5F0E8" }}>Wilcox Medical Center</strong> in Līhuʻe.
           </p>
-          <p style={{ fontSize: 12, color: "rgba(245,240,232,0.45)", lineHeight: 1.65, margin: 0 }}>
-            We carry the on-island contacts and full directions in your arrival packet, this is a
-            quick reference.
-          </p>
         </section>
       </main>
+      <SiteFooter />
     </div>
   );
 }
