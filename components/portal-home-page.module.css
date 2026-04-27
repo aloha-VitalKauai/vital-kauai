@@ -445,13 +445,13 @@
 }
 
 .beginBannerLocked {
-  background: rgba(245, 240, 232, 0.03);
-  border: 1px dashed rgba(168, 197, 172, 0.22);
+  background: rgba(184, 149, 106, 0.06);
+  border: 1px dashed rgba(107, 140, 110, 0.45);
 }
 
 .beginBannerActive {
-  background: linear-gradient(135deg, rgba(200, 169, 110, 0.18), rgba(168, 197, 172, 0.10));
-  border: 1px solid rgba(200, 169, 110, 0.45);
+  background: linear-gradient(135deg, rgba(200, 169, 110, 0.18), rgba(168, 197, 172, 0.14));
+  border: 1px solid rgba(200, 169, 110, 0.55);
 }
 
 .beginBannerInner {
@@ -473,20 +473,20 @@
   font-family: var(--font-display), "Cormorant Garamond", serif;
   font-size: clamp(36px, 4.6vw, 56px);
   font-weight: 300;
-  color: var(--cream);
+  color: var(--ink);
   margin: 0 0 18px;
   line-height: 1.1;
 }
 
 .beginTitle em {
   font-style: italic;
-  color: var(--sage-light);
+  color: var(--sage);
 }
 
 .beginSub {
   max-width: 560px;
   margin: 0 auto 28px;
-  color: rgba(245, 240, 232, 0.72);
+  color: var(--ink-soft);
   font-size: 15px;
   line-height: 1.75;
 }
