@@ -234,7 +234,7 @@ export default function DonateClient({
 
         {state === "pay-toward-pledge" && (
           <header style={headerStyle}>
-            <h1 style={h1Style}>Complete your commitment.</h1>
+            <h1 style={h1Style}>Complete your Contribution.</h1>
           </header>
         )}
 
@@ -251,11 +251,6 @@ export default function DonateClient({
           (state === "no-commitment" && expected > 0)) && (
           <div style={statGridStyle}>
             <StatCard label="Contribution" value={fmt(expected)} />
-            <StatCard
-              label="Donated"
-              value={fmt(paid)}
-              accent={state === "complete" ? "#68A870" : undefined}
-            />
             <StatCard
               label="Remaining"
               value={fmt(remaining)}
@@ -605,7 +600,7 @@ const eyebrowStyle: React.CSSProperties = {
 
 const statGridStyle: React.CSSProperties = {
   display: "grid",
-  gridTemplateColumns: "repeat(3, 1fr)",
+  gridTemplateColumns: "repeat(2, 1fr)",
   gap: 10,
   marginBottom: "1.25rem",
 };
