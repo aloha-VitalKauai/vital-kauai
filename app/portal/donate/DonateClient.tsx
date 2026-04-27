@@ -225,7 +225,7 @@ export default function DonateClient({
 
         {state === "no-commitment" && expected === 0 && (
           <header style={headerStyle}>
-            <h1 style={h1Style}>Thank you for being with us.</h1>
+            <h1 style={h1Style}>Thank you for your contribution.</h1>
             <p style={subtitleStyle}>
               Your contribution is always welcome and entirely optional.
             </p>
