@@ -78,7 +78,6 @@ const PAGE_CSS = `
   .pne-companion-page header.hero {
     background: var(--bg-dark);
     padding: 96px 0 112px;
-    border-top: 4px solid #3A2418;
   }
   .pne-companion-page .hero h1 {
     color: var(--ink-light);
