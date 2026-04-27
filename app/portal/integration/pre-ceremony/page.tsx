@@ -71,7 +71,7 @@ const actionsForWeek = (
       { kind: 'internal', href: '/intake-form',                        text: 'Fill out Your Member Intake & Readiness Form' },
       { kind: 'hash',     href: '#journal-prompts',                    text: 'Respond to this week’s journal prompts' },
       { kind: 'internal', href: '/portal/questions-for-the-medicine',  text: 'Begin writing your questions for the medicine.' },
-      { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1: The Language of the Body in The PsychoNeuroEnergetic Companion' },
+      { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1: The Language of the Body in The PsychoNeuroEnergetic (PNE) Companion' },
       { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule your first call with your integration guide' },
     ]
   }
@@ -1049,18 +1049,18 @@ export default function PreCeremonyPage() {
             {/* PNE PERSPECTIVE */}
             <section className="w1-section" id="pne-perspective">
               <h3 className="w1-h3">
-                {i === 0 ? <>PNE Perspective: <em>The Language of the Body</em></> : 'PNE Perspective'}
+                {i === 0 ? <>PNE (PsychoNeuroEnergetic) Perspective: <em>The Language of the Body</em></> : 'PNE (PsychoNeuroEnergetic) Perspective'}
               </h3>
               {i === 0 && (
                 <p className="w1-body">
-                  Before any thought, the body is already speaking. Sensation, tightening, loosening, warmth, pressure, is the nervous system&apos;s first language, arriving long before words or meaning. What we call a &ldquo;feeling&rdquo; is actually three layers stacked: sensation in the body, charge in the emotional system, and story in the mind. The mind&apos;s story is often the loudest, but it&apos;s the last layer to arrive. This week, the invitation from PNE is to notice what&apos;s underneath the story, the raw data of the body, before the mind names it.
+                  Before any thought, the body is already speaking. Sensation, tightening, loosening, warmth, pressure, is the nervous system&apos;s first language, arriving long before words or meaning. What we call a &ldquo;feeling&rdquo; is actually three layers stacked: sensation in the body, charge in the emotional system, and story in the mind. The mind&apos;s story is often the loudest, but it&apos;s the last layer to arrive. This week, the invitation from PNE (PsychoNeuroEnergetic) is to notice what&apos;s underneath the story, the raw data of the body, before the mind names it.
                 </p>
               )}
               <div className="video-frame" style={{ marginTop: i === 0 ? 24 : 0 }}>
                 <div className="video-primer">
                   <div className="vp-play"><span className="vp-play-icon">▶</span></div>
                   <div>
-                    <div className="vp-label">PNE Teaching · Week {i + 1}</div>
+                    <div className="vp-label">PNE (PsychoNeuroEnergetic) Teaching · Week {i + 1}</div>
                     <div className="vp-text">
                       {i === 0
                         ? 'A short teaching on the three layers of feeling, sensation in the body, charge in the emotional system, and story in the mind, and why the body’s raw data arrives before the mind names it. The foundational practice of Week 1: listening underneath.'
@@ -1072,7 +1072,7 @@ export default function PreCeremonyPage() {
               </div>
               {i === 0 && (
                 <Link href="/portal/somatic-companion#top" className="w1-companion-link">
-                  Read the full teaching in The PsychoNeuroEnergetic Companion → Week 1: The Language of the Body
+                  Read the full teaching in The PsychoNeuroEnergetic (PNE) Companion → Week 1: The Language of the Body
                 </Link>
               )}
             </section>

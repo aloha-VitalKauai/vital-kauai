@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
-export const metadata = { title: "The PsychoNeuroEnergetic Companion · Week 1 — Vital Kauaʻi" };
+export const metadata = { title: "The PsychoNeuroEnergetic (PNE) Companion · Week 1 — Vital Kauaʻi" };
 
 const PAGE_CSS = `
   :root {
@@ -583,8 +583,8 @@ export default async function SomaticCompanionPage() {
         <header className="hero">
           <div className="vk-wrap">
             <div className="vk-eyebrow">Iboga Journey · Member Resource</div>
-            <h1>Week One <em>PNE Companion</em></h1>
-            <p className="hero-subtitle">PsychoNeuroEnergetics</p>
+            <h1>Week One <em>PNE (PsychoNeuroEnergetic) Companion</em></h1>
+            <p className="hero-subtitle">PsychoNeuroEnergetics (PNE)</p>
             <p className="hero-lede">A foundational guide prepared for Iboga Journey participants — polyvagal theory, somatic self-resourcing, and breath practices to support your preparation, ceremony, and integration.</p>
           </div>
         </header>
@@ -798,7 +798,7 @@ export default async function SomaticCompanionPage() {
               <div className="hw-step">
                 <div className="hw-num">One</div>
                 <h3>Explore the regulation practices in the portal — find what works best for you.</h3>
-                <div className="hw-tags">Breathing &nbsp;·&nbsp; Grounding &nbsp;·&nbsp; 4 / 7 / 8 Breath &nbsp;·&nbsp; PNE Breath (Belly / Heart) &nbsp;·&nbsp; Orienting &nbsp;·&nbsp; Felt-Sense Regulation</div>
+                <div className="hw-tags">Breathing &nbsp;·&nbsp; Grounding &nbsp;·&nbsp; 4 / 7 / 8 Breath &nbsp;·&nbsp; PNE (PsychoNeuroEnergetic) Breath (Belly / Heart) &nbsp;·&nbsp; Orienting &nbsp;·&nbsp; Felt-Sense Regulation</div>
               </div>
               <div className="hw-step">
                 <div className="hw-num">Two</div>
