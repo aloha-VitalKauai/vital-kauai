@@ -561,7 +561,7 @@ export function PortalHomePage({
           <p className={styles.beginSub}>
             {allRequiredDone
               ? "Six weeks of preparation, then ceremony, then six weeks of integration. Open Week 1 when you’re ready."
-              : "Step into your preparation arc. Sign the three documents above when you’re ready to fully open it."}
+              : "Step into your preparation journey after signing the documents above."}
           </p>
           <span className={styles.beginCta}>Open Week 1 &rarr;</span>
         </Link>
