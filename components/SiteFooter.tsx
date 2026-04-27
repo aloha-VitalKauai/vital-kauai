@@ -14,26 +14,26 @@ export default function SiteFooter() {
         <div className="vk-footer-col">
           <h4>Explore</h4>
           <ul className="vk-footer-links">
-            <li><Link href="/iboga-journey">The Iboga Journey</Link></li>
-            <li><Link href="/about">Josh &amp; Rachel</Link></li>
-            <li><Link href="/healing-circle">Our Healing Circle</Link></li>
-            <li><Link href="/stay">Stay With Us</Link></li>
+            <li><Link href="/iboga-journey" target="_blank" rel="noopener noreferrer">The Iboga Journey</Link></li>
+            <li><Link href="/about" target="_blank" rel="noopener noreferrer">Josh &amp; Rachel</Link></li>
+            <li><Link href="/healing-circle" target="_blank" rel="noopener noreferrer">Our Healing Circle</Link></li>
+            <li><Link href="/stay" target="_blank" rel="noopener noreferrer">Stay With Us</Link></li>
           </ul>
         </div>
         <div className="vk-footer-col">
           <h4>Connect</h4>
           <ul className="vk-footer-links">
-            <li><Link href="/begin-your-journey">Begin the Journey</Link></li>
+            <li><Link href="/begin-your-journey" target="_blank" rel="noopener noreferrer">Begin the Journey</Link></li>
             <li><Link href="/portal">Member Portal</Link></li>
           </ul>
         </div>
         <div className="vk-footer-col">
           <h4>Our Policies</h4>
           <ul className="vk-footer-links">
-            <li><Link href="/privacy-policy">Privacy Policy</Link></li>
-            <li><Link href="/terms-of-use">Terms of Use</Link></li>
-            <li><Link href="/medical-disclaimer">Medical Disclaimer</Link></li>
-            <li><Link href="/church-information">Church Information</Link></li>
+            <li><Link href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</Link></li>
+            <li><Link href="/terms-of-use" target="_blank" rel="noopener noreferrer">Terms of Use</Link></li>
+            <li><Link href="/medical-disclaimer" target="_blank" rel="noopener noreferrer">Medical Disclaimer</Link></li>
+            <li><Link href="/church-information" target="_blank" rel="noopener noreferrer">Church Information</Link></li>
           </ul>
         </div>
       </footer>

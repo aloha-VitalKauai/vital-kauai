@@ -67,21 +67,24 @@ function renderActionText(
     }
     segments = next
   }
-  return segments.map((seg, i) =>
-    typeof seg === 'string' ? (
-      <Fragment key={i}>{seg}</Fragment>
-    ) : (
+  return segments.map((seg, i) => {
+    if (typeof seg === 'string') return <Fragment key={i}>{seg}</Fragment>
+    // Hash-only links scroll the current page — keep them in the same tab.
+    // Everything else (internal route or external URL) opens in a new tab so
+    // members don't lose their place on the week page.
+    const isHashOnly = seg.href.startsWith('#')
+    return (
       <a
         key={i}
         href={seg.href}
-        target={seg.external ? '_blank' : undefined}
-        rel={seg.external ? 'noopener noreferrer' : undefined}
+        target={isHashOnly ? undefined : '_blank'}
+        rel={isHashOnly ? undefined : 'noopener noreferrer'}
         style={{ color: 'inherit', textDecoration: 'none', borderBottom: '1px dashed rgba(200,169,110,.55)' }}
       >
         {seg.text}
       </a>
-    ),
-  )
+    )
+  })
 }
 
 // ─── Return-practice calendar helpers ─────────────────────
@@ -1019,7 +1022,7 @@ export default function PostCeremonyPage() {
                     )
                   } else {
                     body = (
-                      <Link href={card.href} className="w1-action-body">
+                      <Link href={card.href} target="_blank" rel="noopener noreferrer" className="w1-action-body">
                         <span className="w1-action-dot" />
                         <span className="w1-action-text">{card.text}</span>
                       </Link>
