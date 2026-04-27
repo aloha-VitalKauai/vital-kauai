@@ -397,7 +397,7 @@ const WEEKS = [
     title: 'Six weeks in.',
     subtitle: 'This is who you are now.',
     carryForward: 'You have moved through the full arc, from the raw tenderness of emergence to the relational work of week five. This final week is a transition from active integration into sustained living.',
-    intro: 'Pono means right relationship, with yourself, with others, with the life you are building. Week six marks the close of the intensive integration window and the opening of a longer, quieter arc. The medicine\'s most dramatic effects have passed, but its work continues, in your dreams, your relationships, your daily choices, and in the moments you catch yourself responding differently than you used to.',
+    intro: 'Pono means right relationship, with yourself, with others, with the life you are building. Week six marks the close of the integration window and the opening of a longer, quieter arc. The medicine\'s most dramatic effects have passed, but its work continues, in your dreams, your relationships, your daily choices, and in the moments you catch yourself responding differently than you used to.',
     video: { label: 'A Message from Rachel & Josh · Week 6', text: 'Six weeks ago you came home from ceremony. In this final weekly transmission Rachel and Josh want to mark what you have done. The long integration is beginning. They want you to know what to expect, and how to hold yourself through the months ahead.' },
     actionLabel: 'This week, 4 completions',
     actions: [
@@ -878,9 +878,9 @@ export default function PostCeremonyPage() {
         .w1-autosave { font-size:11.5px;color:var(--stone);font-style:italic;margin:4px 0 20px; }
         .w1-prompt { padding:22px 0;border-bottom:1px solid var(--border); }
         .w1-prompt:first-child { border-top:1px solid var(--border); }
-        .w1-prompt-num { font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:10px; }
-        .w1-prompt-q { font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--ink);line-height:1.35;margin-bottom:10px; }
-        .w1-prompt-hint { font-size:12.5px;color:var(--stone);line-height:1.75;font-style:italic; }
+        .w1-prompt-num { font-size:14px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:12px; }
+        .w1-prompt-q { font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--ink);line-height:1.35;margin-bottom:10px; }
+        .w1-prompt-hint { font-size:14px;color:var(--stone);line-height:1.75;font-style:italic; }
         .w1-actions { display:flex;flex-direction:column;gap:10px; }
         .w1-action { display:flex;align-items:flex-start;gap:14px;padding:16px 18px;border:.5px solid var(--border);border-radius:4px;background:white;text-decoration:none;color:var(--ink);transition:border-color .2s,background .2s; }
         .w1-action:hover { border-color:var(--gold);background:rgba(200,169,110,.05); }
@@ -1109,17 +1109,24 @@ export default function PostCeremonyPage() {
             {w.integrationStatement && (
               <section className="w1-section" id="completion">
                 <h3 className="w1-h3">Completion</h3>
-                <div className="integration-qs">
-                  <div className="iq-header">
-                    <span className="iq-label">Your integration statement, three questions, one page</span>
-                  </div>
-                  {w.integrationStatement.map((q, qi) => (
-                    <div className="iq-item" key={qi}>
-                      <div className="iq-q">{qi + 1}. {q.q}</div>
-                      <div className="iq-hint">{q.hint}</div>
+                <p className="w1-autosave">Your integration statement, three questions, one page. Your writing saves automatically as you type.</p>
+                {w.integrationStatement.map((q, qi) => {
+                  const jKey = `w${i}-iq${qi}`
+                  return (
+                    <div className="w1-prompt" key={qi}>
+                      <span className="w1-prompt-num">0{qi + 1}</span>
+                      <p className="w1-prompt-q">{q.q}</p>
+                      {q.hint && <p className="w1-prompt-hint">{q.hint}</p>}
+                      <textarea
+                        className="journal-textarea"
+                        value={journal[jKey] ?? ''}
+                        onChange={(e) => updateJournal(jKey, e.target.value)}
+                        placeholder="Write freely..."
+                        rows={4}
+                      />
                     </div>
-                  ))}
-                </div>
+                  )
+                })}
               </section>
             )}
 

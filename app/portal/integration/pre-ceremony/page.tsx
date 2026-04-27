@@ -794,9 +794,9 @@ export default function PreCeremonyPage() {
         .w1-invite { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:var(--sage);line-height:1.7;margin:4px 0 28px;padding-left:20px;border-left:2px solid var(--sage-lt); }
         .w1-prompt { padding:22px 0;border-bottom:1px solid var(--border); }
         .w1-prompt:first-child { border-top:1px solid var(--border); }
-        .w1-prompt-num { font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:10px; }
-        .w1-prompt-q { font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--ink);line-height:1.35;margin-bottom:10px; }
-        .w1-prompt-hint { font-size:12.5px;color:var(--stone);line-height:1.75;font-style:italic; }
+        .w1-prompt-num { font-size:14px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:12px; }
+        .w1-prompt-q { font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--ink);line-height:1.35;margin-bottom:10px; }
+        .w1-prompt-hint { font-size:14px;color:var(--stone);line-height:1.75;font-style:italic; }
         .w1-actions { display:flex;flex-direction:column;gap:10px; }
         .w1-action { display:flex;align-items:flex-start;gap:14px;padding:16px 18px;border:.5px solid var(--border);border-radius:4px;background:white;text-decoration:none;color:var(--ink);transition:border-color .2s,background .2s; }
         .w1-action:hover { border-color:var(--sage);background:rgba(122,158,126,.04); }
