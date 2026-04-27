@@ -250,7 +250,7 @@ export default function DonateClient({
           state === "complete" ||
           (state === "no-commitment" && expected > 0)) && (
           <div style={statGridStyle}>
-            <StatCard label="Pledged" value={fmt(expected)} />
+            <StatCard label="Contribution" value={fmt(expected)} />
             <StatCard
               label="Donated"
               value={fmt(paid)}
