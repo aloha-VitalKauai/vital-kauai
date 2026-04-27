@@ -13,7 +13,14 @@ export default async function DonatePage() {
   if (!user) return null;
 
   const [{ data: ov }, { data: memberRow }, { data: history }] = await Promise.all([
-    supabase.from("member_financial_overview").select("*").maybeSingle(),
+    // Filter explicitly by user.id. RLS scopes regular members to one row, but
+    // founders can read all rows — without this filter maybeSingle() returns
+    // null for any founder testing the portal, hiding their own pledge.
+    supabase
+      .from("member_financial_overview")
+      .select("*")
+      .eq("member_id", user.id)
+      .maybeSingle(),
     // Source of truth for program price (founder sets this in member editor).
     supabase.from("members").select("program_price").eq("id", user.id).maybeSingle(),
     supabase
@@ -63,6 +70,7 @@ export default async function DonatePage() {
       paid={paid}
       remaining={remaining}
       journeyId={ov?.active_journey_id ?? null}
+      memberId={user.id}
       history={history ?? []}
     />
   );

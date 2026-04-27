@@ -18,6 +18,7 @@ type Props = {
   paid: number;
   remaining: number;
   journeyId: string | null;
+  memberId: string;
   history: DonationRow[];
 };
 
@@ -55,6 +56,7 @@ export default function DonateClient({
   paid,
   remaining,
   journeyId,
+  memberId,
   history,
 }: Props) {
   const params = useSearchParams();
@@ -97,6 +99,7 @@ export default function DonateClient({
       const { data } = await supabase
         .from("member_financial_overview")
         .select("journey_remaining_amount_cents, financial_status")
+        .eq("member_id", memberId)
         .maybeSingle();
       if (cancelled) return;
       const cur = data?.journey_remaining_amount_cents ?? baseline;
