@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { formatMoney } from "@/lib/financials/formatMoney";
 import type { PrivateCeremonyMargin } from "@/lib/financials/types";
 import { TH, TD, EMPTY } from "./styles";
@@ -12,12 +13,60 @@ export default function PrivateCeremoniesTable({
 }: {
   rows: PrivateCeremonyMargin[];
 }) {
+  const router = useRouter();
   const [sortKey, setSortKey] = useState<SortKey>("start_at");
   const [dir, setDir] = useState<"asc" | "desc">("desc");
   const [expenseFor, setExpenseFor] = useState<{
     journeyId: string;
     label: string;
   } | null>(null);
+  const [editingJourneyId, setEditingJourneyId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [errMsg, setErrMsg] = useState<string | null>(null);
+
+  function startEdit(journeyId: string, currentOutstandingCents: number) {
+    setEditingJourneyId(journeyId);
+    setEditValue((currentOutstandingCents / 100).toString());
+    setErrMsg(null);
+  }
+
+  function cancelEdit() {
+    setEditingJourneyId(null);
+    setEditValue("");
+    setErrMsg(null);
+  }
+
+  async function saveEdit(journeyId: string) {
+    const dollars = parseFloat(editValue);
+    if (!Number.isFinite(dollars) || dollars < 0) {
+      setErrMsg("Enter $0 or more");
+      return;
+    }
+    setSaving(true);
+    setErrMsg(null);
+    try {
+      const res = await fetch("/api/payments/adjust-outstanding", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          journey_id: journeyId,
+          outstanding_cents: Math.round(dollars * 100),
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || json.error) {
+        setErrMsg(json.error ?? "Save failed");
+        return;
+      }
+      cancelEdit();
+      router.refresh();
+    } catch {
+      setErrMsg("Save failed");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   if (rows.length === 0) {
     return <div style={EMPTY}>No private ceremonies yet.</div>;
@@ -110,7 +159,63 @@ export default function PrivateCeremoniesTable({
                     color: outstanding > 0 ? "#633806" : "#9E9E9A",
                   }}
                 >
-                  {formatMoney(outstanding)}
+                  {editingJourneyId === r.journey_id ? (
+                    <span
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      <span style={{ color: "#9E9E9A" }}>$</span>
+                      <input
+                        type="number"
+                        min={0}
+                        step="0.01"
+                        autoFocus
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") saveEdit(r.journey_id);
+                          if (e.key === "Escape") cancelEdit();
+                        }}
+                        disabled={saving}
+                        style={INLINE_INPUT}
+                      />
+                      <button
+                        onClick={() => saveEdit(r.journey_id)}
+                        disabled={saving}
+                        style={INLINE_SAVE}
+                      >
+                        {saving ? "…" : "Save"}
+                      </button>
+                      <button
+                        onClick={cancelEdit}
+                        disabled={saving}
+                        style={INLINE_CANCEL}
+                        aria-label="Cancel"
+                      >
+                        ✕
+                      </button>
+                      {errMsg && (
+                        <span style={{ color: "#a52a2a", fontSize: 11 }}>
+                          {errMsg}
+                        </span>
+                      )}
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => startEdit(r.journey_id, outstanding)}
+                      style={OUTSTANDING_BUTTON}
+                      title="Adjust outstanding amount"
+                    >
+                      <span>{formatMoney(outstanding)}</span>
+                      <span style={EDIT_PENCIL} aria-hidden>
+                        ✎
+                      </span>
+                    </button>
+                  )}
                 </td>
                 <td style={TD}>
                   <button
@@ -183,5 +288,71 @@ const EXPENSE_PLUS: React.CSSProperties = {
   color: "#B8683D",
   fontSize: 13,
   fontWeight: 600,
+  lineHeight: 1,
+};
+
+const OUTSTANDING_BUTTON: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 6,
+  background: "transparent",
+  border: "0.5px solid transparent",
+  borderRadius: 6,
+  padding: "4px 8px",
+  margin: "-4px -8px",
+  cursor: "pointer",
+  font: "inherit",
+  color: "inherit",
+  textAlign: "left",
+  transition: "border-color 0.15s, background 0.15s",
+};
+
+const EDIT_PENCIL: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: 16,
+  height: 16,
+  borderRadius: "50%",
+  background: "rgba(99,56,6,0.1)",
+  color: "#633806",
+  fontSize: 11,
+  fontWeight: 600,
+  lineHeight: 1,
+};
+
+const INLINE_INPUT: React.CSSProperties = {
+  width: 80,
+  fontSize: 12,
+  padding: "4px 6px",
+  border: "0.5px solid rgba(0,0,0,0.25)",
+  borderRadius: 5,
+  fontFamily: "inherit",
+  background: "#fff",
+  color: "#1A1A18",
+};
+
+const INLINE_SAVE: React.CSSProperties = {
+  fontSize: 11,
+  letterSpacing: "0.06em",
+  textTransform: "uppercase",
+  background: "#0E0C0A",
+  color: "#F0EBE0",
+  border: "0.5px solid rgba(0,0,0,0.35)",
+  borderRadius: 5,
+  padding: "4px 9px",
+  cursor: "pointer",
+  fontFamily: "inherit",
+};
+
+const INLINE_CANCEL: React.CSSProperties = {
+  fontSize: 12,
+  background: "transparent",
+  color: "#6B6B67",
+  border: "0.5px solid rgba(0,0,0,0.15)",
+  borderRadius: 5,
+  padding: "3px 7px",
+  cursor: "pointer",
+  fontFamily: "inherit",
   lineHeight: 1,
 };
