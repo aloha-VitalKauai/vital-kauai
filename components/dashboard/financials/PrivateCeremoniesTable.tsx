@@ -20,24 +20,51 @@ export default function PrivateCeremoniesTable({
     journeyId: string;
     label: string;
   } | null>(null);
-  const [editingJourneyId, setEditingJourneyId] = useState<string | null>(null);
+  type EditField = "booked" | "collected" | "outstanding";
+  const [editing, setEditing] = useState<{
+    journeyId: string;
+    field: EditField;
+  } | null>(null);
   const [editValue, setEditValue] = useState("");
   const [saving, setSaving] = useState(false);
   const [errMsg, setErrMsg] = useState<string | null>(null);
 
-  function startEdit(journeyId: string, currentOutstandingCents: number) {
-    setEditingJourneyId(journeyId);
-    setEditValue((currentOutstandingCents / 100).toString());
+  function startEdit(
+    journeyId: string,
+    field: EditField,
+    currentCents: number,
+  ) {
+    setEditing({ journeyId, field });
+    setEditValue((currentCents / 100).toString());
     setErrMsg(null);
   }
 
   function cancelEdit() {
-    setEditingJourneyId(null);
+    setEditing(null);
     setEditValue("");
     setErrMsg(null);
   }
 
-  async function saveEdit(journeyId: string) {
+  const FIELD_CONFIG: Record<
+    EditField,
+    { endpoint: string; payloadKey: string }
+  > = {
+    booked: {
+      endpoint: "/api/payments/adjust-booked",
+      payloadKey: "booked_cents",
+    },
+    collected: {
+      endpoint: "/api/payments/adjust-collected",
+      payloadKey: "collected_cents",
+    },
+    outstanding: {
+      endpoint: "/api/payments/adjust-outstanding",
+      payloadKey: "outstanding_cents",
+    },
+  };
+
+  async function saveEdit() {
+    if (!editing) return;
     const dollars = parseFloat(editValue);
     if (!Number.isFinite(dollars) || dollars < 0) {
       setErrMsg("Enter $0 or more");
@@ -46,12 +73,13 @@ export default function PrivateCeremoniesTable({
     setSaving(true);
     setErrMsg(null);
     try {
-      const res = await fetch("/api/payments/adjust-outstanding", {
+      const cfg = FIELD_CONFIG[editing.field];
+      const res = await fetch(cfg.endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          journey_id: journeyId,
-          outstanding_cents: Math.round(dollars * 100),
+          journey_id: editing.journeyId,
+          [cfg.payloadKey]: Math.round(dollars * 100),
         }),
       });
       const json = await res.json().catch(() => ({}));
@@ -66,6 +94,75 @@ export default function PrivateCeremoniesTable({
     } finally {
       setSaving(false);
     }
+  }
+
+  function renderEditableMoneyCell(
+    journeyId: string,
+    field: EditField,
+    cents: number,
+    cellStyle: React.CSSProperties,
+  ) {
+    const isEditing =
+      editing?.journeyId === journeyId && editing.field === field;
+    return (
+      <td style={cellStyle}>
+        {isEditing ? (
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              flexWrap: "wrap",
+            }}
+          >
+            <span style={{ color: "#9E9E9A" }}>$</span>
+            <input
+              type="number"
+              min={0}
+              step="0.01"
+              autoFocus
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") saveEdit();
+                if (e.key === "Escape") cancelEdit();
+              }}
+              disabled={saving}
+              style={INLINE_INPUT}
+            />
+            <button
+              onClick={saveEdit}
+              disabled={saving}
+              style={INLINE_SAVE}
+            >
+              {saving ? "…" : "Save"}
+            </button>
+            <button
+              onClick={cancelEdit}
+              disabled={saving}
+              style={INLINE_CANCEL}
+              aria-label="Cancel"
+            >
+              ✕
+            </button>
+            {errMsg && (
+              <span style={{ color: "#a52a2a", fontSize: 11 }}>{errMsg}</span>
+            )}
+          </span>
+        ) : (
+          <button
+            onClick={() => startEdit(journeyId, field, cents)}
+            style={EDITABLE_BUTTON}
+            title={`Adjust ${field}`}
+          >
+            <span>{formatMoney(cents)}</span>
+            <span style={EDIT_PENCIL} aria-hidden>
+              ✎
+            </span>
+          </button>
+        )}
+      </td>
+    );
   }
 
   if (rows.length === 0) {
@@ -151,72 +248,27 @@ export default function PrivateCeremoniesTable({
                 <td style={{ ...TD, textTransform: "capitalize" }}>
                   {r.journey_status.replace(/_/g, " ")}
                 </td>
-                <td style={TD}>{formatMoney(r.booked_cents)}</td>
-                <td style={TD}>{formatMoney(r.revenue_cents)}</td>
-                <td
-                  style={{
+                {renderEditableMoneyCell(
+                  r.journey_id,
+                  "booked",
+                  r.booked_cents ?? 0,
+                  TD,
+                )}
+                {renderEditableMoneyCell(
+                  r.journey_id,
+                  "collected",
+                  r.revenue_cents ?? 0,
+                  TD,
+                )}
+                {renderEditableMoneyCell(
+                  r.journey_id,
+                  "outstanding",
+                  outstanding,
+                  {
                     ...TD,
                     color: outstanding > 0 ? "#633806" : "#9E9E9A",
-                  }}
-                >
-                  {editingJourneyId === r.journey_id ? (
-                    <span
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 6,
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      <span style={{ color: "#9E9E9A" }}>$</span>
-                      <input
-                        type="number"
-                        min={0}
-                        step="0.01"
-                        autoFocus
-                        value={editValue}
-                        onChange={(e) => setEditValue(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") saveEdit(r.journey_id);
-                          if (e.key === "Escape") cancelEdit();
-                        }}
-                        disabled={saving}
-                        style={INLINE_INPUT}
-                      />
-                      <button
-                        onClick={() => saveEdit(r.journey_id)}
-                        disabled={saving}
-                        style={INLINE_SAVE}
-                      >
-                        {saving ? "…" : "Save"}
-                      </button>
-                      <button
-                        onClick={cancelEdit}
-                        disabled={saving}
-                        style={INLINE_CANCEL}
-                        aria-label="Cancel"
-                      >
-                        ✕
-                      </button>
-                      {errMsg && (
-                        <span style={{ color: "#a52a2a", fontSize: 11 }}>
-                          {errMsg}
-                        </span>
-                      )}
-                    </span>
-                  ) : (
-                    <button
-                      onClick={() => startEdit(r.journey_id, outstanding)}
-                      style={OUTSTANDING_BUTTON}
-                      title="Adjust outstanding amount"
-                    >
-                      <span>{formatMoney(outstanding)}</span>
-                      <span style={EDIT_PENCIL} aria-hidden>
-                        ✎
-                      </span>
-                    </button>
-                  )}
-                </td>
+                  },
+                )}
                 <td style={TD}>
                   <button
                     onClick={() =>
@@ -291,7 +343,7 @@ const EXPENSE_PLUS: React.CSSProperties = {
   lineHeight: 1,
 };
 
-const OUTSTANDING_BUTTON: React.CSSProperties = {
+const EDITABLE_BUTTON: React.CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
   gap: 6,
