@@ -148,7 +148,7 @@ const WEEKS = [
     subtitle: 'This is the beginning of something real.',
     sub: 'Iboga asks for your presence, your honesty, and your full participation. What you do in these six weeks matters. The way you prepare becomes part of the experience itself.',
     italic: 'This week calls for presence. Just begin.',
-    video: { label: 'A Message from Rachel & Josh · Week 1', text: 'A real conversation about what you are walking into, why the next six weeks matter, and the one thing that protects you more than any lab result or dietary protocol. Watch this before you read anything else this week.' },
+    video: { label: 'A Message from Rachel & Josh · Week 1', text: 'In this week’s video, Rachel and Josh share what Ike has meant in their own lives and how it has shaped the way they walk through the world.' },
     box: { type: 'info', label: 'The most important safety factor is your honesty.', text: 'Your labs, your diet, and your supplement plan all matter—but it\'s your willingness to see yourself clearly that shapes how the medicine meets you. Iboga brings truth to the surface. When you arrive having already begun that process with yourself, the experience becomes something you can move through with awareness. This is how the medicine meets you.' },
     actionLabel: 'Actions this week, 4 only',
     actions: [
