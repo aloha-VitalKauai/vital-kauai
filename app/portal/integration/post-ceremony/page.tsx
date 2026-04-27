@@ -277,7 +277,7 @@ const WEEKS = [
     title: 'The familiar is returning.',
     subtitle: 'Meet it differently.',
     carryForward: 'You\'ve been tending new practices. You\'ve begun to bring the insights into your days. This week something will shift, old patterns may begin to resurface. This is the real integration beginning.',
-    intro: 'Haʻahaʻa means humility, the willingness to be exactly where you are without pretending to be further along. By week three, the acute aliveness of ceremony has softened. The ordinary world has returned. And with it, the familiar, however slightly, may start to return. Your ability to notice it, welcome it, and shift it with greater awareness is alive. This week asks you to meet all of that with humility rather than shame.',
+    intro: 'Haʻahaʻa means humility, the willingness to be exactly where you are without pretending to be further along. By week three, the acute aliveness of ceremony has softened. The ordinary world has returned. And with it, the familiar, however slightly, may start to return. Your ability to notice it, welcome it, and shift it with greater awareness is alive. This week asks you to meet all of that with humility.',
     reentry: {
       strong: 'When the pattern hits, do this:',
       text: ' (1) Name it aloud or in writing: "This is the [fear / avoidance / contraction] pattern." (2) Feet flat on the floor. One hand on your heart. One slow breath, in for 5, hold for 2, out for 7. (3) Name it openly, tell your guide, your support person, or write it here. (4) Return to your practice, even for five minutes. The pattern yields to your sustained attention and your practice. This is neuroscience.',
