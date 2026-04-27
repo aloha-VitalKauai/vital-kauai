@@ -68,7 +68,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
                 {/* <a href="/portal/journal" className="pn-dropdown-item">Comprehensive Journal</a> */}
               </div>
             </div>
-            <a href="/portal/donate" className="pn-link">Contribution/Donate</a>
+            <a href="/portal/donate" className="pn-link">Contribution</a>
             <a href="/portal/contact" className="pn-link">Contact</a>
           {/* Community tab hidden while the section is being built out.
               Restore by uncommenting this line. */}
@@ -110,7 +110,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         <a href="/portal/integration/post-ceremony" onClick={close}>Post-Ceremony</a>
         {/* Comprehensive Journal hidden — restore alongside the desktop link. */}
         {/* <a href="/portal/journal" onClick={close}>Comprehensive Journal</a> */}
-        <a href="/portal/donate" onClick={close}>Contribution/Donate</a>
+        <a href="/portal/donate" onClick={close}>Contribution</a>
         <a href="/portal/contact" onClick={close}>Contact</a>
         {/* Community link hidden — restore with the main nav link when the section is ready. */}
         <form action="/auth/logout" method="post">
