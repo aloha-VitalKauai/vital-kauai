@@ -553,31 +553,18 @@ export function PortalHomePage({
         </section>
 
         {/* BEGIN WEEK 1 BANNER */}
-        <div className={`${styles.beginBanner} ${allRequiredDone ? styles.beginBannerActive : styles.beginBannerLocked}`}>
-          {allRequiredDone ? (
-            <Link href="/portal/integration/pre-ceremony" className={styles.beginBannerInner}>
-              <p className={styles.beginEyebrow}>Get Started</p>
-              <h2 className={styles.beginTitle}>
-                Begin <em>Week 1</em>
-              </h2>
-              <p className={styles.beginSub}>
-                Six weeks of preparation, then ceremony, then six weeks of integration.
-                Open Week 1 when you&apos;re ready.
-              </p>
-              <span className={styles.beginCta}>Open Week 1 &rarr;</span>
-            </Link>
-          ) : (
-            <div className={styles.beginBannerInner}>
-              <p className={styles.beginEyebrow}>Get Started</p>
-              <h2 className={styles.beginTitle}>
-                Begin <em>Week 1</em>
-              </h2>
-              <p className={styles.beginSub}>
-                Sign all three steps above to open your preparation arc.
-              </p>
-            </div>
-          )}
-        </div>
+        <Link href="/portal/integration/pre-ceremony" className={styles.beginBanner}>
+          <p className={styles.beginEyebrow}>Get Started</p>
+          <h2 className={styles.beginTitle}>
+            Begin <em>Week 1 &middot; Ike</em>
+          </h2>
+          <p className={styles.beginSub}>
+            {allRequiredDone
+              ? "Six weeks of preparation, then ceremony, then six weeks of integration. Open Week 1 when you’re ready."
+              : "Step into your preparation arc. Sign the three documents above when you’re ready to fully open it."}
+          </p>
+          <span className={styles.beginCta}>Open Week 1 &rarr;</span>
+        </Link>
       </main>
 
       {/* ── LOWER BAND (forest) ─── */}
