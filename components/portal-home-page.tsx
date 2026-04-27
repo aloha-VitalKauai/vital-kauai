@@ -537,8 +537,8 @@ export function PortalHomePage({
                 Medical Disclaimer <em>&amp; Risk Acknowledgment</em>
               </div>
               <div className={styles.docDesc}>
-                A clear acknowledgment of the nature of plant medicine work, your informed
-                consent, and the inherent risks you understand and voluntarily accept.
+                A clear acknowledgment of the nature of plant medicine work and your informed
+                consent.
               </div>
               <div className={styles.docFooter}>
                 <span className={`${styles.docTag} ${styles.tagRequired}`}>
