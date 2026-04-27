@@ -553,7 +553,7 @@ export function PortalHomePage({
         </section>
 
         {/* BEGIN WEEK 1 BANNER */}
-        <Link href="/portal/integration/pre-ceremony?week=1" className={styles.beginBanner}>
+        <Link href="/portal/integration/pre-ceremony?week=1" target="_blank" rel="noopener noreferrer" className={styles.beginBanner}>
           <p className={styles.beginEyebrow}>Get Started</p>
           <h2 className={styles.beginTitle}>
             Begin <em>Week 1 &middot; Ike</em>
@@ -711,7 +711,7 @@ export function PortalHomePage({
                 medical advisor, and integration guides, holding you in concert with Rachel and
                 Josh.
               </p>
-              <Link href="/healing-circle" className={styles.teamCta}>
+              <Link href="/healing-circle" target="_blank" rel="noopener noreferrer" className={styles.teamCta}>
                 Meet Our Healing Circle &rarr;
               </Link>
             </div>

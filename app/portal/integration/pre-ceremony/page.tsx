@@ -119,21 +119,24 @@ function renderActionText(
     }
     segments = next
   }
-  return segments.map((seg, i) =>
-    typeof seg === 'string' ? (
-      <Fragment key={i}>{seg}</Fragment>
-    ) : (
+  return segments.map((seg, i) => {
+    if (typeof seg === 'string') return <Fragment key={i}>{seg}</Fragment>
+    // Hash-only links scroll the current page — keep them in the same tab.
+    // Everything else (internal route or external URL) opens in a new tab so
+    // members don't lose their place on the week page.
+    const isHashOnly = seg.href.startsWith('#')
+    return (
       <a
         key={i}
         href={seg.href}
-        target={seg.external ? '_blank' : undefined}
-        rel={seg.external ? 'noopener noreferrer' : undefined}
+        target={isHashOnly ? undefined : '_blank'}
+        rel={isHashOnly ? undefined : 'noopener noreferrer'}
         style={{ color: 'inherit', textDecoration: 'none', borderBottom: '1px dashed rgba(200,169,110,.55)' }}
       >
         {seg.text}
       </a>
-    ),
-  )
+    )
+  })
 }
 
 // ─── Week data ────────────────────────────────────────────
@@ -1042,7 +1045,7 @@ export default function PreCeremonyPage() {
                     )
                   } else {
                     body = (
-                      <Link href={card.href} className="w1-action-body">
+                      <Link href={card.href} target="_blank" rel="noopener noreferrer" className="w1-action-body">
                         <span className="w1-action-dot" />
                         <span className="w1-action-text">{card.text}</span>
                       </Link>
@@ -1063,12 +1066,12 @@ export default function PreCeremonyPage() {
                   <div className="dataset-note" style={{ marginTop: 18 }}>
                     <div className="dn-header">
                       <span className="dn-label">Outcomes, your contribution to the field</span>
-                      {dl && <Link href={dl.href} className="dn-cta">{dl.text}</Link>}
+                      {dl && <Link href={dl.href} target="_blank" rel="noopener noreferrer" className="dn-cta">{dl.text}</Link>}
                     </div>
                     <div className="dn-body">{dataset}</div>
                     {dl && (
                       <div className="dn-footer">
-                        <Link href={dl.href} className="dn-cta">{dl.text}</Link>
+                        <Link href={dl.href} target="_blank" rel="noopener noreferrer" className="dn-cta">{dl.text}</Link>
                       </div>
                     )}
                   </div>
@@ -1105,7 +1108,7 @@ export default function PreCeremonyPage() {
                 </div>
               </div>
               {i === 0 && (
-                <Link href="/portal/somatic-companion#top" className="w1-companion-link">
+                <Link href="/portal/somatic-companion#top" target="_blank" rel="noopener noreferrer" className="w1-companion-link">
                   Read the full teaching in The PsychoNeuroEnergetic (PNE) Companion → Week 1: The Language of the Body
                 </Link>
               )}
