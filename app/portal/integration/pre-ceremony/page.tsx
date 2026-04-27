@@ -978,7 +978,7 @@ export default function PreCeremonyPage() {
               <p className="w1p-pull">&ldquo;{w.principle}&rdquo;</p>
               <p className="w1p-body">
                 {i === 0
-                  ? 'What you perceive shapes what you experience, attention, assumptions, the stories carried without noticing. This week is an invitation to look at the lens itself.'
+                  ? 'What you perceive shapes what you experience, and the world reflects it back as truth. Your attention, assumptions, and stories running underneath are the lens, and life answers in kind. This week is an invitation to look at the lens from which you view your reality.'
                   : w.sub}
               </p>
             </section>
