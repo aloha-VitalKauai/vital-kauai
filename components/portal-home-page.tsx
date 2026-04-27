@@ -490,7 +490,7 @@ export function PortalHomePage({
               }}
             >
               <div className={styles.docTitle}>
-                Contribution/Donate
+                Make your Contribution
               </div>
               <div className={styles.docDesc}>
                 Your gift supports the ministry, our gatherings, and the work Nature is doing
