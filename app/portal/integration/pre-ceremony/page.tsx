@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { PRE_CEREMONY_WEEKS } from '@/lib/journal-prompts'
 import SectionIndex, { type SectionIndexItem } from '@/components/portal/SectionIndex'
+import HeroCountdown from '@/components/portal/HeroCountdown'
 
 // Section index, same six anchors for every week, plus an extra "Readiness"
 // entry on Week 6 (which has the readiness gate appended to its panel).
@@ -730,7 +731,13 @@ export default function PreCeremonyPage() {
         /* HERO */
         .pc-hero { background:var(--forest);padding:80px 60px 72px;position:relative;overflow:hidden; }
         .pc-hero::before { content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(122,158,126,.08) 0%,transparent 70%);pointer-events:none; }
-        .pc-hero-inner { position:relative;z-index:1;max-width:860px;margin:0 auto; }
+        .pc-hero-inner { position:relative;z-index:1;max-width:1140px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:56px;align-items:start; }
+        .pc-hero-text { min-width:0; }
+        .pc-hero-aside { justify-self:end; }
+        @media (max-width: 880px) {
+          .pc-hero-inner { grid-template-columns:1fr;gap:32px; }
+          .pc-hero-aside { justify-self:start; }
+        }
         .pc-hero-eyebrow { font-size:9px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:18px; }
         .pc-hero h1 { font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5vw,62px);font-weight:300;color:var(--cream);line-height:1.06;margin-bottom:22px; }
         .pc-hero h1 em { font-style:italic;color:var(--sage-lt); }
@@ -944,13 +951,18 @@ export default function PreCeremonyPage() {
       {/* HERO */}
       <div className="pc-hero">
         <div className="pc-hero-inner">
-          <span className="pc-hero-eyebrow">Member Portal · Iboga Journey · Confidential</span>
-          <h1>Six Weeks of <em>Preparation</em></h1>
-          <p className="pc-hero-desc">
-            This portal is your companion through an evidence-based and deeply personal arc of preparation and integration.
-            Each week draws on a Hawaiian principle, paired with a teaching from psychoneuroenergetics (PNE) to support the body, mind, and spirit.
-            You&apos;ll find journal prompts, action items, and voices from the Vital Kauaʻi community, those who have walked this path.
-          </p>
+          <div className="pc-hero-text">
+            <span className="pc-hero-eyebrow">Member Portal · Iboga Journey · Confidential</span>
+            <h1>Six Weeks of <em>Preparation</em></h1>
+            <p className="pc-hero-desc">
+              This portal is your companion through an evidence-based and deeply personal arc of preparation and integration.
+              Each week draws on a Hawaiian principle, paired with a teaching from psychoneuroenergetics (PNE) to support the body, mind, and spirit.
+              You&apos;ll find journal prompts, action items, and voices from the Vital Kauaʻi community, those who have walked this path.
+            </p>
+          </div>
+          <div className="pc-hero-aside">
+            <HeroCountdown mode="pre" />
+          </div>
         </div>
       </div>
 
