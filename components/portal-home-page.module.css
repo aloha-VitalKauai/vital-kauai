@@ -431,8 +431,8 @@
   font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(245, 240, 232, 0.55);
-  font-weight: 500;
+  color: var(--ink-soft);
+  font-weight: 600;
 }
 
 .beginBanner {
