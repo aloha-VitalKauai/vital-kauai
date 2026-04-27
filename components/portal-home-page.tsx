@@ -474,7 +474,7 @@ export function PortalHomePage({
           <div className={styles.sectionHead}>
             <span className={styles.sectionEyebrow}>Three Steps to Begin</span>
             <h2 className={styles.sectionTitle}>
-              Sign These to <em>Open Your Journey</em>
+              Sign These and <em>Begin Your Journey</em>
             </h2>
             <p className={styles.unlockProgress}>
               {[donationDone, agreementDone, medicalDone].filter(Boolean).length} of 3 complete
@@ -558,11 +558,11 @@ export function PortalHomePage({
           <h2 className={styles.beginTitle}>
             Begin <em>Week 1 &middot; Ike</em>
           </h2>
-          <p className={styles.beginSub}>
-            {allRequiredDone
-              ? "Six weeks of preparation, then ceremony, then six weeks of integration. Open Week 1 when you’re ready."
-              : "Step into your preparation journey after signing the documents above."}
-          </p>
+          {allRequiredDone && (
+            <p className={styles.beginSub}>
+              Six weeks of preparation, then ceremony, then six weeks of integration. Open Week 1 when you’re ready.
+            </p>
+          )}
           <span className={styles.beginCta}>Open Week 1 &rarr;</span>
         </Link>
       </main>
