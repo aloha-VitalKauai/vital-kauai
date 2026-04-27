@@ -857,10 +857,19 @@ export default function PostCeremonyPage() {
         .w1-prompt-q { font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--ink);line-height:1.35;margin-bottom:10px; }
         .w1-prompt-hint { font-size:12.5px;color:var(--stone);line-height:1.75;font-style:italic; }
         .w1-actions { display:flex;flex-direction:column;gap:10px; }
-        .w1-action { display:flex;align-items:flex-start;gap:14px;padding:16px 18px;border:.5px solid var(--border);border-radius:4px;background:white;text-decoration:none;color:var(--ink);transition:border-color .2s,background .2s; }
+        .w1-action { display:flex;align-items:stretch;border:.5px solid var(--border);border-radius:4px;background:white;transition:border-color .2s,background .2s; }
         .w1-action:hover { border-color:var(--gold);background:rgba(200,169,110,.05); }
+        .w1-action.is-checked { background:rgba(200,169,110,.08);border-color:rgba(200,169,110,.5); }
+        .w1-action.is-checked .w1-action-text { color:var(--ink-soft);text-decoration:line-through;text-decoration-color:rgba(200,169,110,.55);text-decoration-thickness:1px; }
+        .w1-action-body { flex:1;min-width:0;display:flex;align-items:flex-start;gap:14px;padding:16px 18px;text-decoration:none;color:var(--ink); }
         .w1-action-dot { width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:7px; }
         .w1-action-text { font-size:13.5px;color:var(--ink);line-height:1.55; }
+        .w1-action-check { flex-shrink:0;display:flex;align-items:center;justify-content:center;width:54px;background:none;border:none;border-left:.5px solid var(--border);cursor:pointer;font-family:inherit;padding:0;color:var(--gold);transition:background .15s; }
+        .w1-action-check:hover { background:rgba(200,169,110,.1); }
+        .w1-action-check-box { width:22px;height:22px;border:1.5px solid rgba(200,169,110,.6);border-radius:4px;display:flex;align-items:center;justify-content:center;background:white;transition:background .2s,border-color .2s; }
+        .w1-action-check:hover .w1-action-check-box { border-color:var(--gold); }
+        .w1-action-check.checked .w1-action-check-box { background:var(--gold);border-color:var(--gold); }
+        .w1-action-check-mark { color:white;font-size:14px;font-weight:700;line-height:1; }
         /* Week 1 principle display, scaled up so the principle reads as the theme */
         .w1p-eyebrow { font-size:12px;font-weight:600;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:22px; }
         .w1p-title { font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5.2vw,58px);font-weight:300;line-height:1.06;margin:0 0 18px;color:var(--ink); }
@@ -971,35 +980,56 @@ export default function PostCeremonyPage() {
               <h3 className="w1-h3">Action Items</h3>
               <div className="w1-actions">
                 {actionsForWeek(w.actions).map((card, ai) => {
+                  const checkId = `post-w${i}-a${ai}`
+                  const isChecked = !!checklist[checkId]
+                  const checkbox = (
+                    <button
+                      type="button"
+                      className={`w1-action-check${isChecked ? ' checked' : ''}`}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCheck(checkId) }}
+                      aria-label={isChecked ? 'Mark as not done' : 'Mark as done'}
+                      aria-pressed={isChecked}
+                    >
+                      <span className="w1-action-check-box">
+                        {isChecked && <span className="w1-action-check-mark">✓</span>}
+                      </span>
+                    </button>
+                  )
+                  let body
                   if (card.kind === 'static') {
-                    return (
-                      <div key={ai} className="w1-action">
+                    body = (
+                      <div className="w1-action-body">
                         <span className="w1-action-dot" />
                         <span className="w1-action-text">{renderActionText(card.text, card.links)}</span>
                       </div>
                     )
-                  }
-                  if (card.kind === 'hash') {
-                    return (
-                      <a key={ai} href={card.href} className="w1-action">
+                  } else if (card.kind === 'hash') {
+                    body = (
+                      <a href={card.href} className="w1-action-body">
                         <span className="w1-action-dot" />
                         <span className="w1-action-text">{card.text}</span>
                       </a>
                     )
-                  }
-                  if (card.kind === 'external') {
-                    return (
-                      <a key={ai} href={card.href} target="_blank" rel="noopener noreferrer" className="w1-action">
+                  } else if (card.kind === 'external') {
+                    body = (
+                      <a href={card.href} target="_blank" rel="noopener noreferrer" className="w1-action-body">
                         <span className="w1-action-dot" />
                         <span className="w1-action-text">{card.text}</span>
                       </a>
+                    )
+                  } else {
+                    body = (
+                      <Link href={card.href} className="w1-action-body">
+                        <span className="w1-action-dot" />
+                        <span className="w1-action-text">{card.text}</span>
+                      </Link>
                     )
                   }
                   return (
-                    <Link key={ai} href={card.href} className="w1-action">
-                      <span className="w1-action-dot" />
-                      <span className="w1-action-text">{card.text}</span>
-                    </Link>
+                    <div key={ai} className={`w1-action${isChecked ? ' is-checked' : ''}`}>
+                      {body}
+                      {checkbox}
+                    </div>
                   )
                 })}
               </div>
