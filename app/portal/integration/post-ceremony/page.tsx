@@ -2,8 +2,6 @@
 
 import { Fragment, useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { getActiveJourney } from '@/lib/journeyHelpers'
-import { getWeekCountdown } from '@/lib/weekCountdown'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { POST_CEREMONY_WEEKS } from '@/lib/journal-prompts'
@@ -167,16 +165,6 @@ type MonthlyTracking = {
   patterns_returned: boolean
   practice_maintained: boolean
 }
-
-// ─── Per-week anchor lines for the green status box ──────
-const POST_ANCHORS: readonly string[] = [
-  'The medicine is still moving in you.',
-  'Tending what arose.',
-  'Meeting the familiar differently.',
-  'Living the insight.',
-  'Turning what you received outward.',
-  'The work takes root.',
-] as const
 
 // ─── Week data ────────────────────────────────────────────
 const WEEKS = [
@@ -722,7 +710,6 @@ export default function PostCeremonyPage() {
   const [userId, setUserId] = useState<string | null>(null)
   const [userEmail, setUserEmail] = useState('')
   const [activeWeek, setActiveWeek] = useState(0)
-  const [ceremonyStartAt, setCeremonyStartAt] = useState<string | null>(null)
   const [completed, setCompleted] = useState<Set<number>>(new Set())
   const [checklist, setChecklist] = useState<Record<string, boolean>>({})
   const [weeklyTracking, setWeeklyTracking] = useState<Record<number, WeekTracking>>({})
@@ -736,9 +723,6 @@ export default function PostCeremonyPage() {
       if (!user) { router.push('/portal'); return }
       setUserId(user.id)
       setUserEmail(user.email ?? '')
-
-      const journey = await getActiveJourney(supabase, user.id).catch(() => null)
-      if (journey?.start_at) setCeremonyStartAt(journey.start_at)
 
       const { data } = await supabase
         .from('post_ceremony_progress')
@@ -857,16 +841,6 @@ export default function PostCeremonyPage() {
         .pc-week-nav{position:sticky;top:60px;z-index:90;background:rgba(253,251,247,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;display:flex;overflow-x:auto}.pc-week-nav::-webkit-scrollbar{display:none}
         .wbtn{font-family:inherit;font-size:9px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;padding:0 20px;height:52px;border:none;border-bottom:2px solid transparent;cursor:pointer;color:var(--stone);background:transparent;white-space:nowrap;transition:all .2s}.wbtn:hover{color:var(--ink)}.wbtn.active{color:var(--forest);border-bottom-color:var(--gold);font-weight:500}.wbtn.done::after{content:' ✓';font-size:8px;color:var(--gold);margin-left:4px}
         .pc-main{max-width:860px;margin:0 auto;padding:0 48px 100px}.pc-panel{display:none;padding-top:56px}.pc-panel.active{display:block}
-        /* Principle + week-status side-by-side rail */
-        .principle-row{display:grid;grid-template-columns:1fr 280px;gap:36px;align-items:flex-start;margin-bottom:8px}
-        .principle-row > .w1-section{margin-bottom:0}
-        .week-status{background:#1c2b1e;border:1px solid rgba(168,197,172,.18);border-radius:12px;padding:26px 28px;position:sticky;top:130px}
-        .week-status .ws-label{display:block;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px}
-        .week-status .ws-status{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#f5f0e8;line-height:1.2;margin-bottom:18px}
-        .week-status .ws-anchor{font-size:13.5px;font-style:italic;color:rgba(168,197,172,.85);line-height:1.6}
-        .week-status-past .ws-status{color:rgba(168,197,172,.7)}
-        .week-status-unknown .ws-status{font-size:18px;color:rgba(168,197,172,.55);font-style:italic}
-        @media(max-width:760px){.principle-row{grid-template-columns:1fr;gap:20px}.week-status{position:static}}
         .continuity{display:flex;gap:12px;align-items:flex-start;background:rgba(122,158,126,.06);border-left:2px solid var(--sage-lt);padding:14px 18px;margin-bottom:32px}.ct-arrow{font-size:13px;color:var(--sage);flex-shrink:0;margin-top:1px}.ct-text{font-size:12.5px;color:var(--stone);line-height:1.75}.ct-text strong{color:var(--ink-mid);font-weight:500}
         .wh-eyebrow{font-size:9px;letter-spacing:.38em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:14px}.wh-title{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,4vw,46px);font-weight:300;line-height:1.1;margin-bottom:16px;color:var(--ink);white-space:pre-line}.wh-title em{font-style:italic;color:var(--gold)}.wh-sub{font-size:14px;color:var(--stone);line-height:1.9;max-width:640px;padding-bottom:32px;border-bottom:1px solid var(--border);margin-bottom:36px}
         /* Week 1 shared layout (matched to pre-ceremony so the 12-week arc reads as one piece) */
@@ -966,25 +940,16 @@ export default function PostCeremonyPage() {
       <SectionIndex sections={sectionsForWeek(activeWeek)} stickyTop={112} scrollOffset={170} />
 
       <main className="pc-main">
-        {WEEKS.map((w, i) => {
-          const cd = getWeekCountdown(ceremonyStartAt, 'post', i)
-          return (
+        {WEEKS.map((w, i) => (
           <div key={w.id} className={`pc-panel${activeWeek===i?' active':''}`}>
 
-            {/* PRINCIPLE + WEEK STATUS */}
-            <div className="principle-row">
-              <section className="w1-section" id="principle">
-                <span className="w1p-eyebrow">Week {i + 1} · {w.principleName} · {w.theme}</span>
-                <h2 className="w1p-title">{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</h2>
-                <p className="w1p-pull">&ldquo;{w.principle}&rdquo;</p>
-                <p className="w1p-body">{w.intro}</p>
-              </section>
-              <aside className={`week-status week-status-${cd?.phase ?? 'unknown'}`}>
-                <span className="ws-label">Week {i + 1}</span>
-                <div className="ws-status">{cd ? cd.label : 'Begins once your dates are set'}</div>
-                <div className="ws-anchor">{POST_ANCHORS[i]}</div>
-              </aside>
-            </div>
+            {/* PRINCIPLE */}
+            <section className="w1-section" id="principle">
+              <span className="w1p-eyebrow">Week {i + 1} · {w.principleName} · {w.theme}</span>
+              <h2 className="w1p-title">{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</h2>
+              <p className="w1p-pull">&ldquo;{w.principle}&rdquo;</p>
+              <p className="w1p-body">{w.intro}</p>
+            </section>
 
             {/* VIDEO, Message from the Founders */}
             <section className="w1-section" id="week-video">
@@ -1188,7 +1153,7 @@ export default function PostCeremonyPage() {
             </div>
 
           </div>
-        )})}
+        ))}
       </main>
 
       <div className={`save-pill${saveStatus!=='idle'?' visible':''}`}>
