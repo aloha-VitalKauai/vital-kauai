@@ -143,17 +143,15 @@ export default function PrivateCeremoniesTable({
         </tbody>
       </table>
 
-      <AddExpenseModal
-        open={expenseFor !== null}
-        onClose={() => setExpenseFor(null)}
-        cohorts={[]}
-        journeys={[]}
-        lockedJourney={
-          expenseFor
-            ? { id: expenseFor.journeyId, label: expenseFor.label }
-            : undefined
-        }
-      />
+      {expenseFor && (
+        <AddExpenseModal
+          open
+          onClose={() => setExpenseFor(null)}
+          cohorts={[]}
+          journeys={[]}
+          lockedJourney={{ id: expenseFor.journeyId, label: expenseFor.label }}
+        />
+      )}
     </>
   );
 }
