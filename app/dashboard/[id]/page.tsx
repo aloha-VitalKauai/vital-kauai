@@ -26,6 +26,7 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
     { data: checklist },
     { data: commitment },
     { data: memberDonationsData },
+    { data: privateCeremonyRows },
   ] = await Promise.all([
     supabase.from("members").select("*").eq("id", id).maybeSingle(),
     supabase.from("member_profiles").select("*").eq("id", id).maybeSingle(),
@@ -48,7 +49,27 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       .eq("status", "completed")
       .order("completed_at", { ascending: false })
       .limit(25),
+    supabase
+      .from("private_ceremony_summary")
+      .select("booked_cents, expense_cents")
+      .eq("member_id", id),
   ]);
+
+  // Roll up booked + expenses across this member's private ceremony journeys so
+  // the profile's Program Price / Cost of Service cards mirror the Financials
+  // → Private Ceremony tab. Null when the member has no private journeys yet —
+  // the editor falls back to the manually-entered members.program_price /
+  // cost_of_service in that case.
+  const pcRows = (privateCeremonyRows ?? []) as Array<{
+    booked_cents: number | null;
+    expense_cents: number | null;
+  }>;
+  const bookedCents = pcRows.length
+    ? pcRows.reduce((sum, r) => sum + (r.booked_cents ?? 0), 0)
+    : null;
+  const expenseCents = pcRows.length
+    ? pcRows.reduce((sum, r) => sum + (r.expense_cents ?? 0), 0)
+    : null;
 
   if (!member) notFound();
 
@@ -163,6 +184,8 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       journeyEndAt={journeyEndAt}
       specialists={specialists}
       outcomesRows={outcomesRows ?? []}
+      bookedCents={bookedCents}
+      expenseCents={expenseCents}
     />
   );
 }
