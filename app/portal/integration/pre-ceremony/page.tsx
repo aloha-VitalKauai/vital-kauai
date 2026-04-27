@@ -778,7 +778,7 @@ export default function PreCeremonyPage() {
 
         /* SECTION */
         .section { margin-bottom:44px;scroll-margin-top:130px; }
-        .section-label { font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--sage);margin-bottom:16px;display:block; }
+        .section-label { font-size:14px;letter-spacing:.28em;text-transform:uppercase;color:var(--sage);margin-bottom:16px;display:block; }
 
         /* WEEK 1, custom layout */
         .w1-section { margin-bottom:52px;scroll-margin-top:130px; }
