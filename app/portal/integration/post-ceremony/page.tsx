@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { POST_CEREMONY_WEEKS } from '@/lib/journal-prompts'
 import SectionIndex, { type SectionIndexItem } from '@/components/portal/SectionIndex'
+import HeroCountdown from '@/components/portal/HeroCountdown'
 
 // Section index per week, same six entries every week, plus a Completion
 // anchor on Week 6 (the integration-statement + checklist + monthly-arc
@@ -852,7 +853,7 @@ export default function PostCeremonyPage() {
         .pc-nav-right{display:flex;align-items:center;gap:14px}.pc-nav-email{font-size:9px;letter-spacing:.1em;color:rgba(245,240,232,.3);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pc-nav-out{font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(200,169,110,.5);background:none;border:none;cursor:pointer;font-family:inherit;transition:color .2s}.pc-nav-out:hover{color:var(--gold)}
         .pc-prog{background:rgba(28,43,30,.06);border-bottom:1px solid var(--border-lt);padding:14px 48px;display:flex;align-items:center;gap:18px}.pc-prog-label{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--stone);font-weight:500}.pc-prog-track{flex:1;height:4px;background:var(--border);border-radius:3px;max-width:340px}.pc-prog-fill{height:100%;background:var(--gold);border-radius:3px;transition:width .6s ease}.pc-prog-week{font-size:12px;letter-spacing:.1em;color:var(--gold);font-weight:500}
         .pc-hero{background:linear-gradient(135deg,#1C2B1E 0%,#2E4231 60%,#1a3020 100%);padding:80px 60px 72px;position:relative;overflow:hidden}.pc-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 60%,rgba(200,169,110,.07) 0%,transparent 65%);pointer-events:none}
-        .pc-hero-inner{position:relative;z-index:1;max-width:860px;margin:0 auto}.pc-hero-eyebrow{font-size:9px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:18px}.pc-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5vw,62px);font-weight:300;color:var(--cream);line-height:1.06;margin-bottom:22px}.pc-hero h1 em{font-style:italic;color:var(--gold)}.pc-hero-desc{font-size:14.5px;color:rgba(245,240,232,.55);line-height:1.95;max-width:600px;margin-bottom:32px}.pc-hero-meta{display:flex;gap:32px;flex-wrap:wrap}.hm-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--cream);line-height:1}.hm-lbl{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.35);margin-top:4px}
+        .pc-hero-inner{position:relative;z-index:1;max-width:1140px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:56px;align-items:start}.pc-hero-text{min-width:0}.pc-hero-aside{justify-self:end}@media(max-width:880px){.pc-hero-inner{grid-template-columns:1fr;gap:32px}.pc-hero-aside{justify-self:start}}.pc-hero-eyebrow{font-size:9px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:18px}.pc-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5vw,62px);font-weight:300;color:var(--cream);line-height:1.06;margin-bottom:22px}.pc-hero h1 em{font-style:italic;color:var(--gold)}.pc-hero-desc{font-size:14.5px;color:rgba(245,240,232,.55);line-height:1.95;max-width:600px;margin-bottom:32px}.pc-hero-meta{display:flex;gap:32px;flex-wrap:wrap}.hm-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--cream);line-height:1}.hm-lbl{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.35);margin-top:4px}
         .pc-week-nav{position:sticky;top:60px;z-index:90;background:rgba(253,251,247,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;display:flex;overflow-x:auto}.pc-week-nav::-webkit-scrollbar{display:none}
         .wbtn{font-family:inherit;font-size:9px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;padding:0 20px;height:52px;border:none;border-bottom:2px solid transparent;cursor:pointer;color:var(--stone);background:transparent;white-space:nowrap;transition:all .2s}.wbtn:hover{color:var(--ink)}.wbtn.active{color:var(--forest);border-bottom-color:var(--gold);font-weight:500}.wbtn.done::after{content:' ✓';font-size:8px;color:var(--gold);margin-left:4px}
         .pc-main{max-width:860px;margin:0 auto;padding:0 48px 100px}.pc-panel{display:none;padding-top:56px}.pc-panel.active{display:block}
@@ -939,9 +940,14 @@ export default function PostCeremonyPage() {
       {/* HERO */}
       <div className="pc-hero">
         <div className="pc-hero-inner">
-          <span className="pc-hero-eyebrow">Member Portal · Post-Ceremony Integration · Confidential</span>
-          <h1>Six Weeks of<br /><em>Integration</em></h1>
-          <p className="pc-hero-desc">The medicine opened the window. Integration is how you build what goes inside it. Each week has one theme, one video, clear actions, and a weekly check-in that tracks your progress over time.</p>
+          <div className="pc-hero-text">
+            <span className="pc-hero-eyebrow">Member Portal · Post-Ceremony Integration · Confidential</span>
+            <h1>Six Weeks of<br /><em>Integration</em></h1>
+            <p className="pc-hero-desc">The medicine opened the window. Integration is how you build what goes inside it. Each week has one theme, one video, clear actions, and a weekly check-in that tracks your progress over time.</p>
+          </div>
+          <div className="pc-hero-aside">
+            <HeroCountdown mode="post" />
+          </div>
         </div>
       </div>
 
