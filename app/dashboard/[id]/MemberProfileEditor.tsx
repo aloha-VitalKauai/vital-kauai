@@ -116,6 +116,8 @@ export default function MemberProfileEditor({
   journeyEndAt = null,
   specialists = [],
   outcomesRows = [],
+  bookedCents = null,
+  expenseCents = null,
 }: {
   member: Member;
   profile: Profile;
@@ -134,6 +136,8 @@ export default function MemberProfileEditor({
   journeyEndAt?: string | null;
   specialists?: string[];
   outcomesRows?: Array<Record<string, any>>;
+  bookedCents?: number | null;
+  expenseCents?: number | null;
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -224,8 +228,15 @@ export default function MemberProfileEditor({
   }
 
   const sc = STATUS_COLORS[status] ?? fallbackColor;
-  const price = programPrice ? Number(programPrice) : null;
-  const cost = costOfService ? Number(costOfService) : null;
+  // Top stat cards mirror the Financials → Private Ceremony row for this
+  // member when one exists (booked = sum of commitments / fallback to
+  // program_price; expenses = sum of expense_entries logged to the journey).
+  // Falls back to the manually-entered members.program_price /
+  // cost_of_service for members who don't yet have a private journey.
+  const price =
+    bookedCents != null ? bookedCents / 100 : programPrice ? Number(programPrice) : null;
+  const cost =
+    expenseCents != null ? expenseCents / 100 : costOfService ? Number(costOfService) : null;
   const profit = price != null && cost != null ? price - cost : null;
 
   return (
