@@ -529,6 +529,16 @@ export default function PreCeremonyPage() {
       const journey = await getActiveJourney(supabase, user.id).catch(() => null)
       if (journey?.start_at) setCeremonyStartAt(journey.start_at)
 
+      // ?week=N (1–6) forces a specific week and skips the resume-where-you-
+      // left-off behavior. Used by the "Open Week 1" CTA on /portal so it
+      // always lands on Ike at the top of the page.
+      const params = new URLSearchParams(window.location.search)
+      const weekParam = parseInt(params.get('week') ?? '', 10)
+      const forcedWeek =
+        Number.isInteger(weekParam) && weekParam >= 1 && weekParam <= 6
+          ? weekParam - 1
+          : null
+
       const { data } = await supabase
         .from('pre_ceremony_progress')
         .select('*')
@@ -539,11 +549,21 @@ export default function PreCeremonyPage() {
         setCompleted(new Set(data.weeks_completed ?? []))
         setChecklist(data.checklist_items ?? {})
         setJournal(data.journal_responses ?? {})
-        // Resume at last uncompleted week
-        const done = new Set<number>(data.weeks_completed ?? [])
-        const next = [0,1,2,3,4,5].find(w => !done.has(w))
-        if (next !== undefined) setActiveWeek(next)
-        else setActiveWeek(5)
+        if (forcedWeek !== null) {
+          setActiveWeek(forcedWeek)
+        } else {
+          // Resume at last uncompleted week
+          const done = new Set<number>(data.weeks_completed ?? [])
+          const next = [0,1,2,3,4,5].find(w => !done.has(w))
+          if (next !== undefined) setActiveWeek(next)
+          else setActiveWeek(5)
+        }
+      } else if (forcedWeek !== null) {
+        setActiveWeek(forcedWeek)
+      }
+
+      if (forcedWeek !== null) {
+        window.scrollTo({ top: 0, behavior: 'auto' })
       }
 
       setLoading(false)

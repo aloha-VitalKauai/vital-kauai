@@ -553,7 +553,7 @@ export function PortalHomePage({
         </section>
 
         {/* BEGIN WEEK 1 BANNER */}
-        <Link href="/portal/integration/pre-ceremony" className={styles.beginBanner}>
+        <Link href="/portal/integration/pre-ceremony?week=1" className={styles.beginBanner}>
           <p className={styles.beginEyebrow}>Get Started</p>
           <h2 className={styles.beginTitle}>
             Begin <em>Week 1 &middot; Ike</em>
