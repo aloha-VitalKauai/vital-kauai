@@ -1589,7 +1589,7 @@ const BODY_CONTENT = `
           <span class="faq-icon" aria-hidden="true"></span>
         </summary>
         <div class="faq-answer">
-          <p>Meals are prepared with the same intentionality as everything else at Vital Kauaʻi. We source locally and seasonally, farms, farmers' markets, and the ocean. All dietary needs, allergies, and protocol-specific requirements are gathered on your discovery call and honored throughout your stay. Your nutrition is held with care across all seven days.</p>
+          <p>Meals are prepared with the same intentionality as everything else at Vital Kauaʻi. We source locally and seasonally, farms, farmers' markets, and the ocean. All dietary needs, allergies, and protocol-specific requirements are gathered from your member intake and honored throughout your stay. Your nutrition is held with care across all seven days.</p>
         </div>
       </details>
 
