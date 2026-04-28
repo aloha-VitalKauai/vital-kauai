@@ -197,6 +197,10 @@ const WEEKS = [
         ],
       },
       {
+        color: 'green',
+        text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Companion',
+      },
+      {
         color: 'sage',
         text: 'Connect with your integration guide, your post-ceremony call, within 48 hours of ceremony (while still on Kauaʻi)',
         note: 'Your first integration-guide call. Held within 48 hours of ceremony so what was shown is still alive in the body. Bring whatever you need to bring, questions, gratitude, exhaustion. They are there to meet you.',
@@ -242,6 +246,10 @@ const WEEKS = [
         links: [
           { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
         ],
+      },
+      {
+        color: 'green',
+        text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Companion',
       },
       {
         color: 'sage',
@@ -299,6 +307,10 @@ const WEEKS = [
         ],
       },
       {
+        color: 'green',
+        text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Companion',
+      },
+      {
         color: 'gold',
         text: 'Connect with your integration guide',
         note: 'This is the most important call of the integration arc. Bring the return of the familiar. Bring what is still unresolved. Your guide is trained to work with exactly this territory. Book via the Integration Specialist section on your Dashboard.',
@@ -344,6 +356,10 @@ const WEEKS = [
         links: [
           { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
         ],
+      },
+      {
+        color: 'green',
+        text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Companion',
       },
       { color: 'gold', text: 'Write your three non-negotiables for the next three months', note: 'Three things you are committing to, in your body, your relationships, your daily life, that reflect who you are becoming. Specific, liveable, honest.' },
       { color: 'blue', text: 'Share your non-negotiables with one person in your life', note: 'Accountability held by another person anchors differently than accountability held alone. Be specific about what you are asking them to hold with you.' },
@@ -392,6 +408,10 @@ const WEEKS = [
           { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
         ],
       },
+      {
+        color: 'green',
+        text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Companion',
+      },
       { color: 'blue', text: 'Have one honest conversation you have been postponing', note: 'The medicine may have shown you something about a relationship that needs to be spoken. Come from the changed place. Bring what comes up to your next call with your guide.' },
       { color: 'sage', text: 'Practice being your changed self in the presence of people who knew you before', note: 'Notice when you contract back into who you were in someone\'s presence. That noticing is the practice. You can only keep showing up as the person you are becoming.' },
       { color: 'green', text: 'Practice Ho\'oponopono with anyone you are still carrying', note: 'I\'m sorry. Please forgive me. Thank you. I love you. The forgiveness work from ceremony continues here. It does not require the other person to be present or to know. This is an internal release.' },
@@ -434,6 +454,10 @@ const WEEKS = [
         links: [
           { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
         ],
+      },
+      {
+        color: 'green',
+        text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Companion',
       },
       {
         color: 'blue',
