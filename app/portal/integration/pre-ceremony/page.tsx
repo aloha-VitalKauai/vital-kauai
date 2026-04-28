@@ -1164,7 +1164,7 @@ export default function PreCeremonyPage() {
                     <div className="vp-label">{i < 3 ? 'PNE (PsychoNeuroEnergetics)' : 'PNE'} Teaching · Week {i + 1}</div>
                     <div className="vp-text">
                       {i === 0
-                        ? 'A teaching from PsychoNeuroEnergetics: internal safety, what happens when the system senses threat, and how relational practices and external structures together build the ground your nervous system can rest into. The foundational teaching of Week 1.'
+                        ? 'A teaching from PsychoNeuroEnergetics: internal safety, what happens when the system senses threat, and how relational practices and external structures together build the ground your nervous system can rest into.'
                         : 'A teaching from PsychoNeuroEnergetics paired with this week’s principle and the body’s lived response to it.'}
                     </div>
                     <div className="vp-coming-soon">Coming Soon</div>
