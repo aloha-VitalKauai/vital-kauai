@@ -689,6 +689,19 @@ export default async function VitalKauaiNervousSystemGuide() {
             </div>
           </div>
         </section>
+        <section className="vk-section">
+          <div className="vk-narrow">
+            <div className="vk-eyebrow">Working from the Inside Out</div>
+            <h2 className="vk-title">Somatic Self-Resourcing: <em>Coming Back to the Body</em></h2>
+            <p className="vk-lede">Somatic means &ldquo;of the body.&rdquo; Somatic self-resourcing is the practice of using your own body, its sensations, its breath, its contact with gravity and the ground, to create a felt sense of safety within yourself.</p>
+            <div className="listen-steps">
+              <div className="listen-step"><div className="roman">I</div><h3>Orienting</h3><p>Slowly allow your gaze to move through the space around you, as if you are a gentle animal arriving somewhere new. Let your eyes rest on something stable, something soft, something that carries a sense of safety. When you find it, let your gaze settle and breathe there.</p></div>
+              <div className="listen-step"><div className="roman">II</div><h3>Grounding</h3><p>Feel the weight of your body making contact with whatever is beneath you, a chair, the floor, the earth. Press your feet into the ground. Let the ground meet you back. Notice how effortlessly it holds you.</p></div>
+              <div className="listen-step"><div className="roman">III</div><h3>Containment</h3><p>Wrap your arms around yourself, or place a hand over your heart and another on your belly. Feel the warmth of your own touch. Let your body know it is held by you alone, and that is enough.</p></div>
+            </div>
+          </div>
+        </section>
+
       </div>
     </>
   );
