@@ -37,7 +37,7 @@ export async function getMembershipDonationConfig(
   return {
     amount_cents: v.amount_cents,
     currency: v.currency,
-    label: v.label ?? "Membership Donation",
+    label: v.label ?? "Contribution",
   };
 }
 

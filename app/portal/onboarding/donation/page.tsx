@@ -5,7 +5,7 @@ import {
 } from "@/lib/billing/getMembershipDonationConfig";
 import DonationCard from "./DonationCard";
 
-export const metadata = { title: "Membership Donation — Vital Kauaʻi" };
+export const metadata = { title: "Contribution — Vital Kauaʻi" };
 
 export default async function DonationPage() {
   const supabase = await createClient();

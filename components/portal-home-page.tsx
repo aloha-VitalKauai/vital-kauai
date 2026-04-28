@@ -821,7 +821,7 @@ export function PortalHomePage({
                     <span>$</span>250
                   </h2>
                   <p className={styles.depositNote}>
-                    Refundable membership donation &middot; Applied toward first month
+                    Refundable contribution &middot; Applied toward first month
                   </p>
                 </div>
                 <div className={styles.depositBody}>

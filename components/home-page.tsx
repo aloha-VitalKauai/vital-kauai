@@ -65,9 +65,9 @@ const faqs = [
       "We hold ceremony in a private home in Hanalei, where members share the space with a small group of up to five others. Your stay includes meals, movement, breathwork, bodywork, sound healing, and a full schedule of preparation and integration practices. Private journeys are also available as a separate container. If you prefer to arrange your own accommodations on the North Shore, you are welcome to do so and join us for the full experience. We work with whatever supports you best.",
   },
   {
-    question: "What is the love offering?",
+    question: "What is the contribution?",
     answer:
-      "Vital Kauaʻi is a legally established church, and all offerings support our sacred mission. Every journey is shaped around you, and the love offering is discussed personally on your discovery call. We believe this work should be accessible to anyone who is truly called. No one is turned away based on financial circumstances. Kamaʻāina and need-based considerations are always welcome in that conversation.",
+      "Vital Kauaʻi is a legally established church, and all contributions support our sacred mission. Every journey is shaped around you, and the contribution is discussed personally on your discovery call. We believe this work should be accessible to anyone who is truly called. No one is turned away based on financial circumstances. Kamaʻāina and need-based considerations are always welcome in that conversation.",
   },
   {
     question: "How do I know if I'm ready?",

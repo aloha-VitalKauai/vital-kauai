@@ -40,7 +40,7 @@ export function ThankYouPage() {
         <p className={styles.disclaimer}>
           <em>
             Vital Kaua&#699;i Church is currently in the process of obtaining 501(c)(3) status.
-            Until that is finalized, love offerings are gratefully received but are not yet
+            Until that is finalized, contributions are gratefully received but are not yet
             tax-deductible.
           </em>
         </p>
