@@ -14,8 +14,8 @@ const BASE_SECTIONS: SectionIndexItem[] = [
   { label: 'Principle', anchor: '#principle' },
   { label: 'Video',     anchor: '#week-video' },
   { label: 'Actions',   anchor: '#action-items' },
-  { label: 'PNE',       anchor: '#pne-perspective' },
   { label: 'Journal',   anchor: '#journal-prompts' },
+  { label: 'PNE',       anchor: '#pne-perspective' },
   { label: 'Community', anchor: '#community' },
 ]
 const sectionsForWeek = (_weekIdx: number): SectionIndexItem[] => BASE_SECTIONS
@@ -29,12 +29,6 @@ type PromptEntry = { key: string; q: string; hint?: string; placeholder?: string
 const WEEK_1_PROMPTS: PromptEntry[] = [
   { key: 'w0-p1', q: 'If I create my reality, what’s possible for my life after this journey?' },
   { key: 'w0-p2', q: 'What thoughts about myself, others, or the world am I mistaking for truth?' },
-  {
-    key: 'w0-p0',
-    q: 'What sensations am I currently noticing in my body?',
-    hint: 'A tightness in the jaw, warmth in the chest, buzzing in the hands, a heaviness behind the eyes.',
-    placeholder: 'Before you begin, close your eyes. Take a few slow breaths. Scan your body, and notice what you notice. Then write freely…',
-  },
 ]
 const promptsForWeek = (
   weekIdx: number,
@@ -828,8 +822,8 @@ export default function PreCeremonyPage() {
         .w1-h3 { font-family:'Cormorant Garamond',serif;font-size:clamp(22px,2.6vw,30px);font-weight:300;line-height:1.2;color:var(--ink);margin-bottom:16px; }
         .w1-body { font-size:14px;color:var(--ink-mid);line-height:1.9;max-width:640px; }
         .w1-body + .w1-body { margin-top:14px; }
-        .w1-companion-link { display:inline-block;margin-top:20px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);text-decoration:none;border-bottom:1px dashed rgba(200,169,110,.55);padding-bottom:2px; }
-        .w1-companion-link:hover { color:var(--sage); }
+        .w1-h3-link { color:inherit;text-decoration:none;border-bottom:1px dashed rgba(200,169,110,.5);padding-bottom:3px;transition:border-color .2s,color .2s; }
+        .w1-h3-link:hover { color:var(--gold);border-bottom-color:var(--gold); }
         /* Centering invitation before journal prompts */
         .w1-invite { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:var(--sage);line-height:1.7;margin:4px 0 28px;padding-left:20px;border-left:2px solid var(--sage-lt); }
         .w1-prompt { padding:22px 0;border-bottom:1px solid var(--border); }
@@ -1121,51 +1115,6 @@ export default function PreCeremonyPage() {
               })()}
             </section>
 
-            {/* PNE PERSPECTIVE */}
-            <section className="w1-section" id="pne-perspective">
-              <h3 className="w1-h3">
-                {i === 0
-                  ? <>PNE (PsychoNeuroEnergetics) Perspective: <em>The Language of the Body</em></>
-                  : i < 3
-                    ? 'PNE (PsychoNeuroEnergetics) Perspective'
-                    : 'PNE Perspective'}
-              </h3>
-              {i === 0 && (
-                <p className="w1-body">
-                  This week&apos;s PNE (PsychoNeuroEnergetics) teaching introduces internal safety, the felt sense the nervous system rests into when all is well. From there, the companion walks through what happens when the system senses threat and how the body shifts into protection, the relational practices that help you regulate together with safe people, and the external structures, the people, places, and rhythms of your life, that build a foundation of safety from the inside out and the outside in.
-                </p>
-              )}
-              <div className="video-frame" style={{ marginTop: i === 0 ? 24 : 0 }}>
-                <div className="video-primer">
-                  <div className="vp-play"><span className="vp-play-icon">▶</span></div>
-                  <div>
-                    <div className="vp-label">{i < 3 ? 'PNE (PsychoNeuroEnergetics)' : 'PNE'} Teaching · Week {i + 1}</div>
-                    <div className="vp-text">
-                      {i === 0
-                        ? 'Rachel and Josh introduce internal safety, what happens when the system senses threat, and how relational practices and external structures together build the ground your nervous system can rest into. The foundational teaching of Week 1.'
-                        : 'A short teaching paired with this week’s principle and the body’s lived response to it.'}
-                    </div>
-                    <div className="vp-coming-soon">Coming Soon</div>
-                  </div>
-                </div>
-              </div>
-              {i === 0 && (
-                <Link href="/portal/somatic-companion#top" target="_blank" rel="noopener noreferrer" className="w1-companion-link">
-                  The PsychoNeuroEnergetics (PNE) Companion → Week 1: The Language of the Body
-                </Link>
-              )}
-              {i === 1 && (
-                <Link href="/portal/somatic-companion/week-2#top" target="_blank" rel="noopener noreferrer" className="w1-companion-link">
-                  The PsychoNeuroEnergetics (PNE) Companion → Week 2: Nervous System Regulation
-                </Link>
-              )}
-              {i === 2 && (
-                <Link href="/portal/somatic-companion/week-3#top" target="_blank" rel="noopener noreferrer" className="w1-companion-link">
-                  The PsychoNeuroEnergetics (PNE) Companion → Week 3: Building Somatic Awareness
-                </Link>
-              )}
-            </section>
-
             {/* JOURNAL PROMPTS */}
             <section className="w1-section" id="journal-prompts">
               <h3 className="w1-h3">Journal Prompts</h3>
@@ -1184,6 +1133,44 @@ export default function PreCeremonyPage() {
                   />
                 </div>
               ))}
+            </section>
+
+            {/* PNE PERSPECTIVE */}
+            <section className="w1-section" id="pne-perspective">
+              <h3 className="w1-h3">
+                {i === 0 ? (
+                  <Link href="/portal/somatic-companion#top" target="_blank" rel="noopener noreferrer" className="w1-h3-link">
+                    PNE (PsychoNeuroEnergetics) Perspective: <em>The Language of the Body</em>
+                  </Link>
+                ) : i === 1 ? (
+                  <Link href="/portal/somatic-companion/week-2#top" target="_blank" rel="noopener noreferrer" className="w1-h3-link">
+                    PNE (PsychoNeuroEnergetics) Perspective: <em>Nervous System Regulation</em>
+                  </Link>
+                ) : i === 2 ? (
+                  <Link href="/portal/somatic-companion/week-3#top" target="_blank" rel="noopener noreferrer" className="w1-h3-link">
+                    PNE (PsychoNeuroEnergetics) Perspective: <em>Building Somatic Awareness</em>
+                  </Link>
+                ) : 'PNE Perspective'}
+              </h3>
+              {i === 0 && (
+                <p className="w1-body">
+                  This week&apos;s PNE (PsychoNeuroEnergetics) teaching introduces internal safety, the felt sense the nervous system rests into when all is well. From there, the companion walks through what happens when the system senses threat and how the body shifts into protection, the relational practices that help you regulate together with safe people, and the external structures, the people, places, and rhythms of your life, that build a foundation of safety from the inside out and the outside in.
+                </p>
+              )}
+              <div className="video-frame" style={{ marginTop: i === 0 ? 24 : 0 }}>
+                <div className="video-primer">
+                  <div className="vp-play"><span className="vp-play-icon">▶</span></div>
+                  <div>
+                    <div className="vp-label">{i < 3 ? 'PNE (PsychoNeuroEnergetics)' : 'PNE'} Teaching · Week {i + 1}</div>
+                    <div className="vp-text">
+                      {i === 0
+                        ? 'A teaching from PsychoNeuroEnergetics: internal safety, what happens when the system senses threat, and how relational practices and external structures together build the ground your nervous system can rest into. The foundational teaching of Week 1.'
+                        : 'A teaching from PsychoNeuroEnergetics paired with this week’s principle and the body’s lived response to it.'}
+                    </div>
+                    <div className="vp-coming-soon">Coming Soon</div>
+                  </div>
+                </div>
+              </div>
             </section>
 
             {/* VOICES FROM THE VITAL KAUAʻI COMMUNITY */}
