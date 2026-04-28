@@ -177,7 +177,7 @@ const PAGE_CSS = `
     margin-top: 48px;
     text-align: center;
     color: var(--accent-gold);
-    font-size: 15px;
+    font-size: 22px;
     font-weight: 600;
     letter-spacing: 0.32em;
     text-transform: uppercase;
