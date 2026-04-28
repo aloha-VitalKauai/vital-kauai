@@ -410,9 +410,11 @@ export function IbogaJourneyPage() {
             <h3 className={styles.phaseTitle}>Preparation</h3>
             <span className={styles.phaseWeek}>6+ Weeks</span>
             <p className={styles.phaseBody}>
-              Medical screening, dietary preparation, intention setting, and calls with your
-              integration guide. We prepare your body, mind, and spirit for the journey ahead &mdash;
-              gradually, carefully, and with full attention to your unique constitution.
+              Weekly journal prompts, practices and reflections from PsychoNeuroEnergetics, calls
+              with your personal integration guide, and connections with Rachel and Josh. You will
+              meet with your doctor to get your medical screening, prepare your diet, create
+              questions for the medicine, and gather your home support team. We are with you every
+              step of the way as you prepare your body, mind, and spirit for the journey ahead.
             </p>
           </div>
           <div className={styles.protocolPhase}>
