@@ -406,10 +406,9 @@ export function HomePage() {
                 unconditional love.
               </p>
               <p className={styles.storyBody}>
-                Iboga is unlike any plant we have known. It is our calling to share it. We built
-                Vital Kauaʻi because this is the only work we can imagine doing. Everything here
-                exists to serve the depth this medicine makes possible: the land, the team, the
-                preparation, and every branch that supports it.
+                Iboga is unlike any plant we have known. We built Vital Kauaʻi because this is
+                the only work we can imagine doing. Everything here exists to serve the medicine:
+                the land, the team, the preparation, and every branch that grows from the root.
               </p>
               <Link href="/iboga-journey" className={styles.storyLink}>
                 Explore the Iboga Journey →
