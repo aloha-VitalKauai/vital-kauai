@@ -451,7 +451,7 @@ export function IbogaJourneyPage() {
             Upcoming <em style={{ fontStyle: "italic", color: "var(--sage, #7A9E7E)" }}>Ceremonies</em>
           </h2>
           <p style={{ fontSize: 16, color: "var(--ink-soft, #6B6B67)", lineHeight: 1.7, maxWidth: 580, margin: "0 auto 56px", fontStyle: "italic", fontFamily: "'Cormorant Garamond', serif" }}>
-            Each ceremony is a small, held gathering, six members, seven days, one sacred arc.
+            Each ceremony is a small, held gathering: up to six members, seven days.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 24, marginBottom: 48 }}>
             {(() => {
