@@ -159,10 +159,10 @@ const WEEKS = [
       },
       {
         color: 'blue',
-        text: 'Submit your love offering',
+        text: 'Submit your contribution',
         note: 'Your donation completes the container. It signals to your nervous system: I have chosen this. I am in.',
         links: [
-          { text: 'Submit your love offering', href: STRIPE_LOVE_OFFERING_URL, external: true },
+          { text: 'Submit your contribution', href: STRIPE_LOVE_OFFERING_URL, external: true },
         ],
       },
       {

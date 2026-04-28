@@ -28,7 +28,7 @@ export async function POST() {
   const cfg = await getMembershipDonationConfig(supabase);
   if (cfg.amount_cents <= 0) {
     return NextResponse.json(
-      { error: "Membership donation amount is not configured." },
+      { error: "Contribution amount is not configured." },
       { status: 500 },
     );
   }
@@ -99,7 +99,7 @@ export async function POST() {
           product_data: {
             name: cfg.label,
             description:
-              "Refundable membership donation · Applied toward first month",
+              "Refundable contribution · Applied toward first month",
           },
         },
       },

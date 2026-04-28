@@ -35,7 +35,7 @@ export default function BillingSettings() {
         value_json: {
           amount_cents: cents,
           currency: "usd",
-          label: "Membership Donation",
+          label: "Contribution",
         },
         updated_at: new Date().toISOString(),
       })
@@ -73,7 +73,7 @@ export default function BillingSettings() {
           marginBottom: "1.5rem",
         }}
       >
-        Membership Donation Amount
+        Contribution Amount
       </h1>
 
       <label

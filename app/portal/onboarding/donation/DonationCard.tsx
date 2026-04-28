@@ -91,7 +91,7 @@ export default function DonationCard({
         <p className="eyebrow">REQUIRED</p>
         <h1 className="amount">{amountLabel}</h1>
         <p className="subtitle">
-          Refundable membership donation · Applied toward first month
+          Refundable contribution · Applied toward first month
         </p>
       </div>
 
