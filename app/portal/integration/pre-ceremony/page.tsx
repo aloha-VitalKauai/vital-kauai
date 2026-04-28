@@ -64,7 +64,7 @@ const actionsForWeek = (
     return [
       { kind: 'internal', href: '/intake-form',                        text: 'Fill out Your Member Intake & Readiness Form' },
       { kind: 'hash',     href: '#journal-prompts',                    text: 'Respond to this week’s journal prompts' },
-      { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1: The Language of the Body in The PsychoNeuroEnergetics (PNE) Companion' },
+      { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Companion: The Language of the Body' },
       { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule your first call with your integration guide' },
     ]
   }
