@@ -365,10 +365,12 @@ nav.scrolled {
   padding: 0 40px 88px;
 }
 .hero-eyebrow {
-  font-size: 10px;
-  letter-spacing: 0.45em;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.36em;
   text-transform: uppercase;
-  color: var(--terra-pale);
+  color: var(--cream);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
   margin-bottom: 22px;
   opacity: 0;
   animation: fadeUp 1s ease 0.3s forwards;
