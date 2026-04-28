@@ -1619,7 +1619,7 @@ const BODY_CONTENT = `
           <span class="faq-icon" aria-hidden="true"></span>
         </summary>
         <div class="faq-answer">
-          <p>We understand that life moves and plans shift. Our cancellation terms are shared in full at the time of booking. Cancellations made within 30 days of arrival are eligible for a full transfer. Reach out to us directly and we will find a path forward together.</p>
+          <p>We understand that life moves and plans shift. Cancellations made within 30 days of arrival are eligible for a full transfer. Reach out to us directly and we will find a path forward together.</p>
         </div>
       </div>
 
