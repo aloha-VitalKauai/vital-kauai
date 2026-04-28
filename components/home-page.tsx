@@ -62,7 +62,7 @@ const faqs = [
   {
     question: "Are accommodations included?",
     answer:
-      "We hold ceremony in a private home in Hanalei, where members share the space with a small group of up to five other members. Your stay includes meals, movement, breathwork, bodywork, sound healing, and a full schedule of preparation and integration practices. Private journeys are also available as a separate container. If you prefer to arrange your own accommodations on the North Shore, you are welcome to do so and join us for the full experience. We work with whatever supports you best.",
+      "We hold ceremony in a private home in Hanalei, where members share the space with a small group of up to five other members. Your stay includes meals, movement, breathwork, bodywork, sound healing, and a full schedule of preparation and integration practices. Private journeys are also available as a separate container.",
   },
   {
     question: "What is the contribution?",
