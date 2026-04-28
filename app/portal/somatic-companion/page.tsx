@@ -162,6 +162,17 @@ const PAGE_CSS = `
     line-height: 1.5;
     border-radius: 2px;
   }
+  .pne-companion-page .pv-quote-text { margin: 0; }
+  .pne-companion-page .pv-cite {
+    display: block;
+    margin-top: 18px;
+    font-style: normal;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    text-align: right;
+  }
   .pne-companion-page .pv-footer {
     margin-top: 48px;
     text-align: center;
@@ -617,7 +628,10 @@ export default async function SomaticCompanionPage() {
                 <p className="feel">You may feel: heaviness, numbness, flatness, disconnection, fog, collapse, or a wish to disappear.</p>
               </article>
             </div>
-            <div className="pv-quote">&ldquo;Your body is always doing its best with the information it has. Every state you have ever moved through has been a form of intelligence — a faithful attempt to keep you alive and whole.&rdquo;</div>
+            <div className="pv-quote">
+              <p className="pv-quote-text">&ldquo;Your body is always doing its best with the information it has. Every state you have ever moved through has been a form of intelligence — a faithful attempt to keep you alive and whole.&rdquo;</p>
+              <cite className="pv-cite">— Vital Kauaʻi</cite>
+            </div>
             <div className="pv-footer">Week 1 · The Language of the Body</div>
           </div>
         </section>
