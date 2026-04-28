@@ -190,6 +190,13 @@ const WEEKS = [
     actionLabel: 'This week, 4 things',
     actions: [
       {
+        color: 'blue',
+        text: 'Respond to this week’s journal prompts',
+        links: [
+          { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
+        ],
+      },
+      {
         color: 'sage',
         text: 'Connect with your integration guide, your post-ceremony call, within 48 hours of ceremony (while still on Kauaʻi)',
         note: 'Your first integration-guide call. Held within 48 hours of ceremony so what was shown is still alive in the body. Bring whatever you need to bring, questions, gratitude, exhaustion. They are there to meet you.',
@@ -229,6 +236,13 @@ const WEEKS = [
     video: { label: 'A Message from Rachel & Josh · Week 2', text: 'The neuroplasticity window is real, and this week is its peak. Rachel and Josh talk about what that actually means in practice, why this week\'s small daily choices matter more than they appear, and how to tend what the medicine opened without forcing it into shape too quickly.' },
     actionLabel: 'This week, 4 things',
     actions: [
+      {
+        color: 'blue',
+        text: 'Respond to this week’s journal prompts',
+        links: [
+          { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
+        ],
+      },
       {
         color: 'sage',
         text: 'Connect with your integration guide',
@@ -278,6 +292,13 @@ const WEEKS = [
     actionLabel: 'This week, 3 things',
     actions: [
       {
+        color: 'blue',
+        text: 'Respond to this week’s journal prompts',
+        links: [
+          { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
+        ],
+      },
+      {
         color: 'gold',
         text: 'Connect with your integration guide',
         note: 'This is the most important call of the integration arc. Bring the return of the familiar. Bring what is still unresolved. Your guide is trained to work with exactly this territory. Book via the Integration Specialist section on your Dashboard.',
@@ -317,6 +338,13 @@ const WEEKS = [
     video: { label: 'A Message from Rachel & Josh · Week 4', text: 'Kuleana is one of the most important Hawaiian concepts for understanding what integration actually requires. In this transmission Rachel and Josh talk about the difference between insight and accountability, and what it looks like to take full responsibility for the change you\'ve been shown is possible.' },
     actionLabel: 'This week, 4 things',
     actions: [
+      {
+        color: 'blue',
+        text: 'Respond to this week’s journal prompts',
+        links: [
+          { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
+        ],
+      },
       { color: 'gold', text: 'Write your three non-negotiables for the next three months', note: 'Three things you are committing to, in your body, your relationships, your daily life, that reflect who you are becoming. Specific, liveable, honest.' },
       { color: 'blue', text: 'Share your non-negotiables with one person in your life', note: 'Accountability held by another person anchors differently than accountability held alone. Be specific about what you are asking them to hold with you.' },
       { color: 'sage', text: 'Audit one thing in your environment that actively works against your new self \u2014 and change it this week', note: 'Physical environment. Social environment. Digital environment. What in each is pulling you back toward who you were? Make one concrete change this week.' },
@@ -357,6 +385,13 @@ const WEEKS = [
     video: { label: 'A Message from Rachel & Josh · Week 5', text: 'The integration that happens in relationship is some of the most important integration of all. Rachel and Josh talk about what it looks like to bring a changed self back into existing relationships, how to hold new ground without disconnecting from the people you love, and how to let the medicine\'s work deepen through honest contact with others.' },
     actionLabel: 'This week, 4 things',
     actions: [
+      {
+        color: 'blue',
+        text: 'Respond to this week’s journal prompts',
+        links: [
+          { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
+        ],
+      },
       { color: 'blue', text: 'Have one honest conversation you have been postponing', note: 'The medicine may have shown you something about a relationship that needs to be spoken. Come from the changed place. Bring what comes up to your next call with your guide.' },
       { color: 'sage', text: 'Practice being your changed self in the presence of people who knew you before', note: 'Notice when you contract back into who you were in someone\'s presence. That noticing is the practice. You can only keep showing up as the person you are becoming.' },
       { color: 'green', text: 'Practice Ho\'oponopono with anyone you are still carrying', note: 'I\'m sorry. Please forgive me. Thank you. I love you. The forgiveness work from ceremony continues here. It does not require the other person to be present or to know. This is an internal release.' },
@@ -393,6 +428,13 @@ const WEEKS = [
     video: { label: 'A Message from Rachel & Josh · Week 6', text: 'Six weeks ago you came home from ceremony. In this final weekly transmission Rachel and Josh want to mark what you have done. The long integration is beginning. They want you to know what to expect, and how to hold yourself through the months ahead.' },
     actionLabel: 'This week, 4 completions',
     actions: [
+      {
+        color: 'blue',
+        text: 'Respond to this week’s journal prompts',
+        links: [
+          { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
+        ],
+      },
       {
         color: 'blue',
         text: 'Schedule your Completion Call with Rachel & Josh',

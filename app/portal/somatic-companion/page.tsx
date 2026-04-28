@@ -798,7 +798,7 @@ export default async function SomaticCompanionPage() {
             <div className="iboga-grid">
               <div className="iboga-col"><h3>Your Steadfast Team</h3><p>Trust the dedicated people around you. They are there to guide you, hold space, and ensure a foundation of external safety throughout your experience.</p></div>
               <div className="iboga-col"><h3>Anchor in Your Breath</h3><p>If a moment feels overwhelming or uncertain, gently bring your awareness back to your breath. It is always available, a reliable pathway home to yourself.</p></div>
-              <div className="iboga-col"><h3>Co-Regulation with Your Coach</h3><p>Reach out to your coach or team whenever you need support. They can offer grounded presence and help you draw on the safety practices you are building now.</p></div>
+              <div className="iboga-col"><h3>Co-Regulation with Your Integration Guide</h3><p>Reach out to your integration guide, or to Rachel and Josh, whenever you need support. They can offer grounded presence and help you draw on the safety practices you are building now.</p></div>
             </div>
           </div>
         </section>
