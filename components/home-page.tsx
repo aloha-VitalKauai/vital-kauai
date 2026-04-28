@@ -485,8 +485,8 @@ export function HomePage() {
             <p className={styles.riverFeatureBody}>
               Iboga goes deep, interrupting long-held patterns and unconscious conditioning. Many
               describe it as fifty years of therapy in a single night. Those who journey emerge
-              with a clarity of purpose, a freedom from patterns that once felt permanent, and a
-              felt sense of themselves they had forgotten was possible.
+              with a clarity of purpose, a freedom from old patterns, and an embodied sense of
+              their true nature.
             </p>
             <Link href="/iboga-journey" className={styles.riverFeatureLink}>
               The Medicine →
