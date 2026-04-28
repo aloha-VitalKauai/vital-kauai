@@ -999,7 +999,7 @@ export default function PreCeremonyPage() {
             <p className="pc-hero-desc">
               This portal is your companion through an evidence-based and deeply personal arc of preparation and integration.
               Each week draws on a Hawaiian principle, paired with a teaching from psychoneuroenergetics (PNE) to support the body, mind, and spirit.
-              You&apos;ll find journal prompts, action items, and voices from the Vital Kauaʻi community, those who have walked this path.
+              You&apos;ll find journal prompts, action items, and voices from the Vital Kauaʻi community.
             </p>
           </div>
           <div className="pc-hero-aside">
