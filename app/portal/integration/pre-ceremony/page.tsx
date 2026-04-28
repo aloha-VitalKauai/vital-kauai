@@ -70,7 +70,6 @@ const actionsForWeek = (
     return [
       { kind: 'internal', href: '/intake-form',                        text: 'Fill out Your Member Intake & Readiness Form' },
       { kind: 'hash',     href: '#journal-prompts',                    text: 'Respond to this week’s journal prompts' },
-      { kind: 'internal', href: '/portal/questions-for-the-medicine',  text: 'Begin writing your questions for the medicine.' },
       { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1: The Language of the Body in The PsychoNeuroEnergetics (PNE) Companion' },
       { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule your first call with your integration guide' },
     ]
@@ -209,6 +208,13 @@ const WEEKS = [
     actions: [
       {
         color: 'blue',
+        text: 'Respond to this week’s journal prompts',
+        links: [
+          { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
+        ],
+      },
+      {
+        color: 'blue',
         text: 'Connect with your integration guide',
         note: 'Come with your intentions from Week 1. Come with your questions. Come as you are. This call is the beginning of a relationship that will hold you through the hardest parts of what\'s ahead.',
         links: [
@@ -258,6 +264,21 @@ const WEEKS = [
     box: { type: 'info', label: 'If something surfaces this week', text: 'Iboga is intelligent and relational. It begins its work the moment you say yes. If difficult material arises, old grief, anxiety, somatic intensity, here is what to do: slow down deliberately. Bring your attention to one physical sensation at a time. Breathe. Place both feet on the floor. Be with what is arising, presence is enough. Your integration guide is available between sessions. Reach out whenever you need support.\n\nSome days will feel harder to begin. Noticing that, naming it honestly, is itself the practice.' },
     actionLabel: 'Actions this week, 4 only',
     actions: [
+      {
+        color: 'blue',
+        text: 'Respond to this week’s journal prompts',
+        links: [
+          { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
+        ],
+      },
+      {
+        color: 'blue',
+        text: 'Begin writing your questions for the medicine',
+        note: 'Open the questions document and let the first lines arrive. You\'ll keep adding to it as the weeks unfold; Week 4 is when you draft the first version, and Week 6 is when you finalize.',
+        links: [
+          { text: 'Begin writing your questions for the medicine', href: '/portal/questions-for-the-medicine' },
+        ],
+      },
       {
         color: 'blue',
         text: 'Connect with Rachel & Josh',
@@ -324,6 +345,13 @@ const WEEKS = [
     box: { type: 'warn', label: 'Pacing permission, read this before you begin', text: 'This week\'s journaling may bring up old grief, anger, shame, or material you haven\'t touched in years. That is appropriate. It is a sign the process is working. Write for ten minutes. Stop. Breathe. Come back tomorrow. Go slow on purpose. If something feels too large to hold alone, reach out to your integration guide before your next scheduled call.\n\nAnd know this: this process moves in waves. Feeling more unsettled now than you did in Week 1, more uncertain, more raw, is often a sign something is genuinely moving. Regression before breakthrough is real.' },
     actionLabel: 'Actions this week, 4 only',
     actions: [
+      {
+        color: 'blue',
+        text: 'Respond to this week’s journal prompts',
+        links: [
+          { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
+        ],
+      },
       { color: 'red', text: 'Deep journaling, this is the primary work of this week', note: 'An act of honesty. Approach the prompts below as if the medicine is already in the room with you, because in a real sense, it is.' },
       {
         color: 'blue',
@@ -368,6 +396,13 @@ const WEEKS = [
     box: { type: 'info', label: 'Why the relational field is the foundation of your return', text: 'The relational preparation you do this week is a structural protection for integration. The weeks and months after ceremony are when the insights are tender and the old world is asking you to return to who you were. The relational preparation you do this week is a structural protection against that pull. Share the Support Person Guide. Have the real conversations. Let your circle know you\'re asking for something from them, and be specific about what.' },
     actionLabel: 'Actions this week, 3 only',
     actions: [
+      {
+        color: 'blue',
+        text: 'Respond to this week’s journal prompts',
+        links: [
+          { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
+        ],
+      },
       {
         color: 'green',
         text: 'Share the Support Person Guide with your home circle, this week',
@@ -417,6 +452,13 @@ const WEEKS = [
     box: { type: 'close', label: 'Emotional closure, the arc completes here', text: 'Five weeks ago this process asked you to see clearly. Then to commit. Then to tend your body. Then to meet your shadow. Then to open to your people. You have done all of that. Whatever remains unresolved, the medicine will meet it. Your job this week is to arrive with openness, trust your team, and let yourself be held. That is enough. That is everything.\n\nIf you feel uncertain right now, more unsettled than you expected to feel at the end of six weeks of preparation, that feeling often means you have done real work. Uncertainty is a form of readiness.' },
     actionLabel: 'Actions this week, 5 operational completions',
     actions: [
+      {
+        color: 'blue',
+        text: 'Respond to this week’s journal prompts',
+        links: [
+          { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
+        ],
+      },
       {
         color: 'red',
         text: 'Confirm labs are submitted',
@@ -1090,7 +1132,7 @@ export default function PreCeremonyPage() {
               </h3>
               {i === 0 && (
                 <p className="w1-body">
-                  Before any thought, the body is already speaking. Sensation, tightening, loosening, warmth, pressure, is the nervous system&apos;s first language, arriving long before words or meaning. What we call a &ldquo;feeling&rdquo; is actually three layers stacked: sensation in the body, charge in the emotional system, and story in the mind. The mind&apos;s story is often the loudest, but it&apos;s the last layer to arrive. This week, the invitation from PNE (PsychoNeuroEnergetics) is to notice what&apos;s underneath the story, the raw data of the body, before the mind names it.
+                  This week&apos;s PNE (PsychoNeuroEnergetics) teaching introduces internal safety, the felt sense the nervous system rests into when all is well. From there, the companion walks through what happens when the system senses threat and how the body shifts into protection, the relational practices that help you regulate together with safe people, and the external structures, the people, places, and rhythms of your life, that build a foundation of safety from the inside out and the outside in.
                 </p>
               )}
               <div className="video-frame" style={{ marginTop: i === 0 ? 24 : 0 }}>
@@ -1100,7 +1142,7 @@ export default function PreCeremonyPage() {
                     <div className="vp-label">{i < 3 ? 'PNE (PsychoNeuroEnergetics)' : 'PNE'} Teaching · Week {i + 1}</div>
                     <div className="vp-text">
                       {i === 0
-                        ? 'A short teaching on the three layers of feeling, sensation in the body, charge in the emotional system, and story in the mind, and why the body’s raw data arrives before the mind names it. The foundational practice of Week 1: listening underneath.'
+                        ? 'Rachel and Josh introduce internal safety, what happens when the system senses threat, and how relational practices and external structures together build the ground your nervous system can rest into. The foundational teaching of Week 1.'
                         : 'A short teaching paired with this week’s principle and the body’s lived response to it.'}
                     </div>
                     <div className="vp-coming-soon">Coming Soon</div>
