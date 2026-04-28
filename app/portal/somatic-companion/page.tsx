@@ -595,7 +595,7 @@ export default async function SomaticCompanionPage() {
           <div className="vk-wrap">
             <div className="vk-eyebrow">Iboga Journey · Member Resource</div>
             <h1>Week One <em>PNE (PsychoNeuroEnergetics) Companion</em></h1>
-            <p className="hero-lede">A foundational guide prepared for Iboga Journey participants, polyvagal theory, somatic self-resourcing, and breath practices to support your preparation, ceremony, and integration.</p>
+            <p className="hero-lede">A foundation in internal safety: how it feels in the body, what happens when the system senses threat, and how relational practices and the people, places, and rhythms of your life together build the ground your nervous system can rest into.</p>
           </div>
         </header>
 
