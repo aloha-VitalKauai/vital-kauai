@@ -28,7 +28,7 @@ const sectionsForWeek = (_weekIdx: number): SectionIndexItem[] => BASE_SECTIONS
 type PromptEntry = { key: string; q: string; hint?: string; placeholder?: string }
 const WEEK_1_PROMPTS: PromptEntry[] = [
   { key: 'w0-p1', q: 'If I create my reality, what’s possible for my life after this journey?' },
-  { key: 'w0-p2', q: 'What thoughts about myself, others, or the world am I mistaking for truth?' },
+  { key: 'w0-p2', q: 'What story am I still believing that no longer belongs to the life I want?' },
 ]
 const promptsForWeek = (
   weekIdx: number,
