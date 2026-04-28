@@ -561,8 +561,8 @@ export function HomePage() {
               </p>
               <h3 className={styles.supportHeader}>Somatic Practices</h3>
               <p>
-                Breathwork, movement, sound, and energetic practice open presence and aliveness
-                across every dimension of the experience.
+                Yoga, breathwork, movement, sound, and energetic practice open presence and
+                aliveness across every dimension of the experience.
               </p>
               <h3 className={styles.supportHeader}>Nature</h3>
               <p>
