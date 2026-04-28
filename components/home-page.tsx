@@ -596,7 +596,7 @@ export function HomePage() {
         </div>
 
         <div className={`${styles.offeringTags} ${styles.reveal}`}>
-          {["Somatics", "Nervous System Safety", "Cleansing", "Breathwork", "Sound Healing", "Bodywork", "Movement", "Energetics", "Nature Immersion", "Integration", "Ceremony"].map(
+          {["Somatics", "Nervous System Safety", "Cleansing", "Yoga", "Breathwork", "Sound Healing", "Bodywork", "Movement", "Energetics", "Nature Immersion", "Integration", "Ceremony"].map(
             (tag, index) => (
               <span key={tag} className={index % 2 === 0 ? styles.tagSage : styles.tagGold}>
                 {tag}
