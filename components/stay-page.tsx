@@ -1171,9 +1171,6 @@ const BODY_CONTENT = `
   <p style="font-family:'Cormorant Garamond',serif;font-size:clamp(22px,3vw,36px);font-weight:300;font-style:italic;color:var(--cream);line-height:1.5;max-width:680px;margin:0 auto 10px;">There are those who feel the call before they understand it.</p>
   <p id="hero-next-ceremony" style="font-size:16px;color:rgba(245,240,232,0.7);letter-spacing:0.08em;margin-bottom:36px;">Hanalei, Kauaʻi</p>
   <a href="/begin-your-journey" target="_blank" style="display:inline-block;font-size:10px;font-weight:400;letter-spacing:0.3em;text-transform:uppercase;color:var(--forest);background:var(--gold);padding:18px 44px;text-decoration:none;transition:background 0.3s;">Book a Discovery Call</a>
-  <div style="margin-top:48px;padding-top:40px;border-top:1px solid rgba(200,169,110,0.1);max-width:820px;margin-left:auto;margin-right:auto;">
-    <p style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:rgba(245,240,232,0.75);line-height:1.9;">We come together as a church, a small circle, deep transformation, a sacred plant, and this land. People arrive carrying something. They leave lighter.</p>
-  </div>
 </div>
 
 <!-- INTRO -->
@@ -1203,11 +1200,6 @@ const BODY_CONTENT = `
       <span class="section-label reveal">Where You Will Stay</span>
       <h2 class="section-title reveal">A Private Home<br><em>in Hanalei</em></h2>
       <p class="homes-body reveal">You will be staying in a private home in Hanalei, carefully selected for comfort, space, and proximity to the land and the bay. Each home sits within walking distance of the water, cradled by the mountains, and prepared with intention for the people who will move through it.</p>
-      <p class="homes-body reveal reveal-delay-1">The specific home for your ceremony date will be shared with you personally after our discovery call.</p>
-      <div class="homes-pull reveal reveal-delay-2">
-        <p>"The home is the first layer of the medicine, arriving somewhere clean, quiet, and prepared for you, in a deeply healing place."</p>
-      </div>
-      <p class="homes-body reveal">Members share a spacious, welcoming home, a private, intimate container of up to six members at a time, so the space and the care remain deeply personal.</p>
     </div>
   </div>
 </section>
