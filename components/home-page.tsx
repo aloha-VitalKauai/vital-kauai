@@ -547,24 +547,29 @@ export function HomePage() {
             </h2>
             <div className={`${styles.sectionSub} ${styles.reveal} ${styles.revealDelay1}`}>
               <p>We offer support at every level.</p>
+              <h3 className={styles.supportHeader}>Vitality</h3>
               <p>
                 Internal cleansing, detoxification, and deep restoration prepare the body to
                 receive.
               </p>
+              <h3 className={styles.supportHeader}>PsychoNeuroEnergetics</h3>
               <p>
                 Somatic support and guidance prepares the body, mind, and spirit to work with the
                 medicine and to move with what arises. You build the capacity to feel safe, to
                 track the nervous system, to self-resource, and to integrate what the medicine
                 reveals.
               </p>
+              <h3 className={styles.supportHeader}>Somatic Practices</h3>
               <p>
                 Breathwork, movement, sound, and energetic practice open presence and aliveness
                 across every dimension of the experience.
               </p>
+              <h3 className={styles.supportHeader}>Nature</h3>
               <p>
                 The land and waters of Kauaʻi are part of the medicine, too. Time in the ocean, on
                 the ʻāina, and in the elements is woven through your stay.
               </p>
+              <h3 className={styles.supportHeader}>Preparation &amp; Integration</h3>
               <p>
                 Most importantly, we offer full preparation and integration support across months,
                 a six-week arc before ceremony and a six-week arc after, so the depth that opens
