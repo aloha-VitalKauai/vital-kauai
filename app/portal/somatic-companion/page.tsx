@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
-export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Companion · Week 1 — Vital Kauaʻi" };
+export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Companion · Week 1, Vital Kauaʻi" };
 
 const PAGE_CSS = `
   :root {
@@ -177,7 +177,8 @@ const PAGE_CSS = `
     margin-top: 48px;
     text-align: center;
     color: var(--accent-gold);
-    font-size: 11px;
+    font-size: 15px;
+    font-weight: 600;
     letter-spacing: 0.32em;
     text-transform: uppercase;
   }
@@ -595,7 +596,7 @@ export default async function SomaticCompanionPage() {
             <div className="vk-eyebrow">Iboga Journey · Member Resource</div>
             <h1>Week One <em>PNE (PsychoNeuroEnergetics) Companion</em></h1>
             <p className="hero-subtitle">PsychoNeuroEnergetics (PNE)</p>
-            <p className="hero-lede">A foundational guide prepared for Iboga Journey participants — polyvagal theory, somatic self-resourcing, and breath practices to support your preparation, ceremony, and integration.</p>
+            <p className="hero-lede">A foundational guide prepared for Iboga Journey participants, polyvagal theory, somatic self-resourcing, and breath practices to support your preparation, ceremony, and integration.</p>
           </div>
         </header>
 
@@ -617,7 +618,7 @@ export default async function SomaticCompanionPage() {
                 <div className="label">State Two</div>
                 <h3>Sympathetic</h3>
                 <div className="state-tag">Mobilized</div>
-                <p>Your system has detected a signal of danger and is preparing you to act — fight or flee. This state is your protection activating.</p>
+                <p>Your system has detected a signal of danger and is preparing you to act, fight or flee. This state is your protection activating.</p>
                 <p className="feel">You may feel: racing heart, tight jaw, shallow breath, heat, restlessness, urgency, irritability, or fear.</p>
               </article>
               <article className="pv-card dorsal">
@@ -629,7 +630,7 @@ export default async function SomaticCompanionPage() {
               </article>
             </div>
             <div className="pv-quote">
-              <p className="pv-quote-text">&ldquo;Your body is always doing its best with the information it has. Every state you have ever moved through has been a form of intelligence — a faithful attempt to keep you alive and whole.&rdquo;</p>
+              <p className="pv-quote-text">&ldquo;Your body is always doing its best with the information it has. Every state you have ever moved through has been a form of intelligence, a faithful attempt to keep you alive and whole.&rdquo;</p>
               <cite className="pv-cite">— Vital Kauaʻi</cite>
             </div>
             <div className="pv-footer">Week 1 · The Language of the Body</div>
@@ -640,7 +641,7 @@ export default async function SomaticCompanionPage() {
           <div className="vk-narrow">
             <div className="vk-eyebrow">A Felt Sense of Home</div>
             <h2 className="vk-title">What Is <em>Internal Safety</em></h2>
-            <p className="vk-lede">A sense of peace inside the body — that all is good. Not a thought, not a conclusion. A felt quality the nervous system can rest into.</p>
+            <p className="vk-lede">A sense of peace inside the body, that all is good. Not a thought, not a conclusion. A felt quality the nervous system can rest into.</p>
             <p className="vk-body">When you are connected to internal safety, you are:</p>
             <ul className="safety-signs">
               <li>Present in the moment, meeting what is happening now rather than living in the past or future.</li>
@@ -660,7 +661,7 @@ export default async function SomaticCompanionPage() {
           <div className="vk-narrow">
             <div className="vk-eyebrow">Why It Matters</div>
             <h2 className="vk-title">Safety Shapes <em>Everything</em></h2>
-            <p className="vk-lede">A foundational sense of safety touches every aspect of our being — from how we think to how we connect. When safety is compromised, the system shifts into protection mode, altering our cognitive and emotional landscape.</p>
+            <p className="vk-lede">A foundational sense of safety touches every aspect of our being, from how we think to how we connect. When safety is compromised, the system shifts into protection mode, altering our cognitive and emotional landscape.</p>
             <div className="why-grid">
               <div className="why-col">
                 <h3>When We Do Not Feel Safe</h3>
@@ -704,15 +705,15 @@ export default async function SomaticCompanionPage() {
               <div className="sibam-row"><div className="sibam-letter">S</div><div><h4>Sensation</h4><p>The physical: warmth, coolness, tingling, pressure, weight, density, pulsing, streaming. The raw felt sense of the body itself.</p></div></div>
               <div className="sibam-row"><div className="sibam-letter">I</div><div><h4>Image</h4><p>The visual: pictures, memories, colors, symbols, shapes that arrive in the mind&apos;s eye. Sometimes clear, sometimes fleeting.</p></div></div>
               <div className="sibam-row"><div className="sibam-letter">B</div><div><h4>Behavior</h4><p>The expressive: gestures, postures, micro-movements, breath rhythms, facial expressions. The body&apos;s own choreography of meaning.</p></div></div>
-              <div className="sibam-row"><div className="sibam-letter">A</div><div><h4>Affect</h4><p>The emotional: tones of feeling — joy, grief, fear, tenderness, anger — moving through you with their own colors and currents.</p></div></div>
+              <div className="sibam-row"><div className="sibam-letter">A</div><div><h4>Affect</h4><p>The emotional: tones of feeling, joy, grief, fear, tenderness, anger, moving through you with their own colors and currents.</p></div></div>
               <div className="sibam-row"><div className="sibam-letter">M</div><div><h4>Meaning</h4><p>The narrative: the stories, beliefs, and interpretations the mind weaves around what is being experienced. Held lightly, it becomes wisdom.</p></div></div>
             </div>
             <div className="practice-eyebrow">The Practice</div>
             <h2 className="vk-title">How to <em>Listen</em></h2>
             <div className="listen-steps">
               <div className="listen-step"><div className="roman">I</div><h3>Arrive</h3><p>Settle the body. Place your feet. Soften your gaze or close your eyes. Take one slower exhale. You do not need to find anything; you are simply here.</p></div>
-              <div className="listen-step"><div className="roman">II</div><h3>Scan</h3><p>Let your attention move slowly through the body — head, throat, chest, belly, pelvis, arms, legs, feet. Not searching, not diagnosing. Just passing through like a gentle light.</p></div>
-              <div className="listen-step"><div className="roman">III</div><h3>Notice What Calls</h3><p>Rest your attention wherever there is the most presence — whatever has weight, warmth, tension, movement. The body always has something it is asking you to meet.</p></div>
+              <div className="listen-step"><div className="roman">II</div><h3>Scan</h3><p>Let your attention move slowly through the body, head, throat, chest, belly, pelvis, arms, legs, feet. Not searching, not diagnosing. Just passing through like a gentle light.</p></div>
+              <div className="listen-step"><div className="roman">III</div><h3>Notice What Calls</h3><p>Rest your attention wherever there is the most presence, whatever has weight, warmth, tension, movement. The body always has something it is asking you to meet.</p></div>
             </div>
           </div>
         </section>
@@ -721,11 +722,11 @@ export default async function SomaticCompanionPage() {
           <div className="vk-narrow">
             <div className="vk-eyebrow">Working from the Inside Out</div>
             <h2 className="vk-title">Somatic Self-Resourcing: <em>Coming Back to the Body</em></h2>
-            <p className="vk-lede">Somatic means &ldquo;of the body.&rdquo; Somatic self-resourcing is the practice of using your own body — its sensations, its breath, its contact with gravity and the ground — to create a felt sense of safety within yourself.</p>
+            <p className="vk-lede">Somatic means &ldquo;of the body.&rdquo; Somatic self-resourcing is the practice of using your own body, its sensations, its breath, its contact with gravity and the ground, to create a felt sense of safety within yourself.</p>
             <div className="listen-steps">
-              <div className="listen-step"><div className="roman">I</div><h3>Orienting</h3><p>Slowly allow your gaze to move through the space around you — as if you are a gentle animal arriving somewhere new. Let your eyes rest on something stable, something soft, something that carries a sense of safety. When you find it, let your gaze settle and breathe there.</p></div>
-              <div className="listen-step"><div className="roman">II</div><h3>Grounding</h3><p>Feel the weight of your body making contact with whatever is beneath you — a chair, the floor, the earth. Press your feet into the ground. Let the ground meet you back. Notice how it holds you without effort.</p></div>
-              <div className="listen-step"><div className="roman">III</div><h3>Containment</h3><p>Wrap your arms around yourself, or place a hand over your heart and another on your belly. Feel the warmth of your own touch. Let your body know it is held — by no one other than you, and that is enough.</p></div>
+              <div className="listen-step"><div className="roman">I</div><h3>Orienting</h3><p>Slowly allow your gaze to move through the space around you, as if you are a gentle animal arriving somewhere new. Let your eyes rest on something stable, something soft, something that carries a sense of safety. When you find it, let your gaze settle and breathe there.</p></div>
+              <div className="listen-step"><div className="roman">II</div><h3>Grounding</h3><p>Feel the weight of your body making contact with whatever is beneath you, a chair, the floor, the earth. Press your feet into the ground. Let the ground meet you back. Notice how it holds you without effort.</p></div>
+              <div className="listen-step"><div className="roman">III</div><h3>Containment</h3><p>Wrap your arms around yourself, or place a hand over your heart and another on your belly. Feel the warmth of your own touch. Let your body know it is held, by no one other than you, and that is enough.</p></div>
             </div>
           </div>
         </section>
@@ -739,10 +740,10 @@ export default async function SomaticCompanionPage() {
               <h3>The Coherent <em>Heart Breath</em></h3>
               <p className="sub">A complete cycle of breath that fills, stills, and releases.</p>
               <p className="placement">Begin with placement. Bring one hand to rest over your heart and the other over your belly. Feel the warmth of your palms meeting your body. This contact establishes presence.</p>
-              <div className="breath-step"><div className="pill">7 sec</div><div><h4>Inhale — Fill the Belly, Then the Chest</h4><p>Begin by allowing the breath to flow into the belly first — feel your lower hand rise as your diaphragm descends. Then continue upward into the chest. Take the full seven seconds to complete this wave of breath, moving from low to high.</p></div></div>
-              <div className="breath-step"><div className="pill">7 sec</div><div><h4>Hold — Rest at the Top</h4><p>At the fullness of your inhale, pause. Hold gently, with presence. Feel the aliveness in your body at this moment. This pause is full. Simply be here for seven seconds.</p></div></div>
-              <div className="breath-step"><div className="pill">7 sec</div><div><h4>Exhale — Release from the Chest, Then the Belly</h4><p>Let the breath fall from the chest first, then empty fully from the belly. The exhale is where the vagus nerve listens most closely. Let it be slow, soft, and complete.</p></div></div>
-              <div className="breath-step"><div className="pill">7 sec</div><div><h4>Pause — Rest in the Empty</h4><p>Before the next inhale, pause again at the bottom. Let the body rest in stillness. Allow the next breath to arrive on its own, when it is ready.</p></div></div>
+              <div className="breath-step"><div className="pill">7 sec</div><div><h4>Inhale, Fill the Belly, Then the Chest</h4><p>Begin by allowing the breath to flow into the belly first, feel your lower hand rise as your diaphragm descends. Then continue upward into the chest. Take the full seven seconds to complete this wave of breath, moving from low to high.</p></div></div>
+              <div className="breath-step"><div className="pill">7 sec</div><div><h4>Hold, Rest at the Top</h4><p>At the fullness of your inhale, pause. Hold gently, with presence. Feel the aliveness in your body at this moment. This pause is full. Simply be here for seven seconds.</p></div></div>
+              <div className="breath-step"><div className="pill">7 sec</div><div><h4>Exhale, Release from the Chest, Then the Belly</h4><p>Let the breath fall from the chest first, then empty fully from the belly. The exhale is where the vagus nerve listens most closely. Let it be slow, soft, and complete.</p></div></div>
+              <div className="breath-step"><div className="pill">7 sec</div><div><h4>Pause, Rest in the Empty</h4><p>Before the next inhale, pause again at the bottom. Let the body rest in stillness. Allow the next breath to arrive on its own, when it is ready.</p></div></div>
             </div>
           </div>
         </section>
@@ -753,7 +754,7 @@ export default async function SomaticCompanionPage() {
             <div className="practices-grid">
               <div className="practice-card"><h3>Orienting Gaze</h3><p>Slowly allow your gaze to sweep the room. Let your eyes rest briefly on objects that feel neutral or pleasant. This slow, deliberate visual scan signals safety to the subcortical brain.</p></div>
               <div className="practice-card"><h3>Feet on the Earth</h3><p>Stand or sit with bare feet on the ground, or imagine roots extending from the soles of your feet into the earth below. Press down. Feel the earth pressing back.</p></div>
-              <div className="practice-card"><h3>Temperature Anchor</h3><p>Hold something warm — a mug of tea, a warm cloth, your own palms pressed together. Temperature is one of the fastest pathways to the present-moment body.</p></div>
+              <div className="practice-card"><h3>Temperature Anchor</h3><p>Hold something warm, a mug of tea, a warm cloth, your own palms pressed together. Temperature is one of the fastest pathways to the present-moment body.</p></div>
               <div className="practice-card"><h3>Name What You Notice</h3><p>Gently label the sensations you experience with openness and curiosity: tingling, warmth, tightness, expansion. This practice activates the prefrontal cortex and creates stabilizing distance.</p></div>
               <div className="practice-card"><h3>Sound &amp; Tone</h3><p>Humming, chanting, or toning directly vibrates the vagus nerve. A simple sustained hum activates your parasympathetic system and creates resonance in the body.</p></div>
               <div className="practice-card"><h3>The Inner Witness</h3><p>When activation rises, invite the quiet, steady part of yourself to simply observe. Say inwardly: <em>I see what is happening. I am here with it.</em> The witness accompanies, it holds space.</p></div>
@@ -765,10 +766,10 @@ export default async function SomaticCompanionPage() {
           <div className="vk-narrow">
             <div className="vk-eyebrow">Safety Through Connection</div>
             <h2 className="vk-title">Relational <em>Practices</em></h2>
-            <p className="vk-lede">The body learns safety not only from itself, but from other safe bodies. These four practices weave the work outward — into your relationships, your speech, the way you show up with others.</p>
+            <p className="vk-lede">The body learns safety not only from itself, but from other safe bodies. These four practices weave the work outward, into your relationships, your speech, the way you show up with others.</p>
             <div className="practices-grid">
-              <div className="practice-card"><h3>Co-Regulation</h3><p>Connect with a safe person. Borrow calm through their grounded presence — talking, sitting quietly together, or simply being near someone who feels steady. The nervous system regulates fastest in the company of another.</p></div>
-              <div className="practice-card"><h3>Compassionate Listening</h3><p>Listen to others with presence and curiosity, without judgment. Allow yourself to be truly heard by someone safe. Feeling witnessed — without correction or advice — creates deep, embodied safety.</p></div>
+              <div className="practice-card"><h3>Co-Regulation</h3><p>Connect with a safe person. Borrow calm through their grounded presence, talking, sitting quietly together, or simply being near someone who feels steady. The nervous system regulates fastest in the company of another.</p></div>
+              <div className="practice-card"><h3>Compassionate Listening</h3><p>Listen to others with presence and curiosity, without judgment. Allow yourself to be truly heard by someone safe. Feeling witnessed, without correction or advice, creates deep, embodied safety.</p></div>
               <div className="practice-card"><h3>Positive Affirmations</h3><p>Speak kindly to yourself. Use gentle, affirming words that counter negative self-talk and reinforce your inherent worth. The voice you use with yourself is a voice your nervous system listens to all day.</p></div>
               <div className="practice-card"><h3>Boundaries</h3><p>Honor your own limits and respect others&apos;. Clear boundaries create safety by protecting your energy and autonomy. Saying no to what depletes you is a way of saying yes to your own ground.</p></div>
             </div>
@@ -782,7 +783,7 @@ export default async function SomaticCompanionPage() {
             <p className="vk-lede">As internal safety deepens, you naturally seek external structures that reflect this newfound calm. A robust support system means consciously choosing both your people and your places.</p>
             <div className="practices-grid">
               <div className="practice-card"><h3>Your Chosen People</h3><p>Identify two or three individuals who help you feel authentically yourself, respect your boundaries without question, and leave you feeling steadier after connection. These are your anchors during difficult moments.</p></div>
-              <div className="practice-card"><h3>A Sacred Place in Nature</h3><p>Find one specific, accessible place near you — a park bench, a quiet trail, a riverbank, a stretch of beach. This personal sanctuary becomes a reliable anchor for grounding your nervous system regularly.</p></div>
+              <div className="practice-card"><h3>A Sacred Place in Nature</h3><p>Find one specific, accessible place near you, a park bench, a quiet trail, a riverbank, a stretch of beach. This personal sanctuary becomes a reliable anchor for grounding your nervous system regularly.</p></div>
               <div className="practice-card"><h3>A Resilient Web</h3><p>By weaving together safe people and nurturing natural spaces, you create a living support network that sustains you far beyond any one professional relationship. The web itself becomes the medicine.</p></div>
               <div className="practice-card"><h3>An Organized Life</h3><p>Reduce clutter where you can. Create devoted places for your belongings. An organized home reduces cognitive load and offers the nervous system a calm, predictable environment to soften into.</p></div>
             </div>
@@ -793,10 +794,10 @@ export default async function SomaticCompanionPage() {
           <div className="vk-narrow">
             <div className="vk-eyebrow">Safety in the Medicine</div>
             <h2 className="vk-title">In Your <em>Iboga Journey</em></h2>
-            <p className="vk-lede">Your journey into deeper self-discovery is profoundly personal — and you are not alone. Building and trusting your support system is essential to navigating the experience with greater ease, safety, and integration.</p>
+            <p className="vk-lede">Your journey into deeper self-discovery is profoundly personal, and you are not alone. Building and trusting your support system is essential to navigating the experience with greater ease, safety, and integration.</p>
             <div className="iboga-grid">
               <div className="iboga-col"><h3>Your Steadfast Team</h3><p>Trust the dedicated people around you. They are there to guide you, hold space, and ensure a foundation of external safety throughout your experience.</p></div>
-              <div className="iboga-col"><h3>Anchor in Your Breath</h3><p>If a moment feels overwhelming or uncertain, gently bring your awareness back to your breath. It is always available — a reliable pathway home to yourself.</p></div>
+              <div className="iboga-col"><h3>Anchor in Your Breath</h3><p>If a moment feels overwhelming or uncertain, gently bring your awareness back to your breath. It is always available, a reliable pathway home to yourself.</p></div>
               <div className="iboga-col"><h3>Co-Regulation with Your Coach</h3><p>Do not hesitate to ask your coach or team for support. They can offer grounded presence and help you draw on the safety practices you are building now.</p></div>
             </div>
           </div>
@@ -810,7 +811,7 @@ export default async function SomaticCompanionPage() {
               <p className="lede">A simple invitation to live this week&apos;s teaching in your body and your life. There is nothing to perform here. Only noticing.</p>
               <div className="hw-step">
                 <div className="hw-num">One</div>
-                <h3>Explore the regulation practices in the portal — find what works best for you.</h3>
+                <h3>Explore the regulation practices in the portal, find what works best for you.</h3>
                 <div className="hw-tags">Breathing &nbsp;·&nbsp; Grounding &nbsp;·&nbsp; 4 / 7 / 8 Breath &nbsp;·&nbsp; PNE (PsychoNeuroEnergetics) Breath (Belly / Heart) &nbsp;·&nbsp; Orienting &nbsp;·&nbsp; Felt-Sense Regulation</div>
               </div>
               <div className="hw-step">
