@@ -65,6 +65,8 @@ const actionsForWeek = (
       { kind: 'internal', href: '/intake-form',                        text: 'Fill out Your Member Intake & Readiness Form' },
       { kind: 'hash',     href: '#journal-prompts',                    text: 'Respond to this week’s journal prompts' },
       { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Companion: The Language of the Body' },
+      { kind: 'static',                                              text: "Complete this week's PNE Practice" },
+      { kind: 'static',                                              text: "Complete this week's PNE Reflection" },
       { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule your first call with your integration guide' },
     ]
   }
@@ -214,6 +216,8 @@ const WEEKS = [
           { text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Companion: Nervous System Regulation', href: '/portal/somatic-companion/week-2#top' },
         ],
       },
+      { color: 'green', text: "Complete this week's PNE Practice" },
+      { color: 'green', text: "Complete this week's PNE Reflection" },
       {
         color: 'blue',
         text: 'Connect with your integration guide',
@@ -279,6 +283,8 @@ const WEEKS = [
           { text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Companion: Building Somatic Awareness', href: '/portal/somatic-companion/week-3#top' },
         ],
       },
+      { color: 'green', text: "Complete this week's PNE Practice" },
+      { color: 'green', text: "Complete this week's PNE Reflection" },
       {
         color: 'blue',
         text: 'Begin writing your questions for the medicine',
@@ -364,6 +370,8 @@ const WEEKS = [
         color: 'green',
         text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Companion',
       },
+      { color: 'green', text: "Complete this week's PNE Practice" },
+      { color: 'green', text: "Complete this week's PNE Reflection" },
       { color: 'red', text: 'Deep journaling, this is the primary work of this week', note: 'An act of honesty. Approach the prompts below as if the medicine is already in the room with you, because in a real sense, it is.' },
       {
         color: 'blue',
@@ -419,6 +427,8 @@ const WEEKS = [
         color: 'green',
         text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Companion',
       },
+      { color: 'green', text: "Complete this week's PNE Practice" },
+      { color: 'green', text: "Complete this week's PNE Reflection" },
       {
         color: 'green',
         text: 'Share the Support Person Guide with your home circle, this week',
@@ -479,6 +489,8 @@ const WEEKS = [
         color: 'green',
         text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Companion',
       },
+      { color: 'green', text: "Complete this week's PNE Practice" },
+      { color: 'green', text: "Complete this week's PNE Reflection" },
       {
         color: 'red',
         text: 'Confirm labs are submitted',
