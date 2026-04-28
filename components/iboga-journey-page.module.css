@@ -823,10 +823,11 @@
 .phaseNumber {
   display: block;
   font-family: var(--font-display), serif;
-  font-size: 64px;
+  font-style: italic;
+  font-size: 72px;
   font-weight: 300;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--gold);
+  color: var(--gold);
+  letter-spacing: -0.01em;
   line-height: 1;
   margin-bottom: 20px;
 }
