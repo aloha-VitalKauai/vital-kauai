@@ -1211,7 +1211,7 @@ const BODY_CONTENT = `
     style="width:100%;height:100%;object-fit:cover;object-position:center 60%;filter:saturate(0.9) brightness(0.88);">
   <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,20,12,0.15) 0%,rgba(10,20,12,0.0) 40%,rgba(10,20,12,0.45) 100%);"></div>
   <div style="position:absolute;bottom:40px;left:60px;">
-    <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:var(--terra-pale);margin-bottom:8px;">Hanalei Bay · North Shore, Kauaʻi</p>
+    <p style="font-size:13px;font-weight:500;letter-spacing:0.32em;text-transform:uppercase;color:var(--cream);text-shadow:0 1px 8px rgba(0,0,0,0.55);margin-bottom:10px;">Hanalei Bay · North Shore, Kauaʻi</p>
     <p style="font-family:'Cormorant Garamond',serif;font-size:clamp(22px,3vw,36px);font-weight:300;font-style:italic;color:var(--cream);line-height:1.3;">Steps from where you'll wake up.</p>
   </div>
 </div>
@@ -1275,7 +1275,7 @@ const BODY_CONTENT = `
     <div class="included-card reveal reveal-delay-1">
       <div class="included-rule"></div>
       <h3 class="included-title">Full-Spectrum Support</h3>
-      <p class="included-body">Our team is with you across the arc of your journey. Text support, check-ins, and the quiet reassurance of knowing someone who genuinely cares is always close.</p>
+      <p class="included-body">Our team is with you across the arc of your journey. Text support, check-ins, and the reassurance of knowing someone who genuinely cares is always close.</p>
     </div>
     <div class="included-card reveal reveal-delay-2">
       <div class="included-rule"></div>
@@ -1559,7 +1559,7 @@ const BODY_CONTENT = `
           <span class="faq-icon" aria-hidden="true"></span>
         </summary>
         <div class="faq-answer">
-          <p>The first step is a discovery call, a real conversation with Rachel and/or Josh, bookable directly through our Calendly. We want to understand what brings you here, what you are carrying, your health history, and what support will serve you best. This is how we begin to know you, so that the container we hold for you is built for who you actually are.</p>
+          <p>The first step is a discovery call, a conversation with Rachel and/or Josh, bookable directly through our Calendly. We want to understand what brings you here, what you are carrying, your health history, and what support will serve you best. This is how we begin to know you, so that the container we hold for you is built for who you actually are.</p>
         </div>
       </details>
 
