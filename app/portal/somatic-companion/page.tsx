@@ -641,7 +641,7 @@ export default async function SomaticCompanionPage() {
           <div className="vk-narrow">
             <div className="vk-eyebrow">A Felt Sense of Home</div>
             <h2 className="vk-title">What Is <em>Internal Safety</em></h2>
-            <p className="vk-lede">A felt sense of peace inside the body, the embodied knowing that all is good. It arrives as a quality the nervous system can rest into, deeper than thought, beneath any conclusion.</p>
+            <p className="vk-lede">A felt sense of peace inside the body, the embodied knowing that all is good. It arrives as a quality the nervous system can rest into.</p>
             <p className="vk-body">When you are connected to internal safety, you are:</p>
             <ul className="safety-signs">
               <li>Present in the moment, meeting what is happening now rather than living in the past or future.</li>
