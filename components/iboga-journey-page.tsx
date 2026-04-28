@@ -422,10 +422,11 @@ export function IbogaJourneyPage() {
             <h3 className={styles.phaseTitle}>Ceremony</h3>
             <span className={styles.phaseWeek}>1 Week &middot; Hanalei, Kaua&#699;i</span>
             <p className={styles.phaseBody}>
-              Your ceremony takes place in a private home in Hanalei. You will be guided by
-              experienced facilitators through a multi-day process rooted in evidence-based
-              research and held with deep personal care, from the first dose through full
-              integration on the land.
+              Your ceremony arc unfolds over several days, guided by experienced facilitators and
+              rooted in evidence-based research. From the moment you arrive, you are held with
+              deep personal care: nourished by the ʻāina, guided through somatic practices,
+              brought into a carefully held Iboga ceremony, and given space to rest, reflect, and
+              integrate alongside fellow members.
             </p>
           </div>
           <div className={styles.protocolPhase}>
@@ -448,7 +449,7 @@ export function IbogaJourneyPage() {
         <div style={{ maxWidth: 1080, margin: "0 auto" }}>
           {/* Decorative gold rule above the eyebrow */}
           <div style={{ width: 36, height: 1, background: "var(--gold, #C8A96E)", margin: "0 auto 20px", opacity: 0.6 }} />
-          <span className={styles.sectionLabel} style={{ display: "block", marginBottom: 14, color: "var(--gold, #C8A96E)" }}>Come As You Are</span>
+          <span className={styles.sectionLabel} style={{ display: "block", marginBottom: 14, color: "var(--gold, #C8A96E)", fontSize: 13, fontWeight: 500, letterSpacing: "0.32em" }}>Come As You Are</span>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 300, color: "var(--ink, #1A1A18)", lineHeight: 1.1, marginBottom: 16 }}>
             Upcoming <em style={{ fontStyle: "italic", color: "var(--sage, #7A9E7E)" }}>Ceremonies</em>
           </h2>
