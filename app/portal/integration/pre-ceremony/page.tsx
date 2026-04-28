@@ -208,6 +208,13 @@ const WEEKS = [
         ],
       },
       {
+        color: 'green',
+        text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Companion: Nervous System Regulation',
+        links: [
+          { text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Companion: Nervous System Regulation', href: '/portal/somatic-companion/week-2#top' },
+        ],
+      },
+      {
         color: 'blue',
         text: 'Connect with your integration guide',
         note: 'Come with your intentions from Week 1. Come with your questions. Come as you are. This call is the beginning of a relationship that will hold you through the hardest parts of what\'s ahead.',
@@ -263,6 +270,13 @@ const WEEKS = [
         text: 'Respond to this week’s journal prompts',
         links: [
           { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
+        ],
+      },
+      {
+        color: 'green',
+        text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Companion: Building Somatic Awareness',
+        links: [
+          { text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Companion: Building Somatic Awareness', href: '/portal/somatic-companion/week-3#top' },
         ],
       },
       {
@@ -346,6 +360,10 @@ const WEEKS = [
           { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
         ],
       },
+      {
+        color: 'green',
+        text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Companion',
+      },
       { color: 'red', text: 'Deep journaling, this is the primary work of this week', note: 'An act of honesty. Approach the prompts below as if the medicine is already in the room with you, because in a real sense, it is.' },
       {
         color: 'blue',
@@ -396,6 +414,10 @@ const WEEKS = [
         links: [
           { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
         ],
+      },
+      {
+        color: 'green',
+        text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Companion',
       },
       {
         color: 'green',
@@ -452,6 +474,10 @@ const WEEKS = [
         links: [
           { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
         ],
+      },
+      {
+        color: 'green',
+        text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Companion',
       },
       {
         color: 'red',
