@@ -1159,6 +1159,11 @@ export default function PreCeremonyPage() {
                   The PsychoNeuroEnergetics (PNE) Companion → Week 2: Nervous System Regulation
                 </Link>
               )}
+              {i === 2 && (
+                <Link href="/portal/somatic-companion/week-3#top" target="_blank" rel="noopener noreferrer" className="w1-companion-link">
+                  The PsychoNeuroEnergetics (PNE) Companion → Week 3: Building Somatic Awareness
+                </Link>
+              )}
             </section>
 
             {/* JOURNAL PROMPTS */}
