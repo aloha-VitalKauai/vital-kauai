@@ -678,7 +678,7 @@ export function HomePage() {
             <em style={{ color: "var(--terra-pale)" }}>Ceremonies</em>
           </h2>
           <p className={`${styles.sectionSub} ${styles.reveal}`} style={{ maxWidth: 600, margin: "0 auto 48px" }}>
-            Each ceremony is a small, held gathering: six members, seven days, one sacred arc. Book a
+            Each ceremony is a small, held gathering: up to six members, seven days. Book a
             discovery call to learn about the next available date.
           </p>
           <div className={`${styles.ceremoniesGrid} ${styles.reveal}`}>
@@ -727,7 +727,7 @@ export function HomePage() {
             })()}
           </div>
           <a href="/begin-your-journey" target="_blank" rel="noopener noreferrer" className={styles.ceremonyBtn}>
-            Book a Discovery Call to Join Our Next Group Ceremony
+            Book a Discovery Call
           </a>
         </div>
       </section>
