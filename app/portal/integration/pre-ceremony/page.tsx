@@ -1109,7 +1109,7 @@ export default function PreCeremonyPage() {
               </div>
               {i === 0 && (
                 <Link href="/portal/somatic-companion#top" target="_blank" rel="noopener noreferrer" className="w1-companion-link">
-                  Read the full teaching in The PsychoNeuroEnergetics (PNE) Companion → Week 1: The Language of the Body
+                  The PsychoNeuroEnergetics (PNE) Companion → Week 1: The Language of the Body
                 </Link>
               )}
             </section>
