@@ -457,8 +457,7 @@ export function HomePage() {
               plant, participant, and land. We offer the most in-depth preparation and integration we know in this work: a six-week preparation arc before ceremony and a six-week integration after, with weekly teachings, somatic guidance, and one-on-one support throughout.
             </p>
             <p className={styles.medicineBody}>
-              Our approach honors the Bwiti tradition from which Iboga comes, and draws from the whole-plant intelligence of
-              Iboga root bark, titrated consciously with care, safety, and deep presence. As guests on this ʻāina, we hold Kauaʻi with kuleana, the deep responsibility of care for land, water, and lineage.
+              Our approach honors the Bwiti tradition from which Iboga comes, drawing on the whole-plant intelligence of the root bark. As stewards of this ʻāina, we hold Hawaiian tradition with kuleana, caring for the land, water, and lineage that make our ceremony possible.
             </p>
             <div className={styles.medicineDistinction}>
               <p>
