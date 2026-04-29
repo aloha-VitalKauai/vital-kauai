@@ -557,11 +557,85 @@ const PAGE_CSS = `
     color: var(--ink-mute);
   }
 
+  .pne-companion-page .vk-darkband {
+    background: var(--bg-dark);
+    color: var(--ink-light);
+    padding: 80px 0;
+  }
+  .pne-companion-page .vk-darkband-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(30px, 4vw, 44px);
+    line-height: 1.2;
+    color: #F4EDD6;
+    margin: 0 0 36px;
+  }
+  .pne-companion-page .vk-darkband-title em { font-style: italic; color: var(--accent-sage); }
+  .pne-companion-page .vk-darkband-p {
+    font-size: 16px;
+    line-height: 1.75;
+    color: rgba(244, 237, 214, 0.82);
+    margin: 0 0 16px;
+  }
+  .pne-companion-page .vk-darkband-h4 {
+    font-family: var(--body);
+    font-weight: 600;
+    font-size: 16px;
+    color: #F4EDD6;
+    margin: 24px 0 12px;
+  }
+  .pne-companion-page .vk-darkband-list {
+    margin: 0 0 24px;
+    padding-left: 22px;
+  }
+  .pne-companion-page .vk-darkband-list li {
+    color: rgba(244, 237, 214, 0.82);
+    font-size: 15.5px;
+    line-height: 1.7;
+    margin-bottom: 8px;
+  }
+  .pne-companion-page .vk-darkband-note {
+    margin-top: 28px;
+    padding: 18px 22px;
+    background: rgba(122, 158, 126, 0.10);
+    border-left: 3px solid var(--accent-sage);
+    border-radius: 4px;
+    color: var(--accent-sage);
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  .pne-companion-page .exercises-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+    margin-top: 12px;
+  }
+  .pne-companion-page .exercise-card {
+    padding: 4px 0;
+  }
+  .pne-companion-page .exercise-card h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 22px;
+    color: #F4EDD6;
+    margin: 0 0 8px;
+    line-height: 1.25;
+  }
+  .pne-companion-page .exercise-card p {
+    color: rgba(244, 237, 214, 0.78);
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0;
+  }
+
   @media (max-width: 880px) {
     .pne-companion-page .vk-section { padding: 48px 0; }
     .pne-companion-page .vk-wrap, .pne-companion-page .vk-narrow { padding: 0 24px; }
     .pne-companion-page header.hero { padding: 64px 0 72px; }
     .pne-companion-page .pv-states { grid-template-columns: 1fr; gap: 16px; }
+    .pne-companion-page .vk-darkband { padding: 56px 0; }
+    .pne-companion-page .exercises-grid { grid-template-columns: 1fr; gap: 18px; }
     .pne-companion-page .pv-card { min-height: auto; padding: 28px 24px; }
     .pne-companion-page .pv-quote { padding: 28px 24px; }
     .pne-companion-page .why-grid { grid-template-columns: 1fr; gap: 24px; }
@@ -655,17 +729,30 @@ export default async function SomaticCompanionPage() {
           </div>
         </section>
 
-        <section className="vk-section">
+        <section className="vk-darkband">
           <div className="vk-narrow">
-            <div className="vk-eyebrow">Safety Through Connection</div>
-            <h2 className="vk-title">Relational <em>Practices</em></h2>
-            <p className="vk-lede">The body learns safety from itself and, equally, from other safe bodies. These four practices weave the work outward, into your relationships, your speech, the way you show up with others.</p>
-            <div className="practices-grid">
-              <div className="practice-card"><h3>Co-Regulation</h3><p>Connect with a safe person. Borrow calm through their grounded presence, talking, sitting quietly together, or simply being near someone who feels steady. The nervous system regulates fastest in the company of another.</p></div>
-              <div className="practice-card"><h3>Compassionate Listening</h3><p>Listen to others with presence and curiosity, holding space for whatever arises. Allow yourself to be truly heard by someone safe. Feeling witnessed, simply received, creates deep, embodied safety.</p></div>
-              <div className="practice-card"><h3>Positive Affirmations</h3><p>Speak kindly to yourself. Use gentle, affirming words that reinforce your inherent worth. The voice you use with yourself is a voice your nervous system listens to all day.</p></div>
-              <div className="practice-card"><h3>Boundaries</h3><p>Honor your own limits and respect others&apos;. Clear boundaries create safety by protecting your energy and autonomy. Saying yes to what nourishes you is how you stand on your own ground.</p></div>
+            <h2 className="vk-darkband-title">Exercises for <em>Internal Safety</em></h2>
+            <div className="exercises-grid">
+              <div className="exercise-card"><h3>Co-Regulation</h3><p>Connect with a safe person. Borrow calm through their grounded presence &mdash; talking, sitting quietly together, or simply being near someone who feels steady.</p></div>
+              <div className="exercise-card"><h3>Compassionate Listening</h3><p>Listen to others with presence and curiosity, without judgment. Be truly heard by someone safe. Feeling witnessed creates deep safety.</p></div>
+              <div className="exercise-card"><h3>Positive Affirmations</h3><p>Speak kindly to yourself. Use gentle, affirming words that counter negative self-talk and reinforce your inherent worth and safety.</p></div>
+              <div className="exercise-card"><h3>Boundaries</h3><p>Honor your own limits and respect others&apos; boundaries. Clear boundaries create safety by protecting your energy and autonomy.</p></div>
             </div>
+          </div>
+        </section>
+
+        <section className="vk-darkband">
+          <div className="vk-narrow">
+            <h2 className="vk-darkband-title">Small Moments of Presence <em>Create Safety</em></h2>
+            <p className="vk-darkband-p">Healing does not only happen in big cathartic moments, or from mentally understanding our trauma.</p>
+            <p className="vk-darkband-p">Safety is built through small, mindful moments repeated throughout the day. Taking brief pauses to slow down and check in with yourself helps teach the body that safety is available now. Even 30 seconds matters.</p>
+            <h4 className="vk-darkband-h4">Simple awareness practices to integrate at work:</h4>
+            <ul className="vk-darkband-list">
+              <li>Notice your body in the chair before sending an email.</li>
+              <li>Take one slow breath before responding to stress.</li>
+              <li>Look around the room and notice a pleasant thing in the space.</li>
+            </ul>
+            <div className="vk-darkband-note"><em>Though these small practices may seem insignificant, presence in ordinary moments is key to regulating the nervous system and builds inner stability over time.</em></div>
           </div>
         </section>
 
