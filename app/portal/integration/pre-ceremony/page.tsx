@@ -92,6 +92,17 @@ type Progress = {
 
 const STRIPE_LOVE_OFFERING_URL = 'https://buy.stripe.com/test_cNi4gzcoG3ZBeQUcmZbo400'
 
+// Per-week PNE practice + reflection shown below the PNE video. Empty string =
+// placeholder ("Coming Soon"). Filled in as content lands.
+const PRE_PNE_DETAILS: ReadonlyArray<{ practice: string; reflection: string }> = [
+  { practice: 'Breath regulation practice', reflection: 'What do I notice differently in my body after using some of these practices throughout my day?' },
+  { practice: '', reflection: '' },
+  { practice: '', reflection: '' },
+  { practice: '', reflection: '' },
+  { practice: '', reflection: '' },
+  { practice: '', reflection: '' },
+]
+
 // Render an action's text with optional inline links. Each link matches a
 // substring in `text` and is replaced with an anchor tag in place.
 function renderActionText(
@@ -896,6 +907,8 @@ export default function PreCeremonyPage() {
         .vp-label { font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:6px; }
         .vp-text { font-size:13.5px;color:rgba(245,240,232,.75);line-height:1.7; }
         .vp-text em { font-style:italic;color:var(--cream); }
+        .pne-detail { margin-top:10px;background:var(--forest);border:.5px solid var(--border);border-radius:4px;padding:18px 24px; }
+        .pne-detail .vp-coming-soon { margin-top:6px; }
 
         /* BOXES */
         .box { margin-top:14px;border-radius:2px;padding:16px 20px; }
@@ -1208,6 +1221,18 @@ export default function PreCeremonyPage() {
                     <div className="vp-coming-soon">Coming Soon</div>
                   </div>
                 </div>
+              </div>
+              <div className="pne-detail">
+                <div className="vp-label">This Week&apos;s PNE Practice</div>
+                {PRE_PNE_DETAILS[i]?.practice
+                  ? <div className="vp-text">{PRE_PNE_DETAILS[i].practice}</div>
+                  : <div className="vp-coming-soon">Coming Soon</div>}
+              </div>
+              <div className="pne-detail">
+                <div className="vp-label">This Week&apos;s PNE Reflection</div>
+                {PRE_PNE_DETAILS[i]?.reflection
+                  ? <div className="vp-text">{PRE_PNE_DETAILS[i].reflection}</div>
+                  : <div className="vp-coming-soon">Coming Soon</div>}
               </div>
             </section>
 
