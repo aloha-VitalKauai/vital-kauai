@@ -679,6 +679,14 @@ const PAGE_CSS = `
     line-height: 1.65;
     margin: 0;
   }
+  .pne-companion-page .strategy-coda {
+    margin-top: 36px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(244, 237, 214, 0.12);
+  }
+  .pne-companion-page .strategy-coda .vk-darkband-list {
+    margin-top: 12px;
+  }
 
   @media (max-width: 880px) {
     .pne-companion-page .vk-section { padding: 48px 0; }
@@ -822,21 +830,15 @@ export default async function SomaticCompanionPage() {
                 <div className="strategy-item"><h4>The Inner Witness</h4><p>When activation rises, invite the steady part of yourself to observe. Say inwardly: I see what is happening. I am here with it.</p></div>
               </div>
             </div>
-          </div>
-        </section>
 
-        <section className="vk-darkband">
-          <div className="vk-narrow">
-            <h2 className="vk-darkband-title">Small Moments of Presence <em>Create Safety</em></h2>
-            <p className="vk-darkband-p">Healing does not only happen in big cathartic moments, or from mentally understanding our trauma.</p>
-            <p className="vk-darkband-p">Safety is built through small, mindful moments repeated throughout the day. Taking brief pauses to slow down and check in with yourself helps teach the body that safety is available now. Even 30 seconds matters.</p>
-            <h4 className="vk-darkband-h4">Simple awareness practices to integrate at work:</h4>
-            <ul className="vk-darkband-list">
-              <li>Notice your body in the chair before sending an email.</li>
-              <li>Take one slow breath before responding to stress.</li>
-              <li>Look around the room and notice a pleasant thing in the space.</li>
-            </ul>
-            <div className="vk-darkband-note"><em>Though these small practices may seem insignificant, presence in ordinary moments is key to regulating the nervous system and builds inner stability over time.</em></div>
+            <div className="strategy-coda">
+              <p className="vk-darkband-p">Safety is built through small, mindful moments repeated throughout the day. Simple awareness practices to integrate at work:</p>
+              <ul className="vk-darkband-list">
+                <li>Notice your body in the chair before sending an email.</li>
+                <li>Take one slow breath before responding to stress.</li>
+                <li>Look around the room and notice a pleasant thing in the space.</li>
+              </ul>
+            </div>
           </div>
         </section>
 
