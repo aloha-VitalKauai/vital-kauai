@@ -909,6 +909,15 @@ export default function PreCeremonyPage() {
         .vp-text em { font-style:italic;color:var(--cream); }
         .pne-detail { margin-top:10px;background:var(--forest);border:.5px solid var(--border);border-radius:4px;padding:18px 24px; }
         .pne-detail .vp-coming-soon { margin-top:6px; }
+        .pne-practice-rich { padding:24px 28px; }
+        .pne-practice-title { margin:10px 0 4px;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--cream);line-height:1.25; }
+        .pne-practice-tag { margin:0 0 14px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--sage-lt); }
+        .pne-practice-p { margin:0 0 12px; }
+        .pne-practice-steps { margin:8px 0 14px;border-top:1px solid rgba(168,197,172,.18); }
+        .pne-step { display:flex;align-items:flex-start;gap:18px;padding:10px 0;border-bottom:1px solid rgba(168,197,172,.18); }
+        .pne-step-time { flex-shrink:0;width:54px;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);padding-top:2px; }
+        .pne-step-text { font-size:13.5px;color:rgba(245,240,232,.85);line-height:1.7; }
+        .pne-practice-closer { margin:8px 0 0;font-style:italic;color:var(--sage-lt); }
         .pne-reflection { margin-top:18px;padding:22px 24px;background:rgba(122,158,126,0.06);border:1px solid rgba(122,158,126,0.22);border-left:3px solid var(--sage);border-radius:4px; }
         .pne-reflection-label { font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:10px; }
         .pne-reflection-q { font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--ink);line-height:1.35;margin:0; }
@@ -1227,12 +1236,28 @@ export default function PreCeremonyPage() {
                   </div>
                 </div>
               </div>
-              <div className="pne-detail">
-                <div className="vp-label">This Week&apos;s PNE Practice</div>
-                {PRE_PNE_DETAILS[i]?.practice
-                  ? <div className="vp-text">{PRE_PNE_DETAILS[i].practice}</div>
-                  : <div className="vp-coming-soon">Coming Soon</div>}
-              </div>
+              {i === 0 ? (
+                <div className="pne-detail pne-practice-rich">
+                  <div className="vp-label">This Week&apos;s PNE Practice: The 4 / 7 / 8 Breath</div>
+                  <h4 className="pne-practice-title">The 4 / 7 / 8 Breath</h4>
+                  <p className="pne-practice-tag">A practice for returning to calm</p>
+                  <p className="vp-text pne-practice-p">A simple, rhythmic breath that signals safety to the body. It slows the heart rate, lowers cortisol, and brings the system out of activation. Any breath where the exhale is longer than the inhale calms the nervous system.</p>
+                  <p className="vp-text pne-practice-p">Bring one hand to your belly. Soften your gaze.</p>
+                  <div className="pne-practice-steps">
+                    <div className="pne-step"><span className="pne-step-time">4 sec</span><span className="pne-step-text">Inhale through the nose. Fill the belly first, then the chest.</span></div>
+                    <div className="pne-step"><span className="pne-step-time">7 sec</span><span className="pne-step-text">Hold. Rest at the top.</span></div>
+                    <div className="pne-step"><span className="pne-step-time">8 sec</span><span className="pne-step-text">Exhale through the mouth. Slow, soft, complete.</span></div>
+                  </div>
+                  <p className="vp-text pne-practice-closer">Repeat for four cycles.</p>
+                </div>
+              ) : (
+                <div className="pne-detail">
+                  <div className="vp-label">This Week&apos;s PNE Practice</div>
+                  {PRE_PNE_DETAILS[i]?.practice
+                    ? <div className="vp-text">{PRE_PNE_DETAILS[i].practice}</div>
+                    : <div className="vp-coming-soon">Coming Soon</div>}
+                </div>
+              )}
               <div className="pne-reflection">
                 <span className="pne-reflection-label">This Week&apos;s PNE Reflection</span>
                 {PRE_PNE_DETAILS[i]?.reflection ? (
