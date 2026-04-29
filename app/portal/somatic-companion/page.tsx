@@ -637,6 +637,48 @@ const PAGE_CSS = `
     line-height: 1.65;
     margin: 0;
   }
+  .pne-companion-page .strategy-group {
+    margin-top: 36px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(244, 237, 214, 0.12);
+  }
+  .pne-companion-page .strategy-group:first-of-type {
+    margin-top: 8px;
+    padding-top: 0;
+    border-top: none;
+  }
+  .pne-companion-page .strategy-group-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 26px;
+    color: #F4EDD6;
+    line-height: 1.2;
+    margin: 0 0 22px;
+    letter-spacing: -0.005em;
+  }
+  .pne-companion-page .strategy-group-title em {
+    font-style: italic;
+    color: var(--accent-sage);
+  }
+  .pne-companion-page .strategy-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px 32px;
+  }
+  .pne-companion-page .strategy-item h4 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 20px;
+    color: #F4EDD6;
+    margin: 0 0 6px;
+    line-height: 1.25;
+  }
+  .pne-companion-page .strategy-item p {
+    color: rgba(244, 237, 214, 0.78);
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0;
+  }
 
   @media (max-width: 880px) {
     .pne-companion-page .vk-section { padding: 48px 0; }
@@ -645,6 +687,7 @@ const PAGE_CSS = `
     .pne-companion-page .pv-states { grid-template-columns: 1fr; gap: 16px; }
     .pne-companion-page .vk-darkband { padding: 56px 0; }
     .pne-companion-page .exercises-grid { grid-template-columns: 1fr; gap: 18px; }
+    .pne-companion-page .strategy-grid { grid-template-columns: 1fr; gap: 18px; }
     .pne-companion-page .pv-card { min-height: auto; padding: 28px 24px; }
     .pne-companion-page .pv-quote { padding: 28px 24px; }
     .pne-companion-page .why-grid { grid-template-columns: 1fr; gap: 24px; }
@@ -742,11 +785,42 @@ export default async function SomaticCompanionPage() {
           <div className="vk-narrow">
             <div className="vk-darkband-eyebrow">Working from the Inside Out</div>
             <h2 className="vk-darkband-title">Exercises for <em>Internal Safety</em></h2>
-            <div className="exercises-grid">
-              <div className="exercise-card"><h3>Co-Regulation</h3><p>Connect with a safe person. Borrow calm through their grounded presence &mdash; talking, sitting quietly together, or simply being near someone who feels steady.</p></div>
-              <div className="exercise-card"><h3>Compassionate Listening</h3><p>Listen to others with presence and curiosity, without judgment. Be truly heard by someone safe. Feeling witnessed creates deep safety.</p></div>
-              <div className="exercise-card"><h3>Positive Affirmations</h3><p>Speak kindly to yourself. Use gentle, affirming words that counter negative self-talk and reinforce your inherent worth and safety.</p></div>
-              <div className="exercise-card"><h3>Boundaries</h3><p>Honor your own limits and respect others&apos; boundaries. Clear boundaries create safety by protecting your energy and autonomy.</p></div>
+
+            <div className="strategy-group">
+              <h3 className="strategy-group-title">Through the <em>Body</em></h3>
+              <div className="strategy-grid">
+                <div className="strategy-item"><h4>Grounding</h4><p>Feet on the floor, or on the earth. Press down. Feel the ground meet you back.</p></div>
+                <div className="strategy-item"><h4>Self-Hold</h4><p>Wrap your arms around yourself. Or place one hand over your heart and one on your belly. Let your body know it is held.</p></div>
+                <div className="strategy-item"><h4>Butterfly Tap</h4><p>Cross your arms over your chest. Tap alternately, left, right, left, right. Slow and steady. The bilateral rhythm soothes the nervous system.</p></div>
+                <div className="strategy-item"><h4>Temperature Anchor</h4><p>Hold something warm. A mug of tea. Warm palms pressed together. Warmth is one of the fastest pathways to the present-moment body.</p></div>
+              </div>
+            </div>
+
+            <div className="strategy-group">
+              <h3 className="strategy-group-title">Through the <em>Senses</em></h3>
+              <div className="strategy-grid">
+                <div className="strategy-item"><h4>Orienting Gaze</h4><p>Slowly let your eyes sweep the room. Rest briefly on objects that feel neutral or pleasant. The visual scan signals safety to the subcortical brain.</p></div>
+                <div className="strategy-item"><h4>Sound and Tone</h4><p>Hum, chant, or tone gently. The vibration travels through the vagus nerve. A simple sustained hum activates parasympathetic calm.</p></div>
+                <div className="strategy-item"><h4>Five Senses Anchor</h4><p>Name five things you see, four you hear, three you can touch, two you smell, one you taste. The body returns to here when the senses are invited home.</p></div>
+              </div>
+            </div>
+
+            <div className="strategy-group">
+              <h3 className="strategy-group-title">Through <em>Connection</em></h3>
+              <div className="strategy-grid">
+                <div className="strategy-item"><h4>Co-Regulation</h4><p>Sit near someone who feels steady. Borrow calm through their presence. The nervous system regulates fastest in the company of another.</p></div>
+                <div className="strategy-item"><h4>Compassionate Listening</h4><p>Listen without judgment, or be heard by someone safe. Feeling witnessed creates deep, embodied safety.</p></div>
+                <div className="strategy-item"><h4>Pet or Animal Contact</h4><p>Resting a hand on a dog, cat, or horse. Soft fur, slow breath, warm body. Animals carry their own regulation, and they share it freely.</p></div>
+              </div>
+            </div>
+
+            <div className="strategy-group">
+              <h3 className="strategy-group-title">Through <em>Words</em></h3>
+              <div className="strategy-grid">
+                <div className="strategy-item"><h4>Positive Affirmations</h4><p>Speak kindly to yourself. The voice you use with yourself is a voice your nervous system listens to all day.</p></div>
+                <div className="strategy-item"><h4>Naming What Is True</h4><p>I am here. I am safe in this moment. The hard thing has passed. Simple, present-tense truth helps the body update from past to now.</p></div>
+                <div className="strategy-item"><h4>The Inner Witness</h4><p>When activation rises, invite the steady part of yourself to observe. Say inwardly: I see what is happening. I am here with it.</p></div>
+              </div>
             </div>
           </div>
         </section>
