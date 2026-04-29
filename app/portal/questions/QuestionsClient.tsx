@@ -80,8 +80,8 @@ function AutoTextarea({ value, onChange, placeholder }: { value: string; onChang
       placeholder={placeholder}
       style={{
         width: "100%", border: "none", borderBottom: "1px solid #D6CEBC", background: "transparent",
-        fontFamily: "'Jost', sans-serif", fontSize: 14, fontWeight: 300, color: "#1A1A18",
-        resize: "none", outline: "none", minHeight: 36, lineHeight: 1.7, padding: "6px 0 8px",
+        fontFamily: "'Jost', sans-serif", fontSize: 16, fontWeight: 300, color: "#1A1A18",
+        resize: "none", outline: "none", minHeight: 40, lineHeight: 1.7, padding: "8px 0 10px",
         overflow: "hidden", transition: "border-color 0.2s",
       }}
     />
@@ -113,11 +113,11 @@ export default function QuestionsClient() {
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "64px 48px 96px" }}>
         {/* Header */}
         <div style={{ borderBottom: "1px solid #C8A96E", paddingBottom: 40, marginBottom: 48 }}>
-          <p style={{ fontSize: 10, letterSpacing: "0.35em", textTransform: "uppercase", color: "#7A9E7E", marginBottom: 16 }}>Iboga Ceremony Preparation</p>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 48, fontWeight: 300, color: "#1C2B1E", lineHeight: 1.1, marginBottom: 24 }}>
+          <p style={{ fontSize: 12, letterSpacing: "0.32em", textTransform: "uppercase", color: "#7A9E7E", marginBottom: 18, fontWeight: 500 }}>Iboga Ceremony Preparation</p>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 56, fontWeight: 300, color: "#1C2B1E", lineHeight: 1.1, marginBottom: 24 }}>
             Questions for<br /><em style={{ fontStyle: "italic", color: "#8B8070" }}>the Medicine</em>
           </h1>
-          <p style={{ fontSize: 14, lineHeight: 1.85, color: "#3D3D38", maxWidth: 620 }}>
+          <p style={{ fontSize: 16.5, lineHeight: 1.75, color: "#3D3D38", maxWidth: 660 }}>
             Iboga listens. Before you arrive, take time to clarify what you are truly asking, both what you hope to resolve and what you are willing to see, feel, and be shown. These questions are seeds. Write them with sincerity and as much specificity as you can. The medicine will meet you exactly where you are.
           </p>
         </div>
@@ -129,25 +129,26 @@ export default function QuestionsClient() {
 
             {/* Section header */}
             <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 32 }}>
-              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 64, fontWeight: 300, color: "#D6CEBC", lineHeight: 1, flexShrink: 0 }}>{section.num}</span>
+              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 72, fontWeight: 300, color: "#D6CEBC", lineHeight: 1, flexShrink: 0 }}>{section.num}</span>
               <div>
-                <p style={{ fontSize: 9, letterSpacing: "0.35em", textTransform: "uppercase", color: "#C8A96E", marginBottom: 6 }}>{section.label}</p>
-                <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 26, fontWeight: 400, color: "#1C2B1E" }}>{section.title}</h2>
-                <p style={{ fontSize: 12, color: "#8B8070", marginTop: 4, lineHeight: 1.6 }}>{section.subtitle}</p>
+                <p style={{ fontSize: 11, letterSpacing: "0.32em", textTransform: "uppercase", color: "#C8A96E", marginBottom: 8, fontWeight: 500 }}>{section.label}</p>
+                <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 30, fontWeight: 400, color: "#1C2B1E", marginBottom: 8 }}>{section.title}</h2>
+                <p style={{ fontSize: 15.5, color: "#5C5A4F", marginTop: 4, lineHeight: 1.65 }}>{section.subtitle}</p>
               </div>
             </div>
 
             {/* Examples */}
             {section.examples.length > 0 && (
               <div style={{ background: "#F5F0E8", padding: "24px 28px", marginBottom: 32, borderLeft: "2px solid #A8C5AC" }}>
-                <p style={{ fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: "#8B8070", marginBottom: 12 }}>Examples to inspire you</p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <p style={{ fontSize: 11, letterSpacing: "0.28em", textTransform: "uppercase", color: "#7A7466", marginBottom: 14, fontWeight: 500 }}>Examples to inspire you</p>
+                <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
                   {section.examples.map((ex, i) => (
-                    <p key={i} style={{ fontSize: 12, fontStyle: "italic", color: "#8B8070", fontFamily: "'Cormorant Garamond', serif", lineHeight: 1.5 }}>
-                     , {ex}
-                    </p>
+                    <li key={i} style={{ position: "relative", paddingLeft: 18, fontSize: 17, fontStyle: "italic", color: "#5C5A4F", fontFamily: "'Cormorant Garamond', serif", lineHeight: 1.5 }}>
+                      <span aria-hidden style={{ position: "absolute", left: 0, top: 0, color: "#A8C5AC" }}>·</span>
+                      {ex}
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
             )}
 
@@ -157,7 +158,7 @@ export default function QuestionsClient() {
                 const key = `s${si}-q${qi}`;
                 return (
                   <div key={qi} style={{ display: "grid", gridTemplateColumns: "36px 1fr", gap: 16, alignItems: "start", marginBottom: 28 }}>
-                    <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 300, color: "#C8A96E", paddingTop: 10, textAlign: "right" }}>{qi + 1}.</span>
+                    <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 300, color: "#C8A96E", paddingTop: 10, textAlign: "right" }}>{qi + 1}.</span>
                     <AutoTextarea
                       value={values[key] ?? ""}
                       onChange={(v) => update(key, v)}
@@ -173,7 +174,7 @@ export default function QuestionsClient() {
         {/* Closing */}
         <div style={{ textAlign: "center", paddingTop: 40 }}>
           <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: "#C8A96E", marginBottom: 16 }}>&#10022;</div>
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 16, fontStyle: "italic", lineHeight: 2, color: "#8B8070", maxWidth: 480, margin: "0 auto" }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 19, fontStyle: "italic", lineHeight: 1.75, color: "#8B8070", maxWidth: 520, margin: "0 auto" }}>
             Bring these questions with you, written, held, and felt in your body.<br />
             The medicine already knows. You are simply learning to ask.
           </p>
