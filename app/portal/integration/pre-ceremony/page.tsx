@@ -67,7 +67,7 @@ const actionsForWeek = (
       { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Companion: The Language of the Body' },
       { kind: 'static',                                              text: "Complete this week's PNE Practice" },
       { kind: 'static',                                              text: "Complete this week's PNE Reflection" },
-      { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule your first call with your integration guide' },
+      { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule your two pre-ceremony calls with your integration guide, one in week two and one in week four' },
     ]
   }
   // Weeks 2–6 derive from the existing actions data. Notes are dropped (per
@@ -247,21 +247,12 @@ const WEEKS = [
           { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
         ],
       },
-      { color: 'amber', text: 'Begin noticing your daily habits', note: 'Observe alcohol, sleep, screens, food, substances. Honest observation is all that\u2019s asked. What you notice this week becomes data for your body to begin working with.' },
       {
         color: 'blue',
         text: 'Schedule your required medical appointments and labs',
         note: 'EKG and labs must be completed before Week 5. Schedule now, medical appointments take time. This protects you.',
         links: [
           { text: 'Schedule your required medical appointments and labs', href: '/portal/physician-guide' },
-        ],
-      },
-      {
-        color: 'blue',
-        text: 'Upload your lab results once you have them',
-        note: 'Once your doctor returns results, upload the document here as a single PDF or image. Our medical team reviews them before ceremony.',
-        links: [
-          { text: 'Upload your lab results once you have them', href: '/portal/labs' },
         ],
       },
       {
