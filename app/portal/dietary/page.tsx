@@ -27,6 +27,9 @@ function DietaryContent() {
   const sageSoft = "#C8DAC9";
   const universal = "#5A7A5E";
   const universalBg = "#E6EDE5";
+  const clay = "#A8634C";
+  const clayBg = "#F5E2D6";
+  const claySoft = "#E5C4B0";
   const gold = "#8B6914";
   const goldBg = "#F5F0E4";
   const goldSoft = "#DEC98A";
@@ -55,6 +58,9 @@ function DietaryContent() {
           </p>
           <p style={{ fontSize: 14.5, color: inkLight, letterSpacing: "0.02em", lineHeight: 1.7 }}>
             Begin as early as feels right. Four weeks before your arrival is a strong foundation. Two weeks of clean eating still makes a meaningful difference. The sooner, the better.
+          </p>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: 15, color: clay, lineHeight: 1.7, marginTop: 22, maxWidth: 560, marginLeft: "auto", marginRight: "auto" }}>
+            Drawn to a deeper detox protocol, or pre-ceremony cleansing or fasting? <a href="/portal/contact" style={{ color: clay, textDecoration: "underline", textUnderlineOffset: 3 }}>Ask us</a> and we will guide you through what fits your body and your timeline.
           </p>
         </div>
 
@@ -94,8 +100,8 @@ function DietaryContent() {
               </div>
             </div>
             {/* Step Away From */}
-            <div style={{ background: universalBg, border: `1px solid ${border}`, borderRadius: 8, padding: "26px 28px" }}>
-              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 400, letterSpacing: "0.03em", marginBottom: 16, color: universal }}>Step Away From</h3>
+            <div style={{ background: clayBg, border: `1px solid ${claySoft}`, borderRadius: 8, padding: "26px 28px" }}>
+              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 400, letterSpacing: "0.03em", marginBottom: 16, color: clay }}>Step Away From</h3>
               <div style={{ display: "grid", gap: 9 }}>
                 {[
                   { text: "Refined sugar and sweetened beverages", note: "This includes fruit juice, sodas, sweetened coffees and teas" },
@@ -108,7 +114,7 @@ function DietaryContent() {
                   { text: "Recreational substances" },
                 ].map((item) => (
                   <div key={item.text} style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 13.5, lineHeight: 1.5 }}>
-                    <span style={{ width: 5, height: 5, borderRadius: "50%", background: universal, flexShrink: 0, marginTop: 7 }} />
+                    <span style={{ width: 5, height: 5, borderRadius: "50%", background: clay, flexShrink: 0, marginTop: 7 }} />
                     <span>{item.text}{item.note && <span style={{ display: "block", fontSize: 11.5, color: inkLight, fontStyle: "italic", marginTop: 2 }}>{item.note}</span>}</span>
                   </div>
                 ))}
