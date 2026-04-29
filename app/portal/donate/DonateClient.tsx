@@ -127,6 +127,9 @@ export default function DonateClient({
       ? Math.round(parseFloat(customAmount) * 100)
       : 0;
     const amountCents = pledgeMode === "full" ? remaining : customCents;
+    // Open the new tab synchronously inside the click handler so popup
+    // blockers don't fire; we'll set its URL once Stripe responds.
+    const popup = window.open("", "_blank", "noopener,noreferrer");
     setPledgeLoading(true);
     setPledgeError("");
     try {
@@ -137,9 +140,12 @@ export default function DonateClient({
       });
       const { url, error } = await res.json();
       if (error || !url) throw new Error(error ?? "no url");
-      window.location.href = url;
+      if (popup) popup.location.href = url;
+      else window.open(url, "_blank", "noopener,noreferrer");
+      setPledgeLoading(false);
     } catch (e) {
       console.error(e);
+      if (popup) popup.close();
       setPledgeError("Something went wrong. Please try again.");
       setPledgeLoading(false);
     }
@@ -154,6 +160,7 @@ export default function DonateClient({
       setGiftError("Please enter a valid amount ($1–$25,000).");
       return;
     }
+    const popup = window.open("", "_blank", "noopener,noreferrer");
     setGiftLoading(true);
     setGiftError("");
     try {
@@ -164,9 +171,12 @@ export default function DonateClient({
       });
       const { url, error } = await res.json();
       if (error || !url) throw new Error(error ?? "no url");
-      window.location.href = url;
+      if (popup) popup.location.href = url;
+      else window.open(url, "_blank", "noopener,noreferrer");
+      setGiftLoading(false);
     } catch (e) {
       console.error(e);
+      if (popup) popup.close();
       setGiftError("Something went wrong. Please try again.");
       setGiftLoading(false);
     }

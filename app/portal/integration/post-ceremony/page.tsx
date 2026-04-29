@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { POST_CEREMONY_WEEKS, POST_PNE_DETAILS } from '@/lib/journal-prompts'
+import { companionsFor } from '@/lib/pne-companions'
 import SectionIndex, { type SectionIndexItem } from '@/components/portal/SectionIndex'
 import HeroCountdown from '@/components/portal/HeroCountdown'
 
@@ -505,15 +506,14 @@ const WEEKS = [
   },
 ]
 
-// Per-week PNE Companion theme + URL. Empty url => no link, plain text only.
-const POST_PNE_COMPANION: ReadonlyArray<{ theme: string; url: string }> = [
-  { theme: '', url: '' },
-  { theme: '', url: '' },
-  { theme: '', url: '' },
-  { theme: '', url: '' },
-  { theme: '', url: '' },
-  { theme: '', url: '' },
-]
+// Per-week PNE Companion theme + URL, filtered from the shared companion
+// registry. Live weeks get a hash-anchored deep-link to #top; coming-soon
+// weeks render their theme as plain text.
+const POST_PNE_COMPANION: ReadonlyArray<{ theme: string; url: string }> =
+  companionsFor('post').map((c) => ({
+    theme: c.title,
+    url: c.status === 'live' ? `${c.href}#top` : '',
+  }))
 
 const DOT: Record<string, string> = {
   blue: '#4A7FA5', green: '#7A9E7E', gold: '#C8A96E', sage: '#7A9E7E', amber: '#B8956A',

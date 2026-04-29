@@ -68,7 +68,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
             <div className="pn-dropdown">
               <button className="pn-dropdown-trigger">Resources</button>
               <div className="pn-dropdown-menu">
-                <a href="/portal/somatic-companion" className="pn-dropdown-item">PNE</a>
+                <a href="/portal/pne" className="pn-dropdown-item">PNE</a>
                 <a href="/portal/questions" className="pn-dropdown-item">Questions for the Medicine</a>
                 <a href="/portal/journal" className="pn-dropdown-item">Comprehensive Journal</a>
               </div>
@@ -114,7 +114,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         <a href="/portal/integration/pre-ceremony" onClick={close}>Pre-Ceremony</a>
         <a href="/portal/integration/post-ceremony" onClick={close}>Post-Ceremony</a>
         <span className="pn-mobile-section-label">Resources</span>
-        <a href="/portal/somatic-companion" onClick={close}>PNE</a>
+        <a href="/portal/pne" onClick={close}>PNE</a>
         <a href="/portal/questions" onClick={close}>Questions for the Medicine</a>
         <a href="/portal/journal" onClick={close}>Comprehensive Journal</a>
         <a href="/portal/donate" onClick={close}>Contribute</a>

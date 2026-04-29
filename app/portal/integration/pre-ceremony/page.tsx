@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { PRE_CEREMONY_WEEKS, PRE_PNE_DETAILS } from '@/lib/journal-prompts'
+import { companionsFor } from '@/lib/pne-companions'
 import SectionIndex, { type SectionIndexItem } from '@/components/portal/SectionIndex'
 import HeroCountdown from '@/components/portal/HeroCountdown'
 
@@ -92,15 +93,14 @@ type Progress = {
 
 const STRIPE_LOVE_OFFERING_URL = 'https://buy.stripe.com/test_cNi4gzcoG3ZBeQUcmZbo400'
 
-// Per-week PNE Companion theme + URL. Empty url => no link, plain text only.
-const PRE_PNE_COMPANION: ReadonlyArray<{ theme: string; url: string }> = [
-  { theme: 'The Language of the Body', url: '/portal/somatic-companion#top' },
-  { theme: 'Nervous System Regulation', url: '/portal/somatic-companion/week-2#top' },
-  { theme: 'Building Somatic Awareness', url: '/portal/somatic-companion/week-3#top' },
-  { theme: '', url: '' },
-  { theme: '', url: '' },
-  { theme: '', url: '' },
-]
+// Per-week PNE Companion theme + URL, filtered from the shared companion
+// registry. Live weeks get a hash-anchored deep-link to #top; coming-soon
+// weeks render their theme as plain text.
+const PRE_PNE_COMPANION: ReadonlyArray<{ theme: string; url: string }> =
+  companionsFor('pre').map((c) => ({
+    theme: c.title,
+    url: c.status === 'live' ? `${c.href}#top` : '',
+  }))
 
 // Render an action's text with optional inline links. Each link matches a
 // substring in `text` and is replaced with an anchor tag in place.
