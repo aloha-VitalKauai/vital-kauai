@@ -516,6 +516,16 @@ const POST_PNE_DETAILS: ReadonlyArray<{ practice: string; reflection: string }> 
   { practice: '', reflection: '' },
 ]
 
+// Per-week PNE Companion theme + URL. Empty url => no link, plain text only.
+const POST_PNE_COMPANION: ReadonlyArray<{ theme: string; url: string }> = [
+  { theme: '', url: '' },
+  { theme: '', url: '' },
+  { theme: '', url: '' },
+  { theme: '', url: '' },
+  { theme: '', url: '' },
+  { theme: '', url: '' },
+]
+
 const DOT: Record<string, string> = {
   blue: '#4A7FA5', green: '#7A9E7E', gold: '#C8A96E', sage: '#7A9E7E', amber: '#B8956A',
 }
@@ -973,7 +983,7 @@ export default function PostCeremonyPage() {
         .btn-save-exit:hover { background:rgba(200,169,110,.08); }
         .wc-actions { display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end; }
         .section{margin-bottom:44px}.section-label{font-size:14px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:block}
-        .video-frame{border:.5px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:14px}.video-primer{background:var(--forest);padding:24px 28px;display:flex;align-items:center;gap:20px}.vp-play{width:44px;height:44px;border-radius:50%;border:1px solid rgba(200,169,110,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}.vp-play-icon{color:var(--gold);font-size:14px;margin-left:3px}.vp-label{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}.vp-text{font-size:13.5px;color:rgba(245,240,232,.75);line-height:1.7}.vp-coming-soon{margin-top:12px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.04em;color:var(--gold)}.pne-detail{margin-top:10px;background:var(--forest);border:.5px solid var(--border);border-radius:4px;padding:18px 24px}.pne-detail .vp-coming-soon{margin-top:6px}.pne-reflection{margin-top:18px;padding:22px 24px;background:rgba(122,158,126,0.06);border:1px solid rgba(122,158,126,0.22);border-left:3px solid var(--sage);border-radius:4px}.pne-reflection-label{font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:10px}.pne-reflection-q{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--ink);line-height:1.35;margin:0}.pne-reflection-textarea{margin-top:14px}.pne-reflection-pending{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--sage);margin:6px 0 0}
+        .video-frame{border:.5px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:14px}.video-primer{background:var(--forest);padding:24px 28px;display:flex;align-items:center;gap:20px}.vp-play{width:44px;height:44px;border-radius:50%;border:1px solid rgba(200,169,110,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}.vp-play-icon{color:var(--gold);font-size:14px;margin-left:3px}.vp-label{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}.vp-text{font-size:13.5px;color:rgba(245,240,232,.75);line-height:1.7}.vp-coming-soon{margin-top:12px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.04em;color:var(--gold)}.pne-detail{margin-top:10px;background:var(--forest);border:.5px solid var(--border);border-radius:4px;padding:18px 24px}.pne-detail .vp-coming-soon{margin-top:6px}.pne-reflection{margin-top:18px;padding:26px 28px;background:var(--forest);border:.5px solid var(--border);border-left:3px solid var(--sage);border-radius:4px}.pne-reflection-label{font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--sage-lt);display:block;margin-bottom:12px}.pne-reflection-q{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--cream);line-height:1.35;margin:0}.pne-reflection .pne-reflection-textarea{margin-top:16px;background:rgba(245,240,232,0.96);border:1px solid rgba(168,197,172,0.35);border-left:2px solid var(--sage-lt);color:var(--ink)}.pne-reflection .pne-reflection-textarea:focus{background:#fff;border-color:var(--sage-lt)}.pne-reflection-pending{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--sage-lt);margin:6px 0 0}.pne-companion-read{display:inline-flex;align-items:center;gap:8px;margin:14px 0 4px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:var(--sage);text-decoration:none;border-bottom:1px solid rgba(122,158,126,0.35);padding-bottom:2px;transition:color .15s,border-color .15s}.pne-companion-read:hover{color:var(--ink);border-color:var(--sage)}.pne-companion-read-static{color:var(--stone);border-bottom:1px dashed rgba(122,158,126,0.25);cursor:default}
         .box{margin-top:0;border-radius:2px;padding:16px 20px;margin-bottom:28px}.box-label{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:8px;font-weight:500}.box-text{font-size:13px;line-height:1.8;color:var(--ink-mid)}.box-gold{background:rgba(200,169,110,.08);border:.5px solid rgba(200,169,110,.28)}.box-gold .box-label{color:var(--gold)}.box-sage{background:rgba(122,158,126,.07);border:.5px solid rgba(122,158,126,.25)}.box-sage .box-label{color:var(--sage)}
         .reentry{background:rgba(200,169,110,.05);border:.5px solid rgba(200,169,110,.2);border-radius:2px;padding:14px 20px;margin-bottom:24px;display:flex;gap:14px;align-items:flex-start}.reentry-icon{font-size:13px;color:var(--gold);flex-shrink:0;margin-top:1px}.reentry-text{font-size:12.5px;color:var(--stone);line-height:1.75}
         .dataset-note{background:rgba(200,169,110,.07);border:1px solid rgba(200,169,110,.32);border-left:3px solid var(--gold);border-radius:3px;padding:18px 22px;margin-top:18px;font-size:13px;color:var(--ink-mid);line-height:1.75}
@@ -1153,7 +1163,18 @@ export default function PostCeremonyPage() {
             {/* PNE PERSPECTIVE (placeholder until per-week content ships) */}
             <section className="w1-section" id="pne-perspective">
               <h3 className="w1-h3">PNE Perspective</h3>
-              <div className="video-frame">
+              {(() => {
+                const c = POST_PNE_COMPANION[i]
+                const label = `Read Week ${i + 1} in The PsychoNeuroEnergetics (PNE) Companion${c?.theme ? `: ${c.theme}` : ''}`
+                return c?.url ? (
+                  <Link href={c.url} target="_blank" rel="noopener noreferrer" className="pne-companion-read">
+                    {label} <span aria-hidden>→</span>
+                  </Link>
+                ) : (
+                  <p className="pne-companion-read pne-companion-read-static">{label}</p>
+                )
+              })()}
+              <div className="video-frame" style={{ marginTop: 18 }}>
                 <div className="video-primer">
                   <div className="vp-play"><span className="vp-play-icon">▶</span></div>
                   <div>
