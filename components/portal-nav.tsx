@@ -59,7 +59,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
                 being refined. Restore by uncommenting this line. */}
             {/* <a href="/portal/assessments" className="pn-link">Outcomes</a> */}
             <div className="pn-dropdown">
-              <button className="pn-dropdown-trigger">Integration / Support</button>
+              <button className="pn-dropdown-trigger">The Journey</button>
               <div className="pn-dropdown-menu">
                 <a href="/portal/integration/pre-ceremony" className="pn-dropdown-item">Pre-Ceremony</a>
                 <a href="/portal/integration/post-ceremony" className="pn-dropdown-item">Post-Ceremony</a>
@@ -68,7 +68,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
                 {/* <a href="/portal/journal" className="pn-dropdown-item">Comprehensive Journal</a> */}
               </div>
             </div>
-            <a href="/portal/donate" className="pn-link">Contribution</a>
+            <a href="/portal/donate" className="pn-link">Contribute</a>
             <a href="/portal/contact" className="pn-link">Contact</a>
           {/* Community tab hidden while the section is being built out.
               Restore by uncommenting this line. */}
@@ -105,12 +105,12 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         <a href="/portal" onClick={close}>Dashboard</a>
         {/* Outcomes link hidden — restore alongside the desktop link. */}
         {/* <a href="/portal/assessments" onClick={close}>Outcomes</a> */}
-        <span className="pn-mobile-section-label">Integration / Support</span>
+        <span className="pn-mobile-section-label">The Journey</span>
         <a href="/portal/integration/pre-ceremony" onClick={close}>Pre-Ceremony</a>
         <a href="/portal/integration/post-ceremony" onClick={close}>Post-Ceremony</a>
         {/* Comprehensive Journal hidden — restore alongside the desktop link. */}
         {/* <a href="/portal/journal" onClick={close}>Comprehensive Journal</a> */}
-        <a href="/portal/donate" onClick={close}>Contribution</a>
+        <a href="/portal/donate" onClick={close}>Contribute</a>
         <a href="/portal/contact" onClick={close}>Contact</a>
         {/* Community link hidden — restore with the main nav link when the section is ready. */}
         <form action="/auth/logout" method="post">
