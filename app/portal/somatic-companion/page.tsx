@@ -696,29 +696,6 @@ export default async function SomaticCompanionPage() {
           </div>
         </section>
 
-        <section className="vk-section">
-          <div className="vk-narrow">
-            <div className="homework-panel">
-              <div className="hp-eyebrow">Week One · Living Practice</div>
-              <h2>This Week&apos;s <em>Practice</em></h2>
-              <p className="lede">A simple invitation to live this week&apos;s teaching in your body and your life. The practice is simply to notice.</p>
-              <div className="hw-step">
-                <div className="hw-num">One</div>
-                <h3>Explore the regulation practices in the portal, find what works best for you.</h3>
-                <div className="hw-tags">Breathing &nbsp;·&nbsp; Grounding &nbsp;·&nbsp; 4 / 7 / 8 Breath &nbsp;·&nbsp; PNE (PsychoNeuroEnergetics) Breath (Belly / Heart) &nbsp;·&nbsp; Orienting &nbsp;·&nbsp; Felt-Sense Regulation</div>
-              </div>
-              <div className="hw-step">
-                <div className="hw-num">Two</div>
-                <h3>Reflection</h3>
-                <p className="reflection">What do I notice differently in my body after using some of these practices throughout my day?</p>
-                <p className="reflection">What is one action I can take this week to create a deeper sense of external safety in my life?
-                  <span className="example">For example: spend time with one trusted friend and share about your upcoming Iboga journey · declutter one room in your home · find one place in nature you would like to visit.</span>
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <section className="closing-band">
           <div className="vk-wrap">
             <div className="closing-eyebrow">The Core of Every Practice</div>
