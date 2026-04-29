@@ -680,9 +680,22 @@ const PAGE_CSS = `
     margin: 0;
   }
   .pne-companion-page .strategy-coda {
-    margin-top: 36px;
-    padding-top: 28px;
-    border-top: 1px solid rgba(244, 237, 214, 0.12);
+    margin-top: 56px;
+    padding-top: 44px;
+    border-top: 1px solid rgba(244, 237, 214, 0.18);
+  }
+  .pne-companion-page .strategy-coda-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(26px, 3.4vw, 36px);
+    line-height: 1.2;
+    color: #F4EDD6;
+    margin: 0 0 18px;
+    letter-spacing: -0.005em;
+  }
+  .pne-companion-page .strategy-coda-title em {
+    font-style: italic;
+    color: var(--accent-sage);
   }
   .pne-companion-page .strategy-coda .vk-darkband-list {
     margin-top: 12px;
@@ -832,6 +845,7 @@ export default async function SomaticCompanionPage() {
             </div>
 
             <div className="strategy-coda">
+              <h3 className="strategy-coda-title">Small Moments of Presence <em>Create Safety</em></h3>
               <p className="vk-darkband-p">Safety is built through small, mindful moments repeated throughout the day. Simple awareness practices to integrate at work:</p>
               <ul className="vk-darkband-list">
                 <li>Notice your body in the chair before sending an email.</li>
