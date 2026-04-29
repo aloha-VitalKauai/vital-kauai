@@ -4,7 +4,7 @@ import { Fragment, useState, useEffect, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { PRE_CEREMONY_WEEKS } from '@/lib/journal-prompts'
+import { PRE_CEREMONY_WEEKS, PRE_PNE_DETAILS } from '@/lib/journal-prompts'
 import SectionIndex, { type SectionIndexItem } from '@/components/portal/SectionIndex'
 import HeroCountdown from '@/components/portal/HeroCountdown'
 
@@ -91,17 +91,6 @@ type Progress = {
 }
 
 const STRIPE_LOVE_OFFERING_URL = 'https://buy.stripe.com/test_cNi4gzcoG3ZBeQUcmZbo400'
-
-// Per-week PNE practice + reflection shown below the PNE video. Empty string =
-// placeholder ("Coming Soon"). Filled in as content lands.
-const PRE_PNE_DETAILS: ReadonlyArray<{ practice: string; reflection: string }> = [
-  { practice: 'Breath regulation practice', reflection: 'What do I notice differently in my body after practicing the 4 / 7 / 8 Breath?' },
-  { practice: '', reflection: '' },
-  { practice: '', reflection: '' },
-  { practice: '', reflection: '' },
-  { practice: '', reflection: '' },
-  { practice: '', reflection: '' },
-]
 
 // Per-week PNE Companion theme + URL. Empty url => no link, plain text only.
 const PRE_PNE_COMPANION: ReadonlyArray<{ theme: string; url: string }> = [

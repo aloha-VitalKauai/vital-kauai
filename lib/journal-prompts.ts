@@ -4,6 +4,8 @@
 // Storage keys used by both views:
 //   Pre-ceremony  — `w{weekIdx}-p{promptIdx}` in pre_ceremony_progress.journal_responses
 //   Post-ceremony — `w{weekIdx}-p{promptIdx}` in post_ceremony_progress.journal_responses
+//   PNE reflections (pre)  — `pre-pne-reflection-w{weekIdx}` in pre_ceremony_progress.journal_responses
+//   PNE reflections (post) — `post-pne-reflection-w{weekIdx}` in post_ceremony_progress.journal_responses
 
 export type JournalPrompt = { q: string; hint?: string }
 
@@ -13,6 +15,29 @@ export type JournalWeek = {
   title?: string
   prompts: JournalPrompt[]
 }
+
+// Per-week PNE practice + reflection. Empty reflection => no writable prompt
+// (rendered as "Coming Soon" on the integration page; skipped in the
+// comprehensive journal unless the member has an existing entry).
+export type PneWeekDetails = { practice: string; reflection: string }
+
+export const PRE_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
+  { practice: 'Breath regulation practice', reflection: 'What do I notice differently in my body after practicing the 4 / 7 / 8 Breath?' },
+  { practice: '', reflection: '' },
+  { practice: '', reflection: '' },
+  { practice: '', reflection: '' },
+  { practice: '', reflection: '' },
+  { practice: '', reflection: '' },
+]
+
+export const POST_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
+  { practice: '', reflection: '' },
+  { practice: '', reflection: '' },
+  { practice: '', reflection: '' },
+  { practice: '', reflection: '' },
+  { practice: '', reflection: '' },
+  { practice: '', reflection: '' },
+]
 
 export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
   {

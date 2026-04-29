@@ -4,7 +4,7 @@ import { Fragment, useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { POST_CEREMONY_WEEKS } from '@/lib/journal-prompts'
+import { POST_CEREMONY_WEEKS, POST_PNE_DETAILS } from '@/lib/journal-prompts'
 import SectionIndex, { type SectionIndexItem } from '@/components/portal/SectionIndex'
 import HeroCountdown from '@/components/portal/HeroCountdown'
 
@@ -503,17 +503,6 @@ const WEEKS = [
     thread: 'The medicine opened a window. You chose to walk through it, week by week, practice by practice, honest conversation by honest conversation. What you have built is a foundation. The work continues. We continue with you.',
     monthlyArc: true,
   },
-]
-
-// Per-week PNE practice + reflection shown below the PNE video. Empty string =
-// placeholder ("Coming Soon"). Filled in as content lands.
-const POST_PNE_DETAILS: ReadonlyArray<{ practice: string; reflection: string }> = [
-  { practice: '', reflection: '' },
-  { practice: '', reflection: '' },
-  { practice: '', reflection: '' },
-  { practice: '', reflection: '' },
-  { practice: '', reflection: '' },
-  { practice: '', reflection: '' },
 ]
 
 // Per-week PNE Companion theme + URL. Empty url => no link, plain text only.

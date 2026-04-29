@@ -63,15 +63,14 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
               <div className="pn-dropdown-menu">
                 <a href="/portal/integration/pre-ceremony" className="pn-dropdown-item">Pre-Ceremony</a>
                 <a href="/portal/integration/post-ceremony" className="pn-dropdown-item">Post-Ceremony</a>
-                {/* Comprehensive Journal hidden while we re-do the weekly prompts +
-                    re-wire the sync. Restore by uncommenting this line. */}
-                {/* <a href="/portal/journal" className="pn-dropdown-item">Comprehensive Journal</a> */}
               </div>
             </div>
             <div className="pn-dropdown">
               <button className="pn-dropdown-trigger">Resources</button>
               <div className="pn-dropdown-menu">
                 <a href="/portal/questions" className="pn-dropdown-item">Questions for the Medicine</a>
+                <a href="/portal/somatic-companion" className="pn-dropdown-item">PNE</a>
+                <a href="/portal/journal" className="pn-dropdown-item">Comprehensive Journal</a>
               </div>
             </div>
             <a href="/portal/donate" className="pn-link">Contribute</a>
@@ -114,10 +113,10 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         <span className="pn-mobile-section-label">The Journey</span>
         <a href="/portal/integration/pre-ceremony" onClick={close}>Pre-Ceremony</a>
         <a href="/portal/integration/post-ceremony" onClick={close}>Post-Ceremony</a>
-        {/* Comprehensive Journal hidden — restore alongside the desktop link. */}
-        {/* <a href="/portal/journal" onClick={close}>Comprehensive Journal</a> */}
         <span className="pn-mobile-section-label">Resources</span>
         <a href="/portal/questions" onClick={close}>Questions for the Medicine</a>
+        <a href="/portal/somatic-companion" onClick={close}>PNE</a>
+        <a href="/portal/journal" onClick={close}>Comprehensive Journal</a>
         <a href="/portal/donate" onClick={close}>Contribute</a>
         <a href="/portal/contact" onClick={close}>Contact</a>
         {/* Community link hidden — restore with the main nav link when the section is ready. */}
