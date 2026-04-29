@@ -313,27 +313,11 @@ const WEEKS = [
         ],
       },
       {
-        color: 'green',
-        text: 'Read The Somatic Companion',
-        note: 'Understanding your polyvagal states before ceremony is one of the most valuable things you can do. It gives you a map for what you\'ll encounter in your own body during the experience.',
-        links: [
-          { text: 'Read The Somatic Companion', href: '/portal/somatic-companion' },
-        ],
-      },
-      {
-        color: 'green',
-        text: 'Begin Coherent Heart Breath, 10 minutes, every morning',
-        note: 'This single practice does more for your ceremony readiness than almost anything else on this list. It is the minimum. Do it every day.',
-        links: [
-          { text: 'Begin Coherent Heart Breath, 10 minutes, every morning', href: '/portal/somatic-companion#coherent-heart-breath' },
-        ],
-      },
-      {
         color: 'amber',
-        text: 'Begin dietary protocol, you are now 4 weeks out',
+        text: 'Begin dietary protocol',
         note: 'Read the Dietary Preparation guide. The body you bring to ceremony is built in these four weeks. This is about arriving as a clear vessel, prepared, open, and ready to receive.',
         links: [
-          { text: 'Begin dietary protocol, you are now 4 weeks out', href: '/portal/dietary' },
+          { text: 'Begin dietary protocol', href: '/portal/dietary' },
         ],
       },
       {
@@ -342,13 +326,6 @@ const WEEKS = [
         note: 'DHA/EPA: 2–4g daily with food. Magnesium glycinate: 300–400mg before bed. Confirm with your physician if you are on any medications.',
         links: [
           { text: 'Begin DHA/EPA and magnesium glycinate supplementation daily', href: '/portal/dietary#supplement-protocol' },
-        ],
-      },
-      {
-        color: 'amber',
-        text: 'Schedule next week\'s integration-guide call',
-        links: [
-          { text: 'Schedule next week\'s integration-guide call', href: '/portal#integration-specialist' },
         ],
       },
     ],
