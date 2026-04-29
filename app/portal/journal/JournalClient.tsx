@@ -2,17 +2,34 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { PRE_CEREMONY_WEEKS, POST_CEREMONY_WEEKS, type JournalWeek } from "@/lib/journal-prompts";
+import {
+  PRE_CEREMONY_WEEKS,
+  POST_CEREMONY_WEEKS,
+  PRE_PNE_DETAILS,
+  POST_PNE_DETAILS,
+  type JournalWeek,
+  type PneWeekDetails,
+} from "@/lib/journal-prompts";
 
 type Phase = "pre" | "post";
 
-const PHASES: { key: Phase; eyebrow: string; title: [string, string]; desc: string; weeks: JournalWeek[] }[] = [
+const PHASES: {
+  key: Phase;
+  eyebrow: string;
+  title: [string, string];
+  desc: string;
+  weeks: JournalWeek[];
+  pne: ReadonlyArray<PneWeekDetails>;
+  pneKey: (weekIdx: number) => string;
+}[] = [
   {
     key: "pre",
     eyebrow: "Phase One · Preparation",
     title: ["Before the ", "Threshold"],
     desc: "Six weeks of preparation. The questions you carry in shape the ceremony you receive. Write what is true.",
     weeks: PRE_CEREMONY_WEEKS,
+    pne: PRE_PNE_DETAILS,
+    pneKey: (w) => `pre-pne-reflection-w${w}`,
   },
   {
     key: "post",
@@ -20,6 +37,8 @@ const PHASES: { key: Phase; eyebrow: string; title: [string, string]; desc: stri
     title: ["The Work of ", "Integration"],
     desc: "Six weeks of return. The medicine continues working long after ceremony ends. Return to these pages as new layers surface.",
     weeks: POST_CEREMONY_WEEKS,
+    pne: POST_PNE_DETAILS,
+    pneKey: (w) => `post-pne-reflection-w${w}`,
   },
 ];
 
@@ -132,7 +151,7 @@ export default function JournalClient() {
             Your Journey<br /><em style={{ fontStyle: "italic", color: "#A8C5AC" }}>Journal</em>
           </h1>
           <p style={{ fontSize: 14.5, color: "rgba(245,240,232,0.58)", lineHeight: 1.95, maxWidth: 580, marginBottom: 28 }}>
-            Every prompt from your weekly preparation and integration work, in one place. Write here or in the weekly pages, your responses sync across both views.
+            Every journal prompt and PNE reflection from your weekly preparation and integration work, in one place. Write here or in the weekly pages, your responses sync across both views and save as you write.
           </p>
           <p style={{ fontSize: 12, color: "rgba(245,240,232,0.3)", borderLeft: "2px solid rgba(168,197,172,0.2)", paddingLeft: 14, lineHeight: 1.7 }}>
             Take what serves you. Leave the rest. Return as often as you wish.
@@ -178,7 +197,12 @@ export default function JournalClient() {
               </div>
 
               {/* Weeks */}
-              {phase.weeks.map((week, wi) => (
+              {phase.weeks.map((week, wi) => {
+                const pneDetail = phase.pne[wi];
+                const pneKey = phase.pneKey(wi);
+                const pneEntry = responses[pneKey] ?? "";
+                const showPne = !!(pneDetail?.reflection || pneEntry);
+                return (
                 <div key={wi} style={{ marginTop: 56 }}>
                   {/* Week header */}
                   <div style={{ background: "rgba(122,158,126,0.06)", borderLeft: "3px solid #7A9E7E", padding: "20px 24px", marginBottom: 28 }}>
@@ -190,7 +214,10 @@ export default function JournalClient() {
                     )}
                   </div>
 
-                  {/* Prompts */}
+                  {/* Journal Prompts */}
+                  <span style={{ fontSize: 8.5, letterSpacing: "0.36em", textTransform: "uppercase", color: "#8B8070", display: "block", marginBottom: 4 }}>
+                    Journal Prompts
+                  </span>
                   <div style={{ display: "flex", flexDirection: "column" }}>
                     {week.prompts.map((prompt, pj) => {
                       const key = `w${wi}-p${pj}`;
@@ -231,8 +258,53 @@ export default function JournalClient() {
                       );
                     })}
                   </div>
+
+                  {/* PNE Reflection */}
+                  {showPne && (
+                    <div style={{ marginTop: 28, padding: "26px 28px", background: "rgba(122,158,126,0.05)", border: "1px solid rgba(122,158,126,0.18)", borderLeft: "3px solid #7A9E7E" }}>
+                      <span style={{ fontSize: 9, fontWeight: 600, letterSpacing: "0.32em", textTransform: "uppercase", color: "#7A9E7E", display: "block", marginBottom: 12 }}>
+                        PNE Reflection
+                      </span>
+                      {pneDetail?.reflection ? (
+                        <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 21, fontWeight: 300, color: "#1A1A18", lineHeight: 1.35, marginBottom: 12 }}>
+                          {pneDetail.reflection}
+                        </p>
+                      ) : (
+                        <p style={{ fontSize: 12, color: "#8B8070", lineHeight: 1.7, marginBottom: 12, fontStyle: "italic" }}>
+                          Your earlier PNE reflection.
+                        </p>
+                      )}
+                      {mode === "write" ? (
+                        <textarea
+                          value={pneEntry}
+                          onChange={(e) => update(pneKey, e.target.value)}
+                          placeholder="Write freely..."
+                          style={{
+                            width: "100%",
+                            minHeight: 130,
+                            background: "rgba(245,240,232,0.96)",
+                            border: "1px solid rgba(168,197,172,0.35)",
+                            borderLeft: "2px solid #A8C5AC",
+                            padding: "14px 16px",
+                            fontFamily: "'Jost', sans-serif",
+                            fontSize: 13.5,
+                            fontWeight: 300,
+                            color: "#1A1A18",
+                            lineHeight: 1.85,
+                            resize: "vertical",
+                            outline: "none",
+                          }}
+                        />
+                      ) : (
+                        pneEntry && (
+                          <p style={{ whiteSpace: "pre-wrap", fontSize: 13.5, color: "#1A1A18", lineHeight: 1.85 }}>{pneEntry}</p>
+                        )
+                      )}
+                    </div>
+                  )}
                 </div>
-              ))}
+                );
+              })}
             </div>
           );
         })}
