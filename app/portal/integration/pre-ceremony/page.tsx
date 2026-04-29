@@ -21,27 +21,20 @@ const BASE_SECTIONS: SectionIndexItem[] = [
 ]
 const sectionsForWeek = (_weekIdx: number): SectionIndexItem[] => BASE_SECTIONS
 
-// Journal prompt entries, Week 1 has explicit storage keys (so the display
-// order can swap without re-attaching members' existing entries to the wrong
-// prompt) plus a custom centering placeholder on prompt 3. Weeks 2–6 use the
-// implicit `w${weekIdx}-p${promptIdx}` key pattern that's been in place since
-// the original launch.
-type PromptEntry = { key: string; q: string; hint?: string; placeholder?: string }
-const WEEK_1_PROMPTS: PromptEntry[] = [
-  { key: 'w0-p1', q: 'If I create my reality, what’s possible for my life after this journey?' },
-  { key: 'w0-p2', q: 'What story am I still believing that no longer belongs to the life I want?' },
-]
+// Display rows for a week's journal prompts. Source of truth is
+// lib/journal-prompts.ts: prompts may carry an explicit `key` (used where the
+// display order has shifted since the original launch) or fall back to the
+// implicit `w${weekIdx}-p${promptIdx}` storage key.
+type PromptEntry = { key: string; q: string; hint?: string }
 const promptsForWeek = (
   weekIdx: number,
-  weekPrompts: { q: string; hint?: string }[],
-): PromptEntry[] => {
-  if (weekIdx === 0) return WEEK_1_PROMPTS
-  return weekPrompts.map((p, pi) => ({
-    key: `w${weekIdx}-p${pi}`,
+  weekPrompts: { q: string; hint?: string; key?: string }[],
+): PromptEntry[] =>
+  weekPrompts.map((p, pi) => ({
+    key: p.key ?? `w${weekIdx}-p${pi}`,
     q: p.q,
     hint: p.hint,
   }))
-}
 
 // Action-item card shape for the new Week 1 layout. Single-link actions
 // render as a clickable card; multi-link actions fall back to inline links
@@ -1161,7 +1154,7 @@ export default function PreCeremonyPage() {
                     className="journal-textarea"
                     value={journal[p.key] ?? ''}
                     onChange={(e) => updateJournal(p.key, e.target.value)}
-                    placeholder={p.placeholder ?? 'Write freely...'}
+                    placeholder="Write freely..."
                     rows={4}
                   />
                 </div>

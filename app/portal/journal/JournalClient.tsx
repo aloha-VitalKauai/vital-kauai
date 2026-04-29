@@ -17,25 +17,22 @@ const PHASES: {
   key: Phase;
   eyebrow: string;
   title: [string, string];
-  desc: string;
   weeks: JournalWeek[];
   pne: ReadonlyArray<PneWeekDetails>;
   pneKey: (weekIdx: number) => string;
 }[] = [
   {
     key: "pre",
-    eyebrow: "Phase One · Preparation",
+    eyebrow: "Pre-Ceremony · Weeks 1–6",
     title: ["Before the ", "Threshold"],
-    desc: "Six weeks of preparation. The questions you carry in shape the ceremony you receive. Write what is true.",
     weeks: PRE_CEREMONY_WEEKS,
     pne: PRE_PNE_DETAILS,
     pneKey: (w) => `pre-pne-reflection-w${w}`,
   },
   {
     key: "post",
-    eyebrow: "Phase Two · Integration",
+    eyebrow: "Post-Ceremony · Weeks 1–6",
     title: ["The Work of ", "Integration"],
-    desc: "Six weeks of return. The medicine continues working long after ceremony ends. Return to these pages as new layers surface.",
     weeks: POST_CEREMONY_WEEKS,
     pne: POST_PNE_DETAILS,
     pneKey: (w) => `post-pne-reflection-w${w}`,
@@ -144,18 +141,12 @@ export default function JournalClient() {
   return (
     <div style={{ minHeight: "100vh", background: "#FDFBF7", fontFamily: "'Jost', sans-serif", fontWeight: 300 }}>
       {/* Hero */}
-      <div style={{ background: "#1C2B1E", padding: "72px 60px 68px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "relative", zIndex: 1, maxWidth: 780 }}>
-          <span style={{ fontSize: 9, letterSpacing: "0.42em", textTransform: "uppercase", color: "#C8A96E", display: "block", marginBottom: 16 }}>Member Portal &middot; Iboga Journey</span>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(36px, 4vw, 58px)", fontWeight: 300, color: "#F5F0E8", lineHeight: 1.06, marginBottom: 20 }}>
-            Your Journey<br /><em style={{ fontStyle: "italic", color: "#A8C5AC" }}>Journal</em>
+      <div style={{ background: "#1C2B1E", padding: "60px 60px 56px" }}>
+        <div style={{ maxWidth: 780 }}>
+          <span style={{ fontSize: 9, letterSpacing: "0.42em", textTransform: "uppercase", color: "#C8A96E", display: "block", marginBottom: 16 }}>Member Portal · Comprehensive Journal</span>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(36px, 4vw, 58px)", fontWeight: 300, color: "#F5F0E8", lineHeight: 1.06 }}>
+            Your Journey <em style={{ fontStyle: "italic", color: "#A8C5AC" }}>Journal</em>
           </h1>
-          <p style={{ fontSize: 14.5, color: "rgba(245,240,232,0.58)", lineHeight: 1.95, maxWidth: 580, marginBottom: 28 }}>
-            Every journal prompt and PNE reflection from your weekly preparation and integration work, in one place. Write here or in the weekly pages, your responses sync across both views and save as you write.
-          </p>
-          <p style={{ fontSize: 12, color: "rgba(245,240,232,0.3)", borderLeft: "2px solid rgba(168,197,172,0.2)", paddingLeft: 14, lineHeight: 1.7 }}>
-            Take what serves you. Leave the rest. Return as often as you wish.
-          </p>
         </div>
       </div>
 
@@ -188,12 +179,11 @@ export default function JournalClient() {
               {pi > 0 && <div style={{ height: 1, background: "linear-gradient(90deg, #C8A96E, transparent)", margin: "80px 0 0", opacity: 0.35 }} />}
 
               {/* Phase header */}
-              <div style={{ paddingTop: 72 }}>
+              <div style={{ paddingTop: 72, paddingBottom: 28, borderBottom: "1px solid rgba(28,43,30,0.12)" }}>
                 <span style={{ fontSize: 8.5, letterSpacing: "0.44em", textTransform: "uppercase", color: "#C8A96E", display: "block", marginBottom: 10 }}>{phase.eyebrow}</span>
-                <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(30px, 3.5vw, 44px)", fontWeight: 300, color: "#1A1A18", lineHeight: 1.1, marginBottom: 12 }}>
+                <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(30px, 3.5vw, 44px)", fontWeight: 300, color: "#1A1A18", lineHeight: 1.1 }}>
                   {phase.title[0]}<em style={{ fontStyle: "italic", color: "#7A9E7E" }}>{phase.title[1]}</em>
                 </h2>
-                <p style={{ fontSize: 13.5, color: "#8B8070", lineHeight: 1.85, maxWidth: 640, paddingBottom: 40, borderBottom: "1px solid rgba(28,43,30,0.1)", marginBottom: 0 }}>{phase.desc}</p>
               </div>
 
               {/* Weeks */}
@@ -215,24 +205,24 @@ export default function JournalClient() {
                   </div>
 
                   {/* Journal Prompts */}
-                  <span style={{ fontSize: 8.5, letterSpacing: "0.36em", textTransform: "uppercase", color: "#8B8070", display: "block", marginBottom: 4 }}>
+                  <span style={{ fontSize: 8.5, letterSpacing: "0.36em", textTransform: "uppercase", color: "#5A5046", display: "block", marginBottom: 4, fontWeight: 500 }}>
                     Journal Prompts
                   </span>
                   <div style={{ display: "flex", flexDirection: "column" }}>
                     {week.prompts.map((prompt, pj) => {
-                      const key = `w${wi}-p${pj}`;
+                      const key = prompt.key ?? `w${wi}-p${pj}`;
                       return (
-                        <div key={pj} style={{ padding: "28px 0", borderBottom: pj < week.prompts.length - 1 ? "1px solid rgba(28,43,30,0.08)" : "none" }}>
-                          <span style={{ fontSize: 9, letterSpacing: "0.35em", textTransform: "uppercase", color: "#7A9E7E", display: "block", marginBottom: 10 }}>
+                        <div key={key} style={{ padding: "28px 0", borderBottom: pj < week.prompts.length - 1 ? "1px solid rgba(28,43,30,0.08)" : "none" }}>
+                          <span style={{ fontSize: 9, letterSpacing: "0.35em", textTransform: "uppercase", color: "#7A9E7E", display: "block", marginBottom: 10, fontWeight: 600 }}>
                             {String(pj + 1).padStart(2, "0")}
                           </span>
                           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 300, color: "#1A1A18", lineHeight: 1.35, marginBottom: 12 }}>
                             {prompt.q}
                           </p>
                           {prompt.hint && (
-                            <p style={{ fontSize: 12, color: "#8B8070", lineHeight: 1.7, marginBottom: 14, fontStyle: "italic" }}>{prompt.hint}</p>
+                            <p style={{ fontSize: 13, color: "#3D4D3F", lineHeight: 1.7, marginBottom: 14, fontStyle: "italic" }}>{prompt.hint}</p>
                           )}
-                          {mode === "write" && (
+                          {mode === "write" ? (
                             <textarea
                               value={responses[key] ?? ""}
                               onChange={(e) => update(key, e.target.value)}
@@ -253,6 +243,12 @@ export default function JournalClient() {
                                 outline: "none",
                               }}
                             />
+                          ) : (
+                            responses[key] && (
+                              <p style={{ whiteSpace: "pre-wrap", fontSize: 14, color: "#1A1A18", lineHeight: 1.85, padding: "14px 16px", background: "rgba(122,158,126,0.04)", borderLeft: "2px solid #A8C5AC" }}>
+                                {responses[key]}
+                              </p>
+                            )
                           )}
                         </div>
                       );
@@ -270,7 +266,7 @@ export default function JournalClient() {
                           {pneDetail.reflection}
                         </p>
                       ) : (
-                        <p style={{ fontSize: 12, color: "#8B8070", lineHeight: 1.7, marginBottom: 12, fontStyle: "italic" }}>
+                        <p style={{ fontSize: 12, color: "#3D4D3F", lineHeight: 1.7, marginBottom: 12, fontStyle: "italic" }}>
                           Your earlier PNE reflection.
                         </p>
                       )}
@@ -309,28 +305,7 @@ export default function JournalClient() {
           );
         })}
 
-        {/* Closing */}
-        <div style={{ background: "#1C2B1E", padding: "60px 56px", textAlign: "center", marginTop: 96 }}>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 34, fontWeight: 300, color: "#F5F0E8", marginBottom: 16, lineHeight: 1.2 }}>
-            A Hui Hou &mdash;<br /><em style={{ fontStyle: "italic", color: "#A8C5AC" }}>Until We Meet Again</em>
-          </h2>
-          <p style={{ fontSize: 14, color: "rgba(245,240,232,0.55)", lineHeight: 1.95, maxWidth: 500, margin: "0 auto 20px" }}>
-            You walked through something real. The medicine chose you as much as you chose it. Whatever continues to unfold, we are here. Your integration team remains available, and this journal is always open.
-          </p>
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 17, fontStyle: "italic", color: "rgba(245,240,232,0.38)", letterSpacing: "0.05em" }}>
-            With deep reverence, Rachel & Josh &middot; Vital Kaua&#699;i
-          </p>
-        </div>
       </div>
-
-      {/* Footer */}
-      <footer style={{ background: "#0E1A10", padding: "40px 60px", display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid rgba(200,169,110,0.07)" }}>
-        <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 17, letterSpacing: "0.15em", color: "#F5F0E8", textTransform: "uppercase", fontWeight: 300 }}>Vital Kaua&#699;i</p>
-        <p style={{ fontSize: 11, color: "rgba(245,240,232,0.22)", lineHeight: 1.7, textAlign: "right" }}>
-          Iboga Journey Journal &middot; Confidential<br />
-          <a href="/portal" style={{ color: "rgba(200,169,110,0.38)", textDecoration: "none" }}>Return to Portal</a>
-        </p>
-      </footer>
     </div>
   );
 }
