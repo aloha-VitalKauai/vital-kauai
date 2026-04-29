@@ -52,6 +52,7 @@ export default function DonationCard({
   }, [processing, router, supabase]);
 
   async function handlePay() {
+    const popup = window.open("", "_blank", "noopener,noreferrer");
     setLoading(true);
     setFailed(false);
     try {
@@ -60,9 +61,12 @@ export default function DonationCard({
       });
       const { url, error } = await res.json();
       if (error || !url) throw new Error(error ?? "no url");
-      window.location.href = url;
+      if (popup) popup.location.href = url;
+      else window.open(url, "_blank", "noopener,noreferrer");
+      setLoading(false);
     } catch (e) {
       console.error(e);
+      if (popup) popup.close();
       setLoading(false);
       setFailed(true);
     }

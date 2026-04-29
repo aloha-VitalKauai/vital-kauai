@@ -72,6 +72,7 @@ export default function JourneyPaymentCard({
   }, [processing, paid, journeyId, router, supabase]);
 
   async function pay(amountCents?: number) {
+    const popup = window.open("", "_blank", "noopener,noreferrer");
     setLoading(true);
     setFailed(false);
     try {
@@ -82,9 +83,12 @@ export default function JourneyPaymentCard({
       });
       const { url, error } = await res.json();
       if (error || !url) throw new Error(error ?? "no url");
-      window.location.href = url;
+      if (popup) popup.location.href = url;
+      else window.open(url, "_blank", "noopener,noreferrer");
+      setLoading(false);
     } catch (e) {
       console.error(e);
+      if (popup) popup.close();
       setLoading(false);
       setFailed(true);
     }
