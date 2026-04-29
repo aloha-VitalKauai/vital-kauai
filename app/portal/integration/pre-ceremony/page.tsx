@@ -909,6 +909,11 @@ export default function PreCeremonyPage() {
         .vp-text em { font-style:italic;color:var(--cream); }
         .pne-detail { margin-top:10px;background:var(--forest);border:.5px solid var(--border);border-radius:4px;padding:18px 24px; }
         .pne-detail .vp-coming-soon { margin-top:6px; }
+        .pne-reflection { margin-top:18px;padding:22px 24px;background:rgba(122,158,126,0.06);border:1px solid rgba(122,158,126,0.22);border-left:3px solid var(--sage);border-radius:4px; }
+        .pne-reflection-label { font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:10px; }
+        .pne-reflection-q { font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--ink);line-height:1.35;margin:0; }
+        .pne-reflection-textarea { margin-top:14px; }
+        .pne-reflection-pending { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--sage);margin:6px 0 0; }
 
         /* BOXES */
         .box { margin-top:14px;border-radius:2px;padding:16px 20px; }
@@ -1205,7 +1210,7 @@ export default function PreCeremonyPage() {
               </h3>
               {i === 0 && (
                 <p className="w1-body">
-                  This week&apos;s PNE (PsychoNeuroEnergetics) teaching introduces internal safety, the felt sense the nervous system rests into when all is well. From there, the companion walks through what happens when the system senses threat and how the body shifts into protection, the relational practices that help you regulate together with safe people, and the external structures, the people, places, and rhythms of your life, that build a foundation of safety from the inside out and the outside in.
+                  This week&apos;s PNE (PsychoNeuroEnergetics) teaching introduces internal safety, the felt sense the nervous system rests into when all is well. From there, the companion walks through what happens when the system senses threat and how the body shifts into protection, and the external structures, the people, places, and rhythms of your life, that build a foundation of safety from the inside out and the outside in.
                 </p>
               )}
               <div className="video-frame" style={{ marginTop: i === 0 ? 24 : 0 }}>
@@ -1215,7 +1220,7 @@ export default function PreCeremonyPage() {
                     <div className="vp-label">{i < 3 ? 'PNE (PsychoNeuroEnergetics)' : 'PNE'} Teaching · Week {i + 1}</div>
                     <div className="vp-text">
                       {i === 0
-                        ? 'A teaching from PsychoNeuroEnergetics: internal safety, what happens when the system senses threat, and how relational practices and external structures together build the ground your nervous system can rest into.'
+                        ? 'A teaching from PsychoNeuroEnergetics: internal safety, what happens when the system senses threat, and how external structures build the ground your nervous system can rest into.'
                         : 'A teaching from PsychoNeuroEnergetics paired with this week’s principle and the body’s lived response to it.'}
                     </div>
                     <div className="vp-coming-soon">Coming Soon</div>
@@ -1228,11 +1233,22 @@ export default function PreCeremonyPage() {
                   ? <div className="vp-text">{PRE_PNE_DETAILS[i].practice}</div>
                   : <div className="vp-coming-soon">Coming Soon</div>}
               </div>
-              <div className="pne-detail">
-                <div className="vp-label">This Week&apos;s PNE Reflection</div>
-                {PRE_PNE_DETAILS[i]?.reflection
-                  ? <div className="vp-text">{PRE_PNE_DETAILS[i].reflection}</div>
-                  : <div className="vp-coming-soon">Coming Soon</div>}
+              <div className="pne-reflection">
+                <span className="pne-reflection-label">This Week&apos;s PNE Reflection</span>
+                {PRE_PNE_DETAILS[i]?.reflection ? (
+                  <>
+                    <p className="pne-reflection-q">{PRE_PNE_DETAILS[i].reflection}</p>
+                    <textarea
+                      className="journal-textarea pne-reflection-textarea"
+                      value={journal[`pre-pne-reflection-w${i}`] ?? ''}
+                      onChange={(e) => updateJournal(`pre-pne-reflection-w${i}`, e.target.value)}
+                      placeholder="Write freely..."
+                      rows={4}
+                    />
+                  </>
+                ) : (
+                  <p className="pne-reflection-pending">Coming Soon</p>
+                )}
               </div>
             </section>
 

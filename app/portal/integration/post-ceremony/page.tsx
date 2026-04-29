@@ -973,7 +973,7 @@ export default function PostCeremonyPage() {
         .btn-save-exit:hover { background:rgba(200,169,110,.08); }
         .wc-actions { display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end; }
         .section{margin-bottom:44px}.section-label{font-size:14px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:block}
-        .video-frame{border:.5px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:14px}.video-primer{background:var(--forest);padding:24px 28px;display:flex;align-items:center;gap:20px}.vp-play{width:44px;height:44px;border-radius:50%;border:1px solid rgba(200,169,110,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}.vp-play-icon{color:var(--gold);font-size:14px;margin-left:3px}.vp-label{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}.vp-text{font-size:13.5px;color:rgba(245,240,232,.75);line-height:1.7}.vp-coming-soon{margin-top:12px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.04em;color:var(--gold)}.pne-detail{margin-top:10px;background:var(--forest);border:.5px solid var(--border);border-radius:4px;padding:18px 24px}.pne-detail .vp-coming-soon{margin-top:6px}
+        .video-frame{border:.5px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:14px}.video-primer{background:var(--forest);padding:24px 28px;display:flex;align-items:center;gap:20px}.vp-play{width:44px;height:44px;border-radius:50%;border:1px solid rgba(200,169,110,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}.vp-play-icon{color:var(--gold);font-size:14px;margin-left:3px}.vp-label{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}.vp-text{font-size:13.5px;color:rgba(245,240,232,.75);line-height:1.7}.vp-coming-soon{margin-top:12px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.04em;color:var(--gold)}.pne-detail{margin-top:10px;background:var(--forest);border:.5px solid var(--border);border-radius:4px;padding:18px 24px}.pne-detail .vp-coming-soon{margin-top:6px}.pne-reflection{margin-top:18px;padding:22px 24px;background:rgba(122,158,126,0.06);border:1px solid rgba(122,158,126,0.22);border-left:3px solid var(--sage);border-radius:4px}.pne-reflection-label{font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:10px}.pne-reflection-q{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--ink);line-height:1.35;margin:0}.pne-reflection-textarea{margin-top:14px}.pne-reflection-pending{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--sage);margin:6px 0 0}
         .box{margin-top:0;border-radius:2px;padding:16px 20px;margin-bottom:28px}.box-label{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:8px;font-weight:500}.box-text{font-size:13px;line-height:1.8;color:var(--ink-mid)}.box-gold{background:rgba(200,169,110,.08);border:.5px solid rgba(200,169,110,.28)}.box-gold .box-label{color:var(--gold)}.box-sage{background:rgba(122,158,126,.07);border:.5px solid rgba(122,158,126,.25)}.box-sage .box-label{color:var(--sage)}
         .reentry{background:rgba(200,169,110,.05);border:.5px solid rgba(200,169,110,.2);border-radius:2px;padding:14px 20px;margin-bottom:24px;display:flex;gap:14px;align-items:flex-start}.reentry-icon{font-size:13px;color:var(--gold);flex-shrink:0;margin-top:1px}.reentry-text{font-size:12.5px;color:var(--stone);line-height:1.75}
         .dataset-note{background:rgba(200,169,110,.07);border:1px solid rgba(200,169,110,.32);border-left:3px solid var(--gold);border-radius:3px;padding:18px 22px;margin-top:18px;font-size:13px;color:var(--ink-mid);line-height:1.75}
@@ -1169,11 +1169,22 @@ export default function PostCeremonyPage() {
                   ? <div className="vp-text">{POST_PNE_DETAILS[i].practice}</div>
                   : <div className="vp-coming-soon">Coming Soon</div>}
               </div>
-              <div className="pne-detail">
-                <div className="vp-label">This Week&apos;s PNE Reflection</div>
-                {POST_PNE_DETAILS[i]?.reflection
-                  ? <div className="vp-text">{POST_PNE_DETAILS[i].reflection}</div>
-                  : <div className="vp-coming-soon">Coming Soon</div>}
+              <div className="pne-reflection">
+                <span className="pne-reflection-label">This Week&apos;s PNE Reflection</span>
+                {POST_PNE_DETAILS[i]?.reflection ? (
+                  <>
+                    <p className="pne-reflection-q">{POST_PNE_DETAILS[i].reflection}</p>
+                    <textarea
+                      className="journal-textarea pne-reflection-textarea"
+                      value={journal[`post-pne-reflection-w${i}`] ?? ''}
+                      onChange={(e) => updateJournal(`post-pne-reflection-w${i}`, e.target.value)}
+                      placeholder="Write freely..."
+                      rows={4}
+                    />
+                  </>
+                ) : (
+                  <p className="pne-reflection-pending">Coming Soon</p>
+                )}
               </div>
             </section>
 
