@@ -562,6 +562,15 @@ const PAGE_CSS = `
     color: var(--ink-light);
     padding: 80px 0;
   }
+  .pne-companion-page .vk-darkband-eyebrow {
+    font-family: var(--body);
+    font-size: 12px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent-sage);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
   .pne-companion-page .vk-darkband-title {
     font-family: var(--serif);
     font-weight: 400;
@@ -669,7 +678,7 @@ export default async function SomaticCompanionPage() {
           <div className="vk-wrap">
             <div className="vk-eyebrow">Iboga Journey · Member Resource</div>
             <h1>Week One <em>PNE (PsychoNeuroEnergetics) Companion</em></h1>
-            <p className="hero-lede">A foundation in internal safety: how it feels in the body, what happens when the system senses threat, and how relational practices and the people, places, and rhythms of your life together build the ground your nervous system can rest into.</p>
+            <p className="hero-lede">A foundation in internal safety: how it feels in the body, what happens when the system senses threat, and how the people, places, and rhythms of your life together build the ground your nervous system can rest into.</p>
           </div>
         </header>
 
@@ -731,6 +740,7 @@ export default async function SomaticCompanionPage() {
 
         <section className="vk-darkband">
           <div className="vk-narrow">
+            <div className="vk-darkband-eyebrow">Working from the Inside Out</div>
             <h2 className="vk-darkband-title">Exercises for <em>Internal Safety</em></h2>
             <div className="exercises-grid">
               <div className="exercise-card"><h3>Co-Regulation</h3><p>Connect with a safe person. Borrow calm through their grounded presence &mdash; talking, sitting quietly together, or simply being near someone who feels steady.</p></div>

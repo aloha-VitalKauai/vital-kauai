@@ -1218,17 +1218,11 @@ export default function PreCeremonyPage() {
             <section className="w1-section" id="pne-perspective">
               <h3 className="w1-h3">
                 {i === 0 ? (
-                  <Link href="/portal/somatic-companion#top" target="_blank" rel="noopener noreferrer" className="w1-h3-link">
-                    PNE (PsychoNeuroEnergetics) Perspective: <em>The Language of the Body</em>
-                  </Link>
+                  <>PNE (PsychoNeuroEnergetics) Perspective: <em>The Language of the Body</em></>
                 ) : i === 1 ? (
-                  <Link href="/portal/somatic-companion/week-2#top" target="_blank" rel="noopener noreferrer" className="w1-h3-link">
-                    PNE (PsychoNeuroEnergetics) Perspective: <em>Nervous System Regulation</em>
-                  </Link>
+                  <>PNE (PsychoNeuroEnergetics) Perspective: <em>Nervous System Regulation</em></>
                 ) : i === 2 ? (
-                  <Link href="/portal/somatic-companion/week-3#top" target="_blank" rel="noopener noreferrer" className="w1-h3-link">
-                    PNE (PsychoNeuroEnergetics) Perspective: <em>Building Somatic Awareness</em>
-                  </Link>
+                  <>PNE (PsychoNeuroEnergetics) Perspective: <em>Building Somatic Awareness</em></>
                 ) : 'PNE Perspective'}
               </h3>
               {i === 0 && (
