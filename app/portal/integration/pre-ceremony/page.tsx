@@ -320,14 +320,6 @@ const WEEKS = [
           { text: 'Begin dietary protocol', href: '/portal/dietary' },
         ],
       },
-      {
-        color: 'red',
-        text: 'Begin DHA/EPA and magnesium glycinate supplementation daily',
-        note: 'DHA/EPA: 2–4g daily with food. Magnesium glycinate: 300–400mg before bed. Confirm with your physician if you are on any medications.',
-        links: [
-          { text: 'Begin DHA/EPA and magnesium glycinate supplementation daily', href: '/portal/dietary#supplement-protocol' },
-        ],
-      },
     ],
     safetyBox: { label: 'Physiological preparation, safety note', text: 'Magnesium is cardiac-critical for iboga. Adequate magnesium levels directly affect cardiac function during the medicine, particularly QT interval regulation. This supplementation is cardiac-critical preparation, part of your physiological safety protocol. If you have any cardiac history, confirm dosing with your physician and inform the Vital Kauaʻi team before proceeding.' },
     prompts: PRE_CEREMONY_WEEKS[2].prompts,
