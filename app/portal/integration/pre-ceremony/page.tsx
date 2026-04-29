@@ -95,7 +95,7 @@ const STRIPE_LOVE_OFFERING_URL = 'https://buy.stripe.com/test_cNi4gzcoG3ZBeQUcmZ
 // Per-week PNE practice + reflection shown below the PNE video. Empty string =
 // placeholder ("Coming Soon"). Filled in as content lands.
 const PRE_PNE_DETAILS: ReadonlyArray<{ practice: string; reflection: string }> = [
-  { practice: 'Breath regulation practice', reflection: 'What do I notice differently in my body after using some of these practices throughout my day?' },
+  { practice: 'Breath regulation practice', reflection: 'What do I notice differently in my body after practicing the 4 / 7 / 8 Breath?' },
   { practice: '', reflection: '' },
   { practice: '', reflection: '' },
   { practice: '', reflection: '' },
