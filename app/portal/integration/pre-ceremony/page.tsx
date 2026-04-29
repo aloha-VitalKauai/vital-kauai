@@ -103,6 +103,16 @@ const PRE_PNE_DETAILS: ReadonlyArray<{ practice: string; reflection: string }> =
   { practice: '', reflection: '' },
 ]
 
+// Per-week PNE Companion theme + URL. Empty url => no link, plain text only.
+const PRE_PNE_COMPANION: ReadonlyArray<{ theme: string; url: string }> = [
+  { theme: 'The Language of the Body', url: '/portal/somatic-companion#top' },
+  { theme: 'Nervous System Regulation', url: '/portal/somatic-companion/week-2#top' },
+  { theme: 'Building Somatic Awareness', url: '/portal/somatic-companion/week-3#top' },
+  { theme: '', url: '' },
+  { theme: '', url: '' },
+  { theme: '', url: '' },
+]
+
 // Render an action's text with optional inline links. Each link matches a
 // substring in `text` and is replaced with an anchor tag in place.
 function renderActionText(
@@ -918,11 +928,15 @@ export default function PreCeremonyPage() {
         .pne-step-time { flex-shrink:0;width:54px;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);padding-top:2px; }
         .pne-step-text { font-size:13.5px;color:rgba(245,240,232,.85);line-height:1.7; }
         .pne-practice-closer { margin:8px 0 0;font-style:italic;color:var(--sage-lt); }
-        .pne-reflection { margin-top:18px;padding:22px 24px;background:rgba(122,158,126,0.06);border:1px solid rgba(122,158,126,0.22);border-left:3px solid var(--sage);border-radius:4px; }
-        .pne-reflection-label { font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:10px; }
-        .pne-reflection-q { font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--ink);line-height:1.35;margin:0; }
-        .pne-reflection-textarea { margin-top:14px; }
-        .pne-reflection-pending { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--sage);margin:6px 0 0; }
+        .pne-reflection { margin-top:18px;padding:26px 28px;background:var(--forest);border:.5px solid var(--border);border-left:3px solid var(--sage);border-radius:4px; }
+        .pne-reflection-label { font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--sage-lt);display:block;margin-bottom:12px; }
+        .pne-reflection-q { font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--cream);line-height:1.35;margin:0; }
+        .pne-reflection .pne-reflection-textarea { margin-top:16px;background:rgba(245,240,232,0.96);border:1px solid rgba(168,197,172,0.35);border-left:2px solid var(--sage-lt);color:var(--ink); }
+        .pne-reflection .pne-reflection-textarea:focus { background:#fff;border-color:var(--sage-lt); }
+        .pne-reflection-pending { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--sage-lt);margin:6px 0 0; }
+        .pne-companion-read { display:inline-flex;align-items:center;gap:8px;margin:14px 0 4px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:var(--sage);text-decoration:none;border-bottom:1px solid rgba(122,158,126,0.35);padding-bottom:2px;transition:color .15s,border-color .15s; }
+        .pne-companion-read:hover { color:var(--ink);border-color:var(--sage); }
+        .pne-companion-read-static { color:var(--stone);border-bottom:1px dashed rgba(122,158,126,0.25);cursor:default; }
 
         /* BOXES */
         .box { margin-top:14px;border-radius:2px;padding:16px 20px; }
@@ -1222,7 +1236,18 @@ export default function PreCeremonyPage() {
                   This week&apos;s PNE (PsychoNeuroEnergetics) teaching introduces internal safety, the felt sense the nervous system rests into when all is well. From there, the companion walks through what happens when the system senses threat and how the body shifts into protection, and the external structures, the people, places, and rhythms of your life, that build a foundation of safety from the inside out and the outside in.
                 </p>
               )}
-              <div className="video-frame" style={{ marginTop: i === 0 ? 24 : 0 }}>
+              {(() => {
+                const c = PRE_PNE_COMPANION[i]
+                const label = `Read Week ${i + 1} in The PsychoNeuroEnergetics (PNE) Companion${c?.theme ? `: ${c.theme}` : ''}`
+                return c?.url ? (
+                  <Link href={c.url} target="_blank" rel="noopener noreferrer" className="pne-companion-read">
+                    {label} <span aria-hidden>→</span>
+                  </Link>
+                ) : (
+                  <p className="pne-companion-read pne-companion-read-static">{label}</p>
+                )
+              })()}
+              <div className="video-frame" style={{ marginTop: 18 }}>
                 <div className="video-primer">
                   <div className="vp-play"><span className="vp-play-icon">▶</span></div>
                   <div>
