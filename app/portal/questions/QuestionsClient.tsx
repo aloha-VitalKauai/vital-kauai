@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 const SECTIONS = [
   {
@@ -62,6 +63,10 @@ const SECTIONS = [
 ];
 
 const STORAGE_KEY = "vk-questions-data";
+// Prefix used for Questions-for-the-Medicine keys inside the shared
+// `member_journals.responses` JSONB blob, so they don't collide with the
+// pre/post-ceremony journal prompt keys.
+const QFTM_PREFIX = "qftm-";
 
 function AutoTextarea({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) {
   const ref = useRef<HTMLTextAreaElement>(null);
@@ -90,18 +95,86 @@ function AutoTextarea({ value, onChange, placeholder }: { value: string; onChang
 
 export default function QuestionsClient() {
   const [values, setValues] = useState<Record<string, string>>({});
+  const [userId, setUserId] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const supabaseRef = useRef(createClient());
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Load: localStorage first (instant) so the page is responsive while
+  // Supabase round-trips, then merge in the server copy as the source of truth.
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-      if (typeof saved === "object") setValues(saved);
+      if (saved && typeof saved === "object") setValues(saved);
     } catch {}
+
+    let cancelled = false;
+    (async () => {
+      const supabase = supabaseRef.current;
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || cancelled) return;
+      setUserId(user.id);
+      const { data } = await supabase
+        .from("member_journals")
+        .select("responses")
+        .eq("member_id", user.id)
+        .maybeSingle();
+      if (cancelled) return;
+      const responses = (data?.responses as Record<string, string>) ?? {};
+      const fromServer: Record<string, string> = {};
+      for (const [k, v] of Object.entries(responses)) {
+        if (k.startsWith(QFTM_PREFIX) && typeof v === "string") {
+          fromServer[k.slice(QFTM_PREFIX.length)] = v;
+        }
+      }
+      if (Object.keys(fromServer).length > 0) {
+        setValues((prev) => ({ ...prev, ...fromServer }));
+      }
+    })();
+    return () => { cancelled = true };
   }, []);
+
+  async function persistToSupabase(next: Record<string, string>) {
+    if (!userId) return;
+    setSaveStatus("saving");
+    try {
+      const supabase = supabaseRef.current;
+      const { data } = await supabase
+        .from("member_journals")
+        .select("responses")
+        .eq("member_id", userId)
+        .maybeSingle();
+      const existing = (data?.responses as Record<string, string>) ?? {};
+      // Strip out any old qftm-* keys, then re-merge with fresh ones — so
+      // emptied fields get cleared rather than lingering.
+      const preserved: Record<string, string> = {};
+      for (const [k, v] of Object.entries(existing)) {
+        if (!k.startsWith(QFTM_PREFIX)) preserved[k] = v;
+      }
+      const namespaced: Record<string, string> = {};
+      for (const [k, v] of Object.entries(next)) namespaced[`${QFTM_PREFIX}${k}`] = v;
+      await supabase
+        .from("member_journals")
+        .upsert(
+          { member_id: userId, responses: { ...preserved, ...namespaced }, last_saved_at: new Date().toISOString() },
+          { onConflict: "member_id" },
+        );
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus("idle"), 1800);
+    } catch {
+      setSaveStatus("error");
+    }
+  }
 
   function update(key: string, val: string) {
     setValues((prev) => {
       const next = { ...prev, [key]: val };
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = setTimeout(() => {
+        persistToSupabase(next);
+        saveTimerRef.current = null;
+      }, 1500);
       return next;
     });
   }
@@ -119,6 +192,12 @@ export default function QuestionsClient() {
           </h1>
           <p style={{ fontSize: 16.5, lineHeight: 1.75, color: "#3D3D38", maxWidth: 660 }}>
             Iboga listens. Before you arrive, take time to clarify what you are truly asking, both what you hope to resolve and what you are willing to see, feel, and be shown. These questions are seeds. Write them with sincerity and as much specificity as you can. The medicine will meet you exactly where you are.
+          </p>
+          <p style={{ fontSize: 12.5, fontStyle: "italic", color: "#8B8070", marginTop: 16 }}>
+            {saveStatus === "saving" && "Saving…"}
+            {saveStatus === "saved" && "Saved."}
+            {saveStatus === "error" && "Couldn’t save just now — your writing is kept on this device."}
+            {saveStatus === "idle" && "Your writing saves automatically as you type. Return any time to continue."}
           </p>
         </div>
 
