@@ -963,6 +963,8 @@ export default function PostCeremonyPage() {
         .w1-action:hover { border-color:var(--gold);background:rgba(200,169,110,.05); }
         .w1-action.is-checked { background:rgba(200,169,110,.08);border-color:rgba(200,169,110,.5); }
         .w1-action.is-checked .w1-action-text { color:var(--ink-soft);text-decoration:line-through;text-decoration-color:rgba(200,169,110,.55);text-decoration-thickness:1px; }
+        .w1-action.is-child { margin-left:32px;background:rgba(200,169,110,.04);border-color:rgba(200,169,110,.22); }
+        .w1-action.is-child.is-checked { background:rgba(200,169,110,.10); }
         .w1-action-body { flex:1;min-width:0;display:flex;align-items:flex-start;gap:14px;padding:16px 18px;text-decoration:none;color:var(--ink); }
         .w1-action-dot { width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:7px; }
         .w1-action-text { font-size:13.5px;color:var(--ink);line-height:1.55; }
@@ -1128,7 +1130,10 @@ export default function PostCeremonyPage() {
                     )
                   }
                   return (
-                    <div key={ai} className={`w1-action${isChecked ? ' is-checked' : ''}`}>
+                    <div
+                      key={ai}
+                      className={`w1-action${isChecked ? ' is-checked' : ''}${card.text.startsWith("Complete this week's PNE") ? ' is-child' : ''}`}
+                    >
                       {body}
                       {checkbox}
                     </div>

@@ -25,18 +25,18 @@ function DietaryContent() {
   const sage = "#6B8C6E";
   const sageBg = "#EDF2EC";
   const sageSoft = "#C8DAC9";
-  const universal = "#8C7B5E";
-  const universalBg = "#F2EDE4";
+  const universal = "#5A7A5E";
+  const universalBg = "#E6EDE5";
   const gold = "#8B6914";
   const goldBg = "#F5F0E4";
   const goldSoft = "#DEC98A";
-  const border = "#DDD5C5";
-  const ink = "#2C2416";
-  const inkLight = "#5C5040";
+  const border = "#D6DCCF";
+  const ink = "#1F3A2E";
+  const inkLight = "#3D4D3F";
   const warmWhite = "#FDFAF6";
 
   return (
-    <div style={{ minHeight: "100vh", background: "#F7F3ED", fontFamily: "'Jost', sans-serif", color: ink, fontSize: 15, lineHeight: 1.75 }}>
+    <div style={{ minHeight: "100vh", background: "#F5F0E8", fontFamily: "'Jost', sans-serif", color: ink, fontSize: 16, lineHeight: 1.75 }}>
       {/* Nav */}
       {/* Header */}
       <div style={{ background: ink, color: "#F7F3ED", padding: "70px 40px 60px", textAlign: "center" }}>
@@ -50,10 +50,10 @@ function DietaryContent() {
       <div style={{ maxWidth: 780, margin: "0 auto", padding: "60px 32px 100px" }}>
         {/* Intro */}
         <div style={{ textAlign: "center", marginBottom: 56, paddingBottom: 48, borderBottom: `1px solid ${border}` }}>
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 400, lineHeight: 1.8, maxWidth: 640, margin: "0 auto 18px" }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 400, lineHeight: 1.7, maxWidth: 660, margin: "0 auto 20px" }}>
             What you feed your body in the weeks before you arrive shapes how deeply you can open, how clearly you can receive, and how smoothly you can integrate. This guide is simple by design. Eat close to the earth, reduce what taxes the system, and let the food itself become part of your preparation.
           </p>
-          <p style={{ fontSize: 13, color: inkLight, letterSpacing: "0.03em" }}>
+          <p style={{ fontSize: 14.5, color: inkLight, letterSpacing: "0.02em", lineHeight: 1.7 }}>
             Begin as early as feels right. Four weeks before your arrival is a strong foundation. Two weeks of clean eating still makes a meaningful difference. The sooner, the better.
           </p>
         </div>
@@ -71,7 +71,7 @@ function DietaryContent() {
               <div key={c.label} style={{ background: warmWhite, border: `1px solid ${border}`, borderRadius: 8, padding: "22px 24px" }}>
                 <p style={{ fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: universal, fontWeight: 600, marginBottom: 8 }}>{c.label}</p>
                 <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 19, fontWeight: 400, letterSpacing: "0.02em", marginBottom: 8, lineHeight: 1.25 }}>{c.title}</h3>
-                <p style={{ fontSize: 13, color: inkLight, lineHeight: 1.65 }}>{c.desc}</p>
+                <p style={{ fontSize: 14, color: inkLight, lineHeight: 1.65 }}>{c.desc}</p>
               </div>
             ))}
           </div>
@@ -121,7 +121,7 @@ function DietaryContent() {
         <div style={{ marginBottom: 52 }}>
           <SectionHeader dot={universal} title="Proper Preparation of Whole Foods" />
           <div style={{ marginBottom: 24 }}>
-            <p style={{ fontSize: 14, color: inkLight, lineHeight: 1.75, maxWidth: 680 }}>
+            <p style={{ fontSize: 15, color: inkLight, lineHeight: 1.75, maxWidth: 680 }}>
               Beans, grains, nuts, and seeds are deeply nourishing, and they carry natural compounds called phytic acid, lectins, and enzyme inhibitors that block mineral absorption and cause gas and bloating when left unprepared. Traditional food cultures have always soaked, sprouted, or fermented these foods before eating them.
             </p>
           </div>
@@ -137,16 +137,16 @@ function DietaryContent() {
                   <div style={{ width: 7, height: 7, borderRadius: "50%", background: card.dot, flexShrink: 0 }} />
                   <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 19, fontWeight: 400, letterSpacing: "0.02em" }}>{card.title}</h3>
                 </div>
-                <p style={{ fontSize: 11.5, color: inkLight, fontStyle: "italic", marginBottom: 14, paddingLeft: 17 }}>{card.note}</p>
+                <p style={{ fontSize: 13, color: inkLight, fontStyle: "italic", marginBottom: 14, paddingLeft: 17 }}>{card.note}</p>
                 <ul style={{ listStyle: "none", display: "grid", gap: 6, marginBottom: 14 }}>
                   {card.steps.map((s) => (
-                    <li key={s} style={{ fontSize: 13, lineHeight: 1.55, paddingLeft: 14, position: "relative" }}>
+                    <li key={s} style={{ fontSize: 14, lineHeight: 1.6, paddingLeft: 14, position: "relative" }}>
                       <span style={{ position: "absolute", left: 0, color: sage, fontWeight: 700 }}>&middot;</span>
                       {s}
                     </li>
                   ))}
                 </ul>
-                <p style={{ fontSize: 12, color: inkLight, fontStyle: "italic", borderTop: `1px solid ${border}`, paddingTop: 12, lineHeight: 1.6 }}>{card.tip}</p>
+                <p style={{ fontSize: 13, color: inkLight, fontStyle: "italic", borderTop: `1px solid ${border}`, paddingTop: 12, lineHeight: 1.65 }}>{card.tip}</p>
               </div>
             ))}
           </div>
@@ -186,30 +186,7 @@ function DietaryContent() {
               ))}
             </div>
 
-            <div style={{ marginTop: 20, background: "rgba(139,105,20,0.06)", border: `1px solid rgba(222,201,138,0.6)`, borderRadius: 7, padding: "18px 20px" }}>
-              <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 17, fontWeight: 400, marginBottom: 10, letterSpacing: "0.02em" }}>Medications & Contraindicated Substances</h4>
-              <div style={{ display: "grid", gap: 7 }}>
-                {[
-                  "All medications that require a washout period \u2014 including SSRIs, MAOIs, antipsychotics, and other psychiatric medications \u2014 must be discontinued well in advance of ceremony.",
-                  "Recreational substances: discontinue as early as possible. At minimum, step away completely four weeks before your ceremony date.",
-                  "Full details on contraindications and medical screening requirements are in your Iboga Preparedness Guide.",
-                ].map((item, i) => (
-                  <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 13, color: inkLight, lineHeight: 1.5 }}>
-                    <span style={{ color: gold, flexShrink: 0 }}>&mdash;</span>
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
-        </div>
-
-        {/* Arrival Note */}
-        <div style={{ background: warmWhite, border: `1px solid ${border}`, borderRadius: 8, padding: "28px 32px", textAlign: "center" }}>
-          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 400, marginBottom: 12, letterSpacing: "0.03em" }}>The Day You Arrive</h3>
-          <p style={{ fontSize: 13.5, color: inkLight, maxWidth: 540, margin: "0 auto", lineHeight: 1.75 }}>
-            On your arrival day and the day of ceremony, eat lightly, easy-to-digest whole foods, fresh fruit, soups, or broths. Give your digestive system space to rest. You will be fully nourished and cared for throughout your stay. Arrive as clear, hydrated, and rested as you can.
-          </p>
         </div>
       </div>
     </div>
