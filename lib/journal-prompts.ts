@@ -7,7 +7,15 @@
 //   PNE reflections (pre)  — `pre-pne-reflection-w{weekIdx}` in pre_ceremony_progress.journal_responses
 //   PNE reflections (post) — `post-pne-reflection-w{weekIdx}` in post_ceremony_progress.journal_responses
 
-export type JournalPrompt = { q: string; hint?: string }
+export type JournalPrompt = {
+  q: string
+  hint?: string
+  // Optional explicit storage key. When present, this overrides the implicit
+  // `w{weekIdx}-p{promptIdx}` pattern so prompts can be reordered without
+  // re-attaching members' existing entries to the wrong question. Used
+  // wherever a week's display order has shifted since the original launch.
+  key?: string
+}
 
 export type JournalWeek = {
   code: string
@@ -45,9 +53,8 @@ export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
     theme: 'Perception',
     title: 'Seeing clearly',
     prompts: [
-      { q: 'What do I want? What is my intention?', hint: 'Write the truest version. If your intention is still forming, write that.' },
-      { q: 'What are my greatest gifts? What is my purpose and mission in this life?', hint: 'Even a partial, uncertain answer is welcome here.' },
-      { q: 'After this journey, what becomes possible?', hint: 'Dream beyond what feels realistic. Let yourself go there.' },
+      { key: 'w0-p1', q: 'If I create my reality, what’s possible for my life after this journey?' },
+      { key: 'w0-p2', q: 'What story am I still believing that no longer belongs to the life I want?' },
     ],
   },
   {
