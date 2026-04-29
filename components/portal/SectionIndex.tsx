@@ -33,6 +33,19 @@ type Props = {
 
 const idOf = (anchor: string) => anchor.replace(/^#/, '')
 
+// Pre-ceremony / post-ceremony pages render every week's sections with the
+// same IDs, hiding inactive weeks via `display:none`. `getElementById` would
+// always return the first (often hidden) match, so prefer the rendered one:
+// pick the element whose `offsetParent` is not null (i.e. actually visible).
+const findVisibleById = (id: string): HTMLElement | null => {
+  if (typeof document === 'undefined') return null
+  const matches = document.querySelectorAll<HTMLElement>(`[id="${CSS.escape(id)}"]`)
+  for (const el of matches) {
+    if (el.offsetParent !== null) return el
+  }
+  return matches[0] ?? null
+}
+
 export default function SectionIndex({
   sections,
   activeSection,
@@ -44,13 +57,14 @@ export default function SectionIndex({
 
   // Auto-track active section via IntersectionObserver when the parent isn't
   // driving activeSection. Picks the visible section closest to the top of
-  // the viewport (under the sticky header stack).
+  // the viewport (under the sticky header stack). Re-runs when the visible
+  // panel changes (parent re-renders sections / scrollOffset).
   useEffect(() => {
     if (controlled) return
     if (typeof window === 'undefined') return
     const ids = sections.map(s => idOf(s.anchor))
     const elements = ids
-      .map(id => document.getElementById(id))
+      .map(id => findVisibleById(id))
       .filter((el): el is HTMLElement => Boolean(el))
     if (elements.length === 0) return
 
@@ -72,7 +86,7 @@ export default function SectionIndex({
   const handleClick = (e: React.MouseEvent, anchor: string) => {
     e.preventDefault()
     if (typeof window === 'undefined') return
-    const el = document.getElementById(idOf(anchor))
+    const el = findVisibleById(idOf(anchor))
     if (!el) return
     const top = el.getBoundingClientRect().top + window.scrollY - scrollOffset
     window.scrollTo({ top, behavior: 'smooth' })
