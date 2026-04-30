@@ -200,7 +200,7 @@ const WEEKS = [
     subtitle: 'turns toward you.',
     carryForward: 'You named what you want and what is asking to change. That honesty is already in motion. This week you begin aligning your whole life, your body, your choices, your attention, toward what\'s coming.',
     sub: 'Makia means energy flows where attention goes. Where are you spending yours? This week asks you to look at what you are feeding with your focus, and what that is growing.',
-    video: { label: 'A Message from Rachel & Josh · Week 2', text: 'In this week’s video, Rachel and Josh share what Makia has meant in their own lives and how learning to follow attention has shaped what they have built and what they have let go of.' },
+    video: { label: 'A Message from Rachel & Josh · Week 2', text: 'In this week’s video, Rachel and Josh share what Makia has meant in their own lives and how learning to focus and follow their attention has shaped what they have built and what they have let go of.' },
     box: { type: 'info', label: 'The identity shift', text: 'You are no longer the person who was considering this. The moment you committed, something changed. This week\'s job is to feel that shift, as a lived, embodied orientation. The portal, this video, and the prompts below all serve one thing: moving you from "I signed up for something" to "I am inside a process."' },
     actionLabel: 'Actions this week, 3 only',
     actionIntro: 'Identity shifts happen in the noticing. This week your job is to begin seeing clearly, the changes will follow.',
