@@ -187,7 +187,7 @@ const WEEKS = [
       label: 'The 48-hour window, read this first',
       text: 'The first 48 hours after ceremony are the most neurologically plastic of your entire journey. What you allow yourself to feel, what you speak aloud, what you write, is being encoded more deeply than at almost any other moment in your life. This is a time for receiving what was shown, set aside decisions, analysis, and explanation.',
     },
-    video: { label: 'A Message from Rachel & Josh · Week 1', text: 'You made it through. In this first transmission Rachel and Josh speak directly to where you are right now, the tenderness, the strange combination of exhaustion and aliveness. They want to meet you exactly here, before you do anything else.' },
+    video: { label: 'A Message from Rachel & Josh · Week 1', text: 'In this week’s video, Rachel and Josh share what Lōkahi has meant in their own lives and how the days right after ceremony have shaped how they listen to what wants to come through.' },
     actionLabel: 'This week, 4 things',
     actions: [
       {
@@ -240,7 +240,7 @@ const WEEKS = [
       label: 'The noribogaine window, this is urgent',
       text: 'Noribogaine, iboga\'s primary metabolite, keeps your brain in a state of heightened neuroplasticity for approximately 4–6 weeks post-ceremony. Right now you are at peak plasticity. What you practice consistently this week becomes your new baseline faster than at almost any other time in your adult life. This is the most important behavioral window of your entire process. Use it deliberately.',
     },
-    video: { label: 'A Message from Rachel & Josh · Week 2', text: 'The neuroplasticity window is real, and this week is its peak. Rachel and Josh talk about what that actually means in practice, why this week\'s small daily choices matter more than they appear, and how to tend what the medicine opened without forcing it into shape too quickly.' },
+    video: { label: 'A Message from Rachel & Josh · Week 2', text: 'In this week’s video, Rachel and Josh share what Mālama has meant in their own lives and how tending the small daily practices has shaped what they have been able to keep from the medicine.' },
     actionLabel: 'This week, 4 things',
     actions: [
       {
@@ -301,7 +301,7 @@ const WEEKS = [
       strong: 'When the pattern hits, do this:',
       text: ' (1) Name it aloud or in writing: "This is the [fear / avoidance / contraction] pattern." (2) Feet flat on the floor. One hand on your heart. One slow breath, in for 5, hold for 2, out for 7. (3) Name it openly, tell your guide, your support person, or write it here. (4) Return to your practice, even for five minutes. The pattern yields to your sustained attention and your practice. This is neuroscience.',
     },
-    video: { label: 'A Message from Rachel & Josh · Week 3', text: 'Rachel and Josh speak directly to the return of the familiar, why it happens, what it means, and why the people who stay with the practice through this week are the ones who see lasting change.' },
+    video: { label: 'A Message from Rachel & Josh · Week 3', text: 'In this week’s video, Rachel and Josh share what Haʻahaʻa has meant in their own lives and how meeting the familiar with humility has shaped how they hold the long arc of integration.' },
     actionLabel: 'This week, 3 things',
     actions: [
       {
@@ -354,7 +354,7 @@ const WEEKS = [
       label: 'The window is beginning to close, anchor now',
       text: 'By the end of week four, the peak neuroplasticity driven by noribogaine begins to narrow. The extraordinary ease of new pattern formation that characterized weeks 1–3 is shifting toward normal, and what you have practiced is becoming structural. What you have yet to commit to in behavior will ask more of you after this week. This week matters.',
     },
-    video: { label: 'A Message from Rachel & Josh · Week 4', text: 'Kuleana is one of the most important Hawaiian concepts for understanding what integration actually requires. In this transmission Rachel and Josh talk about the difference between insight and accountability, and what it looks like to take full responsibility for the change you\'ve been shown is possible.' },
+    video: { label: 'A Message from Rachel & Josh · Week 4', text: 'In this week’s video, Rachel and Josh share what Kuleana has meant in their own lives and how owning what they were shown has shaped the work and the way they live.' },
     actionLabel: 'This week, 4 things',
     actions: [
       {
@@ -407,7 +407,7 @@ const WEEKS = [
       strong: 'If people in your life are struggling with your changes:',
       text: ' When one person does deep transformational work, the entire relational system around them reorganizes. This is a sign the change is real. The people closest to you have built their relationship with the previous version of you. Give them time. Hold your changes clearly without needing their immediate understanding or approval. The skill here is patience without self-abandonment, staying present to the relationship while remaining your changed self. Bring specific relationships to your guide this week.',
     },
-    video: { label: 'A Message from Rachel & Josh · Week 5', text: 'The integration that happens in relationship is some of the most important integration of all. Rachel and Josh talk about what it looks like to bring a changed self back into existing relationships, how to hold new ground without disconnecting from the people you love, and how to let the medicine\'s work deepen through honest contact with others.' },
+    video: { label: 'A Message from Rachel & Josh · Week 5', text: 'In this week’s video, Rachel and Josh share what Aloha as love in action has meant in their own lives and how it has shaped the way they meet the people they love after coming home from ceremony.' },
     actionLabel: 'This week, 4 things',
     actions: [
       {
@@ -456,7 +456,7 @@ const WEEKS = [
     subtitle: 'This is who you are now.',
     carryForward: 'You have moved through the full arc, from the raw tenderness of emergence to the relational work of week five. This final week is a transition from active integration into sustained living.',
     intro: 'Pono means right relationship, with yourself, with others, with the life you are building. Week six marks the close of the intensive integration window and the opening of a longer, quieter arc. The medicine\'s most dramatic effects have passed, but its work continues, in your dreams, your relationships, your daily choices, and in the moments you catch yourself responding differently than you used to.',
-    video: { label: 'A Message from Rachel & Josh · Week 6', text: 'Six weeks ago you came home from ceremony. In this final weekly transmission Rachel and Josh want to mark what you have done. The long integration is beginning. They want you to know what to expect, and how to hold yourself through the months ahead.' },
+    video: { label: 'A Message from Rachel & Josh · Week 6', text: 'In this week’s video, Rachel and Josh share what Pono has meant in their own lives and how living in right relationship with themselves and others has shaped what they have built since their first journeys.' },
     actionLabel: 'This week, 4 completions',
     actions: [
       {
