@@ -846,7 +846,7 @@ export default async function SomaticCompanionPage() {
 
             <div className="strategy-coda">
               <h3 className="strategy-coda-title">Small Moments of Presence <em>Create Safety</em></h3>
-              <p className="vk-darkband-p">Safety is built through small, mindful moments repeated throughout the day. Simple awareness practices to integrate at work:</p>
+              <p className="vk-darkband-p">Safety is built through small, mindful moments repeated throughout the day. Simple awareness practices to integrate throughout your day:</p>
               <ul className="vk-darkband-list">
                 <li>Notice your body in the chair before sending an email.</li>
                 <li>Take one slow breath before responding to stress.</li>
@@ -866,19 +866,6 @@ export default async function SomaticCompanionPage() {
               <div className="practice-card"><h3>A Sacred Place in Nature</h3><p>Find one specific, accessible place near you, a park bench, a quiet trail, a riverbank, a stretch of beach. This personal sanctuary becomes a reliable anchor for grounding your nervous system regularly.</p></div>
               <div className="practice-card"><h3>A Resilient Web</h3><p>By weaving together safe people and nurturing natural spaces, you create a living support network that sustains you far beyond any one professional relationship. The web itself becomes the medicine.</p></div>
               <div className="practice-card"><h3>An Organized Life</h3><p>Reduce clutter where you can. Create devoted places for your belongings. An organized home reduces cognitive load and offers the nervous system a calm, predictable environment to soften into.</p></div>
-            </div>
-          </div>
-        </section>
-
-        <section className="vk-section">
-          <div className="vk-narrow">
-            <div className="vk-eyebrow">Safety in the Medicine</div>
-            <h2 className="vk-title">In Your <em>Iboga Journey</em></h2>
-            <p className="vk-lede">Your journey into deeper self-discovery is profoundly personal, and held by community. Building and trusting your support system is essential to navigating the experience with greater ease, safety, and integration.</p>
-            <div className="iboga-grid">
-              <div className="iboga-col"><h3>Your Steadfast Team</h3><p>Trust the dedicated people around you. They are there to guide you, hold space, and ensure a foundation of external safety throughout your experience.</p></div>
-              <div className="iboga-col"><h3>Anchor in Your Breath</h3><p>If a moment feels overwhelming or uncertain, gently bring your awareness back to your breath. It is always available, a reliable pathway home to yourself.</p></div>
-              <div className="iboga-col"><h3>Co-Regulation with Your Integration Guide</h3><p>Reach out to your integration guide, or to Rachel and Josh, whenever you need support. They can offer grounded presence and help you draw on the safety practices you are building now.</p></div>
             </div>
           </div>
         </section>
