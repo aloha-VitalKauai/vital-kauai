@@ -32,14 +32,23 @@ export type JournalWeek = {
 //   Primary  — `pre-pne-reflection-w{weekIdx}` (or `post-…`)
 //   Follow-up — `pre-pne-reflection-w{weekIdx}-2` when reflectionFollowUp is set
 export type PneWeekDetails = {
+  // Synopsis shown in the PNE Teaching video card on the integration page.
+  // Empty string falls back to the generic "A teaching from PsychoNeuroEnergetics
+  // paired with this week's principle and the body's lived response to it."
+  teaching?: string
   practice: string
   reflection: string
   reflectionFollowUp?: string
 }
 
 export const PRE_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
-  { practice: 'Breath regulation practice', reflection: 'What do I notice differently in my body after practicing the 4 / 7 / 8 Breath?' },
   {
+    teaching: 'A teaching from PsychoNeuroEnergetics: internal safety, what happens when the system senses threat, and how internal and external structures build the ground your nervous system can rest into.',
+    practice: 'Breath regulation practice',
+    reflection: 'What do I notice differently in my body after practicing the 4 / 7 / 8 Breath?',
+  },
+  {
+    teaching: 'A Polyvagal Neuroscience-Informed framework for understanding how your body moves between states of safety, protection, and rest, and how to support its natural return to balance.',
     practice: '',
     reflection: 'Where do I go when I feel dysregulated? What is my dominant pattern — fight, flight, freeze, or fawn?',
     reflectionFollowUp: 'What situations tend to call these patterns forward most quickly in your life?',
