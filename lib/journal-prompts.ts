@@ -27,11 +27,23 @@ export type JournalWeek = {
 // Per-week PNE practice + reflection. Empty reflection => no writable prompt
 // (rendered as "Coming Soon" on the integration page; skipped in the
 // comprehensive journal unless the member has an existing entry).
-export type PneWeekDetails = { practice: string; reflection: string }
+//
+// Storage keys for reflection responses:
+//   Primary  — `pre-pne-reflection-w{weekIdx}` (or `post-…`)
+//   Follow-up — `pre-pne-reflection-w{weekIdx}-2` when reflectionFollowUp is set
+export type PneWeekDetails = {
+  practice: string
+  reflection: string
+  reflectionFollowUp?: string
+}
 
 export const PRE_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
   { practice: 'Breath regulation practice', reflection: 'What do I notice differently in my body after practicing the 4 / 7 / 8 Breath?' },
-  { practice: '', reflection: '' },
+  {
+    practice: '',
+    reflection: 'Where do I go when I feel dysregulated? What is my dominant pattern — fight, flight, freeze, or fawn?',
+    reflectionFollowUp: 'What situations tend to call these patterns forward most quickly in your life?',
+  },
   { practice: '', reflection: '' },
   { practice: '', reflection: '' },
   { practice: '', reflection: '' },
@@ -71,9 +83,11 @@ export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
     code: 'MANAWA',
     theme: 'Presence',
     title: 'The body is the experience',
+    // The dysregulation / fight-flight-freeze-fawn prompt that lived here as
+    // w2-p0 has moved to Week 2's PNE Reflection. The remaining prompt keeps
+    // its original w2-p1 storage key so existing entries are preserved.
     prompts: [
-      { q: 'Where do I go when I feel dysregulated? What is my dominant pattern — fight, flight, freeze, or fawn?', hint: 'This is self-knowledge. Observe clearly.' },
-      { q: 'How do I create safety within myself? What brings me back to center?', hint: 'Name what is true for your body.' },
+      { key: 'w2-p1', q: 'How do I create safety within myself? What brings me back to center?', hint: 'Name what is true for your body.' },
     ],
   },
   {
