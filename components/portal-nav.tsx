@@ -72,6 +72,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
                 <a href="/portal/vital-kauai-guides" className="pn-dropdown-item">Vital Kauaʻi Guides</a>
                 <a href="/portal/questions" className="pn-dropdown-item">Questions for the Medicine</a>
                 <a href="/portal/journal" className="pn-dropdown-item">Comprehensive Journal</a>
+                <a href="/portal/vital-kauai-guides" className="pn-dropdown-item">Vital Kauaʻi Guides</a>
               </div>
             </div>
             <a href="/portal/donate" className="pn-link">Contribute</a>
@@ -119,6 +120,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         <a href="/portal/vital-kauai-guides" onClick={close}>Vital Kauaʻi Guides</a>
         <a href="/portal/questions" onClick={close}>Questions for the Medicine</a>
         <a href="/portal/journal" onClick={close}>Comprehensive Journal</a>
+        <a href="/portal/vital-kauai-guides" onClick={close}>Vital Kauaʻi Guides</a>
         <a href="/portal/donate" onClick={close}>Contribute</a>
         <a href="/portal/contact" onClick={close}>Contact</a>
         {/* Community link hidden — restore with the main nav link when the section is ready. */}
