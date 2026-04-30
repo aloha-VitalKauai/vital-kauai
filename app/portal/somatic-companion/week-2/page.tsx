@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
-export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Companion · Week 2, Vital Kauaʻi" };
+export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Guide · Week 2, Vital Kauaʻi" };
 
 const PAGE_CSS = `
   :root {
@@ -512,7 +512,7 @@ export default async function SomaticCompanionWeek2Page() {
         <header className="hero">
           <div className="vk-wrap">
             <div className="vk-eyebrow">Iboga Journey · Member Resource</div>
-            <h1>Week Two <em>PNE Companion</em></h1>
+            <h1>Week Two <em>PNE Guide</em></h1>
             <p className="hero-subtitle">Nervous System Regulation</p>
             <p className="hero-lede">A Polyvagal Neuroscience-Informed framework for understanding how your body moves between states of safety, protection, and rest, and how to support its natural return to balance.</p>
           </div>

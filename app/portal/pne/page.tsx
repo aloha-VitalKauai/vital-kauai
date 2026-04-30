@@ -68,9 +68,9 @@ export default async function PnePage() {
       {/* ── BODY ── */}
       <main style={{ maxWidth: 1080, margin: "0 auto", padding: "72px 48px 120px" }}>
         <div style={{ marginBottom: 36 }}>
-          <p style={{ fontSize: 9, letterSpacing: "0.36em", textTransform: "uppercase", color: SAGE, marginBottom: 10, fontWeight: 500 }}>Weekly Companion</p>
+          <p style={{ fontSize: 9, letterSpacing: "0.36em", textTransform: "uppercase", color: SAGE, marginBottom: 10, fontWeight: 500 }}>Weekly Guide</p>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(28px, 3.2vw, 40px)", fontWeight: 300, lineHeight: 1.1, color: "#1A1A18" }}>
-            The PNE <em style={{ fontStyle: "italic", color: SAGE }}>Companion</em>
+            The PNE <em style={{ fontStyle: "italic", color: SAGE }}>Guide</em>
           </h2>
         </div>
 

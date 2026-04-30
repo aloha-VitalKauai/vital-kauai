@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
-export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Companion · Week 1, Vital Kauaʻi" };
+export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Guide · Week 1, Vital Kauaʻi" };
 
 const PAGE_CSS = `
   :root {
@@ -741,7 +741,7 @@ export default async function SomaticCompanionPage() {
         <header className="hero">
           <div className="vk-wrap">
             <div className="vk-eyebrow">Iboga Journey · Member Resource</div>
-            <h1>Week One <em>PNE (PsychoNeuroEnergetics) Companion</em></h1>
+            <h1>Week One <em>PNE (PsychoNeuroEnergetics) Guide</em></h1>
             <p className="hero-lede">A foundation in internal safety: how it feels in the body, what happens when the system senses threat, and how the people, places, and rhythms of your life together build the ground your nervous system can rest into.</p>
           </div>
         </header>

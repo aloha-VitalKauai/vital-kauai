@@ -58,7 +58,7 @@ const actionsForWeek = (
     return [
       { kind: 'internal', href: '/intake-form',                        text: 'Fill out Your Member Intake & Readiness Form' },
       { kind: 'hash',     href: '#journal-prompts',                    text: 'Respond to this week’s journal prompts' },
-      { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Companion: The Language of the Body' },
+      { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Guide: The Language of the Body' },
       { kind: 'static',                                              text: "Complete this week's PNE Practice" },
       { kind: 'static',                                              text: "Complete this week's PNE Reflection" },
       { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule your two pre-ceremony calls with your integration guide, one in week two and one in week four' },
@@ -214,9 +214,9 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Companion: Nervous System Regulation',
+        text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Guide: Nervous System Regulation',
         links: [
-          { text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Companion: Nervous System Regulation', href: '/portal/somatic-companion/week-2#top' },
+          { text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Guide: Nervous System Regulation', href: '/portal/somatic-companion/week-2#top' },
         ],
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
@@ -272,9 +272,9 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Companion: Building Somatic Awareness',
+        text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Guide: Building Somatic Awareness',
         links: [
-          { text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Companion: Building Somatic Awareness', href: '/portal/somatic-companion/week-3#top' },
+          { text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Guide: Building Somatic Awareness', href: '/portal/somatic-companion/week-3#top' },
         ],
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
@@ -331,7 +331,7 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Companion',
+        text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Guide',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -388,7 +388,7 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Companion',
+        text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Guide',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -450,7 +450,7 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Companion',
+        text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Guide',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -1179,7 +1179,7 @@ export default function PreCeremonyPage() {
               )}
               {(() => {
                 const c = PRE_PNE_COMPANION[i]
-                const label = `Read Week ${i + 1} in The PsychoNeuroEnergetics (PNE) Companion${c?.theme ? `: ${c.theme}` : ''}`
+                const label = `Read Week ${i + 1} in The PsychoNeuroEnergetics (PNE) Guide${c?.theme ? `: ${c.theme}` : ''}`
                 return c?.url ? (
                   <Link href={c.url} target="_blank" rel="noopener noreferrer" className="pne-companion-read">
                     {label} <span aria-hidden>→</span>

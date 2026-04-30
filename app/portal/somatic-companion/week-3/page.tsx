@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
-export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Companion · Week 3, Vital Kauaʻi" };
+export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Guide · Week 3, Vital Kauaʻi" };
 
 const PAGE_CSS = `
   :root {
@@ -538,7 +538,7 @@ export default async function SomaticCompanionWeek3Page() {
         <header className="hero">
           <div className="vk-wrap">
             <div className="vk-eyebrow">Iboga Journey · Member Resource</div>
-            <h1>Week Three <em>PNE Companion</em></h1>
+            <h1>Week Three <em>PNE Guide</em></h1>
             <p className="hero-subtitle">Building Somatic Awareness</p>
             <p className="hero-lede">Somatic awareness is the gentle skill of noticing the body from the inside. Of letting the body&apos;s quiet language become familiar, so that what arises can be met with steadiness rather than alarm.</p>
           </div>
