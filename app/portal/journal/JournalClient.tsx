@@ -189,8 +189,10 @@ export default function JournalClient() {
               {phase.weeks.map((week, wi) => {
                 const pneDetail = phase.pne[wi];
                 const pneKey = phase.pneKey(wi);
+                const pneFollowUpKey = `${pneKey}-2`;
                 const pneEntry = responses[pneKey] ?? "";
-                const showPne = !!(pneDetail?.reflection || pneEntry);
+                const pneFollowUpEntry = responses[pneFollowUpKey] ?? "";
+                const showPne = !!(pneDetail?.reflection || pneEntry || pneFollowUpEntry);
                 return (
                 <div key={wi} style={{ marginTop: 56 }}>
                   {/* Week header */}
@@ -281,6 +283,35 @@ export default function JournalClient() {
                           outline: "none",
                         }}
                       />
+                      {(pneDetail?.reflectionFollowUp || pneFollowUpEntry) && (
+                        <>
+                          {pneDetail?.reflectionFollowUp && (
+                            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 300, color: "#1A1A18", lineHeight: 1.35, marginTop: 24, marginBottom: 12 }}>
+                              {pneDetail.reflectionFollowUp}
+                            </p>
+                          )}
+                          <textarea
+                            value={pneFollowUpEntry}
+                            onChange={(e) => update(pneFollowUpKey, e.target.value)}
+                            placeholder="Write freely..."
+                            style={{
+                              width: "100%",
+                              minHeight: 130,
+                              background: "rgba(245,240,232,0.96)",
+                              border: "1px solid rgba(168,197,172,0.35)",
+                              borderLeft: "2px solid #A8C5AC",
+                              padding: "14px 16px",
+                              fontFamily: "'Jost', sans-serif",
+                              fontSize: 15,
+                              fontWeight: 300,
+                              color: "#1A1A18",
+                              lineHeight: 1.85,
+                              resize: "vertical",
+                              outline: "none",
+                            }}
+                          />
+                        </>
+                      )}
                     </div>
                   )}
                 </div>

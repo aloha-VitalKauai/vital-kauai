@@ -1196,6 +1196,18 @@ export default function PostCeremonyPage() {
                       placeholder="Write freely..."
                       rows={4}
                     />
+                    {POST_PNE_DETAILS[i].reflectionFollowUp && (
+                      <>
+                        <p className="pne-reflection-q" style={{ marginTop: 24 }}>{POST_PNE_DETAILS[i].reflectionFollowUp}</p>
+                        <textarea
+                          className="journal-textarea pne-reflection-textarea"
+                          value={journal[`post-pne-reflection-w${i}-2`] ?? ''}
+                          onChange={(e) => updateJournal(`post-pne-reflection-w${i}-2`, e.target.value)}
+                          placeholder="Write freely..."
+                          rows={4}
+                        />
+                      </>
+                    )}
                   </>
                 ) : (
                   <p className="pne-reflection-pending">Coming Soon</p>

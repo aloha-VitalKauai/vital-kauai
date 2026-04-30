@@ -1236,6 +1236,18 @@ export default function PreCeremonyPage() {
                       placeholder="Write freely..."
                       rows={4}
                     />
+                    {PRE_PNE_DETAILS[i].reflectionFollowUp && (
+                      <>
+                        <p className="pne-reflection-q" style={{ marginTop: 24 }}>{PRE_PNE_DETAILS[i].reflectionFollowUp}</p>
+                        <textarea
+                          className="journal-textarea pne-reflection-textarea"
+                          value={journal[`pre-pne-reflection-w${i}-2`] ?? ''}
+                          onChange={(e) => updateJournal(`pre-pne-reflection-w${i}-2`, e.target.value)}
+                          placeholder="Write freely..."
+                          rows={4}
+                        />
+                      </>
+                    )}
                   </>
                 ) : (
                   <p className="pne-reflection-pending">Coming Soon</p>
