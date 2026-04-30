@@ -85,7 +85,7 @@ export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
     prompts: [
       { q: 'Where is most of your energy going right now? What is receiving the most of you, and does that feel true?' },
       { q: 'What are you most afraid of losing, or being asked to change?', hint: 'Fear named loses half its power.' },
-      { q: 'Where do you sense resistance living in you? What have your closest relationships reflected to you about your resistance?' },
+      { q: 'Where do you sense resistance living in you? What have your closest relationships shown you about where you hold back?' },
     ],
   },
   {
