@@ -178,16 +178,4 @@ export const PNE_ADDITIONAL_RESOURCES: ReadonlyArray<PneAdditionalResource> = [
     href: "/portal/pne",
     status: "coming-soon",
   },
-  {
-    title: "Pre-Ceremony Integration",
-    description: "Six weeks of preparation, paired with the Hawaiian principles.",
-    href: "/portal/integration/pre-ceremony",
-    status: "live",
-  },
-  {
-    title: "Post-Ceremony Integration",
-    description: "Six weeks of return. The medicine continues working long after ceremony ends.",
-    href: "/portal/integration/post-ceremony",
-    status: "live",
-  },
 ]

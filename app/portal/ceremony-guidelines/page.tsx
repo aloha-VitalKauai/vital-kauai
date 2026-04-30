@@ -14,7 +14,6 @@ export default async function CeremonyGuidelinesPage() {
   const gold = "#B8956A";
   const goldLight = "#E6D5BF";
   const sage = "#7A8C6E";
-  const sageLt = "#D4DBCE";
   const rose = "#C4897A";
   const rule = "rgba(184,149,106,0.25)";
   const cardBg = "#FEFCF8";
@@ -148,29 +147,6 @@ export default async function CeremonyGuidelinesPage() {
               </li>
             ))}
           </ul>
-        </Card>
-
-        {/* 6. Tantric Attitude */}
-        <Card accent={sage} icon="&#8734;" title="Tantric Attitude">
-          <p style={{ ...p, marginBottom: 0 }}>
-            <span style={{ fontFamily: "'Jost'", fontSize: "0.75rem", fontWeight: 300, color: sage, letterSpacing: "0.1em", textTransform: "uppercase", marginLeft: "0.6rem" }}>Sacred Intimacy & Tantra Work</span>
-          </p>
-          <p style={{ ...p, marginTop: "0.75rem" }}>For those entering Sacred Intimacy & Tantra offerings, these principles form the energetic orientation of our work together.</p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "0.75rem", marginTop: "1rem" }}>
-            {["Cultivate self-love", "Release guilt", "Enjoy spontaneity", "Cultivate pleasure & relaxation", "Be fully present", "Discover meditation in the body", "Release goal orientation", "Allow surrender", "Trust the body\u2019s wisdom over the mind"].map((principle) => (
-              <div key={principle} style={{ background: sageLt, borderRadius: 2, padding: "0.6rem 0.9rem", fontSize: "0.8rem", color: ink, letterSpacing: "0.03em", lineHeight: 1.4 }}>{principle}</div>
-            ))}
-          </div>
-
-          <p style={{ marginTop: "1.5rem", fontSize: "0.8rem", letterSpacing: "0.1em", textTransform: "uppercase", color: sage }}>The Four Foundations</p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", marginTop: "1.25rem" }}>
-            {[{ num: "1", name: "Breath" }, { num: "2", name: "Movement" }, { num: "3", name: "Sound" }, { num: "4", name: "Visualization" }].map((f) => (
-              <div key={f.name} style={{ textAlign: "center", padding: "1rem 0.5rem", border: `1px solid ${rule}`, borderRadius: 2 }}>
-                <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.6rem", fontWeight: 300, color: gold, display: "block", lineHeight: 1, marginBottom: "0.4rem" }}>{f.num}</span>
-                <span style={{ fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase", color: inkSoft }}>{f.name}</span>
-              </div>
-            ))}
-          </div>
         </Card>
 
         {/* Closing */}
