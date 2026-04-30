@@ -830,7 +830,7 @@ export default function PreCeremonyPage() {
         .w1-prompt { padding:22px 0;border-bottom:1px solid var(--border); }
         .w1-prompt:first-child { border-top:1px solid var(--border); }
         .w1-prompt-num { font-size:13px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:10px; }
-        .w1-prompt-q { font-family:'Jost',sans-serif;font-size:15px;font-weight:300;color:var(--ink);line-height:1.6;margin-bottom:10px; }
+        .w1-prompt-q { font-family:'Jost',sans-serif;font-size:15px;font-weight:400;color:var(--ink);line-height:1.6;margin-bottom:10px; }
         .w1-prompt-hint { font-size:12.5px;color:var(--stone);line-height:1.75;font-style:italic; }
         .w1-actions { display:flex;flex-direction:column;gap:10px; }
         .w1-action { display:flex;align-items:stretch;border:.5px solid var(--border);border-radius:4px;background:white;transition:border-color .2s,background .2s; }
@@ -922,7 +922,7 @@ export default function PreCeremonyPage() {
         .prompt-num { font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:10px; }
         .prompt-q { font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--ink);line-height:1.35;margin-bottom:10px; }
         .prompt-hint { font-size:12.5px;color:var(--stone);line-height:1.75;font-style:italic; }
-        .journal-textarea{width:100%;margin-top:14px;padding:14px 16px;border:1px solid rgba(122,158,126,0.2);border-left:2px solid var(--sage-lt);background:rgba(122,158,126,0.04);font-family:'Jost',sans-serif;font-size:16px;font-weight:400;color:var(--ink);line-height:1.85;resize:vertical;outline:none;min-height:100px;transition:border-color .2s,background .2s}
+        .journal-textarea{width:100%;margin-top:14px;padding:14px 16px;border:1px solid rgba(122,158,126,0.2);border-left:2px solid var(--sage-lt);background:rgba(122,158,126,0.04);font-family:'Jost',sans-serif;font-size:13.5px;font-weight:300;color:var(--ink);line-height:1.7;resize:vertical;outline:none;min-height:100px;transition:border-color .2s,background .2s}
         .journal-textarea:focus{border-color:var(--sage);background:rgba(122,158,126,0.07)}
         .journal-textarea::placeholder{color:rgba(28,43,30,0.5);font-style:italic}
 
