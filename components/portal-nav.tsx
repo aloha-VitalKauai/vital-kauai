@@ -69,7 +69,6 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
               <button className="pn-dropdown-trigger">Resources</button>
               <div className="pn-dropdown-menu">
                 <a href="/portal/pne" className="pn-dropdown-item">PNE</a>
-                <a href="/portal/vital-kauai-guides" className="pn-dropdown-item">Vital Kauaʻi Guides</a>
                 <a href="/portal/questions" className="pn-dropdown-item">Questions for the Medicine</a>
                 <a href="/portal/journal" className="pn-dropdown-item">Comprehensive Journal</a>
                 <a href="/portal/vital-kauai-guides" className="pn-dropdown-item">Vital Kauaʻi Guides</a>
@@ -117,7 +116,6 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         <a href="/portal/integration/post-ceremony" onClick={close}>Post-Ceremony</a>
         <span className="pn-mobile-section-label">Resources</span>
         <a href="/portal/pne" onClick={close}>PNE</a>
-        <a href="/portal/vital-kauai-guides" onClick={close}>Vital Kauaʻi Guides</a>
         <a href="/portal/questions" onClick={close}>Questions for the Medicine</a>
         <a href="/portal/journal" onClick={close}>Comprehensive Journal</a>
         <a href="/portal/vital-kauai-guides" onClick={close}>Vital Kauaʻi Guides</a>
