@@ -167,6 +167,12 @@ export type PneAdditionalResource = {
 
 export const PNE_ADDITIONAL_RESOURCES: ReadonlyArray<PneAdditionalResource> = [
   {
+    title: "Iboga Preparedness Guide",
+    description: "The full medical, somatic, and logistical preparation framework, shared with all enrolled members.",
+    href: "/iboga-preparedness-guide.html",
+    status: "live",
+  },
+  {
     title: "Ceremony Guidelines",
     description: "How we hold the container, and what to expect inside it.",
     href: "/portal/ceremony-guidelines",
