@@ -199,7 +199,7 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Companion',
+        text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Guide',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -252,7 +252,7 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Companion',
+        text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Guide',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -313,7 +313,7 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Companion',
+        text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Guide',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -366,7 +366,7 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Companion',
+        text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Guide',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -419,7 +419,7 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Companion',
+        text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Guide',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -468,7 +468,7 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Companion',
+        text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Guide',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -1159,7 +1159,7 @@ export default function PostCeremonyPage() {
               <h3 className="w1-h3">PNE Perspective</h3>
               {(() => {
                 const c = POST_PNE_COMPANION[i]
-                const label = `Read Week ${i + 1} in The PsychoNeuroEnergetics (PNE) Companion${c?.theme ? `: ${c.theme}` : ''}`
+                const label = `Read Week ${i + 1} in The PsychoNeuroEnergetics (PNE) Guide${c?.theme ? `: ${c.theme}` : ''}`
                 return c?.url ? (
                   <Link href={c.url} target="_blank" rel="noopener noreferrer" className="pne-companion-read">
                     {label} <span aria-hidden>→</span>
