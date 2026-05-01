@@ -283,8 +283,8 @@ export function AboutPage() {
             </div>
           </div>
           <p className={styles.storyRole}>
-            Somatic Integration Guide &middot; Energy Healer &middot; Women&apos;s Group
-            Facilitator &middot; Co-Creatress
+            Co-Creatress &middot; Visionary &middot; Preparation and Integration Guide
+            &middot; Women&apos;s Group Facilitator &middot; Energy Healer
           </p>
           <h2 className={styles.storyName}>
             Rachel
