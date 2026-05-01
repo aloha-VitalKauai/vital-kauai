@@ -355,18 +355,6 @@ const WEEKS = [
         ],
       },
       {
-        color: 'blue',
-        text: 'Read "Preparing the Inner Landscape" in your Preparedness Guide',
-        note: 'A short framing of what this inner work asks of you, and what the medicine begins doing the moment you say yes.',
-        links: [
-          {
-            text: 'Read "Preparing the Inner Landscape" in your Preparedness Guide',
-            href: '/iboga-preparedness-guide.html#preparing-inner',
-            external: true,
-          },
-        ],
-      },
-      {
         color: 'green',
         text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Guide',
       },
