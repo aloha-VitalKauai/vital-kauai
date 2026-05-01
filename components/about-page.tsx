@@ -295,7 +295,7 @@ export function AboutPage() {
             Growing up as a dedicated athlete, I understood the body as a vehicle for excellence, the focus, the discipline, the endless refinement of technique. But beneath that drive, I was quietly losing myself.
           </p>
           <p className={styles.storyPara}>
-            A corporate career that hollowed my soul. A debilitating autoimmune condition. And then the completion of a seventeen-year relationship, the greatest unraveling of my life. I became a single mother, carrying the weight of what felt like failure, resentment I didn&apos;t know what to do with, and a grief so heavy I knew my boys could feel it too.
+            I followed a path of success in a corporate career that hollowed my soul and was met with a debilitating autoimmune condition. And then the completion of a seventeen-year relationship, the greatest unraveling of my life, left me a single mother. I was carrying the weight of what felt like failure and resentment.
           </p>
           <p className={styles.storyPara}>
             Iboga had been calling me, in my dreams, and in the spaces I was holding for others. When I answered, something direct and incredibly wise moved through me. It helped me clear what I had been holding—the anger, the blame, and the feeling that I was less than the mother my boys deserved. I emerged lighter, more present and authentically me.
