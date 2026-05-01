@@ -184,4 +184,10 @@ export const PNE_ADDITIONAL_RESOURCES: ReadonlyArray<PneAdditionalResource> = [
     href: "/portal/pne",
     status: "coming-soon",
   },
+  {
+    title: "Physician Reference Guide",
+    description: "Required lab work, contraindications, and medical context to share with your physician.",
+    href: "/portal/physician-guide",
+    status: "live",
+  },
 ]
