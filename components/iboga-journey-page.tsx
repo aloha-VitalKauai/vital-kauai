@@ -168,9 +168,9 @@ export function IbogaJourneyPage() {
             </p>
             <p>
               You will be supported from your first conversation through the months of integration
-              that follow. The ceremony is held in living relationship with the mana of Mama
-              Kaua&#699;i, the land, the water, the forest, so that nature itself
-              becomes an active participant in your healing.
+              that follow. Our ceremony unfolds in living relationship with the land and waters of
+              Kaua&#699;i, where the natural world becomes an active participant in your return to
+              your own true nature.
             </p>
             <p>
               This is a deeply held container, guided with love, rigor, and decades of
