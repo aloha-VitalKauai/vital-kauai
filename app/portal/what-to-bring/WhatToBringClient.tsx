@@ -30,7 +30,12 @@ const SACRED_ITEMS = [
   { label: "Anything that helps you feel grounded, held, and at home" },
 ];
 
-const ALL_ITEMS = [...PRACTICAL_ITEMS, ...SACRED_ITEMS];
+const IBOGA_ITEMS = [
+  { label: "Comfortable all-white outfit", note: "White is worn as a reflection of openness and intention. Bring enough for the full ceremony period." },
+  { label: "Sleep aid", note: "Iboga is a stimulant and sleep in the days following ceremony can be challenging. Consult with your doctor before arrival about a sleep aid or prescription support, and fill it in advance so you have it on hand." },
+];
+
+const ALL_ITEMS = [...PRACTICAL_ITEMS, ...SACRED_ITEMS, ...IBOGA_ITEMS];
 
 const ink = "#2C2416";
 const inkLight = "#5C5040";
@@ -156,16 +161,9 @@ export default function WhatToBringClient() {
           </div>
 
           <div style={{ background: goldBg, borderLeft: `3px solid ${gold}`, borderRadius: 8, padding: "20px 24px", marginBottom: 16 }}>
-            <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 500, marginBottom: 14, letterSpacing: "0.02em" }}>Iboga Journey</h3>
-            <ul style={{ listStyle: "none", display: "grid", gap: 14, padding: 0, margin: 0 }}>
-              <li style={{ fontSize: 14, lineHeight: 1.5 }}>
-                <span style={{ fontWeight: 600 }}>Comfortable all-white outfit</span>
-                <span style={{ display: "block", fontSize: 12.5, color: inkLight, fontStyle: "italic", marginTop: 3, lineHeight: 1.6 }}>White is worn as a reflection of openness and intention. Bring enough for the full ceremony period.</span>
-              </li>
-              <li style={{ fontSize: 14, lineHeight: 1.5 }}>
-                <span style={{ fontWeight: 600 }}>Sleep aid</span>
-                <span style={{ display: "block", fontSize: 12.5, color: inkLight, fontStyle: "italic", marginTop: 3, lineHeight: 1.6 }}>Iboga is a stimulant and sleep in the days following ceremony can be challenging. Consult with your doctor before arrival about a sleep aid or prescription support, and fill it in advance so you have it on hand.</span>
-              </li>
+            <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 500, marginBottom: 10, letterSpacing: "0.02em" }}>Iboga Journey</h3>
+            <ul style={{ listStyle: "none", display: "grid", gap: 2, padding: 0, margin: 0 }}>
+              {IBOGA_ITEMS.map((item, i) => renderItem(item, PRACTICAL_ITEMS.length + SACRED_ITEMS.length + i))}
             </ul>
           </div>
         </div>
