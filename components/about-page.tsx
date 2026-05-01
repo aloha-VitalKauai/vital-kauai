@@ -141,7 +141,7 @@ export function AboutPage() {
 
       {/* ── Hero ── */}
       <section className={styles.hero} id="hero">
-        <Image src="/images/about/hero-josh-rachel.jpg" alt="Josh & Rachel at Hanalei" fill sizes="100vw" className={styles.heroImg} priority />
+        <Image src="/images/rachjosh.jpg" alt="Josh & Rachel at Hanalei" fill sizes="100vw" className={styles.heroImg} priority style={{ objectFit: "cover", objectPosition: "center 20%" }} />
         <div className={styles.heroOverlay} />
         <div className={styles.heroContent}>
           <p className={styles.heroEyebrow}>The Hearts Behind the Work</p>
@@ -164,10 +164,7 @@ export function AboutPage() {
 
       {/* ── Meeting ── */}
       <section className={styles.meeting} id="meeting">
-        <div className={styles.meetingGrid}>
-          <div style={{ borderRadius: 8, overflow: "hidden", maxHeight: 500 }}>
-            <img src="/images/rachjosh.jpg" alt="Rachel & Josh at Hanalei" style={{ width: "100%", height: "100%", maxHeight: 500, objectFit: "cover", objectPosition: "center 20%", display: "block", borderRadius: 8 }} />
-          </div>
+        <div className={`${styles.meetingGrid} ${styles.meetingGridTextOnly}`}>
           <div className={styles.meetingText}>
             <p className={`${styles.eyebrow} ${styles.reveal}`}>Hanalei, Kaua&#699;i</p>
             <h2 className={`${styles.meetingTitle} ${styles.reveal}`}>

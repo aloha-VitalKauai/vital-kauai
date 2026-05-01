@@ -401,6 +401,11 @@
   align-items: center;
 }
 
+.meetingGridTextOnly {
+  grid-template-columns: 1fr;
+  max-width: 900px;
+}
+
 .meetingPhoto .imgPlaceholder {
   position: absolute;
   inset: 0;
