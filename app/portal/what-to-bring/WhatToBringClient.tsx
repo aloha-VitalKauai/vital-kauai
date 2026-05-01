@@ -157,11 +157,17 @@ export default function WhatToBringClient() {
           </div>
 
           <div style={{ background: goldBg, borderLeft: `3px solid ${gold}`, borderRadius: 8, padding: "20px 24px", marginBottom: 16 }}>
-            <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 500, marginBottom: 10, letterSpacing: "0.02em" }}>Iboga Journey</h3>
-            <p style={{ fontSize: 13.5, lineHeight: 1.65, color: inkLight }}>Please bring all-white clothing for ceremony. White is worn as a reflection of openness and intention, bring enough for the full ceremony period.</p>
-            <div style={{ marginTop: 16, background: "rgba(139,105,20,0.1)", borderLeft: `3px solid ${gold}`, borderRadius: 4, padding: "12px 16px", fontSize: 13.5, lineHeight: 1.65 }}>
-              Iboga is a stimulant and sleep in the days following ceremony can be challenging. Before your arrival, consult with your doctor about a sleep aid or prescription sleep support, and fill it in advance so you have it on hand.
-            </div>
+            <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 500, marginBottom: 14, letterSpacing: "0.02em" }}>Iboga Journey</h3>
+            <ul style={{ listStyle: "none", display: "grid", gap: 14, padding: 0, margin: 0 }}>
+              <li style={{ fontSize: 14, lineHeight: 1.5 }}>
+                <span style={{ fontWeight: 600 }}>Comfortable all-white outfit</span>
+                <span style={{ display: "block", fontSize: 12.5, color: inkLight, fontStyle: "italic", marginTop: 3, lineHeight: 1.6 }}>White is worn as a reflection of openness and intention. Bring enough for the full ceremony period.</span>
+              </li>
+              <li style={{ fontSize: 14, lineHeight: 1.5 }}>
+                <span style={{ fontWeight: 600 }}>Sleep aid</span>
+                <span style={{ display: "block", fontSize: 12.5, color: inkLight, fontStyle: "italic", marginTop: 3, lineHeight: 1.6 }}>Iboga is a stimulant and sleep in the days following ceremony can be challenging. Consult with your doctor before arrival about a sleep aid or prescription support, and fill it in advance so you have it on hand.</span>
+              </li>
+            </ul>
           </div>
         </div>
 
@@ -188,10 +194,10 @@ export default function WhatToBringClient() {
         </div>
 
         {/* Digital Detox */}
-        <div style={{ background: warmWhite, border: `1px solid ${border}`, borderRadius: 8, padding: "28px 32px", textAlign: "center" }}>
-          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 400, marginBottom: 12, letterSpacing: "0.03em" }}>A Note on Devices</h3>
-          <p style={{ fontSize: 13.5, color: inkLight, maxWidth: 540, margin: "0 auto", lineHeight: 1.75 }}>
-            We warmly encourage a digital detox for as much of your stay as feels right. The less you carry from the outside world, the more space opens for what you came here to receive.
+        <div style={{ background: goldBg, borderLeft: `3px solid ${gold}`, borderRadius: 8, padding: "20px 24px" }}>
+          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 500, marginBottom: 10, letterSpacing: "0.02em" }}>A Note on Devices</h3>
+          <p style={{ fontSize: 13.5, lineHeight: 1.65, color: inkLight }}>
+            We warmly encourage a digital detox for as much of your stay as feels right. We suggest only using your device when you need to call a loved one or visit your Vital Kauaʻi member portal.
           </p>
         </div>
       </div>
