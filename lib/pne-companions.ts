@@ -179,6 +179,12 @@ export const PNE_ADDITIONAL_RESOURCES: ReadonlyArray<PneAdditionalResource> = [
     status: "live",
   },
   {
+    title: "Packing Guide",
+    description: "What to bring for your journey with us, practical and intentional.",
+    href: "/portal/what-to-bring",
+    status: "live",
+  },
+  {
     title: "Ceremony Day Guide",
     description: "A walkthrough of the day itself — flow, support, what to bring close.",
     href: "/portal/pne",
