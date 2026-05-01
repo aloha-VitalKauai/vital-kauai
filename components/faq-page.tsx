@@ -285,7 +285,7 @@ export function FaqPage() {
         </h2>
         <p className={styles.membershipBody}>
           Every inquiry is read personally by Rachel and Josh. If something specific is on your
-          mind, the discovery call is where the real conversation begins.
+          mind, the discovery call is where we begin.
         </p>
         <Link href="/begin-your-journey" className={styles.btnPrimary}>
           Begin the Journey
