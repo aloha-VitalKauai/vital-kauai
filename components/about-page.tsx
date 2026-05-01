@@ -304,7 +304,7 @@ export function AboutPage() {
             That experience re-oriented me. Everything I had trained in across three decades&mdash;naturopathic medicine, transpersonal psychology, consciousness and spirituality, Tantra and other Eastern wisdom traditions, mind-body nutrition, energy work, life coaching, hypnotherapy, and more wove together into this work.
           </p>
           <p className={styles.storyPara}>
-            My deepest passion is holding space for couples, helping them find their way back to themselves first, and meet each other with fresh eyes and hearts, to feel truly safe, loved, and seen in one another&apos;s presence. I know what it is to lose that thread, and I know what it takes to find it again.
+            What I love most is helping couples come home to themselves, then to each other&mdash;meeting with fresh eyes and feeling genuinely safe, loved, and seen. I know what it is to lose that thread, and I know what it takes to find it again.
           </p>
           <p className={styles.storyPara}>
             I&apos;ve learned so much from my own surrender, to Spirit, to the unknown, to the medicine, and to love. That&apos;s what I bring into every space I hold. The ceremonies I&apos;m blessed to guide are known to be powerful, trustworthy, and radically transformative, weaving intention, play, and grounded spirituality into an experience that meets each person exactly where they are. I am so grateful to be of service to others&apos; awakening and homecoming, in this place, with the people I love, doing the work I was born for.
