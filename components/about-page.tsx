@@ -292,7 +292,7 @@ export function AboutPage() {
             <em>Nelson</em>
           </h2>
           <p className={styles.storyPara}>
-            Growing up as a dedicated athlete, I understood the body as a vehicle for excellence, the focus, the discipline, the endless refinement of technique. But beneath that drive, I was quietly losing myself.
+            Growing up as a dedicated athlete, I understood the body as a vehicle for excellence, the focus, the discipline, and the endless refinement of technique. But beneath that drive, I was quietly losing myself.
           </p>
           <p className={styles.storyPara}>
             I followed a path of success in a corporate career that hollowed my soul and was met with a debilitating autoimmune condition. And then the completion of a seventeen-year relationship, the greatest unraveling of my life, left me a single mother. I was carrying the weight of what felt like failure and resentment.
