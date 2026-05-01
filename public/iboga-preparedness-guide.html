@@ -155,10 +155,11 @@ body {
 .section-deep { background: var(--deep); border-bottom-color: rgba(255,255,255,0.03); }
 
 .eyebrow {
-  font-size: 9px;
-  letter-spacing: 0.42em;
+  font-size: 11.5px;
+  letter-spacing: 0.38em;
   text-transform: uppercase;
   color: var(--gold);
+  font-weight: 600;
   display: block;
   margin-bottom: 14px;
 }
@@ -392,10 +393,11 @@ body {
 }
 .phase-meta { flex: 1; }
 .phase-timing {
-  font-size: 8.5px;
+  font-size: 11px;
   letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--sage);
+  font-weight: 600;
   margin-bottom: 6px;
   display: block;
 }
@@ -916,6 +918,8 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
   <h2 class="section-heading">Medical Preparation &amp; <em>Contraindications</em></h2>
   <p class="section-intro">Iboga is a powerful medicine and approaches its full power when the body is properly prepared and screened. Thorough medical preparation is one of the most important gifts you can give yourself and your journey. We take this with complete seriousness, and we ask you to as well.</p>
 
+  <p style="font-size:14px;color:var(--text-mid);line-height:1.85;max-width:720px;margin:-32px 0 52px;">Schedule your required medical appointments and labs in <strong style="color:var(--text-dark);font-weight:600;">Week 2</strong> of your portal preparation. Our Physician Reference Guide is written for your doctor, share it directly with their office. <a href="/portal/physician-guide" style="color:var(--sage);text-decoration:underline;text-underline-offset:3px;font-weight:500;">Open the Physician Reference Guide →</a></p>
+
   <div class="safety-layout reveal">
 
     <div>
@@ -972,12 +976,7 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
   <h2 class="section-heading">Before Your <em>Ceremony</em></h2>
   <p class="section-intro">Your preparation is the foundation everything else rests on. Iboga works most powerfully when the body is already clear, the nervous system is regulated, and the inner landscape has been consciously tended. Give this phase the attention it deserves.</p>
 
-  <div style="background:rgba(122,158,126,0.06);border-left:2px solid var(--sage);padding:22px 28px;max-width:760px;margin-bottom:36px;">
-    <span style="font-size:8.5px;letter-spacing:0.32em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:8px;">A Note on Diet</span>
-    <p style="font-size:14px;color:var(--text-mid);line-height:1.9;">Iboga's preparation is gentler in its dietary demands than many plant medicines. We ask that you begin moving toward cleaner, simpler eating, whole foods, lighter meals, less alcohol and processed food, in the weeks before you arrive. Think of it as tending the vessel. Your body will thank you, and the medicine will meet you more clearly. <a href="/portal/dietary" style="color:var(--sage);text-decoration:underline;text-underline-offset:3px;">Read the full Dietary Guide →</a></p>
-  </div>
-
-  <div class="phase-block reveal">
+  <div id="preparing-body" class="phase-block reveal" style="scroll-margin-top:80px;">
     <div class="phase-header">
       <p class="phase-num">01</p>
       <div class="phase-meta">
@@ -985,26 +984,16 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
         <h3 class="phase-title">Preparing the <em>Body</em></h3>
       </div>
     </div>
-    <div class="phase-body-area">
+    <div class="phase-body-area" style="grid-template-columns:1fr;">
       <div>
-        <span class="phase-col-title">Physical Preparation</span>
-        <div class="phase-item">Begin the dietary preparation protocol, clean, anti-inflammatory, nutrient-dense. Your full dietary guide is available in your member portal.</div>
-        <div class="phase-item">Support your gut microbiome and liver health throughout. If you are interested in deeper gut healing protocols, including liver and gallbladder cleanse or extended fasting, reach out to us directly and we can guide you.</div>
-        <div class="phase-item">Complete all necessary medical labs (see Safety section above)</div>
-        <div class="phase-item">Clear all contraindicated medications and supplements per protocol timeline, under physician guidance</div>
-        <div class="phase-item"><span style="display:block;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:3px;">Cannabis · 2 weeks prior</span>Clear completely. Cannabis can intensify disorientation and confusion during ceremony.</div>
-        <div class="phase-item"><span style="display:block;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:3px;">Caffeine · taper from 7 days prior</span>Reduce by half at 5–6 days out and eliminate fully by 3 days before ceremony. Withdrawal headaches are best behind you before you arrive.</div>
-      </div>
-      <div>
-        <span class="phase-col-title">Supplementation to Begin</span>
-        <div class="phase-item">DHA + EPA and magnesium glycinate daily, supports new synaptic connection formation, neuronal signaling, and nervous system regulation. Continue through and after ceremony.</div>
-        <div class="phase-item">Any additional supplements confirmed with your care team</div>
-        <div class="phase-item">Consider acupuncture, massage, reiki, or craniosacral sessions during this phase</div>
+        <p style="font-size:14.5px;color:var(--text-mid);line-height:1.9;margin-bottom:22px;max-width:720px;">Iboga's preparation is gentler in its dietary demands than many plant medicines. We ask that you begin moving toward cleaner, simpler eating, whole foods, lighter meals, less alcohol and processed food, in the weeks before you arrive. Think of it as tending the vessel. Your body will thank you, and the medicine will meet you more clearly. <a href="/portal/dietary" style="color:var(--sage);text-decoration:underline;text-underline-offset:3px;font-weight:500;">Read the full Dietary Guide →</a></p>
+        <div class="phase-item">Begin supplements as guided by your physician.</div>
+        <div class="phase-item">Bodywork — acupuncture, massage, reiki, or craniosacral — supports the body as it prepares.</div>
       </div>
     </div>
   </div>
 
-  <div class="phase-block reveal">
+  <div id="preparing-inner" class="phase-block reveal" style="scroll-margin-top:80px;">
     <div class="phase-header">
       <p class="phase-num">02</p>
       <div class="phase-meta">
@@ -1012,43 +1001,11 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
         <h3 class="phase-title">Preparing the <em>Inner Landscape</em></h3>
       </div>
     </div>
-    <div class="phase-body-area">
+    <div class="phase-body-area" style="grid-template-columns:1fr;">
       <div>
-        <span class="phase-col-title">Daily Practices</span>
-        <div class="phase-item">Coherent Heart Breath, 10 minutes each morning, daily. Full practice instructions are in your Nervous System Guide in the member portal.</div>
-        <div class="phase-item">Daily journaling, 10 minutes each morning, stream of consciousness. Use the journal prompts in your member portal to deepen your intentions.</div>
-        <div class="phase-item">Prepare your specific questions for the medicine, what you are seeking, what you are ready to meet, what you are asking to be shown.</div>
-        <div class="phase-item">Visualization, see and feel your healed, whole self vividly and often</div>
-        <div class="phase-item">Arrive with openness and presence, ahead of any fixed expectation. The most useful posture is simply: <em>I am willing to see the truth.</em></div>
+        <p style="font-size:14.5px;color:var(--text-mid);line-height:1.9;margin-bottom:18px;max-width:720px;">You'll move through Weeks 1–6 of your preparation in the member portal: calls with Rachel and Josh, work with your integration guide, and daily practices that build safety and presence in your body and mind. Open the portal each week and follow what's in front of you, the path is laid out one step at a time.</p>
+        <p style="font-size:14.5px;color:var(--text-mid);line-height:1.9;margin-bottom:22px;max-width:720px;"><a href="/portal/integration/pre-ceremony" style="color:var(--sage);text-decoration:underline;text-underline-offset:3px;font-weight:500;">Open your Pre-Ceremony portal →</a></p>
         <div class="phase-item" style="border-left:2px solid var(--sage);padding-left:14px;background:rgba(122,158,126,0.05);color:var(--text-dark);">As you move through your preparation, emotions may surface with greater intensity, old memories, unexpected heaviness, dreams that arrive more vividly. This is the medicine already in relationship with you. Iboga is intelligent and relational; it begins its work the moment you say yes. Meet what arises with gentleness and curiosity. The intensity is part of the opening.</div>
-      </div>
-      <div>
-        <span class="phase-col-title">Somatic &amp; Relational Prep</span>
-        <div class="phase-item">Learn to identify, access, and safely process emotions and somatic imprints, your Integration Guide will support this</div>
-        <div class="phase-item">Practice self-sourcing safety, the felt sense of regulation in the body</div>
-        <div class="phase-item">Identify your personal support team and share the Support Person Guide with them, available in your member portal</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="phase-block reveal">
-    <div class="phase-header">
-      <p class="phase-num">03</p>
-      <div class="phase-meta">
-        <span class="phase-timing">Preparation Calls · Scheduled with Your Care Team</span>
-        <h3 class="phase-title">Your Care Team <em>Preparation</em></h3>
-      </div>
-    </div>
-    <div class="phase-body-area">
-      <div>
-        <div class="phase-item">Your care team will schedule preparation calls with you throughout this phase. Bring your questions and whatever is arising.</div>
-      </div>
-      <div>
-        <span class="phase-col-title">With Your Integration Guide</span>
-        <div class="phase-item">Somatic and therapeutic preparation, learning to access and move through what arises in the body</div>
-        <div class="phase-item">Deepening your intentions and clarifying the specific questions you are bringing to the medicine</div>
-        <div class="phase-item">Refining your inner landscape, identifying what most needs attention in the weeks before arrival</div>
-        <div class="phase-item">Building the somatic foundation for integration before ceremony begins</div>
       </div>
     </div>
   </div>
@@ -1057,96 +1014,9 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
 <!-- collapsible styles for countdown -->
 
 <section id="final-seven" class="section section-cream" style="padding-top:0;border-top:none;">
-  <span class="eyebrow">Reference · The Final 7 Days</span>
-  <h2 class="section-heading">The Final <em>7 Days</em></h2>
-
-  <div class="phase-block reveal">
-    <div class="phase-header">
-      <p class="phase-num" style="font-size:28px;">7</p>
-      <div class="phase-meta">
-        <span class="phase-timing">7 Days Before</span>
-        <h3 class="phase-title">Substances &amp; <em>Hydration</em></h3>
-      </div>
-    </div>
-    <div class="phase-body-area">
-      <div>
-        <div class="phase-item">Stop all high-risk substances: alcohol, recreational drugs, stimulants (cocaine, amphetamines), MDMA, microdosing psychedelics</div>
-        <div class="phase-item">Clear all contraindicated medications under physician guidance, SSRI clearance timelines vary by medication: some clear in 5–14 days, while others (particularly fluoxetine) require 4–8 weeks. Your physician will advise based on your specific prescription</div>
-        <div class="phase-item">Begin active hydration: electrolytes, coconut water, mineral water</div>
-        <div class="phase-item">Begin reducing caffeine</div>
-        <div class="phase-item">Begin tapering nicotine if applicable, ideally clear by ceremony day</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="phase-block reveal">
-    <div class="phase-header">
-      <p class="phase-num" style="font-size:28px;">5–6</p>
-      <div class="phase-meta">
-        <span class="phase-timing">5–6 Days Before</span>
-        <h3 class="phase-title">Clean Diet <em>Begins</em></h3>
-      </div>
-    </div>
-    <div class="phase-body-area">
-      <div>
-        <div class="phase-item">Reduce caffeine by half, if you drink 2–3 coffees daily, move to 1. Energy drinks stop now.</div>
-        <div class="phase-item">Begin clean diet: fresh vegetables, fruit, simple proteins (fish, eggs, legumes), rice, quinoa, root vegetables</div>
-        <div class="phase-item">Reduce processed foods, heavy fried foods, and excess sugar</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="phase-block reveal">
-    <div class="phase-header">
-      <p class="phase-num" style="font-size:28px;">4</p>
-      <div class="phase-meta">
-        <span class="phase-timing">4 Days Before</span>
-        <h3 class="phase-title">Lighten <em>Digestion</em></h3>
-      </div>
-    </div>
-    <div class="phase-body-area">
-      <div>
-        <div class="phase-item">Lighten digestion: soups, steamed vegetables, rice or quinoa, fruit, light protein</div>
-        <div class="phase-item">Reduce fatty meals, large portions, red meat</div>
-        <div class="phase-item">Many traditions view this as clearing energetic density in the body, the physical and the subtle are connected here</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="phase-block reveal">
-    <div class="phase-header">
-      <p class="phase-num" style="font-size:28px;">3</p>
-      <div class="phase-meta">
-        <span class="phase-timing">3 Days Before</span>
-        <h3 class="phase-title">Slow Down &amp; <em>Go Inward</em></h3>
-      </div>
-    </div>
-    <div class="phase-body-area">
-      <div>
-        <div class="phase-item">Eliminate caffeine completely, coffee, espresso, energy drinks, pre-workout stimulants. Mild green tea is sometimes tolerated earlier but ideally stop all caffeine by now.</div>
-        <div class="phase-item">Slow down. This is preparation. Minimize devices, phones, screens, social media. Step back from demanding social obligations. Let the rhythm of your life quiet down.</div>
-        <div class="phase-item">Spend time in nature daily, walking, sitting by water, barefoot on the earth. Let the outer stillness support the inner one.</div>
-        <div class="phase-item">Turn toward self-inquiry: journal, sit quietly, revisit your questions for the medicine. The more settled you arrive, the more clearly the medicine can speak.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="phase-block reveal">
-    <div class="phase-header">
-      <p class="phase-num" style="font-size:24px;">48h</p>
-      <div class="phase-meta">
-        <span class="phase-timing">48 Hours Before</span>
-        <h3 class="phase-title">Very Clean <em>Diet</em></h3>
-      </div>
-    </div>
-    <div class="phase-body-area">
-      <div>
-        <div class="phase-item">Very clean diet: vegetables, fruit, rice, light soups, small portions</div>
-        <div class="phase-item">Continue electrolytes, coconut water, mineral water, light herbal teas</div>
-        <div class="phase-item">Keep meals light, heavy fats, fried food, and processed sugar stay off the plate</div>
-      </div>
-    </div>
-  </div>
+  <span class="eyebrow">Reference · The Days Before</span>
+  <h2 class="section-heading">The Days <em>Before</em></h2>
+  <p class="section-intro">In the days leading up to ceremony, slow down. Step back from screens and social obligations. Spend time outdoors. Let the rhythm of your life quiet so the medicine has somewhere clear to land.</p>
 
   <div class="phase-block reveal">
     <div class="phase-header">
