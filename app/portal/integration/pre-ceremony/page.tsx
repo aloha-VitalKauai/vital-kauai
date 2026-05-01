@@ -1147,7 +1147,7 @@ export default function PreCeremonyPage() {
               <p className="w1-autosave">(Your writing saves automatically as you type. You can return any time to continue.)</p>
               {promptsForWeek(i, w.prompts).map((p, pi) => (
                 <div className="w1-prompt" key={p.key}>
-                  <span className="w1-prompt-num">0{pi + 1}</span>
+                  <span className="w1-prompt-num">{pi + 1}</span>
                   <p className="w1-prompt-q">{p.q}</p>
                   {p.hint && <p className="w1-prompt-hint">{p.hint}</p>}
                   <textarea
