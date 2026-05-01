@@ -307,7 +307,7 @@ export function AboutPage() {
             My deepest passion is holding space for couples, helping them find their way back to themselves first, and meet each other with fresh eyes and hearts, to feel truly safe, loved, and seen in one another&apos;s presence. I know what it is to lose that thread, and I know what it takes to find it again.
           </p>
           <p className={styles.storyPara}>
-            I&apos;ve learned so much from my own surrender, to Spirit, to the unknown, to the medicine, to love. That&apos;s what I bring into every space I hold. The ceremonies I&apos;m blessed to guide are known to be powerful, trustworthy, and radically transformative, weaving intention, play, and grounded spirituality into an experience that meets each person exactly where they are. I am so grateful to be of service to others&apos; awakening and homecoming, in this place, with the people I love, doing the work I was born for.
+            I&apos;ve learned so much from my own surrender, to Spirit, to the unknown, to the medicine, and to love. That&apos;s what I bring into every space I hold. The ceremonies I&apos;m blessed to guide are known to be powerful, trustworthy, and radically transformative, weaving intention, play, and grounded spirituality into an experience that meets each person exactly where they are. I am so grateful to be of service to others&apos; awakening and homecoming, in this place, with the people I love, doing the work I was born for.
           </p>
           <div className={styles.pullPlaceholder}>
             <p>&ldquo;I carried an ancestral wound for decades, never quite finding the courage to face it. It was in the space you facilitated that something finally shifted. I was able to free myself! I am forever grateful for all the teachings you shared. Rachel, you have a magic that unlocked something deep in me.&rdquo;</p>
@@ -327,7 +327,7 @@ export function AboutPage() {
       <section className={styles.close} id="close">
         <p className={`${styles.closeEyebrow} ${styles.reveal}`}>An Invitation</p>
         <blockquote className={`${styles.closeQuote} ${styles.reveal}`}>
-          We offer what we have genuinely walked, the full arc of healing, coming home to the
+          We offer what we have genuinely walked, the full circle of healing, coming home to the
           body, and living in devotion to this work and to each other.
         </blockquote>
         <p className={`${styles.closeBody} ${styles.reveal}`}>
