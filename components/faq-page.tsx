@@ -66,7 +66,7 @@ const FAQ_SECTIONS: FaqSection[] = [
       {
         question: "What does the discovery call look like?",
         answer:
-          "The first step is a discovery call, a real conversation with Rachel and/or Josh, bookable directly through our Calendly. We want to understand what brings you here, what you are carrying, your health history, and what support will serve you best. This is how we begin to know you, so that the container we hold for you is built for who you actually are.",
+          "The first step is a discovery call with Rachel and/or Josh, bookable directly through our Calendly. We want to understand what brings you here, what you are carrying, your health history, and what support will serve you best. This is how we begin to know you, so that the container we hold for you is built for who you actually are.",
       },
       {
         question: "Can I bring a partner or travel companion?",
