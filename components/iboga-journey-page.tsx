@@ -245,46 +245,42 @@ export function IbogaJourneyPage() {
           </div>
         </div>
 
-        <blockquote className={styles.comparisonQuote}>
-          <p>
-            &ldquo;Ibogaine is like seeing the color red. Whole-plant Iboga root bark is seeing the
-            entire rainbow.&rdquo;
-          </p>
-          <p style={{ marginTop: 12, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "#3d3d38", fontWeight: 500, fontStyle: "normal" }}>
-            — Troy Valencia, Root &amp; Wisdom
-          </p>
-        </blockquote>
-
-        <div className={styles.comparisonTable}>
-          <h3 className={styles.comparisonTableTitle}>
-            Understanding the Medicine, Iboga Root Bark vs. Ibogaine
+        <div className={styles.medicineComparison}>
+          <span className={styles.comparisonEyebrowMain}>Understanding the Medicine</span>
+          <h3 className={styles.medicineComparisonTitle}>
+            Iboga Root Bark <em className={styles.medicineComparisonAnd}>&amp;</em> Ibogaine
           </h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Iboga Root Bark (Whole Plant)</th>
-                <th>Ibogaine (Isolated Alkaloid)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Full-spectrum whole plant, all alkaloids intact</td>
-                <td>Single isolated alkaloid</td>
-              </tr>
-              <tr>
-                <td>Slower, titrated onset, gradual, conscious unfolding</td>
-                <td>Fast onset, more abrupt</td>
-              </tr>
-              <tr>
-                <td>Deep somatic, visionary &amp; autobiographical processing</td>
-                <td>Less access to plant intelligence &amp; spirit</td>
-              </tr>
-              <tr>
-                <td>Buffered cardiovascular effect</td>
-                <td>Stronger cardiotoxic profile, can prolong QT interval</td>
-              </tr>
-            </tbody>
-          </table>
+          <p className={styles.medicineComparisonSub}>Two ways the plant has come to the West.</p>
+
+          <div className={styles.comparisonPair}>
+            <article className={`${styles.comparisonCard} ${styles.comparisonCardSage}`}>
+              <span className={styles.comparisonCardKicker}>Whole Plant</span>
+              <h4 className={styles.comparisonCardTitle}>Iboga Root Bark</h4>
+              <p className={styles.comparisonCardLede}>The full intelligence of the plant, intact.</p>
+              <ul className={styles.comparisonAttributes}>
+                <li>Full-spectrum whole plant, all alkaloids intact</li>
+                <li>Slower, titrated onset &mdash; a gradual, conscious unfolding</li>
+                <li>Deep somatic, visionary, and autobiographical processing</li>
+                <li>Buffered cardiovascular effect</li>
+              </ul>
+            </article>
+
+            <div className={styles.comparisonDivider} aria-hidden>
+              <span className={styles.comparisonDividerOrnament} />
+            </div>
+
+            <article className={`${styles.comparisonCard} ${styles.comparisonCardGold}`}>
+              <span className={styles.comparisonCardKicker}>Isolated Alkaloid</span>
+              <h4 className={styles.comparisonCardTitle}>Ibogaine</h4>
+              <p className={styles.comparisonCardLede}>A single thread, separated from the whole.</p>
+              <ul className={styles.comparisonAttributes}>
+                <li>Single isolated alkaloid</li>
+                <li>Fast onset, more abrupt</li>
+                <li>Less access to plant intelligence and spirit</li>
+                <li>Stronger cardiotoxic profile; can prolong QT interval</li>
+              </ul>
+            </article>
+          </div>
         </div>
       </section>
 
