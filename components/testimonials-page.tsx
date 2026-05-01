@@ -206,15 +206,6 @@ export function TestimonialsPage() {
         </div>
       </section>
 
-      {/* Breadcrumb */}
-      <div className={styles.breadcrumb}>
-        <Link href="/">Home</Link>
-        <span className={styles.sep}>›</span>
-        <Link href="/about">About</Link>
-        <span className={styles.sep}>›</span>
-        <span className={styles.current}>Testimonials</span>
-      </div>
-
       {/* Video Testimonials */}
       <section className={styles.darkBand}>
         <div className={styles.sectionInnerWide}>
