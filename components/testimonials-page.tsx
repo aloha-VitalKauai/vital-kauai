@@ -200,8 +200,7 @@ export function TestimonialsPage() {
           </h1>
           <div className={styles.heroRule} />
           <p className={styles.heroSub}>
-            Stories from members who have walked this work. Watch their reflections, read their
-            words. What lives here is offered with gratitude, in their own voice.
+            Stories from members who have walked this path.
           </p>
         </div>
       </section>
