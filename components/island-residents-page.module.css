@@ -178,7 +178,7 @@
 .footerBrand { font-family: var(--font-display), serif; font-size: 24px; letter-spacing: 0.12em; color: var(--cream); margin-bottom: 16px; }
 .footerTagline { font-size: 14px; line-height: 1.7; max-width: 320px; margin-bottom: 18px; }
 .footerAddress { font-size: 12px; white-space: pre-line; line-height: 1.7; opacity: 0.6; }
-.footerCol h4 { font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); margin: 0 0 18px; }
+.footerCol h4 { font-size: 12px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); margin: 0 0 18px; }
 .footerLinks { list-style: none; margin: 0; padding: 0; }
 .footerLinks li { margin-bottom: 12px; }
 .footerLinks a { font-size: 13px; color: rgba(245, 240, 232, 0.7); text-decoration: none; transition: color 0.3s; }

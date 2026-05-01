@@ -251,7 +251,7 @@
 }
 
 .eyebrow {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.35em;
   text-transform: uppercase;
   color: var(--gold);
@@ -427,7 +427,7 @@
 }
 
 .policyNav p {
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gold);
@@ -489,7 +489,7 @@
 }
 
 .policiesBar h4 {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--gold);
@@ -576,7 +576,7 @@
 }
 
 .footerCol h4 {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--gold);
