@@ -333,7 +333,7 @@ export function AboutPage() {
         <p className={`${styles.closeBody} ${styles.reveal}`}>
           Together we hold a rare dual intelligence, the feminine and masculine, the ancient
           and the visionary, the deeply personal and the rigorously trained. Vital Kaua&#699;i is the
-          natural expression of the life we are living.
+          natural expression of our lives&apos; journeys.
         </p>
         <a href="/begin-your-journey" target="_blank" rel="noopener noreferrer" className={`${styles.closeCta} ${styles.reveal}`}>
           Begin the Journey
