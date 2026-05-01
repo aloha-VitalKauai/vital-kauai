@@ -826,6 +826,11 @@ export default function PostCeremonyPage() {
       setUserId(user.id)
       setUserEmail(user.email ?? '')
 
+      // #week-N (from the nav dropdown) forces a specific week so the resume
+      // logic below doesn't overwrite the deep-link selection.
+      const hashMatch = /^#week-([1-6])$/.exec(window.location.hash)
+      const hashWeek = hashMatch ? Number(hashMatch[1]) - 1 : null
+
       const { data } = await supabase
         .from('post_ceremony_progress')
         .select('*')
@@ -837,8 +842,14 @@ export default function PostCeremonyPage() {
         setChecklist(data.checklist_items ?? {})
         setWeeklyTracking(data.weekly_tracking ?? {})
         setJournal(data.journal_responses ?? {})
-        const next = [0,1,2,3,4,5].find(w => !done.has(w))
-        setActiveWeek(next !== undefined ? next : 5)
+        if (hashWeek !== null) {
+          setActiveWeek(hashWeek)
+        } else {
+          const next = [0,1,2,3,4,5].find(w => !done.has(w))
+          setActiveWeek(next !== undefined ? next : 5)
+        }
+      } else if (hashWeek !== null) {
+        setActiveWeek(hashWeek)
       }
       setLoading(false)
     }
