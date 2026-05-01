@@ -474,7 +474,7 @@ nav.scrolled {
 }
 .homes-text .section-title { color: var(--text-dark); }
 .homes-body {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-mid);
   line-height: 2.0;
   margin-bottom: 20px;
@@ -518,7 +518,7 @@ nav.scrolled {
   padding-bottom: 8px;
 }
 .gallery-header-right p {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-mid);
   line-height: 2.0;
   font-weight: 300;
@@ -599,7 +599,7 @@ nav.scrolled {
   line-height: 1.2;
 }
 .included-body {
-  font-size: 13px;
+  font-size: 15px;
   color: rgba(245,240,232,0.6);
   line-height: 1.9;
 }
@@ -640,7 +640,7 @@ nav.scrolled {
 }
 .setting-text .section-title { color: var(--text-dark); }
 .setting-body {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-mid);
   line-height: 2.0;
   margin-bottom: 18px;
@@ -673,7 +673,7 @@ nav.scrolled {
   text-transform: uppercase;
 }
 .setting-feature-desc {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--stone);
   line-height: 1.7;
 }
@@ -696,7 +696,7 @@ nav.scrolled {
 }
 .experience-header .section-title { color: var(--text-dark); }
 .experience-header p {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-mid);
   line-height: 2.0;
   font-weight: 300;
@@ -740,7 +740,7 @@ nav.scrolled {
   line-height: 1.25;
 }
 .day-body {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--text-mid);
   line-height: 1.9;
 }
@@ -759,7 +759,7 @@ nav.scrolled {
 .community-text .section-title { color: var(--cream); }
 .community-text .section-title em { color: var(--terra-pale); }
 .community-body {
-  font-size: 14px;
+  font-size: 15px;
   color: rgba(245,240,232,0.68);
   line-height: 2.0;
   margin-bottom: 18px;
@@ -779,7 +779,7 @@ nav.scrolled {
   background: rgba(184,105,74,0.06);
 }
 .community-note p {
-  font-size: 13px;
+  font-size: 15px;
   color: rgba(245,240,232,0.6);
   line-height: 1.85;
 }
@@ -816,7 +816,7 @@ nav.scrolled {
   margin-bottom: 24px;
 }
 .bc-body {
-  font-size: 13px;
+  font-size: 15px;
   color: rgba(245,240,232,0.62);
   line-height: 1.9;
   margin-bottom: 28px;
@@ -877,7 +877,7 @@ nav.scrolled {
 }
 .faq-header .section-title { color: var(--text-dark); }
 .faq-header p {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-mid);
   line-height: 2.0;
   font-weight: 300;
@@ -944,7 +944,7 @@ nav.scrolled {
   max-width: 780px;
 }
 .faq-answer p {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-mid);
   line-height: 2.0;
   font-weight: 300;
@@ -972,7 +972,7 @@ nav.scrolled {
 }
 .intake-title em { font-style: italic; color: var(--terra-pale); }
 .intake-body {
-  font-size: 14px;
+  font-size: 15px;
   color: rgba(245,240,232,0.62);
   line-height: 1.95;
   margin-bottom: 44px;
@@ -1056,7 +1056,7 @@ footer {
 }
 .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
 .footer-links a {
-  font-size: 13px;
+  font-size: 15px;
   color: rgba(245,240,232,0.5);
   text-decoration: none;
   transition: color 0.3s;
@@ -1223,7 +1223,7 @@ const BODY_CONTENT = `
   <div style="margin-bottom:48px;">
     <span class="section-label reveal">The Setting</span>
     <h2 class="section-title reveal" style="color:var(--text-dark);">Hanalei —<br><em>Your Backyard</em></h2>
-    <p class="reveal" style="font-size:14px;color:var(--text-mid);line-height:2.0;font-weight:300;max-width:640px;margin-top:16px;">This is where you will wake up. The bay, the mountains, the rivers, all of it within walking distance, woven into every day of your stay.</p>
+    <p class="reveal" style="font-size:15px;color:var(--text-mid);line-height:2.0;font-weight:300;max-width:640px;margin-top:16px;">This is where you will wake up. The bay, the mountains, the rivers, all of it within walking distance, woven into every day of your stay.</p>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
     <div class="gallery-item" style="height:360px;grid-row:span 2;" >
@@ -1329,7 +1329,7 @@ const BODY_CONTENT = `
     <div style="margin-bottom:64px;">
       <span class="section-label reveal">What to Expect</span>
       <h2 class="section-title reveal" style="color:var(--text-dark);">Seven Days.<br><em>One Arc.</em></h2>
-      <p class="reveal" style="font-size:14px;color:var(--text-mid);line-height:2.0;font-weight:300;max-width:560px;margin-top:16px;">Two days of preparation, one day of ceremony, three days of integration, and a closing. Each phase has its own rhythm.</p>
+      <p class="reveal" style="font-size:15px;color:var(--text-mid);line-height:2.0;font-weight:300;max-width:560px;margin-top:16px;">Two days of preparation, one day of ceremony, three days of integration, and a closing. Each phase has its own rhythm.</p>
     </div>
 
     <div style="display:flex;flex-direction:column;position:relative;">
@@ -1348,7 +1348,7 @@ const BODY_CONTENT = `
             <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Arrival</span>
           </div>
           <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Arriving & Settling In</h3>
-          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">Your home is ready. A nourishing meal, an orientation, and the chance to feel what it is like to be here.</p>
+          <p style="font-size:15px;color:var(--text-mid);line-height:1.85;">Your home is ready. A nourishing meal, an orientation, and the chance to feel what it is like to be here.</p>
         </div>
       </div>
 
@@ -1363,7 +1363,7 @@ const BODY_CONTENT = `
             <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Preparation</span>
           </div>
           <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Time on the Land & in the Water</h3>
-          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">Time in nature, on the bay, in the rivers, a guided walk along the Nā Pali Coast. Body and spirit readied for what follows.</p>
+          <p style="font-size:15px;color:var(--text-mid);line-height:1.85;">Time in nature, on the bay, in the rivers, a guided walk along the Nā Pali Coast. Body and spirit readied for what follows.</p>
         </div>
       </div>
 
@@ -1378,7 +1378,7 @@ const BODY_CONTENT = `
             <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Ceremony</span>
           </div>
           <h3 style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">The Iboga Ceremony</h3>
-          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">The heart of the journey. You enter with intention. You leave having been met by the medicine, changed at the root.</p>
+          <p style="font-size:15px;color:var(--text-mid);line-height:1.85;">The heart of the journey. You enter with intention. You leave having been met by the medicine, changed at the root.</p>
         </div>
       </div>
 
@@ -1393,7 +1393,7 @@ const BODY_CONTENT = `
             <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Integration</span>
           </div>
           <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Rest & Receiving</h3>
-          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">The day after ceremony is for rest. The medicine is still moving. We hold you close.</p>
+          <p style="font-size:15px;color:var(--text-mid);line-height:1.85;">The day after ceremony is for rest. The medicine is still moving. We hold you close.</p>
         </div>
       </div>
 
@@ -1408,7 +1408,7 @@ const BODY_CONTENT = `
             <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Integration</span>
           </div>
           <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Land & Reflection</h3>
-          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">Nature, somatic integration sessions with your guide, and the quiet where the deeper layers begin to settle and clarify.</p>
+          <p style="font-size:15px;color:var(--text-mid);line-height:1.85;">Nature, somatic integration sessions with your guide, and the quiet where the deeper layers begin to settle and clarify.</p>
         </div>
       </div>
 
@@ -1423,7 +1423,7 @@ const BODY_CONTENT = `
             <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Integration</span>
           </div>
           <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Embodying the Shift</h3>
-          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">Movement, community, and mapping the path forward into the life waiting for you.</p>
+          <p style="font-size:15px;color:var(--text-mid);line-height:1.85;">Movement, community, and mapping the path forward into the life waiting for you.</p>
         </div>
       </div>
 
@@ -1438,7 +1438,7 @@ const BODY_CONTENT = `
             <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Return</span>
           </div>
           <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Closing & Going Home</h3>
-          <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">A closing ceremony and a gentle transition, carried by what Iboga opened in you and what Kauaʻi gave you.</p>
+          <p style="font-size:15px;color:var(--text-mid);line-height:1.85;">A closing ceremony and a gentle transition, carried by what Iboga opened in you and what Kauaʻi gave you.</p>
         </div>
       </div>
 
@@ -1454,7 +1454,7 @@ const BODY_CONTENT = `
     <div style="margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid rgba(184,105,74,0.15);">
       <span class="section-label reveal" style="margin-bottom:6px;">Regenerative Visitorship</span>
       <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(22px,2.5vw,34px);font-weight:300;color:var(--text-dark);line-height:1.15;margin-bottom:14px;" class="reveal">The Living <em style="font-style:italic;color:var(--terra);">ʻĀina</em></h2>
-      <p class="reveal" style="font-size:13px;color:var(--stone);line-height:1.85;max-width:680px;font-weight:300;">For those who feel called, there is an option to visit or volunteer at one of these places and give back to the land that holds you. These organizations welcome hands and open hearts.</p>
+      <p class="reveal" style="font-size:15px;color:var(--stone);line-height:1.85;max-width:680px;font-weight:300;">For those who feel called, there is an option to visit or volunteer at one of these places and give back to the land that holds you. These organizations welcome hands and open hearts.</p>
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(184,105,74,0.1);overflow:hidden;" class="reveal">
@@ -1508,7 +1508,7 @@ const BODY_CONTENT = `
   <div style="max-width:860px;margin:0 auto;">
     <span class="section-label reveal" style="color:var(--terra);">Come As You Are</span>
     <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,52px);font-weight:300;color:var(--cream);line-height:1.1;margin-bottom:16px;" class="reveal">Upcoming<br><em style="font-style:italic;color:var(--terra-pale);">Ceremonies</em></h2>
-    <p class="reveal" style="font-size:14px;color:rgba(245,240,232,0.6);line-height:1.95;margin-bottom:48px;max-width:600px;margin-left:auto;margin-right:auto;">Each ceremony is a small, held gathering: up to six members, seven days. Book a discovery call to learn about the next available date.</p>
+    <p class="reveal" style="font-size:15px;color:rgba(245,240,232,0.6);line-height:1.95;margin-bottom:48px;max-width:600px;margin-left:auto;margin-right:auto;">Each ceremony is a small, held gathering: up to six members, seven days. Book a discovery call to learn about the next available date.</p>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-bottom:44px;" class="reveal">
       <div id="upcoming-ceremony-card-0" style="background:rgba(28,43,30,0.5);padding:28px 20px;">
         <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.75);margin-bottom:10px;">Upcoming</p>
