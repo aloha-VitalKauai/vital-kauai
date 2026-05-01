@@ -255,8 +255,7 @@ export function TestimonialsPage() {
               Written <em>Reflections</em>
             </h2>
             <p className="testimonials-section-sub">
-              Letters and reflections from those who have journeyed with us. Each one is shared
-              with permission, and held with deep gratitude.
+              Letters and reflections from those who have journeyed with us.
             </p>
 
             <div className="written-list">
