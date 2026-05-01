@@ -1089,6 +1089,16 @@
   color: var(--sage-light);
 }
 
+.medicineDistinctionByline {
+  margin-top: 14px !important;
+  font-family: var(--font-body), sans-serif !important;
+  font-size: 12px !important;
+  font-style: normal !important;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--stone) !important;
+}
+
 .medicinePills {
   display: flex;
   flex-wrap: wrap;
