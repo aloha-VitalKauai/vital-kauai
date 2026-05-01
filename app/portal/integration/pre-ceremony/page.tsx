@@ -874,7 +874,7 @@ export default function PreCeremonyPage() {
         .pne-practice-closer { margin:8px 0 0;font-style:italic;color:var(--sage-lt); }
         .pne-reflection { margin-top:18px;padding:26px 28px;background:var(--forest);border:.5px solid var(--border);border-left:3px solid var(--sage);border-radius:4px; }
         .pne-reflection-label { font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--sage-lt);display:block;margin-bottom:12px; }
-        .pne-reflection-q { font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--cream);line-height:1.35;margin:0; }
+        .pne-reflection-q { font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--cream);line-height:1.4;margin:0; }
         .pne-reflection .pne-reflection-textarea { margin-top:16px;background:rgba(245,240,232,0.96);border:1px solid rgba(168,197,172,0.35);border-left:2px solid var(--sage-lt);color:var(--ink); }
         .pne-reflection .pne-reflection-textarea:focus { background:#fff;border-color:var(--sage-lt); }
         .pne-reflection-pending { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--sage-lt);margin:6px 0 0; }
