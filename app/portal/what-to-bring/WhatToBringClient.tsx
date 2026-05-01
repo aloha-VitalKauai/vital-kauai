@@ -27,9 +27,8 @@ const PRACTICAL_ITEMS = [
 ];
 
 const SACRED_ITEMS = [
-  { label: "Crystals or other sacred power objects", note: "Anything that carries meaning, memory, or protective energy for you" },
-  { label: "Altar items \u2014 photos, talismans, or objects that hold personal significance" },
-  { label: "Anything that helps you feel connected, grounded, and held" },
+  { label: "Crystals, photos, or other sacred power objects", note: "Anything that carries meaning, memory, or protective energy for you" },
+  { label: "Anything that helps you feel grounded, held, and at home" },
 ];
 
 const ALL_ITEMS = [...PRACTICAL_ITEMS, ...SACRED_ITEMS];
