@@ -236,8 +236,8 @@ export function FaqPage() {
           <div className={styles.heroRule} />
           <p className={styles.heroSub}>
             The questions members and visitors ask most often, gathered in one place. If something
-            specific is on your mind, bring it. Every question matters when you are preparing to do
-            real work.
+            specific is on your mind, perhaps you&apos;ll find it answered here&mdash;or you can reach
+            out and ask.
           </p>
         </div>
       </section>
