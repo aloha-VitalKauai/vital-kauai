@@ -61,7 +61,7 @@ const FAQ_SECTIONS: FaqSection[] = [
       {
         question: "How long is a typical stay?",
         answer:
-          "Most guests stay an average of 10 days, though stays vary depending on the depth of the work they are here to do. During your intake, we will discuss what length of container feels right for what you are moving through.",
+          "Our group ceremony is a seven-day arc, arriving on Day 1, two days of preparation, ceremony on Day 3, three days of integration, and a closing on Day 7. We discuss your specific journey and any additional support you may need on your discovery call.",
       },
       {
         question: "What does the discovery call look like?",
