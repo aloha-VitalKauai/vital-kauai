@@ -23,7 +23,6 @@ const PRACTICAL_ITEMS = [
   { label: "Yoga mat (optional)", note: "We have loaners available \u2014 bring your own if you prefer." },
   { label: "Alarm clock or phone for waking", note: "For those on a digital detox, a simple travel alarm clock keeps mornings device-free." },
   { label: "Musical instruments, costumes, special poetry, readings, songs (optional)", note: "If something calls to you to bring and offer \u2014 trust that. There will be space for it." },
-  { label: "Any comfort items that help you feel safe and held" },
 ];
 
 const SACRED_ITEMS = [
@@ -140,7 +139,7 @@ export default function WhatToBringClient() {
         <div style={{ marginBottom: 48 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: rose, flexShrink: 0 }} />
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 400, letterSpacing: "0.03em" }}>Sacred Items</h2>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 400, letterSpacing: "0.03em" }}>Comfort / Sacred Items</h2>
             <div style={{ flex: 1, height: 1, background: border }} />
           </div>
           <ul style={{ listStyle: "none", display: "grid", gap: 2 }}>
