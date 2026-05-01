@@ -1039,6 +1039,60 @@
   color: rgb(245 240 232 / 0.6);
 }
 
+.phaseEssence {
+  margin: 0 0 24px;
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--sage-light);
+  opacity: 0.9;
+}
+
+.phaseList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.phaseList li {
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgb(245 240 232 / 0.72);
+  padding: 12px 0;
+  border-top: 1px solid rgb(245 240 232 / 0.07);
+}
+
+.phaseList li:first-child {
+  border-top: none;
+  padding-top: 4px;
+}
+
+.protocolFooter {
+  margin: 64px auto 0;
+  max-width: 640px;
+  text-align: center;
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.6;
+  color: rgb(245 240 232 / 0.72);
+}
+
+.protocolFooter a {
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px solid rgb(200 169 110 / 0.4);
+  transition: border-color 0.3s, color 0.3s;
+}
+
+.protocolFooter a:hover {
+  border-bottom-color: var(--gold);
+  color: var(--gold-light);
+}
+
 /* ── Testimonials ── */
 .testimonials {
   background: var(--deep);
