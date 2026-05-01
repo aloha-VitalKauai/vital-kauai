@@ -433,10 +433,11 @@ export function HomePage() {
       <section id="medicine" className={styles.medicine}>
         <div className={styles.medicineIntro}>
           <p className={styles.medicineIntroQuote}>
-            &quot;Every journey here is a one-of-a-kind creation, shaped by who you are, what you
-            carry, what you are moving toward, and what this moment in your life is asking of you.
-            We are present with you from the very first conversation through the months of
-            integration that follow.&quot;
+            &quot;Every journey here is a one-of-a-kind creation. We learn who you are, what you carry,
+            what you are moving toward, and what this moment in your life is asking of you. We shape
+            your experience through an evidence-informed arc of preparation, ceremony, and
+            integration. This depth of holding is what we felt was missing from medicine spaces, and
+            it is what we bring to every member.&quot;
           </p>
           <p className={styles.medicineIntroByline}>— Rachel & Josh</p>
         </div>
@@ -473,8 +474,9 @@ export function HomePage() {
             </p>
             <div className={styles.medicineDistinction}>
               <p>
-                &quot;Vital Kauaʻi offers the most in-depth preparation and integration we know in this work.&quot;
+                &quot;We are dedicated to providing the most in-depth preparation and integration we know in this work.&quot;
               </p>
+              <p className={styles.medicineDistinctionByline}>— Vital Kauaʻi</p>
             </div>
           </div>
         </div>
