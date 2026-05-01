@@ -222,7 +222,7 @@ export function AboutPage() {
             <em>Perdue</em>
           </h2>
           <p className={styles.storyPara}>
-            I came into the world with a spirit too large and too alive for the systems around me. As a young boy I was diagnosed with ODD and put on medication. I felt unloved in my primary relationship bonds, and found ways to quiet the ache: the numbing comforts of substances, distraction, pleasure without presence.
+            I came into the world with a spirit too large and too alive for the systems around me. As a young boy I was diagnosed with ODD and put on medication. I felt unloved in my primary relationship bonds, and found ways to quiet the ache: the numbing comforts of substances, distraction, and pleasure without presence.
           </p>
           <p className={styles.storyPara}>
             At the age of ten, I found myself dreaming about African tribes and studying Amazonian plant medicines. I had no idea why at the time, but something greater was calling me toward my path.
