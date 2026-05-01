@@ -457,23 +457,32 @@
 
 /* ── Medicine ── */
 .medicine {
-  background: var(--cream);
-  padding: 128px 100px;
-  max-width: 1400px;
+  background: var(--forest-dark);
+  padding: 128px 0;
+}
+
+.medicineInner {
+  max-width: 1300px;
   margin: 0 auto;
+  padding: 0 100px;
 }
 
 .medicine .sectionLabel {
-  color: var(--sage);
+  color: var(--sage-light);
   font-weight: 500;
 }
 
 .medicine .sectionTitle {
-  color: var(--text-dark);
+  color: var(--cream);
 }
 
 .medicine .sectionTitle em {
-  color: var(--sage);
+  color: var(--sage-light);
+}
+
+.comparisonSection {
+  background: var(--cream);
+  padding: 128px 100px;
 }
 
 .medicineGrid {
@@ -505,7 +514,7 @@
   margin: 0;
   font-size: 15px;
   line-height: 1.95;
-  color: var(--text-mid);
+  color: rgb(245 240 232 / 0.78);
 }
 
 .medicineDistinction {
@@ -517,7 +526,7 @@
   font-style: italic;
   font-weight: 300;
   line-height: 1.75;
-  color: var(--text-dark);
+  color: var(--sage-light);
 }
 
 .medicinePills {
@@ -532,9 +541,9 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   padding: 8px 18px;
-  border: 1px solid var(--sage);
-  color: var(--sage);
-  background: rgb(122 158 126 / 0.06);
+  border: 1px solid rgb(122 158 126 / 0.5);
+  color: var(--sage-light);
+  background: rgb(122 158 126 / 0.08);
   font-weight: 500;
 }
 
@@ -652,11 +661,10 @@
 
 /* ── Editorial comparison: Root Bark · Ibogaine ── */
 .medicineComparison {
-  margin: 96px auto 0;
+  margin: 0 auto;
   max-width: 1080px;
-  padding: 96px 60px 0;
+  padding: 0 60px;
   text-align: center;
-  border-top: 1px solid rgb(28 43 30 / 0.08);
 }
 
 .comparisonEyebrowMain {
@@ -1420,6 +1428,14 @@
   }
 
   .medicine {
+    padding: 80px 0;
+  }
+
+  .medicineInner {
+    padding: 0 48px;
+  }
+
+  .comparisonSection {
     padding: 80px 48px;
   }
 
@@ -1487,6 +1503,14 @@
   }
 
   .medicine {
+    padding: 60px 0;
+  }
+
+  .medicineInner {
+    padding: 0 24px;
+  }
+
+  .comparisonSection {
     padding: 60px 24px;
   }
 

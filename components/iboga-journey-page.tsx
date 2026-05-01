@@ -199,52 +199,57 @@ export function IbogaJourneyPage() {
         </div>
       </section>
 
-      {/* ── Medicine ── */}
+      {/* ── Iboga, The Teacher Plant (forest-dark) ── */}
       <section className={styles.medicine} id="medicine">
-        <span className={styles.sectionLabel}>Godparent Medicine</span>
-        <h2 className={styles.sectionTitle}>
-          Iboga, <em className={styles.sageLightItalic}>The Teacher Plant</em>
-        </h2>
+        <div className={styles.medicineInner}>
+          <span className={styles.sectionLabel}>Godparent Medicine</span>
+          <h2 className={styles.sectionTitle}>
+            Iboga, <em className={styles.sageLightItalic}>The Teacher Plant</em>
+          </h2>
 
-        <div className={styles.medicineGrid}>
-          <div className={styles.medicineImgWrap}>
-            <Image
-              src="/images/ibogafruit.jpg"
-              alt="Iboga fruit"
-              fill
-              sizes="(max-width: 1024px) 100vw, 40vw"
-              className={styles.medicineCoverImg}
-            />
-          </div>
-          <div className={styles.medicineRight}>
-            <p className={styles.medicineBody}>
-              Iboga is one of humanity&apos;s oldest plant allies, used for millennia in the
-              Bwiti tradition of Central Africa as a sacrament of initiation, healing, and spiritual
-              awakening. It is a teacher, a living
-              intelligence that works with the whole human system: body, mind, emotion, and spirit.
-            </p>
-            <blockquote className={styles.medicineDistinction}>
-              We work exclusively with whole-plant Iboga root bark in deep relationship with the land
-              and lineage of Kaua&#699;i. Our approach honors both the ancestral Bwiti tradition and
-              the unique healing intelligence of this island.
-            </blockquote>
-            <p className={styles.medicineBody}>
-              Whole-plant root bark contains the full alkaloid profile of Iboga, not just
-              ibogaine, but dozens of synergistic compounds that buffer the experience, reduce
-              cardiac risk, and allow for a deeper, more nuanced journey.
-            </p>
-            <div className={styles.medicinePills}>
-              <span>Whole-Plant Root Bark</span>
-              <span>Titrated Dosing</span>
-              <span>Cardiac Monitoring Available</span>
-              <span>Rooted in Reverence</span>
-              <span>Extended Protocol</span>
-              <span>Neuroplasticity Window</span>
-              <span>Emphasis on Preparation and Integration</span>
+          <div className={styles.medicineGrid}>
+            <div className={styles.medicineImgWrap}>
+              <Image
+                src="/images/ibogafruit.jpg"
+                alt="Iboga fruit"
+                fill
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                className={styles.medicineCoverImg}
+              />
+            </div>
+            <div className={styles.medicineRight}>
+              <p className={styles.medicineBody}>
+                Iboga is one of humanity&apos;s oldest plant allies, used for millennia in the
+                Bwiti tradition of Central Africa as a sacrament of initiation, healing, and spiritual
+                awakening. It is a teacher, a living
+                intelligence that works with the whole human system: body, mind, emotion, and spirit.
+              </p>
+              <blockquote className={styles.medicineDistinction}>
+                We work exclusively with whole-plant Iboga root bark in deep relationship with the land
+                and lineage of Kaua&#699;i. Our approach honors both the ancestral Bwiti tradition and
+                the unique healing intelligence of this island.
+              </blockquote>
+              <p className={styles.medicineBody}>
+                Whole-plant root bark contains the full alkaloid profile of Iboga, not just
+                ibogaine, but dozens of synergistic compounds that buffer the experience, reduce
+                cardiac risk, and allow for a deeper, more nuanced journey.
+              </p>
+              <div className={styles.medicinePills}>
+                <span>Whole-Plant Root Bark</span>
+                <span>Titrated Dosing</span>
+                <span>Cardiac Monitoring Available</span>
+                <span>Rooted in Reverence</span>
+                <span>Extended Protocol</span>
+                <span>Neuroplasticity Window</span>
+                <span>Emphasis on Preparation and Integration</span>
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
+      {/* ── Understanding the Medicine (cream) ── */}
+      <section className={styles.comparisonSection}>
         <div className={styles.medicineComparison}>
           <span className={styles.comparisonEyebrowMain}>Understanding the Medicine</span>
           <h3 className={styles.medicineComparisonTitle}>
