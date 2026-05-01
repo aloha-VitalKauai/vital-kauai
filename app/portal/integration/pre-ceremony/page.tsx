@@ -285,11 +285,11 @@ const WEEKS = [
       },
       {
         color: 'blue',
-        text: 'Read "Preparing the Body" in your Preparedness Guide',
+        text: 'Read "Body, Mind, Spirit Preparation" in your Preparedness Guide',
         note: 'A short orientation to how the body lands into ceremony, paired with the Dietary Guide you\'re beginning this week.',
         links: [
           {
-            text: 'Read "Preparing the Body" in your Preparedness Guide',
+            text: 'Read "Body, Mind, Spirit Preparation" in your Preparedness Guide',
             href: '/iboga-preparedness-guide.html#preparing-body',
             external: true,
           },
