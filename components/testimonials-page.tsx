@@ -215,7 +215,7 @@ export function TestimonialsPage() {
             </h2>
             <p className="testimonials-section-sub">
               Members share their journeys&mdash;what shifted within them, and how they were held
-              at Vital Kaua&#699;i. More stories will be added here as they are shared with us.
+              at Vital Kaua&#699;i.
             </p>
 
             <div className="video-grid">
