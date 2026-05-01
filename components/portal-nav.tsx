@@ -23,6 +23,11 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         .pn-dropdown:hover .pn-dropdown-menu { display:block; }
         .pn-dropdown-item { display:block;padding:10px 20px;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,240,232,.55);text-decoration:none;transition:color .15s,background .15s;border-left:2px solid transparent; }
         .pn-dropdown-item:hover { color:#F5F0E8;background:rgba(122,158,126,.06); }
+        .pn-dropdown-parent { color:rgba(245,240,232,.78);font-weight:500; }
+        .pn-dropdown-parent + .pn-dropdown-subitem { margin-top:2px; }
+        .pn-dropdown-subitem { display:block;padding:7px 20px 7px 36px;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,240,232,.42);text-decoration:none;transition:color .15s,background .15s; }
+        .pn-dropdown-subitem:hover { color:#F5F0E8;background:rgba(122,158,126,.06); }
+        .pn-dropdown-divider { height:1px;background:rgba(245,240,232,.06);margin:8px 0; }
         .pn-right { display:flex;align-items:center;gap:14px; }
         .pn-email { font-size:9px;letter-spacing:.1em;color:rgba(245,240,232,.3);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
         .pn-out { font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,240,232,.35);background:none;border:1px solid rgba(245,240,232,.12);padding:6px 14px;cursor:pointer;font-family:inherit;transition:color .2s,border-color .2s; }
@@ -39,6 +44,8 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         .pn-mobile-close { position:absolute;top:18px;right:22px;background:none;border:none;color:#F5F0E8;font-size:28px;cursor:pointer;font-family:inherit;line-height:1;padding:6px 10px; }
         .pn-mobile a, .pn-mobile form button { font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;letter-spacing:.08em;color:#F5F0E8;text-decoration:none;background:none;border:none;cursor:pointer; }
         .pn-mobile a:hover, .pn-mobile form button:hover { color:#C8A96E; }
+        .pn-mobile a.pn-mobile-week { font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.55);margin-top:0; }
+        .pn-mobile-week-row { display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;margin-top:-12px; }
         .pn-mobile-section-label { font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#C8A96E;margin-top:6px; }
         .pn-mobile-email { font-size:10px;letter-spacing:.12em;color:rgba(245,240,232,.4);word-break:break-all;text-align:center;margin-top:12px; }
 
@@ -61,8 +68,15 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
             <div className="pn-dropdown">
               <button className="pn-dropdown-trigger">The Journey</button>
               <div className="pn-dropdown-menu">
-                <a href="/portal/integration/pre-ceremony" className="pn-dropdown-item">Pre-Ceremony</a>
-                <a href="/portal/integration/post-ceremony" className="pn-dropdown-item">Post-Ceremony</a>
+                <a href="/portal/integration/pre-ceremony" className="pn-dropdown-item pn-dropdown-parent">Pre-Ceremony</a>
+                {[1, 2, 3, 4, 5, 6].map((n) => (
+                  <a key={`pre-${n}`} href={`/portal/integration/pre-ceremony#week-${n}`} className="pn-dropdown-subitem">Week {n}</a>
+                ))}
+                <div className="pn-dropdown-divider" />
+                <a href="/portal/integration/post-ceremony" className="pn-dropdown-item pn-dropdown-parent">Post-Ceremony</a>
+                {[1, 2, 3, 4, 5, 6].map((n) => (
+                  <a key={`post-${n}`} href={`/portal/integration/post-ceremony#week-${n}`} className="pn-dropdown-subitem">Week {n}</a>
+                ))}
               </div>
             </div>
             <div className="pn-dropdown">
@@ -113,7 +127,31 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         {/* <a href="/portal/assessments" onClick={close}>Outcomes</a> */}
         <span className="pn-mobile-section-label">The Journey</span>
         <a href="/portal/integration/pre-ceremony" onClick={close}>Pre-Ceremony</a>
+        <div className="pn-mobile-week-row">
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <a
+              key={`m-pre-${n}`}
+              href={`/portal/integration/pre-ceremony#week-${n}`}
+              className="pn-mobile-week"
+              onClick={close}
+            >
+              Week {n}
+            </a>
+          ))}
+        </div>
         <a href="/portal/integration/post-ceremony" onClick={close}>Post-Ceremony</a>
+        <div className="pn-mobile-week-row">
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <a
+              key={`m-post-${n}`}
+              href={`/portal/integration/post-ceremony#week-${n}`}
+              className="pn-mobile-week"
+              onClick={close}
+            >
+              Week {n}
+            </a>
+          ))}
+        </div>
         <span className="pn-mobile-section-label">Resources</span>
         <a href="/portal/pne" onClick={close}>PNE</a>
         <a href="/portal/questions" onClick={close}>Questions for the Medicine</a>

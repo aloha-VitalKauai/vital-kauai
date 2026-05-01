@@ -542,6 +542,17 @@ export default function PreCeremonyPage() {
   const [journal, setJournal] = useState<Record<string, string>>({})
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
 
+  // ── Sync activeWeek with #week-N hash so dropdown links can deep-link.
+  useEffect(() => {
+    const applyHash = () => {
+      const m = /^#week-([1-6])$/.exec(window.location.hash)
+      if (m) setActiveWeek(Number(m[1]) - 1)
+    }
+    applyHash()
+    window.addEventListener('hashchange', applyHash)
+    return () => window.removeEventListener('hashchange', applyHash)
+  }, [])
+
   // ── Auth + data load
   useEffect(() => {
     const load = async () => {

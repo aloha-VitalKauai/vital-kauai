@@ -808,6 +808,17 @@ export default function PostCeremonyPage() {
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
   const [checkInWeek, setCheckInWeek] = useState<number | null>(null)
 
+  // ── Sync activeWeek with #week-N hash so dropdown links can deep-link.
+  useEffect(() => {
+    const applyHash = () => {
+      const m = /^#week-([1-6])$/.exec(window.location.hash)
+      if (m) setActiveWeek(Number(m[1]) - 1)
+    }
+    applyHash()
+    window.addEventListener('hashchange', applyHash)
+    return () => window.removeEventListener('hashchange', applyHash)
+  }, [])
+
   useEffect(() => {
     const load = async () => {
       const { data: { user } } = await supabase.auth.getUser()
