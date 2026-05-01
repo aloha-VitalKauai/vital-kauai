@@ -478,12 +478,12 @@ const WEEKS = [
       },
       {
         color: 'blue',
-        text: 'Read "The Days Before" and "Integration, The Real Work" in your Preparedness Guide',
-        note: 'A simple orientation to the final days and to the integration arc that begins the moment ceremony ends.',
+        text: 'Read "Integration, The Real Work" in your Preparedness Guide',
+        note: 'A simple orientation to the integration arc that begins the moment ceremony ends.',
         links: [
           {
-            text: 'Read "The Days Before" and "Integration, The Real Work" in your Preparedness Guide',
-            href: '/iboga-preparedness-guide.html#final-seven',
+            text: 'Read "Integration, The Real Work" in your Preparedness Guide',
+            href: '/iboga-preparedness-guide.html#integration',
             external: true,
           },
         ],
