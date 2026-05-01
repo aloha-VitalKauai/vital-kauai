@@ -650,6 +650,187 @@
   border-bottom: none;
 }
 
+/* ── Editorial comparison: Root Bark · Ibogaine ── */
+.medicineComparison {
+  margin: 96px auto 0;
+  max-width: 1080px;
+  padding: 0 60px;
+  text-align: center;
+}
+
+.comparisonEyebrowMain {
+  display: block;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 18px;
+}
+
+.medicineComparisonTitle {
+  font-family: var(--font-display), serif;
+  font-size: clamp(30px, 3.4vw, 48px);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--text-dark);
+  margin: 0 0 14px;
+  letter-spacing: 0.005em;
+}
+
+.medicineComparisonAnd {
+  font-style: italic;
+  color: var(--sage);
+  margin: 0 8px;
+  font-weight: 300;
+}
+
+.medicineComparisonSub {
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-size: clamp(16px, 1.5vw, 19px);
+  color: var(--text-mid);
+  opacity: 0.75;
+  margin: 0 auto 64px;
+  max-width: 540px;
+}
+
+.comparisonPair {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 56px;
+  align-items: stretch;
+  text-align: left;
+}
+
+.comparisonCard {
+  position: relative;
+  padding: 36px 32px 40px;
+  background: rgba(253, 251, 247, 0.55);
+  border-top: 1.5px solid;
+  display: flex;
+  flex-direction: column;
+}
+
+.comparisonCardSage {
+  border-top-color: var(--sage);
+}
+
+.comparisonCardGold {
+  border-top-color: var(--gold);
+}
+
+.comparisonCardKicker {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.comparisonCardSage .comparisonCardKicker {
+  color: var(--forest);
+}
+
+.comparisonCardGold .comparisonCardKicker {
+  color: #7a5c20;
+}
+
+.comparisonCardTitle {
+  font-family: var(--font-display), serif;
+  font-size: clamp(26px, 2.6vw, 34px);
+  font-weight: 300;
+  color: var(--text-dark);
+  margin: 0 0 14px;
+  line-height: 1.1;
+}
+
+.comparisonCardLede {
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.5;
+  margin: 0 0 26px;
+}
+
+.comparisonCardSage .comparisonCardLede {
+  color: var(--forest);
+  opacity: 0.85;
+}
+
+.comparisonCardGold .comparisonCardLede {
+  color: #7a5c20;
+  opacity: 0.9;
+}
+
+.comparisonAttributes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.comparisonAttributes li {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--text-mid);
+  padding: 14px 0;
+  border-top: 1px solid rgb(28 43 30 / 0.08);
+  position: relative;
+}
+
+.comparisonAttributes li:first-child {
+  border-top: none;
+  padding-top: 4px;
+}
+
+.comparisonDivider {
+  position: relative;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(28 43 30 / 0.12) 18%,
+    rgb(28 43 30 / 0.12) 82%,
+    transparent
+  );
+  margin: 0 auto;
+  align-self: stretch;
+}
+
+.comparisonDividerOrnament {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  background: var(--sage);
+  opacity: 0.6;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+@media (max-width: 768px) {
+  .medicineComparison {
+    margin-top: 64px;
+    padding: 0 24px;
+  }
+  .comparisonPair {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .comparisonDivider {
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgb(28 43 30 / 0.12), transparent);
+    margin: 4px auto;
+  }
+  .medicineComparisonSub {
+    margin-bottom: 40px;
+  }
+}
+
 /* ── Science ── */
 .science {
   background: var(--forest);
