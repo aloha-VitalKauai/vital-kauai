@@ -214,9 +214,6 @@ export default function JournalClient() {
                       const key = prompt.key ?? `w${wi}-p${pj}`;
                       return (
                         <div key={key} style={{ padding: "28px 0", borderBottom: pj < week.prompts.length - 1 ? "1px solid rgba(28,43,30,0.08)" : "none" }}>
-                          <span style={{ fontSize: 12, letterSpacing: "0.3em", textTransform: "uppercase", color: "#5C7A5F", display: "block", marginBottom: 10, fontWeight: 700 }}>
-                            {String(pj + 1).padStart(2, "0")}
-                          </span>
                           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 300, color: "#1A1A18", lineHeight: 1.35, marginBottom: 12 }}>
                             {prompt.q}
                           </p>
