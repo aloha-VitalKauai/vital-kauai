@@ -174,7 +174,7 @@ export default function JournalClient() {
           const update = phase.key === "pre" ? updatePre : updatePost;
 
           return (
-            <div key={phase.key}>
+            <div key={phase.key} id={phase.key} style={{ scrollMarginTop: 80 }}>
               {pi > 0 && <div style={{ height: 1, background: "linear-gradient(90deg, #C8A96E, transparent)", margin: "80px 0 0", opacity: 0.35 }} />}
 
               {/* Phase header */}

@@ -84,7 +84,9 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
               <div className="pn-dropdown-menu">
                 <a href="/portal/pne" className="pn-dropdown-item">PNE</a>
                 <a href="/portal/questions" className="pn-dropdown-item">Questions for the Medicine</a>
-                <a href="/portal/journal" className="pn-dropdown-item">Comprehensive Journal</a>
+                <a href="/portal/journal" className="pn-dropdown-item pn-dropdown-parent">Comprehensive Journal</a>
+                <a href="/portal/journal#pre" className="pn-dropdown-subitem">Pre-Ceremony</a>
+                <a href="/portal/journal#post" className="pn-dropdown-subitem">Post-Ceremony</a>
                 <a href="/portal/vital-kauai-guides" className="pn-dropdown-item">Vital Kauaʻi Guides</a>
               </div>
             </div>
@@ -156,6 +158,10 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         <a href="/portal/pne" onClick={close}>PNE</a>
         <a href="/portal/questions" onClick={close}>Questions for the Medicine</a>
         <a href="/portal/journal" onClick={close}>Comprehensive Journal</a>
+        <div className="pn-mobile-week-row">
+          <a href="/portal/journal#pre" className="pn-mobile-week" onClick={close}>Pre-Ceremony</a>
+          <a href="/portal/journal#post" className="pn-mobile-week" onClick={close}>Post-Ceremony</a>
+        </div>
         <a href="/portal/vital-kauai-guides" onClick={close}>Vital Kauaʻi Guides</a>
         <a href="/portal/donate" onClick={close}>Contribute</a>
         <a href="/portal/contact" onClick={close}>Contact</a>
