@@ -1133,7 +1133,7 @@ const BODY_CONTENT = `
   <ul class="nav-links">
     <li><a href="/iboga-journey">The Iboga Journey</a></li>
     <li class="nav-dropdown-wrap"><a href="/stay" style="opacity:1;">Stay With Us</a><span class="nav-dropdown"><a href="/island-residents">Island Residents</a></span></li>
-    <li class="nav-dropdown-wrap"><span class="nav-dropdown-label">About</span><ul class="nav-dropdown-menu"><li><a href="/about">About the Founders</a></li><li><a href="/church-information">About Vital Kauaʻi Church</a></li><li><a href="/healing-circle">Our Healing Circle</a></li></ul></li>
+    <li class="nav-dropdown-wrap"><span class="nav-dropdown-label">About</span><ul class="nav-dropdown-menu"><li><a href="/about">About the Founders</a></li><li><a href="/church-information">About Vital Kauaʻi Church</a></li><li><a href="/healing-circle">Our Healing Circle</a></li><li><a href="/faq">FAQ</a></li></ul></li>
     <li><a href="/#contact">Contact</a></li>
   </ul>
   <a href="/begin-your-journey" class="nav-cta">Begin the Journey</a>
@@ -1149,6 +1149,7 @@ const BODY_CONTENT = `
   <a href="/about">About the Founders</a>
   <a href="/church-information">About Vital Kauaʻi Church</a>
   <a href="/healing-circle">Our Healing Circle</a>
+  <a href="/faq">FAQ</a>
   <a href="/portal">Member Portal</a>
 </div>
 

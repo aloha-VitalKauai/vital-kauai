@@ -271,6 +271,12 @@ export function HomePage() {
               <li>
                 <Link href="/healing-circle">Our Healing Circle</Link>
               </li>
+              <li>
+                <Link href="/testimonials">Testimonials</Link>
+              </li>
+              <li>
+                <Link href="/faq">FAQ</Link>
+              </li>
             </ul>
           </li>
           <li>
@@ -311,6 +317,12 @@ export function HomePage() {
         </Link>
         <Link href="/healing-circle" onClick={() => setIsMobileNavOpen(false)}>
           Our Healing Circle
+        </Link>
+        <Link href="/testimonials" onClick={() => setIsMobileNavOpen(false)}>
+          Testimonials
+        </Link>
+        <Link href="/faq" onClick={() => setIsMobileNavOpen(false)}>
+          FAQ
         </Link>
         <a href="/portal" onClick={() => setIsMobileNavOpen(false)}>
           Member Portal
@@ -992,6 +1004,9 @@ export function HomePage() {
             </li>
             <li>
               <Link href="/healing-circle">Our Healing Circle</Link>
+            </li>
+            <li>
+              <Link href="/faq">FAQ</Link>
             </li>
             <li>
               <span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/island-residents">Island Residents</Link></span></span>
