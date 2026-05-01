@@ -242,13 +242,6 @@ export function FaqPage() {
         </div>
       </section>
 
-      {/* Breadcrumb */}
-      <div className={styles.breadcrumb}>
-        <Link href="/">Home</Link>
-        <span className={styles.sep}>›</span>
-        <span className={styles.current}>FAQ</span>
-      </div>
-
       {/* FAQ sections — rendered on the dark band so the cream/gold accordion reads */}
       <section className={styles.darkBand}>
         <div className={styles.sectionInnerWide}>
