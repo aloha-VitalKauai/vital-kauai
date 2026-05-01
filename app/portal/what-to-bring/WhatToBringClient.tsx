@@ -110,11 +110,8 @@ export default function WhatToBringClient() {
       <div style={{ maxWidth: 780, margin: "0 auto", padding: "60px 32px 100px" }}>
         {/* Intro */}
         <div style={{ textAlign: "center", marginBottom: 56, paddingBottom: 48, borderBottom: `1px solid ${border}` }}>
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 400, lineHeight: 1.8, maxWidth: 640, margin: "0 auto 18px" }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 400, lineHeight: 1.8, maxWidth: 640, margin: "0 auto" }}>
             Your time here is an invitation to arrive fully, body, spirit, and the things that make you feel most like yourself. Pack lightly and intentionally.
-          </p>
-          <p style={{ fontSize: 13, color: inkLight, letterSpacing: "0.03em" }}>
-            Kaua&#699;i&rsquo;s North Shore is warm and lush, with afternoon rain and everything in between. Pack accordingly.
           </p>
         </div>
 
