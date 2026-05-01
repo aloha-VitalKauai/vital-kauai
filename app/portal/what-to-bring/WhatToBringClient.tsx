@@ -10,6 +10,8 @@ const PRACTICAL_ITEMS = [
   { label: "Notebook or journal" },
   { label: "Swimwear" },
   { label: "Flip-flops or sandals" },
+  { label: "Sunglasses" },
+  { label: "Sun hat" },
   { label: "Comfortable hiking shoes", note: "Winter (Oct\u2013Apr): waterproof or trail shoes strongly recommended. Summer (May\u2013Sep): sturdy trail shoes or sneakers work well." },
   { label: "Movement and yoga attire" },
   { label: "Warm layers", note: "Winter: sweatshirt, sweatpants, and socks. Summer: a light sweater for cooler evenings." },
