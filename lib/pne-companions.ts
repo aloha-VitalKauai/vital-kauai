@@ -187,8 +187,8 @@ export const PNE_ADDITIONAL_RESOURCES: ReadonlyArray<PneAdditionalResource> = [
   {
     title: "Ceremony Day Guide",
     description: "A walkthrough of the day itself — flow, support, what to bring close.",
-    href: "/portal/pne",
-    status: "coming-soon",
+    href: "/ceremony-day-guide.html",
+    status: "live",
   },
   {
     title: "Physician Reference Guide",

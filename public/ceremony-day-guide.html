@@ -106,15 +106,6 @@
       position: relative;
       overflow: hidden;
     }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 2rem; left: 50%;
-      transform: translateX(-50%);
-      width: 1px; height: 2.5rem;
-      background: var(--gold);
-      opacity: 0.4;
-    }
     .hero-eyebrow {
       font-size: 0.72rem;
       letter-spacing: 0.32em;
@@ -251,6 +242,7 @@
       letter-spacing: 0.06em;
       text-align: right;
       padding-right: 1rem;
+      white-space: nowrap;
     }
     .arc-content {
       padding-left: 0.5rem;
@@ -369,6 +361,203 @@
       left: 0;
       color: var(--gold);
       font-weight: 700;
+    }
+
+    /* ── PRINCIPLE CARDS (Safety section) ─────────────────────────────── */
+    .principles-stack {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .principle-card {
+      background: var(--card-bg);
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--gold);
+      padding: 1.75rem 2rem;
+      box-shadow: var(--shadow-soft);
+    }
+    .principle-card.sage { border-left-color: var(--sage); }
+    .principle-card.rose { border-left-color: var(--rose); }
+    .principle-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--gold-deep);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+    .principle-card.sage .principle-num { color: var(--sage); }
+    .principle-card.rose .principle-num { color: var(--rose); }
+    .principle-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: 1.45rem;
+      color: var(--ink);
+      margin-bottom: 0.75rem;
+    }
+    .principle-card h3 em { font-style: italic; color: var(--gold-deep); }
+    .principle-card p {
+      font-size: 0.98rem;
+      color: var(--ink-soft);
+      margin-bottom: 0;
+    }
+
+    /* ── SIGNAL TABLE ─────────────────────────────────────────────────── */
+    .signal-block {
+      background: var(--cream-deep);
+      padding: 2.25rem;
+      margin-top: 2rem;
+      border: 1px solid var(--rule);
+    }
+    .signal-block h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: 1.5rem;
+      color: var(--ink);
+      margin-bottom: 1.25rem;
+    }
+    .signal-block h3 em { font-style: italic; color: var(--gold-deep); }
+    .signal-list {
+      list-style: none;
+      padding: 0;
+    }
+    .signal-list li {
+      padding: 0.9rem 0;
+      border-bottom: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1rem;
+      align-items: baseline;
+    }
+    .signal-list li:last-child { border-bottom: none; }
+    .signal-word {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--gold-deep);
+      min-width: 90px;
+    }
+    .signal-desc {
+      font-size: 0.97rem;
+      color: var(--ink-soft);
+      line-height: 1.7;
+    }
+
+    /* ── BREATH SECTION ───────────────────────────────────────────────── */
+    .breath-section {
+      background: var(--forest);
+      color: var(--cream);
+      padding: 4.5rem 2rem;
+      margin: 4rem -2rem 0;
+      text-align: center;
+      position: relative;
+    }
+    .breath-inner {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .breath-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-bottom: 1.25rem;
+    }
+    .breath-section h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(1.9rem, 4vw, 2.6rem);
+      color: var(--cream);
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+    }
+    .breath-section h2 em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+    .breath-section > .breath-inner > p {
+      color: rgba(250,246,240,0.8);
+      font-size: 1rem;
+      line-height: 1.85;
+      margin-bottom: 1.25rem;
+    }
+    .breath-steps {
+      margin-top: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      text-align: left;
+    }
+    .breath-step {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.25rem;
+      align-items: baseline;
+      padding: 1rem 1.5rem;
+      background: rgba(230,213,191,0.06);
+      border-left: 2px solid var(--gold-light);
+    }
+    .breath-count {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.5rem;
+      color: var(--gold-light);
+      min-width: 2.5rem;
+    }
+    .breath-text {
+      color: rgba(250,246,240,0.88);
+      font-size: 0.98rem;
+      line-height: 1.65;
+    }
+    .breath-text strong {
+      color: var(--cream);
+      font-weight: 400;
+    }
+
+    /* ── TEAM BLOCK ───────────────────────────────────────────────────── */
+    .team-block {
+      background: var(--cream-deep);
+      border: 1px solid var(--rule);
+      padding: 2.5rem;
+      margin-top: 2rem;
+    }
+    .team-block h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: 1.55rem;
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+    .team-block h3 em { font-style: italic; color: var(--gold-deep); }
+    .team-list {
+      list-style: none;
+      padding: 0;
+      margin-top: 1.25rem;
+    }
+    .team-list li {
+      padding: 0.6rem 0 0.6rem 1.5rem;
+      position: relative;
+      font-size: 0.98rem;
+      color: var(--ink-soft);
+      line-height: 1.7;
+    }
+    .team-list li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+    }
+    .team-closing {
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--rule);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--ink);
+      text-align: center;
+      line-height: 1.6;
     }
 
     /* ── PULL QUOTE ───────────────────────────────────────────────────── */
@@ -530,10 +719,10 @@
       .print-bar { padding: 0.65rem 1.25rem; }
       .hero { padding: 4rem 1.4rem 3.5rem; }
       .container { padding: 0 1.4rem; }
-      .arc::before { left: 50px; }
-      .arc-item { grid-template-columns: 60px 1fr; gap: 1.25rem; }
-      .arc-dot { left: 44px; }
-      .arc-time { font-size: 0.82rem; padding-right: 0.5rem; }
+      .arc::before { left: 78px; }
+      .arc-item { grid-template-columns: 88px 1fr; gap: 1rem; }
+      .arc-dot { left: 72px; }
+      .arc-time { font-size: 0.78rem; padding-right: 0.5rem; }
       .feature-dark { padding: 2.5rem 1.4rem; margin: 2.5rem -1.4rem 0; }
       .reminders, .morning-after { padding: 1.75rem 1.25rem; }
     }
@@ -597,17 +786,17 @@
       }
       h2 + p, h3 + p { page-break-before: avoid; }
 
-      /* Arc / timeline, keep each item together when possible, allow splitting for tall items */
+      /* Arc / timeline — keep each item together when possible, allow splitting for tall items */
       .arc { margin-top: 1rem; }
-      .arc::before { left: 70px; }
+      .arc::before { left: 80px; }
       .arc-item {
-        grid-template-columns: 80px 1fr;
+        grid-template-columns: 92px 1fr;
         gap: 1.25rem;
         padding-bottom: 1rem;
         orphans: 3;
         widows: 3;
       }
-      .arc-dot { left: 64px; top: 0.5rem; }
+      .arc-dot { left: 74px; top: 0.5rem; }
       .arc-time { font-size: 0.85rem; padding-right: 0.75rem; }
       .arc-title { font-size: 1.15rem; margin-bottom: 0.4rem; }
       .arc-text { font-size: 10pt; line-height: 1.55; }
@@ -682,6 +871,76 @@
       .morning-after h3 { font-size: 1.3rem; margin-bottom: 0.6rem; }
       .morning-after p { font-size: 10pt; line-height: 1.55; margin-bottom: 0.6rem; }
 
+      /* Principle cards */
+      .principles-stack { gap: 0.5rem; margin-top: 0.7rem; }
+      .principle-card {
+        padding: 0.7rem 1rem;
+        box-shadow: none;
+        page-break-inside: avoid;
+      }
+      .principle-card h3 { font-size: 1.1rem; margin-bottom: 0.3rem; }
+      .principle-card p { font-size: 9.75pt; line-height: 1.5; margin-bottom: 0; }
+      .principle-num { margin-bottom: 0.15rem; font-size: 0.8rem; }
+
+      /* Breath feature */
+      .breath-section {
+        background: #f9f4ec !important;
+        color: black;
+        margin: 1rem 0;
+        padding: 1.25rem 1.5rem;
+        border: 1px solid #d9c9ad;
+        page-break-inside: avoid;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .breath-section h2, .breath-section > .breath-inner > p, .breath-text { color: black; }
+      .breath-text strong { color: black; }
+      .breath-count, .breath-section h2 em, .breath-eyebrow { color: #9A7A52; }
+      .breath-section h2 { font-size: 1.5rem; margin-bottom: 0.7rem; }
+      .breath-section > .breath-inner > p { font-size: 10pt; line-height: 1.5; margin-bottom: 0.6rem; }
+      .breath-steps { margin-top: 0.9rem; gap: 0.4rem; }
+      .breath-step {
+        background: #f0e8d8;
+        border-left-color: #9A7A52;
+        padding: 0.55rem 0.9rem;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .breath-count { font-size: 1.15rem; }
+      .breath-text { font-size: 10pt; line-height: 1.45; }
+
+      /* Signal block */
+      .signal-block {
+        padding: 0.8rem 1rem;
+        margin-top: 0.6rem;
+        page-break-inside: avoid;
+        background: #f5efe4;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .signal-block h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
+      .signal-list li { padding: 0.35rem 0; }
+      .signal-word { font-size: 0.9rem; min-width: 75px; }
+      .signal-desc { font-size: 9.25pt; line-height: 1.45; }
+
+      /* Team block */
+      .team-block {
+        padding: 0.8rem 1rem;
+        margin-top: 0.7rem;
+        background: #f5efe4;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .team-block h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
+      .team-list { margin-top: 0.5rem; }
+      .team-list li { padding: 0.2rem 0 0.2rem 1rem; font-size: 9.5pt; line-height: 1.45; }
+      .team-closing {
+        margin-top: 0.7rem;
+        padding-top: 0.6rem;
+        font-size: 0.95rem;
+        line-height: 1.45;
+      }
+
       /* Pull quote */
       .pull-quote {
         margin: 1.25rem 0;
@@ -743,22 +1002,17 @@
 <section class="hero">
   <p class="hero-eyebrow">Ceremony · Moment-by-Moment Guide</p>
   <h1>Ceremony <em>Day</em> Guide</h1>
-  <p class="hero-sub">A moment-by-moment orientation for your ceremony day, what to expect from arrival through the full arc of the night and morning after. Your journey will last between 12 and 36 hours.</p>
-  <p class="hero-note">This is a living map. The medicine arrives in its own way, in its own time. Let this guide orient you, and then release it, and trust what unfolds.</p>
+  <p class="hero-sub">A moment-by-moment orientation for your ceremony day. What to expect from arrival through the full arc of the night and morning after. Your journey will last between 12 and 36 hours.</p>
+  <p class="hero-note">Let this guide orient you, then release it, and trust what unfolds.</p>
 </section>
 
 <div class="container">
 
-  <!-- INTRO -->
-  <div class="intro-block">
-    <p>You have prepared. You have arrived. What remains is to receive what has been waiting for you. Let this day meet you exactly as you are.</p>
-  </div>
-
   <!-- THE MORNING -->
   <section class="section">
-    <p class="section-eyebrow">Phase One · The Morning</p>
+    <p class="section-eyebrow">The Morning</p>
     <h2>Rising Into <em>Ceremony</em></h2>
-    <p>The day begins gently. There is nothing to accomplish and nothing to prepare, everything has already been prepared. The morning is for settling, for quieting, for arriving in the body.</p>
+    <p>The day begins gently. Everything has been prepared. The morning is for settling, quieting, and arriving in the body.</p>
 
     <div class="arc">
 
@@ -768,9 +1022,9 @@
           <div class="arc-time">On waking</div>
         </div>
         <div class="arc-content">
-          <h3 class="arc-title">Rest and <em>Gentle Movement</em></h3>
-          <p class="arc-text">Wake slowly. If you slept well, let that nourish you. If sleep was light, trust that your body got what it needed. Take a warm shower. Move your body gently, stretching, a slow walk outside, a few breaths under the sky.</p>
-          <p class="arc-text">Journaling is welcome if it is calling you. So is silence. Both are forms of arrival.</p>
+          <h3 class="arc-title">Breathwork and <em>Gentle Movement</em></h3>
+          <p class="arc-text">Wake slowly. Take a warm shower or walk on the bay. The morning includes guided breathwork and yoga to settle the nervous system, open the body, and bring you into presence.</p>
+          <p class="arc-text">Journaling is welcome.</p>
         </div>
       </div>
 
@@ -781,8 +1035,8 @@
         </div>
         <div class="arc-content">
           <h3 class="arc-title">Physical <em>Nourishment</em></h3>
-          <p class="arc-text">Nourishment if your body is asking for it: banana, eggs, coconut water, electrolyte drinks, fresh ginger root tea. Keep it light and easy to digest. Minimal food after midday, your system begins to clear for the medicine. Food and drink pause fully in the six hours before ceremony begins.</p>
-          <p class="arc-text">Hydrate through the morning. Rest when you feel tired. You are being cared for.</p>
+          <p class="arc-text">Light, easily digestible food if your body asks for it: banana, eggs, coconut water, electrolyte drinks, fresh ginger root tea. Minimal food after midday so your system can begin to clear for the medicine. Food and drink pause fully in the six hours before ceremony begins.</p>
+          <p class="arc-text">Hydrate through the morning. Rest when you feel tired.</p>
         </div>
       </div>
 
@@ -793,8 +1047,19 @@
         </div>
         <div class="arc-content">
           <h3 class="arc-title">Quiet <em>Preparation</em></h3>
-          <p class="arc-text">Step away from screens and from conversations that pull you outward. This is a time to turn inward. Review your intentions. Read back through your "Questions for the Medicine." Remember why you came.</p>
-          <p class="arc-text">Whatever you are feeling, excitement, fear, tenderness, uncertainty, is welcome and is part of arriving.</p>
+          <p class="arc-text">Step away from screens and from conversations that pull you outward. Turn inward. Review your intentions. Read back through your "Questions for the Medicine."</p>
+          <p class="arc-text">Whatever you are feeling, whether it's excitement, fear, tenderness, or uncertainty, is part of the preparation.</p>
+        </div>
+      </div>
+
+      <div class="arc-item">
+        <div class="arc-marker">
+          <span class="arc-dot"></span>
+          <div class="arc-time">Afternoon</div>
+        </div>
+        <div class="arc-content">
+          <h3 class="arc-title">Body <em>Support</em></h3>
+          <p class="arc-text">Treatment such as reiki, massage, cranio-sacral, or acupuncture to settle and open the body in preparation for the work ahead.</p>
         </div>
       </div>
 
@@ -803,22 +1068,10 @@
 
   <!-- THE AFTERNOON -->
   <section class="section">
-    <p class="section-eyebrow">Phase Two · Late Afternoon</p>
+    <p class="section-eyebrow">Late Afternoon</p>
     <h2>Opening the <em>Container</em></h2>
-    <p>As the day softens into afternoon, the formal opening of ceremony begins. Your body, your heart, and the land will all feel this shift. Move with it.</p>
 
     <div class="arc">
-
-      <div class="arc-item">
-        <div class="arc-marker">
-          <span class="arc-dot"></span>
-          <div class="arc-time">Afternoon</div>
-        </div>
-        <div class="arc-content">
-          <h3 class="arc-title">Parasympathetic <em>Support</em></h3>
-          <p class="arc-text">Treatment such as massage, acupuncture, or sound healing to support the parasympathetic nervous system, settling and opening the body in preparation for the work ahead.</p>
-        </div>
-      </div>
 
       <div class="arc-item">
         <div class="arc-marker">
@@ -827,7 +1080,7 @@
         </div>
         <div class="arc-content">
           <h3 class="arc-title">Dress in <em>White</em></h3>
-          <p class="arc-text">When it is time, dress in all white, the traditional color of ceremony, clarity, and openness. Let the act of dressing be part of the ritual, a quiet passage from your daily self into the self who is meeting the medicine tonight.</p>
+          <p class="arc-text">When it is time, dress in all white, the traditional color of ceremony, clarity, and openness. Let the act of dressing be part of the ritual.</p>
         </div>
       </div>
 
@@ -838,8 +1091,7 @@
         </div>
         <div class="arc-content">
           <h3 class="arc-title">Opening &amp; <em>Fire Ceremony</em></h3>
-          <p class="arc-text">Arrive at the fire. Speak what you are releasing, your intentions, and your prayers. The fire receives what is ready to be let go. This is the beginning of sacred time, the ordinary rules soften, and the deeper wisdom takes over.</p>
-          <p class="arc-text">Breathe. You are entering.</p>
+          <p class="arc-text">Arrive at the fire. Speak what you are releasing, your intentions, and your prayers. The fire receives what is ready to be let go.</p>
         </div>
       </div>
 
@@ -851,22 +1103,22 @@
     <div class="feature-inner">
       <p class="feature-eyebrow">Your Four Anchors in Ceremony</p>
       <h2>What to <em>Remember</em> When You Are Inside It</h2>
-      <p>Once you are in, there is nothing to do but be with what arises. These four anchors are always available to you, they will carry you through any intensity, any depth, any wave.</p>
+      <p>Be with what arises. These four anchors are always available to you and will carry you through any intensity, any depth, any wave.</p>
 
       <ul class="pillar-list">
-        <li><strong>Your breath is your home.</strong> Your heart-belly breath is waiting for you. One hand on heart, one hand on belly. Inhale seven, hold seven, exhale seven with sound. Return here as often as you need.</li>
-        <li><strong>Your body is wise.</strong> Trust what it asks for, stillness, movement, sound, tears. If it wants to shake, let it shake. If it wants to weep, let it weep. The body is doing its work.</li>
-        <li><strong>Our team is here.</strong> A peace sign to leave the space. A raised hand for support. Words if you need them. Silence if you prefer. You are accompanied throughout.</li>
-        <li><strong>When in doubt, do less.</strong> The temptation in intensity is to push. Soften instead. Let the medicine move you. You came to receive, let yourself receive.</li>
+        <li><strong>Your breath is your home.</strong> When sensation rises, return to your breath. Slow, full inhale. Slow exhale with sound. One breath is enough to find your way back.</li>
+        <li><strong>Your body is wise.</strong> Trust what it asks for, whether stillness, movement, sound, or tears. If it wants to shake, let it shake. If it wants to weep, let it weep. The body is doing its work.</li>
+        <li><strong>Our team is here.</strong> If you need support, raise your hand and someone will come to you. You can also speak. Words like "I need help," "I want to be held," "I need water," or "I need space" are enough. We will meet you with whatever you need.</li>
+        <li><strong>It is okay to let go.</strong> The temptation in intensity is to push or control. Soften instead. Surrender to what is unfolding.</li>
       </ul>
     </div>
   </section>
 
   <!-- THE JOURNEY ARC -->
   <section class="section">
-    <p class="section-eyebrow">Phase Three · The Journey</p>
+    <p class="section-eyebrow">The Journey</p>
     <h2>The Arc of <em>the Night</em></h2>
-    <p>Your journey can last between 12 and 36 hours. What follows is a map of the territory many travelers move through, and your journey is yours alone. The medicine arrives in its own way. Let this be a guide for orienting, and release it as soon as it stops serving you.</p>
+    <p>Your journey can last between 12 and 36 hours. What follows is a map of the territory many travelers move through. Trust what unfolds.</p>
 
     <div class="arc">
 
@@ -878,8 +1130,8 @@
         <div class="arc-content">
           <h3 class="arc-title">Onset</h3>
           <p class="arc-text">Return to the ceremony space, which has been prepared and held for you. Dosing begins here, titrated gradually over the first several hours of your journey. Your ceremony guides open the space with invocation, creating a protected, sacred container for what is to come.</p>
-          <p class="arc-text">Bwiti music begins. You are invited to move with it however feels true, rattle, dance, shake, sound, tone, sing, or remain in stillness. Follow what your body asks.</p>
-          <p class="arc-text">As onset arrives, you may be guided to lie down and receive an eye mask. Body heaviness, buzzing or vibration, and the beginning of visual patterns are natural signs the medicine is moving. Your facilitators are present throughout, attentive, grounded, and attuned to the whole room and to you.</p>
+          <p class="arc-text">Bwiti music begins. You are invited to move with it however feels true: rattle, dance, shake, sound, tone, sing, or remain in stillness. Follow what your body asks. We encourage having your rattle close at all times and using it often.</p>
+          <p class="arc-text">As onset arrives, you may be guided to lie down and receive an eye mask. Body heaviness, buzzing or vibration, and the beginning of visual patterns are natural signs the medicine is moving. Your facilitators are present throughout, attentive and attuned to the whole room and to you.</p>
         </div>
       </div>
 
@@ -889,9 +1141,9 @@
           <div class="arc-time">Hours 4–8</div>
         </div>
         <div class="arc-content">
-          <h3 class="arc-title">The Deepest <em>Phase</em></h3>
-          <p class="arc-text">Often the most immersive portion of the journey. Vivid life review, archetypal visions, guidance and insight, dream-like sequences. Many people remain eyes-closed and turned inward during this phase. Your facilitators offer reassurance, grounding touch when welcomed, and simple presence.</p>
-          <p class="arc-text">You may hear voices or whispers, encounter presences, or sense that vision is moving even behind the eye mask, iboga opens dimensions of experience that can be vast and unexpected. Whatever arises, your facilitators are with you. If you feel called to open your eyes, you may do so gently.</p>
+          <h3 class="arc-title">The Deepest <em>Hours</em></h3>
+          <p class="arc-text">Often the most immersive portion of the journey. Vivid life review, archetypal visions, guidance and insight, dream-like sequences. Many people remain eyes-closed and turned inward here. Your facilitators offer reassurance, grounding touch when welcomed, and simple presence.</p>
+          <p class="arc-text">You may hear voices or whispers, encounter presences, or sense that vision is moving even behind the eye mask. Iboga opens dimensions of experience that can be vast and unexpected. Whatever arises, your facilitators are with you. If you feel called to open your eyes, you may do so gently. Know that you may experience visual distortions when you open them, and this is part of the medicine working.</p>
         </div>
       </div>
 
@@ -902,8 +1154,8 @@
         </div>
         <div class="arc-content">
           <h3 class="arc-title">Psycho-Spiritual <em>Processing</em></h3>
-          <p class="arc-text">This is where meaning-making often begins, life narrative integration, inner child work, ancestral and belief system processing, and discussing the insights surfacing from the visions. Your facilitator meets you where you are.</p>
-          <p class="arc-text">If you want to speak, you can speak. If you want to remain silent, remain silent. Both are honored. The medicine keeps working either way.</p>
+          <p class="arc-text">This is where meaning-making often begins: life narrative integration, inner child work, ancestral and belief system processing, and discussing the insights surfacing from the visions. Your facilitator meets you where you are.</p>
+          <p class="arc-text">Speak when you feel called to speak or remain silent when silence feels right.</p>
         </div>
       </div>
 
@@ -914,24 +1166,19 @@
         </div>
         <div class="arc-content">
           <h3 class="arc-title">Emergence &amp; <em>Grounding</em></h3>
-          <p class="arc-text">The journey moves into its closing arc. Sleep is the greatest medicine available to you at this point, if your body calls for it, follow it fully. You may feel physically tired and emotionally wide open. This tenderness is sacred, we hold it with full care.</p>
-          <p class="arc-text">Move slowly and accept assistance as you orient. Dizziness, visual trails, and shifts in perception are a natural part of emergence, the medicine is still working. Your facilitator's presence and gentle breathwork meet you here. Light will feel brighter than usual, sunglasses are your friend. Receive what arises with curiosity and trust.</p>
+          <p class="arc-text">The journey moves into its closing arc. Sleep is the greatest medicine available to you at this point. If your body calls for it, follow it fully. You may feel physically tired and emotionally wide open. This tenderness is sacred and we hold it with full care.</p>
+          <p class="arc-text">Move slowly and accept assistance as you orient. Dizziness, visual trails, and shifts in perception are a natural part of emergence. The medicine is still working. Light will feel brighter than usual, so sunglasses are your friend.</p>
         </div>
       </div>
 
     </div>
   </section>
 
-  <!-- PULL QUOTE -->
-  <div class="pull-quote">
-    <p>What arises in ceremony is arriving for your healing. Even the difficult parts are care. Trust the thread you are on.</p>
-  </div>
-
   <!-- WHAT TO BRING -->
   <section class="section">
     <p class="section-eyebrow">Practical Support</p>
     <h2>What to <em>Have With You</em></h2>
-    <p>Almost everything you need is provided. These are the few personal items that support your journey and let you settle in fully.</p>
+    <p>Almost everything you need is provided. These are the personal items that support your journey and let you settle in fully.</p>
 
     <div class="bring-grid">
       <div class="bring-card">
@@ -953,8 +1200,9 @@
       <div class="bring-card">
         <h4>For the heart</h4>
         <ul>
+          <li>Photos of loved ones, if it supports you</li>
           <li>A written intention or prayer</li>
-          <li>Any sacred object</li>
+          <li>Any sacred object that holds meaning for you</li>
         </ul>
       </div>
       <div class="bring-card">
@@ -963,7 +1211,6 @@
           <li>A journal and pen</li>
           <li>Comfortable clothes for the morning</li>
           <li>Sunglasses for the first day after</li>
-          <li>Slip-on shoes or sandals for steady walking</li>
         </ul>
       </div>
     </div>
@@ -978,27 +1225,161 @@
       <h3>When the Work Goes <em>Deep</em></h3>
       <ul class="reminder-list">
         <li><em>You are safe.</em> You are held by our team, by the lineage, by the medicine itself, and by the land of Kauaʻi.</li>
-        <li><em>Nothing is wrong.</em> Whatever arises is the medicine working. Your body knows what it is doing.</li>
+        <li><em>Everything is moving in your favor.</em> Whatever arises is the medicine working. Your body knows what it is doing.</li>
         <li><em>Understanding can wait.</em> Let the experience move through you. Meaning will come in its own time.</li>
         <li><em>The wave will pass.</em> Every sensation, every emotion, every vision is moving. Stay with it, breathe into it, and it will keep moving.</li>
-        <li><em>You are doing it right.</em> There is no right way to journey. Whatever you are doing, that is exactly it.</li>
-        <li><em>We are with you.</em> You are never alone in this. Raise a hand, signal, speak, or rest in the knowing that we are here.</li>
+        <li><em>You are doing it right.</em> Whatever you are doing is exactly it.</li>
+        <li><em>We are with you.</em> Raise a hand, signal, speak, or rest in the knowing that we are here.</li>
       </ul>
     </div>
   </section>
 
   <!-- THE MORNING AFTER -->
   <section class="section">
-    <p class="section-eyebrow">Phase Four · The Morning After</p>
+    <p class="section-eyebrow">The Morning After</p>
     <h2>The Day <em>Beyond</em></h2>
     <p>When you emerge, the world will meet you softly. The medicine is still working within you, and your system is still settling. This is a tender, open, sacred time, a gentle passage from ceremony into the first movements of integration.</p>
 
     <div class="morning-after">
       <h3>What the <em>Morning</em> Asks of You</h3>
       <p>Rest is the work of this morning. You will most likely still be lying down, processing, and this is exactly right. Eat gently when nourishment is welcome: fresh fruit, broth, something warm and easy. Sip water slowly. Let the body stay horizontal as long as it asks to.</p>
-      <p>If you feel called to move later in the afternoon, a few slow steps, time in quiet shade, a gentle sit outside, follow what your body allows. The ordinary world can wait.</p>
+      <p>If you feel called to move later in the afternoon, follow what your body allows. The ordinary world can wait.</p>
       <p>You may feel wide open, emotionally sensitive, physically tired, or surprisingly clear. All of these are part of emergence. There is no right way to be the morning after.</p>
-      <p>Our team will be with you, checking in, offering nourishment and presence. Journaling can be powerful here, simply to capture what arose and what is arriving now. Let the words come as they come. You will be guided into your integration support in the days ahead.</p>
+      <p>Our team will be with you, checking in, offering nourishment and presence. Journaling can be powerful here, simply to capture what arose and what is arriving now. You will be guided into your integration support in the days ahead.</p>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────────────────── -->
+  <!-- PART TWO: SAFETY IN THE BODY                                       -->
+  <!-- ─────────────────────────────────────────────────────────────────── -->
+
+  <!-- PART TWO DIVIDER -->
+  <section class="section" style="text-align:center; padding-top:5rem;">
+    <p class="section-eyebrow">Part Two · Foundational Reading</p>
+    <h2 style="margin-bottom:1.25rem;">Safety in <em>the Body</em></h2>
+    <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.2rem; color:var(--ink-soft); max-width:620px; margin:0 auto;">How to orient within intense somatic experience during ceremony. What you may feel, how to work with it, and what our team is here to support.</p>
+    <p style="margin-top:1.5rem; font-size:0.95rem; color:var(--ink-mist);">The deepest medicine arrives through the body. Sensation, even intense sensation, is the path itself. Meeting it is the work.</p>
+  </section>
+
+  <!-- WHAT YOU MAY FEEL -->
+  <section class="section">
+    <p class="section-eyebrow">What You May Feel</p>
+    <h2>The Language of <em>the Body</em></h2>
+    <p>Iboga ceremony is a full-body experience. Your system is being invited to open, release, and reorganize, and sensation will move. Some of it will feel familiar. Some of it will feel new or intense. All of it belongs.</p>
+    <p>What follows is a partial map of what can arise. Every sensation on this map is a sign that your system is doing exactly what it was built to do.</p>
+
+    <div class="principles-stack">
+      <div class="principle-card">
+        <p class="principle-num">Physical</p>
+        <h3>Heaviness, vibration, heat or cold, tingling</h3>
+        <p>Your body may feel like it weighs a great deal, or like it is vibrating from the inside. Waves of warmth or cold can move through you. Limbs may feel electric or slightly numb. These are all common sensations as the nervous system shifts state and the body opens.</p>
+      </div>
+      <div class="principle-card">
+        <p class="principle-num">Involuntary</p>
+        <h3>Shaking, trembling, yawning, tears, sound</h3>
+        <p>The body knows how to discharge. Trembling, shaking, deep yawns, spontaneous tears, and unexpected sounds are how tension and held experience move out. Let them. What wants to move will move more easily when you stop trying to hold it still.</p>
+      </div>
+      <div class="principle-card sage">
+        <p class="principle-num">Emotional</p>
+        <h3>Waves of grief, joy, fear, love, longing</h3>
+        <p>Emotions often arrive in waves rather than as thoughts. You may weep without a story attached. You may laugh without reason. You may feel a deep tenderness, or a fierce grief, or a pure and inexplicable joy. Let each wave rise and pass. Honor it simply by letting it move through.</p>
+      </div>
+      <div class="principle-card sage">
+        <p class="principle-num">Perceptual</p>
+        <h3>Time softening, imagery, visions, inner sound</h3>
+        <p>In Iboga ceremony, perception shifts. Time may stretch or fold. Imagery, memories, archetypal visions, and inner sounds may arise. Some moments will feel luminous and clear; others will feel dreamlike and strange. Let each one come as it comes, and let it pass when it is ready.</p>
+      </div>
+      <div class="principle-card rose">
+        <p class="principle-num">Mental</p>
+        <h3>The fight-flight-freeze voice</h3>
+        <p>Your thinking mind may try to keep you safe in the way it always has, by narrating, controlling, analyzing, doubting, or wanting to leave. This is the survival part of you doing its job. Let it speak, thank it for its care, and return to your breath. The deeper wisdom will take over from there.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRINCIPLES -->
+  <section class="section">
+    <p class="section-eyebrow">Working With Intensity</p>
+    <h2>Five <em>Principles</em> for Meeting What Arises</h2>
+    <p>These are simple. They will stay with you. Whenever the body feels overwhelming, one of these will meet you where you are.</p>
+
+    <div class="principles-stack">
+      <div class="principle-card">
+        <p class="principle-num">One</p>
+        <h3>When in doubt, <em>do less</em></h3>
+        <p>The temptation in intensity is to try harder, push through, or fix. The body is already doing its work and asks only for space. Soften the jaw, soften the belly, let the shoulders drop. Do less and let the medicine do more.</p>
+      </div>
+      <div class="principle-card">
+        <p class="principle-num">Two</p>
+        <h3>Move <em>with</em> what is moving</h3>
+        <p>If the body wants to shake, let it shake. If sound wants to come, let it come. If breath wants to deepen or quicken, follow it. Trauma and held experience move through us with breath, sound, and movement. Allowing the movement is how you pass through. The movement itself is the medicine.</p>
+      </div>
+      <div class="principle-card sage">
+        <p class="principle-num">Three</p>
+        <h3>Return to the <em>breath</em></h3>
+        <p>Your breath is the most available anchor you have. It is always with you, steady, simple, yours. When sensation becomes disorienting, find one slow inhale. Then one slow exhale. One breath is enough. The next one will come.</p>
+      </div>
+      <div class="principle-card sage">
+        <p class="principle-num">Four</p>
+        <h3>Practice <em>alone together</em></h3>
+        <p>You are in a shared container with other members, and you are on your own sacred thread. Stay with your own experience. Keep your attention close to your body and trust that your support team is holding the whole room. Your journey is yours. Theirs is theirs. Both are held.</p>
+      </div>
+      <div class="principle-card rose">
+        <p class="principle-num">Five</p>
+        <h3>Trust the wisdom of <em>your body</em></h3>
+        <p>Your body has carried you through every experience of your life. It knows how to open, how to close, how to discharge, how to rest. Its wisdom runs deeper than the mind can reach. When the mind is uncertain, ask the body. It will answer in sensation, in impulse, in a sense of yes or no. Listen.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIGNALS & COMMUNICATION -->
+  <section class="section">
+    <p class="section-eyebrow">Communication in Ceremony</p>
+    <h2>How to <em>Signal</em> the Team</h2>
+    <p>You are held throughout ceremony. Our facilitators are trained to read the body, notice subtle shifts, and offer support while honoring your process. You also have agency. You can communicate what you need at any time, in simple ways.</p>
+
+    <div class="signal-block">
+      <h3>Simple <em>Signals</em></h3>
+      <ul class="signal-list">
+        <li>
+          <span class="signal-word">Raised hand</span>
+          <span class="signal-desc">Raise your hand if you need anything: the bathroom, water, to step outside, a facilitator's presence, grounding touch, a cool cloth, or reassurance. Someone will come to you.</span>
+        </li>
+        <li>
+          <span class="signal-word">Words</span>
+          <span class="signal-desc">You are welcome to speak. You can say "I need support," "I want to be held," "I need space," "I am overwhelmed." Simple words are enough. We will meet you with whatever you need.</span>
+        </li>
+        <li>
+          <span class="signal-word">Silence</span>
+          <span class="signal-desc">Silence is welcome. If you are turned inward and the work is moving through you, stay with it. We will check on you gently and honor the space you are in.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- PULL QUOTE -->
+  <div class="pull-quote">
+    <p>Everything we invite is a suggestion and a guide. The deepest instruction always comes from the wisdom of your own body.</p>
+  </div>
+
+  <!-- WE HOLD YOU -->
+  <section class="section">
+    <p class="section-eyebrow">You Are Held</p>
+    <h2>What Our Team <em>is Here For</em></h2>
+    <p>You are held by a constellation of facilitators, assistants, and prayer. Our team is trained, present, and constantly attuned to the container as a whole and to each individual within it.</p>
+
+    <div class="team-block">
+      <h3>Throughout ceremony, your team offers <em>all of this</em></h3>
+      <ul class="team-list">
+        <li>Continuous attentive presence: someone is always watching the room with care</li>
+        <li>Grounding touch when welcomed: a hand on the shoulder, the feet, the crown</li>
+        <li>Physical support: water, rest, temperature regulation, movement assistance</li>
+        <li>Somatic guidance: invitations to breathe, to sound, to move, or simply to be still</li>
+        <li>Emotional accompaniment: your tears, your fear, and your joy are all welcome here</li>
+        <li>Safety of the container: energetic protection, ritual holding, and the prayers of the lineage</li>
+        <li>Intervention if needed: in the rare moments when something medical or acute arises, we respond immediately and with full skill</li>
+      </ul>
+      <p class="team-closing">Your only task is to be present with what arises in you. We are holding the rest.</p>
     </div>
   </section>
 
