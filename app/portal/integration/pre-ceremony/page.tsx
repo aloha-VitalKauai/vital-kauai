@@ -58,6 +58,7 @@ const actionsForWeek = (
     return [
       { kind: 'internal', href: '/intake-form',                        text: 'Fill out Your Member Intake & Readiness Form' },
       { kind: 'hash',     href: '#journal-prompts',                    text: 'Respond to this week’s journal prompts' },
+      { kind: 'external', href: '/iboga-preparedness-guide.html#iboga', text: 'Read "Understanding Iboga" and "What Iboga Works On" in your Preparedness Guide' },
       { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Guide: The Language of the Body' },
       { kind: 'static',                                              text: "Complete this week's PNE Practice" },
       { kind: 'static',                                              text: "Complete this week's PNE Reflection" },
@@ -177,7 +178,7 @@ const WEEKS = [
         links: [
           {
             text: 'Read "Understanding Iboga" and "What Iboga Works On" in your Preparedness Guide',
-            href: '/iboga-preparedness-guide.html',
+            href: '/iboga-preparedness-guide.html#iboga',
             external: true,
           },
         ],
@@ -210,6 +211,18 @@ const WEEKS = [
         text: 'Respond to this week’s journal prompts',
         links: [
           { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
+        ],
+      },
+      {
+        color: 'blue',
+        text: 'Read "Iboga & Ibogaine" and "Medical Preparation & Contraindications" in your Preparedness Guide',
+        note: 'Two short sections. The first names what we work with; the second is the safety frame your physician will use.',
+        links: [
+          {
+            text: 'Read "Iboga & Ibogaine" and "Medical Preparation & Contraindications" in your Preparedness Guide',
+            href: '/iboga-preparedness-guide.html#medicine-forms',
+            external: true,
+          },
         ],
       },
       {
@@ -268,6 +281,18 @@ const WEEKS = [
         text: 'Respond to this week’s journal prompts',
         links: [
           { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
+        ],
+      },
+      {
+        color: 'blue',
+        text: 'Read "Preparing the Body" in your Preparedness Guide',
+        note: 'A short orientation to how the body lands into ceremony, paired with the Dietary Guide you\'re beginning this week.',
+        links: [
+          {
+            text: 'Read "Preparing the Body" in your Preparedness Guide',
+            href: '/iboga-preparedness-guide.html#preparing-body',
+            external: true,
+          },
         ],
       },
       {
@@ -330,6 +355,18 @@ const WEEKS = [
         ],
       },
       {
+        color: 'blue',
+        text: 'Read "Preparing the Inner Landscape" in your Preparedness Guide',
+        note: 'A short framing of what this inner work asks of you, and what the medicine begins doing the moment you say yes.',
+        links: [
+          {
+            text: 'Read "Preparing the Inner Landscape" in your Preparedness Guide',
+            href: '/iboga-preparedness-guide.html#preparing-inner',
+            external: true,
+          },
+        ],
+      },
+      {
         color: 'green',
         text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Guide',
       },
@@ -384,6 +421,18 @@ const WEEKS = [
         text: 'Respond to this week’s journal prompts',
         links: [
           { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
+        ],
+      },
+      {
+        color: 'blue',
+        text: 'Read "Ceremony Day" and "The Days After" in your Preparedness Guide',
+        note: 'A walkthrough of the ceremony arc and the days that follow, share what feels useful with your support people.',
+        links: [
+          {
+            text: 'Read "Ceremony Day" and "The Days After" in your Preparedness Guide',
+            href: '/iboga-preparedness-guide.html#ceremony-day',
+            external: true,
+          },
         ],
       },
       {
@@ -446,6 +495,18 @@ const WEEKS = [
         text: 'Respond to this week’s journal prompts',
         links: [
           { text: 'Respond to this week’s journal prompts', href: '#journal-prompts' },
+        ],
+      },
+      {
+        color: 'blue',
+        text: 'Read "The Days Before" and "Integration, The Real Work" in your Preparedness Guide',
+        note: 'A simple orientation to the final days and to the integration arc that begins the moment ceremony ends.',
+        links: [
+          {
+            text: 'Read "The Days Before" and "Integration, The Real Work" in your Preparedness Guide',
+            href: '/iboga-preparedness-guide.html#final-seven',
+            external: true,
+          },
         ],
       },
       {
