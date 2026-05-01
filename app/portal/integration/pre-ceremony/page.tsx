@@ -612,6 +612,12 @@ export default function PreCeremonyPage() {
           ? weekParam - 1
           : null
 
+      // #week-N (from the nav dropdown) also forces a specific week so the
+      // async resume logic below doesn't overwrite the deep-link selection.
+      const hashMatch = /^#week-([1-6])$/.exec(window.location.hash)
+      const hashWeek = hashMatch ? Number(hashMatch[1]) - 1 : null
+      const explicitWeek = forcedWeek ?? hashWeek
+
       const { data } = await supabase
         .from('pre_ceremony_progress')
         .select('*')
@@ -622,8 +628,8 @@ export default function PreCeremonyPage() {
         setCompleted(new Set(data.weeks_completed ?? []))
         setChecklist(data.checklist_items ?? {})
         setJournal(data.journal_responses ?? {})
-        if (forcedWeek !== null) {
-          setActiveWeek(forcedWeek)
+        if (explicitWeek !== null) {
+          setActiveWeek(explicitWeek)
         } else {
           // Resume at last uncompleted week
           const done = new Set<number>(data.weeks_completed ?? [])
@@ -631,8 +637,8 @@ export default function PreCeremonyPage() {
           if (next !== undefined) setActiveWeek(next)
           else setActiveWeek(5)
         }
-      } else if (forcedWeek !== null) {
-        setActiveWeek(forcedWeek)
+      } else if (explicitWeek !== null) {
+        setActiveWeek(explicitWeek)
       }
 
       if (forcedWeek !== null) {
