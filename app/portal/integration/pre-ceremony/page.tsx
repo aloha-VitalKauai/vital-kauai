@@ -360,21 +360,12 @@ const WEEKS = [
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
-      { color: 'red', text: 'Deep journaling, this is the primary work of this week', note: 'An act of honesty. Approach the prompts below as if the medicine is already in the room with you, because in a real sense, it is.' },
       {
         color: 'blue',
         text: 'Connect with your integration guide',
         note: 'Bring the material that is surfacing. Your guide is trained to hold exactly this territory.',
         links: [
           { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
-        ],
-      },
-      {
-        color: 'blue',
-        text: 'Draft your Questions for the Medicine, first version',
-        note: 'You\'ve been gathering the raw material for four weeks. What do you most want to ask? What do you most need to be shown? Write freely. These will be refined in Week 6.',
-        links: [
-          { text: 'Draft your Questions for the Medicine, first version', href: '/portal/questions' },
         ],
       },
       {
