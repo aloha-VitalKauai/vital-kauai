@@ -18,7 +18,7 @@ export type Member = {
 
 export const categoryLabels: Record<Exclude<MemberCategory, "hidden">, string> = {
   founders: "Founders",
-  somatic: "Somatic Integration Guides",
+  somatic: "Integration Guides",
   plant: "Plant Medicine",
   healers: "Healers",
   medical: "Medical",
@@ -219,7 +219,7 @@ export const members: Member[] = [
 export const filterTabs = [
   { value: "all", label: "All" },
   { value: "founders", label: "Founders" },
-  { value: "somatic", label: "Somatic Integration Guides" },
+  { value: "somatic", label: "Integration Guides" },
   { value: "plant", label: "Plant Medicine" },
   { value: "healers", label: "Healers" },
   { value: "medical", label: "Medical" },
