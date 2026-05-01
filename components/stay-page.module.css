@@ -272,7 +272,7 @@
 }
 
 .heroEyebrow {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.45em;
   text-transform: uppercase;
   color: var(--terra-pale);
@@ -337,7 +337,7 @@
 /* ───────────── Section Labels ───────────── */
 
 .sectionLabel {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--terra);
@@ -458,7 +458,7 @@
 }
 
 .photoStripEyebrow {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--terra-pale);
@@ -756,7 +756,7 @@
 }
 
 .dayLabel {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--terra);
@@ -960,7 +960,7 @@
   position: absolute;
   bottom: 16px;
   left: 22px;
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 0.35em;
   text-transform: uppercase;
   color: var(--terra-pale);
@@ -988,7 +988,7 @@
 }
 
 .stewardSubtitle {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--terra);
@@ -1004,7 +1004,7 @@
 .stewardLink {
   display: inline-block;
   margin-top: 22px;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--terra);
@@ -1265,7 +1265,7 @@
 }
 
 .footerCol h4 {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;

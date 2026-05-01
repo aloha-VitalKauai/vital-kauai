@@ -69,7 +69,7 @@ export function TestimonialsPage() {
     <main className={styles.page}>
       <style>{`
         .testimonials-section + .testimonials-section { margin-top: 88px; }
-        .testimonials-section-eyebrow { display:block;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold,#C8A96E);margin-bottom:14px;text-align:center; }
+        .testimonials-section-eyebrow { display:block;font-size:13px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold,#C8A96E);margin-bottom:14px;text-align:center; }
         .testimonials-section-title { font-family: var(--font-display, 'Cormorant Garamond'), serif; font-size: clamp(28px, 3.4vw, 40px); font-weight: 300; line-height: 1.15; color: var(--cream, #F5F0E8); text-align: center; margin: 0 0 12px; }
         .testimonials-section-title em { font-style: italic; color: var(--sage, #A8C5AC); }
         .testimonials-section-sub { max-width: 620px; margin: 0 auto 48px; text-align:center; font-size: 14px; line-height: 1.8; color: rgb(245 240 232 / 0.62); }
@@ -82,7 +82,7 @@ export function TestimonialsPage() {
         .video-placeholder svg { width: 38px; height: 38px; opacity: 0.4; }
         .video-meta { padding: 18px 4px 0; }
         .video-name { font-family: var(--font-display, 'Cormorant Garamond'), serif; font-size: 19px; font-weight: 400; color: var(--cream, #F5F0E8); }
-        .video-loc { display:block; font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold, #C8A96E); margin-top: 6px; }
+        .video-loc { display:block; font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold, #C8A96E); margin-top: 6px; }
         .video-quote { margin-top: 12px; font-size: 13px; line-height: 1.7; color: rgb(245 240 232 / 0.6); font-style: italic; }
 
         .written-list { max-width: 760px; margin: 0 auto; display:flex; flex-direction: column; gap: 56px; }
@@ -90,7 +90,7 @@ export function TestimonialsPage() {
         .written-item:last-child { border-bottom: 0; padding-bottom: 0; }
         .written-mark { display:block; font-family: var(--font-display, 'Cormorant Garamond'), serif; font-size: 56px; line-height: 1; color: var(--gold, #C8A96E); opacity: 0.5; margin-bottom: 8px; }
         .written-quote { font-family: var(--font-display, 'Cormorant Garamond'), serif; font-size: clamp(19px, 2.1vw, 23px); font-weight: 300; line-height: 1.55; color: var(--cream, #F5F0E8); font-style: italic; }
-        .written-attrib { display:block; margin-top: 22px; font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold, #C8A96E); }
+        .written-attrib { display:block; margin-top: 22px; font-size: 13px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold, #C8A96E); }
         .written-attrib em { font-style: normal; color: rgb(245 240 232 / 0.55); margin-left: 10px; }
 
         @media (max-width: 900px) {

@@ -118,7 +118,7 @@ export function FaqPage() {
       <style>{`
         .faq-list { max-width: 760px; margin: 0 auto; }
         .faq-section + .faq-section { margin-top: 72px; }
-        .faq-section-eyebrow { display:block;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold,#C8A96E);margin-bottom:14px;text-align:center; }
+        .faq-section-eyebrow { display:block;font-size:13px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold,#C8A96E);margin-bottom:14px;text-align:center; }
         .faq-section-title { font-family: var(--font-display, 'Cormorant Garamond'), serif; font-size: clamp(28px, 3.4vw, 40px); font-weight: 300; line-height: 1.15; color: var(--cream, #F5F0E8); text-align: center; margin: 0 0 36px; }
         .faq-section-title em { font-style: italic; color: var(--sage, #A8C5AC); }
         .faq-item { display:block;width:100%;padding:28px 0;text-align:left;background:none;border:0;border-bottom:1px solid rgb(200 169 110 / 0.18);cursor:pointer;font-family:inherit;color:inherit; }

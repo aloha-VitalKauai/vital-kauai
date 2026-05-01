@@ -268,7 +268,7 @@
 }
 
 .heroEyebrow {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.45em;
   text-transform: uppercase;
   color: var(--gold);
@@ -338,7 +338,7 @@
 .sectionLabel {
   display: block;
   margin-bottom: 20px;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--gold);
@@ -843,7 +843,7 @@
 .phaseWeek {
   display: block;
   margin-bottom: 20px;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--gold);
@@ -951,7 +951,7 @@
 }
 
 .entryLink {
-  font-size: 12px;
+  font-size: 14px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gold);
@@ -994,7 +994,7 @@
 .ctaLabel {
   display: block;
   margin-bottom: 28px;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--gold);
@@ -1089,7 +1089,7 @@
 
 .footerCol h4 {
   margin: 0 0 24px;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--gold);

@@ -79,7 +79,7 @@
 }
 
 .heroEyebrow {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
   letter-spacing: 0.35em;
   text-transform: uppercase;
@@ -339,7 +339,7 @@
 .footerBrand { font-family: var(--font-display), serif; font-size: 26px; font-weight: 400; letter-spacing: 0.1em; color: var(--cream); text-transform: uppercase; margin-bottom: 14px; }
 .footerTagline { font-size: 13px; font-weight: 300; color: rgba(245, 240, 232, 0.38); line-height: 1.8; max-width: 240px; margin: 0; }
 .footerAddress { margin-top: 12px; font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; line-height: 1.9; color: rgba(245, 240, 232, 0.36); }
-.footerCol h4 { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); font-weight: 400; margin: 0 0 18px; }
+.footerCol h4 { font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); font-weight: 400; margin: 0 0 18px; }
 .footerLinks { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
 .footerLinks a { font-size: 13px; font-weight: 300; color: rgba(245, 240, 232, 0.45); text-decoration: none; transition: color 0.3s; }
 .footerLinks a:hover { color: var(--cream); }

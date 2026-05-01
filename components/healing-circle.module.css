@@ -267,7 +267,7 @@
 }
 
 .heroEyebrow {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.45em;
   text-transform: uppercase;
   color: var(--gold);
@@ -449,7 +449,7 @@
 
 .cardRole {
   margin-top: 5px;
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--gold);
@@ -496,7 +496,7 @@
 .bioRowCat {
   display: block;
   margin-bottom: 10px;
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--gold);
@@ -575,7 +575,7 @@
 .ctaLabel {
   display: block;
   margin-bottom: 28px;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--gold);
@@ -644,7 +644,7 @@
 
 .footerCol h4 {
   margin: 0 0 24px;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--gold);
