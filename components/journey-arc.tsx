@@ -33,8 +33,8 @@ const PHASES: Phase[] = [
       "Diet preparation and gathering your home support team",
       "Crafting your questions for the medicine",
     ],
-    color: "#c44a26",
-    colorDeep: "#7a2c12",
+    color: "#7a2417",
+    colorDeep: "#3d100a",
   },
   {
     key: "ceremony",
@@ -54,8 +54,8 @@ const PHASES: Phase[] = [
       "Group support and 1:1 integration with your integration guide",
       "Held by experienced facilitators from arrival through closing",
     ],
-    color: "#2d6a45",
-    colorDeep: "#143a23",
+    color: "#1c4a2e",
+    colorDeep: "#0c2917",
   },
   {
     key: "integration",
@@ -69,8 +69,8 @@ const PHASES: Phase[] = [
       "The PsychoNeuroEnergetics (PNE) Guide — week-by-week teachings, reflections, and practices to integrate your journey",
       "Lifetime invitation into the Vital Kauaʻi community of those who’ve walked this path",
     ],
-    color: "#1d4f73",
-    colorDeep: "#0e2c45",
+    color: "#143046",
+    colorDeep: "#08182a",
   },
 ];
 
@@ -152,11 +152,24 @@ export function JourneyArc() {
                 fill="none"
               />
             ))}
+            {PHASES.map((phase) => (
+              <linearGradient
+                key={phase.key}
+                id={`grad-${phase.key}`}
+                x1="0%"
+                y1="0%"
+                x2="0%"
+                y2="100%"
+              >
+                <stop offset="0%" stopColor={phase.color} />
+                <stop offset="100%" stopColor={phase.colorDeep} />
+              </linearGradient>
+            ))}
             <filter id="arc-shadow" x="-10%" y="-10%" width="120%" height="120%">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
-              <feOffset dy="6" result="off" />
+              <feGaussianBlur in="SourceAlpha" stdDeviation="8" />
+              <feOffset dy="10" result="off" />
               <feComponentTransfer>
-                <feFuncA type="linear" slope="0.18" />
+                <feFuncA type="linear" slope="0.28" />
               </feComponentTransfer>
               <feMerge>
                 <feMergeNode />
@@ -165,7 +178,7 @@ export function JourneyArc() {
             </filter>
           </defs>
 
-          {/* Bands ── full saturation, touching */}
+          {/* Bands ── jewel-tone gradients, touching */}
           <g filter="url(#arc-shadow)">
             {ARC_BANDS.map((band) => {
               const phase = PHASES.find((p) => p.key === band.key)!;
@@ -180,28 +193,31 @@ export function JourneyArc() {
                   <path
                     d={arcPath(band.r)}
                     fill="none"
-                    stroke={phase.color}
+                    stroke={`url(#grad-${phase.key})`}
                     strokeWidth={STROKE}
                     strokeLinecap="butt"
-                    opacity={isActive ? 1 : 0.62}
-                    style={{ transition: "opacity 0.35s ease" }}
+                    opacity={isActive ? 1 : 0.55}
+                    style={{ transition: "opacity 0.45s ease" }}
                   />
                 </g>
               );
             })}
           </g>
 
-          {/* Active band: gold hairline along its outer edge */}
-          {ARC_BANDS.filter((b) => b.key === active.key).map((band) => {
-            const r = band.r + STROKE / 2 - 1;
+          {/* Brass hairlines along every band's outer edge */}
+          {ARC_BANDS.map((band) => {
+            const phase = PHASES.find((p) => p.key === band.key)!;
+            const isActive = active.key === band.key;
             return (
               <path
                 key={band.key}
-                d={arcPath(r)}
+                d={arcPath(band.r + STROKE / 2 - 0.5)}
                 fill="none"
-                stroke="#e2cfa0"
-                strokeWidth={1.25}
-                strokeOpacity={0.85}
+                stroke="#d6b878"
+                strokeWidth={isActive ? 1.6 : 0.9}
+                strokeOpacity={isActive ? 0.95 : 0.45}
+                style={{ transition: "stroke-width 0.4s ease, stroke-opacity 0.4s ease" }}
+                onClick={() => setActiveIdx(PHASES.findIndex((p) => p.key === phase.key))}
               />
             );
           })}
