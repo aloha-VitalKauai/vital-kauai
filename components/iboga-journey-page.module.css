@@ -712,6 +712,14 @@
   text-align: left;
 }
 
+.comparisonTrio {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  align-items: stretch;
+  text-align: left;
+}
+
 .comparisonCard {
   position: relative;
   padding: 36px 32px 40px;
@@ -724,6 +732,10 @@
 
 .comparisonCardSage {
   border-top-color: var(--sage);
+}
+
+.comparisonCardTerra {
+  border-top-color: #b8694a;
 }
 
 .comparisonCardGold {
@@ -741,6 +753,10 @@
 
 .comparisonCardSage .comparisonCardKicker {
   color: var(--forest);
+}
+
+.comparisonCardTerra .comparisonCardKicker {
+  color: #7a3017;
 }
 
 .comparisonCardGold .comparisonCardKicker {
@@ -767,6 +783,11 @@
 .comparisonCardSage .comparisonCardLede {
   color: var(--forest);
   opacity: 0.85;
+}
+
+.comparisonCardTerra .comparisonCardLede {
+  color: #7a3017;
+  opacity: 0.9;
 }
 
 .comparisonCardGold .comparisonCardLede {
@@ -829,6 +850,10 @@
   .comparisonPair {
     grid-template-columns: 1fr;
     gap: 28px;
+  }
+  .comparisonTrio {
+    grid-template-columns: 1fr;
+    gap: 24px;
   }
   .comparisonDivider {
     width: 60%;

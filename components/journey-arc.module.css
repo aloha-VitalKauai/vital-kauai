@@ -44,50 +44,137 @@
   max-width: 620px;
 }
 
-/* ── Desktop / tablet wrapper ── */
-.desktopWrap {
-  position: relative;
-  max-width: 880px;
+/* ── Three image-led chapter cards ── */
+.chapters {
+  list-style: none;
+  padding: 0;
   margin: 0 auto;
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
 }
 
-.arc {
+.chapterItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.chapter {
   display: block;
   width: 100%;
-  height: auto;
-  margin: 0 auto;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+  text-align: left;
+  position: relative;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
-.bandLabel {
-  font-family: "Cormorant Garamond", serif;
+.chapter:hover {
+  transform: translateY(-4px);
+}
+
+.chapterActive {
+  transform: translateY(-6px);
+}
+
+.chapterImgWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #1c2b1e;
+  box-shadow: 0 18px 44px rgba(28, 43, 30, 0.2);
+  outline: 1px solid rgba(200, 169, 110, 0.18);
+  outline-offset: 0;
+  transition: outline-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.chapterActive .chapterImgWrap {
+  outline-color: rgba(200, 169, 110, 0.95);
+  box-shadow: 0 24px 56px rgba(28, 43, 30, 0.32);
+}
+
+.chapterImg {
+  object-fit: cover;
+  filter: saturate(1.04) brightness(0.92);
+  transition: filter 0.45s ease, transform 0.6s ease;
+}
+
+.chapter:hover .chapterImg,
+.chapterActive .chapterImg {
+  filter: saturate(1.1) brightness(0.96);
+  transform: scale(1.03);
+}
+
+.chapterOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(14, 26, 16, 0.05) 0%,
+    rgba(14, 26, 16, 0.05) 35%,
+    rgba(14, 26, 16, 0.55) 70%,
+    rgba(14, 26, 16, 0.92) 100%
+  );
+}
+
+.chapterNumeral {
+  position: absolute;
+  top: 24px;
+  left: 28px;
+  font-family: var(--font-display, "Cormorant Garamond"), serif;
   font-style: italic;
-  font-size: 16px;
-  font-weight: 500;
-  letter-spacing: 0.22em;
+  font-size: clamp(48px, 5.4vw, 80px);
+  font-weight: 300;
+  line-height: 1;
+  color: var(--gold-light, #e2cfa0);
+  letter-spacing: 0.04em;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
+}
+
+.chapterCaption {
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  bottom: 26px;
+  text-align: left;
+  color: #f5f0e8;
+}
+
+.chapterWeek {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  pointer-events: auto;
+  color: rgba(245, 240, 232, 0.85);
+  margin-bottom: 10px;
 }
 
-/* Connector strip linking arc bottom to the panel above */
-.connector {
-  width: 1px;
-  height: 28px;
-  margin: -8px auto 0;
-  opacity: 0.6;
+.chapterTitle {
+  font-family: var(--font-display, "Cormorant Garamond"), serif;
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 300;
+  line-height: 1.05;
+  margin: 0 0 8px;
+  color: #f5f0e8;
 }
 
-.panelWrap {
-  margin: 0 auto;
-  max-width: 760px;
-  animation: fadeIn 0.45s ease both;
+.chapterEssence {
+  font-family: var(--font-display, "Cormorant Garamond"), serif;
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0;
+  color: rgba(245, 240, 232, 0.9);
+  max-width: 280px;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── Panel (shared) ── */
+/* ── Panel (shared between desktop and mobile) ── */
 .panel {
   background: var(--warm-white, #fdfbf7);
   border: 1px solid rgba(28, 43, 30, 0.06);
@@ -95,6 +182,12 @@
   padding: 40px 48px 40px;
   text-align: left;
   box-shadow: 0 18px 44px rgba(28, 43, 30, 0.08);
+  animation: fadeIn 0.4s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .panelEyebrow {
@@ -144,6 +237,28 @@
   padding-top: 4px;
 }
 
+/* ── Desktop panel below the row ── */
+.desktopPanelWrap {
+  margin: 36px auto 0;
+  max-width: 880px;
+}
+
+.desktopConnector {
+  width: 1px;
+  height: 28px;
+  margin: 0 auto;
+  opacity: 0.6;
+}
+
+.desktopPanel {
+  margin: 0 auto;
+}
+
+.mobilePanelWrap {
+  display: none;
+  list-style: none;
+}
+
 /* ── CTA ── */
 .cta {
   margin: 56px auto 0;
@@ -167,88 +282,39 @@
   border-bottom-color: var(--gold, #c8a96e);
 }
 
-/* ── Mobile stack (hidden on desktop) ── */
-.mobileStack {
-  display: none;
-  list-style: none;
-  padding: 0;
-  margin: 0 auto;
-  max-width: 560px;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.mobilePill {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  width: 100%;
-  padding: 22px 22px 20px;
-  border: 0;
-  cursor: pointer;
-  text-align: left;
-  font-family: inherit;
-  color: #f5f0e8;
-  border-radius: 4px;
-  transition: transform 0.3s, box-shadow 0.3s, filter 0.3s;
-  filter: saturate(0.85) brightness(0.92);
-  box-shadow: 0 6px 18px rgba(28, 43, 30, 0.08);
-}
-
-.mobilePill:hover {
-  filter: saturate(1) brightness(1);
-  transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgba(28, 43, 30, 0.14);
-}
-
-.mobilePillActive {
-  filter: saturate(1) brightness(1);
-  transform: translateY(-2px);
-  box-shadow: 0 16px 32px rgba(28, 43, 30, 0.18);
-}
-
-.mobilePillNumber {
-  font-family: var(--font-display, "Cormorant Garamond"), serif;
-  font-style: italic;
-  font-size: 18px;
-  font-weight: 300;
-  color: rgba(245, 240, 232, 0.85);
-}
-
-.mobilePillTitle {
-  font-family: var(--font-display, "Cormorant Garamond"), serif;
-  font-size: 24px;
-  font-weight: 300;
-  color: #f5f0e8;
-  line-height: 1.1;
-}
-
-.mobilePillWeek {
-  font-size: 11px;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: rgba(245, 240, 232, 0.85);
-}
-
-.mobilePanelWrap {
-  list-style: none;
-  animation: fadeIn 0.4s ease both;
-}
-
-/* ── Responsive switching ── */
+/* ── Responsive ── */
 @media (max-width: 900px) {
   .section {
     padding: 80px 32px;
   }
+  .chapters {
+    gap: 14px;
+  }
+  .chapterNumeral {
+    top: 18px;
+    left: 22px;
+  }
+  .chapterCaption {
+    left: 22px;
+    right: 22px;
+    bottom: 22px;
+  }
 }
 
-@media (max-width: 640px) {
-  .desktopWrap {
+@media (max-width: 700px) {
+  .chapters {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+    gap: 18px;
+  }
+  .chapterImgWrap {
+    aspect-ratio: 16 / 9;
+  }
+  .desktopPanelWrap {
     display: none;
   }
-  .mobileStack {
-    display: flex;
+  .mobilePanelWrap {
+    display: list-item;
   }
   .panel {
     padding: 28px 24px 30px;
