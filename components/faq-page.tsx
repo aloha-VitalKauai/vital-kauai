@@ -38,16 +38,6 @@ const FAQ_SECTIONS: FaqSection[] = [
           "Most providers use isolated ibogaine, a single alkaloid. We work with the whole root bark, honoring the ancient wisdom in which this plant has been used for millennia. The full plant carries an intelligence that no single compound can replicate.",
       },
       {
-        question: "Are accommodations included?",
-        answer:
-          "We hold ceremony in a private home in Hanalei, where members share the space with a small group of up to five other members. Your stay includes meals, movement, breathwork, bodywork, sound healing, and a full schedule of preparation and integration practices. Private journeys are also available as a separate container.",
-      },
-      {
-        question: "What is the contribution?",
-        answer:
-          "Vital Kauaʻi is a legally established church, and all contributions support our sacred mission. Every journey is shaped around you, and the contribution is discussed personally on your discovery call. We believe this work should be accessible to anyone who is truly called. No one is turned away based on financial circumstances. Kamaʻāina and need-based considerations are always welcome in that conversation.",
-      },
-      {
         question: "How do I know if I'm ready?",
         answer:
           "If the question is alive in you, that is already something. The discovery call is where we explore readiness together.",
@@ -62,6 +52,16 @@ const FAQ_SECTIONS: FaqSection[] = [
         question: "How long is a typical stay?",
         answer:
           "Our group ceremony is a seven-day arc, arriving on Day 1, two days of preparation, ceremony on Day 3, three days of integration, and a closing on Day 7. We discuss your specific journey and any additional support you may need on your discovery call.",
+      },
+      {
+        question: "Are accommodations included?",
+        answer:
+          "We hold ceremony in a private home in Hanalei, where members share the space with a small group of up to five other members. Your stay includes meals, movement, breathwork, bodywork, sound healing, and a full schedule of preparation and integration practices. Private journeys are also available as a separate container.",
+      },
+      {
+        question: "What is the contribution?",
+        answer:
+          "Vital Kauaʻi is a legally established church, and all contributions support our sacred mission. Every journey is shaped around you, and the contribution is discussed personally on your discovery call. We believe this work should be accessible to anyone who is truly called. No one is turned away based on financial circumstances. Kamaʻāina and need-based considerations are always welcome in that conversation.",
       },
       {
         question: "What does the discovery call look like?",
