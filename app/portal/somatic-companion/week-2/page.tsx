@@ -761,7 +761,7 @@ export default async function SomaticCompanionWeek2Page() {
               <div className="hw-step">
                 <div className="hw-num">Practice</div>
                 <h3>Continue the regulation practices from Week One.</h3>
-                <p className="reflection">Breath, grounding, orienting, and felt-sense practices. Visit the materials section of the portal for the full Regulation Practices guide, with practices tailored to each nervous system state.</p>
+                <p className="reflection">Breath, grounding, orienting, and felt-sense practices. Visit the Resources section under PNE for the full Regulation Practices guide, with practices tailored to each nervous system state.</p>
               </div>
             </div>
           </div>

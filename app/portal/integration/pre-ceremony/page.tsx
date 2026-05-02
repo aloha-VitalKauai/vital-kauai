@@ -1051,7 +1051,7 @@ export default function PreCeremonyPage() {
             <span className="pc-hero-eyebrow">Member Portal · Iboga Journey · Confidential</span>
             <h1>Six Weeks of <em>Preparation</em></h1>
             <p className="pc-hero-desc">
-              This portal is your companion through an evidence-based and deeply personal arc of preparation and integration.
+              This portal is your guide through an evidence-based and deeply personal arc of preparation and integration.
               Each week draws on a Hawaiian principle, paired with a teaching from psychoneuroenergetics (PNE) to support the body, mind, and spirit.
               You&apos;ll find journal prompts, action items, and voices from the Vital Kauaʻi community.
             </p>
@@ -1231,7 +1231,7 @@ export default function PreCeremonyPage() {
               </h3>
               {i === 0 && (
                 <p className="w1-body">
-                  This week&apos;s PNE (PsychoNeuroEnergetics) teaching introduces internal safety, the felt sense the nervous system rests into when all is well. From there, the companion walks through what happens when the system senses threat and how the body shifts into protection, and the internal and external structures, the people, places, and rhythms of your life, that build a foundation of safety from the inside out and the outside in.
+                  This week&apos;s PNE (PsychoNeuroEnergetics) teaching introduces internal safety, the felt sense the nervous system rests into when all is well. From there, the PNE Guide walks through what happens when the system senses threat and how the body shifts into protection, and the internal and external structures, the people, places, and rhythms of your life, that build a foundation of safety from the inside out and the outside in.
                 </p>
               )}
               {(() => {
