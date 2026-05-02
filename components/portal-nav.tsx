@@ -83,11 +83,11 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
               <button className="pn-dropdown-trigger">Resources</button>
               <div className="pn-dropdown-menu">
                 <a href="/portal/pne" className="pn-dropdown-item">PNE</a>
-                <a href="/portal/questions" className="pn-dropdown-item">Questions for the Medicine</a>
                 <a href="/portal/journal" className="pn-dropdown-item pn-dropdown-parent">Comprehensive Journal</a>
                 <a href="/portal/journal#pre" className="pn-dropdown-subitem">Pre-Ceremony</a>
                 <a href="/portal/journal#post" className="pn-dropdown-subitem">Post-Ceremony</a>
-                <a href="/portal/vital-kauai-guides" className="pn-dropdown-item">Vital Kauaʻi Guides</a>
+                <a href="/portal/vital-kauai-guides" className="pn-dropdown-item pn-dropdown-parent">Vital Kauaʻi Guides</a>
+                <a href="/portal/questions" className="pn-dropdown-subitem">Questions for the Medicine</a>
               </div>
             </div>
             <a href="/portal/donate" className="pn-link">Contribute</a>
@@ -156,13 +156,15 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         </div>
         <span className="pn-mobile-section-label">Resources</span>
         <a href="/portal/pne" onClick={close}>PNE</a>
-        <a href="/portal/questions" onClick={close}>Questions for the Medicine</a>
         <a href="/portal/journal" onClick={close}>Comprehensive Journal</a>
         <div className="pn-mobile-week-row">
           <a href="/portal/journal#pre" className="pn-mobile-week" onClick={close}>Pre-Ceremony</a>
           <a href="/portal/journal#post" className="pn-mobile-week" onClick={close}>Post-Ceremony</a>
         </div>
         <a href="/portal/vital-kauai-guides" onClick={close}>Vital Kauaʻi Guides</a>
+        <div className="pn-mobile-week-row">
+          <a href="/portal/questions" className="pn-mobile-week" onClick={close}>Questions for the Medicine</a>
+        </div>
         <a href="/portal/donate" onClick={close}>Contribute</a>
         <a href="/portal/contact" onClick={close}>Contact</a>
         {/* Community link hidden — restore with the main nav link when the section is ready. */}
