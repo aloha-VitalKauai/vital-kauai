@@ -1240,6 +1240,11 @@ export default function PreCeremonyPage() {
                   This week&apos;s PNE (PsychoNeuroEnergetics) teaching introduces nervous system regulation, the body&apos;s natural movement between states of safety, protection, and rest. The PNE Guide walks through how to read the body&apos;s weather, ventral vagal, sympathetic, and dorsal vagal, the patterns of protection the system reaches for under stress, fight, flight, fawn, freeze, withdraw, soften inward, and the capacity to move through, how a regulated body returns to balance, and what that means as you prepare for ceremony.
                 </p>
               )}
+              {i === 2 && (
+                <p className="w1-body">
+                  This week&apos;s PNE (PsychoNeuroEnergetics) teaching turns toward sensation as the body&apos;s native language. The PNE Guide explores what a sensation is, neutral, locatable, alive, what deer can teach us about completing stress and shaking it off, how unprocessed energy gets held in the body, and the vocabulary that helps you describe what you feel. From there, it walks through working with sensation through a six-step inner practice you can return to whenever something asks for attention.
+                </p>
+              )}
               {(() => {
                 const c = PRE_PNE_COMPANION[i]
                 const label = `Read Week ${i + 1} in The PsychoNeuroEnergetics (PNE) Guide${c?.theme ? `: ${c.theme}` : ''}`
