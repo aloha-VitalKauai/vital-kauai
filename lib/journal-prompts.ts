@@ -53,7 +53,7 @@ export const PRE_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
     reflection: 'Where do I go when I feel dysregulated? What is my dominant pattern — fight, flight, freeze, or fawn?',
     reflectionFollowUp: 'What situations tend to call these patterns forward most quickly in your life?',
   },
-  { practice: '', reflection: '' },
+  { practice: '', reflection: 'When I am stressed, where do I notice it in my body, and how do I create safety within myself? What brings me back to center?' },
   { practice: '', reflection: '' },
   { practice: '', reflection: '' },
   { practice: '', reflection: '' },
@@ -92,11 +92,9 @@ export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
     code: 'MANAWA',
     theme: 'Presence',
     title: 'The body is the experience',
-    // The dysregulation / fight-flight-freeze-fawn prompt that lived here as
-    // w2-p0 has moved to Week 2's PNE Reflection. The remaining prompt keeps
-    // its original w2-p1 storage key so existing entries are preserved.
     prompts: [
-      { key: 'w2-p1', q: 'How do I create safety within myself? What brings me back to center?', hint: 'Name what is true for your body.' },
+      { q: 'What choices am I proud of, and which ones do I wish I had made differently?' },
+      { q: 'Where am I holding onto something I cannot change, and what is actually mine to choose now?' },
     ],
   },
   {
