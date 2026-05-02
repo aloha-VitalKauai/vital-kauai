@@ -41,7 +41,7 @@ export default async function PnePage() {
               <em style={{ fontStyle: "italic", color: SAGE_LT }}>(PNE) Resources</em>
             </h1>
             <p style={{ fontSize: 15, color: CREAM_SOFT, lineHeight: 1.9, maxWidth: 480 }}>
-              A library of body-led teachings paired with each week of your journey. Start with the orientation video, then move through the weekly companions before and after ceremony.
+              A library of body-led teachings paired with each week of your journey. Start with the orientation video, then move through the weekly PNE Guide chapters before and after ceremony.
             </p>
           </div>
 
