@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Jost } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { RecoveryRedirect } from "@/components/recovery-redirect";
 import "./globals.css";
 
@@ -50,6 +51,7 @@ export default function RootLayout({
         <RecoveryRedirect />
         {children}
       </body>
+      <GoogleAnalytics gaId="G-VFF127QR7J" />
     </html>
   );
 }
