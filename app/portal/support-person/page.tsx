@@ -22,27 +22,27 @@ export default async function SupportPersonPage() {
   const border = "rgba(60,48,40,0.10)";
   const borderWarm = "rgba(184,151,74,0.18)";
 
-  const sectionTitle: React.CSSProperties = { fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 400, lineHeight: 1.2 };
-  const prose: React.CSSProperties = { fontSize: 15.5, color: textMid, lineHeight: 1.9, marginBottom: 22 };
+  const sectionTitle: React.CSSProperties = { fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(30px, 4.5vw, 44px)", fontWeight: 400, lineHeight: 1.2 };
+  const prose: React.CSSProperties = { fontSize: 17.5, color: textMid, lineHeight: 1.9, marginBottom: 24 };
 
   return (
-    <div style={{ minHeight: "100vh", background: cream, fontFamily: "'Jost', sans-serif", fontWeight: 300, lineHeight: 1.75, fontSize: 15, color: ink }}>
+    <div style={{ minHeight: "100vh", background: cream, fontFamily: "'Jost', sans-serif", fontWeight: 300, lineHeight: 1.75, fontSize: 17, color: ink }}>
       {/* Nav */}
 
       {/* Hero */}
-      <section style={{ padding: "100px 40px 80px", maxWidth: 780, margin: "0 auto", textAlign: "center" }}>
-        <span style={{ display: "inline-block", fontSize: 9, letterSpacing: "0.38em", textTransform: "uppercase", color: sage, marginBottom: 28 }}>For the People Who Love Them</span>
-        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(38px, 6vw, 62px)", fontWeight: 300, lineHeight: 1.15, marginBottom: 28 }}>
+      <section style={{ padding: "100px 40px 80px", maxWidth: 820, margin: "0 auto", textAlign: "center" }}>
+        <span style={{ display: "inline-block", fontSize: 11, letterSpacing: "0.38em", textTransform: "uppercase", color: sage, marginBottom: 28 }}>For the People Who Love You</span>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(42px, 6.5vw, 68px)", fontWeight: 300, lineHeight: 1.15, marginBottom: 28 }}>
           You are part of <em style={{ fontStyle: "italic", color: rose }}>this journey</em> too.
         </h1>
-        <p style={{ fontSize: 16, color: textMid, maxWidth: 560, margin: "0 auto 44px", lineHeight: 1.85 }}>
+        <p style={{ fontSize: 18, color: textMid, maxWidth: 600, margin: "0 auto 44px", lineHeight: 1.85 }}>
           Someone you love is doing something courageous. This guide is here to help you understand what to expect, and how to show up well, before and after they return.
         </p>
         <div style={{ width: 48, height: 1, background: gold, margin: "0 auto", opacity: 0.5 }} />
       </section>
 
       {/* Section Nav */}
-      <nav style={{ maxWidth: 900, margin: "0 auto", padding: "0 40px 72px", display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
+      <nav style={{ maxWidth: 960, margin: "0 auto", padding: "0 40px 72px", display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
         {[
           { label: "Understanding Iboga", id: "understanding" },
           { label: "Before They Leave", id: "before" },
@@ -50,7 +50,7 @@ export default async function SupportPersonPage() {
           { label: "When They Return", id: "return" },
           { label: "Caring for Yourself", id: "yourself" },
         ].map((item) => (
-          <a key={item.id} href={`#${item.id}`} style={{ display: "inline-block", padding: "10px 22px", border: `1px solid ${borderWarm}`, borderRadius: 40, fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: textMid, textDecoration: "none", transition: "all 0.25s" }}>{item.label}</a>
+          <a key={item.id} href={`#${item.id}`} style={{ display: "inline-block", padding: "12px 26px", border: `1px solid ${borderWarm}`, borderRadius: 40, fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", color: textMid, textDecoration: "none", transition: "all 0.25s" }}>{item.label}</a>
         ))}
       </nav>
 
@@ -95,7 +95,7 @@ export default async function SupportPersonPage() {
           <span>When the time feels right, these simple invitations open space without pressure:</span>
           <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 14 }}>
             {["\u201CWhat are you noticing?\u201D", "\u201CHow can I support you best right now?\u201D", "\u201CIs there anything you need from me today?\u201D", "\u201CI\u2019m here. Take all the time you need.\u201D", "\u201CWould you like company, or would space feel better?\u201D"].map((q) => (
-              <p key={q} style={{ paddingLeft: 18, borderLeft: `1px solid ${sage}`, fontSize: 14.5, color: inkMid, lineHeight: 1.75, margin: 0 }}>{q}</p>
+              <p key={q} style={{ paddingLeft: 18, borderLeft: `1px solid ${sage}`, fontSize: 16.5, color: inkMid, lineHeight: 1.75, margin: 0 }}>{q}</p>
             ))}
           </div>
         </Callout>
@@ -109,10 +109,10 @@ export default async function SupportPersonPage() {
             { time: "Months 2\u20136", title: "Stabilization", text: "The new ground becomes the new normal. Relationships often grow richer, more honest, and more present." },
           ].map((item, i, arr) => (
             <div key={item.title} style={{ display: "grid", gridTemplateColumns: "120px 1fr", gap: "0 32px", padding: "28px 0", borderBottom: i < arr.length - 1 ? `1px solid ${border}` : "none" }}>
-              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, fontStyle: "italic", color: gold, paddingTop: 3, lineHeight: 1.5 }}>{item.time}</div>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 15, fontStyle: "italic", color: gold, paddingTop: 4, lineHeight: 1.5 }}>{item.time}</div>
               <div>
-                <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 19, fontWeight: 500, marginBottom: 8 }}>{item.title}</h4>
-                <p style={{ fontSize: 14.5, color: textMid, lineHeight: 1.85, margin: 0 }}>{item.text}</p>
+                <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 500, marginBottom: 10 }}>{item.title}</h4>
+                <p style={{ fontSize: 16.5, color: textMid, lineHeight: 1.85, margin: 0 }}>{item.text}</p>
               </div>
             </div>
           ))}
@@ -134,8 +134,8 @@ export default async function SupportPersonPage() {
             { title: "Reach Out to Us", body: "Rachel and Josh are available to you too \u2014 for clarity, reassurance, or simply a conversation." },
           ].map((card) => (
             <div key={card.title} style={{ padding: 28, border: `1px solid ${border}`, borderRadius: 4, background: "rgba(247,243,238,0.6)" }}>
-              <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 500, marginBottom: 8 }}>{card.title}</h4>
-              <p style={{ fontSize: 13.5, color: textMid, lineHeight: 1.8 }}>{card.body}</p>
+              <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 21, fontWeight: 500, marginBottom: 10 }}>{card.title}</h4>
+              <p style={{ fontSize: 15.5, color: textMid, lineHeight: 1.8 }}>{card.body}</p>
             </div>
           ))}
         </div>
@@ -144,19 +144,19 @@ export default async function SupportPersonPage() {
       {/* Closing */}
       <section style={{ background: ink, color: cream, padding: "80px 40px", textAlign: "center" }}>
         <div style={{ maxWidth: 600, margin: "0 auto" }}>
-          <span style={{ display: "inline-block", fontSize: 9, letterSpacing: "0.38em", textTransform: "uppercase", color: gold, opacity: 0.8, marginBottom: 28 }}>We Are Here for You Too</span>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(30px, 4.5vw, 48px)", fontWeight: 300, lineHeight: 1.25, marginBottom: 20 }}>You do not have to navigate this alone.</h2>
-          <p style={{ fontSize: 15, color: "rgba(247,243,238,0.65)", lineHeight: 1.85, marginBottom: 40 }}>
+          <span style={{ display: "inline-block", fontSize: 11, letterSpacing: "0.38em", textTransform: "uppercase", color: gold, opacity: 0.8, marginBottom: 28 }}>We Are Here for You Too</span>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 4.5vw, 52px)", fontWeight: 300, lineHeight: 1.25, marginBottom: 20 }}>You do not have to navigate this alone.</h2>
+          <p style={{ fontSize: 17, color: "rgba(247,243,238,0.7)", lineHeight: 1.85, marginBottom: 40 }}>
             Questions, concerns, or simply need to talk, we are here for you at any point in this journey.
           </p>
           <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color: gold, opacity: 0.7 }}>Reach Rachel & Josh</span>
-            <a href="mailto:aloha@vitalkauai.com" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontStyle: "italic", color: cream, textDecoration: "none", borderBottom: "1px solid rgba(247,243,238,0.2)", paddingBottom: 4 }}>aloha@vitalkauai.com</a>
+            <span style={{ fontSize: 11, letterSpacing: "0.32em", textTransform: "uppercase", color: gold, opacity: 0.75 }}>Reach Rachel & Josh</span>
+            <a href="mailto:aloha@vitalkauai.com" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontStyle: "italic", color: cream, textDecoration: "none", borderBottom: "1px solid rgba(247,243,238,0.2)", paddingBottom: 4 }}>aloha@vitalkauai.com</a>
           </div>
         </div>
       </section>
 
-      <footer style={{ textAlign: "center", padding: "28px 40px", borderTop: `1px solid ${border}`, fontSize: 11, letterSpacing: "0.12em", color: textLight }}>
+      <footer style={{ textAlign: "center", padding: "28px 40px", borderTop: `1px solid ${border}`, fontSize: 13, letterSpacing: "0.12em", color: textLight }}>
         &copy; Vital Kaua&#699;i &middot; North Shore, Kaua&#699;i, Hawai&#699;i
       </footer>
     </div>
@@ -168,10 +168,10 @@ function Section({ id, num, label, title, titleEm, rose, border, sage, children 
   return (
     <section id={id} style={{ maxWidth: 820, margin: "0 auto", padding: "0 40px 96px", scrollMarginTop: 80 }}>
       <div style={{ display: "flex", alignItems: "flex-start", gap: 28, marginBottom: 48, paddingBottom: 32, borderBottom: `1px solid ${border}` }}>
-        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 56, fontWeight: 300, lineHeight: 1, color: "rgba(184,151,74,0.18)", flexShrink: 0, marginTop: -6 }}>{num}</div>
+        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 64, fontWeight: 300, lineHeight: 1, color: "rgba(184,151,74,0.22)", flexShrink: 0, marginTop: -6 }}>{num}</div>
         <div style={{ flex: 1 }}>
-          <span style={{ fontSize: 9, letterSpacing: "0.38em", textTransform: "uppercase", color: sage, display: "block", marginBottom: 10 }}>{label}</span>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 400, lineHeight: 1.2 }}>
+          <span style={{ fontSize: 11, letterSpacing: "0.38em", textTransform: "uppercase", color: sage, display: "block", marginBottom: 12 }}>{label}</span>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(30px, 4.5vw, 44px)", fontWeight: 400, lineHeight: 1.2 }}>
             {title} <em style={{ fontStyle: "italic", color: rose }}>{titleEm}</em>
           </h2>
         </div>
@@ -184,8 +184,8 @@ function Section({ id, num, label, title, titleEm, rose, border, sage, children 
 function Callout({ color, bg, label, children }: { color: string; bg: string; label: string; children: React.ReactNode }) {
   return (
     <div style={{ borderLeft: `2px solid ${color}`, background: bg, padding: "24px 28px", margin: "36px 0", borderRadius: "0 6px 6px 0" }}>
-      <span style={{ fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color, marginBottom: 10, display: "block" }}>{label}</span>
-      <div style={{ color: "#3A3330", fontSize: 15, lineHeight: 1.85 }}>{children}</div>
+      <span style={{ fontSize: 11, letterSpacing: "0.32em", textTransform: "uppercase", color, marginBottom: 12, display: "block" }}>{label}</span>
+      <div style={{ color: "#3A3330", fontSize: 17, lineHeight: 1.85 }}>{children}</div>
     </div>
   );
 }
