@@ -304,7 +304,7 @@ export function AboutPage() {
             Iboga had been calling me, in my dreams, and in the spaces I was holding for others. When I answered, something direct and incredibly wise moved through me. It helped me clear what I had been holding—the anger, the pain, and the feeling that I was less than the mother my boys deserved. I emerged lighter, more present and authentically me.
           </p>
           <p className={styles.storyPara}>
-            That experience re-oriented me. Across more than two decades, I pursued doctoral studies in naturopathic medicine and graduate studies in transpersonal psychology, consciousness, and spirituality. I earned certifications in life coaching, eating psychology, and mind-body nutrition; sat with Tantra teachers and esoteric wisdom holders; and trained in modalities including hypnotherapy and Reiki. All of it wove together into this work.
+            That experience re-oriented me. Across more than two decades, I pursued doctoral studies in naturopathic medicine and graduate studies in transpersonal psychology, consciousness, and spirituality. I earned certifications in life coaching, eating psychology, and mind-body nutrition; I sat with Tantra teachers and esoteric wisdom holders, and trained in modalities including hypnotherapy and Reiki. All of it wove together into this work.
           </p>
           <p className={styles.storyPara}>
             What I love most is helping couples come home to themselves, then to each other&mdash;meeting with fresh eyes and feeling genuinely safe, loved, and seen. I know what it is to lose that thread, and I know what it takes to find it again.
