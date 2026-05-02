@@ -254,7 +254,7 @@ export function HomePage() {
         </Link>
         <ul className={styles.navLinks}>
           <li>
-            <Link href="/iboga-journey">The Iboga Journey</Link>
+            <span className="nav-dropdown-wrap"><Link href="/iboga-journey">The Iboga Journey</Link><span className="nav-dropdown"><Link href="/upcoming-ceremonies">Upcoming Ceremonies</Link></span></span>
           </li>
           <li>
             <span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/island-residents">Island Residents</Link></span></span>
@@ -302,6 +302,9 @@ export function HomePage() {
         </Link>
         <Link href="/iboga-journey" onClick={() => setIsMobileNavOpen(false)}>
           The Iboga Journey
+        </Link>
+        <Link href="/upcoming-ceremonies" onClick={() => setIsMobileNavOpen(false)}>
+          Upcoming Ceremonies
         </Link>
         <Link href="/stay" onClick={() => setIsMobileNavOpen(false)}>
           Stay With Us

@@ -199,6 +199,9 @@ export function FaqPage() {
         <Link href="/iboga-journey" onClick={() => setIsMobileNavOpen(false)}>
           The Iboga Journey
         </Link>
+        <Link href="/upcoming-ceremonies" onClick={() => setIsMobileNavOpen(false)}>
+          Upcoming Ceremonies
+        </Link>
         <Link href="/stay" onClick={() => setIsMobileNavOpen(false)}>
           Stay With Us
         </Link>
