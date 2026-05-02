@@ -12,7 +12,7 @@
 
 .eyebrow {
   display: block;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
   letter-spacing: 0.4em;
   text-transform: uppercase;
@@ -48,7 +48,7 @@
 .arcStage {
   position: relative;
   max-width: 880px;
-  margin: 0 auto 0;
+  margin: 0 auto;
 }
 
 .arc {
@@ -56,103 +56,42 @@
   width: 100%;
   height: auto;
   margin: 0 auto;
-  filter: drop-shadow(0 14px 28px rgba(28, 43, 30, 0.08));
 }
 
-/* ── Pills (controls) ── */
-.pills {
-  list-style: none;
-  padding: 0;
-  margin: -16px auto 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  max-width: 880px;
-  position: relative;
-  z-index: 2;
+.bandGroup:hover path[stroke-width="16"] {
+  stroke-width: 18;
 }
 
-.pill {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 18px 18px 16px;
-  background: var(--warm-white, #fdfbf7);
-  border: 1px solid rgba(28, 43, 30, 0.1);
-  border-top: 3px solid transparent;
-  cursor: pointer;
-  text-align: center;
-  font-family: inherit;
-  color: inherit;
-  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s, background 0.3s;
-  width: 100%;
-  box-shadow: 0 6px 18px rgba(28, 43, 30, 0.04);
-}
-
-.pill:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(28, 43, 30, 0.1);
-}
-
-.pill_prep {
-  border-top-color: rgba(168, 197, 172, 0.55);
-}
-.pill_ceremony {
-  border-top-color: rgba(226, 207, 160, 0.6);
-}
-.pill_integration {
-  border-top-color: rgba(212, 145, 122, 0.55);
-}
-
-.pill_prep.pillActive {
-  border-top-color: #7a9e7e;
-}
-.pill_ceremony.pillActive {
-  border-top-color: #c8a96e;
-}
-.pill_integration.pillActive {
-  border-top-color: #b8694a;
-}
-
-.pillActive {
-  background: #fdfbf7;
-  box-shadow: 0 18px 32px rgba(28, 43, 30, 0.12);
-  transform: translateY(-4px);
-}
-
-.pillNumber {
-  font-family: var(--font-display, "Cormorant Garamond"), serif;
+.bandLabel {
+  font-family: "Cormorant Garamond", serif;
   font-style: italic;
-  font-size: 20px;
-  font-weight: 300;
-  color: var(--gold, #c8a96e);
-  letter-spacing: 0.04em;
-}
-
-.pillTitle {
-  font-family: var(--font-display, "Cormorant Garamond"), serif;
-  font-size: clamp(20px, 2vw, 26px);
-  font-weight: 300;
-  color: var(--text-dark, #1a1a18);
-  line-height: 1.1;
-}
-
-.pillWeek {
-  font-size: 11px;
-  letter-spacing: 0.28em;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--gold, #c8a96e);
-  margin-top: 4px;
+  pointer-events: auto;
 }
 
-/* ── Active panel ── */
+.connector {
+  pointer-events: none;
+}
+
+/* ── Connector line between arc and panel ── */
+.panelLine {
+  width: 1px;
+  height: 36px;
+  margin: -2px auto 0;
+  opacity: 0.5;
+}
+
+/* ── Panel ── */
 .panel {
-  margin: 56px auto 0;
+  margin: 0 auto;
   max-width: 760px;
   background: var(--warm-white, #fdfbf7);
   border: 1px solid rgba(28, 43, 30, 0.06);
-  padding: 44px 48px 40px;
+  border-top: 3px solid;
+  padding: 40px 48px 40px;
   text-align: left;
   box-shadow: 0 18px 44px rgba(28, 43, 30, 0.08);
   animation: fadeIn 0.45s ease both;
@@ -163,14 +102,30 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.essence {
-  margin: 0 0 28px;
+.panelEyebrow {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.panelTitle {
+  margin: 0 0 14px;
+  font-family: var(--font-display, "Cormorant Garamond"), serif;
+  font-size: clamp(28px, 3.2vw, 40px);
+  font-weight: 300;
+  line-height: 1.05;
+  color: var(--text-dark, #1a1a18);
+}
+
+.panelEssence {
+  margin: 0 0 24px;
   font-family: var(--font-display, "Cormorant Garamond"), serif;
   font-style: italic;
-  font-size: clamp(18px, 1.8vw, 22px);
+  font-size: clamp(17px, 1.7vw, 20px);
   line-height: 1.5;
-  color: var(--sage, #7a9e7e);
-  text-align: center;
 }
 
 .list {
@@ -217,30 +172,85 @@
   border-bottom-color: var(--gold, #c8a96e);
 }
 
+/* ── Mobile pills (shown only on small screens) ── */
+.mobilePills {
+  display: none;
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mobilePill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  padding: 16px 18px;
+  background: var(--warm-white, #fdfbf7);
+  border: 1px solid rgba(28, 43, 30, 0.1);
+  border-top: 3px solid;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 6px 18px rgba(28, 43, 30, 0.04);
+}
+
+.mobilePill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(28, 43, 30, 0.1);
+}
+
+.mobilePillActive {
+  box-shadow: 0 14px 28px rgba(28, 43, 30, 0.1);
+  transform: translateY(-3px);
+}
+
+.mobilePillNumber {
+  font-family: var(--font-display, "Cormorant Garamond"), serif;
+  font-style: italic;
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--gold, #c8a96e);
+}
+
+.mobilePillTitle {
+  font-family: var(--font-display, "Cormorant Garamond"), serif;
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--text-dark, #1a1a18);
+  line-height: 1.1;
+}
+
+.mobilePillWeek {
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold, #c8a96e);
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .section {
     padding: 80px 32px;
   }
-  .arcStage {
-    max-width: 100%;
-  }
-  .pills {
-    grid-template-columns: 1fr;
-    gap: 12px;
-    margin-top: -8px;
-  }
-  .pill {
-    padding: 16px;
-  }
-  .panel {
-    padding: 36px 28px 32px;
-  }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .arc {
-    transform: scale(1.05);
-    transform-origin: center bottom;
+    display: none;
+  }
+  .mobilePills {
+    display: flex;
+  }
+  .panel {
+    padding: 28px 24px 30px;
+  }
+  .panelLine {
+    display: none;
   }
 }
