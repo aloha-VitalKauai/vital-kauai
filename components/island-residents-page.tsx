@@ -32,7 +32,9 @@ export function IslandResidentsPage() {
           Vital Kauaʻi
         </Link>
         <ul className={styles.navLinks}>
-          <li><Link href="/iboga-journey">The Iboga Journey</Link></li>
+          <li>
+            <span className="nav-dropdown-wrap"><Link href="/iboga-journey">The Iboga Journey</Link><span className="nav-dropdown"><Link href="/upcoming-ceremonies">Upcoming Ceremonies</Link></span></span>
+          </li>
           <li>
             <span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/island-residents">Island Residents</Link></span></span>
           </li>
