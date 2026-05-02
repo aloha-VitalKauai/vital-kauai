@@ -672,10 +672,11 @@
 }
 
 .testimonialDetoxTag {
-  font-size: 16px;
+  font-size: 11px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--gold);
+  opacity: 0.85;
   margin: 4px auto 0;
   text-align: center;
 }
