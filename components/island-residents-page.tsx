@@ -78,7 +78,15 @@ export function IslandResidentsPage() {
 
       {/* Hero */}
       <section className={styles.hero}>
-        <div className={styles.heroBg} />
+        <Image
+          src="/images/hanalei2.jpg"
+          alt="Hanalei Bay on Kauaʻi's North Shore"
+          fill
+          sizes="100vw"
+          priority
+          className={styles.heroImg}
+        />
+        <div className={styles.heroOverlay} />
         <div className={styles.heroContent}>
           <p className={styles.heroEyebrow}>On-Island Work</p>
           <h1 className={styles.heroTitle}>
@@ -91,20 +99,6 @@ export function IslandResidentsPage() {
             For those who live on Kauaʻi and feel the pull of this work. Rachel and Josh come
             to you.
           </p>
-        </div>
-      </section>
-
-      {/* Place ── full-bleed photo of Hanalei / North Shore */}
-      <section className={styles.placeBand}>
-        <div className={styles.placeImgWrap}>
-          <Image
-            src="/images/hanalei2.jpg"
-            alt="Hanalei Bay on Kauaʻi's North Shore"
-            fill
-            sizes="100vw"
-            className={styles.placeImg}
-            priority={false}
-          />
         </div>
       </section>
 

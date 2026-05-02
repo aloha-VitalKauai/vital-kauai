@@ -56,7 +56,7 @@
 .hero {
   position: relative;
   padding: 160px 60px 100px;
-  min-height: 520px;
+  min-height: 580px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -64,13 +64,19 @@
   background: var(--deep);
 }
 
-.heroBg {
+.heroImg {
+  object-fit: cover;
+  object-position: center 55%;
+  filter: saturate(0.92);
+}
+
+.heroOverlay {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(184, 105, 74, 0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 80% at 20% 80%, rgba(122, 158, 126, 0.07) 0%, transparent 55%),
-    linear-gradient(180deg, #0e1a10 0%, #141f15 60%, #1c2b1e 100%);
+    radial-gradient(ellipse 70% 55% at 50% 45%, rgba(14, 26, 16, 0.55) 0%, rgba(14, 26, 16, 0.35) 60%, transparent 100%),
+    linear-gradient(180deg, rgba(14, 26, 16, 0.55) 0%, rgba(14, 26, 16, 0.35) 50%, rgba(14, 26, 16, 0.7) 100%);
+  z-index: 1;
 }
 
 .heroContent {
@@ -119,25 +125,6 @@
   max-width: 540px;
   margin: 0 auto;
   line-height: 1.8;
-}
-
-/* ── PLACE BAND (Hanalei photo between hero and body) ── */
-.placeBand {
-  position: relative;
-  width: 100%;
-  background: var(--deep);
-}
-
-.placeImgWrap {
-  position: relative;
-  width: 100%;
-  height: clamp(260px, 48vw, 540px);
-  overflow: hidden;
-}
-
-.placeImg {
-  object-fit: cover;
-  object-position: center 55%;
 }
 
 /* ── BODY ── */
