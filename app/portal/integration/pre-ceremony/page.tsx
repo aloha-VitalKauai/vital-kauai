@@ -888,7 +888,7 @@ export default function PreCeremonyPage() {
         .w1-prompt { padding:22px 0;border-bottom:1px solid var(--border); }
         .w1-prompt:first-child { border-top:1px solid var(--border); }
         .w1-prompt-num { font-size:13px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--sage);display:block;margin-bottom:10px; }
-        .w1-prompt-q { font-family:'Jost',sans-serif;font-size:15px;font-weight:400;color:var(--ink);line-height:1.6;margin-bottom:10px; }
+        .w1-prompt-q { font-family:'Jost',sans-serif;font-size:18px;font-weight:400;color:var(--ink);line-height:1.6;margin-bottom:10px; }
         .w1-prompt-hint { font-size:12.5px;color:var(--stone);line-height:1.75;font-style:italic; }
         .w1-actions { display:flex;flex-direction:column;gap:10px; }
         .w1-action { display:flex;align-items:stretch;border:.5px solid var(--border);border-radius:4px;background:white;transition:border-color .2s,background .2s; }
