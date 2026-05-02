@@ -390,6 +390,7 @@ export function HomePage() {
             <div className={styles.testimonialQuoteMark}>&quot;</div>
             <p className={styles.testimonialText}>&quot;{testimonialQuote}&quot;</p>
             <p className={styles.testimonialAttr}>— {testimonialAttribution}</p>
+            <p className={styles.testimonialRole}>Detox</p>
             <p className={styles.testimonialRole}>{testimonialRole}</p>
             <div style={{ marginTop: 36, textAlign: "center" }}>
               <Link href="/begin-your-journey" className={styles.btnPrimary}>
