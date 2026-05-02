@@ -44,8 +44,8 @@
   max-width: 620px;
 }
 
-/* ── Arc stage ── */
-.arcStage {
+/* ── Desktop / tablet wrapper ── */
+.desktopWrap {
   position: relative;
   max-width: 880px;
   margin: 0 auto;
@@ -58,48 +58,43 @@
   margin: 0 auto;
 }
 
-.bandGroup:hover path[stroke-width="16"] {
-  stroke-width: 18;
-}
-
 .bandLabel {
   font-family: "Cormorant Garamond", serif;
   font-style: italic;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
-  letter-spacing: 0.32em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   pointer-events: auto;
 }
 
+/* Connector strip linking arc bottom to the panel above */
 .connector {
-  pointer-events: none;
-}
-
-/* ── Connector line between arc and panel ── */
-.panelLine {
   width: 1px;
-  height: 36px;
-  margin: -2px auto 0;
-  opacity: 0.5;
+  height: 28px;
+  margin: -8px auto 0;
+  opacity: 0.6;
 }
 
-/* ── Panel ── */
-.panel {
+.panelWrap {
   margin: 0 auto;
   max-width: 760px;
+  animation: fadeIn 0.45s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Panel (shared) ── */
+.panel {
   background: var(--warm-white, #fdfbf7);
   border: 1px solid rgba(28, 43, 30, 0.06);
   border-top: 3px solid;
   padding: 40px 48px 40px;
   text-align: left;
   box-shadow: 0 18px 44px rgba(28, 43, 30, 0.08);
-  animation: fadeIn 0.45s ease both;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
 }
 
 .panelEyebrow {
@@ -172,14 +167,15 @@
   border-bottom-color: var(--gold, #c8a96e);
 }
 
-/* ── Mobile pills (shown only on small screens) ── */
-.mobilePills {
+/* ── Mobile stack (hidden on desktop) ── */
+.mobileStack {
   display: none;
   list-style: none;
   padding: 0;
-  margin: 24px 0 0;
+  margin: 0 auto;
+  max-width: 560px;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
 }
 
 .mobilePill {
@@ -188,26 +184,28 @@
   align-items: flex-start;
   gap: 4px;
   width: 100%;
-  padding: 16px 18px;
-  background: var(--warm-white, #fdfbf7);
-  border: 1px solid rgba(28, 43, 30, 0.1);
-  border-top: 3px solid;
+  padding: 22px 22px 20px;
+  border: 0;
   cursor: pointer;
   text-align: left;
   font-family: inherit;
-  color: inherit;
-  transition: transform 0.3s, box-shadow 0.3s;
-  box-shadow: 0 6px 18px rgba(28, 43, 30, 0.04);
+  color: #f5f0e8;
+  border-radius: 4px;
+  transition: transform 0.3s, box-shadow 0.3s, filter 0.3s;
+  filter: saturate(0.85) brightness(0.92);
+  box-shadow: 0 6px 18px rgba(28, 43, 30, 0.08);
 }
 
 .mobilePill:hover {
+  filter: saturate(1) brightness(1);
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(28, 43, 30, 0.1);
+  box-shadow: 0 14px 28px rgba(28, 43, 30, 0.14);
 }
 
 .mobilePillActive {
-  box-shadow: 0 14px 28px rgba(28, 43, 30, 0.1);
-  transform: translateY(-3px);
+  filter: saturate(1) brightness(1);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(28, 43, 30, 0.18);
 }
 
 .mobilePillNumber {
@@ -215,14 +213,14 @@
   font-style: italic;
   font-size: 18px;
   font-weight: 300;
-  color: var(--gold, #c8a96e);
+  color: rgba(245, 240, 232, 0.85);
 }
 
 .mobilePillTitle {
   font-family: var(--font-display, "Cormorant Garamond"), serif;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 300;
-  color: var(--text-dark, #1a1a18);
+  color: #f5f0e8;
   line-height: 1.1;
 }
 
@@ -230,10 +228,15 @@
   font-size: 11px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--gold, #c8a96e);
+  color: rgba(245, 240, 232, 0.85);
 }
 
-/* ── Responsive ── */
+.mobilePanelWrap {
+  list-style: none;
+  animation: fadeIn 0.4s ease both;
+}
+
+/* ── Responsive switching ── */
 @media (max-width: 900px) {
   .section {
     padding: 80px 32px;
@@ -241,16 +244,13 @@
 }
 
 @media (max-width: 640px) {
-  .arc {
+  .desktopWrap {
     display: none;
   }
-  .mobilePills {
+  .mobileStack {
     display: flex;
   }
   .panel {
     padding: 28px 24px 30px;
-  }
-  .panelLine {
-    display: none;
   }
 }
