@@ -65,9 +65,9 @@
 .bandLabel {
   font-family: "Cormorant Garamond", serif;
   font-style: italic;
-  font-size: 18px;
-  font-weight: 400;
-  letter-spacing: 0.18em;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
   pointer-events: auto;
 }

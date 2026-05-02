@@ -360,7 +360,7 @@
 
 /* ── Lead Capture ── */
 .leadCapture {
-  background: #ebe1cf;
+  background: var(--cream);
   padding: 120px 100px;
 }
 
