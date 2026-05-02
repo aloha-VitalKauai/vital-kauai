@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import styles from "./journey-arc.module.css";
 
 type PhaseKey = "prep" | "ceremony" | "integration";
@@ -120,6 +120,22 @@ function PhasePanel({ phase }: { phase: Phase }) {
 export function JourneyArc() {
   const [activeIdx, setActiveIdx] = useState(0);
   const active = PHASES[activeIdx];
+  const pillRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  // On mobile, inserting/removing the inline panel reflows the list and the
+  // browser's default focus-scroll jumps the viewport. Anchor the clicked pill
+  // to a stable spot (just below the fixed nav) so taps feel intentional.
+  const handleMobileSelect = (i: number) => {
+    if (activeIdx === i) return;
+    setActiveIdx(i);
+    requestAnimationFrame(() => {
+      const el = pillRefs.current[i];
+      if (!el) return;
+      const navOffset = 96;
+      const top = el.getBoundingClientRect().top + window.scrollY - navOffset;
+      window.scrollTo({ top, behavior: "smooth" });
+    });
+  };
 
   return (
     <section className={styles.section} id="protocol">
@@ -262,12 +278,15 @@ export function JourneyArc() {
             <Fragment key={phase.key}>
               <li>
                 <button
+                  ref={(el) => {
+                    pillRefs.current[i] = el;
+                  }}
                   type="button"
                   role="tab"
                   aria-selected={isActive}
                   className={`${styles.mobilePill} ${isActive ? styles.mobilePillActive : ""}`}
                   style={{ background: phase.color }}
-                  onClick={() => setActiveIdx(i)}
+                  onClick={() => handleMobileSelect(i)}
                 >
                   <span className={styles.mobilePillNumber}>{phase.number}</span>
                   <span className={styles.mobilePillTitle}>{phase.title}</span>
