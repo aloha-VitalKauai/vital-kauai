@@ -196,4 +196,16 @@ export const PNE_ADDITIONAL_RESOURCES: ReadonlyArray<PneAdditionalResource> = [
     href: "/portal/physician-guide",
     status: "live",
   },
+  {
+    title: "Questions for the Medicine",
+    description: "A living document where you shape the questions you carry into ceremony.",
+    href: "/portal/questions",
+    status: "live",
+  },
+  {
+    title: "Support Person Guide",
+    description: "For the people who love you, how to show up well, before and after ceremony.",
+    href: "/portal/support-person",
+    status: "live",
+  },
 ]
