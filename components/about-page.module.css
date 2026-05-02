@@ -290,9 +290,9 @@
 }
 
 .heroEyebrow {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--gold);
   margin-bottom: 18px;
@@ -351,9 +351,9 @@
 }
 
 .eyebrow {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--gold);
   margin-bottom: 32px;
@@ -730,9 +730,9 @@
 }
 
 .closeEyebrow {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--gold);
   margin-bottom: 36px;
