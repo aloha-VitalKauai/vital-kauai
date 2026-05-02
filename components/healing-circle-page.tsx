@@ -89,6 +89,11 @@ export function HealingCirclePage() {
 
   const activeMember = visibleMembers.find((member) => member.id === activeId) ?? null;
   const activeCategoryLabel = activeMember && activeMember.cat !== "hidden" ? categoryLabels[activeMember.cat] : "";
+  const activeIndex = activeMember ? visibleMembers.findIndex((member) => member.id === activeMember.id) : -1;
+  const activeRowEndIndex =
+    activeIndex >= 0
+      ? Math.min(Math.ceil((activeIndex + 1) / columns) * columns, visibleMembers.length) - 1
+      : -1;
 
   return (
     <main className={styles.page}>
@@ -253,8 +258,7 @@ export function HealingCirclePage() {
 
         <div className={styles.constellation}>
           {visibleMembers.map((member, index) => {
-            const showBioRow =
-              activeMember && member.id === visibleMembers[Math.min(Math.ceil((index + 1) / columns) * columns, visibleMembers.length) - 1]?.id;
+            const showBioRow = activeMember !== null && index === activeRowEndIndex;
 
             return (
               <Fragment key={member.id}>
