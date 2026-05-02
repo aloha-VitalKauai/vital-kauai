@@ -18,7 +18,6 @@ const GALLERY: { src: string; alt: string; caption: string }[] = [
   { src: "/images/ibogaroot.jpeg", alt: "Iboga root bark", caption: "Iboga root, the heart of the medicine." },
   { src: "/images/ibogafruit.jpg", alt: "Iboga fruit", caption: "The fruit of the Tabernanthe iboga shrub." },
   { src: "/images/hanalei3.jpg", alt: "Hanalei Bay, Kauaʻi", caption: "Hanalei Bay, where ceremonies are held." },
-  { src: "/images/ibogaprep.jpeg", alt: "Iboga preparation", caption: "The medicine, prepared with care." },
   { src: "/images/napali.jpeg", alt: "Nā Pali Coast, Kauaʻi", caption: "Nā Pali Coast, the island that holds the work." },
   { src: "/images/kauaiwaterfall.jpeg", alt: "Kauaʻi waterfall", caption: "Kauaʻi's waters, alive in the integration." },
 ];
