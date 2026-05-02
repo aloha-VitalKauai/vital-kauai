@@ -671,12 +671,21 @@
   color: var(--gold);
 }
 
+.testimonialDetoxTag {
+  font-size: 16px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 4px auto 0;
+  text-align: center;
+}
+
 .testimonialRole {
   font-family: var(--font-display), serif;
   font-style: italic;
   font-size: 14px;
   color: rgba(245, 240, 232, 0.65);
-  margin: 6px auto 0;
+  margin: 14px auto 0;
   line-height: 1.5;
   max-width: 540px;
   text-align: center;
