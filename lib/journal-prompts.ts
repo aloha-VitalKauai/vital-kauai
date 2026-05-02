@@ -103,9 +103,9 @@ export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
     theme: 'Release',
     title: 'Iboga sees everything',
     prompts: [
-      { q: 'Where am I lying to myself — and where am I living out of integrity as a result?', hint: 'Iboga sees everything. Arrive having already looked.' },
-      { q: 'What shadows are showing up right now? What patterns keep returning?', hint: 'What surfaces repeatedly is ready to be seen.' },
-      { q: 'What is my relationship to shame? Where does it show up — or where has it shaped me?', hint: 'Shame seen clearly begins to lose its grip.' },
+      { q: 'Where am I lying to myself, and where am I living out of integrity as a result?', hint: 'Iboga sees everything. Arrive having already looked.' },
+      { q: 'What shadows are showing up right now? What patterns keep returning?', hint: 'The shadow is the part of yourself you have hidden, denied, or disowned, often because it was not safe or acceptable to express. Write freely about what you have kept in the dark.' },
+      { q: 'What is my relationship to shame? Where does it show up, or where has it shaped me?', hint: 'Shame seen clearly begins to lose its grip.' },
     ],
   },
   {
