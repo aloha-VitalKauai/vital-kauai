@@ -267,11 +267,11 @@ const WEEKS = [
     principleName: 'Manawa',
     principle: 'The moment of power is now.',
     theme: 'Presence',
-    title: 'The body is the experience.',
-    subtitle: 'This is where the medicine lands.',
+    title: 'Presence is the practice.',
+    subtitle: '',
     carryForward: 'You named what must change and what you\'re committing to. This week the work moves from mind into body. The clarity you found last week needs a regulated nervous system to land in. That\'s what this week builds.',
     reentry: { strong: 'Arriving at this week behind?', text: ' If you haven\'t yet completed Week 2\'s integration call, do that first, before starting anything here. One real conversation with your guide is worth more than moving forward alone. If you\'re behind on journaling, write just five minutes on Week 1\'s prompts before opening Week 3. Start here: one integration call scheduled, one journal prompt written.' },
-    sub: 'Iboga works through the body, the gut, the heart, the nervous system, the tissue where unresolved experience lives. The more regulated and resourced your nervous system is when you arrive, the more cleanly the medicine can do its work. This week, you begin building that foundation.',
+    sub: 'You have everything you need, right here, in this moment. The past is memory dressed as nostalgia or regret. The future, imagination, in the shape of hope or anxiety. Now is the only ground that is true. Now is the only place where change and choice can happen.\n\nWeek 3 is about remembering the power of the present moment. Through simple practices of breath, body, awareness, and sensation, you build the muscle of presence, and capacity to be with what is. When ceremony comes, this is what carries you.',
     video: { label: 'A Message from Rachel & Josh · Week 3', text: 'In this week’s video, Rachel and Josh share what Manawa has meant in their own lives and how returning to the body has shaped the way they meet what each day brings.' },
     box: { type: 'info', label: 'If something surfaces this week', text: 'Iboga is intelligent and relational. It begins its work the moment you say yes. If difficult material arises, old grief, anxiety, somatic intensity, here is what to do: slow down deliberately. Bring your attention to one physical sensation at a time. Breathe. Place both feet on the floor. Be with what is arising, presence is enough. Your integration guide is available between sessions. Reach out whenever you need support.\n\nSome days will feel harder to begin. Noticing that, naming it honestly, is itself the practice.' },
     actionLabel: 'Actions this week, 4 only',
@@ -1095,11 +1095,11 @@ export default function PreCeremonyPage() {
                   : <>{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</>}
               </h2>
               <p className="w1p-pull">&ldquo;{w.principle}&rdquo;</p>
-              <p className="w1p-body">
-                {i === 0
-                  ? 'What you perceive shapes what you experience, and the world reflects it back as truth. Your attention, assumptions, and stories running underneath are the lens, and life answers in kind. This week is an invitation to look at the lens from which you view your reality.'
-                  : w.sub}
-              </p>
+              {i === 0
+                ? <p className="w1p-body">What you perceive shapes what you experience, and the world reflects it back as truth. Your attention, assumptions, and stories running underneath are the lens, and life answers in kind. This week is an invitation to look at the lens from which you view your reality.</p>
+                : w.sub.split('\n\n').map((para, pi) => (
+                    <p key={pi} className="w1p-body">{para}</p>
+                  ))}
             </section>
 
             {/* VIDEO, Message from the Founders */}
