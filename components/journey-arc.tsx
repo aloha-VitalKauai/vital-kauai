@@ -34,9 +34,9 @@ const PHASES: Phase[] = [
       "Diet preparation and gathering your home support team",
       "Crafting your questions for the medicine",
     ],
-    color: "#b8694a",
-    colorDim: "rgba(184,105,74,0.45)",
-    colorDeep: "#7a3a23",
+    color: "#9c4423",
+    colorDim: "rgba(156,68,35,0.7)",
+    colorDeep: "#6a2c14",
   },
   {
     key: "ceremony",
@@ -56,9 +56,9 @@ const PHASES: Phase[] = [
       "Group support and 1:1 integration with your integration guide",
       "Held by experienced facilitators from arrival through closing",
     ],
-    color: "#5d8a64",
-    colorDim: "rgba(93,138,100,0.45)",
-    colorDeep: "#345236",
+    color: "#2f5f3a",
+    colorDim: "rgba(47,95,58,0.7)",
+    colorDeep: "#1b3d22",
   },
   {
     key: "integration",
@@ -72,9 +72,9 @@ const PHASES: Phase[] = [
       "The PsychoNeuroEnergetics (PNE) Guide — week-by-week teachings, reflections, and practices to integrate your journey",
       "Lifetime invitation into the Vital Kauaʻi community of those who’ve walked this path",
     ],
-    color: "#2a3f6e",
-    colorDim: "rgba(42,63,110,0.45)",
-    colorDeep: "#19264a",
+    color: "#1a2c52",
+    colorDim: "rgba(26,44,82,0.7)",
+    colorDeep: "#0f1c38",
   },
 ];
 
@@ -167,7 +167,7 @@ export function JourneyArc() {
                     d={arcPath(band.r)}
                     fill="none"
                     stroke={isActive ? phase.color : phase.colorDim}
-                    strokeWidth={isActive ? 22 : 16}
+                    strokeWidth={isActive ? 24 : 18}
                     strokeLinecap="round"
                     style={{
                       transition:
@@ -180,8 +180,8 @@ export function JourneyArc() {
                       d={arcPath(band.r)}
                       fill="none"
                       stroke="#c8a96e"
-                      strokeWidth={1.25}
-                      strokeOpacity={0.85}
+                      strokeWidth={1.5}
+                      strokeOpacity={0.9}
                       strokeLinecap="round"
                     />
                   )}
@@ -190,7 +190,7 @@ export function JourneyArc() {
             })}
           </g>
 
-          {/* Curved labels along each arc */}
+          {/* Curved labels along each arc — cream over the saturated bands */}
           {ARC_BANDS.map((band) => {
             const phase = PHASES.find((p) => p.key === band.key)!;
             const isActive = active.key === band.key;
@@ -198,9 +198,9 @@ export function JourneyArc() {
               <text
                 key={band.key}
                 className={styles.bandLabel}
-                fill={isActive ? phase.colorDeep : phase.color}
-                opacity={isActive ? 1 : 0.78}
-                style={{ transition: "opacity 0.35s ease, fill 0.35s ease", cursor: "pointer" }}
+                fill="#f5f0e8"
+                opacity={isActive ? 1 : 0.82}
+                style={{ transition: "opacity 0.35s ease", cursor: "pointer" }}
                 onClick={() => setActiveIdx(PHASES.findIndex((p) => p.key === band.key))}
               >
                 <textPath

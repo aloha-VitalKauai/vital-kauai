@@ -184,25 +184,6 @@ export function IbogaJourneyPage() {
       {/* ── Journey arc (interactive) ── */}
       <JourneyArc />
 
-      {/* ── Lead Capture ── */}
-      <section className={styles.leadCapture}>
-        <div className={styles.leadGrid}>
-          <div className={styles.leadLeft}>
-            <span className={styles.sectionLabel}>Free Resource</span>
-            <h2 className={styles.sectionTitle}>
-              Everything You Need{" "}
-              <em className={styles.sageLightItalic}>to Know About Iboga</em>
-            </h2>
-            <p className={styles.leadBody}>
-              Download our comprehensive guide covering the history of Iboga, what to expect during
-              ceremony, preparation protocols, and how to choose a safe, qualified provider. This is
-              the resource we wish existed when we began our own journeys.
-            </p>
-          </div>
-          <LeadCaptureCard />
-        </div>
-      </section>
-
       {/* ── Iboga, The Teacher Plant (forest-dark) ── */}
       <section className={styles.medicine} id="medicine">
         <div className={styles.medicineInner}>
@@ -249,6 +230,25 @@ export function IbogaJourneyPage() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── Lead Capture ── */}
+      <section className={styles.leadCapture}>
+        <div className={styles.leadGrid}>
+          <div className={styles.leadLeft}>
+            <span className={styles.sectionLabel}>Free Resource</span>
+            <h2 className={styles.sectionTitle}>
+              Everything You Need{" "}
+              <em className={styles.sageLightItalic}>to Know About Iboga</em>
+            </h2>
+            <p className={styles.leadBody}>
+              Download our comprehensive guide covering the history of Iboga, what to expect during
+              ceremony, preparation protocols, and how to choose a safe, qualified provider. This is
+              the resource we wish existed when we began our own journeys.
+            </p>
+          </div>
+          <LeadCaptureCard />
         </div>
       </section>
 
