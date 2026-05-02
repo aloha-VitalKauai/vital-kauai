@@ -88,6 +88,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
                 <a href="/portal/journal#post" className="pn-dropdown-subitem">Post-Ceremony</a>
                 <a href="/portal/vital-kauai-guides" className="pn-dropdown-item pn-dropdown-parent">Vital Kauaʻi Guides</a>
                 <a href="/portal/questions" className="pn-dropdown-subitem">Questions for the Medicine</a>
+                <a href="/portal/support-person" className="pn-dropdown-subitem">Support Person Guide</a>
               </div>
             </div>
             <a href="/portal/donate" className="pn-link">Contribute</a>
@@ -164,6 +165,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         <a href="/portal/vital-kauai-guides" onClick={close}>Vital Kauaʻi Guides</a>
         <div className="pn-mobile-week-row">
           <a href="/portal/questions" className="pn-mobile-week" onClick={close}>Questions for the Medicine</a>
+          <a href="/portal/support-person" className="pn-mobile-week" onClick={close}>Support Person Guide</a>
         </div>
         <a href="/portal/donate" onClick={close}>Contribute</a>
         <a href="/portal/contact" onClick={close}>Contact</a>
