@@ -58,7 +58,7 @@ export default async function CeremonyGuidelinesPage() {
               "I respect all practices, protocols, and teachings as proprietary to Vital Kaua\u02BBi and hold them within this container.",
               "I take full responsibility for my own experience, using \u201CI\u201D statements and owning my own process.",
               "I ask before offering support \u2014 making sure those around me are seeking help before extending it.",
-              "I allow at least two weeks after any point-holding or ceremony work before making major life decisions or shifts.",
+              "I allow at least two weeks after ceremony before making major life decisions or shifts.",
               "I drive or travel home only when I feel fully grounded and safe to do so.",
               "I honor the purpose of this gathering and the trust it requires.",
             ].map((item) => (
