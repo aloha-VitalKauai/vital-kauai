@@ -181,6 +181,9 @@ export function IbogaJourneyPage() {
         </div>
       </section>
 
+      {/* ── Journey arc (interactive) ── */}
+      <JourneyArc />
+
       {/* ── Lead Capture ── */}
       <section className={styles.leadCapture}>
         <div className={styles.leadGrid}>
@@ -362,9 +365,6 @@ export function IbogaJourneyPage() {
           </div>
         </div>
       </section>
-
-      {/* ── Journey arc (interactive) ── */}
-      <JourneyArc />
 
       {/* ── Upcoming Ceremonies ── */}
       <section style={{ padding: "112px 32px", background: "var(--cream, #F5F0E8)", textAlign: "center" }}>
