@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import styles from "./island-residents-page.module.css";
@@ -90,6 +91,20 @@ export function IslandResidentsPage() {
             For those who live on Kauaʻi and feel the pull of this work. Rachel and Josh come
             to you.
           </p>
+        </div>
+      </section>
+
+      {/* Place ── full-bleed photo of Hanalei / North Shore */}
+      <section className={styles.placeBand}>
+        <div className={styles.placeImgWrap}>
+          <Image
+            src="/images/hanalei2.jpg"
+            alt="Hanalei Bay on Kauaʻi's North Shore"
+            fill
+            sizes="100vw"
+            className={styles.placeImg}
+            priority={false}
+          />
         </div>
       </section>
 
