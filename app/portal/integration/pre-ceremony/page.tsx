@@ -1234,6 +1234,11 @@ export default function PreCeremonyPage() {
                   This week&apos;s PNE (PsychoNeuroEnergetics) teaching introduces internal safety, the felt sense the nervous system rests into when all is well. From there, the PNE Guide walks through what happens when the system senses threat and how the body shifts into protection, and the internal and external structures, the people, places, and rhythms of your life, that build a foundation of safety from the inside out and the outside in.
                 </p>
               )}
+              {i === 1 && (
+                <p className="w1-body">
+                  This week&apos;s PNE (PsychoNeuroEnergetics) teaching introduces nervous system regulation, the body&apos;s natural movement between states of safety, protection, and rest. The PNE Guide walks through how to read the body&apos;s weather, ventral vagal, sympathetic, and dorsal vagal, the patterns of protection the system reaches for under stress, fight, flight, fawn, freeze, withdraw, soften inward, and the capacity to move through, how a regulated body returns to balance, and what that means as you prepare for ceremony.
+                </p>
+              )}
               {(() => {
                 const c = PRE_PNE_COMPANION[i]
                 const label = `Read Week ${i + 1} in The PsychoNeuroEnergetics (PNE) Guide${c?.theme ? `: ${c.theme}` : ''}`
