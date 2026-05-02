@@ -65,7 +65,7 @@ export default async function SupportPersonPage() {
 
       {/* Section 2: Before They Leave */}
       <Section id="before" num="02" label="Preparation" title="Before" titleEm="They Leave" rose={rose} border={border} sage={sage}>
-        <p style={prose}>Your person is following a rigorous preparation protocol, dietary changes, emotional introspection, physical preparation. They may already feel quieter or more inward than usual. A steady, calm presence from you is one of the most meaningful things you can offer.</p>
+        <p style={prose}>Your person is following a rigorous preparation protocol, dietary changes, emotional introspection, and physical preparation. They may already feel quieter or more inward than usual. A steady, calm presence from you is one of the most meaningful things you can offer.</p>
         <Callout color={sage} bg={sageLt} label="How You Might Support">
           Lighten their logistical load where you can. If they want to talk, listen without needing to fix anything. If they are pulling inward, let that be okay. Your genuine send-off, a simple expression of love and support as they leave, becomes part of the container they carry into ceremony.
         </Callout>
@@ -103,7 +103,7 @@ export default async function SupportPersonPage() {
         {/* Timeline */}
         <div style={{ margin: "40px 0" }}>
           {[
-            { time: "Days 1\u20133", title: "Stillness & Landing", text: "Rest, sleep, minimal stimulation. Quiet presence is the greatest gift." },
+            { time: "First days home", title: "Landing", text: "They are stepping back into ordinary life after several days of held space on Kaua\u02bbi. Welcome them gently. Invite them to share if they want to share, and let silence be welcome too." },
             { time: "Week 1\u20132", title: "Emergence", text: "Gradual return of presence, appetite, and speech. Emotions may move unexpectedly. Let them share at their own pace." },
             { time: "Weeks 2\u20138", title: "Active Integration", text: "Insights become changes \u2014 in habits, relationships, perspective. Witnessing with open presence is everything." },
             { time: "Months 2\u20136", title: "Stabilization", text: "The new ground becomes the new normal. Relationships often grow richer, more honest, and more present." },
