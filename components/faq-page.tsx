@@ -13,16 +13,6 @@ const FAQ_SECTIONS: FaqSection[] = [
     title: "Working with the Medicine",
     items: [
       {
-        question: "Where are you located?",
-        answer:
-          "Kauaʻi's North Shore, in Hanalei. One of the most pristine healing landscapes on Earth. Specific addresses are shared once you become a member.",
-      },
-      {
-        question: "How do I get to Kauaʻi?",
-        answer:
-          "Fly into Līhuʻe Airport (LIH), about one hour from the North Shore. Direct flights from several major US cities; international guests connect through Honolulu (HNL). Ground transport can be coordinated with us or arranged independently.",
-      },
-      {
         question: "Is Iboga legal?",
         answer:
           "Vital Kauaʻi operates as a legally established church. Our medicine work is held within a protected religious context. We are happy to speak with you directly about our legal structure.",
@@ -49,6 +39,16 @@ const FAQ_SECTIONS: FaqSection[] = [
     title: "Preparing Your Visit",
     items: [
       {
+        question: "Where are you located?",
+        answer:
+          "Kauaʻi's North Shore, in Hanalei. One of the most pristine healing landscapes on Earth. Specific addresses are shared once you become a member.",
+      },
+      {
+        question: "How do I get to Kauaʻi?",
+        answer:
+          "Fly into Līhuʻe Airport (LIH), about one hour from the North Shore. Direct flights from several major US cities; international guests connect through Honolulu (HNL). Ground transport can be coordinated with us or arranged independently.",
+      },
+      {
         question: "How long is a typical stay?",
         answer:
           "Our group ceremony is a seven-day arc, arriving on Day 1, two days of preparation, ceremony on Day 3, three days of integration, and a closing on Day 7. We discuss your specific journey and any additional support you may need on your discovery call.",
@@ -61,7 +61,7 @@ const FAQ_SECTIONS: FaqSection[] = [
       {
         question: "What is the contribution?",
         answer:
-          "Vital Kauaʻi is a legally established church, and all contributions support our sacred mission. Every journey is shaped around you, and the contribution is discussed personally on your discovery call. We believe this work should be accessible to anyone who is truly called. No one is turned away based on financial circumstances. Kamaʻāina and need-based considerations are always welcome in that conversation.",
+          "Vital Kauaʻi is a legally established church, and all contributions support our sacred mission. For members joining the weeklong ceremony arc, including full preparation and integration, the contribution begins at $15,000.\n\nEvery journey is shaped around you, and the specifics are discussed personally on your discovery call. We believe this work should be accessible to anyone who is truly called: kamaʻāina rates and need-based arrangements are always welcome in that conversation, and we encourage you to reach out to us.",
       },
       {
         question: "What does the discovery call look like?",
@@ -126,7 +126,7 @@ export function FaqPage() {
         .faq-q { display:flex;align-items:center;justify-content:space-between;gap:16px;font-family: var(--font-display, 'Cormorant Garamond'), serif;font-size:19px;font-weight:400;color: var(--cream, #F5F0E8); }
         .faq-toggle { flex-shrink:0;font-size:20px;color: var(--gold, #C8A96E);transition:transform .3s; }
         .faq-item-open .faq-toggle { transform:rotate(45deg); }
-        .faq-a { display:block;max-height:0;overflow:hidden;font-size:13.5px;line-height:1.9;color: rgb(245 240 232 / 0.7);transition:max-height .5s ease, padding .3s; }
+        .faq-a { display:block;max-height:0;overflow:hidden;font-size:13.5px;line-height:1.9;color: rgb(245 240 232 / 0.7);white-space:pre-line;transition:max-height .5s ease, padding .3s; }
         .faq-item-open .faq-a { max-height:2000px;padding-top:14px; }
         @media (max-width: 768px) {
           .faq-section + .faq-section { margin-top: 56px; }

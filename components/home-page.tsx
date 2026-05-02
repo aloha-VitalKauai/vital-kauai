@@ -67,7 +67,7 @@ const faqs = [
   {
     question: "What is the contribution?",
     answer:
-      "Vital Kauaʻi is a legally established church, and all contributions support our sacred mission. Every journey is shaped around you, and the contribution is discussed personally on your discovery call. We believe this work should be accessible to anyone who is truly called. No one is turned away based on financial circumstances. Kamaʻāina and need-based considerations are always welcome in that conversation.",
+      "Vital Kauaʻi is a legally established church, and all contributions support our sacred mission. For members joining the weeklong ceremony arc, including full preparation and integration, the contribution begins at $15,000.\n\nEvery journey is shaped around you, and the specifics are discussed personally on your discovery call. We believe this work should be accessible to anyone who is truly called: kamaʻāina rates and need-based arrangements are always welcome in that conversation, and we encourage you to reach out to us.",
   },
   {
     question: "How do I know if I'm ready?",
