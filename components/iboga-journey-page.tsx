@@ -248,47 +248,6 @@ export function IbogaJourneyPage() {
         </div>
       </section>
 
-      {/* ── Understanding the Medicine (cream) ── */}
-      <section className={styles.comparisonSection}>
-        <div className={styles.medicineComparison}>
-          <span className={styles.comparisonEyebrowMain}>Understanding the Medicine</span>
-          <h3 className={styles.medicineComparisonTitle}>
-            Iboga Root Bark <em className={styles.medicineComparisonAnd}>&amp;</em> Ibogaine
-          </h3>
-          <p className={styles.medicineComparisonSub}>Two ways the plant has come to the West.</p>
-
-          <div className={styles.comparisonPair}>
-            <article className={`${styles.comparisonCard} ${styles.comparisonCardSage}`}>
-              <span className={styles.comparisonCardKicker}>Whole Plant</span>
-              <h4 className={styles.comparisonCardTitle}>Iboga Root Bark</h4>
-              <p className={styles.comparisonCardLede}>The full intelligence of the plant, intact.</p>
-              <ul className={styles.comparisonAttributes}>
-                <li>Full-spectrum whole plant, all alkaloids intact</li>
-                <li>Slower, titrated onset &mdash; a gradual, conscious unfolding</li>
-                <li>Deep somatic, visionary, and autobiographical processing</li>
-                <li>Buffered cardiovascular effect</li>
-              </ul>
-            </article>
-
-            <div className={styles.comparisonDivider} aria-hidden>
-              <span className={styles.comparisonDividerOrnament} />
-            </div>
-
-            <article className={`${styles.comparisonCard} ${styles.comparisonCardGold}`}>
-              <span className={styles.comparisonCardKicker}>Isolated Alkaloid</span>
-              <h4 className={styles.comparisonCardTitle}>Ibogaine</h4>
-              <p className={styles.comparisonCardLede}>A single thread, separated from the whole.</p>
-              <ul className={styles.comparisonAttributes}>
-                <li>Single isolated alkaloid</li>
-                <li>Fast onset, more abrupt</li>
-                <li>Less access to plant intelligence and spirit</li>
-                <li>Stronger cardiotoxic profile; can prolong QT interval</li>
-              </ul>
-            </article>
-          </div>
-        </div>
-      </section>
-
       {/* ── Science ── */}
       <section className={styles.science} id="science">
         <div className={styles.scienceIntro}>
@@ -559,6 +518,47 @@ export function IbogaJourneyPage() {
           >
             Book a Discovery Call
           </a>
+        </div>
+      </section>
+
+      {/* ── Understanding the Medicine (cream) ── */}
+      <section className={styles.comparisonSection}>
+        <div className={styles.medicineComparison}>
+          <span className={styles.comparisonEyebrowMain}>Understanding the Medicine</span>
+          <h3 className={styles.medicineComparisonTitle}>
+            Iboga Root Bark <em className={styles.medicineComparisonAnd}>&amp;</em> Ibogaine
+          </h3>
+          <p className={styles.medicineComparisonSub}>Two ways the plant has come to the West.</p>
+
+          <div className={styles.comparisonPair}>
+            <article className={`${styles.comparisonCard} ${styles.comparisonCardSage}`}>
+              <span className={styles.comparisonCardKicker}>Whole Plant</span>
+              <h4 className={styles.comparisonCardTitle}>Iboga Root Bark</h4>
+              <p className={styles.comparisonCardLede}>The full intelligence of the plant, intact.</p>
+              <ul className={styles.comparisonAttributes}>
+                <li>Full-spectrum whole plant, all alkaloids intact</li>
+                <li>Slower, titrated onset &mdash; a gradual, conscious unfolding</li>
+                <li>Deep somatic, visionary, and autobiographical processing</li>
+                <li>Buffered cardiovascular effect</li>
+              </ul>
+            </article>
+
+            <div className={styles.comparisonDivider} aria-hidden>
+              <span className={styles.comparisonDividerOrnament} />
+            </div>
+
+            <article className={`${styles.comparisonCard} ${styles.comparisonCardGold}`}>
+              <span className={styles.comparisonCardKicker}>Isolated Alkaloid</span>
+              <h4 className={styles.comparisonCardTitle}>Ibogaine</h4>
+              <p className={styles.comparisonCardLede}>A single thread, separated from the whole.</p>
+              <ul className={styles.comparisonAttributes}>
+                <li>Single isolated alkaloid</li>
+                <li>Fast onset, more abrupt</li>
+                <li>Less access to plant intelligence and spirit</li>
+                <li>Stronger cardiotoxic profile; can prolong QT interval</li>
+              </ul>
+            </article>
+          </div>
         </div>
       </section>
 
