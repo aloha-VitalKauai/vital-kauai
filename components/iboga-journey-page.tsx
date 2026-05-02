@@ -463,11 +463,12 @@ export function IbogaJourneyPage() {
         <div className={styles.medicineComparison}>
           <span className={styles.comparisonEyebrowMain}>Understanding the Medicine</span>
           <h3 className={styles.medicineComparisonTitle}>
-            Iboga Root Bark <em className={styles.medicineComparisonAnd}>&amp;</em> Ibogaine
+            Iboga Root Bark, <em className={styles.medicineComparisonAnd}>Total Alkaloid</em>{" "}
+            &amp; Ibogaine
           </h3>
-          <p className={styles.medicineComparisonSub}>Two ways the plant has come to the West.</p>
+          <p className={styles.medicineComparisonSub}>Three ways the plant has come to the West.</p>
 
-          <div className={styles.comparisonPair}>
+          <div className={styles.comparisonTrio}>
             <article className={`${styles.comparisonCard} ${styles.comparisonCardSage}`}>
               <span className={styles.comparisonCardKicker}>Whole Plant</span>
               <h4 className={styles.comparisonCardTitle}>Iboga Root Bark</h4>
@@ -480,9 +481,18 @@ export function IbogaJourneyPage() {
               </ul>
             </article>
 
-            <div className={styles.comparisonDivider} aria-hidden>
-              <span className={styles.comparisonDividerOrnament} />
-            </div>
+            <article className={`${styles.comparisonCard} ${styles.comparisonCardTerra}`}>
+              <span className={styles.comparisonCardKicker}>Full-Spectrum Extract</span>
+              <h4 className={styles.comparisonCardTitle}>Total Alkaloid (TA)</h4>
+              <p className={styles.comparisonCardLede}>The plant&apos;s full alkaloid family, concentrated.</p>
+              <ul className={styles.comparisonAttributes}>
+                <li>Contains the whole alkaloid family &mdash; ibogaine alongside ibogamine, tabernanthine, ibogaline, and more</li>
+                <li>Concentrated and standardized for precise dosing</li>
+                <li>Faster onset than root bark; more buffered than ibogaine alone</li>
+                <li>Without the fibrous matter of the root</li>
+                <li>Used in many medicalized clinic settings</li>
+              </ul>
+            </article>
 
             <article className={`${styles.comparisonCard} ${styles.comparisonCardGold}`}>
               <span className={styles.comparisonCardKicker}>Isolated Alkaloid</span>

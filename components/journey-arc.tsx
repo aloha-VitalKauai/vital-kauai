@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useRef, useState } from "react";
 import styles from "./journey-arc.module.css";
@@ -8,19 +9,24 @@ type PhaseKey = "prep" | "ceremony" | "integration";
 
 type Phase = {
   key: PhaseKey;
-  number: string;
+  numeral: string;
+  numberLabel: string;
   title: string;
   week: string;
   essence: string;
   items: string[];
-  color: string;
-  colorDeep: string;
+  image: string;
+  imageAlt: string;
+  imagePosition?: string;
+  accent: string;
+  accentDeep: string;
 };
 
 const PHASES: Phase[] = [
   {
     key: "prep",
-    number: "01",
+    numeral: "I",
+    numberLabel: "01",
     title: "Preparation",
     week: "6+ Weeks",
     essence: "Your commitment before you sit with the medicine.",
@@ -33,12 +39,16 @@ const PHASES: Phase[] = [
       "Diet preparation and gathering your home support team",
       "Crafting your questions for the medicine",
     ],
-    color: "#7a2417",
-    colorDeep: "#3d100a",
+    image: "/images/kauaiwaterfall.jpeg",
+    imageAlt: "Kauaʻi waterfall",
+    imagePosition: "center 40%",
+    accent: "#3a6b48",
+    accentDeep: "#1f3d27",
   },
   {
     key: "ceremony",
-    number: "02",
+    numeral: "II",
+    numberLabel: "02",
     title: "Ceremony",
     week: "1 Week · Hanalei, Kauaʻi",
     essence: "A deeply held arc, rooted in evidence and lineage.",
@@ -54,12 +64,16 @@ const PHASES: Phase[] = [
       "Group support and 1:1 integration with your integration guide",
       "Held by experienced facilitators from arrival through closing",
     ],
-    color: "#1c4a2e",
-    colorDeep: "#0c2917",
+    image: "/images/ibogaroot.jpeg",
+    imageAlt: "Iboga root bark",
+    imagePosition: "center center",
+    accent: "#9c4423",
+    accentDeep: "#5e2410",
   },
   {
     key: "integration",
-    number: "03",
+    numeral: "III",
+    numberLabel: "03",
     title: "Integration",
     week: "6+ Weeks & Beyond",
     essence: "Where the work takes root.",
@@ -69,29 +83,13 @@ const PHASES: Phase[] = [
       "The PsychoNeuroEnergetics (PNE) Guide — week-by-week teachings, reflections, and practices to integrate your journey",
       "Lifetime invitation into the Vital Kauaʻi community of those who’ve walked this path",
     ],
-    color: "#143046",
-    colorDeep: "#08182a",
+    image: "/images/napali.jpeg",
+    imageAlt: "Nā Pali coast at golden hour",
+    imagePosition: "center 60%",
+    accent: "#1f4d73",
+    accentDeep: "#0f2c45",
   },
 ];
-
-// Real-rainbow geometry: bands touch each other (radii spaced exactly by stroke width).
-const STROKE = 40;
-const ARC_BANDS: Array<{ key: PhaseKey; r: number }> = [
-  { key: "prep", r: 280 },
-  { key: "ceremony", r: 240 },
-  { key: "integration", r: 200 },
-];
-
-const CENTER_X = 400;
-const CENTER_Y = 320;
-const VIEWBOX_W = 800;
-const VIEWBOX_H = 360;
-
-function arcPath(r: number) {
-  const startX = CENTER_X - r;
-  const endX = CENTER_X + r;
-  return `M ${startX} ${CENTER_Y} A ${r} ${r} 0 0 1 ${endX} ${CENTER_Y}`;
-}
 
 function PhasePanel({ phase }: { phase: Phase }) {
   return (
@@ -99,13 +97,13 @@ function PhasePanel({ phase }: { phase: Phase }) {
       className={styles.panel}
       id={`journey-panel-${phase.key}`}
       role="tabpanel"
-      style={{ borderTopColor: phase.color }}
+      style={{ borderTopColor: phase.accent }}
     >
-      <span className={styles.panelEyebrow} style={{ color: phase.colorDeep }}>
-        {phase.number} · {phase.week}
+      <span className={styles.panelEyebrow} style={{ color: phase.accentDeep }}>
+        {phase.numberLabel} · {phase.week}
       </span>
       <h3 className={styles.panelTitle}>{phase.title}</h3>
-      <p className={styles.panelEssence} style={{ color: phase.colorDeep }}>
+      <p className={styles.panelEssence} style={{ color: phase.accentDeep }}>
         {phase.essence}
       </p>
       <ul className={styles.list}>
@@ -120,21 +118,21 @@ function PhasePanel({ phase }: { phase: Phase }) {
 export function JourneyArc() {
   const [activeIdx, setActiveIdx] = useState(0);
   const active = PHASES[activeIdx];
-  const pillRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const cardRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  // On mobile, inserting/removing the inline panel reflows the list and the
-  // browser's default focus-scroll jumps the viewport. Anchor the clicked pill
-  // to a stable spot (just below the fixed nav) so taps feel intentional.
-  const handleMobileSelect = (i: number) => {
+  // Keep the tapped card stable in the viewport on mobile.
+  const handleSelect = (i: number) => {
     if (activeIdx === i) return;
     setActiveIdx(i);
-    requestAnimationFrame(() => {
-      const el = pillRefs.current[i];
-      if (!el) return;
-      const navOffset = 96;
-      const top = el.getBoundingClientRect().top + window.scrollY - navOffset;
-      window.scrollTo({ top, behavior: "smooth" });
-    });
+    if (typeof window !== "undefined" && window.innerWidth <= 700) {
+      requestAnimationFrame(() => {
+        const el = cardRefs.current[i];
+        if (!el) return;
+        const navOffset = 96;
+        const top = el.getBoundingClientRect().top + window.scrollY - navOffset;
+        window.scrollTo({ top, behavior: "smooth" });
+      });
+    }
   };
 
   return (
@@ -150,151 +148,46 @@ export function JourneyArc() {
         </p>
       </div>
 
-      {/* ── Desktop / tablet: arc + panel below ── */}
-      <div className={styles.desktopWrap}>
-        <svg
-          viewBox={`0 0 ${VIEWBOX_W} ${VIEWBOX_H}`}
-          preserveAspectRatio="xMidYMax meet"
-          className={styles.arc}
-          role="img"
-          aria-label="Journey arc — Preparation, Ceremony, Integration"
-        >
-          <defs>
-            {ARC_BANDS.map((band) => (
-              <path
-                key={band.key}
-                id={`arc-path-${band.key}`}
-                d={arcPath(band.r)}
-                fill="none"
-              />
-            ))}
-            {PHASES.map((phase) => (
-              <linearGradient
-                key={phase.key}
-                id={`grad-${phase.key}`}
-                x1="0%"
-                y1="0%"
-                x2="0%"
-                y2="100%"
-              >
-                <stop offset="0%" stopColor={phase.color} />
-                <stop offset="100%" stopColor={phase.colorDeep} />
-              </linearGradient>
-            ))}
-            <filter id="arc-shadow" x="-10%" y="-10%" width="120%" height="120%">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="8" />
-              <feOffset dy="10" result="off" />
-              <feComponentTransfer>
-                <feFuncA type="linear" slope="0.28" />
-              </feComponentTransfer>
-              <feMerge>
-                <feMergeNode />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
-
-          {/* Bands ── jewel-tone gradients, touching */}
-          <g filter="url(#arc-shadow)">
-            {ARC_BANDS.map((band) => {
-              const phase = PHASES.find((p) => p.key === band.key)!;
-              const isActive = active.key === band.key;
-              return (
-                <g
-                  key={band.key}
-                  className={styles.bandGroup}
-                  onClick={() => setActiveIdx(PHASES.findIndex((p) => p.key === band.key))}
-                  style={{ cursor: "pointer" }}
-                >
-                  <path
-                    d={arcPath(band.r)}
-                    fill="none"
-                    stroke={`url(#grad-${phase.key})`}
-                    strokeWidth={STROKE}
-                    strokeLinecap="butt"
-                    opacity={isActive ? 1 : 0.55}
-                    style={{ transition: "opacity 0.45s ease" }}
-                  />
-                </g>
-              );
-            })}
-          </g>
-
-          {/* Brass hairlines along every band's outer edge */}
-          {ARC_BANDS.map((band) => {
-            const phase = PHASES.find((p) => p.key === band.key)!;
-            const isActive = active.key === band.key;
-            return (
-              <path
-                key={band.key}
-                d={arcPath(band.r + STROKE / 2 - 0.5)}
-                fill="none"
-                stroke="#d6b878"
-                strokeWidth={isActive ? 1.6 : 0.9}
-                strokeOpacity={isActive ? 0.95 : 0.45}
-                style={{ transition: "stroke-width 0.4s ease, stroke-opacity 0.4s ease" }}
-                onClick={() => setActiveIdx(PHASES.findIndex((p) => p.key === phase.key))}
-              />
-            );
-          })}
-
-          {/* Curved labels — cream over each band */}
-          {ARC_BANDS.map((band) => {
-            const phase = PHASES.find((p) => p.key === band.key)!;
-            const isActive = active.key === band.key;
-            return (
-              <text
-                key={band.key}
-                className={styles.bandLabel}
-                fill="#f5f0e8"
-                opacity={isActive ? 1 : 0.78}
-                style={{ transition: "opacity 0.35s ease", cursor: "pointer" }}
-                onClick={() => setActiveIdx(PHASES.findIndex((p) => p.key === band.key))}
-              >
-                <textPath
-                  href={`#arc-path-${band.key}`}
-                  startOffset="50%"
-                  textAnchor="middle"
-                >
-                  {phase.title}
-                </textPath>
-              </text>
-            );
-          })}
-        </svg>
-
-        {/* Connector + panel anchored directly below the active arc */}
-        <div className={styles.connector} aria-hidden style={{ background: active.color }} />
-        <div key={active.key} className={styles.panelWrap}>
-          <PhasePanel phase={active} />
-        </div>
-      </div>
-
-      {/* ── Mobile: stacked rectangles, inline panel under the active one ── */}
-      <ul className={styles.mobileStack} role="tablist">
+      {/* ── Three image-led chapter cards ── */}
+      <ul className={styles.chapters} role="tablist">
         {PHASES.map((phase, i) => {
           const isActive = i === activeIdx;
           return (
             <Fragment key={phase.key}>
-              <li>
+              <li className={styles.chapterItem}>
                 <button
                   ref={(el) => {
-                    pillRefs.current[i] = el;
+                    cardRefs.current[i] = el;
                   }}
                   type="button"
                   role="tab"
                   aria-selected={isActive}
-                  className={`${styles.mobilePill} ${isActive ? styles.mobilePillActive : ""}`}
-                  style={{ background: phase.color }}
-                  onClick={() => handleMobileSelect(i)}
+                  aria-controls={`journey-panel-${phase.key}`}
+                  className={`${styles.chapter} ${isActive ? styles.chapterActive : ""}`}
+                  onClick={() => handleSelect(i)}
                 >
-                  <span className={styles.mobilePillNumber}>{phase.number}</span>
-                  <span className={styles.mobilePillTitle}>{phase.title}</span>
-                  <span className={styles.mobilePillWeek}>{phase.week}</span>
+                  <div className={styles.chapterImgWrap}>
+                    <Image
+                      src={phase.image}
+                      alt={phase.imageAlt}
+                      fill
+                      sizes="(max-width: 900px) 100vw, 33vw"
+                      className={styles.chapterImg}
+                      style={{ objectPosition: phase.imagePosition ?? "center" }}
+                    />
+                    <div className={styles.chapterOverlay} />
+                    <span className={styles.chapterNumeral}>{phase.numeral}</span>
+                    <div className={styles.chapterCaption}>
+                      <span className={styles.chapterWeek}>{phase.week}</span>
+                      <h3 className={styles.chapterTitle}>{phase.title}</h3>
+                      <p className={styles.chapterEssence}>{phase.essence}</p>
+                    </div>
+                  </div>
                 </button>
               </li>
+              {/* Mobile inline panel — appears immediately under the active card */}
               {isActive && (
-                <li className={styles.mobilePanelWrap} key={`panel-${phase.key}`}>
+                <li className={styles.mobilePanelWrap} aria-hidden={false}>
                   <PhasePanel phase={phase} />
                 </li>
               )}
@@ -302,6 +195,14 @@ export function JourneyArc() {
           );
         })}
       </ul>
+
+      {/* Desktop / tablet panel sits below all three cards */}
+      <div className={styles.desktopPanelWrap}>
+        <div className={styles.desktopConnector} aria-hidden style={{ background: active.accent }} />
+        <div key={active.key} className={styles.desktopPanel}>
+          <PhasePanel phase={active} />
+        </div>
+      </div>
 
       <p className={styles.cta}>
         For a fuller view of the work week-by-week,{" "}
