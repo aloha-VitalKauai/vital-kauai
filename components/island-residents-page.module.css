@@ -121,6 +121,25 @@
   line-height: 1.8;
 }
 
+/* ── PLACE BAND (Hanalei photo between hero and body) ── */
+.placeBand {
+  position: relative;
+  width: 100%;
+  background: var(--deep);
+}
+
+.placeImgWrap {
+  position: relative;
+  width: 100%;
+  height: clamp(260px, 48vw, 540px);
+  overflow: hidden;
+}
+
+.placeImg {
+  object-fit: cover;
+  object-position: center 55%;
+}
+
 /* ── BODY ── */
 .section { padding: 120px 60px; background: var(--warm-white); }
 .sectionInner { max-width: 720px; margin: 0 auto; }
