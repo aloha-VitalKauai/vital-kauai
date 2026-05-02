@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { fetchPublicCohorts, formatCohortRange, groupCohortsByDate, isCohortFull, spotsLeftLabel, type PublicCohort } from "@/lib/cohorts";
 import styles from "./iboga-journey-page.module.css";
+import { JourneyArc } from "./journey-arc";
 
 export function IbogaJourneyPage() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -248,47 +249,6 @@ export function IbogaJourneyPage() {
         </div>
       </section>
 
-      {/* ── Understanding the Medicine (cream) ── */}
-      <section className={styles.comparisonSection}>
-        <div className={styles.medicineComparison}>
-          <span className={styles.comparisonEyebrowMain}>Understanding the Medicine</span>
-          <h3 className={styles.medicineComparisonTitle}>
-            Iboga Root Bark <em className={styles.medicineComparisonAnd}>&amp;</em> Ibogaine
-          </h3>
-          <p className={styles.medicineComparisonSub}>Two ways the plant has come to the West.</p>
-
-          <div className={styles.comparisonPair}>
-            <article className={`${styles.comparisonCard} ${styles.comparisonCardSage}`}>
-              <span className={styles.comparisonCardKicker}>Whole Plant</span>
-              <h4 className={styles.comparisonCardTitle}>Iboga Root Bark</h4>
-              <p className={styles.comparisonCardLede}>The full intelligence of the plant, intact.</p>
-              <ul className={styles.comparisonAttributes}>
-                <li>Full-spectrum whole plant, all alkaloids intact</li>
-                <li>Slower, titrated onset &mdash; a gradual, conscious unfolding</li>
-                <li>Deep somatic, visionary, and autobiographical processing</li>
-                <li>Buffered cardiovascular effect</li>
-              </ul>
-            </article>
-
-            <div className={styles.comparisonDivider} aria-hidden>
-              <span className={styles.comparisonDividerOrnament} />
-            </div>
-
-            <article className={`${styles.comparisonCard} ${styles.comparisonCardGold}`}>
-              <span className={styles.comparisonCardKicker}>Isolated Alkaloid</span>
-              <h4 className={styles.comparisonCardTitle}>Ibogaine</h4>
-              <p className={styles.comparisonCardLede}>A single thread, separated from the whole.</p>
-              <ul className={styles.comparisonAttributes}>
-                <li>Single isolated alkaloid</li>
-                <li>Fast onset, more abrupt</li>
-                <li>Less access to plant intelligence and spirit</li>
-                <li>Stronger cardiotoxic profile; can prolong QT interval</li>
-              </ul>
-            </article>
-          </div>
-        </div>
-      </section>
-
       {/* ── Science ── */}
       <section className={styles.science} id="science">
         <div className={styles.scienceIntro}>
@@ -403,72 +363,8 @@ export function IbogaJourneyPage() {
         </div>
       </section>
 
-      {/* ── Protocol ── */}
-      <section className={styles.protocol} id="protocol">
-        <div className={styles.protocolIntro}>
-          <span className={styles.sectionLabel}>The Journey Structure</span>
-          <h2 className={styles.sectionTitle}>
-            Months of{" "}
-            <em className={styles.sageLightItalic}>Transformation</em>
-          </h2>
-          <p className={styles.protocolBody}>
-            The Iboga Journey is a held arc of preparation, ceremony, and integration that unfolds
-            over months. Every phase is guided, every step supported.
-          </p>
-        </div>
-
-        <div className={styles.protocolGrid}>
-          <div className={styles.protocolPhase}>
-            <span className={styles.phaseNumber}>01</span>
-            <h3 className={styles.phaseTitle}>Preparation</h3>
-            <span className={styles.phaseWeek}>6+ Weeks</span>
-            <p className={styles.phaseEssence}>Your commitment before you sit with the medicine.</p>
-            <ul className={styles.phaseList}>
-              <li>Two 1:1 calls with your personal integration guide (Weeks 2 and 4)</li>
-              <li>Two 1:1 preparation and check-in calls with Rachel &amp; Josh</li>
-              <li>Weekly journal prompts and reflections in your member portal</li>
-              <li>The PsychoNeuroEnergetics (PNE) Guide &mdash; week-by-week teachings, reflections, and practices to expand your nervous-system capacity</li>
-              <li>Medical screening, labs, and EKG with your physician</li>
-              <li>Diet preparation and gathering your home support team</li>
-              <li>Crafting your questions for the medicine</li>
-            </ul>
-          </div>
-          <div className={styles.protocolPhase}>
-            <span className={styles.phaseNumber}>02</span>
-            <h3 className={styles.phaseTitle}>Ceremony</h3>
-            <span className={styles.phaseWeek}>1 Week &middot; Hanalei, Kaua&#699;i</span>
-            <p className={styles.phaseEssence}>A deeply held arc, rooted in evidence and lineage.</p>
-            <ul className={styles.phaseList}>
-              <li>A small cohort of up to six members over seven days</li>
-              <li>Daily meditation, breathwork, movement, and/or yoga</li>
-              <li>Three therapeutic bodywork or energy work sessions</li>
-              <li>Ceremonial walk along the Nā Pali coast and water ritual</li>
-              <li>Fire ritual and whole-plant Iboga ceremony</li>
-              <li>Sound healing ceremony</li>
-              <li>Hoʻoponopono ceremony</li>
-              <li>Nourishment sourced from the ʻāina</li>
-              <li>Group support and 1:1 integration with your integration guide</li>
-              <li>Held by experienced facilitators from arrival through closing</li>
-            </ul>
-          </div>
-          <div className={styles.protocolPhase}>
-            <span className={styles.phaseNumber}>03</span>
-            <h3 className={styles.phaseTitle}>Integration</h3>
-            <span className={styles.phaseWeek}>6+ Weeks &amp; Beyond</span>
-            <p className={styles.phaseEssence}>Where the work takes root.</p>
-            <ul className={styles.phaseList}>
-              <li>Weekly 1:1 calls with your integration guide</li>
-              <li>Continued member-portal support to anchor what arose into new patterns</li>
-              <li>The PsychoNeuroEnergetics (PNE) Guide &mdash; week-by-week teachings, reflections, and practices to integrate your journey</li>
-              <li>Lifetime invitation into the Vital Kaua&#699;i community of those who&apos;ve walked this path</li>
-            </ul>
-          </div>
-        </div>
-        <p className={styles.protocolFooter}>
-          For a fuller view of the work week-by-week,{" "}
-          <Link href="/begin-your-journey">book a discovery call</Link>.
-        </p>
-      </section>
+      {/* ── Journey arc (interactive) ── */}
+      <JourneyArc />
 
       {/* ── Upcoming Ceremonies ── */}
       <section style={{ padding: "112px 32px", background: "var(--cream, #F5F0E8)", textAlign: "center" }}>
@@ -559,6 +455,47 @@ export function IbogaJourneyPage() {
           >
             Book a Discovery Call
           </a>
+        </div>
+      </section>
+
+      {/* ── Understanding the Medicine (cream) ── */}
+      <section className={styles.comparisonSection}>
+        <div className={styles.medicineComparison}>
+          <span className={styles.comparisonEyebrowMain}>Understanding the Medicine</span>
+          <h3 className={styles.medicineComparisonTitle}>
+            Iboga Root Bark <em className={styles.medicineComparisonAnd}>&amp;</em> Ibogaine
+          </h3>
+          <p className={styles.medicineComparisonSub}>Two ways the plant has come to the West.</p>
+
+          <div className={styles.comparisonPair}>
+            <article className={`${styles.comparisonCard} ${styles.comparisonCardSage}`}>
+              <span className={styles.comparisonCardKicker}>Whole Plant</span>
+              <h4 className={styles.comparisonCardTitle}>Iboga Root Bark</h4>
+              <p className={styles.comparisonCardLede}>The full intelligence of the plant, intact.</p>
+              <ul className={styles.comparisonAttributes}>
+                <li>Full-spectrum whole plant, all alkaloids intact</li>
+                <li>Slower, titrated onset &mdash; a gradual, conscious unfolding</li>
+                <li>Deep somatic, visionary, and autobiographical processing</li>
+                <li>Buffered cardiovascular effect</li>
+              </ul>
+            </article>
+
+            <div className={styles.comparisonDivider} aria-hidden>
+              <span className={styles.comparisonDividerOrnament} />
+            </div>
+
+            <article className={`${styles.comparisonCard} ${styles.comparisonCardGold}`}>
+              <span className={styles.comparisonCardKicker}>Isolated Alkaloid</span>
+              <h4 className={styles.comparisonCardTitle}>Ibogaine</h4>
+              <p className={styles.comparisonCardLede}>A single thread, separated from the whole.</p>
+              <ul className={styles.comparisonAttributes}>
+                <li>Single isolated alkaloid</li>
+                <li>Fast onset, more abrupt</li>
+                <li>Less access to plant intelligence and spirit</li>
+                <li>Stronger cardiotoxic profile; can prolong QT interval</li>
+              </ul>
+            </article>
+          </div>
         </div>
       </section>
 
