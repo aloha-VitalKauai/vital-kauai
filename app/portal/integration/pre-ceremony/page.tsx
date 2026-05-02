@@ -271,7 +271,7 @@ const WEEKS = [
     subtitle: '',
     carryForward: 'You named what must change and what you\'re committing to. This week the work moves from mind into body. The clarity you found last week needs a regulated nervous system to land in. That\'s what this week builds.',
     reentry: { strong: 'Arriving at this week behind?', text: ' If you haven\'t yet completed Week 2\'s integration call, do that first, before starting anything here. One real conversation with your guide is worth more than moving forward alone. If you\'re behind on journaling, write just five minutes on Week 1\'s prompts before opening Week 3. Start here: one integration call scheduled, one journal prompt written.' },
-    sub: 'You have everything you need, right here, in this moment. The past is memory dressed as nostalgia or regret. The future, imagination, in the shape of hope or anxiety. Now is the only ground that is true. Now is the only place where change and choice can happen.\n\nWeek 3 is about remembering the power of the present moment. Through simple practices of breath, body, awareness, and sensation, you build the muscle of presence, and capacity to be with what is. When ceremony comes, this is what carries you.',
+    sub: 'You have everything you need, right here, in this moment. The past is memory dressed as nostalgia or regret. The future is vision or imagination, in the shape of hope or anxiety. Now is the only ground that is true. Now is the only place where change and choice can happen.\n\nWeek 3 is about remembering the power of the present moment. Through simple practices of breath, body awareness, and sensation, you build the muscle of presence, and capacity to be with what is. When ceremony comes, this is what carries you.',
     video: { label: 'A Message from Rachel & Josh · Week 3', text: 'In this week’s video, Rachel and Josh share what Manawa has meant in their own lives and how returning to the body has shaped the way they meet what each day brings.' },
     box: { type: 'info', label: 'If something surfaces this week', text: 'Iboga is intelligent and relational. It begins its work the moment you say yes. If difficult material arises, old grief, anxiety, somatic intensity, here is what to do: slow down deliberately. Bring your attention to one physical sensation at a time. Breathe. Place both feet on the floor. Be with what is arising, presence is enough. Your integration guide is available between sessions. Reach out whenever you need support.\n\nSome days will feel harder to begin. Noticing that, naming it honestly, is itself the practice.' },
     actionLabel: 'Actions this week, 4 only',
@@ -854,7 +854,8 @@ export default function PreCeremonyPage() {
         .w1p-title { font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5.2vw,58px);font-weight:300;line-height:1.06;margin:0 0 18px;color:var(--ink); }
         .w1p-title em { font-style:italic;color:var(--sage); }
         .w1p-pull { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(17px,1.8vw,21px);color:var(--sage);line-height:1.55;margin:0 0 26px;letter-spacing:.015em; }
-        .w1p-body { font-size:15.5px;color:var(--stone);line-height:1.95;max-width:680px;padding-bottom:40px;border-bottom:1px solid var(--border);margin:0; }
+        .w1p-body { font-size:15.5px;color:var(--stone);line-height:1.95;max-width:680px;margin:0 0 18px; }
+        .w1p-body:last-child { margin-bottom:0;padding-bottom:40px;border-bottom:1px solid var(--border); }
 
         /* PRINCIPLE CARD, Hawaiian principle of the week */
         .principle-card { background:var(--cream); border-left:3px solid var(--gold); border-radius:2px; padding:56px 60px; margin-bottom:40px; }
@@ -1276,6 +1277,22 @@ export default function PreCeremonyPage() {
                     <div className="pne-step"><span className="pne-step-time">8 sec</span><span className="pne-step-text">Exhale through the mouth. Slow, soft, complete.</span></div>
                   </div>
                   <p className="vp-text pne-practice-closer">Repeat for four cycles.</p>
+                </div>
+              ) : i === 2 ? (
+                <div className="pne-detail pne-practice-rich">
+                  <div className="vp-label">This Week&apos;s PNE Practice: A Six-Step Inner Practice</div>
+                  <h4 className="pne-practice-title">A Six-Step Inner Practice</h4>
+                  <p className="pne-practice-tag">A gentle progression for meeting any sensation that calls for attention</p>
+                  <p className="vp-text pne-practice-p">Choose any sensation that calls to you. Walk it gently through the six steps.</p>
+                  <div className="pne-practice-steps">
+                    <div className="pne-step"><span className="pne-step-time">I</span><span className="pne-step-text"><strong>Notice the Sensation.</strong> &ldquo;What am I feeling right now in my body?&rdquo;</span></div>
+                    <div className="pne-step"><span className="pne-step-time">II</span><span className="pne-step-text"><strong>Name It Without Judgment.</strong> &ldquo;Tightness.&rdquo; &ldquo;Heaviness.&rdquo; &ldquo;Warmth.&rdquo;</span></div>
+                    <div className="pne-step"><span className="pne-step-time">III</span><span className="pne-step-text"><strong>Make Space for It.</strong> &ldquo;Can I welcome it? Can I breathe into it?&rdquo;</span></div>
+                    <div className="pne-step"><span className="pne-step-time">IV</span><span className="pne-step-text"><strong>Follow Its Movement.</strong> &ldquo;Notice any shifts. Stay curious.&rdquo;</span></div>
+                    <div className="pne-step"><span className="pne-step-time">V</span><span className="pne-step-text"><strong>Ask Gently.</strong> &ldquo;What might this be about?&rdquo;</span></div>
+                    <div className="pne-step"><span className="pne-step-time">VI</span><span className="pne-step-text"><strong>Offer Compassion.</strong> &ldquo;I am here with you.&rdquo;</span></div>
+                  </div>
+                  <p className="vp-text pne-practice-closer">Notice what shifts, and what simply asks to be witnessed.</p>
                 </div>
               ) : (
                 <div className="pne-detail">
