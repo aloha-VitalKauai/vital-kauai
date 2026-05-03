@@ -82,8 +82,8 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
   {
     phase: "pre",
     weekIdx: 5,
-    code: "MANA + PONO",
-    theme: "Sovereignty & Integrity",
+    code: "MANA",
+    theme: "Sovereignty",
     title: "Arriving Whole",
     href: "/portal/pne",
     status: "coming-soon",
