@@ -77,7 +77,7 @@ export default function PortalLabsPage() {
     <div style={{ minHeight: "100vh", background: "#0E1A10", color: "#F5F0E8" }}>
       <main style={{ maxWidth: 720, margin: "0 auto", padding: "80px 32px 100px" }}>
         <Link
-          href="/portal/integration/pre-ceremony"
+          href="/portal/integration/pre-ceremony#week-6"
           style={{
             display: "inline-block",
             fontSize: 11,
