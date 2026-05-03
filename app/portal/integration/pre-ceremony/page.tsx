@@ -481,11 +481,28 @@ const WEEKS = [
         ],
       },
       {
+        color: 'blue',
+        text: 'Read the Ceremony Day Guide and Ceremony Guidelines',
+        note: 'A walkthrough of how the day itself unfolds, and the agreements that hold the container.',
+        links: [
+          { text: 'Ceremony Day Guide', href: '/ceremony-day-guide.html', external: true },
+          { text: 'Ceremony Guidelines', href: '/portal/ceremony-guidelines' },
+        ],
+      },
+      {
         color: 'green',
         text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Guide',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
+      {
+        color: 'green',
+        text: 'Finalize your Questions for the Medicine',
+        note: 'The truest question, that is the one. Hold it with open hands.',
+        links: [
+          { text: 'Finalize your Questions for the Medicine', href: '/portal/questions' },
+        ],
+      },
       {
         color: 'red',
         text: 'Confirm labs are submitted',
@@ -496,10 +513,17 @@ const WEEKS = [
       },
       {
         color: 'blue',
-        text: 'Save our direct contacts for arrival week',
-        note: 'Rachel and Josh\'s phone numbers and our email live on one page. Keep it open or take a screenshot before you fly.',
+        text: 'Review your arrival packet',
+        note: 'Everything you need for the days right before ceremony, in one place.',
         links: [
-          { text: 'Save our direct contacts for arrival week', href: '/portal/contact' },
+          { text: 'Review your arrival packet', href: '/portal/arrival-packet' },
+        ],
+      },
+      {
+        color: 'blue',
+        text: 'Finish packing',
+        links: [
+          { text: 'Finish packing', href: '/portal/what-to-bring' },
         ],
       },
       {
@@ -512,32 +536,9 @@ const WEEKS = [
       },
       {
         color: 'amber',
-        text: 'Connect with your integration guide',
-        note: 'A final pre-ceremony touchpoint with the guide who will walk with you through integration. Bring what is asking to be spoken before you arrive.',
-        links: [
-          { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
-        ],
-      },
-      {
-        color: 'amber',
         text: 'Schedule your post-ceremony integration-guide call, within 48 hours of ceremony, while still on Kauaʻi',
         links: [
           { text: 'Schedule your post-ceremony integration-guide call, within 48 hours of ceremony, while still on Kauaʻi', href: '/portal#integration-specialist' },
-        ],
-      },
-      {
-        color: 'blue',
-        text: 'Confirm travel and send arrival details to aloha@vitalkauai.com',
-        links: [
-          { text: 'aloha@vitalkauai.com', href: 'mailto:aloha@vitalkauai.com' },
-        ],
-      },
-      {
-        color: 'green',
-        text: 'Finalize your Questions for the Medicine, land on what feels most true',
-        note: 'The truest question, that is the one. Hold it with open hands.',
-        links: [
-          { text: 'Finalize your Questions for the Medicine, land on what feels most true', href: '/portal/questions' },
         ],
       },
     ],
