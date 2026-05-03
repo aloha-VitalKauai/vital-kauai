@@ -536,10 +536,9 @@ const WEEKS = [
       },
       {
         color: 'amber',
-        text: 'Schedule your call with your integration guide before you arrive',
-        note: 'It will happen on Day 5, two days after ceremony, while you are still on Kauaʻi. Please schedule for after 12pm Hawaiʻi time.',
+        text: 'Schedule your call with your integration guide before you arrive, for Day 5 (two days after ceremony, still on Kauaʻi), after 12pm Hawaiʻi time',
         links: [
-          { text: 'Schedule your call with your integration guide before you arrive', href: '/portal#integration-specialist' },
+          { text: 'Schedule your call with your integration guide before you arrive, for Day 5 (two days after ceremony, still on Kauaʻi), after 12pm Hawaiʻi time', href: '/portal#integration-specialist' },
         ],
       },
     ],
