@@ -173,9 +173,21 @@ export const PNE_ADDITIONAL_RESOURCES: ReadonlyArray<PneAdditionalResource> = [
     status: "live",
   },
   {
-    title: "Ceremony Guidelines",
-    description: "How we hold the container, and what to expect inside it.",
-    href: "/portal/ceremony-guidelines",
+    title: "Questions for the Medicine",
+    description: "A living document where you shape the questions you carry into ceremony.",
+    href: "/portal/questions",
+    status: "live",
+  },
+  {
+    title: "Physician Reference Guide",
+    description: "Required lab work, contraindications, and medical context to share with your physician.",
+    href: "/portal/physician-guide",
+    status: "live",
+  },
+  {
+    title: "Support Person Guide",
+    description: "For the people who love you, how to show up well, before and after ceremony.",
+    href: "/portal/support-person",
     status: "live",
   },
   {
@@ -191,21 +203,9 @@ export const PNE_ADDITIONAL_RESOURCES: ReadonlyArray<PneAdditionalResource> = [
     status: "live",
   },
   {
-    title: "Physician Reference Guide",
-    description: "Required lab work, contraindications, and medical context to share with your physician.",
-    href: "/portal/physician-guide",
-    status: "live",
-  },
-  {
-    title: "Questions for the Medicine",
-    description: "A living document where you shape the questions you carry into ceremony.",
-    href: "/portal/questions",
-    status: "live",
-  },
-  {
-    title: "Support Person Guide",
-    description: "For the people who love you, how to show up well, before and after ceremony.",
-    href: "/portal/support-person",
+    title: "Ceremony Guidelines",
+    description: "How we hold the container, and what to expect inside it.",
+    href: "/portal/ceremony-guidelines",
     status: "live",
   },
 ]

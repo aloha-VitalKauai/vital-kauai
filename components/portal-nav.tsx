@@ -88,12 +88,12 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
                 <a href="/portal/journal#post" className="pn-dropdown-subitem">Post-Ceremony</a>
                 <a href="/portal/vital-kauai-guides" className="pn-dropdown-item pn-dropdown-parent">Vital Kauaʻi Guides</a>
                 <a href="/iboga-preparedness-guide.html" className="pn-dropdown-subitem">Iboga Preparedness Guide</a>
-                <a href="/portal/ceremony-guidelines" className="pn-dropdown-subitem">Ceremony Guidelines</a>
+                <a href="/portal/questions" className="pn-dropdown-subitem">Questions for the Medicine</a>
+                <a href="/portal/physician-guide" className="pn-dropdown-subitem">Physician Reference Guide</a>
+                <a href="/portal/support-person" className="pn-dropdown-subitem">Support Person Guide</a>
                 <a href="/portal/what-to-bring" className="pn-dropdown-subitem">Packing Guide</a>
                 <a href="/ceremony-day-guide.html" className="pn-dropdown-subitem">Ceremony Day Guide</a>
-                <a href="/portal/physician-guide" className="pn-dropdown-subitem">Physician Reference Guide</a>
-                <a href="/portal/questions" className="pn-dropdown-subitem">Questions for the Medicine</a>
-                <a href="/portal/support-person" className="pn-dropdown-subitem">Support Person Guide</a>
+                <a href="/portal/ceremony-guidelines" className="pn-dropdown-subitem">Ceremony Guidelines</a>
               </div>
             </div>
             <a href="/portal/donate" className="pn-link">Contribute</a>
@@ -170,12 +170,12 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         <a href="/portal/vital-kauai-guides" onClick={close}>Vital Kauaʻi Guides</a>
         <div className="pn-mobile-week-row">
           <a href="/iboga-preparedness-guide.html" className="pn-mobile-week" onClick={close}>Iboga Preparedness Guide</a>
-          <a href="/portal/ceremony-guidelines" className="pn-mobile-week" onClick={close}>Ceremony Guidelines</a>
+          <a href="/portal/questions" className="pn-mobile-week" onClick={close}>Questions for the Medicine</a>
+          <a href="/portal/physician-guide" className="pn-mobile-week" onClick={close}>Physician Reference Guide</a>
+          <a href="/portal/support-person" className="pn-mobile-week" onClick={close}>Support Person Guide</a>
           <a href="/portal/what-to-bring" className="pn-mobile-week" onClick={close}>Packing Guide</a>
           <a href="/ceremony-day-guide.html" className="pn-mobile-week" onClick={close}>Ceremony Day Guide</a>
-          <a href="/portal/physician-guide" className="pn-mobile-week" onClick={close}>Physician Reference Guide</a>
-          <a href="/portal/questions" className="pn-mobile-week" onClick={close}>Questions for the Medicine</a>
-          <a href="/portal/support-person" className="pn-mobile-week" onClick={close}>Support Person Guide</a>
+          <a href="/portal/ceremony-guidelines" className="pn-mobile-week" onClick={close}>Ceremony Guidelines</a>
         </div>
         <a href="/portal/donate" onClick={close}>Contribute</a>
         <a href="/portal/contact" onClick={close}>Contact</a>
