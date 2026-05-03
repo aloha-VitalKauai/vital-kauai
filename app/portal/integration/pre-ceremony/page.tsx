@@ -536,9 +536,10 @@ const WEEKS = [
       },
       {
         color: 'amber',
-        text: 'Schedule your post-ceremony integration-guide call, within 48 hours of ceremony, while still on Kauaʻi',
+        text: 'Schedule your call with your integration guide before you arrive',
+        note: 'It will happen on Day 5, two days after ceremony, while you are still on Kauaʻi. Please schedule for after 12pm Hawaiʻi time.',
         links: [
-          { text: 'Schedule your post-ceremony integration-guide call, within 48 hours of ceremony, while still on Kauaʻi', href: '/portal#integration-specialist' },
+          { text: 'Schedule your call with your integration guide before you arrive', href: '/portal#integration-specialist' },
         ],
       },
     ],
