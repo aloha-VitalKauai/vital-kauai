@@ -422,10 +422,10 @@ const WEEKS = [
       { color: 'green', text: "Complete this week's PNE Reflection" },
       {
         color: 'green',
-        text: 'Share the Support Person Guide with your home circle, this week',
+        text: 'Share the Support Person Guide with your home circle',
         note: 'Not after ceremony. Now. So they have time to read it, ask questions, and show up prepared for your return.',
         links: [
-          { text: 'Share the Support Person Guide with your home circle, this week', href: '/portal/support-person' },
+          { text: 'Share the Support Person Guide with your home circle', href: '/portal/support-person' },
         ],
       },
       {
