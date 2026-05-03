@@ -124,7 +124,7 @@ export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
     title: 'Trust your preparation',
     prompts: [
       { q: 'What am I ready to receive?', hint: 'Write from your body, your heart, your life — what you are ready to receive and live into.' },
-      { q: 'What am I committing to after — in one sentence, as concrete as possible?', hint: 'A commitment — concrete, lived. The medicine amplifies what you bring into ceremony.' },
+      { q: 'What am I committed to after this ceremony? Be as concrete as possible.', hint: 'The medicine amplifies what you bring into ceremony.' },
     ],
   },
 ]
