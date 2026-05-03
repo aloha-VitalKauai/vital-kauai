@@ -98,10 +98,8 @@ export default function PortalLabsPage() {
           Upload <em style={{ fontStyle: "italic", color: "#A8C5AC" }}>Your Labs</em>
         </h1>
         <p style={{ fontSize: 15, color: "rgba(245,240,232,0.72)", lineHeight: 1.85, marginBottom: 36, maxWidth: 600 }}>
-          Walk through the lab requirements with your doctor. Once you have results, upload them
-          here as a single PDF or image. Our medical team reviews them before ceremony and
-          extracts the required values internally (EKG, thyroid, liver, magnesium, cardiac, CYP450,
-          CMP).
+          Once you have your lab results from your doctor, upload them here as a single PDF or
+          image. Our medical team will review them before ceremony. Mahalo.
         </p>
 
         {labDoc && (
