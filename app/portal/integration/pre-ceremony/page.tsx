@@ -387,7 +387,7 @@ const WEEKS = [
     principle: 'To love is to be happy with.',
     theme: 'Connection',
     title: 'You walk this with others.',
-    subtitle: 'You always have.',
+    subtitle: '',
     carryForward: 'You looked at the shadow. You named what you\'ve been avoiding. That took courage. This week the work moves outward, into your relationships, your home, and the people who will hold you from a distance while you\'re in ceremony.',
     reentry: { strong: 'Arriving at this week without having done Week 4\'s journaling?', text: ' Do one prompt from Week 4, just one, before you move forward. The shadow work and the relational work are connected. Ten minutes of Week 4 journaling is where to begin.' },
     sub: 'Aloha is mutual respect, kindness, and harmony, often interpreted as the “presence of breath” or “breath of life.” It is the alignment of mind and heart. It is how you meet a stranger, how you care for the land, how you hold the people closest to you, and how you return to yourself.\n\nThe Hawaiian teaching holds that to love is to be happy with: to be with what is, with who is, exactly as they are. Without trying to fix, change, or rearrange. This is the practice of relationship.',
