@@ -115,7 +115,7 @@ export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
     prompts: [
       { q: 'Who do I need to forgive in order to feel free?', hint: 'Forgiveness is releasing the weight you carry on their behalf.' },
       { q: 'Where do I need to forgive myself?', hint: 'The same grace you would offer someone you love — extend it here.' },
-      { q: 'How will I connect with my support team — and what specific support do I need from them?', hint: 'Be specific. The more specific the ask, the more support lands.' },
+      { q: 'How will I connect with my support team, and what specific support do I need from them?', hint: 'Be specific. The more specific the ask, the more support lands.' },
     ],
   },
   {

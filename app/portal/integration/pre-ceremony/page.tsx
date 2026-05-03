@@ -429,19 +429,11 @@ const WEEKS = [
         ],
       },
       {
-        color: 'amber',
-        text: 'Begin preparing your home environment for your return',
-        note: 'Clean it. Simplify it. Stock what will nourish you. The space you return to is part of integration. Prepare it now, before you\'re altered by what\'s coming.',
-        links: [
-          { text: 'Begin preparing your home environment for your return', href: '/portal/support-person#return' },
-        ],
-      },
-      {
         color: 'blue',
-        text: 'Complete the What to Bring packing checklist',
+        text: 'Start packing',
         note: 'Practical, yes, and also a ritualized act of arrival. Let the packing be intentional.',
         links: [
-          { text: 'Complete the What to Bring packing checklist', href: '/portal/what-to-bring' },
+          { text: 'Start packing', href: '/portal/what-to-bring' },
         ],
       },
       {
