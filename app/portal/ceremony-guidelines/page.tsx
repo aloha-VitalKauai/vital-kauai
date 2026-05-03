@@ -13,7 +13,6 @@ export default async function CeremonyGuidelinesPage() {
   const inkSoft = "#5C5043";
   const gold = "#B8956A";
   const goldLight = "#E6D5BF";
-  const sage = "#7A8C6E";
   const rose = "#C4897A";
   const rule = "rgba(184,149,106,0.25)";
   const cardBg = "#FEFCF8";
@@ -54,7 +53,8 @@ export default async function CeremonyGuidelinesPage() {
             {[
               "I align with my highest positive intention for the good of all.",
               "I arrive on time, having eaten lightly and remained free of alcohol and substances.",
-              "I honor and protect the confidentiality of this group.",
+              "I hold complete confidentiality, the identities, experiences, and private shares of those in this space stay within it.",
+              "I keep ceremony and session spaces photo-free, video-free, and social-media-free.",
               "I respect all practices, protocols, and teachings as proprietary to Vital Kaua\u02BBi and hold them within this container.",
               "I take full responsibility for my own experience, using \u201CI\u201D statements and owning my own process.",
               "I ask before offering support \u2014 making sure those around me are seeking help before extending it.",
@@ -70,25 +70,7 @@ export default async function CeremonyGuidelinesPage() {
           </ul>
         </Card>
 
-        {/* 2. Confidentiality */}
-        <Card accent={sage} icon="&#9711;" title="Confidentiality & the Sacred Container">
-          <p style={p}>Everything shared and experienced within this space is sacred. We ask that you hold complete confidentiality — the identities of those present, the details of their experiences, processes, and private shares.</p>
-          <p style={p}>You are welcome to speak about your own personal feelings and insights. We ask that you keep the specific practices and exercises within this container.</p>
-          <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0" }}>
-            {[
-              "When sharing with a partner or loved one, focus on your own experience rather than what others shared or did in the space.",
-              "Within any group container, keep each participant\u2019s experience in confidence — even with others from the same group.",
-              "Ceremony and session spaces are photo-free, video-free, and social-media-free.",
-            ].map((item) => (
-              <li key={item} style={listItem}>
-                <span style={{ position: "absolute", left: 0, color: gold, fontWeight: 400 }}>&mdash;</span>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </Card>
-
-        {/* 3. Caring for Yourself */}
+        {/* 2. Caring for Yourself */}
         <Card accent={rose} icon="&#9825;" title="Caring for Yourself">
           <p style={p}>Your wellbeing is the foundation of the work. You are the most important variable in your own healing.</p>
           <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0" }}>
@@ -109,7 +91,7 @@ export default async function CeremonyGuidelinesPage() {
           </ul>
         </Card>
 
-        {/* 4. Presence Within the Space */}
+        {/* 3. Presence Within the Space */}
         <Card accent={inkSoft} icon="&#10022;" title="Presence Within the Space">
           <p style={p}>Ceremony and deep work call for a quality of awareness, a sustained turning inward, even when held in the company of others.</p>
           <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0" }}>
@@ -130,7 +112,7 @@ export default async function CeremonyGuidelinesPage() {
           </ul>
         </Card>
 
-        {/* 5. Facilitator Presence */}
+        {/* 4. Facilitator Presence */}
         <Card accent={gold} icon="&#9672;" title="Facilitator Presence & Boundaries">
           <p style={p}>Your facilitators hold this space as mirrors, guides, and fellow travelers, never as authority over your experience.</p>
           <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0" }}>
