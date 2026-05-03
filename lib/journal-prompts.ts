@@ -119,8 +119,8 @@ export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
     ],
   },
   {
-    code: 'MANA + PONO',
-    theme: 'Sovereignty & Integrity',
+    code: 'MANA',
+    theme: 'Sovereignty',
     title: 'Trust your preparation',
     prompts: [
       { q: 'What am I ready to receive?', hint: 'Write from your body, your heart, your life — what you are ready to receive and live into.' },
