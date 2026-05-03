@@ -114,7 +114,7 @@ export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
     title: 'You walk this with others',
     prompts: [
       { q: 'How can I be more compassionate with myself?' },
-      { q: 'Who do I need to forgive? What do I need to forgive myself for?', hint: 'Forgiveness is releasing the weight you carry on their behalf.' },
+      { q: 'Who do I need to forgive? What do I need to forgive in myself?', hint: 'Forgiveness is releasing the weight you carry on their behalf.' },
       { q: 'How will I connect with my support team, and what specific support will I ask for from them?', hint: 'Be specific. The more specific the ask, the more support lands.' },
     ],
   },
