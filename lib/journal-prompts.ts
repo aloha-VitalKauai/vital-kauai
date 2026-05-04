@@ -159,7 +159,7 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     prompts: [
       { key: 'w1-p2', q: 'Where am I meeting myself differently in daily life? What have I noticed about the way I move through the world since returning home?', hint: 'Small shifts count. A changed reaction. A pause before responding. Name them.' },
       { key: 'w1-p3', q: 'How am I tending to myself differently since ceremony?', hint: 'Notice the small shifts in how you eat, rest, move, listen. Name what is being cared for now that was not before.' },
-      { key: 'w1-p4', q: 'What is one practice I am committing to, to tend myself in this season?', hint: 'One practice. Liveable. Something you can return to on the days you least feel like it.' },
+      { key: 'w1-p4', q: 'What is one practice I am committing to, to care for myself in this season?', hint: 'One practice. Liveable. Something you can return to on the days you least feel like it.' },
     ],
   },
   {

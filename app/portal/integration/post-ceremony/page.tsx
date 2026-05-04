@@ -353,7 +353,6 @@ const WEEKS = [
           { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
         ],
       },
-      { color: 'blue', text: 'Name one old pattern that has returned, write about it', note: 'To see it clearly. Naming with precision is itself a form of integration. Your guide can see your weekly tracking and will reach out if they notice something that needs support.' },
       { color: 'sage', text: 'Continue your daily practice, especially on the days you least want to', note: 'The days you least want to show up are the days it matters most.' },
     ],
     prompts: POST_CEREMONY_WEEKS[3].prompts,
@@ -369,7 +368,7 @@ const WEEKS = [
     title: 'Do what is right.',
     subtitle: 'With what you know now.',
     carryForward: 'You met the return of the familiar with humility. You kept your practice. You forgave what you have been carrying. This week the work becomes a choice, the daily, deliberate act of doing what is right with what you have seen.',
-    intro: 'Pono is righteousness, the practice of doing what is right with what you know. The medicine showed you something. You have been tending it, meeting what returned, and forgiving what you have carried. By week five, the question becomes how you act on it. Pono is not perfection. It is the willingness to align your choices with what you have seen, again and again, in the small daily decisions that build a life.',
+    intro: 'Pono is righteousness, balance, harmony, and goodness. It is a way of living that is morally upright, fair, and respectful toward yourself, others, and the environment. To live in pono is to do things the right way and to bring harmony into every part of your life. The medicine showed you something. You have been tending it, meeting what returned, and forgiving what you have carried. By week five, the question becomes how you act on it, in the small daily decisions that build a life of pono.',
     reentry: {
       strong: 'When you catch yourself defaulting to who you used to be, do this:',
       text: ' Pause. Name it: "This is the old habit." Bring to mind one thing the medicine showed you. Choose from there, even once, even imperfectly. Pono is not arrived at. It is practiced. The next right thing is the work.',
