@@ -285,7 +285,7 @@ const WEEKS = [
     title: 'The insights are alive.',
     subtitle: 'Now you tend them.',
     carryForward: 'You opened the four lines into your daily life. You named what you are taking 100% responsibility for. This week the work moves from receiving and releasing into tending, the slow, deliberate act of bringing what was shown into how you actually live.',
-    intro: 'Mālama means to care for, to tend, to preserve. The medicine opened a door. This week the work is repetition, the small daily practices that turn what was shown into how you actually live. What you practice consistently in this early window becomes your new baseline. Use it deliberately.',
+    intro: 'Mālama means to care for, to tend, or to preserve. The medicine opened a door. This week the work is repetition, the small daily practices that turn what was shown into how you actually live. What you practice consistently in this early window becomes your new baseline.',
     video: { label: 'A Message from Rachel & Josh · Week 3', text: 'In this week’s video, Rachel and Josh share what Mālama has meant in their own lives and how tending the small daily practices has shaped what they have been able to keep from the medicine.' },
     actionLabel: 'This week, 4 things',
     actions: [

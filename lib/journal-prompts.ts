@@ -148,7 +148,7 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     title: 'The forgiveness work continues',
     prompts: [
       { q: 'Who or what am I still in the process of forgiving, including myself? What would forgiveness make possible in my life?', hint: 'Forgiveness is the weight you stop carrying on their behalf, including your own.' },
-      { q: 'Where in my life am I taking less than full responsibility, and what shifts when I claim 100% of it?', hint: 'Hoʻoponopono begins with "I\'m sorry." Responsibility is the door, not the punishment.' },
+      { q: 'Where in my life am I taking less than full responsibility, and what shifts when I claim 100% of it?', hint: 'Hoʻoponopono begins with "I\'m sorry."' },
       { q: 'What am I genuinely grateful for in the very situation that has been hardest? What does it feel like in the body to hold responsibility, forgiveness, gratitude, and love for myself and this situation at once?', hint: 'Gratitude inside the difficulty is where the medicine roots.' },
     ],
   },
