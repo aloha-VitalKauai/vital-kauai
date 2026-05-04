@@ -189,7 +189,7 @@ export function AboutPage() {
               This sanctuary is the culmination of our life paths brought together, to be in
               loving service of others&apos; healing and transformation. What we carry into this work
               is everything we have genuinely lived, the depths we have touched, the healing
-              we have done, the love we have built here on the North Shore.
+              we have done, and the love we have built here on the North Shore.
             </p>
             <p className={`${styles.meetingPara} ${styles.reveal} ${styles.d3}`}>
               We&apos;re grateful to be in service, devotion, and care for your transformation.
