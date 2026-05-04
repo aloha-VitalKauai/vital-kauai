@@ -211,8 +211,6 @@ const WEEKS = [
           { text: 'Connect with your integration guide, your post-ceremony call, within 48 hours of ceremony (while still on Kauaʻi)', href: '/portal#integration-specialist' },
         ],
       },
-      { color: 'green', text: 'Rest completely for the first 48 hours', note: 'Let the experience settle. Rest before sharing. Allow what happened to remain wordless a little longer.' },
-      { color: 'blue', text: 'Journal what arose, images, moments, what the medicine showed you', note: 'Don\'t interpret it yet. Just record it. The meaning arrives in its own time. What you write now will be the material you return to for months.' },
       {
         color: 'amber',
         text: 'Schedule next week\'s integration-guide call',
