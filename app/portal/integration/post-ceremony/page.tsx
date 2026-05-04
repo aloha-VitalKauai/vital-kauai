@@ -301,9 +301,7 @@ const WEEKS = [
           { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
         ],
       },
-      { color: 'gold', text: 'Establish one morning practice, and do it every day, tracking your days below', note: 'Coherent Heart Breath. Journaling. Movement. Prayer. One thing. Done every morning. The medicine opened the door. Repetition is how you walk through it.' },
-      { color: 'green', text: 'Continue magnesium glycinate (300–400mg) and DHA/EPA (2–4g) daily', note: 'The supplement protocol from your preparation does not end at ceremony. Magnesium supports nervous system regulation. DHA/EPA supports the brain through this window. Continue both for at minimum 30 days post-ceremony.' },
-      { color: 'sage', text: 'Continue full sobriety, minimum 30 days, 3 months strongly recommended', note: 'Iboga resets tolerance. Returning to any substance during these early weeks undermines what the medicine worked to open.' },
+      { color: 'gold', text: 'Establish one morning practice, and do it every day. Write it down below', note: 'Coherent Heart Breath. Journaling. Movement. Prayer. One thing. Done every morning. The medicine opened the door. Repetition is how you walk through it.' },
       {
         color: 'blue',
         text: 'Schedule a check-in call with Rachel & Josh',
