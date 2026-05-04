@@ -138,8 +138,18 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
       { q: 'What did the medicine show me?', hint: 'What was revealed — about yourself, your nature, your life. Name it plainly.' },
       { q: 'What am I grateful for today?', hint: 'Let gratitude be specific. The smaller the detail, the more real it lands.' },
       { q: 'What images, impressions, or moments from ceremony keep returning? What feels most alive or most unresolved?', hint: 'Record them. The meaning arrives in its own time.' },
-      { q: 'Where did I feel the most resistance during the journey? What was I holding onto — and what happened when I let go?', hint: 'Resistance during ceremony is information.' },
+      { q: 'Where did I feel the most resistance during the journey? What was I holding onto, and what happened when I let go?', hint: 'Resistance during ceremony is information.' },
       { q: 'What is one thing I feel called to do, release, or begin?', hint: 'Trust the impulse. Write it before the mind catches up.' },
+    ],
+  },
+  {
+    code: 'HOʻOPONOPONO',
+    theme: 'Forgiveness',
+    title: 'The forgiveness work continues',
+    prompts: [
+      { q: 'Who or what am I still in the process of forgiving, including myself? What would forgiveness make possible in my life?', hint: 'Forgiveness is the weight you stop carrying on their behalf, including your own.' },
+      { q: 'Where in my life am I taking less than full responsibility, and what shifts when I claim 100% of it?', hint: 'Hoʻoponopono begins with "I\'m sorry." Responsibility is the door, not the punishment.' },
+      { q: 'What am I genuinely grateful for in the very situation that has been hardest? What does it feel like in the body to hold responsibility, forgiveness, gratitude, and love for myself and this situation at once?', hint: 'Gratitude inside the difficulty is where the medicine roots.' },
     ],
   },
   {
@@ -147,9 +157,9 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     theme: 'Tending',
     title: 'The insights are alive — now you tend them',
     prompts: [
-      { q: 'What relationships, dynamics, or patterns were illuminated? What did I see about how I show up with others?', hint: 'Write what you saw, without softening it.' },
-      { q: 'Looking back at the intentions I set before ceremony — what was answered, exceeded, or transformed beyond what I could have imagined? What is still emerging?', hint: 'The medicine rarely answers in the way you expected. Look honestly at what actually happened.' },
-      { q: 'Where am I meeting myself differently in daily life? What have I noticed about the way I move through the world since returning home?', hint: 'Small shifts count. A changed reaction. A pause before responding. Name them.' },
+      { key: 'w1-p0', q: 'What relationships, dynamics, or patterns were illuminated? What did I see about how I show up with others?', hint: 'Write what you saw, without softening it.' },
+      { key: 'w1-p1', q: 'Looking back at the intentions I set before ceremony — what was answered, exceeded, or transformed beyond what I could have imagined? What is still emerging?', hint: 'The medicine rarely answers in the way you expected. Look honestly at what actually happened.' },
+      { key: 'w1-p2', q: 'Where am I meeting myself differently in daily life? What have I noticed about the way I move through the world since returning home?', hint: 'Small shifts count. A changed reaction. A pause before responding. Name them.' },
     ],
   },
   {
@@ -157,38 +167,28 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     theme: 'Humility',
     title: 'The familiar is returning — meet it differently',
     prompts: [
-      { q: 'What one commitment am I making to myself?', hint: 'Make it concrete. Something you can hold yourself to.' },
-      { q: 'What do I want to say to my pre-ceremony self — the one who was afraid, uncertain, or carrying so much?', hint: 'Write them a letter if you wish.' },
-      { q: 'What old patterns, reactions, or beliefs have I noticed returning — and how am I choosing to meet them now?', hint: 'Return is part of the spiral. How you respond now is what matters.' },
-    ],
-  },
-  {
-    code: 'KULEANA',
-    theme: 'Responsibility',
-    title: 'The knowing is yours now',
-    prompts: [
-      { q: 'What relationships in my life are shifting as I change? Who is meeting me in my growth — and where am I feeling friction or distance?', hint: 'Both the welcome and the friction are information.' },
-      { q: 'What commitments did I make — to myself, to a new way of being — and how am I honoring them? Where do I need more support or structure?', hint: 'Honest inventory. Name where you have kept the agreement and where the work is still in motion.' },
-      { q: 'What does my body need right now in this integration phase? How is it speaking to me — and am I listening?', hint: 'Sleep, nourishment, movement, stillness, touch, nature. Let the body lead.' },
-    ],
-  },
-  {
-    code: 'ALOHA',
-    theme: 'Love in Action',
-    title: 'You have changed — your relationships are noticing',
-    prompts: [
-      { q: 'What is still alive and in process? What is still seeking form in words, understanding, or action?', hint: 'The most important material sometimes takes the longest to land.' },
-      { q: 'What forgiveness work is still alive in me? Who or what am I still in the process of releasing?', hint: 'Forgiveness is a practice. Be honest about where you are in it.' },
-      { q: 'What is the medicine still teaching me? What insights continue to surface — in dreams, synchronicities, or the quiet moments?', hint: 'The ceremony continues to move in you.' },
+      { key: 'w2-p0', q: 'What one commitment am I making to myself?', hint: 'Make it concrete. Something you can hold yourself to.' },
+      { key: 'w2-p1', q: 'What do I want to say to my pre-ceremony self — the one who was afraid, uncertain, or carrying so much?', hint: 'Write them a letter if you wish.' },
+      { key: 'w2-p2', q: 'What old patterns, reactions, or beliefs have I noticed returning — and how am I choosing to meet them now?', hint: 'Return is part of the spiral. How you respond now is what matters.' },
     ],
   },
   {
     code: 'PONO',
     theme: 'Right Relationship',
-    title: 'Six weeks in — this is who you are now',
+    title: 'You have changed — your relationships are noticing',
     prompts: [
-      { q: 'How has my sense of purpose shifted or clarified? What am I called to create, offer, or become in this next chapter?', hint: 'Purpose often surfaces in ceremony more clearly than we expect. Name it plainly, even if it is still forming.' },
-      { q: 'Who am I now? How would I describe the person who arrived — and the person standing here today?', hint: 'Write this one without holding back. You have earned the right to see yourself clearly.' },
+      { key: 'w5-p0', q: 'How has my sense of purpose shifted or clarified? What am I called to create, offer, or become in this next chapter?', hint: 'Purpose often surfaces in ceremony more clearly than we expect. Name it plainly, even if it is still forming.' },
+      { key: 'w5-p1', q: 'Who am I now? How would I describe the person who arrived — and the person standing here today?', hint: 'Write this one without holding back. You have earned the right to see yourself clearly.' },
+    ],
+  },
+  {
+    code: 'KULEANA',
+    theme: 'Responsibility',
+    title: 'Six weeks in — the knowing is yours now',
+    prompts: [
+      { key: 'w3-p0', q: 'What relationships in my life are shifting as I change? Who is meeting me in my growth — and where am I feeling friction or distance?', hint: 'Both the welcome and the friction are information.' },
+      { key: 'w3-p1', q: 'What commitments did I make — to myself, to a new way of being — and how am I honoring them? Where do I need more support or structure?', hint: 'Honest inventory. Name where you have kept the agreement and where the work is still in motion.' },
+      { key: 'w3-p2', q: 'What does my body need right now in this integration phase? How is it speaking to me — and am I listening?', hint: 'Sleep, nourishment, movement, stillness, touch, nature. Let the body lead.' },
     ],
   },
 ]
