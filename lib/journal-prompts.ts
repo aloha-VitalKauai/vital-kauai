@@ -167,9 +167,8 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     theme: 'Humility',
     title: 'The familiar is returning — meet it differently',
     prompts: [
-      { key: 'w2-p0', q: 'What one commitment am I making to myself?', hint: 'Make it concrete. Something you can hold yourself to.' },
-      { key: 'w2-p1', q: 'What do I want to say to my pre-ceremony self — the one who was afraid, uncertain, or carrying so much?', hint: 'Write them a letter if you wish.' },
       { key: 'w2-p2', q: 'What old patterns, reactions, or beliefs have I noticed returning — and how am I choosing to meet them now?', hint: 'Return is part of the spiral. How you respond now is what matters.' },
+      { key: 'w2-p1', q: 'What do I want to say to my pre-ceremony self — the one who was afraid, uncertain, or carrying so much?', hint: 'Write them a letter if you wish.' },
     ],
   },
   {
