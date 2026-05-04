@@ -75,7 +75,7 @@ export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
     title: 'Seeing clearly',
     prompts: [
       { key: 'w0-p1', q: 'If I create my reality, what’s possible for my life after this journey?' },
-      { key: 'w0-p2', q: 'What story am I still believing that no longer belongs to the life I want?' },
+      { key: 'w0-p2', q: 'What stories am I still believing that no longer belong to the life I want?' },
     ],
   },
   {
