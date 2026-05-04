@@ -186,9 +186,9 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     theme: 'Responsibility',
     title: 'Six weeks in — the knowing is yours now',
     prompts: [
-      { key: 'w3-p0', q: 'What relationships in my life are shifting as I change? Who is meeting me in my growth — and where am I feeling friction or distance?', hint: 'Both the welcome and the friction are information.' },
-      { key: 'w3-p1', q: 'What commitments did I make — to myself, to a new way of being — and how am I honoring them? Where do I need more support or structure?', hint: 'Honest inventory. Name where you have kept the agreement and where the work is still in motion.' },
-      { key: 'w3-p2', q: 'What does my body need right now in this integration phase? How is it speaking to me — and am I listening?', hint: 'Sleep, nourishment, movement, stillness, touch, nature. Let the body lead.' },
+      { key: 'w5-completion-1', q: 'What genuinely changed?', hint: 'Actual, lived change. How do you move through the world differently now? Name specific behaviors, responses, ways of being.' },
+      { key: 'w5-completion-2', q: 'What do I know now that I didn\'t know before?', hint: 'About yourself. About what you want. About what you were carrying. About what is possible.' },
+      { key: 'w5-completion-3', q: 'What am I committed to in the next six months?', hint: 'One sentence. Concrete and liveable. Something you can return to and know immediately whether you kept it.' },
     ],
   },
 ]
