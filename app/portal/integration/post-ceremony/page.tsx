@@ -1067,8 +1067,8 @@ export default function PostCeremonyPage() {
             {/* PRINCIPLE */}
             <section className="w1-section" id="principle">
               <span className="w1p-eyebrow">Week {i + 1} · {w.principleName} · {w.theme}</span>
-              <h2 className="w1p-title">{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</h2>
               <p className="w1p-pull">&ldquo;{w.principle}&rdquo;</p>
+              <h2 className="w1p-title">{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</h2>
               <p className="w1p-body">{w.intro}</p>
             </section>
 

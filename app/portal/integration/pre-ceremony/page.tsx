@@ -1083,6 +1083,7 @@ export default function PreCeremonyPage() {
             {/* PRINCIPLE */}
             <section className="w1-section" id="principle">
               <span className="w1p-eyebrow">Week {i + 1} · {w.principleName} · {w.theme}</span>
+              <p className="w1p-pull">&ldquo;{w.principle}&rdquo;</p>
               <h2 className="w1p-title">
                 {i === 0
                   ? <>Seeing <em>clearly.</em></>
@@ -1096,7 +1097,6 @@ export default function PreCeremonyPage() {
                   ? <>You answer to no one but your own <em>knowing.</em></>
                   : <>{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</>}
               </h2>
-              <p className="w1p-pull">&ldquo;{w.principle}&rdquo;</p>
               {i === 0
                 ? <p className="w1p-body">What you perceive shapes what you experience, and the world reflects it back as truth. Your attention, assumptions, and stories running underneath are the lens, and life answers in kind. This week is an invitation to look at the lens from which you view your reality.</p>
                 : w.sub.split('\n\n').map((para, pi) => (
