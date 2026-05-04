@@ -187,8 +187,8 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     title: 'Six weeks in — the knowing is yours now',
     prompts: [
       { key: 'w5-completion-1', q: 'What genuinely changed?', hint: 'Actual, lived change. How do you move through the world differently now? Name specific behaviors, responses, ways of being.' },
-      { key: 'w5-completion-2', q: 'What do I know now that I didn\'t know before?', hint: 'About yourself. About what you want. About what you were carrying. About what is possible.' },
       { key: 'w5-completion-3', q: 'What am I committed to in the next six months?', hint: 'One sentence. Concrete and liveable. Something you can return to and know immediately whether you kept it.' },
+      { key: 'w5-accountability', q: 'How will I hold myself accountable, and how will I ask for continued support with my home circle?', hint: 'Name the people in your home circle and what you are asking them to hold with you.' },
     ],
   },
 ]
