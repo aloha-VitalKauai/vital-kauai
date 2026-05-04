@@ -1203,7 +1203,7 @@ export default function PreCeremonyPage() {
             {/* JOURNAL PROMPTS */}
             <section className="w1-section" id="journal-prompts">
               <h3 className="w1-h3">Journal Prompts</h3>
-              <p className="w1-autosave">(Your writing saves automatically as you type. You can return any time to continue.)</p>
+              {i < 2 && <p className="w1-autosave">(Your writing saves automatically as you type. You can return any time to continue.)</p>}
               {promptsForWeek(i, w.prompts).map((p, pi) => (
                 <div className="w1-prompt" key={p.key}>
                   <span className="w1-prompt-num">{pi + 1}</span>
