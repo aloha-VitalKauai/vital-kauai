@@ -56,6 +56,10 @@ low-risk, proceed straight through merge + deploy.
   "we gather X when Y" over "we won't ask for X"; "open to beginners"
   over "not only for advanced practitioners." Negatives foreground the
   wrong thing.
+- **No "the real X" framings.** Do not write "the real work," "the real
+  teaching," "the real integration," "the real you," or any variant that
+  ranks one experience as more authentic than another. It is all real.
+  Drop the qualifier — say "the work," "the teaching," "integration."
 - Paul Heffernan's plant-medicine title is **"Director of Plant
   Regeneration / Medicine Guide"**; his BodyTalk role is separate.
 - Dr. Liz is **"Director of On-Island Integration"**.

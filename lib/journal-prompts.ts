@@ -136,7 +136,7 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     title: 'The medicine is still moving in you',
     prompts: [
       { q: 'What did the medicine show me?', hint: 'What was revealed about yourself, your nature, your life.' },
-      { q: 'What did the ceremony reveal that surprised me, or that I did not know before receiving the medicine?', hint: 'Stay with what was unexpected. The surprise is often where the real teaching lives.' },
+      { q: 'What did the ceremony reveal that surprised me, or that I did not know before receiving the medicine?', hint: 'Stay with what was unexpected.' },
       { q: 'What images, impressions, or moments from ceremony keep returning? What feels most alive or most unresolved?', hint: 'Record them. The meaning arrives in its own time.' },
       { q: 'Where did I feel the most resistance during the journey? What was I holding onto, and what happened when I let go?', hint: 'Resistance during ceremony is information.' },
       { q: 'What is one thing I am committed to begin? What am I committed to release?', hint: 'Trust the impulse. Write it before the mind catches up.' },
