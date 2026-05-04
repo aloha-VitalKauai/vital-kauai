@@ -176,8 +176,8 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     theme: 'Right Relationship',
     title: 'You have changed — your relationships are noticing',
     prompts: [
-      { key: 'w5-p0', q: 'How has my sense of purpose shifted or clarified? What am I called to create, offer, or become in this next chapter?', hint: 'Purpose often surfaces in ceremony more clearly than we expect. Name it plainly, even if it is still forming.' },
-      { key: 'w5-p1', q: 'Who am I now? How would I describe the person who arrived — and the person standing here today?', hint: 'Write this one without holding back. You have earned the right to see yourself clearly.' },
+      { key: 'w5-p0', q: 'How has my sense of purpose shifted or clarified? What am I called to create, offer, or become in this next chapter?', hint: 'Purpose often surfaces in ceremony more clearly than we expect.' },
+      { key: 'w5-p1', q: 'Who am I now? How would I describe the person who arrived, and the person standing here today?' },
     ],
   },
   {

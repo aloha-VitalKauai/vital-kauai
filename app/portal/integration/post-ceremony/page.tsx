@@ -389,9 +389,7 @@ const WEEKS = [
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
-      { color: 'gold', text: 'Make one decision this week from what you know now, not from old habit', note: 'Where in your life are you about to default to who you used to be? Choose differently, even once. That is pono.' },
-      { color: 'blue', text: 'Have one honest conversation you have been postponing', note: 'The medicine may have shown you something about a relationship that needs to be spoken. Come from the changed place. Bring what comes up to your next call with your guide.' },
-      { color: 'sage', text: 'Practice being your changed self in the presence of people who knew you before', note: 'Notice when you contract back into who you were in someone\'s presence. That noticing is the practice. You can only keep showing up as the person you are becoming.' },
+      { color: 'gold', text: 'Ask yourself this week if your thoughts, words, and actions are pono', note: 'Pause through the day and check the alignment. When something feels off, name it, choose again, return to pono.' },
       { color: 'green', text: 'Continue Hoʻoponopono with anyone or anything still carrying weight', note: 'I\'m sorry. Please forgive me. Thank you. I love you. The forgiveness work from Week 2 is a lifelong practice. Return to it whenever something resurfaces.' },
       {
         color: 'amber',
