@@ -451,7 +451,7 @@ const WEEKS = [
     id: 5,
     code: 'MANA',
     principleName: 'Mana',
-    principle: 'All power comes from within.',
+    principle: 'The power is within you.',
     theme: 'Sovereignty',
     title: 'You have done the work.',
     subtitle: 'Trust your preparation.',
