@@ -157,9 +157,9 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     theme: 'Tending',
     title: 'The insights are alive — now you tend them',
     prompts: [
-      { key: 'w1-p0', q: 'What relationships, dynamics, or patterns were illuminated? What did I see about how I show up with others?', hint: 'Write what you saw, without softening it.' },
-      { key: 'w1-p1', q: 'Looking back at the intentions I set before ceremony — what was answered, exceeded, or transformed beyond what I could have imagined? What is still emerging?', hint: 'The medicine rarely answers in the way you expected. Look honestly at what actually happened.' },
       { key: 'w1-p2', q: 'Where am I meeting myself differently in daily life? What have I noticed about the way I move through the world since returning home?', hint: 'Small shifts count. A changed reaction. A pause before responding. Name them.' },
+      { key: 'w1-p3', q: 'How am I tending to myself differently since ceremony?', hint: 'Notice the small shifts in how you eat, rest, move, listen. Name what is being cared for now that was not before.' },
+      { key: 'w1-p4', q: 'What is one practice I am committing to, to tend myself in this season?', hint: 'One practice. Liveable. Something you can return to on the days you least feel like it.' },
     ],
   },
   {
