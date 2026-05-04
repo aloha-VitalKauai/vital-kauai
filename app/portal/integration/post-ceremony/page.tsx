@@ -411,9 +411,9 @@ const WEEKS = [
     theme: 'Responsibility',
     eyebrow: 'Week 6 · KULEANA · Responsibility',
     title: 'Six weeks in.',
-    subtitle: 'The knowing is yours now.',
+    subtitle: 'The kuleana is yours now.',
     carryForward: 'You have moved through the full arc, from the raw tenderness of emergence to the practice of choosing pono. This final week is a transition from active integration into sustained living.',
-    intro: 'Kuleana is responsibility, sacred accountability — to yourself, to your family, to your community, to your practices, and to the new stories and beliefs you continue to live and reinforce. Six weeks in, the medicine\'s most dramatic effects have passed and what remains is what you carry. The intensive integration window has narrowed into the rhythm of how you live. The knowing is yours. Letting it become how you live, in your relationships, your daily choices, and the way you show up for your people, is the work that continues.',
+    intro: 'Kuleana is responsibility. It is sacred accountability to yourself, your family, your community, your practices, and to the new stories and beliefs you continue to live and reinforce. Six weeks in, the medicine\'s most dramatic effects have passed and you\'re living it through the new rhythms of your life.',
     video: { label: 'A Message from Rachel & Josh · Week 6', text: 'In this week’s video, Rachel and Josh share what Kuleana has meant in their own lives and how owning what they were shown has shaped the work and the way they live.' },
     actionLabel: 'This week, 4 completions',
     actions: [
