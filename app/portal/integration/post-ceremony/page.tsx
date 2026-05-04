@@ -213,9 +213,9 @@ const WEEKS = [
       },
       {
         color: 'amber',
-        text: 'Schedule next week\'s integration-guide call',
+        text: 'Schedule 5 more weekly calls with your integration guide',
         links: [
-          { text: 'Schedule next week\'s integration-guide call', href: '/portal#integration-specialist' },
+          { text: 'Schedule 5 more weekly calls with your integration guide', href: '/portal#integration-specialist' },
         ],
       },
     ],
@@ -260,13 +260,6 @@ const WEEKS = [
         note: 'Your weekly call. Bring whoever or whatever has surfaced this week. Bring the forgiveness work you are doing on yourself.',
         links: [
           { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
-        ],
-      },
-      {
-        color: 'amber',
-        text: 'Schedule next week\'s integration-guide call',
-        links: [
-          { text: 'Schedule next week\'s integration-guide call', href: '/portal#integration-specialist' },
         ],
       },
     ],
@@ -319,13 +312,6 @@ const WEEKS = [
           { text: 'Schedule a check-in call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-check-in-call', external: true },
         ],
       },
-      {
-        color: 'amber',
-        text: 'Schedule next week\'s integration-guide call',
-        links: [
-          { text: 'Schedule next week\'s integration-guide call', href: '/portal#integration-specialist' },
-        ],
-      },
     ],
     prompts: POST_CEREMONY_WEEKS[2].prompts,
     thread: 'The practice you establish this week has a disproportionate impact on everything that follows. The medicine opened the door. This week you decide what you\'re building.',
@@ -371,13 +357,6 @@ const WEEKS = [
       },
       { color: 'blue', text: 'Name one old pattern that has returned, write about it', note: 'To see it clearly. Naming with precision is itself a form of integration. Your guide can see your weekly tracking and will reach out if they notice something that needs support.' },
       { color: 'sage', text: 'Continue your daily practice, especially on the days you least want to', note: 'The days you least want to show up are the days it matters most.' },
-      {
-        color: 'amber',
-        text: 'Schedule next week\'s integration-guide call',
-        links: [
-          { text: 'Schedule next week\'s integration-guide call', href: '/portal#integration-specialist' },
-        ],
-      },
     ],
     prompts: POST_CEREMONY_WEEKS[3].prompts,
     thread: 'Every person who has done deep transformational work meets this week. The ones who move through it are the ones who keep showing up to their practice. You are in the long arc now.',
@@ -423,13 +402,6 @@ const WEEKS = [
         note: 'Bring the decisions that are surfacing. Your guide can help you stay present to what is being asked of you without abandoning yourself.',
         links: [
           { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
-        ],
-      },
-      {
-        color: 'amber',
-        text: 'Schedule next week\'s integration-guide call',
-        links: [
-          { text: 'Schedule next week\'s integration-guide call', href: '/portal#integration-specialist' },
         ],
       },
     ],
