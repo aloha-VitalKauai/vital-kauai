@@ -232,7 +232,7 @@ const WEEKS = [
     title: 'The forgiveness work continues.',
     subtitle: 'Now it becomes a daily practice.',
     carryForward: 'You rested. You let what was shown remain wordless. This week the forgiveness you opened on Kauaʻi steps forward into your daily life.',
-    intro: 'Hoʻoponopono is the practice of making right. On Kauaʻi you opened the door to forgiveness, for yourself, for the people whose weight you have been carrying, for the situations that shaped you. This week is for anchoring that opening into something you can return to every day. The four lines, said in your own time and in your own way, are how you take 100% responsibility for the life you are living, and how you reinforce a felt sense of responsibility, forgiveness, gratitude, and love for yourself and for whatever you are holding: I\'m sorry. Please forgive me. Thank you. I love you.',
+    intro: 'Hoʻoponopono is the practice of making right. On Kauaʻi you opened the door to forgiveness, for yourself, for the people whose weight you have been carrying, and the situations that have shaped you. This week is for anchoring that opening into something you can return to every day. The four lines, said in your own time and in your own way, are how you take 100% responsibility for the life you are living, and how you reinforce a felt sense of responsibility, forgiveness, gratitude, and love for yourself and for whatever you are holding: I\'m sorry. Please forgive me. Thank you. I love you.',
     reentry: {
       strong: 'When something resurfaces this week, do this:',
       text: ' Place one hand on your heart. Bring whoever or whatever has surfaced to mind. Say the four lines slowly: "I\'m sorry. Please forgive me. Thank you. I love you." Hoʻoponopono does not require the other person to be present, to know, or to agree. The release belongs to you.',
@@ -254,8 +254,6 @@ const WEEKS = [
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
       { color: 'gold', text: 'Practice Hoʻoponopono daily, the four lines, with one person or situation held in mind', note: 'I\'m sorry. Please forgive me. Thank you. I love you. Same lines, every day. Different person or situation when called. Even five minutes is enough. The work is internal, the other person does not need to be present, know, or agree.' },
-      { color: 'sage', text: 'Take 100% responsibility for one situation in your life, name it, claim it, notice what shifts', note: 'Responsibility is not blame. It is the recognition that you are present in the situation, and that your response is yours to choose.' },
-      { color: 'blue', text: 'Write a list of the people and situations you are still carrying', note: 'Naming is the first act of release. You do not have to send anything or speak to anyone. The work is internal.' },
       {
         color: 'sage',
         text: 'Connect with your integration guide',
