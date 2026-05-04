@@ -1086,6 +1086,14 @@ export default function PreCeremonyPage() {
               <h2 className="w1p-title">
                 {i === 0
                   ? <>Seeing <em>clearly.</em></>
+                  : i === 2
+                  ? <>Presence is the <em>practice.</em></>
+                  : i === 3
+                  ? <>Iboga sees the <em>truth.</em></>
+                  : i === 4
+                  ? <>You walk this with <em>others.</em></>
+                  : i === 5
+                  ? <>You answer to no one but your own <em>knowing.</em></>
                   : <>{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</>}
               </h2>
               <p className="w1p-pull">&ldquo;{w.principle}&rdquo;</p>
