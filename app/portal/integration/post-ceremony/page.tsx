@@ -325,7 +325,7 @@ const WEEKS = [
     eyebrow: 'Week 4 · HAʻAHAʻA · Humility',
     title: 'The familiar is returning.',
     subtitle: 'Meet it differently.',
-    carryForward: 'You have been tending new practices. You have begun to bring the insights into your days. This week something will shift, old patterns may begin to resurface. This is the real integration beginning.',
+    carryForward: 'You have been tending new practices. You have begun to bring the insights into your days. This week something will shift, old patterns may begin to resurface. This is integration beginning.',
     intro: 'Haʻahaʻa means humility, the willingness to be exactly where you are without pretending to be further along. By week four, the acute aliveness of ceremony has softened. The ordinary world has returned. And with it, the familiar, however slightly, may start to return. Your ability to notice it, welcome it, and shift it with greater awareness is alive. This week asks you to meet all of that with humility rather than shame.',
     reentry: {
       strong: 'When the pattern hits, do this:',
