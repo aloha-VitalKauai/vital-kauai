@@ -167,7 +167,7 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     theme: 'Humility',
     title: 'The familiar is returning — meet it differently',
     prompts: [
-      { key: 'w2-p2', q: 'What old patterns, reactions, or beliefs have I noticed returning — and how am I choosing to meet them now?', hint: 'Return is part of the spiral. How you respond now is what matters.' },
+      { key: 'w2-p2', q: 'What old patterns, reactions, or beliefs have I noticed returning, and how am I choosing to meet them now?', hint: 'Return is part of the spiral. How you respond now is what matters.' },
       { key: 'w2-p1', q: 'What do I want to say to my pre-ceremony self — the one who was afraid, uncertain, or carrying so much?', hint: 'Write them a letter if you wish.' },
     ],
   },
@@ -178,6 +178,7 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     prompts: [
       { key: 'w5-p0', q: 'How has my sense of purpose shifted or clarified? What am I called to create, offer, or become in this next chapter?', hint: 'Purpose often surfaces in ceremony more clearly than we expect.' },
       { key: 'w5-p1', q: 'Who am I now? How would I describe the person who arrived, and the person standing here today?' },
+      { key: 'w5-p2', q: 'What does pono mean to me? What are my values now, and how will I live them moving forward?', hint: 'For example, to live authentically and honestly, to practice moderation, or to practice compassion with yourself and others.' },
     ],
   },
   {
