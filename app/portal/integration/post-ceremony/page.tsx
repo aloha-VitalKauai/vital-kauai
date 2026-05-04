@@ -199,7 +199,7 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Guide',
+        text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Integration Guide',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -230,9 +230,9 @@ const WEEKS = [
     theme: 'Forgiveness',
     eyebrow: 'Week 2 · HOʻOPONOPONO · Forgiveness',
     title: 'The forgiveness work continues.',
-    subtitle: 'You carry it now.',
+    subtitle: 'Now it becomes a daily practice.',
     carryForward: 'You rested. You let what was shown remain wordless. This week the forgiveness you opened on Kauaʻi steps forward into your daily life.',
-    intro: 'Hoʻoponopono is the practice of making right. On Kauaʻi you opened the door to forgiveness, for yourself, for the people you have carried, for the situations that shaped you. This week is for anchoring that opening into something you can return to every day. The four lines, said in your own time and in your own way, are how you take 100% responsibility for the life you are living, and how you reinforce a felt sense of responsibility, forgiveness, gratitude, and love for yourself and for whatever you are holding: I\'m sorry. Please forgive me. Thank you. I love you.',
+    intro: 'Hoʻoponopono is the practice of making right. On Kauaʻi you opened the door to forgiveness, for yourself, for the people whose weight you have been carrying, for the situations that shaped you. This week is for anchoring that opening into something you can return to every day. The four lines, said in your own time and in your own way, are how you take 100% responsibility for the life you are living, and how you reinforce a felt sense of responsibility, forgiveness, gratitude, and love for yourself and for whatever you are holding: I\'m sorry. Please forgive me. Thank you. I love you.',
     reentry: {
       strong: 'When something resurfaces this week, do this:',
       text: ' Place one hand on your heart. Bring whoever or whatever has surfaced to mind. Say the four lines slowly: "I\'m sorry. Please forgive me. Thank you. I love you." Hoʻoponopono does not require the other person to be present, to know, or to agree. The release belongs to you.',
@@ -249,7 +249,7 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Guide',
+        text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Integration Guide',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -298,7 +298,7 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Guide',
+        text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Integration Guide',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -359,7 +359,7 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Guide',
+        text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Integration Guide',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -411,7 +411,7 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Guide',
+        text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Integration Guide',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -461,7 +461,7 @@ const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Guide',
+        text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Integration Guide',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -1176,7 +1176,7 @@ export default function PostCeremonyPage() {
               <h3 className="w1-h3">PNE Perspective</h3>
               {(() => {
                 const c = POST_PNE_COMPANION[i]
-                const label = `Read Week ${i + 1} in The PsychoNeuroEnergetics (PNE) Guide${c?.theme ? `: ${c.theme}` : ''}`
+                const label = `Read Week ${i + 1} in The PsychoNeuroEnergetics (PNE) Integration Guide${c?.theme ? `: ${c.theme}` : ''}`
                 return c?.url ? (
                   <Link href={c.url} target="_blank" rel="noopener noreferrer" className="pne-companion-read">
                     {label} <span aria-hidden>→</span>
