@@ -20,9 +20,7 @@ const BASE_SECTIONS: SectionIndexItem[] = [
   { label: 'PNE',       anchor: '#pne-perspective' },
   { label: 'Community', anchor: '#community' },
 ]
-const COMPLETION_SECTION: SectionIndexItem = { label: 'Completion', anchor: '#completion' }
-const sectionsForWeek = (weekIdx: number): SectionIndexItem[] =>
-  weekIdx === 5 ? [...BASE_SECTIONS, COMPLETION_SECTION] : BASE_SECTIONS
+const sectionsForWeek = (_weekIdx: number): SectionIndexItem[] => BASE_SECTIONS
 
 // Action-item card shape, matches pre-ceremony's renderer so cards look and
 // behave identically across the 12-week arc.
@@ -448,17 +446,7 @@ const WEEKS = [
           { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
         ],
       },
-      { color: 'sage', text: 'Write your integration statement, guided below', note: 'Three questions, one page. What changed. What you know now. What you are committed to. Date it. You will want to read it in six months.' },
-      { color: 'green', text: 'Establish your monthly rhythm, one practice, one question, one connection', note: 'One thing you do every day. One honest question each month. One conversation with someone who knows what you went through. Simple enough to sustain.' },
-    ],
-    integrationStatement: [
-      { q: 'What genuinely changed?', hint: 'Actual, lived change. How do you move through the world differently now? Name specific behaviors, responses, ways of being.' },
-      { q: 'What do you know now that you didn\'t know before?', hint: 'About yourself. About what you want. About what you were carrying. About what is possible.' },
-      { q: 'What are you committed to in the next six months?', hint: 'One sentence. Concrete and liveable. Something you can return to and know immediately whether you kept it.' },
-    ],
-    checklist: [
-      'Integration statement written and dated',
-      'Monthly rhythm established',
+      { color: 'green', text: 'Establish your monthly rhythm: one practice, one question, one connection', note: 'One thing you do every day. One honest question each month. One conversation with someone who knows what you went through. Simple enough to sustain.' },
     ],
     prompts: POST_CEREMONY_WEEKS[5].prompts,
     thread: 'Kuleana is an honor, the recognition that you have been shown something real and that you are capable of living it. The medicine opened a window. You chose to walk through it, week by week, practice by practice, honest conversation by honest conversation. What you have built is a foundation. The work continues. We continue with you.',
@@ -975,8 +963,8 @@ export default function PostCeremonyPage() {
         .integration-qs{margin-top:28px;border:.5px solid rgba(200,169,110,.2);border-radius:4px;overflow:hidden}.iq-header{background:rgba(200,169,110,.06);padding:14px 20px;border-bottom:.5px solid rgba(200,169,110,.15)}.iq-label{font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}.iq-item{padding:18px 20px;border-bottom:.5px solid var(--border-lt)}.iq-item:last-of-type{border-bottom:none}.iq-q{font-size:13px;color:var(--ink-mid);font-weight:500;margin-bottom:6px}.iq-hint{font-size:12px;color:var(--stone);font-style:italic;line-height:1.65}
         .rg-wrap{margin-top:40px;border:.5px solid rgba(200,169,110,.35);border-radius:4px;overflow:hidden}.rg-header{background:var(--forest);padding:18px 24px;display:flex;align-items:center;gap:12px}.rg-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0}.rg-title{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}.rg-body{padding:20px 24px}.rg-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:.5px solid var(--border)}.rg-item:last-of-type{border-bottom:none}.rg-check{width:18px;height:18px;border-radius:2px;border:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}.rg-check.checked{background:var(--gold);border-color:var(--gold)}.rg-check-icon{font-size:10px;color:white;opacity:0}.rg-check.checked .rg-check-icon{opacity:1}.rg-item-text{font-size:13px;color:var(--ink-mid);line-height:1.5}
         .monthly-arc{margin-top:48px;background:linear-gradient(135deg,rgba(28,43,30,.04) 0%,rgba(200,169,110,.04) 100%);border:.5px solid rgba(200,169,110,.18);border-radius:4px;padding:32px 36px}.ma-eyebrow{font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:block}.ma-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--ink);line-height:1.2;margin-bottom:14px}.ma-title em{font-style:italic;color:var(--gold)}.ma-text{font-size:13.5px;color:var(--stone);line-height:1.9;margin-bottom:20px}.ma-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}.ma-card{background:white;border:.5px solid var(--border);border-radius:4px;padding:18px 20px}.ma-card-label{font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:block}.ma-card-text{font-size:13px;color:var(--ink-mid);line-height:1.7}.ma-question{margin-top:20px;background:rgba(200,169,110,.06);border:.5px solid rgba(200,169,110,.2);border-radius:4px;padding:16px 20px}.ma-q-label{font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:block}.ma-q-text{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;color:var(--ink);line-height:1.4}
-        .return-practice{margin-top:40px;background:rgba(200,169,110,.06);border:.5px solid rgba(200,169,110,.25);border-left:3px solid var(--gold);border-radius:4px;padding:28px 32px}.rp-eyebrow{font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:block;font-weight:500}.rp-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--ink);line-height:1.2;margin-bottom:14px}.rp-text{font-size:13.5px;color:var(--ink-mid);line-height:1.85;margin-bottom:12px}.rp-text:last-of-type{margin-bottom:20px}.rp-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}.rp-btn{font-family:inherit;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid var(--gold);border-radius:2px;padding:10px 16px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;transition:all .2s;font-weight:500}.rp-btn:hover{background:rgba(200,169,110,.1)}.rp-btn-alt{background:rgba(200,169,110,.06)}
-        .bridge{margin-top:28px;background:var(--forest);padding:32px 36px;border-radius:2px}.bridge-eyebrow{font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:block}.bridge-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--cream);line-height:1.2;margin-bottom:14px}.bridge-title em{font-style:italic;color:var(--gold)}.bridge-text{font-size:13.5px;color:rgba(245,240,232,.62);line-height:1.9}
+        .return-practice{margin-top:40px;background:rgba(200,169,110,.06);border:.5px solid rgba(200,169,110,.25);border-left:3px solid var(--gold);border-radius:4px;padding:28px 32px}.rp-eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:block;font-weight:500}.rp-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--ink);line-height:1.2;margin-bottom:14px}.rp-text{font-size:13.5px;color:var(--ink-mid);line-height:1.85;margin-bottom:12px}.rp-text:last-of-type{margin-bottom:20px}.rp-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}.rp-btn{font-family:inherit;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);background:transparent;border:1px solid var(--gold);border-radius:2px;padding:10px 16px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;transition:all .2s;font-weight:500}.rp-btn:hover{background:rgba(200,169,110,.1)}.rp-btn-alt{background:rgba(200,169,110,.06)}
+        .bridge{margin-top:28px;background:var(--forest);padding:32px 36px;border-radius:2px}.bridge-eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:block;font-weight:500}.bridge-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--cream);line-height:1.2;margin-bottom:14px}.bridge-title em{font-style:italic;color:var(--gold)}.bridge-text{font-size:13.5px;color:rgba(245,240,232,.62);line-height:1.9}
         .wc-wrap{margin-top:48px;padding-top:36px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}.wc-text{font-size:12.5px;color:var(--stone);line-height:1.65}.wc-text strong{color:var(--ink-mid);font-weight:500}
         .btn-complete{padding:12px 28px;background:var(--gold);border:none;border-radius:3px;color:var(--deep);font-family:inherit;font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap}.btn-complete:hover{background:#d4b87a}.btn-complete.done{background:rgba(200,169,110,.12);border:.5px solid var(--gold);color:var(--gold);cursor:default}
         .save-pill{position:fixed;bottom:24px;right:24px;padding:10px 18px;border-radius:4px;font-size:11px;letter-spacing:.1em;font-family:inherit;background:rgba(28,43,30,.9);color:var(--gold);opacity:0;transition:opacity .3s;pointer-events:none;z-index:200}.save-pill.visible{opacity:1}
@@ -1212,60 +1200,24 @@ export default function PostCeremonyPage() {
               </div>
             </section>
 
-            {/* COMPLETION, Week 6 only: integration statement + six-week
-                checklist + monthly arc + return-practice + closing bridge. */}
-            {w.integrationStatement && (
-              <section className="w1-section" id="completion">
-                <h3 className="w1-h3">Completion</h3>
-                <div className="integration-qs">
-                  <div className="iq-header">
-                    <span className="iq-label">Your integration statement, three questions, one page</span>
-                  </div>
-                  {w.integrationStatement.map((q, qi) => (
-                    <div className="iq-item" key={qi}>
-                      <div className="iq-q">{qi + 1}. {q.q}</div>
-                      <div className="iq-hint">{q.hint}</div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {w.checklist && (
-              <div className="rg-wrap" style={{ marginTop: 24 }}>
-                <div className="rg-header">
-                  <div className="rg-dot" /><div className="rg-title">Six-week integration, completions</div>
-                </div>
-                <div className="rg-body">
-                  {w.checklist.map((txt, ri) => (
-                    <div className="rg-item" key={ri}>
-                      <div className={`rg-check${checklist[`w6-${ri}`]?' checked':''}`} onClick={() => toggleCheck(`w6-${ri}`)}>
-                        <span className="rg-check-icon">✓</span>
-                      </div>
-                      <div className="rg-item-text">{txt}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
+            {/* COMPLETION, Week 6 only: monthly arc + return-practice + closing bridge. */}
             {w.monthlyArc && (
               <div className="monthly-arc">
-                <span className="ma-eyebrow">What comes next, months 2 & 3</span>
+                <span className="ma-eyebrow">What comes next, months 2 &amp; 3</span>
                 <h3 className="ma-title">After the <em>Six Weeks</em></h3>
-                <p className="ma-text">The pace softens from here. One daily practice, one honest question each month, one conversation with someone who knows the fuller picture of you. Your integration guide remains available whenever you need them.</p>
+                <p className="ma-text">The arc settles into a rhythm. Stay connected to your guide, your community, and the practices you have built.</p>
                 <div className="ma-grid">
                   <div className="ma-card">
-                    <span className="ma-card-label">One daily practice</span>
-                    <div className="ma-card-text">The practice you established in week 2. Continue it, consistently. It is the thread that connects ceremony to the life you are building.</div>
+                    <span className="ma-card-label">Continue with your integration guide</span>
+                    <div className="ma-card-text">Your integration guide is available beyond the six-week arc. Reach out to set a continuing cadence that supports you.</div>
                   </div>
                   <div className="ma-card">
-                    <span className="ma-card-label">One monthly check-in</span>
-                    <div className="ma-card-text">Rate your alignment (1–10). Notice what is holding and what is asking for renewal. One honest conversation with your guide each month.</div>
+                    <span className="ma-card-label">Stay in community</span>
+                    <div className="ma-card-text">You are part of our ongoing Vital Kauaʻi community. Join the monthly calls to stay connected with the people who walked this alongside you.</div>
                   </div>
                   <div className="ma-card">
-                    <span className="ma-card-label">One monthly connection</span>
-                    <div className="ma-card-text">One conversation per month with someone who knows what you went through, your integration guide, your support person, or another who can hold the fuller picture of you.</div>
+                    <span className="ma-card-label">Return to your practices</span>
+                    <div className="ma-card-text">Come back to your daily practice and to these journal prompts often. Reinforcement is how the new ways of being settle into how you live.</div>
                   </div>
                 </div>
                 <div className="ma-question">
@@ -1280,6 +1232,7 @@ export default function PostCeremonyPage() {
                 <span className="rp-eyebrow">A practice of return</span>
                 <h3 className="rp-title">Mark the returns.</h3>
                 <p className="rp-text">Integration happens in waves. Place three gentle markers on your own calendar, three months, six months, and one year from today. When each arrives, return here. Notice what has moved, what has deepened, what still asks for attention.</p>
+                <p className="rp-text">You are welcome to return for another ceremony whenever you feel called. The medicine often offers more than one passage to support who you are becoming.</p>
               </div>
             )}
 
@@ -1287,7 +1240,7 @@ export default function PostCeremonyPage() {
               <div className="bridge">
                 <span className="bridge-eyebrow">You are held</span>
                 <h3 className="bridge-title">The work continues.<br /><em>So do we.</em></h3>
-                <p className="bridge-text">Vital Kauaʻi does not end at the ceremony gate or the close of this program. Your integration guide, your care team, and this portal remain with you. If something arises, six weeks from now, six months from now, reach out. <strong style={{ color: 'var(--gold)' }}>aloha@vitalkauai.com</strong></p>
+                <p className="bridge-text">Vital Kauaʻi is always here for you. Your integration guide, your care team, and this portal remain with you. If something arises six weeks from now or six months from now, reach out and stay connected. <strong style={{ color: 'var(--gold)' }}>aloha@vitalkauai.com</strong></p>
               </div>
             )}
 
