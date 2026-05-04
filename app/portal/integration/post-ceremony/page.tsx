@@ -428,16 +428,6 @@ const WEEKS = [
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
-      { color: 'gold', text: 'Write your three non-negotiables for the next three months', note: 'Three things you are committing to, in your body, your relationships, your daily life, that reflect who you are becoming. Specific, liveable, honest.' },
-      { color: 'blue', text: 'Share your non-negotiables with one person in your life', note: 'Accountability held by another person anchors differently than accountability held alone. Be specific about what you are asking them to hold with you.' },
-      {
-        color: 'blue',
-        text: 'Schedule your Completion Call with Rachel & Josh',
-        note: 'The closing call of your integration arc with Rachel & Josh. Bring your integration statement. Bring what has landed, what is still moving, and what you are carrying forward.',
-        links: [
-          { text: 'Schedule your Completion Call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-completion-call', external: true },
-        ],
-      },
       {
         color: 'blue',
         text: 'Connect with your integration guide',
@@ -446,7 +436,6 @@ const WEEKS = [
           { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
         ],
       },
-      { color: 'green', text: 'Establish your monthly rhythm: one practice, one question, one connection', note: 'One thing you do every day. One honest question each month. One conversation with someone who knows what you went through. Simple enough to sustain.' },
     ],
     prompts: POST_CEREMONY_WEEKS[5].prompts,
     thread: 'Kuleana is an honor, the recognition that you have been shown something real and that you are capable of living it. The medicine opened a window. You chose to walk through it, week by week, practice by practice, honest conversation by honest conversation. What you have built is a foundation. The work continues. We continue with you.',
