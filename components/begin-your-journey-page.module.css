@@ -189,6 +189,7 @@
   font-size: 22px;
   color: var(--cream);
   text-decoration: none;
+  text-align: center;
   opacity: 0.8;
   transition: opacity 0.3s;
 }

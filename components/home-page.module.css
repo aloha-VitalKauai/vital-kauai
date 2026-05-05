@@ -216,6 +216,7 @@
   letter-spacing: 0.1em;
   color: var(--cream);
   text-decoration: none;
+  text-align: center;
   opacity: 0.85;
   transition: opacity 0.3s;
 }

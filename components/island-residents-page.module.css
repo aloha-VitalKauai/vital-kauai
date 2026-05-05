@@ -47,7 +47,7 @@
 /* ── MOBILE NAV ── */
 .navMobile { position: fixed; inset: 0; z-index: 200; background: var(--deep); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px; opacity: 0; pointer-events: none; transition: opacity 0.35s ease; }
 .navMobileOpen { opacity: 1; pointer-events: auto; }
-.navMobile a { font-family: var(--font-display), serif; font-size: 22px; color: var(--cream); text-decoration: none; opacity: 0.8; transition: opacity 0.3s; }
+.navMobile a { font-family: var(--font-display), serif; font-size: 22px; color: var(--cream); text-decoration: none; text-align: center; opacity: 0.8; transition: opacity 0.3s; }
 .navMobile a:hover { opacity: 1; }
 .navMobileClose { position: absolute; top: 32px; right: 40px; background: none; border: 0; color: var(--cream); font-size: 28px; cursor: pointer; }
 .mobileAccentLink { color: var(--gold) !important; }
