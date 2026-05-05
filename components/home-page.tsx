@@ -25,12 +25,6 @@ const teamMembers = [
     bio: "A Doctor of Clinical Psychology and lineage-initiated shamanic energy medicine practitioner, Dr. Liz bridges the depth of evidence-based psychology with the precision of shamanic wisdom and embodied healing. Founder of Luminous Healing Center and The Lotus Collaborative, she brings over 25 years of transformational care, illuminating unconscious patterns, supporting psychedelic integration, and guiding members into authentic wholeness at the intersection of mind, body, and spirit.",
     image: "/images/lizesalen.jpeg",
   },
-  {
-    name: "Jon Allen, PA-C",
-    role: "Medical Advisor · PA-C · Yale-Trained",
-    bio: "Jon is a Yale School of Medicine-trained, board-certified Physician Assistant practicing family and cardiovascular medicine on Kauaʻi's North Shore. He reviews all participant medical records, evaluates contraindications, and provides clinical oversight throughout the preparation process. For those who wish it, Jon is available to be present during ceremony, bringing the reassurance of skilled, grounded medical presence to the container.",
-    image: "/images/jonallen.jpeg",
-  },
 ];
 
 const faqs = [
