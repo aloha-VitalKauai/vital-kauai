@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import styles from "./church-information-page.module.css";
@@ -224,7 +225,15 @@ export function FaqPage() {
 
       {/* Hero */}
       <section className={styles.hero}>
-        <div className={styles.heroBg} />
+        <Image
+          className={styles.heroBgImg}
+          src="/images/napali.jpeg"
+          alt="Nā Pali Coast, Kauaʻi"
+          fill
+          priority
+          sizes="100vw"
+        />
+        <div className={styles.heroOverlay} />
         <div className={styles.heroContent}>
           <p className={styles.heroEyebrow}>Frequently Asked Questions</p>
           <h1 className={styles.heroTitle}>
