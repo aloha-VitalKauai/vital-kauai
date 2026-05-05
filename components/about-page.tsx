@@ -77,9 +77,6 @@ export function AboutPage() {
                 <Link href="/healing-circle">Our Healing Circle</Link>
               </li>
               <li>
-                <Link href="/testimonials">Testimonials</Link>
-              </li>
-              <li>
                 <Link href="/faq">FAQ</Link>
               </li>
             </ul>
@@ -130,9 +127,6 @@ export function AboutPage() {
         </Link>
         <Link href="/healing-circle" onClick={() => setIsMobileNavOpen(false)}>
           Our Healing Circle
-        </Link>
-        <Link href="/testimonials" onClick={() => setIsMobileNavOpen(false)}>
-          Testimonials
         </Link>
         <Link href="/faq" onClick={() => setIsMobileNavOpen(false)}>
           FAQ
