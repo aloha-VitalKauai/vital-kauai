@@ -15,6 +15,7 @@ const TABS = [
   // { label: "Outcomes", href: "/dashboard/outcomes" },
   { label: "Dosing", href: "/dashboard/dosing" },
   { label: "Financials", href: "/dashboard/financials" },
+  { label: "Automatic Emails", href: "/dashboard/automatic-emails" },
   { label: "SOPs", href: "/dashboard/sops" },
 ];
 
