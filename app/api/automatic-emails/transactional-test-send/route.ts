@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { readFile } from 'node:fs/promises'
+import path from 'node:path'
 import { verifyFounder } from '@/lib/auth/founder-check'
 import { renderSetupLinkEmail, renderPaymentLinkEmail } from '@/lib/email-renderers'
 import type { TransactionalEmailTemplate } from '@/lib/transactional-emails'
@@ -40,6 +42,9 @@ export async function POST(req: NextRequest) {
   const firstName = (founder.email.split('@')[0] || 'Friend').replace(/[^a-zA-Z]/g, '') || 'Friend'
 
   let rendered: { subject: string; html: string }
+  // Some tests need the same PDF the production route attaches.
+  let attachments: Array<{ filename: string; content: string }> | undefined
+
   try {
     if (template.key === 'setup_link') {
       rendered = await renderSetupLinkEmail({
@@ -54,9 +59,10 @@ export async function POST(req: NextRequest) {
         payUrl: `${APP_URL}/portal/journey/payment?token=preview`,
       })
     } else if (template.key === 'free_guide') {
-      // free-guide route does PDF attachment work that lives in its own
-      // route file. For test, render a body-only preview using the same
-      // scaffold and skip the attachment.
+      // free-guide normally renders inline in its own route. For test we
+      // render the same draft preview the founder sees on screen, then
+      // attach the actual PDF that production sends so the test fully
+      // mirrors what a real recipient gets.
       const previewRes = await fetch(`${req.nextUrl.origin}/api/automatic-emails/transactional-preview`, {
         method: 'POST',
         headers: {
@@ -67,6 +73,19 @@ export async function POST(req: NextRequest) {
       })
       const data = await previewRes.json()
       rendered = { subject: data.subject, html: data.html }
+
+      try {
+        const pdfPath = path.join(process.cwd(), 'public', 'iboga-guide-free.pdf')
+        const pdfBytes = await readFile(pdfPath)
+        attachments = [
+          {
+            filename: 'vital-kauai-iboga-guide.pdf',
+            content: pdfBytes.toString('base64'),
+          },
+        ]
+      } catch (pdfErr) {
+        console.warn('[transactional-test-send] free_guide PDF not found, sending without attachment:', pdfErr)
+      }
     } else {
       return NextResponse.json({ error: `unknown template key: ${template.key}` }, { status: 400 })
     }
@@ -83,15 +102,18 @@ export async function POST(req: NextRequest) {
   }
 
   const subject = `[TEST] ${rendered.subject}`
+  const payload: Record<string, unknown> = {
+    from: 'Vital Kauaʻi <aloha@vitalkauai.com>',
+    to: recipient,
+    subject,
+    html: rendered.html,
+  }
+  if (attachments) payload.attachments = attachments
+
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
-    body: JSON.stringify({
-      from: 'Vital Kauaʻi <aloha@vitalkauai.com>',
-      to: recipient,
-      subject,
-      html: rendered.html,
-    }),
+    body: JSON.stringify(payload),
   })
 
   if (!res.ok) {
@@ -99,5 +121,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: `Resend ${res.status}: ${txt}` }, { status: 500 })
   }
   const data = (await res.json().catch(() => ({}))) as { id?: string }
-  return NextResponse.json({ ok: true, id: data.id, to: recipient })
+  return NextResponse.json({ ok: true, id: data.id, to: recipient, attached_pdf: !!attachments })
 }
