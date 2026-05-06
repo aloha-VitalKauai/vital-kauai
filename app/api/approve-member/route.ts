@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyFounder } from '@/lib/auth/founder-check'
+import { renderSetupLinkEmail } from '@/lib/email-renderers'
 
 function db() {
   return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
@@ -297,86 +298,14 @@ function esc(s: string): string {
 }
 
 async function sendSetupEmail(email: string, fullName: string, setupLink: string) {
-  const firstName = esc(fullName?.split(' ')[0] || 'Friend')
-
-  const html = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <style>
-    *{box-sizing:border-box}
-    body{font-family:Georgia,'Times New Roman',serif;background:#f5f0e8;margin:0;padding:40px 16px}
-    .wrap{max-width:560px;margin:0 auto}
-    .card{background:#1a2e1c;border-radius:6px;overflow:hidden}
-    .top-bar{background:#c8a96e;height:4px}
-    .inner{padding:48px 44px 44px}
-    .eyebrow{font-family:'Helvetica Neue',sans-serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#c8a96e;margin:0 0 22px}
-    h1{color:#f5f0e8;font-size:30px;font-weight:400;line-height:1.2;margin:0 0 20px}
-    h1 em{font-style:italic;color:rgba(245,240,232,.7)}
-    p{color:rgba(245,240,232,.7);font-size:16px;line-height:1.75;margin:0 0 18px}
-    .cta-wrap{margin:36px 0 28px;text-align:center}
-    .cta{display:inline-block;background:#c8a96e;color:#1a2e1c;text-decoration:none;font-family:'Helvetica Neue',sans-serif;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:17px 38px;border-radius:3px}
-    .steps{margin:28px 0;padding:22px 26px;background:rgba(245,240,232,.05);border-radius:6px;border-left:2px solid #c8a96e}
-    .step{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
-    .step:last-child{margin-bottom:0}
-    .step-num{font-family:'Helvetica Neue',sans-serif;font-size:11px;font-weight:700;color:#c8a96e;background:rgba(200,169,110,.15);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-    .step-text{font-family:'Helvetica Neue',sans-serif;font-size:14px;color:rgba(245,240,232,.65);line-height:1.5}
-    .step-text strong{color:#f5f0e8}
-    hr{border:none;border-top:1px solid rgba(200,169,110,.15);margin:28px 0}
-    .login-box{background:rgba(245,240,232,.04);border:1px solid rgba(245,240,232,.1);border-radius:6px;padding:18px 22px;margin-bottom:24px}
-    .login-box p{font-family:'Helvetica Neue',sans-serif;font-size:13px;color:rgba(245,240,232,.5);margin:0 0 4px}
-    .login-url{font-family:'Helvetica Neue',sans-serif;font-size:14px;color:#c8a96e}
-    .note{font-family:'Helvetica Neue',sans-serif;font-size:12px;color:rgba(245,240,232,.3);line-height:1.6;margin:0 0 12px}
-    .note a{color:#c8a96e;text-decoration:none}
-    .footer{font-family:'Helvetica Neue',sans-serif;font-size:11px;color:rgba(245,240,232,.22);text-align:center;line-height:1.9}
-  </style>
-</head>
-<body>
-  <div class="wrap"><div class="card">
-    <div class="top-bar"></div>
-    <div class="inner">
-      <p class="eyebrow">Vital Kaua\u02BBi \u00B7 Member Portal</p>
-      <h1>Welcome, <em>${firstName}.</em></h1>
-      <p>We're honored to welcome you to Vital Kaua\u02BBi. Your private member portal is ready \u2014 it holds everything you need to prepare for your journey.</p>
-      <p>Click below to create your account. This takes about 30 seconds.</p>
-      <div class="cta-wrap">
-        <a class="cta" href="${setupLink}">Set Up My Account \u2192</a>
-      </div>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-text">Click the button above \u2014 it takes you to your account setup page.</div>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-text"><strong>Create a password</strong> you'll use every time you sign in.</div>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-text">You'll land directly in your member portal dashboard.</div>
-        </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-text">Complete your <strong>required documents</strong> as your first step inside.</div>
-        </div>
-      </div>
-      <hr>
-      <p style="color:rgba(245,240,232,.6);font-family:'Helvetica Neue',sans-serif;font-size:14px;margin:0 0 16px">After setup, sign in any time at:</p>
-      <div class="login-box">
-        <p>Member portal login</p>
-        <span class="login-url">${env().appUrl}/login</span>
-      </div>
-      <p class="note">The setup button expires in <strong style="color:rgba(245,240,232,.45)">24 hours</strong>. If it expires, go to the login page and use "Forgot password" to get a new link.</p>
-      <p class="note">Questions? Reply to this email or reach us at <a href="mailto:aloha@vitalkauai.com">aloha@vitalkauai.com</a></p>
-      <hr>
-      <div class="footer">\u00A9 2026 Vital Kaua\u02BBi Church \u00B7 PO Box 932, Hanalei, HI 96714<br>aloha@vitalkauai.com</div>
-    </div>
-  </div></div>
-</body>
-</html>`
-
   if (!env().resendKey) { console.log('No RESEND_API_KEY \u2014 skipping setup email'); return }
+
+  const firstName = fullName?.split(' ')[0] || 'Friend'
+  const { subject, html } = await renderSetupLinkEmail({
+    firstName,
+    setupLink,
+    appUrl: env().appUrl,
+  })
 
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -384,7 +313,7 @@ async function sendSetupEmail(email: string, fullName: string, setupLink: string
     body: JSON.stringify({
       from:    'Vital Kaua\u02BBi <aloha@vitalkauai.com>',
       to:      email,
-      subject: `Welcome to Vital Kaua\u02BBi, ${firstName} \u2014 set up your account`,
+      subject,
       html,
     }),
   })
