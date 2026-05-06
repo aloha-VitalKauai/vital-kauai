@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient as createServiceSupabase } from "@supabase/supabase-js";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { resolveTemplate } from "@/lib/transactional-emails";
 
 export const runtime = "nodejs";
 
@@ -139,6 +140,23 @@ async function sendFreeGuideEmail(input: {
   const pdfBytes = await readFile(pdfPath);
   const pdfB64   = pdfBytes.toString("base64");
 
+  // Pull editable copy from DB; fall back to the canonical defaults below
+  // if the row is missing or the query fails. Values are HTML-safe at write
+  // time (founders edit a textarea), so we don't double-escape here.
+  const fields = await resolveTemplate(
+    "free_guide",
+    { firstName, guideUrl, pdfUrl, discoveryUrl },
+    {
+      subject:      "Your Free Iboga Guide",
+      eyebrow:      "Vital Kauaʻi · Free Resource",
+      heading:      `Your Iboga guide, <em>${firstName}.</em>`,
+      lead_html:    `<p>Mahalo for reaching out. The guide we wish existed when we began our own journeys is attached to this email as a PDF, and you can read it on the web anytime at the link below.</p><p>It covers the history and lineage of Iboga, what to expect during ceremony, how we prepare body and nervous system, and how to choose a safe, qualified provider.</p>`,
+      body_html:    `<p>If, after reading, you sense this work may be for you, the next step is a conversation. We hold discovery calls with everyone before they enter ceremony, and we would be honored to connect with you.</p>`,
+      cta_label:    "Book a Discovery Call →",
+      closing_html: `<p class="links">Questions? Reply to this email or reach us at <a href="mailto:aloha@vitalkauai.com">aloha@vitalkauai.com</a>.</p>`,
+    },
+  );
+
   const html = `<!DOCTYPE html>
 <html>
 <head>
@@ -168,21 +186,20 @@ async function sendFreeGuideEmail(input: {
   <div class="wrap"><div class="card">
     <div class="top-bar"></div>
     <div class="inner">
-      <p class="eyebrow">Vital Kauaʻi · Free Resource</p>
-      <h1>Your Iboga guide, <em>${firstName}.</em></h1>
-      <p>Mahalo for reaching out. The guide we wish existed when we began our own journeys is attached to this email as a PDF, and you can read it on the web anytime at the link below.</p>
-      <p>It covers the history and lineage of Iboga, what to expect during ceremony, how we prepare body and nervous system, and how to choose a safe, qualified provider.</p>
+      <p class="eyebrow">${fields.eyebrow}</p>
+      <h1>${fields.heading}</h1>
+      ${fields.lead_html}
       <p class="links">
         • <a href="${esc(guideUrl)}">Read the guide on the web</a><br>
         • <a href="${esc(pdfUrl)}">Download the PDF</a> (also attached)
       </p>
       <hr>
-      <p>If, after reading, you sense this work may be for you, the next step is a conversation. We hold discovery calls with everyone before they enter ceremony, and we would be honored to connect with you.</p>
+      ${fields.body_html}
       <div class="cta-wrap">
-        <a class="cta" href="${esc(discoveryUrl)}">Book a Discovery Call →</a>
+        <a class="cta" href="${esc(discoveryUrl)}">${fields.cta_label}</a>
       </div>
       <hr>
-      <p class="links">Questions? Reply to this email or reach us at <a href="mailto:aloha@vitalkauai.com">aloha@vitalkauai.com</a>.</p>
+      ${fields.closing_html}
       <div class="footer">With care,<br>Rachel, Josh &amp; the Vital Kauaʻi team<br><br>© 2026 Vital Kauaʻi Church · PO Box 932, Hanalei, HI 96714</div>
     </div>
   </div></div>
@@ -198,7 +215,7 @@ async function sendFreeGuideEmail(input: {
     body: JSON.stringify({
       from:    "Vital Kauaʻi <aloha@vitalkauai.com>",
       to:      toEmail,
-      subject: "Your Free Iboga Guide",
+      subject: fields.subject,
       html,
       attachments: [
         {

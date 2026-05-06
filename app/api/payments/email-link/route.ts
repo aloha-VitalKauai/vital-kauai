@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient as createServerSupabase } from "@/lib/supabase/server";
 import { createClient as createServiceSupabase } from "@supabase/supabase-js";
 import { randomBytes } from "node:crypto";
+import { renderPaymentLinkEmail } from "@/lib/email-renderers";
 
 export const runtime = "nodejs";
 
@@ -30,13 +31,6 @@ function fmt(cents: number) {
   }).format(cents / 100);
 }
 
-function esc(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
 
 export async function POST(req: Request) {
   const { commitment_id } = await req
@@ -227,64 +221,15 @@ async function sendPaymentEmail(input: {
   payUrl:      string;
 }) {
   const { toEmail, fullName, amountCents, payUrl } = input;
-  const firstName = esc(fullName?.split(" ")[0] || "Friend");
-  const amount = fmt(amountCents);
-  const escUrl = esc(payUrl);
-
-  const html = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <style>
-    *{box-sizing:border-box}
-    body{font-family:Georgia,'Times New Roman',serif;background:#f5f0e8;margin:0;padding:40px 16px}
-    .wrap{max-width:560px;margin:0 auto}
-    .card{background:#1a2e1c;border-radius:6px;overflow:hidden}
-    .top-bar{background:#c8a96e;height:4px}
-    .inner{padding:48px 44px 44px}
-    .eyebrow{font-family:'Helvetica Neue',sans-serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#c8a96e;margin:0 0 22px}
-    h1{color:#f5f0e8;font-size:30px;font-weight:400;line-height:1.2;margin:0 0 20px}
-    h1 em{font-style:italic;color:rgba(245,240,232,.7)}
-    p{color:rgba(245,240,232,.7);font-size:16px;line-height:1.75;margin:0 0 18px}
-    .amount-box{background:rgba(200,169,110,.08);border:1px solid rgba(200,169,110,.25);border-radius:6px;padding:22px 26px;margin:28px 0;text-align:center}
-    .amount-label{font-family:'Helvetica Neue',sans-serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(200,169,110,.85);margin:0 0 8px}
-    .amount-value{font-family:Georgia,serif;font-size:36px;color:#f5f0e8;font-weight:400}
-    .cta-wrap{margin:32px 0 24px;text-align:center}
-    .cta{display:inline-block;background:#c8a96e;color:#1a2e1c;text-decoration:none;font-family:'Helvetica Neue',sans-serif;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:17px 38px;border-radius:3px}
-    .note{font-family:'Helvetica Neue',sans-serif;font-size:12px;color:rgba(245,240,232,.3);line-height:1.6;margin:0 0 12px}
-    .note a{color:#c8a96e;text-decoration:none}
-    .footer{font-family:'Helvetica Neue',sans-serif;font-size:11px;color:rgba(245,240,232,.22);text-align:center;line-height:1.9;margin-top:18px}
-    hr{border:none;border-top:1px solid rgba(200,169,110,.15);margin:28px 0}
-  </style>
-</head>
-<body>
-  <div class="wrap"><div class="card">
-    <div class="top-bar"></div>
-    <div class="inner">
-      <p class="eyebrow">Vital Kaua\u02BBi \u00B7 Journey Contribution</p>
-      <h1>Thank you for your contribution, <em>${firstName}.</em></h1>
-      <p>Here\u2019s a single-use payment link for your journey contribution. It opens a secure Stripe checkout pre-filled with your amount.</p>
-      <div class="amount-box">
-        <p class="amount-label">Amount</p>
-        <span class="amount-value">${amount}</span>
-      </div>
-      <div class="cta-wrap">
-        <a class="cta" href="${escUrl}">Complete Contribution \u2192</a>
-      </div>
-      <hr>
-      <p class="note">This link is single-use and expires in <strong style="color:rgba(245,240,232,.45)">7 days</strong>. If anything looks off, reply to this email and we\u2019ll sort it out together.</p>
-      <p class="note">Questions? Reply to this email or reach us at <a href="mailto:aloha@vitalkauai.com">aloha@vitalkauai.com</a></p>
-      <div class="footer">\u00A9 2026 Vital Kaua\u02BBi Church \u00B7 PO Box 932, Hanalei, HI 96714<br>aloha@vitalkauai.com</div>
-    </div>
-  </div></div>
-</body>
-</html>`;
 
   if (!env().resendKey) {
     console.log("[payments/email-link] No RESEND_API_KEY \u2014 skipping email");
     throw new Error("RESEND_API_KEY not configured");
   }
+
+  const firstName = fullName?.split(" ")[0] || "Friend";
+  const amount = fmt(amountCents);
+  const { subject, html } = await renderPaymentLinkEmail({ firstName, amount, payUrl });
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -295,7 +240,7 @@ async function sendPaymentEmail(input: {
     body: JSON.stringify({
       from:    "Vital Kaua\u02BBi <aloha@vitalkauai.com>",
       to:      toEmail,
-      subject: `Your Vital Kaua\u02BBi journey contribution \u2014 ${amount}`,
+      subject,
       html,
     }),
   });

@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyFounder } from '@/lib/auth/founder-check'
+import { renderSetupLinkEmail } from '@/lib/email-renderers'
 
 function db() {
   return createClient(
@@ -128,69 +129,20 @@ async function generatePasswordSetupLink(email: string): Promise<string | null> 
   return null
 }
 
-function esc(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-}
-
 async function sendSetupEmail(email: string, fullName: string, setupLink: string) {
-  const firstName = esc(fullName?.split(' ')[0] || 'Friend')
-  const appUrl = env().appUrl
-
-  const html = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <style>
-    *{box-sizing:border-box}
-    body{font-family:Georgia,'Times New Roman',serif;background:#f5f0e8;margin:0;padding:40px 16px}
-    .wrap{max-width:560px;margin:0 auto}
-    .card{background:#1a2e1c;border-radius:6px;overflow:hidden}
-    .top-bar{background:#c8a96e;height:4px}
-    .inner{padding:48px 44px 44px}
-    .eyebrow{font-family:'Helvetica Neue',sans-serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#c8a96e;margin:0 0 22px}
-    h1{color:#f5f0e8;font-size:30px;font-weight:400;line-height:1.2;margin:0 0 20px}
-    h1 em{font-style:italic;color:rgba(245,240,232,.7)}
-    p{color:rgba(245,240,232,.7);font-size:16px;line-height:1.75;margin:0 0 18px}
-    .cta-wrap{margin:36px 0 28px;text-align:center}
-    .cta{display:inline-block;background:#c8a96e;color:#1a2e1c;text-decoration:none;font-family:'Helvetica Neue',sans-serif;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:17px 38px;border-radius:3px}
-    .login-box{background:rgba(245,240,232,.04);border:1px solid rgba(245,240,232,.1);border-radius:6px;padding:18px 22px;margin:24px 0}
-    .login-box p{font-family:'Helvetica Neue',sans-serif;font-size:13px;color:rgba(245,240,232,.5);margin:0 0 4px}
-    .login-url{font-family:'Helvetica Neue',sans-serif;font-size:14px;color:#c8a96e}
-    .note{font-family:'Helvetica Neue',sans-serif;font-size:12px;color:rgba(245,240,232,.3);line-height:1.6;margin:0 0 12px}
-    .note a{color:#c8a96e;text-decoration:none}
-    .footer{font-family:'Helvetica Neue',sans-serif;font-size:11px;color:rgba(245,240,232,.22);text-align:center;line-height:1.9;margin-top:18px}
-    hr{border:none;border-top:1px solid rgba(200,169,110,.15);margin:28px 0}
-  </style>
-</head>
-<body>
-  <div class="wrap"><div class="card">
-    <div class="top-bar"></div>
-    <div class="inner">
-      <p class="eyebrow">Vital Kaua\u02BBi \u00B7 Member Portal</p>
-      <h1>Here\u2019s a fresh link, <em>${firstName}.</em></h1>
-      <p>Your previous account-setup link expired. Click below to create your password \u2014 it takes about 30 seconds.</p>
-      <div class="cta-wrap">
-        <a class="cta" href="${setupLink}">Set Up My Account \u2192</a>
-      </div>
-      <hr>
-      <p style="color:rgba(245,240,232,.6);font-family:'Helvetica Neue',sans-serif;font-size:14px;margin:0 0 16px">After setup, sign in any time at:</p>
-      <div class="login-box">
-        <p>Member portal login</p>
-        <span class="login-url">${appUrl}/login</span>
-      </div>
-      <p class="note">This link expires in <strong style="color:rgba(245,240,232,.45)">24 hours</strong>. If it expires again, reply to this email and we\u2019ll send another.</p>
-      <p class="note">Questions? Reply to this email or reach us at <a href="mailto:aloha@vitalkauai.com">aloha@vitalkauai.com</a></p>
-      <div class="footer">\u00A9 2026 Vital Kaua\u02BBi Church \u00B7 PO Box 932, Hanalei, HI 96714<br>aloha@vitalkauai.com</div>
-    </div>
-  </div></div>
-</body>
-</html>`
-
   if (!env().resendKey) {
     console.log('[resend-setup-link] No RESEND_API_KEY \u2014 skipping email')
     return
   }
+
+  const firstName = fullName?.split(' ')[0] || 'Friend'
+  // Same renderer + DB-backed template as /api/approve-member, so editing the
+  // setup_link template in the dashboard updates both flows.
+  const { subject, html } = await renderSetupLinkEmail({
+    firstName,
+    setupLink,
+    appUrl: env().appUrl,
+  })
 
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -201,7 +153,7 @@ async function sendSetupEmail(email: string, fullName: string, setupLink: string
     body: JSON.stringify({
       from:    'Vital Kaua\u02BBi <aloha@vitalkauai.com>',
       to:      email,
-      subject: `Your Vital Kaua\u02BBi setup link, ${firstName} \u2014 fresh copy`,
+      subject,
       html,
     }),
   })
