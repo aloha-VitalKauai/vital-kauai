@@ -459,7 +459,7 @@ export function HomePage() {
             </p>
             <p className={styles.medicineBody}>
               Vital Kauaʻi is a ceremonial container: a living relationship between practitioner,
-              plant, participant, and land. We offer the most in-depth preparation and integration we know in this work: a six-week preparation arc before ceremony and a six-week integration after, with weekly teachings, somatic guidance, and one-on-one support throughout.
+              plant, participant, and land. We offer the most in-depth preparation and integration we know in this work: a six-week preparation arc before ceremony and a six-week integration after, with weekly teachings, somatic guidance, and one-on-one support throughout. From there, you become a lifelong member of the Vital Kauaʻi community, with monthly group calls and optional ongoing one-on-one support.
             </p>
             <p className={styles.medicineBody}>
               Our approach honors the Bwiti tradition from which Iboga comes, drawing on the whole-plant intelligence of the root bark. As stewards of this ʻāina, we hold Hawaiian tradition with kuleana, caring for the land, water, and lineage that make our ceremony possible.
