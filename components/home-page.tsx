@@ -466,7 +466,7 @@ export function HomePage() {
             </p>
             <div className={styles.medicineDistinction}>
               <p>
-                &quot;We are dedicated to providing the most in-depth preparation and integration we know in this work.&quot;
+                &quot;Our commitment is to walk beside you through preparation, into ceremony, and months after in the work of integration.&quot;
               </p>
               <p className={styles.medicineDistinctionByline}>— Vital Kauaʻi</p>
             </div>
