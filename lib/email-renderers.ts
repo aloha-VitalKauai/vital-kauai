@@ -39,7 +39,7 @@ export async function renderSetupLinkEmail(args: {
       lead_html: `<p>We're honored to welcome you to Vital Kauaʻi. Your private member portal is ready — it holds everything you need to prepare for your journey.</p><p>Click below to create your account. This takes about 30 seconds.</p>`,
       body_html: '',
       cta_label: 'Set Up My Account →',
-      closing_html: `<p class="note">The setup button expires in <strong style="color:rgba(245,240,232,.45)">24 hours</strong>. If it expires, go to the login page and use "Forgot password" to get a new link.</p><p class="note">Questions? Reply to this email or reach us at <a href="mailto:aloha@vitalkauai.com">aloha@vitalkauai.com</a></p>`,
+      closing_html: `<p class="note">The setup button is good for <strong style="color:rgba(245,240,232,.45)">30 days</strong>. If it expires, go to the login page and use "Forgot password" to get a new link.</p><p class="note">Questions? Reply to this email or reach us at <a href="mailto:aloha@vitalkauai.com">aloha@vitalkauai.com</a></p>`,
     },
   )
 
