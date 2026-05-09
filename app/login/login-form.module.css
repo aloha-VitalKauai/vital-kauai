@@ -77,6 +77,27 @@
   border-color: #c8a96e;
 }
 
+.forgotRow {
+  display: flex;
+  justify-content: flex-end;
+  margin: -8px 0 20px;
+}
+
+.linkButton {
+  background: transparent;
+  border: none;
+  color: #c8a96e;
+  font-family: var(--font-body), sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.linkButton:hover {
+  text-decoration: underline;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

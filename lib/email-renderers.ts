@@ -109,6 +109,78 @@ export async function renderSetupLinkEmail(args: {
   return { subject: fields.subject, html }
 }
 
+// ─── password_reset ────────────────────────────────────────────
+//
+// Self-service "Forgot password" flow. Visually mirrors setup_link but
+// uses copy that fits a returning member, not a brand-new account.
+// Not DB-editable today; if Rachel wants to tweak the words, promote
+// to a transactional_email_templates row.
+
+export function renderPasswordResetEmail(args: {
+  firstName: string
+  resetLink: string
+  appUrl: string
+}): { subject: string; html: string } {
+  const { firstName, resetLink, appUrl } = args
+  const safeFirst = esc(firstName)
+
+  const subject = `Reset your Vital Kauaʻi password`
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    *{box-sizing:border-box}
+    body{font-family:Georgia,'Times New Roman',serif;background:#f5f0e8;margin:0;padding:40px 16px}
+    .wrap{max-width:560px;margin:0 auto}
+    .card{background:#1a2e1c;border-radius:6px;overflow:hidden}
+    .top-bar{background:#c8a96e;height:4px}
+    .inner{padding:48px 44px 44px}
+    .eyebrow{font-family:'Helvetica Neue',sans-serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#c8a96e;margin:0 0 22px}
+    h1{color:#f5f0e8;font-size:30px;font-weight:400;line-height:1.2;margin:0 0 20px}
+    h1 em{font-style:italic;color:rgba(245,240,232,.7)}
+    p{color:rgba(245,240,232,.7);font-size:16px;line-height:1.75;margin:0 0 18px}
+    .cta-wrap{margin:36px 0 28px;text-align:center}
+    .cta{display:inline-block;background:#c8a96e;color:#1a2e1c;text-decoration:none;font-family:'Helvetica Neue',sans-serif;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:17px 38px;border-radius:3px}
+    hr{border:none;border-top:1px solid rgba(200,169,110,.15);margin:28px 0}
+    .login-box{background:rgba(245,240,232,.04);border:1px solid rgba(245,240,232,.1);border-radius:6px;padding:18px 22px;margin-bottom:24px}
+    .login-box p{font-family:'Helvetica Neue',sans-serif;font-size:13px;color:rgba(245,240,232,.5);margin:0 0 4px}
+    .login-url{font-family:'Helvetica Neue',sans-serif;font-size:14px;color:#c8a96e}
+    .note{font-family:'Helvetica Neue',sans-serif;font-size:12px;color:rgba(245,240,232,.3);line-height:1.6;margin:0 0 12px}
+    .note a{color:#c8a96e;text-decoration:none}
+    .footer{font-family:'Helvetica Neue',sans-serif;font-size:11px;color:rgba(245,240,232,.22);text-align:center;line-height:1.9}
+  </style>
+</head>
+<body>
+  <div class="wrap"><div class="card">
+    <div class="top-bar"></div>
+    <div class="inner">
+      <p class="eyebrow">Vital Kauaʻi · Member Portal</p>
+      <h1>Reset your password, <em>${safeFirst}.</em></h1>
+      <p>We received a request to reset the password on your Vital Kauaʻi member portal account. Click below to choose a new one — this takes about 30 seconds.</p>
+      <div class="cta-wrap">
+        <a class="cta" href="${esc(resetLink)}">Reset Password →</a>
+      </div>
+      <hr>
+      <p style="color:rgba(245,240,232,.6);font-family:'Helvetica Neue',sans-serif;font-size:14px;margin:0 0 16px">After resetting, sign in any time at:</p>
+      <div class="login-box">
+        <p>Member portal login</p>
+        <span class="login-url">${esc(appUrl)}/login</span>
+      </div>
+      <p class="note">This link expires in <strong style="color:rgba(245,240,232,.45)">24 hours</strong>. If you didn't request this reset, you can safely ignore this email — your password will stay the same.</p>
+      <p class="note">Questions? Reply to this email or reach us at <a href="mailto:aloha@vitalkauai.com">aloha@vitalkauai.com</a></p>
+      <hr>
+      <div class="footer">© 2026 Vital Kauaʻi Church · PO Box 932, Hanalei, HI 96714<br>aloha@vitalkauai.com</div>
+    </div>
+  </div></div>
+</body>
+</html>`
+
+  return { subject, html }
+}
+
 // ─── payment_link ──────────────────────────────────────────────
 
 export async function renderPaymentLinkEmail(args: {

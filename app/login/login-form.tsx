@@ -11,6 +11,8 @@ type Status = {
   message: string;
 };
 
+type Mode = "signin" | "forgot";
+
 function sanitizeNextPath(input: string | null) {
   if (!input) return "/portal";
   if (!input.startsWith("/")) return "/portal";
@@ -24,10 +26,12 @@ type LoginFormProps = {
 };
 
 export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) {
+  const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState<Status>({ type: "idle", message: "" });
   const [loading, setLoading] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
   const router = useRouter();
 
   const nextPath = sanitizeNextPath(nextPathParam ?? null);
@@ -81,14 +85,69 @@ export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) 
     }
   }
 
+  async function handleForgotSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setLoading(true);
+    setStatus({ type: "idle", message: "" });
+
+    try {
+      const res = await fetch("/api/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setStatus({
+          type: "error",
+          message: data?.error ?? "Couldn't send the reset link. Please try again.",
+        });
+        return;
+      }
+
+      setResetSent(true);
+      setStatus({
+        type: "success",
+        message:
+          data?.message ??
+          "If an approved member account exists for that email, a password reset link is on its way.",
+      });
+    } catch {
+      setStatus({
+        type: "error",
+        message: "Couldn't send the reset link right now. Please try again in a moment.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function switchToForgot() {
+    setMode("forgot");
+    setStatus({ type: "idle", message: "" });
+    setResetSent(false);
+    setPassword("");
+  }
+
+  function switchToSignin() {
+    setMode("signin");
+    setStatus({ type: "idle", message: "" });
+    setResetSent(false);
+  }
+
+  const isForgot = mode === "forgot";
+  const heading = isForgot ? "Reset Password" : "Sign In";
+  const description = isForgot
+    ? "Enter the email on file and we'll send a link to choose a new password."
+    : "Enter the email and password sent to you after your discovery call.";
+
   return (
     <main className={styles.wrapper}>
       <section className={styles.card}>
         <p className={styles.eyebrow}>Member Portal</p>
-        <h1 className={styles.title}>Sign In</h1>
-        <p className={styles.description}>
-          Enter the email and password sent to you after your discovery call.
-        </p>
+        <h1 className={styles.title}>{heading}</h1>
+        <p className={styles.description}>{description}</p>
 
         {errorMessage ? (
           <p className={`${styles.status} ${styles.statusError}`}>{decodeURIComponent(errorMessage)}</p>
@@ -104,42 +163,82 @@ export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) 
           </p>
         ) : null}
 
-        <form onSubmit={handleSubmit}>
-          <label className={styles.fieldLabel} htmlFor="email">
-            Email
-          </label>
-          <input
-            className={styles.input}
-            id="email"
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            placeholder="you@example.com"
-            required
-            autoComplete="email"
-          />
-          <label className={styles.fieldLabel} htmlFor="password">
-            Password
-          </label>
-          <input
-            className={styles.input}
-            id="password"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            placeholder="Your password"
-            required
-            autoComplete="current-password"
-          />
-          <div className={styles.actions}>
-            <button className={`${styles.button} ${styles.buttonPrimary}`} type="submit" disabled={loading}>
-              {loading ? "Signing In..." : "Sign In"}
-            </button>
-            <Link href="/" className={`${styles.button} ${styles.buttonSecondary}`}>
-              Return Home
-            </Link>
-          </div>
-        </form>
+        {isForgot ? (
+          <form onSubmit={handleForgotSubmit}>
+            <label className={styles.fieldLabel} htmlFor="reset-email">
+              Email
+            </label>
+            <input
+              className={styles.input}
+              id="reset-email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="you@example.com"
+              required
+              autoComplete="email"
+              disabled={resetSent}
+            />
+            <div className={styles.actions}>
+              <button
+                className={`${styles.button} ${styles.buttonPrimary}`}
+                type="submit"
+                disabled={loading || resetSent}
+              >
+                {loading ? "Sending..." : resetSent ? "Sent" : "Send Reset Link"}
+              </button>
+              <button
+                type="button"
+                className={`${styles.button} ${styles.buttonSecondary}`}
+                onClick={switchToSignin}
+              >
+                Back to Sign In
+              </button>
+            </div>
+          </form>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <label className={styles.fieldLabel} htmlFor="email">
+              Email
+            </label>
+            <input
+              className={styles.input}
+              id="email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="you@example.com"
+              required
+              autoComplete="email"
+            />
+            <label className={styles.fieldLabel} htmlFor="password">
+              Password
+            </label>
+            <input
+              className={styles.input}
+              id="password"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Your password"
+              required
+              autoComplete="current-password"
+            />
+            <div className={styles.forgotRow}>
+              <button type="button" className={styles.linkButton} onClick={switchToForgot}>
+                Forgot password?
+              </button>
+            </div>
+            <div className={styles.actions}>
+              <button className={`${styles.button} ${styles.buttonPrimary}`} type="submit" disabled={loading}>
+                {loading ? "Signing In..." : "Sign In"}
+              </button>
+              <Link href="/" className={`${styles.button} ${styles.buttonSecondary}`}>
+                Return Home
+              </Link>
+            </div>
+          </form>
+        )}
 
         <p className={styles.notice}>
           Access is invitation-only. After your discovery call, you&apos;ll receive login
