@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyFounder } from '@/lib/auth/founder-check'
 import { renderSetupLinkEmail } from '@/lib/email-renderers'
+import { createSetupToken, setupAccountUrl } from '@/lib/setup-tokens'
 
 function db() {
   return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
@@ -232,12 +233,21 @@ async function handleApproval(token: string, source: string) {
     console.error('[approve-member] STEP:journey+commitment, unexpected error (non-blocking):', err?.message || err)
   }
 
-  // Generate one-time setup link -> /setup-account
-  // This is NOT an ongoing magic link.
-  // After they create their password, they ALWAYS log in with email + password.
-  const setupLink = await generatePasswordSetupLink(lead.email, lead.full_name)
-
-  if (!setupLink) {
+  // Mint a 30-day single-use setup token. Stored in public.setup_tokens and
+  // exchanged server-side for a password set via the admin API in
+  // /api/setup-account/complete. Replaces Supabase's recovery link, which is
+  // hard-capped at 24h on hosted Supabase.
+  let setupLink: string
+  try {
+    const token = await createSetupToken({
+      userId,
+      email: lead.email,
+      fullName: lead.full_name,
+    })
+    setupLink = setupAccountUrl(token, env().appUrl)
+    console.log(`[approve-member] STEP:setuplink, token minted, expires in 30 days`)
+  } catch (err: any) {
+    console.error('[approve-member] STEP:setuplink, FAILED:', err?.message || err)
     return respond(source, false, 'Account created but setup link generation failed. Try resending from the dashboard.')
   }
 
@@ -265,32 +275,6 @@ async function getOrCreateAuthUser(email: string, fullName: string): Promise<str
   const userId = data.user?.id || data.id
   if (!userId) throw new Error(`No user ID in response: ${JSON.stringify(data).slice(0, 200)}`)
   return userId
-}
-
-async function generatePasswordSetupLink(email: string, fullName: string): Promise<string | null> {
-  // Use Supabase JS admin client, raw adminFetch wasn't encoding redirect_to properly
-  const supabase = db()
-  const redirectTo = `${env().appUrl}/setup-account`
-
-  const { data, error } = await supabase.auth.admin.generateLink({
-    type: 'recovery',
-    email,
-    options: { redirectTo },
-  })
-
-  let link = data?.properties?.action_link
-  console.log(`[approve-member] STEP:setuplink, redirectTo=${redirectTo}, has_link=${!!link}, error=${error?.message || 'none'}`)
-  if (link) {
-    // generateLink doesn't always encode redirect_to in the action_link, append it
-    const url = new URL(link)
-    url.searchParams.set('redirect_to', redirectTo)
-    link = url.toString()
-    console.log(`[approve-member] STEP:setuplink, final link redirect_to=${redirectTo}`)
-    return link
-  }
-
-  console.error('[approve-member] STEP:setuplink, FAILED:', error?.message || 'no action_link')
-  return null
 }
 
 function esc(s: string): string {

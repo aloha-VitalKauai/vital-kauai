@@ -1,26 +1,66 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 type Stage = 'loading' | 'set-password' | 'success' | 'error'
+type Mode  = 'token' | 'session'
 
 export default function SetPasswordPage() {
   const supabase = createClient()
   const router   = useRouter()
+  const search   = useSearchParams()
 
   const [stage, setStage]           = useState<Stage>('loading')
+  const [mode, setMode]             = useState<Mode>('session')
+  const [token, setToken]           = useState('')
+  const [email, setEmail]           = useState('')
   const [password, setPassword]     = useState('')
   const [confirm, setConfirm]       = useState('')
   const [showPw, setShowPw]         = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError]           = useState<string | null>(null)
+  const [errorMsg, setErrorMsg]     = useState<string | null>(null)
   const [userName, setUserName]     = useState('')
 
   useEffect(() => {
-    async function initSession() {
-      // Method 1: Cookie session (PKCE flow — user came through /auth/callback)
+    async function init() {
+      // Path 1: custom 30-day setup token (new approval/resend flow)
+      const t = search.get('token')
+      if (t) {
+        setMode('token')
+        setToken(t)
+        try {
+          const res = await fetch('/api/setup-account/verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: t }),
+          })
+          const data = await res.json()
+          if (data.ok) {
+            setUserName(data.firstName || '')
+            setEmail(data.email || '')
+            setStage('set-password')
+            return
+          }
+          setErrorMsg(
+            data.reason === 'expired'
+              ? 'This setup link has expired. Use "Forgot password" on the sign-in page to get a fresh one.'
+              : data.reason === 'used'
+                ? 'This setup link has already been used. Sign in with the password you created, or use "Forgot password".'
+                : 'This setup link is invalid. Use "Forgot password" on the sign-in page to get a fresh one.',
+          )
+          setStage('error')
+          return
+        } catch {
+          setErrorMsg('We could not verify this link. Please try again or use "Forgot password" on the sign-in page.')
+          setStage('error')
+          return
+        }
+      }
+
+      // Path 2: Supabase session via PKCE callback (forgot-password flow)
       const { data: { session } } = await supabase.auth.getSession()
       if (session) {
         const name = session.user.user_metadata?.full_name || ''
@@ -29,7 +69,7 @@ export default function SetPasswordPage() {
         return
       }
 
-      // Method 2: Hash tokens (implicit flow fallback)
+      // Path 3: hash tokens (implicit flow fallback)
       const hash   = window.location.hash.substring(1)
       const params = new URLSearchParams(hash)
       const accessToken  = params.get('access_token')
@@ -49,9 +89,11 @@ export default function SetPasswordPage() {
         }
       }
 
+      setErrorMsg('Setup links expire after 30 days. Go to the sign-in page and use "Forgot password" to get a fresh one sent to your email.')
       setStage('error')
     }
-    initSession()
+    init()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function getStrength(pw: string): { label: string; color: string; pct: string } {
@@ -72,8 +114,45 @@ export default function SetPasswordPage() {
   async function handleSubmit() {
     setError(null)
     if (password.length < 8) { setError('Password must be at least 8 characters.'); return }
-    if (password !== confirm) { setError('Passwords don\'t match.'); return }
+    if (password !== confirm) { setError('Passwords don’t match.'); return }
     setSubmitting(true)
+
+    if (mode === 'token') {
+      try {
+        const res = await fetch('/api/setup-account/complete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token, password }),
+        })
+        const data = await res.json()
+        if (!res.ok || !data.ok) {
+          setError(data.error || 'Something went wrong. Please try again.')
+          setSubmitting(false)
+          return
+        }
+
+        const signInEmail = data.email || email
+        const { error: signInErr } = await supabase.auth.signInWithPassword({
+          email:    signInEmail,
+          password,
+        })
+        if (signInErr) {
+          // Password did set, but auto-sign-in failed. Send them to /login.
+          setStage('success')
+          setTimeout(() => router.push('/login'), 1500)
+          return
+        }
+        setStage('success')
+        setTimeout(() => router.push('/portal'), 1500)
+        return
+      } catch (e: any) {
+        setError(e?.message || 'Something went wrong. Please try again.')
+        setSubmitting(false)
+        return
+      }
+    }
+
+    // mode === 'session' (existing forgot-password / Supabase recovery flow)
     const { error: updateError } = await supabase.auth.updateUser({ password })
     if (updateError) {
       setError(updateError.message || 'Something went wrong. Please try again.')
@@ -97,16 +176,16 @@ export default function SetPasswordPage() {
 
   if (stage === 'loading') return (
     <div style={base}>
-      <p style={{ color: 'rgba(245,240,232,0.4)', fontFamily: 'sans-serif', fontSize: 15 }}>Setting up your account\u2026</p>
+      <p style={{ color: 'rgba(245,240,232,0.4)', fontFamily: 'sans-serif', fontSize: 15 }}>Setting up your account…</p>
     </div>
   )
 
   if (stage === 'error') return (
     <div style={base}>
       <div style={{ background: '#1a2e1c', borderRadius: 8, padding: '52px 44px', maxWidth: 440, width: '100%', textAlign: 'center' }}>
-        <h1 style={{ color: '#f5f0e8', fontFamily: 'Georgia,serif', fontWeight: 400, fontSize: 24, margin: '0 0 16px' }}>This link has expired</h1>
+        <h1 style={{ color: '#f5f0e8', fontFamily: 'Georgia,serif', fontWeight: 400, fontSize: 24, margin: '0 0 16px' }}>This link can&rsquo;t be used</h1>
         <p style={{ color: 'rgba(245,240,232,0.6)', fontFamily: 'sans-serif', fontSize: 15, lineHeight: 1.6, marginBottom: 32 }}>
-          Setup links expire after 24 hours. Go to the sign-in page and use &quot;Forgot password&quot; to get a fresh one sent to your email.
+          {errorMsg || 'Setup links expire after 30 days. Go to the sign-in page and use “Forgot password” to get a fresh one sent to your email.'}
         </p>
         <a href="/login" style={{ display: 'block', background: '#c8a96e', color: '#1a2e1c', textDecoration: 'none', textAlign: 'center', padding: '15px', borderRadius: 6, fontFamily: 'sans-serif', fontSize: 13, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
           Go to sign-in page
@@ -118,9 +197,9 @@ export default function SetPasswordPage() {
   if (stage === 'success') return (
     <div style={base}>
       <div style={{ background: '#1a2e1c', borderRadius: 8, padding: '52px 44px', maxWidth: 440, width: '100%', textAlign: 'center' }}>
-        <div style={{ fontSize: 36, color: '#c8a96e', marginBottom: 20 }}>{'\u2713'}</div>
+        <div style={{ fontSize: 36, color: '#c8a96e', marginBottom: 20 }}>{'✓'}</div>
         <h1 style={{ color: '#f5f0e8', fontFamily: 'Georgia,serif', fontWeight: 400, fontSize: 24, margin: '0 0 12px' }}>Password created</h1>
-        <p style={{ color: 'rgba(245,240,232,0.6)', fontFamily: 'sans-serif', fontSize: 15, margin: 0 }}>Taking you to your portal now\u2026</p>
+        <p style={{ color: 'rgba(245,240,232,0.6)', fontFamily: 'sans-serif', fontSize: 15, margin: 0 }}>Taking you to your portal now…</p>
       </div>
     </div>
   )
@@ -175,7 +254,7 @@ export default function SetPasswordPage() {
               onClick={() => setShowPw(p => !p)}
               style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(245,240,232,0.4)', fontSize: 16, padding: 0 }}
             >
-              {showPw ? '\uD83D\uDE48' : '\uD83D\uDC41'}
+              {showPw ? '🙈' : '👁'}
             </button>
           </div>
 
@@ -208,7 +287,7 @@ export default function SetPasswordPage() {
             disabled={submitting}
             style={{ width: '100%', background: submitting ? 'rgba(200,169,110,0.5)' : '#c8a96e', color: '#1a2e1c', border: 'none', borderRadius: 6, fontFamily: 'sans-serif', fontSize: 13, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', padding: '16px', cursor: submitting ? 'not-allowed' : 'pointer' }}
           >
-            {submitting ? 'Creating account\u2026' : 'Create password & enter portal'}
+            {submitting ? 'Creating account…' : 'Create password & enter portal'}
           </button>
 
           <p style={{ fontFamily: 'sans-serif', fontSize: 12, color: 'rgba(245,240,232,0.3)', textAlign: 'center', marginTop: 16, lineHeight: 1.6 }}>
