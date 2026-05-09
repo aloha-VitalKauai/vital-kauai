@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createServiceSupabase } from "@supabase/supabase-js";
 
 // Columns we accept from the intake form. Anything else in the payload is ignored.
 // Names must match existing columns on public.intake_forms — unknown names
@@ -100,15 +101,40 @@ export async function POST(req: NextRequest) {
     const responsesPayload = buildResponsesPayload(body);
     const nowIso = new Date().toISOString();
 
-    // Does the member already have an intake_forms row? (user can't UPDATE under RLS,
-    // only founders/guides can — but we don't need to: the profile flag is the source
-    // of truth for "completed", and first-submission captures the payload.)
-    // We can't SELECT either (founders/guides only), but INSERT policy is open with check=true.
-    // The intake_forms.member_id will rely on a DB unique index if one exists; otherwise
-    // we may produce duplicate rows on re-submit, which is fine — ops dashboards just look
-    // for existence.
-    const { error: insErr } = await supabase.from("intake_forms").insert({
-      member_id: user.id,
+    // intake_forms.member_id is FK -> members.id, which is NOT the same as
+    // auth.users.id / member_profiles.id. The link is members.profile_id = auth.uid().
+    // Resolve the members row via the service-role client (members RLS only lets a
+    // user read their own record when email casing matches exactly, which is brittle).
+    const service = createServiceSupabase(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { persistSession: false } },
+    );
+
+    const { data: memberRow, error: memberErr } = await service
+      .from("members")
+      .select("id")
+      .eq("profile_id", user.id)
+      .maybeSingle();
+
+    if (memberErr) {
+      console.error("[intake/complete] members lookup error:", memberErr.message);
+      return NextResponse.json({ error: "Failed to save intake form" }, { status: 500 });
+    }
+    if (!memberRow) {
+      console.error("[intake/complete] no members row for profile_id", user.id);
+      return NextResponse.json(
+        { error: "We couldn't find your member record. Please email aloha@vitalkauai.com." },
+        { status: 400 },
+      );
+    }
+
+    const memberId = memberRow.id as string;
+
+    // Insert via service role: the per-user RLS check is `member_id = auth.uid()`,
+    // which would block this insert because member_id is members.id, not auth.uid().
+    const { error: insErr } = await service.from("intake_forms").insert({
+      member_id: memberId,
       ...intakeFields,
       responses: responsesPayload,
       submission_date: nowIso,
