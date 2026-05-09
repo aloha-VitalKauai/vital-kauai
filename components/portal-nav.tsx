@@ -87,6 +87,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
                 <a href="/portal/journal#pre" className="pn-dropdown-subitem">Pre-Ceremony</a>
                 <a href="/portal/journal#post" className="pn-dropdown-subitem">Post-Ceremony</a>
                 <a href="/portal/vital-kauai-guides" className="pn-dropdown-item pn-dropdown-parent">Vital Kauaʻi Guides</a>
+                <a href="/intake-form-legacy.html" className="pn-dropdown-subitem">Member Intake &amp; Readiness Form</a>
                 <a href="/iboga-preparedness-guide.html" className="pn-dropdown-subitem">Iboga Preparedness Guide</a>
                 <a href="/portal/questions" className="pn-dropdown-subitem">Questions for the Medicine</a>
                 <a href="/portal/physician-guide" className="pn-dropdown-subitem">Physician Reference Guide</a>
@@ -169,6 +170,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         </div>
         <a href="/portal/vital-kauai-guides" onClick={close}>Vital Kauaʻi Guides</a>
         <div className="pn-mobile-week-row">
+          <a href="/intake-form-legacy.html" className="pn-mobile-week" onClick={close}>Member Intake &amp; Readiness Form</a>
           <a href="/iboga-preparedness-guide.html" className="pn-mobile-week" onClick={close}>Iboga Preparedness Guide</a>
           <a href="/portal/questions" className="pn-mobile-week" onClick={close}>Questions for the Medicine</a>
           <a href="/portal/physician-guide" className="pn-mobile-week" onClick={close}>Physician Reference Guide</a>
