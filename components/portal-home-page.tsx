@@ -512,7 +512,7 @@ export function PortalHomePage({
             <button
               id="agreement-card"
               className={`${styles.docCard} ${agreementDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
-              onClick={() => !agreementDone && setModal("agreement")}
+              onClick={() => setModal("agreement")}
             >
               <div className={styles.docTitle}>
                 Church Membership <em>Agreement</em>
@@ -756,6 +756,25 @@ export function PortalHomePage({
                   </ol>
                 </div>
                 <div className={styles.modalFooter}>
+                  {agreementDone ? (
+                    <>
+                      <div className={styles.signConfirm}>
+                        <label>
+                          &#10003; Signed{profile?.membership_agreement_signed_at
+                            ? ` on ${new Date(profile.membership_agreement_signed_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}`
+                            : ""}
+                          {profile?.full_name ? ` by ${profile.full_name}` : ""}.
+                        </label>
+                      </div>
+                      <button
+                        className={styles.btnSign}
+                        onClick={() => { setModal(null); setModalChecked(false); setModalMsg(null); }}
+                      >
+                        Close
+                      </button>
+                    </>
+                  ) : (
+                    <>
                   <div className={styles.signConfirm}>
                     <input
                       type="checkbox"
@@ -775,6 +794,8 @@ export function PortalHomePage({
                   >
                     {modalLoading ? "Signing\u2026" : "Sign & Continue"}
                   </button>
+                    </>
+                  )}
                 </div>
               </>
             )}
