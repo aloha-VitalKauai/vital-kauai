@@ -4,6 +4,15 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
+import {
+  getMyProfile,
+  getMyMember,
+  getAssignedSpecialist,
+  markAgreementSigned,
+  markMedicalSigned,
+  markDonationPaid,
+  markOnboardingComplete,
+} from "@/lib/api/member";
 import { PortalNav } from "./portal-nav";
 import PortalJourneyCard from "@/components/portal/PortalJourneyCard";
 import { members as HEALING_CIRCLE_MEMBERS } from "@/components/healing-circle-data";
@@ -225,32 +234,19 @@ export function PortalHomePage({
   const [labUploading, setLabUploading] = useState(false);
 
   const fetchProfile = useCallback(async () => {
-    const { data } = await supabase
-      .from("member_profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
-    if (data) setProfile(data as Profile);
+    const profileData = await getMyProfile(supabase, userId);
+    if (profileData) setProfile(profileData);
 
     // Also try to get member data for ceremony date
-    const { data: mData } = await supabase
-      .from("members")
-      .select("id, assigned_partner")
-      .eq("email", userEmail)
-      .single();
+    const mData = await getMyMember(supabase, userEmail);
     if (mData) {
       setMemberData(mData as MemberData);
       setMemberId(mData.id);
 
       // Resolve assigned specialist by name (case-insensitive).
       if (mData.assigned_partner) {
-        const { data: sData } = await supabase
-          .from("integration_specialists")
-          .select("id, name, photo_url, bio, calendly_url")
-          .ilike("name", mData.assigned_partner.trim())
-          .eq("active", true)
-          .maybeSingle();
-        if (sData) setSpecialist(sData as Specialist);
+        const sData = await getAssignedSpecialist(supabase, mData.assigned_partner);
+        if (sData) setSpecialist(sData);
         else setSpecialist(null);
       } else {
         setSpecialist(null);
@@ -336,13 +332,7 @@ export function PortalHomePage({
   async function handleSignAgreement() {
     setModalLoading(true);
     setModalMsg(null);
-    const { error } = await supabase
-      .from("member_profiles")
-      .update({
-        membership_agreement_signed: true,
-        membership_agreement_signed_at: new Date().toISOString(),
-      })
-      .eq("id", userId);
+    const { error } = await markAgreementSigned(supabase, userId);
     setModalLoading(false);
     if (error) {
       setModalMsg({ type: "error", text: error.message });
@@ -356,13 +346,7 @@ export function PortalHomePage({
   async function handleSignMedical() {
     setModalLoading(true);
     setModalMsg(null);
-    const { error } = await supabase
-      .from("member_profiles")
-      .update({
-        medical_disclaimer_signed: true,
-        medical_disclaimer_signed_at: new Date().toISOString(),
-      })
-      .eq("id", userId);
+    const { error } = await markMedicalSigned(supabase, userId);
     setModalLoading(false);
     if (error) {
       setModalMsg({ type: "error", text: error.message });
@@ -378,39 +362,22 @@ export function PortalHomePage({
     setModalLoading(true);
     setModalMsg(null);
     await new Promise((r) => setTimeout(r, 1500));
-    const { error } = await supabase
-      .from("member_profiles")
-      .update({
-        deposit_paid: true,
-        deposit_paid_at: new Date().toISOString(),
-        deposit_amount: 250.0,
-      })
-      .eq("id", userId);
+    const { error } = await markDonationPaid(supabase, userId, 250.0);
     setModalLoading(false);
     if (error) {
       setModalMsg({ type: "error", text: error.message });
       return;
     }
     // Check if all complete now
-    const { data } = await supabase
-      .from("member_profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
+    const data = await getMyProfile(supabase, userId);
     if (data) {
-      setProfile(data as Profile);
+      setProfile(data);
       if (
         data.membership_agreement_signed &&
         data.medical_disclaimer_signed &&
         data.deposit_paid
       ) {
-        await supabase
-          .from("member_profiles")
-          .update({
-            onboarding_complete: true,
-            onboarding_completed_at: new Date().toISOString(),
-          })
-          .eq("id", userId);
+        await markOnboardingComplete(supabase, userId);
         setProfile((prev) => prev ? { ...prev, onboarding_complete: true } : prev);
       }
     }
@@ -467,16 +434,9 @@ export function PortalHomePage({
   // After each sign, check if all 3 are done
   useEffect(() => {
     if (profile && allRequiredDone && !profile.onboarding_complete) {
-      supabase
-        .from("member_profiles")
-        .update({
-          onboarding_complete: true,
-          onboarding_completed_at: new Date().toISOString(),
-        })
-        .eq("id", userId)
-        .then(() => {
-          setProfile((prev) => prev ? { ...prev, onboarding_complete: true } : prev);
-        });
+      markOnboardingComplete(supabase, userId).then(() => {
+        setProfile((prev) => prev ? { ...prev, onboarding_complete: true } : prev);
+      });
     }
   }, [allRequiredDone, profile, supabase, userId]);
 
