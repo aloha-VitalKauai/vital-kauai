@@ -2,8 +2,8 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { verifyFounder } from '@/lib/auth/founder-check'
 import AutomaticEmailsPanel from '@/components/dashboard/AutomaticEmailsPanel'
-import type { JourneyEmailTemplate } from '@/lib/journey-emails'
 import type { TransactionalEmailTemplate } from '@/lib/transactional-emails'
+import { getAllJourneyEmailTemplates } from '@/lib/journey-emails-from-integration'
 
 export const metadata = { title: 'Automatic Emails — Vital Kauaʻi' }
 export const dynamic = 'force-dynamic'
@@ -14,12 +14,11 @@ export default async function AutomaticEmailsPage() {
 
   const supabase = await createClient()
 
-  const [{ data: journeyTemplates }, { data: txTemplates }, { data: recentLog }] = await Promise.all([
-    supabase
-      .from('journey_email_templates')
-      .select('id, arc, week_idx, principle_name, principle, theme, subject, intro, action_items, updated_at')
-      .order('arc', { ascending: true })
-      .order('week_idx', { ascending: true }),
+  // Journey templates are derived from the Integration page content — they
+  // auto-sync, so the dashboard view is read-only and there is no DB fetch.
+  const journeyTemplates = getAllJourneyEmailTemplates()
+
+  const [{ data: txTemplates }, { data: recentLog }] = await Promise.all([
     supabase
       .from('transactional_email_templates')
       .select('key, audience, editable, display_name, description, subject, eyebrow, heading, lead_html, body_html, cta_label, closing_html, variables, updated_at')
@@ -34,7 +33,7 @@ export default async function AutomaticEmailsPage() {
 
   return (
     <AutomaticEmailsPanel
-      journeyTemplates={(journeyTemplates ?? []) as JourneyEmailTemplate[]}
+      journeyTemplates={journeyTemplates}
       transactionalTemplates={(txTemplates ?? []) as TransactionalEmailTemplate[]}
       recentLog={recentLog ?? []}
       founderEmail={founder.email}
