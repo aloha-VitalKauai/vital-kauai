@@ -534,7 +534,7 @@ export function PortalHomePage({
             <button
               id="medical-card"
               className={`${styles.docCard} ${medicalDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
-              onClick={() => !medicalDone && setModal("medical")}
+              onClick={() => setModal("medical")}
             >
               <div className={styles.docTitle}>
                 Medical Disclaimer <em>&amp; Risk Acknowledgment</em>
@@ -815,26 +815,47 @@ export function PortalHomePage({
                   ))}
                 </div>
                 <div className={styles.modalFooter}>
-                  <div className={styles.signConfirm}>
-                    <input
-                      type="checkbox"
-                      id="sign-chk-med"
-                      checked={modalChecked}
-                      onChange={(e) => setModalChecked(e.target.checked)}
-                    />
-                    <label htmlFor="sign-chk-med">
-                      I have read and understand this Medical Disclaimer. I acknowledge the risks
-                      and agree to the terms.
-                    </label>
-                  </div>
-                  {modalMsg && <div className={`${styles.alert} ${styles.alertError}`}>{modalMsg.text}</div>}
-                  <button
-                    className={styles.btnSign}
-                    disabled={!modalChecked || modalLoading}
-                    onClick={handleSignMedical}
-                  >
-                    {modalLoading ? "Signing\u2026" : "Sign & Continue"}
-                  </button>
+                  {medicalDone ? (
+                    <>
+                      <div className={styles.signConfirm}>
+                        <label>
+                          &#10003; Signed{profile?.medical_disclaimer_signed_at
+                            ? ` on ${new Date(profile.medical_disclaimer_signed_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}`
+                            : ""}
+                          {profile?.full_name ? ` by ${profile.full_name}` : ""}.
+                        </label>
+                      </div>
+                      <button
+                        className={styles.btnSign}
+                        onClick={() => { setModal(null); setModalChecked(false); setModalMsg(null); }}
+                      >
+                        Close
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div className={styles.signConfirm}>
+                        <input
+                          type="checkbox"
+                          id="sign-chk-med"
+                          checked={modalChecked}
+                          onChange={(e) => setModalChecked(e.target.checked)}
+                        />
+                        <label htmlFor="sign-chk-med">
+                          I have read and understand this Medical Disclaimer. I acknowledge the risks
+                          and agree to the terms.
+                        </label>
+                      </div>
+                      {modalMsg && <div className={`${styles.alert} ${styles.alertError}`}>{modalMsg.text}</div>}
+                      <button
+                        className={styles.btnSign}
+                        disabled={!modalChecked || modalLoading}
+                        onClick={handleSignMedical}
+                      >
+                        {modalLoading ? "Signing\u2026" : "Sign & Continue"}
+                      </button>
+                    </>
+                  )}
                 </div>
               </>
             )}
