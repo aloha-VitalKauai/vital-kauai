@@ -1378,6 +1378,51 @@
   margin-bottom: 10px;
 }
 
+.agreementSubtitle {
+  font-size: 11px !important;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold) !important;
+  margin: 0 0 8px !important;
+}
+
+.agreementHeading {
+  font-family: var(--font-display), serif;
+  font-size: 22px !important;
+  font-weight: 300 !important;
+  color: var(--ink) !important;
+  margin: 0 0 18px !important;
+  letter-spacing: 0.02em;
+}
+
+.agreementPreamble {
+  font-size: 14px !important;
+  color: var(--ink) !important;
+  line-height: 1.7 !important;
+  margin: 0 0 18px !important;
+  font-style: italic;
+}
+
+.agreementTerms {
+  margin: 0;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.agreementTerms li {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+  padding-left: 4px;
+}
+
+.agreementTerms li::marker {
+  color: var(--forest-mid);
+  font-weight: 500;
+}
+
 .modalFooter {
   padding: 20px 32px;
   display: flex;
