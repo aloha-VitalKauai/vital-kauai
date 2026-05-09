@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Member has no email on file' }, { status: 400 })
     }
 
-    const setupLink = await generatePasswordSetupLink(member.email)
+    const setupLink = await generatePasswordSetupLink(member.email, member.full_name)
     if (!setupLink) {
       return NextResponse.json(
         { error: 'Failed to generate setup link from Supabase' },
@@ -108,9 +108,16 @@ export async function POST(req: NextRequest) {
   }
 }
 
-async function generatePasswordSetupLink(email: string): Promise<string | null> {
+async function generatePasswordSetupLink(email: string, fullName: string | null): Promise<string | null> {
   const supabase = db()
   const redirectTo = `${env().appUrl}/setup-account`
+
+  // Ensure an auth user exists for this email — generateLink({ type: 'recovery' })
+  // only works when the user already exists, otherwise it returns no action_link.
+  // Members seeded directly into public.members (admin seeds, manual additions)
+  // never went through approve-member's auth-user creation, so we provision
+  // them here on first resend. Idempotent: skips if already present.
+  await ensureAuthUserExists(email, fullName)
 
   const { data, error } = await supabase.auth.admin.generateLink({
     type: 'recovery',
@@ -127,6 +134,35 @@ async function generatePasswordSetupLink(email: string): Promise<string | null> 
   }
   console.error('[resend-setup-link] generateLink failed:', error?.message || 'no action_link')
   return null
+}
+
+/**
+ * Looks up the auth.users row for `email`; creates one if it doesn't exist.
+ * Mirrors approve-member's getOrCreateAuthUser flow. We use email_confirm:true
+ * so the recovery link works immediately without a separate confirmation step.
+ */
+async function ensureAuthUserExists(email: string, fullName: string | null): Promise<void> {
+  const supabase = db()
+
+  // The Admin SDK's listUsers paginates; for our small user count, page 1 is
+  // sufficient. If we ever exceed ~50 users, swap to listUsers({ page, perPage }).
+  const { data: list } = await supabase.auth.admin.listUsers({ page: 1, perPage: 1000 })
+  const existing = list?.users?.find(
+    (u) => u.email && u.email.toLowerCase() === email.toLowerCase(),
+  )
+  if (existing) return
+
+  console.log(`[resend-setup-link] no auth user for ${email}, creating`)
+  const { error } = await supabase.auth.admin.createUser({
+    email,
+    email_confirm: true,
+    user_metadata: fullName ? { full_name: fullName } : {},
+    // No password — they set it on /setup-account via the recovery link.
+  })
+  if (error) {
+    console.error('[resend-setup-link] createUser failed:', error.message)
+    throw new Error(`Could not provision auth user for ${email}: ${error.message}`)
+  }
 }
 
 async function sendSetupEmail(email: string, fullName: string, setupLink: string) {
