@@ -3,6 +3,12 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import {
+  getPreCeremonyJournal,
+  getPostCeremonyJournal,
+  savePreCeremonyJournal,
+  savePostCeremonyJournal,
+} from "@/lib/api/journal";
+import {
   PRE_CEREMONY_WEEKS,
   POST_CEREMONY_WEEKS,
   PRE_PNE_DETAILS,
@@ -56,8 +62,8 @@ export default function JournalClient() {
       userIdRef.current = user.id;
 
       const [preRes, postRes] = await Promise.all([
-        supabase.from("pre_ceremony_progress").select("journal_responses").eq("member_id", user.id).maybeSingle(),
-        supabase.from("post_ceremony_progress").select("journal_responses").eq("member_id", user.id).maybeSingle(),
+        getPreCeremonyJournal(supabase, user.id),
+        getPostCeremonyJournal(supabase, user.id),
       ]);
 
       if (preRes.data?.journal_responses && typeof preRes.data.journal_responses === "object") {
@@ -76,11 +82,7 @@ export default function JournalClient() {
     setSaveStatus("saving");
     try {
       const supabase = createClient();
-      const { error } = await supabase.from("pre_ceremony_progress").upsert({
-        member_id: userIdRef.current,
-        journal_responses: data,
-        last_updated: new Date().toISOString(),
-      }, { onConflict: "member_id" });
+      const { error } = await savePreCeremonyJournal(supabase, userIdRef.current, data);
       if (error) throw error;
       setSaveStatus("saved");
       setTimeout(() => setSaveStatus(""), 3000);
@@ -94,11 +96,7 @@ export default function JournalClient() {
     setSaveStatus("saving");
     try {
       const supabase = createClient();
-      const { error } = await supabase.from("post_ceremony_progress").upsert({
-        member_id: userIdRef.current,
-        journal_responses: data,
-        last_updated: new Date().toISOString(),
-      }, { onConflict: "member_id" });
+      const { error } = await savePostCeremonyJournal(supabase, userIdRef.current, data);
       if (error) throw error;
       setSaveStatus("saved");
       setTimeout(() => setSaveStatus(""), 3000);
