@@ -16,11 +16,11 @@
 import {
   WEEKS as PRE_WEEKS,
   actionsForWeek as preActionsForWeek,
-} from '@/app/portal/integration/pre-ceremony/page'
+} from '@/lib/integration-content/pre-ceremony-weeks'
 import {
   WEEKS as POST_WEEKS,
   actionsForWeek as postActionsForWeek,
-} from '@/app/portal/integration/post-ceremony/page'
+} from '@/lib/integration-content/post-ceremony-weeks'
 import type { JourneyArc, JourneyEmailTemplate } from '@/lib/journey-emails'
 
 function arcLabel(arc: JourneyArc): string {
