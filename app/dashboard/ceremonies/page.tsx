@@ -1,25 +1,44 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import CeremoniesTable from "./CeremoniesTable";
 
 export const metadata = { title: "Ceremonies — Vital Kauaʻi" };
-
-function fmtDate(d: string | null | undefined) {
-  if (!d) return "—";
-  return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-}
 
 export default async function CeremoniesPage() {
   const supabase = await createClient();
 
   const [{ data: ceremonies }, { data: members }] = await Promise.all([
-    supabase.from("ceremony_records").select("*").order("ceremony_date", { ascending: false }),
+    supabase
+      .from("ceremony_records")
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .select("*, journey:journeys(id, schedule_type)" as any)
+      .order("ceremony_date", { ascending: false }),
     supabase.from("members").select("id, full_name"),
   ]);
 
   const memberMap: Record<string, string> = {};
   for (const m of members ?? []) memberMap[m.id] = m.full_name;
 
-  const rows = ceremonies ?? [];
+  type RawRow = Record<string, unknown> & {
+    id: string;
+    member_id: string;
+    journey_id?: string | null;
+    journey?: { id: string; schedule_type: string | null } | null;
+  };
+  const rows = ((ceremonies ?? []) as unknown as RawRow[]).map((r) => ({
+    id:                String(r.id),
+    member_id:         String(r.member_id),
+    ceremony_date:     (r.ceremony_date as string | null) ?? null,
+    medicine_form:     (r.medicine_form as string | null) ?? null,
+    guides_present:    (r.guides_present as string | null) ?? null,
+    status:            (r.status as string | null) ?? null,
+    integration_calls: (r.integration_calls as number | null) ?? null,
+    pre_notes:         (r.pre_notes as string | null) ?? null,
+    post_notes:        (r.post_notes as string | null) ?? null,
+    journey_id:        r.journey?.id ?? r.journey_id ?? null,
+    schedule_type:     r.journey?.schedule_type ?? null,
+  }));
+
   const completed = rows.filter((c) => c.status === "Complete").length;
   const upcoming = rows.filter((c) => c.status !== "Complete").length;
   const totalCalls = rows.reduce((s, c) => s + (c.integration_calls ?? 0), 0);
@@ -27,8 +46,6 @@ export default async function CeremoniesPage() {
   const avgCalls = completedWithCalls.length > 0 ? (totalCalls / completedWithCalls.length).toFixed(1) : "—";
 
   const LABEL: React.CSSProperties = { fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: "#6B6B67", marginBottom: 6, fontWeight: 500 };
-  const TH: React.CSSProperties = { padding: "8px 12px", textAlign: "left", fontSize: 10, fontWeight: 500, color: "#6B6B67", textTransform: "uppercase", letterSpacing: "0.06em", borderBottom: "0.5px solid rgba(0,0,0,0.09)", background: "#FAFAF8", whiteSpace: "nowrap" };
-  const TD: React.CSSProperties = { padding: "10px 12px", borderBottom: "0.5px solid rgba(0,0,0,0.06)", fontSize: 12, verticalAlign: "middle" };
 
   return (
     <div style={{ fontFamily: "var(--font-body, sans-serif)" }}>
@@ -60,43 +77,7 @@ export default async function CeremoniesPage() {
           <span style={{ fontSize: 11, color: "#9E9E9A" }}>{rows.length} records</span>
         </div>
         <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                {["Member", "Ceremony date", "Medicine form", "Guides present", "Status", "Integration calls", "Pre notes", "Post notes"].map((h) => (
-                  <th key={h} style={TH}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.length === 0 ? (
-                <tr><td colSpan={8} style={{ padding: "2.5rem", textAlign: "center", color: "#9E9E9A", fontSize: 14 }}>No ceremony records yet</td></tr>
-              ) : rows.map((r) => {
-                const isComplete = r.status === "Complete";
-                return (
-                  <tr key={r.id} style={{ borderBottom: "0.5px solid rgba(0,0,0,0.06)" }}>
-                    <td style={TD}><div style={{ fontWeight: 500, fontSize: 13 }}>{memberMap[r.member_id] ?? "Unknown"}</div></td>
-                    <td style={TD}>{fmtDate(r.ceremony_date)}</td>
-                    <td style={TD}>{r.medicine_form ?? "—"}</td>
-                    <td style={TD}>{r.guides_present ?? "—"}</td>
-                    <td style={TD}>
-                      <span style={{
-                        display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11, fontWeight: 500, padding: "3px 9px", borderRadius: 99, whiteSpace: "nowrap",
-                        background: isComplete ? "#E1F5EE" : "#FAEEDA",
-                        color: isComplete ? "#085041" : "#633806",
-                      }}>
-                        <span style={{ width: 5, height: 5, borderRadius: "50%", background: isComplete ? "#1D9E75" : "#EF9F27", display: "inline-block" }} />
-                        {r.status ?? "Unknown"}
-                      </span>
-                    </td>
-                    <td style={TD}>{r.integration_calls ?? 0}</td>
-                    <td style={{ ...TD, fontSize: 11, color: r.pre_notes ? "#6B6B67" : "#9E9E9A", maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.pre_notes ?? "—"}</td>
-                    <td style={{ ...TD, fontSize: 11, color: r.post_notes ? "#6B6B67" : "#9E9E9A", maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.post_notes ?? "—"}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <CeremoniesTable rows={rows} memberMap={memberMap} />
         </div>
       </div>
     </div>
