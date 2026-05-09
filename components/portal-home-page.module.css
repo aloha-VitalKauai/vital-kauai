@@ -1378,6 +1378,45 @@
   margin-bottom: 10px;
 }
 
+/* Medical Disclaimer block: bullet list with gold em-dash markers,
+   mirroring the public /medical-disclaimer.html treatment. */
+.disclaimerList {
+  list-style: none;
+  margin: 8px 0 14px;
+  padding: 0;
+}
+
+.disclaimerList li {
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+  padding-left: 22px;
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.disclaimerList li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+}
+
+/* Highlight box: sage-bordered callout for the sacramental framing
+   passages in the disclaimer. */
+.disclaimerHighlight {
+  background: rgba(28, 43, 30, 0.04);
+  border: 1px solid rgba(28, 43, 30, 0.1);
+  border-left: 3px solid #7A9E7E;
+  padding: 16px 20px;
+  margin: 14px 0 18px;
+}
+
+.disclaimerHighlight p {
+  margin-bottom: 0;
+  font-size: 13.5px;
+}
+
 .agreementSubtitle {
   font-size: 11px !important;
   letter-spacing: 0.22em;
