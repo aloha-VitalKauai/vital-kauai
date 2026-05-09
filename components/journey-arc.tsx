@@ -51,7 +51,7 @@ const PHASES: Phase[] = [
     numberLabel: "02",
     title: "Ceremony",
     week: "1 Week · Hanalei, Kauaʻi",
-    essence: "A deeply held arc, rooted in evidence and lineage.",
+    essence: "A deeply held week, rooted in evidence and lineage.",
     items: [
       "A small cohort of up to six members over seven days",
       "Daily meditation, breathwork, movement, and/or yoga",
