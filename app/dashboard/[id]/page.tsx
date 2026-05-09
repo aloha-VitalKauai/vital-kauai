@@ -30,7 +30,13 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
   ] = await Promise.all([
     supabase.from("members").select("*").eq("id", id).maybeSingle(),
     supabase.from("member_profiles").select("*").eq("id", id).maybeSingle(),
-    supabase.from("intake_forms").select("*").eq("member_id", id).maybeSingle(),
+    supabase
+      .from("intake_forms")
+      .select("*")
+      .eq("member_id", id)
+      .order("submission_date", { ascending: false, nullsFirst: false })
+      .limit(1)
+      .maybeSingle(),
     supabase.from("signed_documents").select("*").eq("member_id", id).order("signed_at", { ascending: false }),
     supabase.from("ceremony_records").select("*").eq("member_id", id).order("ceremony_date", { ascending: false }),
     supabase.from("member_checklist").select("*").eq("member_id", id).order("created_at", { ascending: true }),
