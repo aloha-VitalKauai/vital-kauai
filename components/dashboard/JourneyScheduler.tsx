@@ -442,26 +442,37 @@ export default function JourneyScheduler() {
   const load = useCallback(async () => {
     setLoading(true)
     const [mRes, jRes, cRes] = await Promise.all([
-      // Use profile_id — no ceremony_date dependency
+      // Use profile_id — no ceremony_date dependency.
+      // No pipeline_stage filter: members mid-onboarding may already have a
+      // scheduled journey (Josh, Vital Kauai). Hiding them broke "everyone
+      // synced" expectations.
       supabase
         .from('member_pipeline_view')
         .select('member_id, profile_id, full_name, email, pipeline_stage')
-        .not('pipeline_stage', 'eq', 'onboarding')
         .order('full_name'),
       supabase.from('journey_summary_view').select('*'),
       supabase.from('cohorts').select('*').eq('status', 'scheduled').order('start_at'),
     ])
 
-    setMembers((mRes.data ?? []).map((r: {
+    // Dedupe by member_id — member_pipeline_view LEFT JOINs intake_forms,
+    // so a member with multiple intake submissions appears more than once.
+    const seenMemberIds = new Set<string>()
+    const dedupedMembers: MemberRow[] = []
+    for (const r of (mRes.data ?? []) as Array<{
       member_id: string; profile_id: string | null;
       full_name: string; email: string; pipeline_stage: string;
-    }) => ({
-      member_id:      r.member_id,
-      profile_id:     r.profile_id,
-      full_name:      r.full_name,
-      email:          r.email,
-      pipeline_stage: r.pipeline_stage,
-    })))
+    }>) {
+      if (seenMemberIds.has(r.member_id)) continue
+      seenMemberIds.add(r.member_id)
+      dedupedMembers.push({
+        member_id:      r.member_id,
+        profile_id:     r.profile_id,
+        full_name:      r.full_name,
+        email:          r.email,
+        pipeline_stage: r.pipeline_stage,
+      })
+    }
+    setMembers(dedupedMembers)
     setJourneys(jRes.data as JourneySummaryRow[] ?? [])
     setCohorts(cRes.data as CohortRow[] ?? [])
     setLoading(false)
