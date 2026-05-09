@@ -83,6 +83,7 @@ const PHASES: Phase[] = [
       "Continued member-portal support to anchor what arose into new patterns",
       "The PsychoNeuroEnergetics (PNE) Guide — week-by-week teachings, reflections, and practices to integrate your journey",
       "Lifetime invitation into the Vital Kauaʻi community of those who’ve walked this path",
+      "Monthly group calls and optional ongoing one-on-one support",
     ],
     image: "/images/napali.jpeg",
     imageAlt: "Nā Pali coast at golden hour",
