@@ -74,3 +74,69 @@ img {
 .nav-dropdown-wrap .nav-dropdown a:hover {
   opacity: 1;
 }
+
+/* Design tokens. No new consumers in this PR — existing pages keep inline
+   literals. Migration is opportunistic in later PRs. */
+:root {
+  /* color */
+  --ink: #1A1A18;
+  --ink-2: #6B6B67;
+  --ink-3: #9E9E9A;
+  /* --cream and --forest values must match the nav-dropdown var() fallbacks above. */
+  --cream: #f5f0e8;
+  --cream-2: #FAFAF8;
+  --gold: #C8A96E;
+  --teal: #085041;
+  --teal-soft: #E1F5EE;
+  --sage: #7A9E7E;
+  --sage-soft: #A8C5AC;
+  --forest: #1c2b1e;
+  --forest-deep: #0E1A10;
+  --error: #A32D2D;
+
+  /* type scale */
+  --fs-xs: 9px;
+  --fs-sm: 10px;
+  --fs-md: 11px;
+  --fs-base: 13px;
+  --fs-body: 15px;
+  --fs-lg: 16px;
+  --fs-xl: 22px;
+  --fs-2xl: 24px;
+
+  /* tracking */
+  --track-tight: -0.02em;
+  --track-default: 0.06em;
+  --track-wide: 0.18em;
+  --track-eyebrow: 0.32em;
+
+  /* spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-8: 48px;
+  --space-10: 60px;
+
+  /* radius */
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-pill: 999px;
+
+  /* shadow */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 16px 40px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 768px) {
+  :root {
+    /* iOS auto-zooms inputs <16px; lift body to 16px on mobile. No effect
+       until a consumer reads --fs-body. */
+    --fs-body: 16px;
+  }
+}
