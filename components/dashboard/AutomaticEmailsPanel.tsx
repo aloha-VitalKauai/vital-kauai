@@ -116,7 +116,7 @@ function ModeTab({ active, onClick, children }: { active: boolean; onClick: () =
 // ─── Journey emails section (12 weekly templates) ───────────────────────
 
 function JourneySection({
-  templates: initialTemplates,
+  templates,
   recentLog,
   founderEmail,
 }: {
@@ -124,44 +124,14 @@ function JourneySection({
   recentLog: LogRow[]
   founderEmail: string
 }) {
-  const [items, setItems] = useState<JourneyEmailTemplate[]>(initialTemplates)
-  const [activeKey, setActiveKey] = useState<string>(`${initialTemplates[0]?.arc}|${initialTemplates[0]?.week_idx}`)
-  const [savingKey, setSavingKey] = useState<string | null>(null)
+  const [activeKey, setActiveKey] = useState<string>(`${templates[0]?.arc}|${templates[0]?.week_idx}`)
   const [previewHtml, setPreviewHtml] = useState<string | null>(null)
   const [testStatus, setTestStatus] = useState<string>('')
 
   const active = useMemo(
-    () => items.find((t) => `${t.arc}|${t.week_idx}` === activeKey) ?? items[0],
-    [items, activeKey],
+    () => templates.find((t) => `${t.arc}|${t.week_idx}` === activeKey) ?? templates[0],
+    [templates, activeKey],
   )
-
-  function update(key: string, patch: Partial<JourneyEmailTemplate>) {
-    setItems((prev) => prev.map((t) => (`${t.arc}|${t.week_idx}` === key ? { ...t, ...patch } : t)))
-  }
-
-  async function handleSave(t: JourneyEmailTemplate) {
-    const key = `${t.arc}|${t.week_idx}`
-    setSavingKey(key)
-    try {
-      const supabase = createClient()
-      const { error } = await supabase
-        .from('journey_email_templates')
-        .update({
-          principle_name: t.principle_name,
-          principle: t.principle,
-          theme: t.theme,
-          subject: t.subject,
-          intro: t.intro,
-          action_items: t.action_items,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('arc', t.arc)
-        .eq('week_idx', t.week_idx)
-      if (error) alert(`Save failed: ${error.message}`)
-    } finally {
-      setSavingKey(null)
-    }
-  }
 
   async function handlePreview(t: JourneyEmailTemplate) {
     const res = await fetch('/api/automatic-emails/preview', {
@@ -197,10 +167,13 @@ function JourneySection({
           <div style={{ padding: '10px 12px 4px', fontSize: 11, color: C.muted, lineHeight: 1.5 }}>
             12 weekly emails sent automatically the morning each member enters that week. Cron runs daily at 6am Hawaii.
           </div>
+          <div style={{ padding: '8px 12px 10px', fontSize: 11, color: C.gold, lineHeight: 1.55, background: C.goldBg, borderTop: `0.5px solid ${C.gold}33`, borderBottom: `0.5px solid ${C.gold}33` }}>
+            Auto-synced from the Integration pages. Edit principle, intro, or action items on the Integration page and the next email send picks them up.
+          </div>
           {(['pre', 'post'] as JourneyArc[]).map((arc) => (
             <div key={arc} style={{ marginBottom: 18 }}>
               <div style={sectionLabelStyle}>{arc === 'pre' ? 'Preparation' : 'Integration'} — 6 weeks</div>
-              {items
+              {templates
                 .filter((t) => t.arc === arc)
                 .map((t) => {
                   const k = `${t.arc}|${t.week_idx}`
@@ -245,11 +218,8 @@ function JourneySection({
             <JourneyEditor
               key={`${active.arc}|${active.week_idx}`}
               t={active}
-              onChange={(patch) => update(`${active.arc}|${active.week_idx}`, patch)}
-              onSave={() => handleSave(active)}
               onPreview={() => handlePreview(active)}
               onSendTest={() => handleSendTest(active)}
-              saving={savingKey === `${active.arc}|${active.week_idx}`}
               testStatus={testStatus}
               founderEmail={founderEmail}
             />
@@ -394,67 +364,65 @@ function TransactionalSection({
 
 function JourneyEditor(props: {
   t: JourneyEmailTemplate
-  onChange: (patch: Partial<JourneyEmailTemplate>) => void
-  onSave: () => void
   onPreview: () => void
   onSendTest: () => void
-  saving: boolean
   testStatus: string
   founderEmail: string
 }) {
-  const { t, onChange, onSave, onPreview, onSendTest, saving, testStatus, founderEmail } = props
-
-  function updateAction(idx: number, value: string) {
-    const next = [...t.action_items]
-    next[idx] = value
-    onChange({ action_items: next })
-  }
+  const { t, onPreview, onSendTest, testStatus, founderEmail } = props
+  const arcLabel = t.arc === 'pre' ? 'pre-ceremony' : 'post-ceremony'
+  const integrationHref = `/portal/integration/${arcLabel}`
 
   return (
     <div>
       <EditorHeader
         eyebrow={`${t.arc === 'pre' ? 'Preparation' : 'Integration'} · Week ${t.week_idx + 1}`}
         title={t.principle_name}
-        onSave={onSave}
         onPreview={onPreview}
         onSendTest={onSendTest}
-        saving={saving}
+        saving={false}
         testStatus={testStatus}
       />
 
-      <Field label="Hawaiian principle name" value={t.principle_name} onChange={(v) => onChange({ principle_name: v })} />
-      <Field label="Principle quote" value={t.principle} onChange={(v) => onChange({ principle: v })} />
-      <Field label="Theme" value={t.theme} onChange={(v) => onChange({ theme: v })} />
-      <Field label="Email subject" value={t.subject} onChange={(v) => onChange({ subject: v })} />
-      <Field label="Week intro" value={t.intro} onChange={(v) => onChange({ intro: v })} multiline />
+      <div style={{ marginTop: 14, padding: '12px 14px', background: C.goldBg, border: `0.5px solid ${C.gold}55`, borderRadius: 6, fontSize: 12, color: C.muted, lineHeight: 1.6 }}>
+        Read-only preview. The values below come straight from the{' '}
+        <a href={integrationHref} target="_blank" rel="noopener noreferrer" style={{ color: C.gold, textDecoration: 'underline' }}>
+          {t.arc === 'pre' ? 'pre-ceremony' : 'post-ceremony'} integration page
+        </a>
+        . To change copy, edit the integration page — the next email send picks it up.
+      </div>
+
+      <ReadField label="Hawaiian principle name" value={t.principle_name} />
+      <ReadField label="Principle quote" value={t.principle} />
+      <ReadField label="Theme" value={t.theme} />
+      <ReadField label="Email subject" value={t.subject} />
+      <ReadField label="Week intro" value={t.intro} multiline />
 
       <label style={labelStyle}>Action items ({t.action_items.length})</label>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         {t.action_items.map((a, i) => (
-          <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-            <span style={{ color: C.gold, marginTop: 12, fontSize: 14 }}>○</span>
-            <textarea
-              style={{ ...inputStyle, minHeight: 44, resize: 'vertical', flex: 1 }}
-              value={a}
-              onChange={(e) => updateAction(i, e.target.value)}
-            />
-            <button
-              onClick={() => onChange({ action_items: t.action_items.filter((_, j) => j !== i) })}
-              style={removeBtnStyle}
-              aria-label="Remove action"
-            >×</button>
+          <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'flex-start', padding: '10px 12px', background: C.card, border: `0.5px solid ${C.border}`, borderRadius: 6 }}>
+            <span style={{ color: C.gold, fontSize: 14, lineHeight: 1.55 }}>○</span>
+            <span style={{ flex: 1, color: C.text, fontSize: 14, lineHeight: 1.55 }}>{a}</span>
           </div>
         ))}
-        <button
-          onClick={() => onChange({ action_items: [...t.action_items, ''] })}
-          style={addBtnStyle}
-        >+ Add action item</button>
       </div>
 
       <FooterNote founderEmail={founderEmail}>
         Every email follows the same shape: principle block, week intro, action items, and a button to <strong style={{ color: C.text }}>Open the Member Portal</strong>. Sent automatically the morning a member enters this week.
       </FooterNote>
     </div>
+  )
+}
+
+function ReadField({ label, value, multiline }: { label: string; value: string; multiline?: boolean }) {
+  return (
+    <>
+      <label style={labelStyle}>{label}</label>
+      <div style={{ ...inputStyle, color: C.text, whiteSpace: multiline ? 'pre-wrap' : 'normal', lineHeight: 1.6, minHeight: multiline ? 80 : undefined }}>
+        {value}
+      </div>
+    </>
   )
 }
 

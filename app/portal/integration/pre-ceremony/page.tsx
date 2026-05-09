@@ -46,7 +46,7 @@ type ActionCard =
   | { kind: 'external'; href: string; text: string }
   | { kind: 'static';   text: string; links?: ActionLinkArr }
 
-const actionsForWeek = (
+export const actionsForWeek = (
   weekIdx: number,
   actions: ReadonlyArray<{ text: string; links?: ActionLinkArr }>,
 ): ActionCard[] => {
@@ -139,7 +139,11 @@ function renderActionText(
 }
 
 // ─── Week data ────────────────────────────────────────────
-const WEEKS = [
+// Exported so server code (the journey-emails cron, the founder dashboard's
+// auto-derived email preview) can pull principle/intro/action text directly
+// from this canonical source. When this content changes, the weekly emails
+// update on the next cron tick — no separate template store to keep in sync.
+export const WEEKS = [
   {
     id: 0,
     code: 'IKE',

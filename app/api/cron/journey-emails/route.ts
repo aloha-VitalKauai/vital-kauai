@@ -4,9 +4,9 @@ import {
   renderJourneyEmailHtml,
   sendJourneyEmail,
   weekToSendToday,
-  type JourneyEmailTemplate,
   type JourneyArc,
 } from '@/lib/journey-emails'
+import { getJourneyEmailTemplate } from '@/lib/journey-emails-from-integration'
 
 export const runtime = 'nodejs'
 
@@ -20,7 +20,8 @@ export const runtime = 'nodejs'
  *   1. Pull active journeys with a known start_at.
  *   2. For each, ask weekToSendToday() if today is a week boundary day.
  *   3. Skip if (journey, arc, week_idx) already exists in journey_email_log.
- *   4. Pull the template, render, send via Resend, log.
+ *   4. Derive the template from the integration page content
+ *      (getJourneyEmailTemplate), render, send via Resend, log.
  *
  * Late-booking behavior: only sends weeks whose start day is exactly today.
  * A member approved 3 weeks before ceremony will start receiving emails from
@@ -100,16 +101,9 @@ export async function GET(req: Request) {
     return NextResponse.json({ ok: true, sent: 0, skipped: pending.length, errors: 0, message: 'all_already_sent' })
   }
 
-  // 4. Pull templates + member emails in batch.
-  const { data: templatesRaw } = await supabase
-    .from('journey_email_templates')
-    .select('id, arc, week_idx, principle_name, principle, theme, subject, intro, action_items')
-
-  const templates = new Map<string, JourneyEmailTemplate>()
-  for (const t of (templatesRaw ?? []) as JourneyEmailTemplate[]) {
-    templates.set(`${t.arc}|${t.week_idx}`, t)
-  }
-
+  // 4. Pull member emails in batch. Templates are derived from the integration
+  // page content via getJourneyEmailTemplate — there is no separate template
+  // store, so editing the integration page updates the next email send.
   const memberIds = Array.from(new Set(todo.map((t) => t.member_id)))
   const { data: members } = await supabase
     .from('members')
@@ -126,13 +120,8 @@ export async function GET(req: Request) {
   const errorDetails: Array<{ journey_id: string; reason: string }> = []
 
   for (const t of todo) {
-    const tpl = templates.get(`${t.arc}|${t.week_idx}`)
+    const tpl = getJourneyEmailTemplate(t.arc, t.week_idx)
     const member = memberById.get(t.member_id)
-    if (!tpl) {
-      errors++
-      errorDetails.push({ journey_id: t.journey_id, reason: 'template_missing' })
-      continue
-    }
     if (!member?.email) {
       errors++
       errorDetails.push({ journey_id: t.journey_id, reason: 'member_email_missing' })
