@@ -617,7 +617,7 @@ export function HomePage() {
         </div>
 
         <p className={`${styles.offeringQuote} ${styles.reveal}`}>
-          The ocean, rivers, and red earth of Kauaʻi herself hold you during your stay, and long
+          The ocean, rivers, and red earth of Kauaʻi hold you during your stay, and long
           after.
         </p>
       </section>
