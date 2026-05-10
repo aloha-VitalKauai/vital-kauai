@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { PortalNav } from "@/components/portal-nav";
 import { MobileSanctuaryDock } from "@/components/portal/MobileSanctuaryDock";
+import { RegisterServiceWorker } from "@/components/portal/RegisterServiceWorker";
 
 export const metadata = { title: "Member Portal — Vital Kauaʻi" };
 
@@ -34,6 +35,7 @@ export default async function PortalLayout({ children }: { children: React.React
       <PortalNav email={user.email ?? ""} />
       {children}
       <MobileSanctuaryDock />
+      <RegisterServiceWorker />
     </div>
   );
 }
