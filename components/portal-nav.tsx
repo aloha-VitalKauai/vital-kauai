@@ -8,7 +8,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
   return (
     <>
       <style>{`
-        .pn { position:sticky;top:0;z-index:100;background:rgba(14,26,16,.97);backdrop-filter:blur(16px);height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;border-bottom:1px solid rgba(200,169,110,.08); }
+        .pn { position:sticky;top:0;z-index:100;background:rgba(14,26,16,.97);backdrop-filter:blur(16px);min-height:60px;display:flex;align-items:center;justify-content:space-between;padding:env(safe-area-inset-top) 48px 0;border-bottom:1px solid rgba(200,169,110,.08); }
         .pn-left { display:flex;align-items:center;gap:32px; }
         .pn-logo { font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;letter-spacing:.18em;text-transform:uppercase;color:#F5F0E8;text-decoration:none; }
         .pn-logo em { font-style:italic;color:#A8C5AC; }
@@ -39,9 +39,9 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         .pn-burger:hover span { background:#F5F0E8; }
 
         /* Mobile full-screen menu */
-        .pn-mobile { display:none;position:fixed;inset:0;z-index:200;background:rgba(10,18,11,.97);backdrop-filter:blur(12px);flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:80px 24px; }
+        .pn-mobile { display:none;position:fixed;inset:0;z-index:200;background:rgba(10,18,11,.97);backdrop-filter:blur(12px);flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:max(80px, calc(env(safe-area-inset-top) + 60px)) 24px max(24px, env(safe-area-inset-bottom)); }
         .pn-mobile.open { display:flex; }
-        .pn-mobile-close { position:absolute;top:18px;right:22px;background:none;border:none;color:#F5F0E8;font-size:28px;cursor:pointer;font-family:inherit;line-height:1;padding:6px 10px; }
+        .pn-mobile-close { position:absolute;top:max(18px, env(safe-area-inset-top));right:22px;background:none;border:none;color:#F5F0E8;font-size:28px;cursor:pointer;font-family:inherit;line-height:1;padding:6px 10px; }
         .pn-mobile a, .pn-mobile form button { font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;letter-spacing:.08em;color:#F5F0E8;text-decoration:none;background:none;border:none;cursor:pointer; }
         .pn-mobile a:hover, .pn-mobile form button:hover { color:#C8A96E; }
         .pn-mobile a.pn-mobile-week { font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.55);margin-top:0; }
@@ -50,7 +50,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         .pn-mobile-email { font-size:10px;letter-spacing:.12em;color:rgba(245,240,232,.4);word-break:break-all;text-align:center;margin-top:12px; }
 
         @media (max-width:768px) {
-          .pn { padding:0 20px; }
+          .pn { padding:env(safe-area-inset-top) 20px 0; }
           .pn-links { display:none; }
           .pn-email { display:none; }
           .pn-out { display:none; }
