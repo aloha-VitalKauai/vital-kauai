@@ -138,7 +138,7 @@ export default function JournalClient() {
   return (
     <div style={{ minHeight: "100vh", background: "#FDFBF7", fontFamily: "'Jost', sans-serif", fontWeight: 300 }}>
       {/* Hero */}
-      <div style={{ background: "#1C2B1E", padding: "60px 60px 56px" }}>
+      <div style={{ background: "#1C2B1E", padding: "60px clamp(20px, 6vw, 60px) 56px" }}>
         <div style={{ maxWidth: 780 }}>
           <span style={{ fontSize: 11, letterSpacing: "0.36em", textTransform: "uppercase", color: "#C8A96E", display: "block", marginBottom: 16, fontWeight: 500 }}>Member Portal · Comprehensive Journal</span>
           <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(36px, 4vw, 58px)", fontWeight: 300, color: "#F5F0E8", lineHeight: 1.06 }}>
@@ -148,7 +148,7 @@ export default function JournalClient() {
       </div>
 
       {/* Action bar — save status + print */}
-      <div className="cj-actionbar" style={{ position: "sticky", top: 60, zIndex: 40, background: "white", borderBottom: "1px solid rgba(28,43,30,0.1)", padding: "0 60px", display: "flex", alignItems: "center", height: 52, gap: 16 }}>
+      <div className="cj-actionbar" style={{ position: "sticky", top: "calc(60px + env(safe-area-inset-top))", zIndex: 40, background: "white", borderBottom: "1px solid rgba(28,43,30,0.1)", padding: "0 clamp(20px, 6vw, 60px)", display: "flex", alignItems: "center", height: 52, gap: 16 }}>
         {saveStatus && (
           <span style={{ fontSize: 12, letterSpacing: "0.1em", color: saveStatus === "saved" ? "#4e7250" : saveStatus === "saving" ? "#8a7250" : "#c4846a", whiteSpace: "nowrap" }}>
             {saveStatus === "saving" ? "Saving…" : saveStatus === "saved" ? "Saved" : "Not saved"}
@@ -166,7 +166,7 @@ export default function JournalClient() {
       `}</style>
 
       {/* Body */}
-      <div style={{ maxWidth: 860, margin: "0 auto", padding: "0 60px 120px" }}>
+      <div style={{ maxWidth: 860, margin: "0 auto", padding: "0 clamp(20px, 6vw, 60px) 120px" }}>
         {PHASES.map((phase, pi) => {
           const responses = phase.key === "pre" ? preResponses : postResponses;
           const update = phase.key === "pre" ? updatePre : updatePost;
