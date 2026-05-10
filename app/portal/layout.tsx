@@ -8,12 +8,15 @@ export const metadata = { title: "Member Portal — Vital Kauaʻi" };
 
 // viewport-fit:cover lets safe-area-inset-* env() vars pick up real
 // values on notched / rounded-corner devices (e.g. iPhone with
-// Dynamic Island). Scoped to /portal/* — marketing routes keep the
+// Dynamic Island). themeColor tints Android Chrome's address bar and
+// the iOS standalone-mode status bar background to forest, matching
+// the portal nav. Scoped to /portal/* — marketing routes keep the
 // Next.js default viewport.
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  themeColor: "#1C2B1E",
 };
 
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
