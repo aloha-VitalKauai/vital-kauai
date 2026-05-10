@@ -576,7 +576,14 @@ export function HomePage() {
               <p>
                 Most importantly, we offer full preparation and integration support across months,
                 a six-week arc before ceremony and a six-week arc after, so the depth that opens
-                here continues to deepen long after you leave.
+                here continues to deepen long after you leave. Optional 1:1 support continues for
+                as long as it serves, and your place in the Vital Kauaʻi community is for life.
+              </p>
+              <h3 className={styles.supportHeader}>Community</h3>
+              <p>
+                Healing deepens when it is held with others, and community is a pillar of how
+                Vital Kauaʻi lives. Monthly community calls keep us connected and accountable in
+                our integrative living.
               </p>
             </div>
           </div>
