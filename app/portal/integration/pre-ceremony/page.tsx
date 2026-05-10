@@ -652,7 +652,7 @@ export default function PreCeremonyPage() {
                   : <>{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</>}
               </h2>
               {i === 0
-                ? <p className="w1p-body">What you perceive shapes what you experience, and the world reflects it back as truth. Your attention, assumptions, and stories running underneath are the lens, and life answers in kind. This week is an invitation to look at the lens from which you view your reality.</p>
+                ? <p className="w1p-body">You are the creator of your reality and of your life. This week is an invitation to honestly look at the reality you have created for yourself. To notice the patterns, environments, relationships, thoughts, and beliefs that have shaped your current experience, and from that awareness begin creating in a way that is more aligned with who you truly are today.</p>
                 : w.sub.split('\n\n').map((para, pi) => (
                     <p key={pi} className="w1p-body">{para}</p>
                   ))}
