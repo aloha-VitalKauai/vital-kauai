@@ -134,8 +134,8 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
 </div>
 
 <div id="restoredBanner" class="restored-banner">
-  <span class="rb-label">Welcome back.</span>
-  Your earlier answers have been restored, keep going where you left off.
+  <span class="rb-label" id="rbLabel">Welcome back.</span>
+  <span id="rbMessage">Your earlier answers have been restored, keep going where you left off.</span>
   <button type="button" onclick="discardRestoredDraft()">Start over</button>
 </div>
 
@@ -619,6 +619,21 @@ async function readServerDraft() {
   }
 }
 
+// Pulls the most recently submitted intake (if any) and reshapes it into the
+// same { savedAt, state } envelope drafts use, so a returning member sees
+// their previous answers instead of a blank form.
+async function readSubmittedIntake() {
+  try {
+    const res = await fetch('/api/intake/submitted', { credentials: 'include' });
+    if (!res.ok) return null;
+    const body = await res.json();
+    if (!body || !body.snapshot) return null;
+    return body.snapshot;
+  } catch (_) {
+    return null;
+  }
+}
+
 function applySnapshotToForm(snapshot) {
   const state = snapshot && snapshot.state;
   if (!state) return false;
@@ -692,15 +707,24 @@ async function initAutosave() {
     return;
   }
   draftKey = DRAFT_KEY_PREFIX + memberId;
-  // Pull from both sources and use the newer one. Server wins ties so
-  // cross-device edits converge.
-  const [localDraft, serverDraft] = await Promise.all([
+  // Pull all three sources in parallel: local draft, server draft, and the
+  // member's last submitted intake. Drafts (in-progress autosave) take
+  // priority over the submission so we don't clobber unsaved edits, but if
+  // there's no draft we fall back to the submission instead of a blank form.
+  const [localDraft, serverDraft, submitted] = await Promise.all([
     Promise.resolve(readLocalDraft()),
     readServerDraft(),
+    readSubmittedIntake(),
   ]);
   const draft = pickNewerDraft(localDraft, serverDraft);
   let restored = false;
-  if (draft) restored = applySnapshotToForm(draft);
+  let restoredFromSubmission = false;
+  if (draft) {
+    restored = applySnapshotToForm(draft);
+  } else if (submitted) {
+    restored = applySnapshotToForm(submitted);
+    restoredFromSubmission = restored;
+  }
   // Make local and server agree on whichever draft won.
   if (draft) {
     try { localStorage.setItem(draftKey, JSON.stringify(draft)); } catch (_) {}
@@ -712,6 +736,12 @@ async function initAutosave() {
   draftLoaded = true;
   if (restored) {
     const banner = document.getElementById('restoredBanner');
+    const label = document.getElementById('rbLabel');
+    const message = document.getElementById('rbMessage');
+    if (restoredFromSubmission) {
+      if (label) label.textContent = 'Already submitted.';
+      if (message) message.textContent = "We've loaded your previous intake so you can review it. Update anything that's changed and resubmit, or leave as-is.";
+    }
     if (banner) banner.classList.add('visible');
     setAutosaveStatus('saved', 'Saved ✓');
   } else {
