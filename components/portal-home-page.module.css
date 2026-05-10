@@ -1792,4 +1792,13 @@
     margin: 0 16px;
     padding: 36px 24px;
   }
+
+  .beginBanner {
+    padding: 48px 24px;
+    margin: 0 0 40px;
+  }
+
+  .lowerBand {
+    padding: 56px 20px;
+  }
 }
