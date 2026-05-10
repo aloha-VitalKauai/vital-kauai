@@ -167,18 +167,33 @@ function DietaryContent() {
               Supporting the Vessel<br /><em style={{ fontStyle: "italic", fontWeight: 300 }}>Before Ceremony</em>
             </h2>
             <p style={{ fontSize: 13.5, color: inkLight, lineHeight: 1.75, marginBottom: 28, maxWidth: 580 }}>
-              The following supplements support cardiac function, liver health, nervous system integrity, and gut microbiome in the weeks before your Iboga journey. Begin approximately four weeks before your ceremony date.
+              These supplements support your heart, liver, nervous system, and gut microbiome in the weeks before your Iboga journey. Magnesium is the one we ask everyone to take. The rest are suggestions to bring to your physician, who can advise on which ones fit your body and history.
             </p>
             <div style={{ background: "rgba(139,105,20,0.08)", borderLeft: `3px solid ${gold}`, borderRadius: 4, padding: "14px 18px", fontSize: 12.5, color: inkLight, lineHeight: 1.65, marginBottom: 28, fontStyle: "italic" }}>
               All dosing is guided by your physician. Bring this list to your healthcare provider and follow their recommendations.
             </div>
 
+            <p style={{ fontSize: 9.5, letterSpacing: "0.26em", textTransform: "uppercase", color: gold, fontWeight: 600, marginBottom: 12 }}>Required</p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 28 }}>
+              {[
+                { name: "Magnesium Glycinate", purpose: "Heart and nervous system support. Helps your heart move smoothly with the medicine and supports deeper sleep.", timing: "Begin 4 weeks before" },
+              ].map((s) => (
+                <div key={s.name} style={{ background: "white", border: `1px solid rgba(222,201,138,0.5)`, borderRadius: 7, padding: "16px 18px" }}>
+                  <p style={{ fontSize: 13.5, fontWeight: 500, marginBottom: 4, letterSpacing: "0.01em" }}>{s.name}</p>
+                  <p style={{ fontSize: 12, color: inkLight, lineHeight: 1.55, marginBottom: 6 }}>{s.purpose}</p>
+                  <p style={{ fontSize: 11, color: gold, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase" }}>{s.timing}</p>
+                </div>
+              ))}
+            </div>
+
+            <p style={{ fontSize: 9.5, letterSpacing: "0.26em", textTransform: "uppercase", color: gold, fontWeight: 600, marginBottom: 6 }}>Suggested</p>
+            <p style={{ fontSize: 12.5, color: inkLight, lineHeight: 1.65, marginBottom: 14, fontStyle: "italic" }}>Discuss with your physician. They can advise on which of these fit your body and history.</p>
             <div style={{ display: "grid", gap: 10 }}>
               {[
-                [{ name: "Magnesium Glycinate", purpose: "Cardiac and nervous system support. Reduces excitability and supports deeper sleep.", timing: "Begin 4 weeks before" }, { name: "CoQ10", purpose: "Cardiac-protective antioxidant. Supports mitochondrial function and energy production.", timing: "Begin 4 weeks before" }],
-                [{ name: "Vitamin C", purpose: "Immune and adrenal support. Powerful antioxidant that supports detoxification.", timing: "Begin 4 weeks before" }, { name: "DHA + EPA (Omega-3)", purpose: "Brain and nervous system support. Supports membrane integrity.", timing: "Begin 4 weeks before" }],
-                [{ name: "B Complex", purpose: "Nervous system and energy support. Supports methylation and mood stability.", timing: "Begin 4 weeks before" }, { name: "NAC (N-Acetyl Cysteine)", purpose: "Liver support and antioxidant. Precursor to glutathione.", timing: "Begin 4 weeks \u2014 discontinue 72 hrs before" }],
-                [{ name: "Milk Thistle", purpose: "Liver support and gentle detoxification.", timing: "Begin 4 weeks \u2014 discontinue 1 week before" }, { name: "Probiotics", purpose: "Gut microbiome support. A healthy gut supports mood, immunity, and integration.", timing: "Begin 4 weeks before" }],
+                [{ name: "CoQ10", purpose: "Mitochondrial and heart support. Antioxidant that supports energy production.", timing: "Begin 4 weeks before" }, { name: "Vitamin C", purpose: "Immune and adrenal support. Powerful antioxidant that supports detoxification.", timing: "Begin 4 weeks before" }],
+                [{ name: "DHA + EPA (Omega-3)", purpose: "Brain and nervous system support. Supports membrane integrity.", timing: "Begin 4 weeks before" }, { name: "B Complex", purpose: "Nervous system and energy support. Supports methylation and mood stability.", timing: "Begin 4 weeks before" }],
+                [{ name: "NAC (N-Acetyl Cysteine)", purpose: "Liver support and antioxidant. Precursor to glutathione.", timing: "Begin 4 weeks, discontinue 72 hrs before" }, { name: "Milk Thistle", purpose: "Liver support and gentle detoxification.", timing: "Begin 4 weeks, discontinue 1 week before" }],
+                [{ name: "Probiotics", purpose: "Gut microbiome support. A healthy gut supports mood, immunity, and integration.", timing: "Begin 4 weeks before" }],
               ].map((row, ri) => (
                 <div key={ri} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                   {row.map((s) => (

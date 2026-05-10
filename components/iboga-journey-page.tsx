@@ -213,8 +213,8 @@ export function IbogaJourneyPage() {
               </blockquote>
               <p className={styles.medicineBody}>
                 Whole-plant root bark contains the full alkaloid profile of Iboga, not just
-                ibogaine, but dozens of synergistic compounds that buffer the experience, reduce
-                cardiac risk, and allow for a deeper, more nuanced journey.
+                ibogaine, but dozens of synergistic compounds that buffer the experience and ease
+                how the heart receives it, allowing for a deeper, more nuanced journey.
               </p>
               <div className={styles.medicinePills}>
                 <span>Whole-Plant Root Bark</span>
@@ -474,7 +474,7 @@ export function IbogaJourneyPage() {
                 <li>Full-spectrum whole plant, all alkaloids intact</li>
                 <li>Slower, titrated onset &mdash; a gradual, conscious unfolding</li>
                 <li>Deep somatic, visionary, and autobiographical processing</li>
-                <li>Buffered cardiovascular effect</li>
+                <li>Gentle on the heart, supported by the full alkaloid spectrum</li>
               </ul>
             </article>
 
@@ -499,7 +499,7 @@ export function IbogaJourneyPage() {
                 <li>Single isolated alkaloid</li>
                 <li>Fast onset, more abrupt</li>
                 <li>Less access to plant intelligence and spirit</li>
-                <li>Stronger cardiotoxic profile; can prolong QT interval</li>
+                <li>Concentrated single alkaloid; clinical-grade cardiac monitoring is standard in the settings where it is used</li>
               </ul>
             </article>
           </div>
