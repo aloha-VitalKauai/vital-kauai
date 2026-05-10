@@ -226,7 +226,7 @@ export const WEEKS = [
         ],
       },
     ],
-    safetyBox: { label: 'Physiological preparation, safety note', text: 'Magnesium is cardiac-critical for iboga. Adequate magnesium levels directly affect cardiac function during the medicine, particularly QT interval regulation. This supplementation is cardiac-critical preparation, part of your physiological safety protocol. If you have any cardiac history, confirm dosing with your physician and inform the Vital Kauaʻi team before proceeding.' },
+    safetyBox: { label: 'Physiological preparation, a note on magnesium', text: 'Magnesium supports your heart through ceremony. Healthy magnesium and potassium levels help your heart move smoothly with the medicine. We confirm both with bloodwork before you arrive, and a four-week magnesium glycinate ramp is one of the gentlest ways to arrive well-resourced. If you have any cardiac history, confirm dosing with your physician and let the Vital Kauaʻi team know.' },
     prompts: PRE_CEREMONY_WEEKS[2].prompts,
     thread: 'The body awareness you\'re building this week is what carries you through ceremony. When the medicine is at its most intense, your capacity to track sensation without being consumed by it is the skill that matters most. You are practicing it now.',
   },

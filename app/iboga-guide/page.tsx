@@ -286,7 +286,7 @@ const BODY_CONTENT = `
     <div style="background:rgba(122,158,126,0.07);border:1px solid rgba(122,158,126,0.18);border-left:3px solid var(--sage);padding:16px 20px;">
       <span style="font-size:7.5px;letter-spacing:0.34em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;">For Context</span>
       <p style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:400;color:var(--text-dark);margin-bottom:6px;">Isolated Ibogaine</p>
-      <p style="font-size:12.5px;color:var(--text-mid);line-height:1.8;">The single primary alkaloid extracted from the root bark, used in Western clinical settings, including the landmark Stanford study. Measurable and standardized. We honor this research fully. Its onset is faster and more intense, requiring the highest level of cardiac monitoring. What it carries is the alkaloid. What it leaves behind is everything else the plant holds.</p>
+      <p style="font-size:12.5px;color:var(--text-mid);line-height:1.8;">The single primary alkaloid extracted from the root bark, used in Western clinical settings, including the landmark Stanford study. Measurable and standardized. We honor this research fully. Its onset is faster and more intense, paired with clinical-grade cardiac monitoring in the research settings where it is used. What it carries is the alkaloid. What it leaves behind is everything else the plant holds.</p>
     </div>
   </div>
 </section>
@@ -642,7 +642,7 @@ const BODY_CONTENT = `
     <div class="choosing-col">
       <div style="margin-bottom:28px;">
         <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text-dark);margin-bottom:10px;">Safety &amp; Medical Care</h3>
-        <p class="body-text">A qualified provider requires full medical screening, at minimum an EKG and bloodwork, before your ceremony. Cardiac monitoring should be available throughout. Ask whether a medical professional is on-site or on-call. If a provider tells you medical screening is unnecessary, that is the answer you need.</p>
+        <p class="body-text">A qualified provider requires full medical screening, at minimum an EKG and bloodwork, before your ceremony. If receiving Ibogaine specifically, cardiac monitoring should be available throughout. Ask whether a medical professional is on-site or on-call. Look for providers who require medical screening as part of their care.</p>
       </div>
       <div style="margin-bottom:28px;">
         <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text-dark);margin-bottom:10px;">Experience &amp; Lineage</h3>
