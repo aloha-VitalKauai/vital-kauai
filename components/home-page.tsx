@@ -584,7 +584,9 @@ export function HomePage() {
               <h3 className={styles.supportHeader}>Community</h3>
               <p>
                 Healing deepens when it is held with others. Monthly community calls keep us
-                connected and accountable in our integrative living.
+                connected and accountable in our integrative living. Your home team is part of
+                the container too, and we help prepare them before your arrival and in receiving
+                you when you return home.
               </p>
             </div>
           </div>
