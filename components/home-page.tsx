@@ -560,8 +560,9 @@ export function HomePage() {
                 Somatic support and guidance prepares the body, mind, and spirit to work with the
                 medicine and to move with what arises. You build the capacity to feel safe, to
                 track the nervous system, to self-resource, and to integrate what the medicine
-                reveals. A dedicated integration guide and 1:1 calls walk alongside you before
-                and after ceremony.
+                reveals. From this ground, you begin to open the imprints that no longer serve,
+                safely and held. A dedicated integration guide and 1:1 calls walk alongside you
+                before and after ceremony.
               </p>
               <h3 className={styles.supportHeader}>Somatic Practices</h3>
               <p>
