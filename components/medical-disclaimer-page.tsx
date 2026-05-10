@@ -254,15 +254,13 @@ export function MedicalDisclaimerPage() {
         </div>
 
         <p>
-          Vital Kauaʻi Church takes the physiological seriousness of Iboga ceremony with the utmost
-          gravity. The Iboga sacrament carries meaningful physical risk, particularly for individuals
-          with cardiac conditions, liver conditions, or certain medication interactions, including
-          but not limited to SSRIs, MAOIs, opioids, stimulants, and QT-prolonging medications. For
-          this reason, Vital Kauaʻi Church requires all members participating in the Iboga Journey to
-          complete thorough medical screening prior to ceremony, including ECG/cardiac evaluation and
-          comprehensive bloodwork. The Church care team reviews all health disclosures and screening
-          results with care, and reserves the right to decline or postpone ceremony when member
-          safety cannot be responsibly assured.
+          Vital Kauaʻi Church holds the Iboga sacrament with the care it asks for. The sacrament has
+          clear medical considerations around heart health, liver health, and interactions with
+          certain medications, including SSRIs, MAOIs, opioids, stimulants, and QT-prolonging drugs.
+          For this reason every member completes a thorough medical screening before ceremony,
+          including ECG and comprehensive bloodwork. Our care team reviews every disclosure with
+          attention, and may decline or postpone ceremony when that is what care looks like for a
+          particular member.
         </p>
 
         <p>
