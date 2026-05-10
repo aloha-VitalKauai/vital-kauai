@@ -2,6 +2,7 @@ import type { Viewport } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { PortalNav } from "@/components/portal-nav";
+import { MobileSanctuaryDock } from "@/components/portal/MobileSanctuaryDock";
 
 export const metadata = { title: "Member Portal — Vital Kauaʻi" };
 
@@ -29,6 +30,7 @@ export default async function PortalLayout({ children }: { children: React.React
     <div style={{ overflowX: "clip" }}>
       <PortalNav email={user.email ?? ""} />
       {children}
+      <MobileSanctuaryDock />
     </div>
   );
 }
