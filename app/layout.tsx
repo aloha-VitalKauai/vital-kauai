@@ -38,6 +38,16 @@ export const metadata: Metadata = {
     title: "Vital Kauaʻi",
     description: "A living sanctuary of transformation and awakening on Kauaʻi's sacred North Shore.",
   },
+  // PWA installability identity. When a member adds the site to their
+  // iOS home screen and launches it, iOS uses these to render the app
+  // shell: standalone window (no browser chrome), translucent status bar
+  // (so the dark portal nav extends behind it), and the calm "Vital
+  // Kauaʻi" title under the icon.
+  appleWebApp: {
+    capable: true,
+    title: "Vital Kauaʻi",
+    statusBarStyle: "black-translucent",
+  },
 };
 
 export default function RootLayout({

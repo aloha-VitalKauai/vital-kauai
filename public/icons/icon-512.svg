@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Vital Kauaʻi PWA app icon (full bleed, any size — SVG scales).
+  Temporary production-safe mark using the existing palette and the
+  Cormorant Garamond italic "V" — no new brand mark introduced.
+  Forest background matches the portal nav (#1C2B1E); cream V matches
+  the existing cream surface (#F5F0E8).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Vital Kauaʻi">
+  <rect width="512" height="512" fill="#1C2B1E"/>
+  <text
+    x="256"
+    y="350"
+    font-family="'Cormorant Garamond', Georgia, 'Times New Roman', serif"
+    font-style="italic"
+    font-size="320"
+    font-weight="300"
+    fill="#F5F0E8"
+    text-anchor="middle"
+  >V</text>
+</svg>
