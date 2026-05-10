@@ -4,8 +4,8 @@
 export default function Loading() {
   return (
     <div
+      className="vk-portal-shell"
       style={{
-        minHeight: "calc(100vh - 60px)",
         background: "#0E1A10",
         display: "flex",
         alignItems: "center",

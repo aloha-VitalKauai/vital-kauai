@@ -6,8 +6,8 @@
 export default function Error({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
     <div
+      className="vk-portal-shell"
       style={{
-        minHeight: "calc(100vh - 60px)",
         background: "#0E1A10",
         display: "flex",
         flexDirection: "column",

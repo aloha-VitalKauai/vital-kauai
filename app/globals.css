@@ -140,3 +140,20 @@ img {
     --fs-body: 16px;
   }
 }
+
+/* Portal boundary container — used by loading.tsx and error.tsx files
+   in /portal/. Fills the visible area between the sticky portal nav
+   (top, 60px + safe-area-inset-top in standalone PWA on notched devices)
+   and the mobile sanctuary dock (bottom, 56px + safe-area-inset-bottom
+   on viewports <=768px). Uses dvh so iOS Safari's address bar
+   showing/hiding doesn't cause the loading text to jump. */
+.vk-portal-shell {
+  min-height: calc(100dvh - 60px - env(safe-area-inset-top));
+}
+@media (max-width: 768px) {
+  .vk-portal-shell {
+    min-height: calc(
+      100dvh - 60px - 56px - env(safe-area-inset-top) - env(safe-area-inset-bottom)
+    );
+  }
+}
