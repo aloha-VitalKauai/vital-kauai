@@ -560,7 +560,8 @@ export function HomePage() {
                 Somatic support and guidance prepares the body, mind, and spirit to work with the
                 medicine and to move with what arises. You build the capacity to feel safe, to
                 track the nervous system, to self-resource, and to integrate what the medicine
-                reveals.
+                reveals. A dedicated integration guide and 1:1 calls walk alongside you before
+                and after ceremony.
               </p>
               <h3 className={styles.supportHeader}>Somatic Practices</h3>
               <p>
@@ -581,9 +582,8 @@ export function HomePage() {
               </p>
               <h3 className={styles.supportHeader}>Community</h3>
               <p>
-                Healing deepens when it is held with others, and community is a pillar of how
-                Vital Kauaʻi lives. Monthly community calls keep us connected and accountable in
-                our integrative living.
+                Healing deepens when it is held with others. Monthly community calls keep us
+                connected and accountable in our integrative living.
               </p>
             </div>
           </div>
