@@ -221,8 +221,6 @@ export default function PhysicianGuideClient() {
                 </p>
                 {[
                   "History of heart disease or long QT syndrome",
-                  "Active methamphetamine or stimulant use",
-                  "Active opioid use (prescription or recreational)",
                   "Active psychosis, schizophrenia, or bipolar disorder",
                   "Borderline personality disorder",
                 ].map((item) => (
@@ -236,6 +234,8 @@ export default function PhysicianGuideClient() {
                   Relative, Clearance / Taper Required
                 </p>
                 {[
+                  { item: "Stimulants", note: "Methamphetamine, cocaine, MDMA, prescription stimulants. Full cessation with a physician-confirmed clearance window before ceremony." },
+                  { item: "Opioids", note: "Prescription or recreational. Medical taper under physician supervision; clearance window confirmed before ceremony." },
                   { item: "Cannabis", note: "Clear fully 1–4 weeks before ceremony" },
                   { item: "Grapefruit and turmeric", note: "Clear 1–2 weeks before ceremony" },
                   { item: "Antifungals", note: "Ketoconazole, itraconazole, discuss timeline" },
