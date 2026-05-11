@@ -142,7 +142,7 @@ export default function PhysicianGuideClient() {
           <div className="print-intro-box" style={{ background: sageBg, borderLeft: `3px solid ${sage}`, borderRadius: 8, padding: "20px 26px", marginBottom: 48 }}>
             <p style={{ fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: sage, marginBottom: 8 }}>To the Physician</p>
             <p style={{ fontSize: 14.5, lineHeight: 1.75, color: ink, margin: 0 }}>
-              Your patient is preparing to participate in a whole-plant iboga ceremony held in a sacramental religious context. Iboga contains ibogaine and a spectrum of related alkaloids. It has clear cardiac and pharmacological considerations that this screening protocol addresses. The information below outlines the required screening, suggested additional labs, and contraindications. Please review carefully and advise your patient accordingly.
+              Your patient is preparing to participate in a whole-plant iboga ceremony held in a sacramental religious context. Published clinical cohorts with baseline EKG, electrolyte correction, and cardiac telemetry report an excellent safety record when iboga is approached with this preparation in place. The protocol below outlines the required screening, suggested labs, and contraindications. Thank you for supporting your patient in their choice and for reviewing the information below with care.
             </p>
             <p style={{ fontSize: 13, color: inkLight, marginTop: 12, marginBottom: 0 }}>
               Questions? Contact us directly at <strong>aloha@vitalkauai.com</strong>.
