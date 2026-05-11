@@ -201,7 +201,7 @@ export default function PhysicianGuideClient() {
                   Sleep Support, Please Discuss
                 </p>
                 <p style={{ fontSize: 13, color: inkLight, lineHeight: 1.7, margin: 0 }}>
-                  Iboga carries residual stimulation that can affect sleep following ceremony. Please discuss gentle, non-addictive sleep support options your patient may bring with them if needed during integration.
+                  Please discuss sleep support options your patient may bring with them if needed during integration.
                 </p>
               </div>
             </div>
