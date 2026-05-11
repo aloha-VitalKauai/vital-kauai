@@ -317,10 +317,6 @@ export default function ReferenceItineraryPage() {
               <div className="role-desc">Morning of Day 5. Hoʻoponopono and cultural stewardship. Holding the Hawaiian thread of the container.</div>
             </div>
             <div className="team-role">
-              <div className="role-name">Jon Allen, PA-C<em>Medical Advisor</em></div>
-              <div className="role-desc">Medical review before the week. Available or on-call during ceremony night per each member&apos;s medical context.</div>
-            </div>
-            <div className="team-role">
               <div className="role-name">Healing Circle Practitioners<em>Rotating · Scheduled Pre-Week</em></div>
               <div className="role-desc">Bodywork, acupuncture, sound, yoga, breathwork, Reiki, craniosacral, BioGeometry, PNE. The Sacred Hospitality Coordinator schedules practitioners ahead of each ceremony — one practitioner may hold multiple sessions across the week based on availability and member needs.</div>
             </div>

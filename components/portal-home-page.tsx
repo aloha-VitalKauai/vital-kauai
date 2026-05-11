@@ -727,13 +727,6 @@ export function PortalHomePage({
                   className={styles.circlePhoto}
                 />
                 <Image
-                  src="/images/jonallen.jpeg"
-                  alt="Jon Allen, PA-C"
-                  width={56}
-                  height={56}
-                  className={styles.circlePhoto}
-                />
-                <Image
                   src="/images/robyndebonet.JPG"
                   alt="Robyn deBonet"
                   width={56}
@@ -744,9 +737,8 @@ export function PortalHomePage({
               <p className={styles.teamRole}>The Wider Circle</p>
               <p className={styles.teamName}>A Whole Team</p>
               <p className={styles.teamBio}>
-                Behind every ceremony is a circle of practitioners, somatic specialists, a
-                medical advisor, and integration guides, holding you in concert with Rachel and
-                Josh.
+                Behind every ceremony is a circle of practitioners, somatic specialists, and
+                integration guides, holding you in concert with Rachel and Josh.
               </p>
               <Link href="/healing-circle" target="_blank" rel="noopener noreferrer" className={styles.teamCta}>
                 Meet Our Healing Circle &rarr;
