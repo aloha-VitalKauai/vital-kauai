@@ -64,10 +64,11 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     weekIdx: 3,
     code: "KALA",
     theme: "Release",
-    title: "Meeting the Shadow",
-    href: "/portal/pne",
-    status: "coming-soon",
-    videoSummary: "Coming Soon.",
+    title: "The Language of Emotion",
+    href: "/portal/somatic-companion/week-4",
+    status: "live",
+    videoSummary:
+      "The five primary emotions, the secondary patterns layered on top, and how to let what has been long held finally move through.",
   },
   {
     phase: "pre",
