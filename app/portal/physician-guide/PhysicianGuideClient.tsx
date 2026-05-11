@@ -201,7 +201,7 @@ export default function PhysicianGuideClient() {
                   Sleep Support, Please Discuss
                 </p>
                 <p style={{ fontSize: 13, color: inkLight, lineHeight: 1.7, margin: 0 }}>
-                  Please discuss sleep support options your patient may bring with them if needed during integration.
+                  Iboga is a stimulant and can affect sleep following ceremony. Please discuss sleep support options your patient may bring with them if needed during integration.
                 </p>
               </div>
             </div>
