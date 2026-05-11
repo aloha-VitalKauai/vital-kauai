@@ -162,7 +162,7 @@ export default function PhysicianGuideClient() {
                 {[
                   { label: "EKG", note: "Cardiac function and QT interval assessment. QTc must be within normal range." },
                   { label: "Electrolyte Panel", note: "Potassium and magnesium levels, both cardiac-critical. Correct any deficiencies before ceremony." },
-                  { label: "Full Medical Review", note: "Comprehensive physician review of health history, medications, and contraindications." },
+                  { label: "Full Medical Review", note: "Comprehensive physician review of health history, medications, recreational drug use, and contraindications." },
                 ].map((item, idx, arr) => (
                   <div className="print-card-item" key={item.label} style={{ display: "flex", gap: 14, paddingBottom: 16, marginBottom: idx < arr.length - 1 ? 16 : 0, borderBottom: idx < arr.length - 1 ? `1px solid ${border}` : "none" }}>
                     <div style={{ width: 18, height: 18, border: `1.5px solid ${sage}`, borderRadius: 4, flexShrink: 0, marginTop: 2 }} />
@@ -234,6 +234,8 @@ export default function PhysicianGuideClient() {
                   Relative, Clearance / Taper Required
                 </p>
                 {[
+                  { item: "Stimulants", note: "Methamphetamine, cocaine, MDMA, prescription stimulants. Full cessation with a physician-confirmed clearance window before ceremony." },
+                  { item: "Opioids", note: "Prescription or recreational. Medical taper under physician supervision; clearance window confirmed before ceremony." },
                   { item: "Cannabis", note: "Clear fully 1–4 weeks before ceremony" },
                   { item: "Grapefruit and turmeric", note: "Clear 1–2 weeks before ceremony" },
                   { item: "Antifungals", note: "Ketoconazole, itraconazole, discuss timeline" },
