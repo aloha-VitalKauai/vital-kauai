@@ -221,8 +221,6 @@ export default function PhysicianGuideClient() {
                 </p>
                 {[
                   "History of heart disease or long QT syndrome",
-                  "Active methamphetamine or stimulant use",
-                  "Active opioid use (prescription or recreational)",
                   "Active psychosis, schizophrenia, or bipolar disorder",
                   "Borderline personality disorder",
                 ].map((item) => (
