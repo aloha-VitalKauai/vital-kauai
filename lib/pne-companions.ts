@@ -192,6 +192,12 @@ export const PNE_ADDITIONAL_RESOURCES: ReadonlyArray<PneAdditionalResource> = [
     status: "live",
   },
   {
+    title: "Dietary Guide",
+    description: "Foundation principles, whole-food preparation, and the supplement protocol that ready the body for ceremony.",
+    href: "/portal/dietary",
+    status: "live",
+  },
+  {
     title: "Support Person Guide",
     description: "For the people who love you, how to show up well, before and after ceremony.",
     href: "/portal/support-person",
