@@ -783,6 +783,8 @@ export default function PreCeremonyPage() {
                   <>PNE (PsychoNeuroEnergetics) Perspective: <em>Nervous System Regulation</em></>
                 ) : i === 2 ? (
                   <>PNE (PsychoNeuroEnergetics) Perspective: <em>Building Somatic Awareness</em></>
+                ) : i === 3 ? (
+                  <>PNE (PsychoNeuroEnergetics) Perspective: <em>The Language of Emotion</em></>
                 ) : 'PNE Perspective'}
               </h3>
               {i === 0 && (
@@ -798,6 +800,11 @@ export default function PreCeremonyPage() {
               {i === 2 && (
                 <p className="w1-body">
                   This week&apos;s PNE (PsychoNeuroEnergetics) teaching turns toward sensation as the body&apos;s native language. The PNE Guide explores what a sensation is, neutral, locatable, alive, what deer can teach us about completing stress and shaking it off, how unprocessed energy gets held in the body, and the vocabulary that helps you describe what you feel. From there, it walks through working with sensation through a six-step inner practice you can return to whenever something asks for attention.
+                </p>
+              )}
+              {i === 3 && (
+                <p className="w1-body">
+                  This week&apos;s PNE (PsychoNeuroEnergetics) teaching turns toward emotion as the body&apos;s signal. The PNE Guide walks through the five primary emotions and the intelligence each one carries, healthy and unhealthy ways those emotions move, the secondary patterns that form when feeling has no safe place to land, the coping patterns that repeat as a result, and what the body holds when emotion stays unmet. From there, it offers a three-step inner practice for meeting an emotion that has been waiting to be heard.
                 </p>
               )}
               {(() => {
@@ -853,6 +860,19 @@ export default function PreCeremonyPage() {
                     <div className="pne-step"><span className="pne-step-time">VI</span><span className="pne-step-text"><strong>Offer Compassion.</strong> &ldquo;I am here with you.&rdquo;</span></div>
                   </div>
                   <p className="vp-text pne-practice-closer">Notice what shifts, and what simply asks to be witnessed.</p>
+                </div>
+              ) : i === 3 ? (
+                <div className="pne-detail pne-practice-rich">
+                  <div className="vp-label">This Week&apos;s PNE Practice: A Three-Step Inner Practice</div>
+                  <h4 className="pne-practice-title">A Three-Step Inner Practice</h4>
+                  <p className="pne-practice-tag">A gentle progression for meeting an emotion that has been waiting to be heard</p>
+                  <p className="vp-text pne-practice-p">When a feeling arises this week, pause and walk it gently through the three steps.</p>
+                  <div className="pne-practice-steps">
+                    <div className="pne-step"><span className="pne-step-time">I</span><span className="pne-step-text"><strong>Identify the Sensation.</strong> &ldquo;What is happening in my body right now?&rdquo;</span></div>
+                    <div className="pne-step"><span className="pne-step-time">II</span><span className="pne-step-text"><strong>Identify the Emotion.</strong> &ldquo;Which primary emotion is asking to be felt — joy, anger, sadness, fear, or disgust?&rdquo;</span></div>
+                    <div className="pne-step"><span className="pne-step-time">III</span><span className="pne-step-text"><strong>Show the Body It Is Safe.</strong> &ldquo;I am here. You are safe to feel this.&rdquo;</span></div>
+                  </div>
+                  <p className="vp-text pne-practice-closer">Notice which primary emotion sits beneath the secondary one. The pattern often softens once it has been seen.</p>
                 </div>
               ) : (
                 <div className="pne-detail">

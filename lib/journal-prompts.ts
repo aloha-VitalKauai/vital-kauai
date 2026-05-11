@@ -54,7 +54,12 @@ export const PRE_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
     reflectionFollowUp: 'What situations tend to call these patterns forward most quickly in your life?',
   },
   { practice: '', reflection: 'When I am stressed, where do I notice it in my body, and how do I create safety within myself? What brings me back to center?' },
-  { practice: '', reflection: '' },
+  {
+    teaching: 'A teaching from PsychoNeuroEnergetics: the five primary emotions and the intelligence each one carries, the secondary patterns layered on top, and how to let what has been long held finally move through.',
+    practice: '',
+    reflection: 'When you feel anger, what sensations arise in your body? When you feel sadness? When you feel fear?',
+    reflectionFollowUp: 'What emotions had no safe place at home as you were growing up? What did your parents, directly or indirectly, teach you about feeling?',
+  },
   { practice: '', reflection: '' },
   { practice: '', reflection: '' },
 ]

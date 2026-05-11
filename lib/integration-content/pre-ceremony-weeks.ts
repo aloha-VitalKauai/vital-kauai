@@ -254,7 +254,10 @@ export const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Guide',
+        text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Guide: The Language of Emotion',
+        links: [
+          { text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Guide: The Language of Emotion', href: '/portal/somatic-companion/week-4#top' },
+        ],
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
