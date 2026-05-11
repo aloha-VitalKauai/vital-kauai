@@ -111,7 +111,7 @@ export default function PhysicianGuideClient() {
             Physician Reference<br /><em style={{ color: "rgba(247,243,237,0.55)" }}>Guide</em>
           </h1>
           <p style={{ fontSize: 13, color: "rgba(247,243,237,0.45)", letterSpacing: "0.06em", marginTop: 8, maxWidth: 560, margin: "12px auto 0" }}>
-            This document is provided to support your patient&rsquo;s physician in reviewing required lab work and contraindications prior to participation in a plant medicine ceremony.
+            This document is provided to support your patient in reviewing required lab work and contraindications prior to participation in a plant medicine ceremony.
           </p>
         </div>
 
@@ -145,7 +145,7 @@ export default function PhysicianGuideClient() {
               Your patient is preparing to participate in a whole-plant iboga ceremony held in a sacramental religious context. Iboga contains ibogaine and a spectrum of related alkaloids. It has clear cardiac and pharmacological considerations that this screening protocol addresses. The information below outlines the required screening, suggested additional labs, and contraindications. Please review carefully and advise your patient accordingly.
             </p>
             <p style={{ fontSize: 13, color: inkLight, marginTop: 12, marginBottom: 0 }}>
-              Questions? Contact us directly at <strong>aloha@vitalkauai.com</strong> or call our medical advisor Jon Allen, PA-C (Yale School of Medicine).
+              Questions? Contact us directly at <strong>aloha@vitalkauai.com</strong>.
             </p>
           </div>
 
@@ -281,8 +281,7 @@ export default function PhysicianGuideClient() {
           <div className="print-footer" style={{ textAlign: "center", marginTop: 56, paddingTop: 40, borderTop: `1px solid ${border}` }}>
             <p style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: inkLight, marginBottom: 8 }}>Questions or Concerns</p>
             <p style={{ fontSize: 14, color: inkLight, lineHeight: 1.7 }}>
-              Please reach out to our team at <strong style={{ color: ink }}>aloha@vitalkauai.com</strong><br />
-              Medical Advisor: Jon Allen, PA-C, Yale School of Medicine
+              Please reach out to our team at <strong style={{ color: ink }}>aloha@vitalkauai.com</strong>
             </p>
             <p style={{ fontSize: 11, color: "#AAA", marginTop: 20 }}>
               Vital Kaua&#699;i Church, Kaua&#699;i&rsquo;s North Shore, Hawai&#699;i

@@ -74,7 +74,7 @@ const ALERT_TO_TASK: Record<string,string> = {
   labs_incomplete:'labs_missing', followup_overdue:'followup_overdue',
   contraindication:'contraindication_review',
 }
-const GUIDES = ['Josh','Rachel','Jon Allen PA-C']
+const GUIDES = ['Josh','Rachel']
 // Internal tasks don't make sense to notify a member about
 const INTERNAL_TASK_TYPES = ['guide_outreach','ceremony_readiness']
 
