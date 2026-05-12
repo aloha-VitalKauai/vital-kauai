@@ -164,6 +164,9 @@ export default function JournalClient() {
         @media print {
           .cj-actionbar { display: none !important; }
           .cj-textarea { display: none !important; }
+          .pn, .pn-mobile, .vk-dock { display: none !important; }
+          body { padding: 0 !important; }
+          html, body { background: white !important; }
           .cj-print-text {
             display: block !important;
             white-space: pre-wrap;
