@@ -13,5 +13,22 @@ coverage
 # Claude Code workspace artifacts
 .agents/
 .claude/skills/
+.claude/worktrees/
 skills-lock.json
 supabase/.temp/
+
+# Capacitor iOS shell — the source-of-truth files (App.xcodeproj,
+# AppDelegate.swift, Info.plist, capacitor-cordova-ios-plugins, etc.)
+# get committed in PR #14b after `npx cap add ios`. These entries
+# are pre-emptive ignores for build artifacts, dependency caches, and
+# user-specific Xcode state that should never enter version control.
+ios/App/Pods/
+ios/App/Podfile.lock
+ios/App/build/
+ios/App/App/public/
+ios/App/App.xcworkspace/xcuserdata/
+ios/App/App.xcodeproj/xcuserdata/
+ios/App/App.xcodeproj/project.xcworkspace/xcuserdata/
+ios/DerivedData/
+ios/.sourcemaps/
+out/
