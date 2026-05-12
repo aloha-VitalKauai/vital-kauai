@@ -39,7 +39,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         .pn-burger:hover span { background:#F5F0E8; }
 
         /* Mobile full-screen menu */
-        .pn-mobile { display:none;position:fixed;inset:0;z-index:200;background:rgba(10,18,11,.97);backdrop-filter:blur(12px);flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:max(80px, calc(env(safe-area-inset-top) + 60px)) 24px max(24px, env(safe-area-inset-bottom)); }
+        .pn-mobile { display:none;position:fixed;inset:0;z-index:200;background:rgba(10,18,11,.97);backdrop-filter:blur(12px);flex-direction:column;align-items:center;justify-content:flex-start;gap:28px;padding:max(80px, calc(env(safe-area-inset-top) + 60px)) 24px max(40px, env(safe-area-inset-bottom));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain; }
         .pn-mobile.open { display:flex; }
         .pn-mobile-close { position:absolute;top:max(18px, env(safe-area-inset-top));right:22px;background:none;border:none;color:#F5F0E8;font-size:28px;cursor:pointer;font-family:inherit;line-height:1;padding:6px 10px; }
         .pn-mobile a, .pn-mobile form button { font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;letter-spacing:.08em;color:#F5F0E8;text-decoration:none;background:none;border:none;cursor:pointer; }
