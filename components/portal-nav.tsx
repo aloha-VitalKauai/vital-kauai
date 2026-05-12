@@ -9,6 +9,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
     <>
       <style>{`
         .pn { position:sticky;top:0;z-index:100;background:rgba(14,26,16,.97);backdrop-filter:blur(16px);min-height:60px;display:flex;align-items:center;justify-content:space-between;padding:env(safe-area-inset-top) 48px 0;border-bottom:1px solid rgba(200,169,110,.08); }
+        @media print { .pn, .pn-mobile { display:none !important; } }
         .pn-left { display:flex;align-items:center;gap:32px; }
         .pn-logo { font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;letter-spacing:.18em;text-transform:uppercase;color:#F5F0E8;text-decoration:none; }
         .pn-logo em { font-style:italic;color:#A8C5AC; }
