@@ -160,8 +160,29 @@ export default function JournalClient() {
       </div>
 
       <style>{`
+        .cj-print-text { display: none; }
         @media print {
           .cj-actionbar { display: none !important; }
+          .cj-textarea { display: none !important; }
+          .cj-print-text {
+            display: block !important;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background: rgba(122,158,126,0.04);
+            border: 1px solid rgba(122,158,126,0.18);
+            border-left: 2px solid #A8C5AC;
+            padding: 14px 16px;
+            font-family: 'Jost', sans-serif;
+            font-size: 15px;
+            font-weight: 300;
+            color: #1A1A18;
+            line-height: 1.85;
+            min-height: 40px;
+          }
+          .cj-print-text:empty::before {
+            content: '\\200B';
+            color: transparent;
+          }
         }
       `}</style>
 
@@ -219,6 +240,7 @@ export default function JournalClient() {
                             <p style={{ fontSize: 14, color: "#3D4D3F", lineHeight: 1.7, marginBottom: 14, fontStyle: "italic" }}>{prompt.hint}</p>
                           )}
                           <textarea
+                            className="cj-textarea"
                             value={responses[key] ?? ""}
                             onChange={(e) => update(key, e.target.value)}
                             placeholder="Write freely..."
@@ -238,6 +260,7 @@ export default function JournalClient() {
                               outline: "none",
                             }}
                           />
+                          <div className="cj-print-text">{responses[key] ?? ""}</div>
                         </div>
                       );
                     })}
@@ -259,6 +282,7 @@ export default function JournalClient() {
                         </p>
                       )}
                       <textarea
+                        className="cj-textarea"
                         value={pneEntry}
                         onChange={(e) => update(pneKey, e.target.value)}
                         placeholder="Write freely..."
@@ -278,6 +302,7 @@ export default function JournalClient() {
                           outline: "none",
                         }}
                       />
+                      <div className="cj-print-text">{pneEntry}</div>
                       {(pneDetail?.reflectionFollowUp || pneFollowUpEntry) && (
                         <>
                           {pneDetail?.reflectionFollowUp && (
@@ -286,6 +311,7 @@ export default function JournalClient() {
                             </p>
                           )}
                           <textarea
+                            className="cj-textarea"
                             value={pneFollowUpEntry}
                             onChange={(e) => update(pneFollowUpKey, e.target.value)}
                             placeholder="Write freely..."
@@ -305,6 +331,7 @@ export default function JournalClient() {
                               outline: "none",
                             }}
                           />
+                          <div className="cj-print-text">{pneFollowUpEntry}</div>
                         </>
                       )}
                     </div>
