@@ -397,7 +397,9 @@ export default function PreCeremonyPage() {
         .wh-sub { font-size:14px;color:var(--stone);line-height:1.9;max-width:640px;padding-bottom:32px;border-bottom:1px solid var(--border);margin-bottom:36px; }
         .wh-italic { font-size:13px;color:var(--sage);font-style:italic;margin-top:16px;letter-spacing:.02em; }
         /* Week 1 principle, same hierarchy as wh-* but bumped to read as the theme of the week. */
-        .w1p-eyebrow { font-size:12px;font-weight:600;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:22px; }
+        .w1p-eyebrow { font-size:12px;font-weight:600;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:18px; }
+        .w1p-principle-name { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(64px,9vw,108px);font-weight:400;line-height:1;color:var(--gold);margin:0 0 28px;letter-spacing:-.01em; }
+        @media (max-width:640px) { .w1p-principle-name { font-size:clamp(56px,18vw,80px);margin-bottom:22px; } }
         .w1p-title { font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5.2vw,58px);font-weight:300;line-height:1.06;margin:0 0 18px;color:var(--ink); }
         .w1p-title em { font-style:italic;color:var(--sage); }
         .w1p-pull { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(17px,1.8vw,21px);color:var(--sage);line-height:1.55;margin:0 0 26px;letter-spacing:.015em; }
@@ -636,7 +638,8 @@ export default function PreCeremonyPage() {
 
             {/* PRINCIPLE */}
             <section className="w1-section" id="principle">
-              <span className="w1p-eyebrow">Week {i + 1} · {w.principleName} · {w.theme}</span>
+              <span className="w1p-eyebrow">Week {i + 1}{i === 0 ? '' : ` · ${w.principleName}`} · {w.theme}</span>
+              {i === 0 && <div className="w1p-principle-name">{w.principleName}</div>}
               <p className="w1p-pull">&ldquo;{w.principle}&rdquo;</p>
               <h2 className="w1p-title">
                 {i === 0
