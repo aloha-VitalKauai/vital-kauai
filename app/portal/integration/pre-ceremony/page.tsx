@@ -802,17 +802,17 @@ export default function PreCeremonyPage() {
               )}
               {i === 1 && (
                 <p className="w1-body">
-                  This week&apos;s PNE (PsychoNeuroEnergetics) teaching introduces nervous system regulation, the body&apos;s natural movement between states of safety, protection, and rest. The PNE Guide walks through how to read the body&apos;s weather, ventral vagal, sympathetic, and dorsal vagal, the patterns of protection the system reaches for under stress, fight, flight, fawn, freeze, withdraw, soften inward, and the capacity to move through, how a regulated body returns to balance, and what that means as you prepare for ceremony.
+                  This week&apos;s PNE teaching introduces nervous system regulation, the body&apos;s natural movement between states of safety, protection, and rest. The PNE Guide walks through how to read the body&apos;s weather, ventral vagal, sympathetic, and dorsal vagal, the patterns of protection the system reaches for under stress, fight, flight, fawn, freeze, withdraw, soften inward, and the capacity to move through, how a regulated body returns to balance, and what that means as you prepare for ceremony.
                 </p>
               )}
               {i === 2 && (
                 <p className="w1-body">
-                  This week&apos;s PNE (PsychoNeuroEnergetics) teaching turns toward sensation as the body&apos;s native language. The PNE Guide explores what a sensation is, neutral, locatable, alive, what deer can teach us about completing stress and shaking it off, how unprocessed energy gets held in the body, and the vocabulary that helps you describe what you feel. From there, it walks through working with sensation through a six-step inner practice you can return to whenever something asks for attention.
+                  This week&apos;s PNE teaching turns toward sensation as the body&apos;s native language. The PNE Guide explores what a sensation is, neutral, locatable, alive, what deer can teach us about completing stress and shaking it off, how unprocessed energy gets held in the body, and the vocabulary that helps you describe what you feel. From there, it walks through working with sensation through a six-step inner practice you can return to whenever something asks for attention.
                 </p>
               )}
               {i === 3 && (
                 <p className="w1-body">
-                  This week&apos;s PNE (PsychoNeuroEnergetics) teaching turns toward emotion as the body&apos;s signal. The PNE Guide walks through the five primary emotions and the intelligence each one carries, healthy and unhealthy ways those emotions move, the secondary patterns that form when feeling has no safe place to land, the coping patterns that repeat as a result, and what the body holds when emotion stays unmet. From there, it offers a three-step inner practice for meeting an emotion that has been waiting to be heard.
+                  This week&apos;s PNE teaching turns toward emotion as the body&apos;s signal. The PNE Guide walks through the five primary emotions and the intelligence each one carries, healthy and unhealthy ways those emotions move, the secondary patterns that form when feeling has no safe place to land, the coping patterns that repeat as a result, and what the body holds when emotion stays unmet. From there, it offers a three-step inner practice for meeting an emotion that has been waiting to be heard.
                 </p>
               )}
               {(() => {
@@ -830,7 +830,7 @@ export default function PreCeremonyPage() {
                 <div className="video-primer">
                   <div className="vp-play"><span className="vp-play-icon">▶</span></div>
                   <div>
-                    <div className="vp-label">{i < 3 ? 'PNE (PsychoNeuroEnergetics)' : 'PNE'} Teaching · Week {i + 1}</div>
+                    <div className="vp-label">PNE Teaching · Week {i + 1}</div>
                     <div className="vp-text">
                       {PRE_PNE_DETAILS[i]?.teaching
                         ?? 'A teaching from PsychoNeuroEnergetics paired with this week’s principle and the body’s lived response to it.'}
