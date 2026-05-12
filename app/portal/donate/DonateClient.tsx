@@ -237,7 +237,10 @@ export default function DonateClient({
           <header style={headerStyle}>
             <h1 style={h1Style}>Thank you for your contribution.</h1>
             <p style={subtitleStyle}>
-              Your contribution is always welcome and entirely optional.
+              Your contribution is always welcome and entirely optional. It opens the door for members called to this work who carry fewer resources, so they can be met with the same care.
+            </p>
+            <p style={subtitleStyle}>
+              It supports the &lsquo;&#x101;ina of Kaua&#699;i&rsquo;s North Shore and the nonprofits we walk alongside who protect and preserve this land. And it sustains the church itself, the people, practice, and ceremony at the heart of Vital Kaua&#699;i.
             </p>
           </header>
         )}
@@ -293,7 +296,7 @@ export default function DonateClient({
                 type="radio"
                 checked={pledgeMode === "full"}
                 onChange={() => setPledgeMode("full")}
-                style={{ accentColor: "#B8683D", marginRight: 10 }}
+                style={{ accentColor: "#7A9E7E", marginRight: 10 }}
               />
               Full remaining&ensp;—&ensp;<strong>{fmt(remaining)}</strong>
             </label>
@@ -303,7 +306,7 @@ export default function DonateClient({
                 type="radio"
                 checked={pledgeMode === "custom"}
                 onChange={() => setPledgeMode("custom")}
-                style={{ accentColor: "#B8683D", marginRight: 10 }}
+                style={{ accentColor: "#7A9E7E", marginRight: 10 }}
               />
               Custom amount
             </label>
@@ -381,13 +384,13 @@ export default function DonateClient({
                     ...presetTileStyle,
                     background:
                       selectedPreset === p
-                        ? "#B8683D"
+                        ? "#7A9E7E"
                         : "rgba(255,255,255,0.06)",
                     borderColor:
                       selectedPreset === p
-                        ? "#B8683D"
-                        : "rgba(232,221,200,0.15)",
-                    color: selectedPreset === p ? "#fff" : "#E8DDC8",
+                        ? "#7A9E7E"
+                        : "rgba(28,43,30,0.12)",
+                    color: selectedPreset === p ? "#FFFFFF" : "#1A1A18",
                   }}
                 >
                   {fmt(p)}
@@ -399,13 +402,13 @@ export default function DonateClient({
                   ...presetTileStyle,
                   background:
                     selectedPreset === "custom"
-                      ? "#B8683D"
+                      ? "#7A9E7E"
                       : "rgba(255,255,255,0.06)",
                   borderColor:
                     selectedPreset === "custom"
-                      ? "#B8683D"
-                      : "rgba(232,221,200,0.15)",
-                  color: selectedPreset === "custom" ? "#fff" : "#E8DDC8",
+                      ? "#7A9E7E"
+                      : "rgba(28,43,30,0.12)",
+                  color: selectedPreset === "custom" ? "#FFFFFF" : "#1A1A18",
                 }}
               >
                 Custom
@@ -461,26 +464,26 @@ export default function DonateClient({
                   ...historyRowStyle,
                   borderBottom:
                     i < history.length - 1
-                      ? "1px solid rgba(232,221,200,0.08)"
+                      ? "1px solid rgba(28,43,30,0.08)"
                       : "none",
                 }}
               >
                 <div>
-                  <p style={{ margin: 0, fontSize: 14, color: "#E8DDC8" }}>
+                  <p style={{ margin: 0, fontSize: 14, color: "#1A1A18" }}>
                     {kindLabel(row.kind)}
                   </p>
                   <p
                     style={{
                       margin: 0,
                       fontSize: 12,
-                      color: "rgba(232,221,200,0.45)",
+                      color: "#7A6F5C",
                     }}
                   >
                     {fmtDate(row.completed_at)}
                   </p>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <strong style={{ fontSize: 14, color: "#E8DDC8" }}>
+                  <strong style={{ fontSize: 14, color: "#1A1A18" }}>
                     {fmt(row.amount_cents)}
                   </strong>
                   {row.receipt_url && (
@@ -534,7 +537,7 @@ function StatCard({
     <div
       style={{
         background: "rgba(255,255,255,0.05)",
-        border: `1px solid ${muted ? "rgba(232,221,200,0.06)" : "rgba(232,221,200,0.1)"}`,
+        border: `1px solid ${muted ? "rgba(28,43,30,0.06)" : "rgba(28,43,30,0.1)"}`,
         borderRadius: 12,
         padding: "1rem 1.25rem",
         opacity: muted ? 0.45 : 1,
@@ -546,7 +549,7 @@ function StatCard({
           fontSize: 11,
           textTransform: "uppercase",
           letterSpacing: "0.1em",
-          color: "rgba(232,221,200,0.45)",
+          color: "#7A6F5C",
         }}
       >
         {label}
@@ -556,7 +559,7 @@ function StatCard({
           margin: 0,
           fontSize: 22,
           fontFamily: "var(--font-display, serif)",
-          color: accent ?? "#E8DDC8",
+          color: accent ?? "#1A1A18",
         }}
       >
         {value}
@@ -568,9 +571,9 @@ function StatCard({
 // ── Styles ──────────────────────────────────────────────────────────────────
 
 const pageStyle: React.CSSProperties = {
-  background: "#0F1A14",
+  background: "#F7F3ED",
   minHeight: "100vh",
-  color: "#E8DDC8",
+  color: "#1A1A18",
   fontFamily: "var(--font-body, sans-serif)",
 };
 
@@ -589,23 +592,24 @@ const h1Style: React.CSSProperties = {
   fontSize: "clamp(2rem, 5vw, 2.75rem)",
   fontWeight: 400,
   letterSpacing: "-0.02em",
-  color: "#E8DDC8",
-  margin: "0 0 0.5rem",
+  color: "#1A1A18",
+  margin: "0 0 0.75rem",
 };
 
 const subtitleStyle: React.CSSProperties = {
   fontSize: 15,
-  color: "rgba(232,221,200,0.6)",
-  margin: 0,
-  lineHeight: 1.6,
+  color: "#3D4D3F",
+  margin: "0 0 0.85rem",
+  lineHeight: 1.7,
 };
 
 const eyebrowStyle: React.CSSProperties = {
   fontSize: 11,
-  fontWeight: 500,
-  letterSpacing: "0.12em",
-  color: "#68A870",
+  fontWeight: 600,
+  letterSpacing: "0.18em",
+  color: "#7A9E7E",
   margin: "0 0 0.75rem",
+  textTransform: "uppercase",
 };
 
 const statGridStyle: React.CSSProperties = {
@@ -617,7 +621,7 @@ const statGridStyle: React.CSSProperties = {
 
 const trackStyle: React.CSSProperties = {
   height: 6,
-  background: "rgba(255,255,255,0.08)",
+  background: "rgba(28,43,30,0.08)",
   borderRadius: 3,
   overflow: "hidden",
   marginBottom: "2rem",
@@ -625,14 +629,14 @@ const trackStyle: React.CSSProperties = {
 
 const fillStyle: React.CSSProperties = {
   height: "100%",
-  background: "#B8683D",
+  background: "#7A9E7E",
   borderRadius: 3,
   transition: "width 0.6s ease",
 };
 
 const cardStyle: React.CSSProperties = {
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(232,221,200,0.1)",
+  background: "#FFFFFF",
+  border: "1px solid rgba(28,43,30,0.1)",
   borderRadius: 14,
   padding: "1.75rem",
   marginBottom: "1.5rem",
@@ -640,27 +644,27 @@ const cardStyle: React.CSSProperties = {
 
 const cardTitleStyle: React.CSSProperties = {
   fontFamily: "var(--font-display, serif)",
-  fontSize: 20,
+  fontSize: 22,
   fontWeight: 400,
-  color: "#E8DDC8",
+  color: "#1A1A18",
   margin: "0 0 0.4rem",
 };
 
 const cardSubtitleStyle: React.CSSProperties = {
-  fontSize: 13,
-  color: "rgba(232,221,200,0.5)",
+  fontSize: 13.5,
+  color: "#5A5046",
   margin: "0 0 1.25rem",
-  lineHeight: 1.6,
+  lineHeight: 1.65,
 };
 
 const radioRowStyle: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   fontSize: 14,
-  color: "#E8DDC8",
+  color: "#1A1A18",
   cursor: "pointer",
   padding: "10px 0",
-  borderBottom: "1px solid rgba(232,221,200,0.07)",
+  borderBottom: "1px solid rgba(28,43,30,0.08)",
 };
 
 const presetGridStyle: React.CSSProperties = {
@@ -674,28 +678,28 @@ const presetTileStyle: React.CSSProperties = {
   padding: "10px 4px",
   fontSize: 13,
   fontWeight: 500,
-  border: "1px solid rgba(232,221,200,0.15)",
+  border: "1px solid rgba(28,43,30,0.12)",
   borderRadius: 8,
   cursor: "pointer",
   textAlign: "center" as const,
-  transition: "background 0.15s, border-color 0.15s",
+  transition: "background 0.15s, border-color 0.15s, color 0.15s",
 };
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
   padding: "10px 12px",
   fontSize: 14,
-  background: "rgba(255,255,255,0.06)",
-  border: "1px solid rgba(232,221,200,0.2)",
+  background: "#FFFFFF",
+  border: "1px solid rgba(28,43,30,0.15)",
   borderRadius: 8,
-  color: "#E8DDC8",
+  color: "#1A1A18",
   outline: "none",
   boxSizing: "border-box" as const,
 };
 
 const hintStyle: React.CSSProperties = {
   fontSize: 11,
-  color: "rgba(232,221,200,0.35)",
+  color: "#7A6F5C",
   margin: "4px 0 0",
 };
 
@@ -705,8 +709,9 @@ const primaryBtnStyle: React.CSSProperties = {
   padding: "13px 18px",
   fontSize: 14,
   fontWeight: 500,
-  background: "#B8683D",
-  color: "#fff",
+  letterSpacing: "0.06em",
+  background: "#7A9E7E",
+  color: "#FFFFFF",
   border: "none",
   borderRadius: 10,
   marginTop: 20,
@@ -714,8 +719,8 @@ const primaryBtnStyle: React.CSSProperties = {
 };
 
 const errorStyle: React.CSSProperties = {
-  background: "rgba(184,104,61,0.15)",
-  color: "#F4A57A",
+  background: "rgba(184,69,54,0.08)",
+  color: "#A04432",
   padding: "10px 14px",
   borderRadius: 8,
   fontSize: 13,
@@ -731,16 +736,16 @@ const historyRowStyle: React.CSSProperties = {
 
 const receiptLinkStyle: React.CSSProperties = {
   fontSize: 12,
-  color: "#B8683D",
+  color: "#7A9E7E",
   textDecoration: "none",
-  border: "1px solid rgba(184,104,61,0.4)",
+  border: "1px solid rgba(122,158,126,0.4)",
   borderRadius: 5,
   padding: "2px 8px",
 };
 
 const processingBannerStyle: React.CSSProperties = {
-  background: "#1A2E22",
-  color: "#A5C8B0",
+  background: "rgba(122,158,126,0.12)",
+  color: "#3D4D3F",
   padding: "12px 20px",
   textAlign: "center",
   fontSize: 14,
@@ -751,8 +756,8 @@ const processingBannerStyle: React.CSSProperties = {
 };
 
 const cancelledBannerStyle: React.CSSProperties = {
-  background: "#2C1510",
-  color: "#E8A88A",
+  background: "rgba(184,69,54,0.08)",
+  color: "#A04432",
   padding: "12px 20px",
   textAlign: "center",
   fontSize: 14,
@@ -768,16 +773,16 @@ const venmoRowStyle: React.CSSProperties = {
 
 const venmoOrStyle: React.CSSProperties = {
   fontSize: 12,
-  color: "rgba(232,221,200,0.4)",
+  color: "#7A6F5C",
   letterSpacing: "0.08em",
   textTransform: "uppercase",
 };
 
 const venmoLinkStyle: React.CSSProperties = {
   fontSize: 13,
-  color: "#E8DDC8",
+  color: "#1A1A18",
   textDecoration: "none",
-  borderBottom: "1px solid rgba(232,221,200,0.3)",
+  borderBottom: "1px solid rgba(28,43,30,0.3)",
   paddingBottom: 1,
 };
 
@@ -785,8 +790,8 @@ const spinnerStyle: React.CSSProperties = {
   display: "inline-block",
   width: 14,
   height: 14,
-  border: "2px solid rgba(165,200,176,0.25)",
-  borderTopColor: "#A5C8B0",
+  border: "2px solid rgba(122,158,126,0.25)",
+  borderTopColor: "#7A9E7E",
   borderRadius: "50%",
   animation: "spin 0.9s linear infinite",
   flexShrink: 0,
