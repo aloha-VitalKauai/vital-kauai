@@ -366,11 +366,11 @@ export default function DonateClient({
             <h2 style={cardTitleStyle}>
               {state === "complete" ? "Give an additional gift" : "Make a gift"}
             </h2>
-            <p style={cardSubtitleStyle}>
-              {state === "complete"
-                ? "Your commitment is fulfilled. Every additional contribution is deeply appreciated."
-                : "A one-time gift in any amount — no commitment required."}
-            </p>
+            {state === "complete" && (
+              <p style={cardSubtitleStyle}>
+                Your commitment is fulfilled. Every additional contribution is deeply appreciated.
+              </p>
+            )}
 
             <div style={presetGridStyle}>
               {GIFT_PRESETS.map((p) => (
