@@ -790,7 +790,7 @@ export default function PreCeremonyPage() {
               {i === 0 && (
                 <>
                   <p className="w1-body">
-                    This week&apos;s PNE (PsychoNeuroEnergetics) teaching introduces internal safety as the felt sense that all is well.
+                    This week&apos;s PNE teaching introduces internal safety as the felt sense that all is well.
                   </p>
                   <p className="w1-body">
                     The PNE Guide walks through what happens in the nervous system when it senses threat, and how the body shifts into protection.
