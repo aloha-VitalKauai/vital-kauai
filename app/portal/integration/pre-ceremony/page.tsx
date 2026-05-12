@@ -638,8 +638,8 @@ export default function PreCeremonyPage() {
 
             {/* PRINCIPLE */}
             <section className="w1-section" id="principle">
-              <span className="w1p-eyebrow">Week {i + 1}{i === 0 ? '' : ` · ${w.principleName}`} · {w.theme}</span>
-              {i === 0 && <div className="w1p-principle-name">{w.principleName}</div>}
+              <span className="w1p-eyebrow">Week {i + 1} · {w.theme}</span>
+              <div className="w1p-principle-name">{w.principleName}</div>
               <p className="w1p-pull">&ldquo;{w.principle}&rdquo;</p>
               <h2 className="w1p-title">
                 {i === 0
