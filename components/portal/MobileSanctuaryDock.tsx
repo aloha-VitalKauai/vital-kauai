@@ -46,6 +46,10 @@ export function MobileSanctuaryDock() {
     <>
       <style>{`
         .vk-dock { display: none; }
+        @media print {
+          .vk-dock { display: none !important; }
+          body { padding-bottom: 0 !important; }
+        }
         @media (max-width: 768px) {
           .vk-dock {
             display: grid;
