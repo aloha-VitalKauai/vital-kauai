@@ -649,7 +649,7 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
 <nav class="nav">
   <a href="/portal" class="nav-logo">Vital Kauaʻi</a>
   <span class="nav-badge">Iboga Preparedness Guide</span>
-  <a href="/portal" class="nav-back">← Return to Portal</a>
+  <a href="/portal" class="nav-back" onclick="if (window.history.length > 1) { window.history.back(); return false; }">← Return to Portal</a>
 </nav>
 
 <!-- HERO -->
@@ -1154,7 +1154,7 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
 <!-- FOOTER -->
 <footer>
   <p class="footer-logo">Vital Kauaʻi</p>
-  <p>Iboga Preparedness Guide · Confidential<br><a href="/portal">← Return to Portal</a> · aloha&#64;vitalkauai.com<br>© 2026 Vital Kauaʻi Church · PO Box 932, Hanalei, HI 96714<br>All original content is protected by U.S. copyright law. Reproduction without written permission prohibited.</p>
+  <p>Iboga Preparedness Guide · Confidential<br><a href="/portal" onclick="if (window.history.length > 1) { window.history.back(); return false; }">← Return to Portal</a> · aloha&#64;vitalkauai.com<br>© 2026 Vital Kauaʻi Church · PO Box 932, Hanalei, HI 96714<br>All original content is protected by U.S. copyright law. Reproduction without written permission prohibited.</p>
 </footer>
 
 <script>
