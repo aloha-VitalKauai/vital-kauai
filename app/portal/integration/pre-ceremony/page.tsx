@@ -788,9 +788,17 @@ export default function PreCeremonyPage() {
                 ) : 'PNE Perspective'}
               </h3>
               {i === 0 && (
-                <p className="w1-body">
-                  This week&apos;s PNE (PsychoNeuroEnergetics) teaching introduces internal safety, the felt sense the nervous system rests into when all is well. From there, the PNE Guide walks through what happens when the system senses threat and how the body shifts into protection, and the internal and external structures, the people, places, and rhythms of your life, that build a foundation of safety from the inside out and the outside in.
-                </p>
+                <>
+                  <p className="w1-body">
+                    This week&apos;s PNE (PsychoNeuroEnergetics) teaching introduces internal safety as the felt sense that all is well.
+                  </p>
+                  <p className="w1-body">
+                    The PNE Guide walks through what happens in the nervous system when it senses threat, and how the body shifts into protection.
+                  </p>
+                  <p className="w1-body">
+                    It also shares how to build a foundation of safety from the inside out and the outside in.
+                  </p>
+                </>
               )}
               {i === 1 && (
                 <p className="w1-body">
