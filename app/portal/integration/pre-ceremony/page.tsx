@@ -283,7 +283,10 @@ export default function PreCeremonyPage() {
     const next = new Set(completed)
     next.add(weekIdx)
     setCompleted(next)
-    setTimeout(() => setActiveWeek(Math.min(weekIdx + 1, 5)), 300)
+    setTimeout(() => {
+      setActiveWeek(Math.min(weekIdx + 1, 5))
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, 300)
     await save(next, checklist)
   }
 

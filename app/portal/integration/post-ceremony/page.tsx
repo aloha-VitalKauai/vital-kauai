@@ -553,7 +553,10 @@ export default function PostCeremonyPage() {
     newCompleted.add(weekIdx)
     setWeeklyTracking(newTracking)
     setCompleted(newCompleted)
-    setTimeout(() => setActiveWeek(Math.min(weekIdx + 1, 5)), 350)
+    setTimeout(() => {
+      setActiveWeek(Math.min(weekIdx + 1, 5))
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, 350)
     await save(newCompleted, checklist, newTracking)
   }
 
