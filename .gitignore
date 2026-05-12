@@ -23,7 +23,6 @@ supabase/.temp/
 # are pre-emptive ignores for build artifacts, dependency caches, and
 # user-specific Xcode state that should never enter version control.
 ios/App/Pods/
-ios/App/Podfile.lock
 ios/App/build/
 ios/App/App/public/
 ios/App/App.xcworkspace/xcuserdata/
@@ -31,4 +30,10 @@ ios/App/App.xcodeproj/xcuserdata/
 ios/App/App.xcodeproj/project.xcworkspace/xcuserdata/
 ios/DerivedData/
 ios/.sourcemaps/
-out/
+# Note: ios/App/Podfile.lock IS committed (locks Pod versions for
+# reproducible builds, same role as package-lock.json).
+# Note: out/ is the webDir placeholder; out/index.html IS committed
+# (one tiny fallback file used only when the WebView can't reach
+# server.url on cold start). Other contents stay ignored.
+out/*
+!out/index.html

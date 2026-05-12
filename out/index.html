@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Vital Kauaʻi</title>
+  <!--
+    Capacitor webDir placeholder. The native iOS shell uses
+    server.url (https://vital-kauai.vercel.app) for normal launches,
+    so this file is only seen if the network is unreachable on cold
+    start. Calm forest fallback page that auto-redirects when the
+    network returns.
+  -->
+  <meta http-equiv="refresh" content="0; url=https://vital-kauai.vercel.app/portal">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100dvh;
+      background: #1C2B1E;
+      color: #F5F0E8;
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: env(safe-area-inset-top) 32px env(safe-area-inset-bottom);
+    }
+    p {
+      font-style: italic;
+      font-size: clamp(20px, 5vw, 26px);
+      font-weight: 300;
+      margin: 0;
+      text-align: center;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <p>Loading Vital Kauaʻi&hellip;</p>
+  <script>
+    window.location.replace("https://vital-kauai.vercel.app/portal");
+  </script>
+</body>
+</html>
