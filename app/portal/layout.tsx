@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { PortalNav } from "@/components/portal-nav";
 import { MobileSanctuaryDock } from "@/components/portal/MobileSanctuaryDock";
 import { RegisterServiceWorker } from "@/components/portal/RegisterServiceWorker";
+import { BiometricGate } from "@/components/portal/BiometricGate";
+import { BiometricEnrollPrompt } from "@/components/portal/BiometricEnrollPrompt";
 
 export const metadata = { title: "Member Portal — Vital Kauaʻi" };
 
@@ -31,10 +33,21 @@ export default async function PortalLayout({ children }: { children: React.React
     // overflowX: clip prevents horizontal-overflow nightmares on small
     // viewports without breaking the sticky portal nav (clip — unlike
     // hidden — does not establish a new scroll container).
+    //
+    // BiometricGate wraps the entire portal interior so that on a
+    // native iOS cold launch with biometrics enrolled, a calm forest
+    // overlay covers the rendered tree until Face ID / Touch ID
+    // resolves. Web and PWA never enter the locked state — the gate's
+    // useEffect short-circuits at isNativeIOS() and renders children
+    // directly. BiometricEnrollPrompt renders null off-native, so
+    // browsers see the same layout they always have.
     <div style={{ overflowX: "clip" }}>
       <PortalNav email={user.email ?? ""} />
-      {children}
-      <MobileSanctuaryDock />
+      <BiometricGate>
+        <BiometricEnrollPrompt />
+        {children}
+        <MobileSanctuaryDock />
+      </BiometricGate>
       <RegisterServiceWorker />
     </div>
   );
