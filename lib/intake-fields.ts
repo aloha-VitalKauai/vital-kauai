@@ -23,7 +23,7 @@ export const INTAKE_SECTIONS: { title: string; fields: [string, string][] }[] = 
   {
     title: "Intention & orientation",
     fields: [
-      ["primary_intention", "What is calling you to this work"],
+      ["primary_intention", "What is bringing you to this work / intention"],
       ["what_brings_you_here", "What brings you here"],
       ["life_purpose", "Purpose or mission"],
       ["ideal_life", "Ideal life / magic wand"],
@@ -76,7 +76,10 @@ export const INTAKE_SECTIONS: { title: string; fields: [string, string][] }[] = 
   {
     title: "Readiness & sovereignty",
     fields: [
-      ["readiness_signals", "Signals of readiness for inner work"],
+      ["readiness_score", "Readiness rating (1–10)"],
+      ["readiness_signals", "How they know they are ready"],
+      ["commitment_score", "Commitment rating (1–10)"],
+      ["commitment_focus", "What they are committed to"],
       ["self_care_practices", "Self-care during intensity"],
       ["boundaries_needs", "Boundaries / needs to know"],
       ["additional_notes", "Anything else for the care team"],

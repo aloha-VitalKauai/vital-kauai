@@ -193,7 +193,7 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
   <h2 class="fs-title">Intention & <em>Orientation</em></h2>
   <div class="field-grid">
     <div class="field-group field-full">
-      <label class="field-label" for="f-calling">What is calling you to this work at this time?</label>
+      <label class="field-label" for="f-calling">What is bringing you to this work at this time, and what is your intention?</label>
       <textarea id="f-calling" name="primary_intention" class="field-textarea tall tracked" placeholder="What has brought you here, be as specific or as open as feels right..."></textarea>
     </div>
   </div>
@@ -332,6 +332,46 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
   <h2 class="fs-title">Readiness & <em>Sovereignty</em></h2>
   <p class="fs-desc">These questions help us understand how you navigate intensity and care for yourself when things get hard.</p>
   <div class="field-grid">
+    <div class="field-group field-full">
+      <label class="field-label">On a scale of 1 to 10, how would you rate your readiness for this journey?</label>
+      <input type="hidden" name="readiness_score" id="f-readiness-score" value="">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="1" onclick="toggleChoice(this,'radio','readiness-score','f-readiness-score')"><span class="choice-text">1</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="2" onclick="toggleChoice(this,'radio','readiness-score','f-readiness-score')"><span class="choice-text">2</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="3" onclick="toggleChoice(this,'radio','readiness-score','f-readiness-score')"><span class="choice-text">3</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="4" onclick="toggleChoice(this,'radio','readiness-score','f-readiness-score')"><span class="choice-text">4</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="5" onclick="toggleChoice(this,'radio','readiness-score','f-readiness-score')"><span class="choice-text">5</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="6" onclick="toggleChoice(this,'radio','readiness-score','f-readiness-score')"><span class="choice-text">6</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="7" onclick="toggleChoice(this,'radio','readiness-score','f-readiness-score')"><span class="choice-text">7</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="8" onclick="toggleChoice(this,'radio','readiness-score','f-readiness-score')"><span class="choice-text">8</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="9" onclick="toggleChoice(this,'radio','readiness-score','f-readiness-score')"><span class="choice-text">9</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="10" onclick="toggleChoice(this,'radio','readiness-score','f-readiness-score')"><span class="choice-text">10</span></div>
+      </div>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label" for="f-readiness-signals">How do you know you are ready for this work?</label>
+      <textarea id="f-readiness-signals" name="readiness_signals" class="field-textarea tracked" placeholder="What signals readiness in you right now..."></textarea>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label">On a scale of 1 to 10, how would you rate your commitment to this work?</label>
+      <input type="hidden" name="commitment_score" id="f-commitment-score" value="">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="1" onclick="toggleChoice(this,'radio','commitment-score','f-commitment-score')"><span class="choice-text">1</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="2" onclick="toggleChoice(this,'radio','commitment-score','f-commitment-score')"><span class="choice-text">2</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="3" onclick="toggleChoice(this,'radio','commitment-score','f-commitment-score')"><span class="choice-text">3</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="4" onclick="toggleChoice(this,'radio','commitment-score','f-commitment-score')"><span class="choice-text">4</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="5" onclick="toggleChoice(this,'radio','commitment-score','f-commitment-score')"><span class="choice-text">5</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="6" onclick="toggleChoice(this,'radio','commitment-score','f-commitment-score')"><span class="choice-text">6</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="7" onclick="toggleChoice(this,'radio','commitment-score','f-commitment-score')"><span class="choice-text">7</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="8" onclick="toggleChoice(this,'radio','commitment-score','f-commitment-score')"><span class="choice-text">8</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="9" onclick="toggleChoice(this,'radio','commitment-score','f-commitment-score')"><span class="choice-text">9</span></div>
+        <div class="choice-item" style="flex:1;min-width:46px;text-align:center;" data-value="10" onclick="toggleChoice(this,'radio','commitment-score','f-commitment-score')"><span class="choice-text">10</span></div>
+      </div>
+    </div>
+    <div class="field-group field-full">
+      <label class="field-label" for="f-commitment-focus">What are you committed to?</label>
+      <textarea id="f-commitment-focus" name="commitment_focus" class="field-textarea tracked" placeholder="To yourself, to the work, to what you are walking toward..."></textarea>
+    </div>
     <div class="field-group field-full">
       <label class="field-label" for="f-boundaries">What boundaries or needs would you like us to be aware of before we begin?</label>
       <p class="field-hint">Physical, emotional, relational, communication style, anything that supports you feeling safe and met.</p>
