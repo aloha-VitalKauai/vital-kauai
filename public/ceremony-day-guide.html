@@ -65,8 +65,12 @@
       padding: 0.5rem 1rem;
       border: 1px solid rgba(230,213,191,0.25);
       transition: all 0.3s ease;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+      touch-action: manipulation;
     }
-    .nav-back:hover { background: var(--gold); color: var(--forest); border-color: var(--gold); }
+    @media (hover: hover) {
+      .nav-back:hover { background: var(--gold); color: var(--forest); border-color: var(--gold); }
+    }
 
     /* ── PRINT BAR ────────────────────────────────────────────────────── */
     .print-bar {
