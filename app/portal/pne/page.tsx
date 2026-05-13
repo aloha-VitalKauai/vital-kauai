@@ -29,8 +29,16 @@ export default async function PnePage() {
   return (
     <div style={{ minHeight: "100vh", background: "#FDFBF7", fontFamily: "'Jost', sans-serif", fontWeight: 300, color: "#1A1A18" }}>
       {/* ── HERO ── */}
-      <section style={{ background: FOREST, color: CREAM, padding: "70px 48px 64px" }}>
-        <div style={{ maxWidth: 1080, margin: "0 auto", display: "grid", gridTemplateColumns: "minmax(0, 1.05fr) minmax(0, 1fr)", gap: 56, alignItems: "center" }}>
+      <section className="pne-hero" style={{ background: FOREST, color: CREAM, padding: "70px 48px 64px" }}>
+        <style>{`
+          @media (max-width: 768px) {
+            .pne-hero { padding: 56px 22px 48px !important; }
+            .pne-hero-grid { grid-template-columns: 1fr !important; gap: 28px !important; }
+            .pne-week-row { grid-template-columns: 1fr !important; }
+            .pne-body { padding: 56px 22px 96px !important; }
+          }
+        `}</style>
+        <div className="pne-hero-grid" style={{ maxWidth: 1080, margin: "0 auto", display: "grid", gridTemplateColumns: "minmax(0, 1.05fr) minmax(0, 1fr)", gap: 56, alignItems: "center" }}>
           <div>
             <p style={{ fontSize: 9.5, letterSpacing: "0.42em", textTransform: "uppercase", color: GOLD, marginBottom: 20 }}>
               Member Portal · Resources
@@ -46,11 +54,11 @@ export default async function PnePage() {
           </div>
 
           {/* Hero video */}
-          <div style={{ border: `1px solid ${GOLD_DIM}`, borderRadius: 6, overflow: "hidden", background: FOREST_DEEP, padding: "28px 30px", display: "flex", alignItems: "center", gap: 22 }}>
+          <div style={{ border: `1px solid ${GOLD_DIM}`, borderRadius: 6, overflow: "hidden", background: FOREST_DEEP, padding: "28px 30px", display: "flex", alignItems: "center", gap: 22, minWidth: 0 }}>
             <div style={{ width: 56, height: 56, borderRadius: "50%", border: `1px solid rgba(200,169,110,0.32)`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <span style={{ color: GOLD, fontSize: 16, marginLeft: 4 }}>▶</span>
             </div>
-            <div>
+            <div style={{ minWidth: 0 }}>
               <p style={{ fontSize: 9, letterSpacing: "0.24em", textTransform: "uppercase", color: GOLD, marginBottom: 8 }}>
                 Orientation · What PNE Is
               </p>
@@ -66,7 +74,7 @@ export default async function PnePage() {
       </section>
 
       {/* ── BODY ── */}
-      <main style={{ maxWidth: 1080, margin: "0 auto", padding: "72px 48px 120px" }}>
+      <main className="pne-body" style={{ maxWidth: 1080, margin: "0 auto", padding: "72px 48px 120px" }}>
         <div style={{ marginBottom: 36 }}>
           <p style={{ fontSize: 9, letterSpacing: "0.36em", textTransform: "uppercase", color: SAGE, marginBottom: 10, fontWeight: 500 }}>Weekly Guide</p>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(28px, 3.2vw, 40px)", fontWeight: 300, lineHeight: 1.1, color: "#1A1A18" }}>
@@ -97,7 +105,7 @@ function PhaseBlock({ label, companions }: { label: string; companions: Readonly
 
 function WeekRow({ companion }: { companion: PneCompanion }) {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)", gap: 14 }}>
+    <div className="pne-week-row" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)", gap: 14 }}>
       <CompanionCard companion={companion} />
       <VideoCard companion={companion} />
     </div>
