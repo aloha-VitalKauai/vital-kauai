@@ -8,6 +8,12 @@ import type { CapacitorConfig } from "@capacitor/cli";
 // server actions, /api/*, server-rendered pages) and the existing
 // PWA service worker. Web/PWA users see no change.
 //
+// Launch target: /portal — the member portal experience, not the
+// public marketing root. The installed native app is for members and
+// founders; opening straight into /portal skips the marketing-site
+// indirection. Existing middleware redirects unauthed visitors to
+// /login, so first-launch sign-in still works the same way.
+//
 // Trade-off: the installed native app needs network on launch (no
 // offline cold-start). The PWA service worker still caches static
 // assets once loaded, so the WebView gets the same shell-continuity
@@ -18,18 +24,16 @@ import type { CapacitorConfig } from "@capacitor/cli";
 // features (biometric login, native camera for labs, push
 // notifications) is a separate later PR before submission.
 //
-// webDir is required by the Capacitor schema. For PR #14a it's a
-// placeholder ("out") that doesn't yet exist. PR #14b creates the
-// out/ directory + a tiny fallback page when running cap add ios,
-// and from that point cap sync will copy that fallback into the
-// native bundle as a no-network safety net.
+// webDir is required by the Capacitor schema. PR #14b created the
+// out/ directory + a tiny fallback page; cap sync copies that
+// fallback into the native bundle as a no-network safety net.
 
 const config: CapacitorConfig = {
   appId: "com.vitalkauai.app",
   appName: "Vital Kauaʻi",
   webDir: "out",
   server: {
-    url: "https://vital-kauai.vercel.app",
+    url: "https://vital-kauai.vercel.app/portal",
     cleartext: false,
   },
 };
