@@ -237,7 +237,7 @@ export default function DonateClient({
           <header style={headerStyle}>
             <h1 style={h1Style}>Thank you for your contribution.</h1>
             <p style={subtitleStyle}>
-              Your contribution is always welcome and entirely optional. It opens the door for members called to this work who carry fewer resources, so they can be met with the same care.
+              Your contribution is always welcome and appreciated. It opens the door for members called to this work who carry fewer resources, so they can be met with the same care.
             </p>
             <p style={subtitleStyle}>
               It supports the &lsquo;&#x101;ina of Kaua&#699;i&rsquo;s North Shore and the nonprofits we walk alongside who protect and preserve this land. And it sustains the church itself, the people, practice, and ceremony at the heart of Vital Kaua&#699;i.
