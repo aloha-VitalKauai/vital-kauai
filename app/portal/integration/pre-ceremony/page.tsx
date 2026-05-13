@@ -807,9 +807,14 @@ export default function PreCeremonyPage() {
                 </>
               )}
               {i === 1 && (
-                <p className="w1-body">
-                  This week&apos;s PNE teaching introduces nervous system regulation, the body&apos;s natural movement between states of safety, protection, and rest. The PNE Guide walks through how to read the body&apos;s weather, ventral vagal, sympathetic, and dorsal vagal, the patterns of protection the system reaches for under stress, fight, flight, fawn, freeze, withdraw, soften inward, and the capacity to move through, how a regulated body returns to balance, and what that means as you prepare for ceremony.
-                </p>
+                <>
+                  <p className="w1-body">
+                    This week&apos;s PNE teaching introduces nervous system regulation and the body&apos;s natural movement between states of safety, protection, and rest.
+                  </p>
+                  <p className="w1-body">
+                    You learn how to read the body&apos;s weather through the different nervous system states&mdash;ventral vagal, sympathetic, and dorsal vagal. You also learn the patterns of protection your body and mind reach for under stress&mdash;fight, flight, fawn, freeze, withdraw, and soften inward. With this understanding you build the capacity to safely support your return to balance.
+                  </p>
+                </>
               )}
               {i === 2 && (
                 <p className="w1-body">
