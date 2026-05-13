@@ -68,8 +68,12 @@ body {
   color: rgba(245,240,232,0.4);
   text-decoration: none;
   transition: color 0.3s;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  touch-action: manipulation;
 }
-.nav-back:hover { color: rgba(245,240,232,0.8); }
+@media (hover: hover) {
+  .nav-back:hover { color: rgba(245,240,232,0.8); }
+}
 
 /* ── HERO ── */
 .hero {

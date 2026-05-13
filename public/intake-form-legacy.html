@@ -28,8 +28,10 @@ body { font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm
 .nav { position: sticky; top: 0; z-index: 50; background: rgba(14,26,16,0.97); backdrop-filter: blur(14px); padding: 0 60px; height: 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(200,169,110,0.08); }
 .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 300; letter-spacing: 0.2em; color: var(--cream); text-transform: uppercase; text-decoration: none; }
 .nav-badge { font-size: 8.5px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(200,169,110,0.22); padding: 5px 14px; }
-.nav-back { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,240,232,0.4); text-decoration: none; transition: color 0.3s; }
-.nav-back:hover { color: rgba(245,240,232,0.8); }
+.nav-back { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,240,232,0.4); text-decoration: none; transition: color 0.3s; -webkit-tap-highlight-color: rgba(0,0,0,0); touch-action: manipulation; }
+@media (hover: hover) {
+  .nav-back:hover { color: rgba(245,240,232,0.8); }
+}
 .hero { background: var(--forest); padding: 72px 60px 68px; position: relative; overflow: hidden; }
 .hero::after { content: ''; position: absolute; top: 0; right: 0; width: 500px; height: 100%; background: radial-gradient(ellipse at right, rgba(122,158,126,0.07) 0%, transparent 70%); }
 .hero-inner { position: relative; z-index: 1; max-width: 780px; }
