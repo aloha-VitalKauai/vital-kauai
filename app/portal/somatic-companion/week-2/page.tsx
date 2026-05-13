@@ -522,10 +522,10 @@ export default async function SomaticCompanionWeek2Page() {
           <div className="vk-narrow">
             <div className="vk-eyebrow">Returning to Balance</div>
             <h2 className="vk-title">What Is <em>Regulation</em></h2>
-            <p className="vk-lede">Regulation is the nervous system&apos;s capacity to return to safety, flexibility, and connection. It is the body&apos;s quiet skill of moving through stress and finding its way home again.</p>
+            <p className="vk-lede">Regulation is the nervous system&apos;s capacity to return to safety, flexibility, and connection. It is the body&apos;s skill of moving through stress and finding its way home again.</p>
             <p className="vk-body">The triune brain, our most ancient inheritance, holds the regulation of thought, emotion, and sensation. When all three are working together, we can understand what we feel, express it clearly, and think with steadiness.</p>
 
-            <div className="gentle-pull">A regulated body is not a quiet body. It is a body that knows how to come back.</div>
+            <div className="gentle-pull">A regulated body is one that knows how to come back.</div>
           </div>
         </section>
 
@@ -602,7 +602,7 @@ export default async function SomaticCompanionWeek2Page() {
           <div className="vk-narrow">
             <div className="vk-eyebrow">Mobilized Patterns in Daily Life</div>
             <h2 className="vk-title">Fight, Flight, <em>Fawn</em></h2>
-            <p className="vk-lede">When the body senses something to attend to, it can call on different protective strategies to keep you safe. These show up not only in emergencies, but in everyday interactions, often quietly.</p>
+            <p className="vk-lede">When the body senses something to attend to, it can call on different protective strategies to keep you safe. These show up not only in emergencies, but in everyday interactions.</p>
 
             <div className="pattern-grid">
               <div className="pattern-card">
@@ -740,7 +740,7 @@ export default async function SomaticCompanionWeek2Page() {
               </div>
             </div>
 
-            <div className="gentle-pull">Iboga can bring the body into intense moments. Your practitioners are present to support you. The practices you are building now give your body the capacity to meet whatever arises with greater ease.</div>
+            <div className="gentle-pull">The practices you are building now give your body the capacity to meet whatever arises with greater ease.</div>
           </div>
         </section>
 
