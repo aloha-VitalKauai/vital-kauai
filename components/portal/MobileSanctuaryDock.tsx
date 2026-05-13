@@ -17,7 +17,7 @@ import { usePathname } from "next/navigation";
 const ITEMS: { label: string; href: string }[] = [
   { label: "Dashboard", href: "/portal" },
   { label: "Journey", href: "/portal/integration/pre-ceremony" },
-  { label: "Resources", href: "/portal/vital-kauai-guides" },
+  { label: "Resources", href: "/portal/resources" },
   { label: "Contribute", href: "/portal/donate" },
 ];
 
