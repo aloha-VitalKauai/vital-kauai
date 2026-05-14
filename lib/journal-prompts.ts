@@ -183,6 +183,7 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     prompts: [
       { key: 'w5-p0', q: 'How has my sense of purpose shifted or clarified? What am I called to create, offer, or become in this next chapter?', hint: 'Purpose often surfaces in ceremony more clearly than we expect.' },
       { key: 'w5-p1', q: 'Who am I now? How would I describe the person who arrived, and the person standing here today?' },
+      { key: 'w5-p1b', q: 'What new beliefs or stories are taking shape in me, the ones that support who I am committed to being today and moving forward?' },
       { key: 'w5-p2', q: 'What does pono mean to me? What are my values now, and how will I live them moving forward?', hint: 'For example, to live authentically and honestly, to practice moderation, or to practice compassion with yourself and others.' },
     ],
   },
