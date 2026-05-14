@@ -88,7 +88,19 @@ export default function SectionIndex({
     if (typeof window === 'undefined') return
     const el = findVisibleById(idOf(anchor))
     if (!el) return
-    const top = el.getBoundingClientRect().top + window.scrollY - scrollOffset
+    const safeAreaTop = parseInt(
+      getComputedStyle(document.documentElement).getPropertyValue('--sat') || '0',
+      10,
+    ) || (() => {
+      // Fallback: read env(safe-area-inset-top) via a temporary element.
+      const probe = document.createElement('div')
+      probe.style.cssText = 'position:fixed;top:env(safe-area-inset-top);visibility:hidden;'
+      document.body.appendChild(probe)
+      const top = probe.getBoundingClientRect().top
+      probe.remove()
+      return top
+    })()
+    const top = el.getBoundingClientRect().top + window.scrollY - scrollOffset - safeAreaTop
     window.scrollTo({ top, behavior: 'smooth' })
     if (window.history && window.history.replaceState) {
       window.history.replaceState(null, '', anchor)
@@ -114,7 +126,7 @@ export default function SectionIndex({
       <nav
         className="si-wrap"
         aria-label="Section index"
-        style={stickyTop !== undefined ? { position: 'sticky', top: stickyTop, zIndex: 80 } : undefined}
+        style={stickyTop !== undefined ? { position: 'sticky', top: `calc(${stickyTop}px + env(safe-area-inset-top))`, zIndex: 80 } : undefined}
       >
         <div className="si-inner">
           {sections.map(s => {

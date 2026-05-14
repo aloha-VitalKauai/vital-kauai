@@ -391,7 +391,7 @@ export default function PreCeremonyPage() {
         .hm-lbl { font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.35);margin-top:4px; }
 
         /* WEEK NAV */
-        .pc-week-nav { position:sticky;top:60px;z-index:90;background:rgba(253,251,247,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;display:flex;overflow-x:auto; }
+        .pc-week-nav { position:sticky;top:calc(60px + env(safe-area-inset-top));z-index:90;background:rgba(253,251,247,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;display:flex;overflow-x:auto; }
         .pc-week-nav::-webkit-scrollbar { display:none; }
         .wbtn { font-family:inherit;font-size:9px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;padding:0 20px;height:52px;border:none;border-bottom:2px solid transparent;cursor:pointer;color:var(--stone);background:transparent;white-space:nowrap;transition:all .2s; }
         .wbtn:hover { color:var(--ink); }
