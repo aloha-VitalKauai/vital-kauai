@@ -93,6 +93,22 @@ function renderActionText(
         href={seg.href}
         target={isHashOnly ? undefined : '_blank'}
         rel={isHashOnly ? undefined : 'noopener noreferrer'}
+        onClick={
+          isHashOnly
+            ? (e) => {
+                // Each week panel reuses the same anchor ids, so we scroll
+                // to the one inside the currently active panel rather than
+                // the first match in the DOM (which is always Week 1).
+                const target = document.querySelector(
+                  `.pc-panel.active ${seg.href}`,
+                )
+                if (target) {
+                  e.preventDefault()
+                  target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }
+              }
+            : undefined
+        }
         style={{ color: 'inherit', textDecoration: 'none', borderBottom: '1px dashed rgba(200,169,110,.55)' }}
       >
         {seg.text}
@@ -709,7 +725,17 @@ export default function PreCeremonyPage() {
                     )
                   } else if (card.kind === 'hash') {
                     body = (
-                      <a href={card.href} className="w1-action-body">
+                      <a
+                        href={card.href}
+                        className="w1-action-body"
+                        onClick={(e) => {
+                          const target = document.querySelector(`.pc-panel.active ${card.href}`)
+                          if (target) {
+                            e.preventDefault()
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                          }
+                        }}
+                      >
                         <span className="w1-action-dot" />
                         <span className="w1-action-text">{card.text}</span>
                       </a>
