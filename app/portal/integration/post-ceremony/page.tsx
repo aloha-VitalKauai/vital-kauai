@@ -701,7 +701,6 @@ export default function PostCeremonyPage() {
       <div className="pc-hero">
         <div className="pc-hero-inner">
           <div className="pc-hero-text">
-            <span className="pc-hero-eyebrow">Member Portal · Post-Ceremony Integration · Confidential</span>
             <h1>Six Weeks of<br /><em>Integration</em></h1>
             <p className="pc-hero-desc">Integration is how you build from what the medicine opened. As with your preparation, each week draws on a Hawaiian principle, paired with a teaching from psychoneuroenergetics (PNE) to support the body, mind, and spirit. You&apos;ll find journal prompts, action items, and voices from the Vital Kauaʻi community to support your homecoming.</p>
           </div>
