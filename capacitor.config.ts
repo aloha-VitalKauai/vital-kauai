@@ -27,6 +27,22 @@ import type { CapacitorConfig } from "@capacitor/cli";
 // webDir is required by the Capacitor schema. PR #14b created the
 // out/ directory + a tiny fallback page; cap sync copies that
 // fallback into the native bundle as a no-network safety net.
+//
+// allowNavigation: explicit whitelist of hostnames the WKWebView
+// is allowed to navigate to in-app. Without this list, Capacitor's
+// navigation policy handler bounces unrecognized hosts to Safari
+// via UIApplication.shared.open — which is what was rendering the
+// Safari URL bar / back / refresh / menu chrome at the bottom of
+// the simulator after PR #16. The implicit hostname parsed from
+// server.url should cover the primary domain, but being explicit
+// means any preview alias, vercel.live edge helper, Supabase auth
+// callback, Stripe checkout return, or analytics redirect stays
+// inside the WebView. Wildcards are supported.
+//
+// If a domain is missing from this list, the WebView will boot the
+// affected URL out to Safari and the user will see the system browser
+// chrome around it — the exact symptom we are fixing. Add new domains
+// here when wiring features that navigate cross-origin.
 
 const config: CapacitorConfig = {
   appId: "com.vitalkauai.app",
@@ -35,6 +51,12 @@ const config: CapacitorConfig = {
   server: {
     url: "https://vital-kauai.vercel.app/portal",
     cleartext: false,
+    allowNavigation: [
+      "vital-kauai.vercel.app",
+      "*.vercel.app",
+      "*.supabase.co",
+      "*.supabase.in",
+    ],
   },
 };
 
