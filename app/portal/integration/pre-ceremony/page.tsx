@@ -617,7 +617,6 @@ export default function PreCeremonyPage() {
       <div className="pc-hero">
         <div className="pc-hero-inner">
           <div className="pc-hero-text">
-            <span className="pc-hero-eyebrow">Member Portal · Iboga Journey · Confidential</span>
             <h1>Six Weeks of <em>Preparation</em></h1>
             <p className="pc-hero-desc">
               This portal is your guide through an evidence-based and deeply personal arc of preparation and integration.
