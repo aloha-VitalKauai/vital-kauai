@@ -790,7 +790,7 @@ export default async function SomaticCompanionWeek3Page() {
                 <div className="hw-num">One</div>
                 <h3>Continue your regulation practices.</h3>
                 <div className="hw-tags">Breathing &nbsp;·&nbsp; Grounding &nbsp;·&nbsp; 4 / 7 / 8 Breath &nbsp;·&nbsp; PNE Breath (Belly / Heart) &nbsp;·&nbsp; Orienting &nbsp;·&nbsp; Felt-Sense Regulation</div>
-                <p className="reflection">Return to your regulation worksheet in the portal. These practices are the soil. Sensation work grows from them.</p>
+                <p className="reflection">Return to your Week One material in the PNE section of the resources tab in your portal.</p>
               </div>
 
               <div className="hw-step">
