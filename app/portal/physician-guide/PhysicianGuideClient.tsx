@@ -276,6 +276,9 @@ export default function PhysicianGuideClient() {
             <p style={{ fontSize: 13.5, color: ink, lineHeight: 1.75, margin: 0 }}>
               <strong>DHA + EPA</strong> and <strong>magnesium glycinate</strong> daily, supports new synaptic connection formation, neuronal signaling, and nervous system regulation. Recommend continuing through and after ceremony.
             </p>
+            <p style={{ fontSize: 13.5, color: ink, lineHeight: 1.75, margin: "12px 0 0" }}>
+              Members are also advised to discuss the following with their physician, each begun 4 weeks prior to ceremony unless noted: <strong>CoQ10</strong> (mitochondrial and heart support, antioxidant), <strong>Vitamin C</strong> (immune and adrenal support, antioxidant for detoxification), <strong>B Complex</strong> (nervous system and energy, methylation, mood stability), <strong>NAC</strong> (liver support and glutathione precursor, discontinue 72 hours before ceremony), <strong>Milk Thistle</strong> (liver support and gentle detoxification, discontinue 1 week before ceremony), and <strong>Probiotics</strong> (gut microbiome support).
+            </p>
           </div>
 
           {/* Footer */}

@@ -74,7 +74,6 @@ const PAGE_CSS = `
   .pne-companion-w3-page header.hero {
     background: var(--bg-dark);
     padding: 96px 0 112px;
-    border-top: 4px solid #3A2418;
   }
   .pne-companion-w3-page .hero h1 {
     color: var(--ink-light);
@@ -542,7 +541,7 @@ export default async function SomaticCompanionWeek3Page() {
           <div className="vk-wrap">
             <h1>Week Three <em>PNE Guide</em></h1>
             <p className="hero-subtitle">Building Somatic Awareness</p>
-            <p className="hero-lede">Somatic awareness is the skill of noticing the body from the inside. Of letting the body&apos;s language become familiar, so that what arises can be met with steadiness rather than alarm.</p>
+            <p className="hero-lede">Somatic awareness is the skill of noticing the body from the inside and letting the body&apos;s language become familiar, so that what arises can be met with steadiness rather than alarm.</p>
           </div>
         </header>
 
@@ -551,7 +550,7 @@ export default async function SomaticCompanionWeek3Page() {
             <div className="vk-eyebrow">Why This Matters</div>
             <h2 className="vk-title">A Foundation of <em>Inner Safety</em></h2>
             <p className="vk-lede">Building somatic awareness before your Iboga journey gives the body a foundation of inner safety. It supports you in understanding what your body is communicating, and in learning to relate to sensations as messengers rather than something to escape.</p>
-            <p className="vk-body">If something intense arises during ceremony, somatic awareness allows you to recognize it as a sensation moving through the body. You can stay with it, breathe with it, and let it pass through. The same skill supports you in PNE sessions, where tender memories and sensations may rise as part of the healing.</p>
+            <p className="vk-body">If something intense arises during ceremony, somatic awareness allows you to recognize it as a sensation moving through the body. You can stay with it, breathe with it, and let it pass through. The same skill supports your sessions with your integration guide, where tender memories and sensations may rise as part of the healing.</p>
 
             <div className="gentle-pull">Do not fear the fear. It is only a sensation, moving through.</div>
           </div>
@@ -762,7 +761,7 @@ export default async function SomaticCompanionWeek3Page() {
               <div className="flow-step">
                 <div className="roman">V</div>
                 <div>
-                  <h3>Ask Gently</h3>
+                  <h3>Ask</h3>
                   <div className="prompt">&ldquo;What might this be about?&rdquo;</div>
                   <p>Without forcing an answer, let the question rest near the sensation. Sometimes meaning arises. Sometimes the sensation simply softens.</p>
                 </div>
@@ -804,7 +803,7 @@ export default async function SomaticCompanionWeek3Page() {
               <div className="hw-step">
                 <div className="hw-num">Three</div>
                 <h3>Practice the six-step inner practice once this week.</h3>
-                <p className="reflection">Choose any sensation that calls to you. Walk it gently through the six steps. Notice what shifts, and what simply asks to be witnessed.</p>
+                <p className="reflection">Choose any sensation that calls to you. Walk it through the six steps. Notice what shifts, and what simply asks to be witnessed.</p>
               </div>
             </div>
           </div>

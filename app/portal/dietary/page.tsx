@@ -70,7 +70,7 @@ function DietaryContent() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             {[
               { label: "Whole & Unprocessed", title: "Eat as close to the earth as possible", desc: "Vegetables, fruits, legumes, whole grains, nuts, seeds, quality proteins. If it has an ingredient list longer than a few words, set it aside." },
-              { label: "Organic & Local", title: "Source with intention", desc: "Farmers markets, farm stands, and local growers where possible. Organic produce, pasture-raised eggs, and free-range or wild-caught animal proteins when you eat them." },
+              { label: "Organic & Local", title: "Source with intention", desc: "Farmers markets, farm stands, and local growers where possible. Organic produce, pasture-raised eggs, and free-range or wild-caught animal proteins." },
               { label: "Alkaline-Leaning", title: "Build an alkaline foundation", desc: "Dark leafy greens, cucumber, celery, sprouts, avocado, citrus, and fresh herbs. An alkaline-rich diet supports detoxification and nervous system function." },
               { label: "Sprouted & Fermented", title: "Support digestion and bioavailability", desc: "Sprouted grains, sprouted legumes, sauerkraut, kimchi, kefir, and miso. These reduce anti-nutrients and populate the gut with beneficial bacteria." },
             ].map((c) => (
