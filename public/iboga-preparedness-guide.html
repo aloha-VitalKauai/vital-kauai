@@ -653,7 +653,7 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
 <nav class="nav">
   <a href="/portal" class="nav-logo">Vital Kauaʻi</a>
   <span class="nav-badge">Iboga Preparedness Guide</span>
-  <a href="/portal" class="nav-back" onclick="if (window.history.length > 1) { window.history.back(); return false; }">← Return to Portal</a>
+  <a href="/portal" class="nav-back" onclick="event.preventDefault(); var r = document.referrer; if (r &amp;&amp; r.indexOf(location.origin) === 0 &amp;&amp; r !== location.href) { window.history.back(); } else { window.location.href = '/portal'; } return false;">← Return to Portal</a>
 </nav>
 
 <!-- HERO -->
@@ -992,7 +992,7 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
     </div>
     <div class="phase-body-area" style="grid-template-columns:1fr;">
       <div>
-        <p style="font-size:14.5px;color:var(--text-mid);line-height:1.9;margin-bottom:22px;max-width:720px;">Iboga's preparation is gentler in its dietary demands than many plant medicines. We ask that you begin moving toward cleaner, simpler eating, whole foods, lighter meals, less alcohol and processed food, in the weeks before you arrive. Think of it as tending the vessel. Your body will thank you, and the medicine will meet you more clearly. <a href="/portal/dietary" style="color:var(--sage);text-decoration:underline;text-underline-offset:3px;font-weight:500;">Read the full Dietary Guide →</a></p>
+        <p style="font-size:14.5px;color:var(--text-mid);line-height:1.9;margin-bottom:22px;max-width:720px;">Iboga's dietary preparation is less demanding than some other plant medicines. We ask that you begin moving toward cleaner, simpler eating&mdash;whole foods, lighter meals, and less alcohol and processed food. We invite you to tend your vessel so you can arrive clear and ready for the medicine to go to the deeper layers of the psyche. <a href="/portal/dietary" style="color:var(--sage);text-decoration:underline;text-underline-offset:3px;font-weight:500;">Read the full Dietary Guide →</a></p>
         <div class="phase-item">Begin supplements as guided by your physician.</div>
         <div class="phase-item">Bodywork: acupuncture, massage, reiki, or craniosacral. These practices help the nervous system soften and the tissues release what they have been holding, so you arrive more open and at home in your body.</div>
         <p style="font-size:14.5px;color:var(--text-mid);line-height:1.9;margin:28px 0 0;max-width:720px;">In the week before ceremony, prioritize sleep and minimize screen time, demands, and stimulation. Move slowly and get outside as often as you can.</p>
@@ -1158,7 +1158,7 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
 <!-- FOOTER -->
 <footer>
   <p class="footer-logo">Vital Kauaʻi</p>
-  <p>Iboga Preparedness Guide · Confidential<br><a href="/portal" onclick="if (window.history.length > 1) { window.history.back(); return false; }">← Return to Portal</a> · aloha&#64;vitalkauai.com<br>© 2026 Vital Kauaʻi Church · PO Box 932, Hanalei, HI 96714<br>All original content is protected by U.S. copyright law. Reproduction without written permission prohibited.</p>
+  <p>Iboga Preparedness Guide · Confidential<br><a href="/portal" onclick="event.preventDefault(); var r = document.referrer; if (r &amp;&amp; r.indexOf(location.origin) === 0 &amp;&amp; r !== location.href) { window.history.back(); } else { window.location.href = '/portal'; } return false;">← Return to Portal</a> · aloha&#64;vitalkauai.com<br>© 2026 Vital Kauaʻi Church · PO Box 932, Hanalei, HI 96714<br>All original content is protected by U.S. copyright law. Reproduction without written permission prohibited.</p>
 </footer>
 
 <script>

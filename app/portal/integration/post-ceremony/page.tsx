@@ -773,7 +773,27 @@ export default function PostCeremonyPage() {
                     </button>
                   )
                   let body
-                  if (card.kind === 'static') {
+                  const pneScrollTarget = card.kind === 'static' && card.text === "Complete this week's PNE Practice"
+                    ? '.pne-detail'
+                    : card.kind === 'static' && card.text === "Complete this week's PNE Reflection"
+                      ? '.pne-reflection'
+                      : null
+                  if (pneScrollTarget) {
+                    body = (
+                      <a
+                        href="#"
+                        className="w1-action-body"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          const target = document.querySelector(`.pc-panel.active ${pneScrollTarget}`)
+                          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                        }}
+                      >
+                        <span className="w1-action-dot" />
+                        <span className="w1-action-text">{card.text}</span>
+                      </a>
+                    )
+                  } else if (card.kind === 'static') {
                     body = (
                       <div className="w1-action-body">
                         <span className="w1-action-dot" />
