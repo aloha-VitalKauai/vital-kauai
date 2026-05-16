@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Iboga Preparedness & Integration Guide — Vital Kauaʻi</title>
+<script>
+  (function() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var rt = params.get('returnTo');
+      if (rt && rt.charAt(0) === '/' && rt.charAt(1) !== '/') {
+        window.__vkReturnTo = rt;
+      }
+    } catch(e) {}
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -653,7 +664,7 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
 <nav class="nav">
   <a href="/portal" class="nav-logo">Vital Kauaʻi</a>
   <span class="nav-badge">Iboga Preparedness Guide</span>
-  <a href="/portal" class="nav-back" onclick="event.preventDefault(); var r = document.referrer; if (r &amp;&amp; r.indexOf(location.origin) === 0 &amp;&amp; r !== location.href) { window.history.back(); } else { window.location.href = '/portal'; } return false;">← Return to Portal</a>
+  <a href="/portal" class="nav-back" onclick="event.preventDefault(); if (window.__vkReturnTo) { window.location.href = window.__vkReturnTo; return false; } var r = document.referrer; if (r &amp;&amp; r.indexOf(location.origin) === 0 &amp;&amp; r !== location.href) { window.history.back(); } else { window.location.href = '/portal'; } return false;">← Return to Portal</a>
 </nav>
 
 <!-- HERO -->
@@ -1158,7 +1169,7 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
 <!-- FOOTER -->
 <footer>
   <p class="footer-logo">Vital Kauaʻi</p>
-  <p>Iboga Preparedness Guide · Confidential<br><a href="/portal" onclick="event.preventDefault(); var r = document.referrer; if (r &amp;&amp; r.indexOf(location.origin) === 0 &amp;&amp; r !== location.href) { window.history.back(); } else { window.location.href = '/portal'; } return false;">← Return to Portal</a> · aloha&#64;vitalkauai.com<br>© 2026 Vital Kauaʻi Church · PO Box 932, Hanalei, HI 96714<br>All original content is protected by U.S. copyright law. Reproduction without written permission prohibited.</p>
+  <p>Iboga Preparedness Guide · Confidential<br><a href="/portal" onclick="event.preventDefault(); if (window.__vkReturnTo) { window.location.href = window.__vkReturnTo; return false; } var r = document.referrer; if (r &amp;&amp; r.indexOf(location.origin) === 0 &amp;&amp; r !== location.href) { window.history.back(); } else { window.location.href = '/portal'; } return false;">← Return to Portal</a> · aloha&#64;vitalkauai.com<br>© 2026 Vital Kauaʻi Church · PO Box 932, Hanalei, HI 96714<br>All original content is protected by U.S. copyright law. Reproduction without written permission prohibited.</p>
 </footer>
 
 <script>
