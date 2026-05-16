@@ -511,7 +511,6 @@ export default async function SomaticCompanionWeek2Page() {
         <span id="top" />
         <header className="hero">
           <div className="vk-wrap">
-            <div className="vk-eyebrow">Iboga Journey · Member Resource</div>
             <h1>Week Two <em>PNE Guide</em></h1>
             <p className="hero-subtitle">Nervous System Regulation</p>
             <p className="hero-lede">A Polyvagal Neuroscience-Informed framework for understanding how your body moves between states of safety, protection, and rest, and how to support its natural return to balance.</p>

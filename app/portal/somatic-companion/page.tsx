@@ -740,7 +740,6 @@ export default async function SomaticCompanionPage() {
         <span id="top" />
         <header className="hero">
           <div className="vk-wrap">
-            <div className="vk-eyebrow">Iboga Journey · Member Resource</div>
             <h1>Week One <em>PNE (PsychoNeuroEnergetics) Guide</em></h1>
             <p className="hero-lede">A foundation in internal safety: how it feels in the body, what happens when the system senses threat, and how the people, places, and rhythms of your life together build the ground your nervous system can rest into.</p>
           </div>

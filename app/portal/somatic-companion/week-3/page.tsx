@@ -537,10 +537,9 @@ export default async function SomaticCompanionWeek3Page() {
         <span id="top" />
         <header className="hero">
           <div className="vk-wrap">
-            <div className="vk-eyebrow">Iboga Journey · Member Resource</div>
             <h1>Week Three <em>PNE Guide</em></h1>
             <p className="hero-subtitle">Building Somatic Awareness</p>
-            <p className="hero-lede">Somatic awareness is the gentle skill of noticing the body from the inside. Of letting the body&apos;s quiet language become familiar, so that what arises can be met with steadiness rather than alarm.</p>
+            <p className="hero-lede">Somatic awareness is the gentle skill of noticing the body from the inside. Of letting the body&apos;s language become familiar, so that what arises can be met with steadiness rather than alarm.</p>
           </div>
         </header>
 

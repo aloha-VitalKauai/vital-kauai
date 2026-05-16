@@ -842,9 +842,14 @@ export default function PreCeremonyPage() {
                 </>
               )}
               {i === 2 && (
-                <p className="w1-body">
-                  This week&apos;s PNE teaching turns toward sensation as the body&apos;s native language. The PNE Guide explores what a sensation is, neutral, locatable, alive, what deer can teach us about completing stress and shaking it off, how unprocessed energy gets held in the body, and the vocabulary that helps you describe what you feel. From there, it walks through working with sensation through a six-step inner practice you can return to whenever something asks for attention.
-                </p>
+                <>
+                  <p className="w1-body">
+                    This week&apos;s PNE teaching explores sensation as the body&apos;s native language. The guide shares how unprocessed energy gets held in the body, and provides you with vocabulary that helps you describe what you feel.
+                  </p>
+                  <p className="w1-body">
+                    From there, it walks you through a six-step practice you can use whenever your body signals for attention.
+                  </p>
+                </>
               )}
               {i === 3 && (
                 <p className="w1-body">
