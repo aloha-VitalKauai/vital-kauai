@@ -212,9 +212,11 @@ export default function JournalClient() {
                 const pneDetail = phase.pne[wi];
                 const pneKey = phase.pneKey(wi);
                 const pneFollowUpKey = `${pneKey}-2`;
+                const pneThirdKey = `${pneKey}-3`;
                 const pneEntry = responses[pneKey] ?? "";
                 const pneFollowUpEntry = responses[pneFollowUpKey] ?? "";
-                const showPne = !!(pneDetail?.reflection || pneEntry || pneFollowUpEntry);
+                const pneThirdEntry = responses[pneThirdKey] ?? "";
+                const showPne = !!(pneDetail?.reflection || pneEntry || pneFollowUpEntry || pneThirdEntry);
                 return (
                 <div key={wi} style={{ marginTop: 56 }}>
                   {/* Week header */}
@@ -335,6 +337,37 @@ export default function JournalClient() {
                             }}
                           />
                           <div className="cj-print-text">{pneFollowUpEntry}</div>
+                        </>
+                      )}
+                      {(pneDetail?.reflectionThird || pneThirdEntry) && (
+                        <>
+                          {pneDetail?.reflectionThird && (
+                            <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 300, color: "#1A1A18", lineHeight: 1.35, marginTop: 24, marginBottom: 12 }}>
+                              {pneDetail.reflectionThird}
+                            </p>
+                          )}
+                          <textarea
+                            className="cj-textarea"
+                            value={pneThirdEntry}
+                            onChange={(e) => update(pneThirdKey, e.target.value)}
+                            placeholder="Write freely..."
+                            style={{
+                              width: "100%",
+                              minHeight: 130,
+                              background: "rgba(245,240,232,0.96)",
+                              border: "1px solid rgba(168,197,172,0.35)",
+                              borderLeft: "2px solid #A8C5AC",
+                              padding: "14px 16px",
+                              fontFamily: "'Jost', sans-serif",
+                              fontSize: 15,
+                              fontWeight: 300,
+                              color: "#1A1A18",
+                              lineHeight: 1.85,
+                              resize: "vertical",
+                              outline: "none",
+                            }}
+                          />
+                          <div className="cj-print-text">{pneThirdEntry}</div>
                         </>
                       )}
                     </div>

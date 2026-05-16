@@ -31,6 +31,7 @@ export type JournalWeek = {
 // Storage keys for reflection responses:
 //   Primary  — `pre-pne-reflection-w{weekIdx}` (or `post-…`)
 //   Follow-up — `pre-pne-reflection-w{weekIdx}-2` when reflectionFollowUp is set
+//   Third — `pre-pne-reflection-w{weekIdx}-3` when reflectionThird is set
 export type PneWeekDetails = {
   // Synopsis shown in the PNE Teaching video card on the integration page.
   // Empty string falls back to the generic "A teaching from PsychoNeuroEnergetics
@@ -39,6 +40,7 @@ export type PneWeekDetails = {
   practice: string
   reflection: string
   reflectionFollowUp?: string
+  reflectionThird?: string
 }
 
 export const PRE_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
@@ -53,7 +55,12 @@ export const PRE_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
     reflection: 'Where do you go when you feel dysregulated? What is your dominant pattern — fight, flight, freeze, or fawn?',
     reflectionFollowUp: 'What situations tend to call these patterns forward most quickly in your life?',
   },
-  { practice: '', reflection: 'When you are stressed, where do you notice it in your body, and how do you create safety within yourself? What brings you back to center?' },
+  {
+    practice: '',
+    reflection: 'How easily can you feel sensation in your body?',
+    reflectionFollowUp: 'When sensation arrives, do you tend to feel it in one place, or in many?',
+    reflectionThird: 'When you are stressed, what sensations do you notice most?',
+  },
   {
     teaching: 'A teaching from PsychoNeuroEnergetics: the five primary emotions and the intelligence each one carries, the secondary patterns layered on top, and how to let what has been long held finally move through.',
     practice: '',
