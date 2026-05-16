@@ -686,7 +686,6 @@ export default async function SomaticCompanionWeek4Page() {
         <span id="top" />
         <header className="hero">
           <div className="vk-wrap">
-            <div className="vk-eyebrow">Iboga Journey · Member Resource</div>
             <h1>Week Four <em>PNE Guide</em></h1>
             <p className="hero-subtitle">The Language of Emotion</p>
             <p className="hero-lede">Emotions are signals. Before they become stories, they are information rising through the body, telling us what is safe, what nourishes us, what asks to be protected, and what is asking to be honored.</p>
