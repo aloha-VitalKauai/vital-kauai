@@ -324,6 +324,8 @@ const PAGE_CSS = `
     font-family: var(--serif);
     font-style: italic;
     color: var(--accent-sage);
+    font-weight: 600;
+    font-size: 1.12em;
   }
 
   .pne-companion-w3-page .flow {
@@ -360,7 +362,8 @@ const PAGE_CSS = `
   .pne-companion-w3-page .flow-step .prompt {
     font-family: var(--serif);
     font-style: italic;
-    font-size: 16px;
+    font-size: 19px;
+    font-weight: 500;
     color: var(--accent-sage);
     margin-bottom: 8px;
   }
@@ -539,7 +542,7 @@ export default async function SomaticCompanionWeek3Page() {
           <div className="vk-wrap">
             <h1>Week Three <em>PNE Guide</em></h1>
             <p className="hero-subtitle">Building Somatic Awareness</p>
-            <p className="hero-lede">Somatic awareness is the gentle skill of noticing the body from the inside. Of letting the body&apos;s language become familiar, so that what arises can be met with steadiness rather than alarm.</p>
+            <p className="hero-lede">Somatic awareness is the skill of noticing the body from the inside. Of letting the body&apos;s language become familiar, so that what arises can be met with steadiness rather than alarm.</p>
           </div>
         </header>
 
@@ -712,7 +715,7 @@ export default async function SomaticCompanionWeek3Page() {
           <div className="vk-narrow">
             <div className="vk-eyebrow">In Your PNE Sessions</div>
             <h2 className="vk-title">Working With <em>Sensation</em></h2>
-            <p className="vk-lede">During PNE sessions, you will track sensations together with your practitioner. The body scanning and regulation practices from Week One are quietly building the capacity that makes this work feel steady and possible.</p>
+            <p className="vk-lede">During your sessions with your integration guide, you will track sensations together. The body scanning and regulation practices from Week One are building the capacity that makes this work feel steady and possible.</p>
 
             <div className="felt-example">
               <div className="label">An Example</div>
@@ -721,7 +724,7 @@ export default async function SomaticCompanionWeek3Page() {
             </div>
 
             <h3 className="six-step-heading">A Six-Step <em>Inner Practice</em></h3>
-            <p className="six-step-sub">A gentle progression you can return to whenever a sensation calls for attention.</p>
+            <p className="six-step-sub">A practice you can return to whenever a sensation calls for attention.</p>
 
             <div className="flow">
               <div className="flow-step">
@@ -761,7 +764,7 @@ export default async function SomaticCompanionWeek3Page() {
                 <div>
                   <h3>Ask Gently</h3>
                   <div className="prompt">&ldquo;What might this be about?&rdquo;</div>
-                  <p>Without forcing an answer, let the question rest near the sensation. Sometimes meaning arises. Sometimes the sensation simply softens. Both are gifts.</p>
+                  <p>Without forcing an answer, let the question rest near the sensation. Sometimes meaning arises. Sometimes the sensation simply softens.</p>
                 </div>
               </div>
               <div className="flow-step">
