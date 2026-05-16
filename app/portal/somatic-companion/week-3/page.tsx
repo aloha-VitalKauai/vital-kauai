@@ -784,7 +784,7 @@ export default async function SomaticCompanionWeek3Page() {
             <div className="homework-panel">
               <div className="hp-eyebrow">Week Three · Living Practice</div>
               <h2>This Week&apos;s <em>Practice</em></h2>
-              <p className="lede">Three gentle invitations to deepen your relationship with sensation. Approach each with curiosity. The body has been waiting to be heard.</p>
+              <p className="lede">Three invitations to deepen your relationship with sensation. Approach each with curiosity. The body has been waiting to be heard.</p>
 
               <div className="hw-step">
                 <div className="hw-num">One</div>
