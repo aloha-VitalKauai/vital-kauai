@@ -701,6 +701,15 @@ export default function PreCeremonyPage() {
                 {actionsForWeek(i, w.actions).map((card, ai) => {
                   const checkId = `pre-w${i}-a${ai}`
                   const isChecked = !!checklist[checkId]
+                  const decorateHref = (href: string): string => {
+                    if (!href.startsWith('/iboga-preparedness-guide.html')) return href
+                    const hashIdx = href.indexOf('#')
+                    const base = hashIdx === -1 ? href : href.slice(0, hashIdx)
+                    const hash = hashIdx === -1 ? '' : href.slice(hashIdx)
+                    const sep = base.includes('?') ? '&' : '?'
+                    const rt = encodeURIComponent(`/portal/integration/pre-ceremony#week-${i + 1}`)
+                    return `${base}${sep}returnTo=${rt}${hash}`
+                  }
                   const checkbox = (
                     <button
                       type="button"
@@ -761,14 +770,14 @@ export default function PreCeremonyPage() {
                     )
                   } else if (card.kind === 'external') {
                     body = (
-                      <a href={card.href} target="_blank" rel="noopener noreferrer" className="w1-action-body">
+                      <a href={decorateHref(card.href)} target="_blank" rel="noopener noreferrer" className="w1-action-body">
                         <span className="w1-action-dot" />
                         <span className="w1-action-text">{card.text}</span>
                       </a>
                     )
                   } else {
                     body = (
-                      <Link href={card.href} target="_blank" rel="noopener noreferrer" className="w1-action-body">
+                      <Link href={decorateHref(card.href)} target="_blank" rel="noopener noreferrer" className="w1-action-body">
                         <span className="w1-action-dot" />
                         <span className="w1-action-text">{card.text}</span>
                       </Link>
@@ -918,7 +927,7 @@ export default function PreCeremonyPage() {
                 <div className="pne-detail pne-practice-rich">
                   <div className="vp-label">This Week&apos;s PNE Practice: A Six-Step Inner Practice</div>
                   <h4 className="pne-practice-title">A Six-Step Inner Practice</h4>
-                  <p className="pne-practice-tag">A gentle progression for meeting any sensation that calls for attention</p>
+                  <p className="pne-practice-tag">A progression for meeting any sensation that calls for attention</p>
                   <p className="vp-text pne-practice-p">Choose any sensation that calls to you. Walk it gently through the six steps.</p>
                   <div className="pne-practice-steps">
                     <div className="pne-step"><span className="pne-step-time">I</span><span className="pne-step-text"><strong>Notice the Sensation.</strong> &ldquo;What am I feeling right now in my body?&rdquo;</span></div>
@@ -934,7 +943,7 @@ export default function PreCeremonyPage() {
                 <div className="pne-detail pne-practice-rich">
                   <div className="vp-label">This Week&apos;s PNE Practice: A Three-Step Inner Practice</div>
                   <h4 className="pne-practice-title">A Three-Step Inner Practice</h4>
-                  <p className="pne-practice-tag">A gentle progression for meeting an emotion that has been waiting to be heard</p>
+                  <p className="pne-practice-tag">A progression for meeting an emotion that has been waiting to be heard</p>
                   <p className="vp-text pne-practice-p">When a feeling arises this week, pause and walk it gently through the three steps.</p>
                   <div className="pne-practice-steps">
                     <div className="pne-step"><span className="pne-step-time">I</span><span className="pne-step-text"><strong>Identify the Sensation.</strong> &ldquo;What is happening in my body right now?&rdquo;</span></div>

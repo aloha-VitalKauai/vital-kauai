@@ -759,6 +759,15 @@ export default function PostCeremonyPage() {
                 {actionsForWeek(w.actions).map((card, ai) => {
                   const checkId = `post-w${i}-a${ai}`
                   const isChecked = !!checklist[checkId]
+                  const decorateHref = (href: string): string => {
+                    if (!href.startsWith('/iboga-preparedness-guide.html')) return href
+                    const hashIdx = href.indexOf('#')
+                    const base = hashIdx === -1 ? href : href.slice(0, hashIdx)
+                    const hash = hashIdx === -1 ? '' : href.slice(hashIdx)
+                    const sep = base.includes('?') ? '&' : '?'
+                    const rt = encodeURIComponent(`/portal/integration/post-ceremony#week-${i + 1}`)
+                    return `${base}${sep}returnTo=${rt}${hash}`
+                  }
                   const checkbox = (
                     <button
                       type="button"
@@ -819,14 +828,14 @@ export default function PostCeremonyPage() {
                     )
                   } else if (card.kind === 'external') {
                     body = (
-                      <a href={card.href} target="_blank" rel="noopener noreferrer" className="w1-action-body">
+                      <a href={decorateHref(card.href)} target="_blank" rel="noopener noreferrer" className="w1-action-body">
                         <span className="w1-action-dot" />
                         <span className="w1-action-text">{card.text}</span>
                       </a>
                     )
                   } else {
                     body = (
-                      <Link href={card.href} target="_blank" rel="noopener noreferrer" className="w1-action-body">
+                      <Link href={decorateHref(card.href)} target="_blank" rel="noopener noreferrer" className="w1-action-body">
                         <span className="w1-action-dot" />
                         <span className="w1-action-text">{card.text}</span>
                       </Link>

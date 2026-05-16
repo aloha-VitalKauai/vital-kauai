@@ -909,7 +909,7 @@ export default async function SomaticCompanionWeek4Page() {
             </div>
 
             <h3 className="sub-heading">A Three-Step <em>Inner Practice</em></h3>
-            <p className="sub-sub">A gentle progression for meeting an emotion that has been waiting to be heard.</p>
+            <p className="sub-sub">A progression for meeting an emotion that has been waiting to be heard.</p>
 
             <div className="flow">
               <div className="flow-step">
@@ -987,7 +987,7 @@ export default async function SomaticCompanionWeek4Page() {
             <div className="homework-panel">
               <div className="hp-eyebrow">Week Four · Living Practice</div>
               <h2>This Week&apos;s <em>Practice</em></h2>
-              <p className="lede">Three gentle invitations to deepen your relationship with emotion. Approach each with curiosity. The body has been waiting to be heard.</p>
+              <p className="lede">Three invitations to deepen your relationship with emotion. Approach each with curiosity. The body has been waiting to be heard.</p>
 
               <div className="hw-step">
                 <div className="hw-num">One</div>
