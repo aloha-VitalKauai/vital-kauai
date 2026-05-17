@@ -672,11 +672,9 @@ export default function PreCeremonyPage() {
                   ? <>You answer to no one but your own <em>knowing.</em></>
                   : <>{w.title}{w.subtitle && <><br /><em>{w.subtitle}</em></>}</>}
               </h2>
-              {i === 0
-                ? <p className="w1p-body">You are the creator of your reality and your life. This week is an invitation to honestly look at the reality you have created for yourself. It&rsquo;s an opportunity to notice the patterns, environments, relationships, thoughts, and beliefs that have shaped your current experience, and from that awareness begin creating in a way that is more aligned with who you truly are today.</p>
-                : w.sub.split('\n\n').map((para, pi) => (
-                    <p key={pi} className="w1p-body">{para}</p>
-                  ))}
+              {w.sub.split('\n\n').map((para, pi) => (
+                <p key={pi} className="w1p-body">{para}</p>
+              ))}
             </section>
 
             {/* VIDEO, Message from the Founders */}
