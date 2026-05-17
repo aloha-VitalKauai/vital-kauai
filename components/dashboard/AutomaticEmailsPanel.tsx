@@ -516,6 +516,8 @@ function SendLogSection({
         </span>
       </div>
 
+      <CatchUpPanel />
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10, marginBottom: 22 }}>
         <StatCard label="Last 24 hours" value={counts.day} sub={`${counts.dayFailed} failed`} highlight={counts.dayFailed > 0} />
         <StatCard label="Last 7 days" value={counts.week} sub={`${counts.weekFailed} failed`} highlight={counts.weekFailed > 0} />
@@ -705,6 +707,122 @@ function StatusPill({ status }: { status: 'sent' | 'failed' | 'queued' }) {
     <span style={{ fontSize: 10, letterSpacing: '.08em', textTransform: 'uppercase', padding: '3px 8px', borderRadius: 3, background: s.bg, color: s.fg, border: `0.5px solid ${s.bd}` }}>
       {s.label}
     </span>
+  )
+}
+
+type CatchUpPreview = {
+  member_name: string | null
+  member_email: string | null
+  arc: 'pre' | 'post'
+  week_idx: number
+  days_late: number
+  subject: string
+}
+
+function CatchUpPanel() {
+  const [busy, setBusy] = useState<'dry' | 'send' | null>(null)
+  const [preview, setPreview] = useState<CatchUpPreview[] | null>(null)
+  const [result, setResult] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  async function call(dryRun: boolean) {
+    setBusy(dryRun ? 'dry' : 'send')
+    setError(null)
+    if (dryRun) {
+      setPreview(null)
+      setResult(null)
+    }
+    try {
+      const res = await fetch('/api/automatic-emails/run-catchup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dryRun }),
+      })
+      const body = await res.json()
+      if (!res.ok) {
+        setError(body.error || `HTTP ${res.status}`)
+        return
+      }
+      if (dryRun) {
+        setPreview(body.preview ?? [])
+        if ((body.preview ?? []).length === 0) {
+          setResult('No journeys are due for catch-up right now.')
+        }
+      } else {
+        const { sent = 0, skipped = 0, errors = 0, message } = body
+        setResult(
+          errors > 0
+            ? `Sent ${sent}, skipped ${skipped}, ${errors} error${errors === 1 ? '' : 's'}.`
+            : message
+              ? `Done — ${message.replace(/_/g, ' ')}.`
+              : `Sent ${sent}, skipped ${skipped}. Reload to see them in the log.`,
+        )
+        setPreview(null)
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setBusy(null)
+    }
+  }
+
+  return (
+    <div
+      style={{
+        background: C.card,
+        border: `0.5px solid ${C.border}`,
+        borderRadius: 6,
+        padding: '14px 16px',
+        marginBottom: 22,
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+        <div>
+          <div style={{ fontSize: 11, color: C.gold, letterSpacing: '.14em', textTransform: 'uppercase' }}>
+            Catch-up sender
+          </div>
+          <div style={{ fontSize: 12, color: C.muted, marginTop: 4, maxWidth: 580, lineHeight: 1.55 }}>
+            Sends each active journey&apos;s current week if the daily cron missed it. Capped at 14 days late and de-dupes against the log, so it&apos;s safe to run.
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => call(true)} disabled={busy !== null} style={btnSecondary}>
+            {busy === 'dry' ? 'Checking…' : 'Preview (dry run)'}
+          </button>
+          <button onClick={() => call(false)} disabled={busy !== null} style={btnPrimary}>
+            {busy === 'send' ? 'Sending…' : 'Send catch-up'}
+          </button>
+        </div>
+      </div>
+
+      {error && (
+        <div style={{ marginTop: 12, fontSize: 12, color: C.terra }}>Error: {error}</div>
+      )}
+      {result && (
+        <div style={{ marginTop: 12, fontSize: 12, color: C.gold }}>{result}</div>
+      )}
+      {preview && preview.length > 0 && (
+        <div style={{ marginTop: 14 }}>
+          <div style={{ fontSize: 10, color: C.dim, letterSpacing: '.12em', textTransform: 'uppercase', marginBottom: 8 }}>
+            Would send {preview.length}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {preview.map((p, i) => (
+              <div key={i} style={{ fontSize: 12, color: C.text, padding: '8px 10px', background: C.faint, borderRadius: 4, border: `0.5px solid ${C.border}` }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12 }}>
+                  <span>
+                    <strong style={{ color: C.text }}>{p.member_name || p.member_email}</strong>
+                    <span style={{ color: C.muted }}> · {p.arc === 'pre' ? 'Prep' : 'Integration'} Week {p.week_idx + 1}</span>
+                  </span>
+                  <span style={{ color: C.dim, fontSize: 11 }}>{p.days_late}d late</span>
+                </div>
+                <div style={{ color: C.muted, fontSize: 11, marginTop: 3 }}>{p.subject} → {p.member_email}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
 
