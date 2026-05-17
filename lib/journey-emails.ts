@@ -201,3 +201,44 @@ export function weekToSendToday(
   }
   return null
 }
+
+/**
+ * Returns the *current* week a journey is in — the most recent boundary
+ * that has already passed. Used by the catch-up endpoint to send the
+ * single most relevant missed week, capped so a member who's been silent
+ * for months doesn't suddenly get an ancient email.
+ *
+ * `maxLatenessDays` defaults to 14 (two cron failures recoverable).
+ * Returns null if the most recent boundary is older than that cap.
+ */
+export function currentWeekForJourney(
+  ceremonyStartAt: string | null | undefined,
+  now: Date = new Date(),
+  maxLatenessDays = 14,
+): { arc: JourneyArc; week_idx: number; daysLate: number } | null {
+  if (!ceremonyStartAt) return null
+  const ceremony = new Date(ceremonyStartAt)
+  if (Number.isNaN(ceremony.getTime())) return null
+
+  const MS = 24 * 60 * 60 * 1000
+  const dayKey = (d: Date) =>
+    Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+  const today = dayKey(now)
+
+  let best: { arc: JourneyArc; week_idx: number; daysLate: number } | null = null
+  for (let i = 0; i < 6; i++) {
+    const preStart = dayKey(new Date(ceremony.getTime() + (-42 + i * 7) * MS))
+    if (preStart <= today) {
+      const daysLate = Math.round((today - preStart) / MS)
+      if (!best || daysLate < best.daysLate) best = { arc: 'pre', week_idx: i, daysLate }
+    }
+    const postStart = dayKey(new Date(ceremony.getTime() + i * 7 * MS))
+    if (postStart <= today) {
+      const daysLate = Math.round((today - postStart) / MS)
+      if (!best || daysLate < best.daysLate) best = { arc: 'post', week_idx: i, daysLate }
+    }
+  }
+  if (!best) return null
+  if (best.daysLate > maxLatenessDays) return null
+  return best
+}
