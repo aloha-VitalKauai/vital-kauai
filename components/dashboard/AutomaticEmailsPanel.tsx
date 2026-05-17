@@ -5,19 +5,33 @@ import { createClient } from '@/lib/supabase/client'
 import type { JourneyArc, JourneyEmailTemplate } from '@/lib/journey-emails'
 import type { TransactionalEmailTemplate } from '@/lib/transactional-emails'
 
-type LogRow = {
+type JourneyLogRow = {
   id: string
   arc: string
   week_idx: number
   recipient_email: string
   subject: string
   sent_at: string
+  resend_id: string | null
+}
+
+type NotificationLogRow = {
+  id: string
+  lead_id: string | null
+  notification_type: string
+  recipient: string[] | null
+  status: string
+  payload: Record<string, unknown> | null
+  failure_reason: string | null
+  sent_at: string | null
+  created_at: string
 }
 
 type Props = {
   journeyTemplates: JourneyEmailTemplate[]
   transactionalTemplates: TransactionalEmailTemplate[]
-  recentLog: LogRow[]
+  journeyLog: JourneyLogRow[]
+  notificationLog: NotificationLogRow[]
   founderEmail: string
 }
 
@@ -35,15 +49,18 @@ const C = {
   terra: '#C96A52',
 }
 
-type Mode = 'journey' | 'transactional'
+type Mode = 'journey' | 'transactional' | 'log'
 
 export default function AutomaticEmailsPanel({
   journeyTemplates,
   transactionalTemplates,
-  recentLog,
+  journeyLog,
+  notificationLog,
   founderEmail,
 }: Props) {
   const [mode, setMode] = useState<Mode>('journey')
+
+  const totalSendCount = journeyLog.length + notificationLog.length
 
   return (
     <div
@@ -66,26 +83,36 @@ export default function AutomaticEmailsPanel({
           Every email Vital Kauaʻi sends through Resend, with the copy editable from one place.
         </div>
 
-        <div style={{ display: 'flex', gap: 4, marginTop: 14 }}>
+        <div style={{ display: 'flex', gap: 4, marginTop: 14, flexWrap: 'wrap' }}>
           <ModeTab active={mode === 'journey'} onClick={() => setMode('journey')}>
             Journey Emails ({journeyTemplates.length})
           </ModeTab>
           <ModeTab active={mode === 'transactional'} onClick={() => setMode('transactional')}>
             Transactional Emails ({transactionalTemplates.length})
           </ModeTab>
+          <ModeTab active={mode === 'log'} onClick={() => setMode('log')}>
+            Send Log ({totalSendCount})
+          </ModeTab>
         </div>
       </div>
 
-      {mode === 'journey' ? (
+      {mode === 'journey' && (
         <JourneySection
           templates={journeyTemplates}
-          recentLog={recentLog}
+          recentLog={journeyLog}
           founderEmail={founderEmail}
         />
-      ) : (
+      )}
+      {mode === 'transactional' && (
         <TransactionalSection
           templates={transactionalTemplates}
           founderEmail={founderEmail}
+        />
+      )}
+      {mode === 'log' && (
+        <SendLogSection
+          journeyLog={journeyLog}
+          notificationLog={notificationLog}
         />
       )}
     </div>
@@ -121,7 +148,7 @@ function JourneySection({
   founderEmail,
 }: {
   templates: JourneyEmailTemplate[]
-  recentLog: LogRow[]
+  recentLog: JourneyLogRow[]
   founderEmail: string
 }) {
   const [activeKey, setActiveKey] = useState<string>(`${templates[0]?.arc}|${templates[0]?.week_idx}`)
@@ -358,6 +385,360 @@ function TransactionalSection({
       {previewHtml && <PreviewModal html={previewHtml} onClose={() => setPreviewHtml(null)} />}
     </>
   )
+}
+
+// ─── Send log section (combined journey + transactional history) ────────
+
+type UnifiedSendRow = {
+  id: string
+  ts: string // ISO — used for sorting + display
+  source: 'journey' | 'transactional'
+  category: string // e.g. "Journey · Prep W1", "Payment Link"
+  recipient: string // joined string for display
+  subject: string
+  status: 'sent' | 'failed' | 'queued'
+  failure_reason: string | null
+  detail: Record<string, unknown> | null
+}
+
+const NOTIFICATION_LABELS: Record<string, string> = {
+  founder_approval: 'Founder approval (new lead)',
+  founder_approval_resend: 'Founder approval (resend)',
+  free_guide_email: 'Free guide download',
+  setup_link_resend: 'Setup link (resend)',
+  payment_link_email: 'Payment link',
+  password_reset: 'Password reset',
+}
+
+function labelForNotificationType(type: string): string {
+  return NOTIFICATION_LABELS[type] ?? type.replace(/_/g, ' ')
+}
+
+function unifyJourneyRow(r: JourneyLogRow): UnifiedSendRow {
+  const arcLabel = r.arc === 'pre' ? 'Prep' : 'Integration'
+  return {
+    id: `j:${r.id}`,
+    ts: r.sent_at,
+    source: 'journey',
+    category: `Journey · ${arcLabel} W${r.week_idx + 1}`,
+    recipient: r.recipient_email,
+    subject: r.subject,
+    status: 'sent', // journey_email_log only stores successful sends
+    failure_reason: null,
+    detail: r.resend_id ? { resend_id: r.resend_id } : null,
+  }
+}
+
+function unifyNotificationRow(r: NotificationLogRow): UnifiedSendRow {
+  const ts = r.sent_at ?? r.created_at
+  const recipients = Array.isArray(r.recipient) ? r.recipient.join(', ') : (r.recipient ?? '')
+  const subject = subjectFromPayload(r.notification_type, r.payload)
+  return {
+    id: `n:${r.id}`,
+    ts,
+    source: 'transactional',
+    category: labelForNotificationType(r.notification_type),
+    recipient: recipients,
+    subject,
+    status: (r.status === 'sent' || r.status === 'failed' || r.status === 'queued') ? r.status : 'queued',
+    failure_reason: r.failure_reason,
+    detail: r.payload,
+  }
+}
+
+function subjectFromPayload(type: string, payload: Record<string, unknown> | null): string {
+  if (!payload) return labelForNotificationType(type)
+  const name = typeof payload.fullName === 'string' ? payload.fullName : typeof payload.full_name === 'string' ? payload.full_name : null
+  switch (type) {
+    case 'founder_approval':
+    case 'founder_approval_resend':
+      return name ? `Approval request for ${name}` : 'Founder approval request'
+    case 'free_guide_email':
+      return name ? `Free guide sent to ${name}` : 'Free guide sent'
+    case 'setup_link_resend':
+      return 'Setup link resent'
+    case 'payment_link_email':
+      if (typeof payload.amount_cents === 'number') {
+        return `Payment link · $${(payload.amount_cents / 100).toFixed(2)}`
+      }
+      return 'Payment link'
+    case 'password_reset':
+      return 'Password reset link'
+    default:
+      return labelForNotificationType(type)
+  }
+}
+
+function SendLogSection({
+  journeyLog,
+  notificationLog,
+}: {
+  journeyLog: JourneyLogRow[]
+  notificationLog: NotificationLogRow[]
+}) {
+  type SourceFilter = 'all' | 'journey' | 'transactional'
+  type StatusFilter = 'all' | 'sent' | 'failed' | 'queued'
+
+  const [sourceFilter, setSourceFilter] = useState<SourceFilter>('all')
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+  const [query, setQuery] = useState('')
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+
+  const merged = useMemo<UnifiedSendRow[]>(() => {
+    const all = [
+      ...journeyLog.map(unifyJourneyRow),
+      ...notificationLog.map(unifyNotificationRow),
+    ]
+    return all.sort((a, b) => (a.ts < b.ts ? 1 : -1))
+  }, [journeyLog, notificationLog])
+
+  const counts = useMemo(() => countByWindow(merged), [merged])
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return merged.filter((r) => {
+      if (sourceFilter !== 'all' && r.source !== sourceFilter) return false
+      if (statusFilter !== 'all' && r.status !== statusFilter) return false
+      if (q) {
+        const hay = `${r.recipient} ${r.subject} ${r.category}`.toLowerCase()
+        if (!hay.includes(q)) return false
+      }
+      return true
+    })
+  }, [merged, sourceFilter, statusFilter, query])
+
+  return (
+    <div style={{ padding: '24px 28px' }}>
+      <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6, marginBottom: 18, maxWidth: 760 }}>
+        Every email Vital Kauaʻi has sent through Resend, oldest visible going back roughly the last few hundred sends. Use this to confirm sends went out, watch for failures, and verify the system is healthy.
+        <span style={{ color: C.dim, display: 'block', marginTop: 4 }}>
+          Reload the page to refresh. Member-facing approval emails (setup-link on first approval) currently aren&apos;t recorded here — only resends and founder alerts are.
+        </span>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10, marginBottom: 22 }}>
+        <StatCard label="Last 24 hours" value={counts.day} sub={`${counts.dayFailed} failed`} highlight={counts.dayFailed > 0} />
+        <StatCard label="Last 7 days" value={counts.week} sub={`${counts.weekFailed} failed`} highlight={counts.weekFailed > 0} />
+        <StatCard label="Last 30 days" value={counts.month} sub={`${counts.monthFailed} failed`} highlight={counts.monthFailed > 0} />
+        <StatCard label="All shown" value={merged.length} sub={`${counts.totalFailed} failed · ${counts.totalQueued} queued`} highlight={counts.totalFailed > 0} />
+      </div>
+
+      <div style={{ display: 'flex', gap: 6, marginBottom: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+        <FilterChip active={sourceFilter === 'all'} onClick={() => setSourceFilter('all')}>All sources</FilterChip>
+        <FilterChip active={sourceFilter === 'journey'} onClick={() => setSourceFilter('journey')}>Journey</FilterChip>
+        <FilterChip active={sourceFilter === 'transactional'} onClick={() => setSourceFilter('transactional')}>Transactional</FilterChip>
+        <div style={{ width: 1, alignSelf: 'stretch', background: C.border, margin: '0 4px' }} />
+        <FilterChip active={statusFilter === 'all'} onClick={() => setStatusFilter('all')}>Any status</FilterChip>
+        <FilterChip active={statusFilter === 'sent'} onClick={() => setStatusFilter('sent')}>Sent</FilterChip>
+        <FilterChip active={statusFilter === 'failed'} onClick={() => setStatusFilter('failed')}>Failed</FilterChip>
+        <FilterChip active={statusFilter === 'queued'} onClick={() => setStatusFilter('queued')}>Queued</FilterChip>
+        <input
+          placeholder="Search recipient or subject…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          style={{
+            marginLeft: 'auto',
+            background: C.card,
+            border: `0.5px solid ${C.border}`,
+            color: C.text,
+            borderRadius: 6,
+            padding: '7px 12px',
+            fontSize: 12,
+            minWidth: 220,
+            fontFamily: 'inherit',
+          }}
+        />
+      </div>
+
+      <div style={{ fontSize: 11, color: C.dim, marginBottom: 8 }}>
+        Showing {filtered.length} of {merged.length}
+      </div>
+
+      <div style={{ border: `0.5px solid ${C.border}`, borderRadius: 6, overflow: 'hidden' }}>
+        <div style={logHeaderStyle}>
+          <div style={{ flex: '0 0 150px' }}>Sent</div>
+          <div style={{ flex: '0 0 180px' }}>Type</div>
+          <div style={{ flex: '1 1 220px' }}>Recipient</div>
+          <div style={{ flex: '2 1 280px' }}>Subject / payload</div>
+          <div style={{ flex: '0 0 80px', textAlign: 'right' }}>Status</div>
+        </div>
+
+        {filtered.length === 0 ? (
+          <div style={{ padding: '40px 16px', textAlign: 'center', color: C.dim, fontSize: 12 }}>
+            No sends match these filters.
+          </div>
+        ) : (
+          filtered.map((row) => {
+            const expanded = expandedId === row.id
+            return (
+              <div key={row.id} style={logRowWrapStyle}>
+                <button onClick={() => setExpandedId(expanded ? null : row.id)} style={logRowStyle}>
+                  <div style={{ flex: '0 0 150px', fontSize: 11, color: C.muted }}>{formatTs(row.ts)}</div>
+                  <div style={{ flex: '0 0 180px', fontSize: 11 }}>
+                    <SourceBadge source={row.source} />
+                    <span style={{ color: C.muted, marginLeft: 6 }}>{row.category}</span>
+                  </div>
+                  <div style={{ flex: '1 1 220px', fontSize: 12, color: C.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>
+                    {row.recipient || <span style={{ color: C.dim }}>—</span>}
+                  </div>
+                  <div style={{ flex: '2 1 280px', fontSize: 12, color: C.muted, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>
+                    {row.subject}
+                  </div>
+                  <div style={{ flex: '0 0 80px', textAlign: 'right' }}>
+                    <StatusPill status={row.status} />
+                  </div>
+                </button>
+                {expanded && (
+                  <div style={logDetailStyle}>
+                    {row.failure_reason && (
+                      <div style={{ color: C.terra, fontSize: 12, marginBottom: 8 }}>
+                        <span style={{ color: C.dim, letterSpacing: '.1em', textTransform: 'uppercase', fontSize: 10, marginRight: 8 }}>Failure</span>
+                        {row.failure_reason}
+                      </div>
+                    )}
+                    <div style={{ color: C.dim, letterSpacing: '.1em', textTransform: 'uppercase', fontSize: 10, marginBottom: 6 }}>Payload</div>
+                    <pre style={{ fontSize: 11, color: C.text, background: C.faint, padding: 10, borderRadius: 4, margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word', maxHeight: 240, overflow: 'auto', fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' }}>
+                      {row.detail ? JSON.stringify(row.detail, null, 2) : '(no payload)'}
+                    </pre>
+                  </div>
+                )}
+              </div>
+            )
+          })
+        )}
+      </div>
+    </div>
+  )
+}
+
+function countByWindow(rows: UnifiedSendRow[]) {
+  const now = Date.now()
+  const day = 24 * 60 * 60 * 1000
+  let dayCount = 0, dayFailed = 0
+  let weekCount = 0, weekFailed = 0
+  let monthCount = 0, monthFailed = 0
+  let totalFailed = 0, totalQueued = 0
+
+  for (const r of rows) {
+    const age = now - new Date(r.ts).getTime()
+    if (age <= day) { dayCount++; if (r.status === 'failed') dayFailed++ }
+    if (age <= 7 * day) { weekCount++; if (r.status === 'failed') weekFailed++ }
+    if (age <= 30 * day) { monthCount++; if (r.status === 'failed') monthFailed++ }
+    if (r.status === 'failed') totalFailed++
+    if (r.status === 'queued') totalQueued++
+  }
+  return {
+    day: dayCount, dayFailed,
+    week: weekCount, weekFailed,
+    month: monthCount, monthFailed,
+    totalFailed, totalQueued,
+  }
+}
+
+function formatTs(iso: string): string {
+  try {
+    const d = new Date(iso)
+    return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+  } catch { return iso }
+}
+
+function StatCard({ label, value, sub, highlight }: { label: string; value: number; sub: string; highlight?: boolean }) {
+  return (
+    <div style={{ background: C.card, border: `0.5px solid ${highlight ? C.terra + '99' : C.border}`, borderRadius: 6, padding: '12px 14px' }}>
+      <div style={{ fontSize: 10, letterSpacing: '.12em', textTransform: 'uppercase', color: C.dim }}>{label}</div>
+      <div style={{ fontSize: 22, fontFamily: 'var(--font-cormorant-garamond,serif)', color: C.text, marginTop: 4 }}>{value}</div>
+      <div style={{ fontSize: 10, color: highlight ? C.terra : C.dim, marginTop: 2 }}>{sub}</div>
+    </div>
+  )
+}
+
+function FilterChip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        background: active ? C.goldBg : 'transparent',
+        border: active ? `0.5px solid ${C.gold}66` : `0.5px solid ${C.border}`,
+        color: active ? C.text : C.muted,
+        borderRadius: 6,
+        padding: '6px 12px',
+        fontSize: 11,
+        letterSpacing: '.04em',
+        cursor: 'pointer',
+        fontFamily: 'inherit',
+      }}
+    >
+      {children}
+    </button>
+  )
+}
+
+function SourceBadge({ source }: { source: 'journey' | 'transactional' }) {
+  const isJourney = source === 'journey'
+  return (
+    <span
+      style={{
+        display: 'inline-block',
+        fontSize: 9,
+        letterSpacing: '.1em',
+        textTransform: 'uppercase',
+        padding: '2px 6px',
+        borderRadius: 3,
+        background: isJourney ? 'rgba(29,107,74,.18)' : C.goldBg,
+        color: isJourney ? '#7DCFA8' : C.gold,
+        border: `0.5px solid ${isJourney ? '#7DCFA833' : C.gold + '44'}`,
+      }}
+    >
+      {isJourney ? 'Journey' : 'Trans'}
+    </span>
+  )
+}
+
+function StatusPill({ status }: { status: 'sent' | 'failed' | 'queued' }) {
+  const styles: Record<typeof status, { bg: string; fg: string; bd: string; label: string }> = {
+    sent:   { bg: 'rgba(29,107,74,.22)', fg: '#7DCFA8', bd: '#7DCFA844', label: 'Sent' },
+    failed: { bg: 'rgba(201,106,82,.20)', fg: C.terra, bd: C.terra + '66', label: 'Failed' },
+    queued: { bg: C.faint, fg: C.muted, bd: C.border, label: 'Queued' },
+  }
+  const s = styles[status]
+  return (
+    <span style={{ fontSize: 10, letterSpacing: '.08em', textTransform: 'uppercase', padding: '3px 8px', borderRadius: 3, background: s.bg, color: s.fg, border: `0.5px solid ${s.bd}` }}>
+      {s.label}
+    </span>
+  )
+}
+
+const logHeaderStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  background: C.faint,
+  padding: '10px 14px',
+  fontSize: 10,
+  letterSpacing: '.12em',
+  textTransform: 'uppercase',
+  color: C.dim,
+  borderBottom: `0.5px solid ${C.border}`,
+}
+const logRowWrapStyle: React.CSSProperties = {
+  borderBottom: `0.5px solid ${C.border}`,
+  background: C.bg,
+}
+const logRowStyle: React.CSSProperties = {
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  padding: '10px 14px',
+  background: 'transparent',
+  border: 0,
+  textAlign: 'left',
+  cursor: 'pointer',
+  fontFamily: 'inherit',
+  color: 'inherit',
+}
+const logDetailStyle: React.CSSProperties = {
+  padding: '4px 14px 14px',
+  background: C.faint,
+  borderTop: `0.5px dashed ${C.border}`,
 }
 
 // ─── Editor sub-components ──────────────────────────────────────────────

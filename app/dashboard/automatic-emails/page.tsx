@@ -18,7 +18,11 @@ export default async function AutomaticEmailsPage() {
   // auto-sync, so the dashboard view is read-only and there is no DB fetch.
   const journeyTemplates = getAllJourneyEmailTemplates()
 
-  const [{ data: txTemplates }, { data: recentLog }] = await Promise.all([
+  const [
+    { data: txTemplates },
+    { data: journeyLog },
+    { data: notificationLog },
+  ] = await Promise.all([
     supabase
       .from('transactional_email_templates')
       .select('key, audience, editable, display_name, description, subject, eyebrow, heading, lead_html, body_html, cta_label, closing_html, variables, updated_at')
@@ -26,16 +30,22 @@ export default async function AutomaticEmailsPage() {
       .order('display_name', { ascending: true }),
     supabase
       .from('journey_email_log')
-      .select('id, arc, week_idx, recipient_email, subject, sent_at')
+      .select('id, arc, week_idx, recipient_email, subject, sent_at, resend_id')
       .order('sent_at', { ascending: false })
-      .limit(20),
+      .limit(200),
+    supabase
+      .from('notification_log')
+      .select('id, lead_id, notification_type, recipient, status, payload, failure_reason, sent_at, created_at')
+      .order('created_at', { ascending: false })
+      .limit(200),
   ])
 
   return (
     <AutomaticEmailsPanel
       journeyTemplates={journeyTemplates}
       transactionalTemplates={(txTemplates ?? []) as TransactionalEmailTemplate[]}
-      recentLog={recentLog ?? []}
+      journeyLog={journeyLog ?? []}
+      notificationLog={notificationLog ?? []}
       founderEmail={founder.email}
     />
   )
