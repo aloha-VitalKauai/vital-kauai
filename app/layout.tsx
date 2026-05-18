@@ -26,6 +26,10 @@ export const metadata: Metadata = {
     template: "%s | Vital Kauaʻi",
   },
   description: "A living sanctuary of transformation and awakening on Kauaʻi's sacred North Shore.",
+  robots: {
+    index: false,
+    follow: false,
+  },
   openGraph: {
     title: "Vital Kauaʻi",
     description: "A living sanctuary of transformation and awakening on Kauaʻi's sacred North Shore.",
