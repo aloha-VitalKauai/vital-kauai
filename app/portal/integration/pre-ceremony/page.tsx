@@ -480,6 +480,8 @@ export default function PreCeremonyPage() {
 
         /* VIDEO */
         .video-frame { border:.5px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:14px; }
+        .video-embed { position:relative;width:100%;padding-bottom:56.25%;background:var(--forest); }
+        .video-embed iframe { position:absolute;inset:0;width:100%;height:100%;border:0; }
         .video-primer { background:var(--forest);padding:24px 28px;display:flex;align-items:center;gap:20px; }
         .vp-play { width:44px;height:44px;border-radius:50%;border:1px solid rgba(168,197,172,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer; }
         .vp-play-icon { color:var(--sage-lt);font-size:14px;margin-left:3px; }
@@ -894,19 +896,32 @@ export default function PreCeremonyPage() {
                   <p className="pne-companion-read pne-companion-read-static">{label}</p>
                 )
               })()}
-              <div className="video-frame" style={{ marginTop: 18 }}>
-                <div className="video-primer">
-                  <div className="vp-play"><span className="vp-play-icon">▶</span></div>
-                  <div>
-                    <div className="vp-label">PNE Teaching · Week {i + 1}</div>
-                    <div className="vp-text">
-                      {PRE_PNE_DETAILS[i]?.teaching
-                        ?? 'A teaching from PsychoNeuroEnergetics paired with this week’s principle and the body’s lived response to it.'}
-                    </div>
-                    <div className="vp-coming-soon">Coming Soon</div>
+              {i === 0 ? (
+                <div className="video-frame" style={{ marginTop: 18 }}>
+                  <div className="video-embed">
+                    <iframe
+                      src="https://www.youtube.com/embed/oAY5AUzcFBw"
+                      title="PNE Perspective: The Language of the Body"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="video-frame" style={{ marginTop: 18 }}>
+                  <div className="video-primer">
+                    <div className="vp-play"><span className="vp-play-icon">▶</span></div>
+                    <div>
+                      <div className="vp-label">PNE Teaching · Week {i + 1}</div>
+                      <div className="vp-text">
+                        {PRE_PNE_DETAILS[i]?.teaching
+                          ?? 'A teaching from PsychoNeuroEnergetics paired with this week’s principle and the body’s lived response to it.'}
+                      </div>
+                      <div className="vp-coming-soon">Coming Soon</div>
+                    </div>
+                  </div>
+                </div>
+              )}
               {i === 0 ? (
                 <div className="pne-detail pne-practice-rich">
                   <div className="vp-label">This Week&apos;s PNE Practice: The 4 / 7 / 8 Breath</div>
