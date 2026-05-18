@@ -154,13 +154,23 @@ export async function POST(req: NextRequest) {
   // === STEP 6: Extract invitee data ===
   const { email, fullName, eventName, startTime, calendlyEventId, inviteeUri } =
     extractInviteeData(body)
-  console.log(`[webhook] STEP:extract, email=${email}, name=${fullName}, eventId=${calendlyEventId}, inviteeUri=${inviteeUri}`)
+  console.log(`[webhook] STEP:extract, email=${email}, name=${fullName}, eventId=${calendlyEventId}, inviteeUri=${inviteeUri}, eventName=${eventName}`)
 
   if (!email) {
     const keys = JSON.stringify(Object.keys(body.payload || {}))
     console.error(`[webhook] STEP:extract, FAILED, no email. Payload keys: ${keys}`)
     await updateReceipt(supabase, receiptId, 'failed', `Missing email. Keys: ${keys}`)
     return NextResponse.json({ ok: false, reason: 'missing_email' }, { status: 200 })
+  }
+
+  // === STEP 6b: Filter non-discovery event types ===
+  // Prep calls (booked by existing members from within the portal pre-ceremony
+  // flow) must NOT trigger the new-lead approval pipeline. Calendly sends its
+  // own native notification for those.
+  if (/prep/i.test(eventName)) {
+    console.log(`[webhook] STEP:filter-eventtype, ignored prep-call booking: ${eventName} for ${email}`)
+    await updateReceipt(supabase, receiptId, 'ignored', `Prep call, not a new lead: ${eventName}`)
+    return NextResponse.json({ ok: true, ignored: true, reason: 'prep_call' })
   }
 
   // === STEP 7: Idempotency, use DB UNIQUE constraint to block race conditions ===
