@@ -67,7 +67,12 @@ export const PRE_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
     reflection: 'When you feel anger, what sensations arise in your body? When you feel sadness? When you feel fear?',
     reflectionFollowUp: 'What emotions had no safe place at home as you were growing up? What did your parents, directly or indirectly, teach you about feeling?',
   },
-  { practice: '', reflection: '' },
+  {
+    teaching: 'A teaching from PsychoNeuroEnergetics: beliefs as embodied patterns the body has learned, the survival truths that hold suffering in place, and how a trauma imprint can soften when the body feels safe enough to know something new.',
+    practice: '',
+    reflection: 'What do you believe about yourself, others, pain, love, and safety that has made suffering feel necessary?',
+    reflectionFollowUp: 'What did you decide about yourself, life, the divine, or others during painful moments of your childhood?',
+  },
   { practice: '', reflection: '' },
 ]
 

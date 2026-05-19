@@ -80,10 +80,11 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     weekIdx: 4,
     code: "ALOHA",
     theme: "Connection",
-    title: "Forgiveness and Belonging",
-    href: "/portal/pne",
-    status: "coming-soon",
-    videoSummary: "Coming Soon.",
+    title: "The Architecture of Belief",
+    href: "/portal/somatic-companion/week-5",
+    status: "live",
+    videoSummary:
+      "Beliefs as embodied patterns, the survival truths that hold suffering in place, and how a trauma imprint softens when the body feels safe enough to know something new.",
   },
   {
     phase: "pre",

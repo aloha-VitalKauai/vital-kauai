@@ -317,7 +317,10 @@ export const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Guide',
+        text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Guide: The Architecture of Belief',
+        links: [
+          { text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Guide: The Architecture of Belief', href: '/portal/somatic-companion/week-5#top' },
+        ],
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },

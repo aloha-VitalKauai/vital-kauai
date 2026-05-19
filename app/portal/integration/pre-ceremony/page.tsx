@@ -846,6 +846,8 @@ export default function PreCeremonyPage() {
                   <>PNE (PsychoNeuroEnergetics) Perspective: <em>Building Somatic Awareness</em></>
                 ) : i === 3 ? (
                   <>PNE (PsychoNeuroEnergetics) Perspective: <em>The Language of Emotion</em></>
+                ) : i === 4 ? (
+                  <>PNE (PsychoNeuroEnergetics) Perspective: <em>The Architecture of Belief</em></>
                 ) : 'PNE Perspective'}
               </h3>
               {i === 0 && (
@@ -885,6 +887,16 @@ export default function PreCeremonyPage() {
                 <p className="w1-body">
                   This week&apos;s PNE teaching turns toward emotion as the body&apos;s signal. The PNE Guide walks through the five primary emotions and the intelligence each one carries, healthy and unhealthy ways those emotions move, the secondary patterns that form when feeling has no safe place to land, the coping patterns that repeat as a result, and what the body holds when emotion stays unmet. From there, it offers a three-step inner practice for meeting an emotion that has been waiting to be heard.
                 </p>
+              )}
+              {i === 4 && (
+                <>
+                  <p className="w1-body">
+                    This week&apos;s PNE teaching turns toward belief, understood not as thought alone but as an embodied pattern of sensation, emotion, and meaning the body has learned.
+                  </p>
+                  <p className="w1-body">
+                    The PNE Guide walks through the survival truths that hold suffering in place, six common limiting beliefs and how they show up in daily life, and how a trauma imprint forms when a moment of unsafety links sensation, feeling, and meaning. From there, it shares the PNE approach of meeting the charge beneath the belief so the body can know, gently, that <em>that was then, this is now</em>, and offers exploration questions to carry into ceremony.
+                  </p>
+                </>
               )}
               {(() => {
                 const c = PRE_PNE_COMPANION[i]
@@ -965,6 +977,20 @@ export default function PreCeremonyPage() {
                     <div className="pne-step"><span className="pne-step-time">III</span><span className="pne-step-text"><strong>Show the Body It Is Safe.</strong> &ldquo;I am here. You are safe to feel this.&rdquo;</span></div>
                   </div>
                   <p className="vp-text pne-practice-closer">Notice which primary emotion sits beneath the secondary one. The pattern often softens once it has been seen.</p>
+                </div>
+              ) : i === 4 ? (
+                <div className="pne-detail pne-practice-rich">
+                  <div className="vp-label">This Week&apos;s PNE Practice: Four Questions to Carry</div>
+                  <h4 className="pne-practice-title">Four Questions to Carry</h4>
+                  <p className="pne-practice-tag">An invitation to meet the beliefs that have organized your life</p>
+                  <p className="vp-text pne-practice-p">Read slowly. Notice which question stirs something in the body. Choose one and let yourself answer in pieces over the week.</p>
+                  <div className="pne-practice-steps">
+                    <div className="pne-step"><span className="pne-step-time">I</span><span className="pne-step-text">What do you believe about yourself, others, pain, love, and safety that has made suffering feel necessary?</span></div>
+                    <div className="pne-step"><span className="pne-step-time">II</span><span className="pne-step-text">What do you believe you have to do or be in order to be loved, accepted, or safe?</span></div>
+                    <div className="pne-step"><span className="pne-step-time">III</span><span className="pne-step-text">What parts of yourself do you feel you need to hide? Why?</span></div>
+                    <div className="pne-step"><span className="pne-step-time">IV</span><span className="pne-step-text">What did you decide about yourself, life, the divine, or others during painful moments of your childhood?</span></div>
+                  </div>
+                  <p className="vp-text pne-practice-closer">The truest answer arrives in its own time. Let the question begin its quiet work.</p>
                 </div>
               ) : (
                 <div className="pne-detail">
