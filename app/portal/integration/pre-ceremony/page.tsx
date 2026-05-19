@@ -53,10 +53,11 @@ type Progress = {
 // Per-week PNE Companion theme + URL, filtered from the shared companion
 // registry. Live weeks get a hash-anchored deep-link to #top; coming-soon
 // weeks render their theme as plain text.
-const PRE_PNE_COMPANION: ReadonlyArray<{ theme: string; url: string }> =
+const PRE_PNE_COMPANION: ReadonlyArray<{ theme: string; url: string; videoUrl?: string }> =
   companionsFor('pre').map((c) => ({
     theme: c.title,
     url: c.status === 'live' ? `${c.href}#top` : '',
+    videoUrl: c.videoUrl,
   }))
 
 // Render an action's text with optional inline links. Each link matches a
@@ -896,12 +897,12 @@ export default function PreCeremonyPage() {
                   <p className="pne-companion-read pne-companion-read-static">{label}</p>
                 )
               })()}
-              {i === 0 ? (
+              {PRE_PNE_COMPANION[i]?.videoUrl ? (
                 <div className="video-frame" style={{ marginTop: 18 }}>
                   <div className="video-embed">
                     <iframe
-                      src="https://www.youtube.com/embed/oAY5AUzcFBw"
-                      title="PNE Perspective: The Language of the Body"
+                      src={PRE_PNE_COMPANION[i].videoUrl}
+                      title={`PNE Perspective: ${PRE_PNE_COMPANION[i].theme}`}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
                     />
