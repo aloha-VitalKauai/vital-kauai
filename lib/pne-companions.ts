@@ -22,6 +22,10 @@ export type PneCompanion = {
                            //   resolve to the landing if the page is unbuilt)
   status: CompanionStatus
   videoSummary: string
+  // YouTube embed URL (https://www.youtube.com/embed/<id>). When set, the
+  // /portal/pne week row and the /portal/integration/{pre,post}-ceremony
+  // PNE Perspective section render the iframe in place of the placeholder.
+  videoUrl?: string
 }
 
 export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
@@ -36,6 +40,7 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     status: "live",
     videoSummary:
       "Internal safety, what happens when the system senses threat, and how internal and external structures build the ground your nervous system can rest into.",
+    videoUrl: "https://www.youtube.com/embed/oAY5AUzcFBw",
   },
   {
     phase: "pre",

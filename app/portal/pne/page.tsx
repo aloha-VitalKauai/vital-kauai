@@ -107,7 +107,34 @@ function WeekRow({ companion }: { companion: PneCompanion }) {
   return (
     <div className="pne-week-row" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)", gap: 14 }}>
       <CompanionCard companion={companion} />
-      <VideoCard companion={companion} />
+      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        <VideoCard companion={companion} />
+        {companion.videoUrl && <VideoPlayer companion={companion} />}
+      </div>
+    </div>
+  );
+}
+
+function VideoPlayer({ companion }: { companion: PneCompanion }) {
+  return (
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        paddingBottom: "56.25%",
+        background: FOREST_DEEP,
+        border: `1px solid ${GOLD_DIM}`,
+        borderRadius: 6,
+        overflow: "hidden",
+      }}
+    >
+      <iframe
+        src={companion.videoUrl}
+        title={`PNE Guide · Week ${companion.weekIdx + 1} · ${companion.title}`}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0 }}
+      />
     </div>
   );
 }
