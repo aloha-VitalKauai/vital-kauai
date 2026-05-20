@@ -66,7 +66,7 @@ const FAQ_SECTIONS: FaqSection[] = [
             Vital Kauaʻi is a legally established church, and all contributions support our sacred mission. For members joining the weeklong ceremony arc, the contribution begins at $15,000.<sup>*</sup> This covers six weeks of preparation with two sessions with your personal integration guide and three check-ins with Rachel and Josh. It includes your accommodations, therapeutic modalities, and meals during ceremony week. It also includes six weeks of integration afterward — six weekly sessions with your guide and two follow-ups with Rachel and Josh.{"\n\n"}
             Private journeys start at $6,500.<sup>*</sup>{"\n\n"}
             We believe this work should be accessible to anyone who is truly called: kamaʻāina rates and need-based arrangements are always welcome in that conversation, and we encourage you to reach out to us.{"\n\n"}
-            <em style={{ fontSize: "0.88em", opacity: 0.85 }}>*No portion of the contribution pays for the medicine. It supports the people and place that hold you through ceremony.</em>
+            <em style={{ fontSize: "0.88em", opacity: 0.85 }}>*No portion of the contribution pays for the medicine. It supports the people and place that hold you through your journey.</em>
           </>
         ),
       },
