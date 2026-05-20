@@ -95,7 +95,7 @@ export const members: Member[] = [
   {
     id: "josh_plant",
     name: "Josh Perdue",
-    role: "Plant Medicine Guide · Bwiti Initiate",
+    role: "Plant Medicine Guide",
     cat: "plant",
     photo: "/images/about/josh-perdue.jpg",
     shortBio:
