@@ -251,7 +251,7 @@ export function AboutPage() {
             </div>
           </div>
           <p className={styles.storyPara}>
-            I traveled to Gabon and underwent an authentic initiation. I carry that initiation as both a gift and a lifelong responsibility. It is the foundation of everything I hold for others.
+            I traveled to Gabon and underwent an authentic initiation. I carry that initiation as both a gift and a lifelong responsibility.
           </p>
           <p className={styles.storyPara}>
             My path continued at Highden Temple in New Zealand, where I trained in Tantric arts and sacred sexuality within the ISTA lineage. I studied somatic therapy with Judith Johnson, founder of PsychoNeuroEnergetics, and became certified in EFT (Emotional Freedom Technique).
