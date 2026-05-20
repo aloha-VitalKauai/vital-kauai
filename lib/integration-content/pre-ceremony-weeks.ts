@@ -22,6 +22,7 @@ export const actionsForWeek = (
   if (weekIdx === 0) {
     return [
       { kind: 'internal', href: '/intake-form',                        text: 'Fill out Your Member Intake & Readiness Form' },
+      { kind: 'external', href: 'https://calendly.com/aloha-vitalkauai/onboarding', text: 'Schedule onboarding call with Rachel and Josh' },
       { kind: 'hash',     href: '#journal-prompts',                    text: 'Respond to this week’s journal prompts' },
       { kind: 'external', href: '/iboga-preparedness-guide.html#iboga', text: 'Read "Understanding Iboga" and "What Iboga Works On" in your Preparedness Guide' },
       { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Guide: The Language of the Body' },
