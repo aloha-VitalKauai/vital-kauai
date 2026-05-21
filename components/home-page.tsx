@@ -589,10 +589,10 @@ export function HomePage() {
               </p>
               <h3 className={styles.supportHeader}>Community</h3>
               <p>
-                Healing deepens when it is held with others. Monthly community calls keep us
-                connected and accountable in our integrative living. Your home team is part of
-                the container too, and we help prepare them before your arrival and in receiving
-                you when you return home.
+                Healing deepens when it is held with others. Bi-monthly Vital Kauaʻi community
+                calls keep you connected and accountable as you integrate new ways into daily
+                living. Your home team is part of the container too, and we help prepare them
+                before your arrival and in receiving you when you return home.
               </p>
             </div>
           </div>
@@ -615,7 +615,7 @@ export function HomePage() {
         </div>
 
         <div className={`${styles.offeringTags} ${styles.reveal}`}>
-          {["Somatics", "Nervous System Safety", "Cleansing", "Yoga", "Breathwork", "Sound Healing", "Bodywork", "Movement", "Energetics", "Nature Immersion", "Integration", "Holistic Thriving", "Ceremony"].map(
+          {["Evidence-Based Preparation", "Nervous System Safety", "1:1 Somatic Coaching (PNE)", "Deeply Held Transformative Journey", "Held in Community", "Clear Integration Plan", "Weeklong Ceremony Arc", "Yoga", "Breathwork", "Movement", "Bodywork", "Sound Healing", "Energetics", "Cleansing", "Nature Immersion"].map(
             (tag, index) => (
               <span key={tag} className={index % 2 === 0 ? styles.tagSage : styles.tagGold}>
                 {tag}
