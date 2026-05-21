@@ -70,8 +70,7 @@ export const PRE_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
   {
     teaching: 'A teaching from PsychoNeuroEnergetics: beliefs as embodied patterns the body has learned, the survival truths that hold suffering in place, and how a trauma imprint can soften when the body feels safe enough to know something new.',
     practice: '',
-    reflection: 'What do you believe about yourself, others, pain, love, and safety that has made suffering feel necessary?',
-    reflectionFollowUp: 'What did you decide about yourself, life, the divine, or others during painful moments of your childhood?',
+    reflection: 'Notice when a familiar belief speaks.',
   },
   { practice: '', reflection: '' },
 ]
@@ -130,9 +129,10 @@ export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
     theme: 'Connection',
     title: 'You walk this with others',
     prompts: [
-      { q: 'How can you be more compassionate with yourself?' },
-      { q: 'Who do you need to forgive? What do you need to forgive in yourself?', hint: 'Forgiveness is releasing the weight you carry on their behalf.' },
-      { q: 'How will you connect with your support team, and what specific support will you ask for from them?', hint: 'Be specific. The more specific the ask, the more support lands.' },
+      { key: 'w4-fqc-1', q: 'What do you believe about yourself, others, pain, love, and safety that has made suffering feel necessary?' },
+      { key: 'w4-fqc-2', q: 'What do you believe you have to do or be in order to be loved, accepted, or safe?' },
+      { key: 'w4-fqc-3', q: 'What parts of yourself do you feel you need to hide? Why?' },
+      { key: 'w4-fqc-4', q: 'What did you decide about yourself, life, the divine, or others during painful moments of your childhood?' },
     ],
   },
   {

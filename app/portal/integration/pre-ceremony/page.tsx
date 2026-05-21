@@ -894,7 +894,10 @@ export default function PreCeremonyPage() {
                     This week&apos;s PNE teaching turns toward belief, understood not as thought alone but as an embodied pattern of sensation, emotion, and meaning the body has learned.
                   </p>
                   <p className="w1-body">
-                    The PNE Guide walks through the survival truths that hold suffering in place, six common limiting beliefs and how they show up in daily life, and how a trauma imprint forms when a moment of unsafety links sensation, feeling, and meaning. From there, it shares the PNE approach of meeting the charge beneath the belief so the body can know, gently, that <em>that was then, this is now</em>, and offers exploration questions to carry into ceremony.
+                    The PNE Guide walks through the survival truths that hold suffering in place, six common limiting beliefs and how they show up in daily life, and how a trauma imprint forms when a moment of unsafety links sensation, feeling, and meaning.
+                  </p>
+                  <p className="w1-body">
+                    From there, it shares the PNE approach of meeting the charge beneath the belief so the body can know that <em>that was then, this is now</em>, and offers exploration questions to carry into ceremony.
                   </p>
                 </>
               )}
@@ -990,7 +993,6 @@ export default function PreCeremonyPage() {
                     <div className="pne-step"><span className="pne-step-time">III</span><span className="pne-step-text">What parts of yourself do you feel you need to hide? Why?</span></div>
                     <div className="pne-step"><span className="pne-step-time">IV</span><span className="pne-step-text">What did you decide about yourself, life, the divine, or others during painful moments of your childhood?</span></div>
                   </div>
-                  <p className="vp-text pne-practice-closer">The truest answer arrives in its own time. Let the question begin its quiet work.</p>
                 </div>
               ) : (
                 <div className="pne-detail">
