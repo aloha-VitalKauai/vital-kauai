@@ -241,6 +241,93 @@ body {
   line-height: 1.8;
 }
 
+/* ── PHASED MAP ── */
+.phase-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 6px;
+}
+.phase-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--sage);
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+}
+.phase-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.phase-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+.phase-why {
+  font-size: 13px;
+  color: var(--stone);
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+.phase-do-dont {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.phase-list-label {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.phase-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.phase-list li {
+  font-size: 12.5px;
+  color: var(--stone);
+  line-height: 1.55;
+  padding: 3px 0;
+}
+.maladaptive-callout {
+  max-width: 860px;
+  margin: 22px 0 0;
+  background: var(--warm-white);
+  padding: 24px 28px;
+  border-left: 3px solid var(--gold);
+}
+.maladaptive-callout p.maladaptive-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.maladaptive-callout p.maladaptive-body {
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 1.9;
+}
+@media (max-width: 720px) {
+  .phase-grid { grid-template-columns: 1fr; }
+  .phase-do-dont { gap: 14px; }
+}
+
 /* ── MEDICINE FORMS ── */
 .medicine-grid {
   display: grid;
@@ -1094,36 +1181,138 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
   <h2 class="section-heading">The Days <em>After</em></h2>
   <p class="section-intro">The days immediately following ceremony are an incredible opportunity to reinforce new beliefs, habits, and ways of being.</p>
 
-  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;" class="reveal">
-
-    <div style="background:white;border:1px solid var(--border);padding:24px 22px;">
-      <span style="font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;">Days 2–4</span>
-      <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text-dark);margin-bottom:8px;line-height:1.2;">Rest, Somatic Care, Nature &amp; Offering</h3>
-      <p style="font-size:12.5px;color:var(--stone);line-height:1.8;margin-bottom:14px;">Sleep as much as you can. Return to your journal and capture anything important you want to remember.</p>
-      <p style="font-size:12.5px;color:var(--stone);line-height:1.8;margin-bottom:14px;">Gentle movement, bodywork, and time in nature will support you.</p>
-      <p style="font-size:12.5px;color:var(--stone);line-height:1.8;margin:0;">You'll have one integration session with your Integration Guide during this time to deepen what arose, help process anything that's still purging, and create space to begin making meaning of what arose.</p>
-    </div>
-
-    <div style="background:white;border:1px solid var(--border);padding:24px 22px;">
-      <span style="font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;">As Needed</span>
-      <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text-dark);margin-bottom:8px;line-height:1.2;">Supplemental Dosing</h3>
-      <p style="font-size:12.5px;color:var(--stone);line-height:1.8;">Partial or booster dosing is available when appropriate, to deepen, anchor, or complete what arose. Your care team guides this in full dialogue with your body.</p>
-    </div>
-
-    <div style="background:white;border:1px solid var(--border);padding:24px 22px;">
-      <span style="font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;">1 Week After</span>
-      <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text-dark);margin-bottom:8px;line-height:1.2;">Sexual Abstinence</h3>
-      <p style="font-size:12.5px;color:var(--stone);line-height:1.8;">Sexual abstinence supports the body's integration in the week following ceremony, as the system is reorganizing.</p>
-    </div>
-
-  </div>
-
   <!-- 48-hour neuroplasticity callout -->
-  <div style="max-width:860px;margin:20px 0 0;background:var(--forest);padding:32px 36px;display:flex;gap:28px;align-items:flex-start;" class="reveal">
+  <div style="max-width:860px;margin:0 0 28px;background:var(--forest);padding:32px 36px;display:flex;gap:28px;align-items:flex-start;" class="reveal">
     <div style="font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;color:rgba(200,169,110,0.22);line-height:1;flex-shrink:0;">48</div>
     <div>
       <p style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">The Critical Window</p>
       <p style="font-size:14px;color:rgba(245,240,232,0.75);line-height:1.9;">The 48 hours after ceremony are neurologically extraordinary. The brain is unusually plastic, exceptionally capable of rewiring habits, patterns, and perspectives. Simple choices in this window like being in nature, journaling, re-inforcing new programs, meaningful conversation, and rest, have a significant effect on your long-term outcome. The Integration section below carries this window forward.</p>
+    </div>
+  </div>
+
+  <!-- Phased map of the noribogaine window -->
+  <div class="reveal" style="margin-top:40px;">
+    <p class="eyebrow" style="color:var(--gold);margin-bottom:6px;">Beyond the First 48</p>
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:var(--text-dark);margin-bottom:12px;line-height:1.2;">The Window, <em style="font-style:italic;color:var(--sage);">Phase by Phase</em></h3>
+    <p style="font-size:14px;color:var(--text-mid);line-height:1.9;max-width:720px;margin-bottom:22px;">Iboga keeps the brain plastic for roughly four weeks. What you practice in each phase is what wires in. This map carries you from the first week of stillness through the sweet spot for deeper training and into the work of maintenance.</p>
+
+    <div class="phase-grid">
+
+      <!-- Phase 1 -->
+      <div class="phase-card">
+        <span class="phase-eyebrow">Days 1–7</span>
+        <h4 class="phase-title">Do Less</h4>
+        <p class="phase-why">Peak synaptogenesis is still happening. The brain is highly impressionable and unstable.</p>
+        <div class="phase-do-dont">
+          <div>
+            <p class="phase-list-label">Do</p>
+            <ul class="phase-list">
+              <li>Rest and sleep</li>
+              <li>Time in nature</li>
+              <li>Bodywork</li>
+              <li>Sunrise and sunset</li>
+              <li>Easy food, slow hydration</li>
+              <li>Sexual abstinence through Day 7</li>
+            </ul>
+          </div>
+          <div>
+            <p class="phase-list-label">Don&rsquo;t</p>
+            <ul class="phase-list">
+              <li>Intense exertion</li>
+              <li>Screen time</li>
+              <li>Alcohol or other psychedelics</li>
+              <li>Music with lyrics</li>
+              <li>Big plans or decisions</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="phase-card">
+        <span class="phase-eyebrow">Days 8–14</span>
+        <h4 class="phase-title">Anchoring</h4>
+        <p class="phase-why">The window stays open and more stable than the first week. Circuits are ready to practice wiring.</p>
+        <div class="phase-do-dont">
+          <div>
+            <p class="phase-list-label">Do</p>
+            <ul class="phase-list">
+              <li>Integration sessions</li>
+              <li>Soft breathwork</li>
+              <li>Simple service</li>
+              <li>Nourishing reading</li>
+              <li>Spiritual practice</li>
+            </ul>
+          </div>
+          <div>
+            <p class="phase-list-label">Don&rsquo;t</p>
+            <ul class="phase-list">
+              <li>Big decisions</li>
+              <li>Oversharing the journey</li>
+              <li>Old habits</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="phase-card">
+        <span class="phase-eyebrow">Days 15–30</span>
+        <h4 class="phase-title">Reinforcement</h4>
+        <p class="phase-why">Iboga keeps circuits plastic up to four weeks. This is the sweet spot for deeper training.</p>
+        <div class="phase-do-dont">
+          <div>
+            <p class="phase-list-label">Do</p>
+            <ul class="phase-list">
+              <li>Daily practice</li>
+              <li>Learn something new</li>
+              <li>Time with animals</li>
+              <li>Deliberate self-care</li>
+              <li>Supplemental microdosing if your guide recommends it</li>
+            </ul>
+          </div>
+          <div>
+            <p class="phase-list-label">Don&rsquo;t</p>
+            <ul class="phase-list">
+              <li>Toxic relationships</li>
+              <li>Addictive habits</li>
+              <li>Skipping rest</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 4 -->
+      <div class="phase-card">
+        <span class="phase-eyebrow">After 30 Days</span>
+        <h4 class="phase-title">Maintenance &amp; Growth</h4>
+        <p class="phase-why">The acute window closes. The circuits formed in the first weeks are stabilizing. The work is maintenance and growth.</p>
+        <div class="phase-do-dont">
+          <div>
+            <p class="phase-list-label">Do</p>
+            <ul class="phase-list">
+              <li>Keep reinforcing</li>
+              <li>Cycle reflection</li>
+              <li>Build community</li>
+              <li>Smart, embodied goals</li>
+            </ul>
+          </div>
+          <div>
+            <p class="phase-list-label">Don&rsquo;t</p>
+            <ul class="phase-list">
+              <li>Falling back</li>
+              <li>Chasing peak states</li>
+              <li>Over-explaining the journey</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="maladaptive-callout">
+      <p class="maladaptive-eyebrow">Maladaptive Plasticity</p>
+      <p class="maladaptive-body">The brain is wiring whatever you give it. Old habits practiced now will harden as quickly as new ones. Choose with care.</p>
     </div>
   </div>
 

@@ -193,7 +193,7 @@ function DietaryContent() {
                 [{ name: "CoQ10", purpose: "Mitochondrial and heart support. Antioxidant that supports energy production.", timing: "Begin 4 weeks before" }, { name: "Vitamin C", purpose: "Immune and adrenal support. Powerful antioxidant that supports detoxification.", timing: "Begin 4 weeks before" }],
                 [{ name: "DHA + EPA (Omega-3)", purpose: "Brain and nervous system support. Supports membrane integrity.", timing: "Begin 4 weeks before" }, { name: "B Complex", purpose: "Nervous system and energy support. Supports methylation and mood stability.", timing: "Begin 4 weeks before" }],
                 [{ name: "NAC (N-Acetyl Cysteine)", purpose: "Liver support and antioxidant. Precursor to glutathione.", timing: "Begin 4 weeks, discontinue 72 hrs before" }, { name: "Milk Thistle", purpose: "Liver support and gentle detoxification.", timing: "Begin 4 weeks, discontinue 1 week before" }],
-                [{ name: "Probiotics", purpose: "Gut microbiome support. A healthy gut supports mood, immunity, and integration.", timing: "Begin 4 weeks before" }],
+                [{ name: "Probiotics", purpose: "Gut microbiome support. A healthy gut supports mood, immunity, and integration.", timing: "Begin 4 weeks before" }, { name: "Lion's Mane", purpose: "Nerve growth factor and BDNF support. Mushroom that supports the brain's repair pathways through the neuroplasticity window.", timing: "Begin 4 weeks before, continue through integration" }],
               ].map((row, ri) => (
                 <div key={ri} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                   {row.map((s) => (
