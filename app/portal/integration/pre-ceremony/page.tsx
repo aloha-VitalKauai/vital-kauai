@@ -990,7 +990,6 @@ export default function PreCeremonyPage() {
                     <div className="pne-step"><span className="pne-step-time">III</span><span className="pne-step-text">What parts of yourself do you feel you need to hide? Why?</span></div>
                     <div className="pne-step"><span className="pne-step-time">IV</span><span className="pne-step-text">What did you decide about yourself, life, the divine, or others during painful moments of your childhood?</span></div>
                   </div>
-                  <p className="vp-text pne-practice-closer">The truest answer arrives in its own time. Let the question begin its quiet work.</p>
                 </div>
               ) : (
                 <div className="pne-detail">

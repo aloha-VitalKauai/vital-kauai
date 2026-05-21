@@ -790,7 +790,7 @@ export default async function SomaticCompanionWeek5Page() {
               <div className="hw-step">
                 <div className="hw-num">Two</div>
                 <h3>Sit with one Exploration Question.</h3>
-                <p className="reflection">Choose the question that stirred something in the body. Write it at the top of a page and let yourself answer in pieces over the week. The truest answer will arrive in its own time.</p>
+                <p className="reflection">Choose the question that stirred something in the body and write about it in this week&apos;s PNE Reflection.</p>
               </div>
 
               <div className="hw-step">
