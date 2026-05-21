@@ -922,6 +922,11 @@ export default function PreCeremonyPage() {
                       allowFullScreen
                     />
                   </div>
+                  {i === 0 && (
+                    <div className="vp-text" style={{ padding: '14px 18px' }}>
+                      In our Week 1 call, our team shares why this work matters and why PsychoNeuroEnergetics sits at the heart of Vital Kauaʻi. We walk through some of this week&apos;s teachings, answer questions from members, and offer a HeartMath breath for regulation. Judith Johnson, the founder of PNE, also shares some of her own story and one traumatic imprint that shaped the work.
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="video-frame" style={{ marginTop: 18 }}>
