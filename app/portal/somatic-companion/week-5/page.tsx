@@ -618,9 +618,9 @@ export default async function SomaticCompanionWeek5Page() {
           <div className="vk-narrow">
             <div className="vk-eyebrow">Survival Truths That Outstayed Their Time</div>
             <h2 className="vk-title">Beliefs and the <em>Addiction to Suffering</em></h2>
-            <p className="vk-lede">The beliefs that keep someone tied to suffering are rarely chosen. They are learned survival truths that may have once protected you, helped you belong, or made sense of pain. Over time, they become patterns that organize limitation, long after the moment that made them needed has passed.</p>
+            <p className="vk-lede">The beliefs that keep someone tied to suffering are rarely chosen. They are learned survival truths that may have once protected you, helped you belong, or made sense of pain. Over time, they become patterns that organize limitation, long after the moment that made them has passed.</p>
 
-            <p className="vk-body" style={{ marginTop: 20 }}>Some of the most common are these.</p>
+            <p className="vk-body" style={{ marginTop: 20 }}>Some of the most common are these:</p>
 
             <div className="belief-grid">
               <div className="belief-card">

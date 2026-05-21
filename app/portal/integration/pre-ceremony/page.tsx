@@ -894,7 +894,10 @@ export default function PreCeremonyPage() {
                     This week&apos;s PNE teaching turns toward belief, understood not as thought alone but as an embodied pattern of sensation, emotion, and meaning the body has learned.
                   </p>
                   <p className="w1-body">
-                    The PNE Guide walks through the survival truths that hold suffering in place, six common limiting beliefs and how they show up in daily life, and how a trauma imprint forms when a moment of unsafety links sensation, feeling, and meaning. From there, it shares the PNE approach of meeting the charge beneath the belief so the body can know, gently, that <em>that was then, this is now</em>, and offers exploration questions to carry into ceremony.
+                    The PNE Guide walks through the survival truths that hold suffering in place, six common limiting beliefs and how they show up in daily life, and how a trauma imprint forms when a moment of unsafety links sensation, feeling, and meaning.
+                  </p>
+                  <p className="w1-body">
+                    From there, it shares the PNE approach of meeting the charge beneath the belief so the body can know that <em>that was then, this is now</em>, and offers exploration questions to carry into ceremony.
                   </p>
                 </>
               )}
