@@ -983,16 +983,10 @@ export default function PreCeremonyPage() {
                 </div>
               ) : i === 4 ? (
                 <div className="pne-detail pne-practice-rich">
-                  <div className="vp-label">This Week&apos;s PNE Practice: Four Questions to Carry</div>
-                  <h4 className="pne-practice-title">Four Questions to Carry</h4>
-                  <p className="pne-practice-tag">An invitation to meet the beliefs that have organized your life</p>
-                  <p className="vp-text pne-practice-p">Read slowly. Notice which question stirs something in the body. Choose one and let yourself answer in pieces over the week.</p>
-                  <div className="pne-practice-steps">
-                    <div className="pne-step"><span className="pne-step-time">I</span><span className="pne-step-text">What do you believe about yourself, others, pain, love, and safety that has made suffering feel necessary?</span></div>
-                    <div className="pne-step"><span className="pne-step-time">II</span><span className="pne-step-text">What do you believe you have to do or be in order to be loved, accepted, or safe?</span></div>
-                    <div className="pne-step"><span className="pne-step-time">III</span><span className="pne-step-text">What parts of yourself do you feel you need to hide? Why?</span></div>
-                    <div className="pne-step"><span className="pne-step-time">IV</span><span className="pne-step-text">What did you decide about yourself, life, the divine, or others during painful moments of your childhood?</span></div>
-                  </div>
+                  <div className="vp-label">This Week&apos;s PNE Practice: Notice When a Familiar Belief Speaks</div>
+                  <h4 className="pne-practice-title">Notice When a Familiar Belief Speaks</h4>
+                  <p className="pne-practice-tag">A practice for meeting the beliefs that have organized your life</p>
+                  <p className="vp-text pne-practice-p">When you catch a thought like &ldquo;I am not enough&rdquo; or &ldquo;I have to earn this,&rdquo; pause. Bring your attention to the body. Notice the sensation underneath the thought. Breathe with it. The pattern often begins to soften the moment it is seen.</p>
                 </div>
               ) : (
                 <div className="pne-detail">
@@ -1033,6 +1027,18 @@ export default function PreCeremonyPage() {
                           className="journal-textarea pne-reflection-textarea"
                           value={journal[`pre-pne-reflection-w${i}-3`] ?? ''}
                           onChange={(e) => updateJournal(`pre-pne-reflection-w${i}-3`, e.target.value)}
+                          placeholder="Write freely..."
+                          rows={4}
+                        />
+                      </>
+                    )}
+                    {PRE_PNE_DETAILS[i].reflectionFourth && (
+                      <>
+                        <p className="pne-reflection-q" style={{ marginTop: 24 }}>{PRE_PNE_DETAILS[i].reflectionFourth}</p>
+                        <textarea
+                          className="journal-textarea pne-reflection-textarea"
+                          value={journal[`pre-pne-reflection-w${i}-4`] ?? ''}
+                          onChange={(e) => updateJournal(`pre-pne-reflection-w${i}-4`, e.target.value)}
                           placeholder="Write freely..."
                           rows={4}
                         />
