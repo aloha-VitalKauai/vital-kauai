@@ -1363,5 +1363,21 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
 </footer>
 
 <script>
+// Intercept in-page anchor clicks so jumping between TOC sections does not
+// pollute browser history. Without this, the "Return to Portal" link sends
+// the member back through every section they jumped to instead of to the
+// portal page they came from.
+document.addEventListener('click', function(e) {
+  var link = e.target.closest('a[href^="#"]');
+  if (!link) return;
+  var href = link.getAttribute('href');
+  if (!href || href === '#') return;
+  var target = document.querySelector(href);
+  if (!target) return;
+  e.preventDefault();
+  target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  history.replaceState(null, '', href);
+});
+
 const reveals = document.querySelectorAll('.reveal');
 const observer = new IntersectionObser
