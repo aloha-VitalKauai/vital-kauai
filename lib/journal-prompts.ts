@@ -117,6 +117,8 @@ export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
     prompts: [
       { q: 'What choices are you proud of, and which ones do you wish you had made differently?' },
       { q: 'Where are you holding onto something you cannot change, and what is actually yours to choose now?' },
+      { q: 'Who or what are you still in the process of forgiving, including yourself? What would forgiveness make possible in your life?', hint: 'Forgiveness is the weight you stop carrying on their behalf, including your own.' },
+      { q: 'Where in your life are you taking less than full responsibility, and what shifts when you claim 100% of it?', hint: 'Responsibility is where your power to change what comes next lives.' },
     ],
   },
   {
@@ -152,25 +154,24 @@ export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
 
 export const POST_CEREMONY_WEEKS: JournalWeek[] = [
   {
+    code: 'MAHALO',
+    theme: 'Gratitude',
+    title: 'Begin in gratitude',
+    prompts: [
+      { key: 'w1-p2', q: 'What are you genuinely grateful for in the very situation that has been hardest? What does it feel like in the body to hold responsibility, forgiveness, gratitude, and love for yourself and this situation at once?', hint: 'Gratitude inside the difficulty is where the medicine roots.' },
+      { key: 'post-mahalo-daily', q: 'How will you incorporate gratitude into your daily living?', hint: 'Name something small and repeatable — a morning pause, a word said aloud, a moment of thanks at the table.' },
+    ],
+  },
+  {
     code: 'LŌKAHI',
     theme: 'Unity',
     title: 'The medicine is still moving in you',
     prompts: [
-      { q: 'What did the medicine show you?', hint: 'What was revealed about yourself, your nature, your life.' },
-      { q: 'What did the ceremony reveal that surprised you, or that you did not know before receiving the medicine?', hint: 'Stay with what was unexpected.' },
-      { q: 'What images, impressions, or moments from ceremony keep returning? What feels most alive or most unresolved?', hint: 'Record them. The meaning arrives in its own time.' },
-      { q: 'Where did you feel the most resistance during the journey? What were you holding onto, and what happened when you let go?', hint: 'Resistance during ceremony is information.' },
-      { q: 'What is one thing you are committed to begin? What are you committed to release?', hint: 'Trust the impulse. Write it before the mind catches up.' },
-    ],
-  },
-  {
-    code: 'HOʻOPONOPONO',
-    theme: 'Forgiveness',
-    title: 'The forgiveness work continues',
-    prompts: [
-      { q: 'Who or what are you still in the process of forgiving, including yourself? What would forgiveness make possible in your life?', hint: 'Forgiveness is the weight you stop carrying on their behalf, including your own.' },
-      { q: 'Where in your life are you taking less than full responsibility, and what shifts when you claim 100% of it?', hint: 'Hoʻoponopono begins with "I\'m sorry."' },
-      { q: 'What are you genuinely grateful for in the very situation that has been hardest? What does it feel like in the body to hold responsibility, forgiveness, gratitude, and love for yourself and this situation at once?', hint: 'Gratitude inside the difficulty is where the medicine roots.' },
+      { key: 'w0-p0', q: 'What did the medicine show you?', hint: 'What was revealed about yourself, your nature, your life.' },
+      { key: 'w0-p1', q: 'What did the ceremony reveal that surprised you, or that you did not know before receiving the medicine?', hint: 'Stay with what was unexpected.' },
+      { key: 'w0-p2', q: 'What images, impressions, or moments from ceremony keep returning? What feels most alive or most unresolved?', hint: 'Record them. The meaning arrives in its own time.' },
+      { key: 'w0-p3', q: 'Where did you feel the most resistance during the journey? What were you holding onto, and what happened when you let go?', hint: 'Resistance during ceremony is information.' },
+      { key: 'w0-p4', q: 'What is one thing you are committed to begin? What are you committed to release?', hint: 'Trust the impulse. Write it before the mind catches up.' },
     ],
   },
   {
