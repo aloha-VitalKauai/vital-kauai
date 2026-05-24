@@ -158,7 +158,7 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     theme: 'Gratitude',
     title: 'Begin in gratitude',
     prompts: [
-      { key: 'w1-p2', q: 'What are you genuinely grateful for in the very situation that has been hardest? What does it feel like in the body to hold responsibility, forgiveness, gratitude, and love for yourself and this situation at once?', hint: 'Gratitude inside the difficulty is where the medicine roots.' },
+      { key: 'w1-p2', q: 'Name everything you are grateful for.', hint: 'Include the things that have challenged you, the difficult moments, even the unsavory ones. Gratitude can hold all of it.' },
       { key: 'post-mahalo-daily', q: 'How will you incorporate gratitude into your daily living?', hint: 'Name something small and repeatable — a morning pause, a word said aloud, a moment of thanks at the table.' },
     ],
   },
