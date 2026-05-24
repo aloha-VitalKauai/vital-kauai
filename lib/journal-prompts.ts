@@ -203,7 +203,7 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     prompts: [
       { key: 'w5-p0', q: 'How has your sense of purpose shifted or clarified? What are you called to create, offer, or become in this next chapter?', hint: 'Write down at least 3 SMART goals: specific (what am I feeling called to create?), measurable (how will I know when it is accomplished?), achievable (how can I do this?), relevant (is this worthwhile, and why?), and time-bound (by when can I accomplish this calling?).' },
       { key: 'w5-p1', q: 'Who are you now? How would you describe the person who arrived, and the person standing here today?' },
-      { key: 'w5-p1b', q: 'What new beliefs or stories are taking shape in you, the ones that support who you are committed to being today and moving forward?' },
+      { key: 'w5-p1b', q: 'What new beliefs are taking shape in you, the ones that support who you are committed to being today and moving forward?' },
       { key: 'w5-p2', q: 'What does pono mean to you? What are your values now, and how will you live them moving forward?', hint: 'For example, to live authentically and honestly, to practice moderation, or to practice compassion with yourself and others.' },
     ],
   },
