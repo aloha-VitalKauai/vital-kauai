@@ -158,6 +158,11 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     theme: 'Gratitude',
     title: 'Begin in gratitude',
     prompts: [
+      { key: 'w0-p0', q: 'What did the medicine show you?', hint: 'What was revealed about yourself, your nature, your life.' },
+      { key: 'w0-p1', q: 'What did the ceremony reveal that surprised you, or that you did not know before receiving the medicine?', hint: 'Stay with what was unexpected.' },
+      { key: 'w0-p2', q: 'What images, impressions, or moments from ceremony keep returning? What feels most alive or most unresolved?', hint: 'Record them. The meaning arrives in its own time.' },
+      { key: 'w0-p3', q: 'Where did you feel the most resistance during the journey? What were you holding onto, and what happened when you let go?', hint: 'Resistance during ceremony is information.' },
+      { key: 'w0-p4', q: 'What is one thing you are committed to begin? What are you committed to release?', hint: 'Trust the impulse. Write it before the mind catches up.' },
       { key: 'w1-p2', q: 'Name everything you are grateful for.', hint: 'Include the things that have challenged you, the difficult moments, even the unsavory ones. Gratitude can hold all of it.' },
       { key: 'post-mahalo-daily', q: 'How will you incorporate gratitude into your daily living?', hint: 'Name something small and repeatable — a morning pause, a word said aloud, a moment of thanks at the table.' },
     ],
@@ -165,13 +170,11 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
   {
     code: 'LŌKAHI',
     theme: 'Unity',
-    title: 'The medicine is still moving in you',
+    title: 'The threads begin to weave',
     prompts: [
-      { key: 'w0-p0', q: 'What did the medicine show you?', hint: 'What was revealed about yourself, your nature, your life.' },
-      { key: 'w0-p1', q: 'What did the ceremony reveal that surprised you, or that you did not know before receiving the medicine?', hint: 'Stay with what was unexpected.' },
-      { key: 'w0-p2', q: 'What images, impressions, or moments from ceremony keep returning? What feels most alive or most unresolved?', hint: 'Record them. The meaning arrives in its own time.' },
-      { key: 'w0-p3', q: 'Where did you feel the most resistance during the journey? What were you holding onto, and what happened when you let go?', hint: 'Resistance during ceremony is information.' },
-      { key: 'w0-p4', q: 'What is one thing you are committed to begin? What are you committed to release?', hint: 'Trust the impulse. Write it before the mind catches up.' },
+      { key: 'post-lokahi-1', q: 'Where are you noticing connection this week — between what ceremony showed you and the life you have returned to, or between yourself and the people around you?', hint: 'Lōkahi is felt before it is understood. Notice where the threads touch.' },
+      { key: 'post-lokahi-2', q: 'What is beginning to feel more whole in you? What parts of yourself are weaving back together?', hint: 'Unity is the many becoming one.' },
+      { key: 'post-lokahi-3', q: 'How do you want to act in unity this week — with your body, your relationships, and the land around you?', hint: 'Connection becomes real in how you live it.' },
     ],
   },
   {
