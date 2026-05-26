@@ -91,10 +91,11 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     weekIdx: 5,
     code: "MANA",
     theme: "Sovereignty",
-    title: "Arriving Whole",
-    href: "/portal/pne",
-    status: "coming-soon",
-    videoSummary: "Coming Soon.",
+    title: "Spirit and the Sacred",
+    href: "/portal/somatic-companion/week-6",
+    status: "live",
+    videoSummary:
+      "Iboga as spiritual encounter, the life review that arises in ceremony, your own relationship to Higher Power, the PNE lens of ancestral healing, discerning the voice of the Divine, prayers to carry, and integration as ongoing spiritual practice.",
   },
 
   // ── Post-ceremony ────────────────────────────────────────────
