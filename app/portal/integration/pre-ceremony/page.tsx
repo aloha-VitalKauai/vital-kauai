@@ -848,6 +848,8 @@ export default function PreCeremonyPage() {
                   <>PNE (PsychoNeuroEnergetics) Perspective: <em>The Language of Emotion</em></>
                 ) : i === 4 ? (
                   <>PNE (PsychoNeuroEnergetics) Perspective: <em>The Architecture of Belief</em></>
+                ) : i === 5 ? (
+                  <>PNE (PsychoNeuroEnergetics) Perspective: <em>Spirit and the Sacred</em></>
                 ) : 'PNE Perspective'}
               </h3>
               {i === 0 && (
@@ -898,6 +900,19 @@ export default function PreCeremonyPage() {
                   </p>
                   <p className="w1-body">
                     From there, it shares the PNE approach of meeting the charge beneath the belief so the body can know that <em>that was then, this is now</em>, and offers exploration questions to carry into ceremony.
+                  </p>
+                </>
+              )}
+              {i === 5 && (
+                <>
+                  <p className="w1-body">
+                    This week&apos;s PNE teaching turns toward spirituality as the ongoing ground of the work. Iboga is understood as a profound spiritual encounter that can soften the conditioned belief systems and survival patterns shaping your life, opening space for a deeper truth to become knowable.
+                  </p>
+                  <p className="w1-body">
+                    The PNE Guide explores what may arise in ceremony, your own relationship to Higher Power (cultivated through prayer, meditation, song, dance, time in nature, or daily rituals), and the spiritual lens of PNE that sees trauma imprints as the ancestral healing you came here to complete.
+                  </p>
+                  <p className="w1-body">
+                    From there, it offers practices for discerning the voice of the Divine from inherited programming, two prayers to carry, and a framing of integration as the spiritual practice of living what the medicine reveals.
                   </p>
                 </>
               )}
@@ -992,6 +1007,22 @@ export default function PreCeremonyPage() {
                   <h4 className="pne-practice-title">Notice When a Familiar Belief Speaks</h4>
                   <p className="pne-practice-tag">A practice for meeting the beliefs that have organized your life</p>
                   <p className="vp-text pne-practice-p">When you catch a thought like &ldquo;I am not enough&rdquo; or &ldquo;I have to earn this,&rdquo; pause. Bring your attention to the body. Notice the sensation underneath the thought. Breathe with it. The pattern often begins to soften the moment it is seen.</p>
+                </div>
+              ) : i === 5 ? (
+                <div className="pne-detail pne-practice-rich">
+                  <div className="vp-label">This Week&apos;s PNE Practice: A Daily Connection Practice</div>
+                  <h4 className="pne-practice-title">A Daily Connection Practice</h4>
+                  <p className="pne-practice-tag">One practice, done each day, that opens you to the sacred</p>
+                  <p className="vp-text pne-practice-p">Choose one form of spiritual connection. Do it once each day this week. The form matters less than the consistency. The body learns to expect the sacred when you arrive at it on the same shore each morning.</p>
+                  <div className="pne-practice-steps">
+                    <div className="pne-step"><span className="pne-step-time">I</span><span className="pne-step-text"><strong>Prayer.</strong> Speak inwardly or aloud. Offer what is alive, and ask for what is needed.</span></div>
+                    <div className="pne-step"><span className="pne-step-time">II</span><span className="pne-step-text"><strong>Meditation.</strong> Sit in stillness until the deeper listening becomes available.</span></div>
+                    <div className="pne-step"><span className="pne-step-time">III</span><span className="pne-step-text"><strong>Song or Dance.</strong> Voice and movement bypass the mind and meet spirit directly.</span></div>
+                    <div className="pne-step"><span className="pne-step-time">IV</span><span className="pne-step-text"><strong>Time in Nature.</strong> Walk slowly. Sit with a tree, a stream, or the sky.</span></div>
+                    <div className="pne-step"><span className="pne-step-time">V</span><span className="pne-step-text"><strong>A Daily Ritual.</strong> A morning candle. An evening breath. Small acts done with care.</span></div>
+                    <div className="pne-step"><span className="pne-step-time">VI</span><span className="pne-step-text"><strong>The Coherent Heart Breath.</strong> Seven-second inhale, hold, exhale, pause. Hand on heart, hand on belly.</span></div>
+                  </div>
+                  <p className="vp-text pne-practice-closer">When guidance arises this week, ask: &ldquo;Is this aligned with Truth, Humility, Healing, and Compassion?&rdquo; Trust what brings peace.</p>
                 </div>
               ) : (
                 <div className="pne-detail">

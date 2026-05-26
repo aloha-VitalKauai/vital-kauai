@@ -396,7 +396,10 @@ export const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Guide',
+        text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Guide: Spirit and the Sacred',
+        links: [
+          { text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Guide: Spirit and the Sacred', href: '/portal/somatic-companion/week-6#top' },
+        ],
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },

@@ -77,7 +77,13 @@ export const PRE_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
     reflectionThird: 'What parts of yourself do you feel you need to hide? Why?',
     reflectionFourth: 'What did you decide about yourself, life, the divine, or others during painful moments of your childhood?',
   },
-  { practice: '', reflection: '' },
+  {
+    teaching: 'A teaching from PsychoNeuroEnergetics: iboga as a spiritual encounter, the life review that may arise in ceremony, your own relationship to Higher Power, trauma imprints as ancestral healing, discerning the voice of the Divine, prayers to carry, and integration as ongoing spiritual practice.',
+    practice: '',
+    reflection: 'How do you experience the sacred in your life right now? What practices already open you to something larger than yourself?',
+    reflectionFollowUp: 'What unfinished energy in your family lineage might be asking to be completed through you?',
+    reflectionThird: 'When guidance arises in your body, how do you tell the voice of inherited programming from the voice of the Divine?',
+  },
 ]
 
 export const POST_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
