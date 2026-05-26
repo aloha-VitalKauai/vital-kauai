@@ -52,6 +52,7 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     status: "live",
     videoSummary:
       "Tracking the body through fight, flight, freeze, and fawn, and the practices that bring the system back to center.",
+    videoUrl: "https://www.youtube.com/embed/lB7qut-bZdg",
   },
   {
     phase: "pre",
