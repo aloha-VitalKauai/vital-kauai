@@ -63,12 +63,15 @@ const SECTIONS = [
 ];
 
 const STORAGE_KEY = "vk-questions-data";
+// Timestamp of the last local write, used on load to decide whether the
+// device copy or the server copy is more recent.
+const SAVED_AT_KEY = "vk-questions-saved-at";
 // Prefix used for Questions-for-the-Medicine keys inside the shared
 // `member_journals.responses` JSONB blob, so they don't collide with the
 // pre/post-ceremony journal prompt keys.
 const QFTM_PREFIX = "qftm-";
 
-function AutoTextarea({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) {
+function AutoTextarea({ value, onChange, onBlur, placeholder }: { value: string; onChange: (v: string) => void; onBlur?: () => void; placeholder: string }) {
   const ref = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
     if (ref.current) {
@@ -82,6 +85,7 @@ function AutoTextarea({ value, onChange, placeholder }: { value: string; onChang
       rows={2}
       value={value}
       onChange={(e) => onChange(e.target.value)}
+      onBlur={onBlur}
       placeholder={placeholder}
       style={{
         width: "100%", border: "none", borderBottom: "1px solid #D6CEBC", background: "transparent",
@@ -95,17 +99,84 @@ function AutoTextarea({ value, onChange, placeholder }: { value: string; onChang
 
 export default function QuestionsClient() {
   const [values, setValues] = useState<Record<string, string>>({});
-  const [userId, setUserId] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const supabaseRef = useRef(createClient());
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Refs mirror the latest state so the flush handlers (registered once) and
+  // the in-flight save queue always act on current data, not a stale closure.
+  const valuesRef = useRef<Record<string, string>>({});
+  const userIdRef = useRef<string | null>(null);
+  const dirtyRef = useRef(false);
+  const savingRef = useRef(false);
+  const pendingRef = useRef<Record<string, string> | null>(null);
 
-  // Load: localStorage first (instant) so the page is responsive while
-  // Supabase round-trips, then merge in the server copy as the source of truth.
+  // Write the current answers to Supabase. Single-flight: if a save is already
+  // in progress, the latest payload is queued and written right after, so the
+  // most recent edit always wins and concurrent upserts can't clobber it.
+  async function persist(next: Record<string, string>) {
+    const userId = userIdRef.current;
+    if (!userId) return;
+    if (savingRef.current) { pendingRef.current = next; return; }
+    savingRef.current = true;
+    setSaveStatus("saving");
+    try {
+      const supabase = supabaseRef.current;
+      const { data } = await supabase
+        .from("member_journals")
+        .select("responses")
+        .eq("member_id", userId)
+        .maybeSingle();
+      const existing = (data?.responses as Record<string, string>) ?? {};
+      // Keep non-QFTM keys (pre/post journal answers); replace all QFTM keys
+      // with the current set so emptied questions are cleared, not left behind.
+      const merged: Record<string, string> = {};
+      for (const [k, v] of Object.entries(existing)) {
+        if (!k.startsWith(QFTM_PREFIX)) merged[k] = v;
+      }
+      for (const [k, v] of Object.entries(next)) merged[`${QFTM_PREFIX}${k}`] = v;
+      const savedAt = new Date().toISOString();
+      const { error } = await supabase
+        .from("member_journals")
+        .upsert(
+          { member_id: userId, responses: merged, last_saved_at: savedAt },
+          { onConflict: "member_id" },
+        );
+      if (error) throw error;
+      try { localStorage.setItem(SAVED_AT_KEY, savedAt); } catch {}
+      dirtyRef.current = false;
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus("idle"), 1800);
+    } catch {
+      setSaveStatus("error");
+    } finally {
+      savingRef.current = false;
+      if (pendingRef.current) {
+        const queued = pendingRef.current;
+        pendingRef.current = null;
+        void persist(queued);
+      }
+    }
+  }
+
+  // Write whatever is pending immediately, cancelling the debounce. Called when
+  // the field blurs, the tab is hidden, the page closes, or the component
+  // unmounts — so an edit is never lost to a navigation that beats the timer.
+  function flushNow() {
+    if (!dirtyRef.current) return;
+    if (saveTimerRef.current) { clearTimeout(saveTimerRef.current); saveTimerRef.current = null; }
+    void persist(valuesRef.current);
+  }
+
+  // Load: localStorage first (instant), then reconcile with Supabase. Whichever
+  // copy was written most recently wins — so a dropped save on this device is
+  // not overwritten by an older server copy (the cause of edits "reverting"),
+  // while a newer copy saved on another device still syncs in.
   useEffect(() => {
+    let localSavedAt: string | null = null;
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-      if (saved && typeof saved === "object") setValues(saved);
+      if (saved && typeof saved === "object") { setValues(saved); valuesRef.current = saved; }
+      localSavedAt = localStorage.getItem(SAVED_AT_KEY);
     } catch {}
 
     let cancelled = false;
@@ -113,10 +184,10 @@ export default function QuestionsClient() {
       const supabase = supabaseRef.current;
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || cancelled) return;
-      setUserId(user.id);
+      userIdRef.current = user.id;
       const { data } = await supabase
         .from("member_journals")
-        .select("responses")
+        .select("responses, last_saved_at")
         .eq("member_id", user.id)
         .maybeSingle();
       if (cancelled) return;
@@ -127,54 +198,48 @@ export default function QuestionsClient() {
           fromServer[k.slice(QFTM_PREFIX.length)] = v;
         }
       }
-      if (Object.keys(fromServer).length > 0) {
-        setValues((prev) => ({ ...prev, ...fromServer }));
+      const serverSavedAt = (data?.last_saved_at as string | undefined) ?? undefined;
+      const serverNewer =
+        !!serverSavedAt && (!localSavedAt || new Date(serverSavedAt) >= new Date(localSavedAt));
+
+      if (serverNewer && Object.keys(fromServer).length > 0) {
+        setValues((prev) => { const m = { ...prev, ...fromServer }; valuesRef.current = m; return m; });
+      } else if (!serverNewer && localSavedAt && Object.keys(valuesRef.current).length > 0) {
+        // Local edits are newer than the server (a save was likely dropped) —
+        // push them up so the server is current again.
+        void persist(valuesRef.current);
       }
     })();
     return () => { cancelled = true };
   }, []);
 
-  async function persistToSupabase(next: Record<string, string>) {
-    if (!userId) return;
-    setSaveStatus("saving");
-    try {
-      const supabase = supabaseRef.current;
-      const { data } = await supabase
-        .from("member_journals")
-        .select("responses")
-        .eq("member_id", userId)
-        .maybeSingle();
-      const existing = (data?.responses as Record<string, string>) ?? {};
-      // Strip out any old qftm-* keys, then re-merge with fresh ones — so
-      // emptied fields get cleared rather than lingering.
-      const preserved: Record<string, string> = {};
-      for (const [k, v] of Object.entries(existing)) {
-        if (!k.startsWith(QFTM_PREFIX)) preserved[k] = v;
-      }
-      const namespaced: Record<string, string> = {};
-      for (const [k, v] of Object.entries(next)) namespaced[`${QFTM_PREFIX}${k}`] = v;
-      await supabase
-        .from("member_journals")
-        .upsert(
-          { member_id: userId, responses: { ...preserved, ...namespaced }, last_saved_at: new Date().toISOString() },
-          { onConflict: "member_id" },
-        );
-      setSaveStatus("saved");
-      setTimeout(() => setSaveStatus("idle"), 1800);
-    } catch {
-      setSaveStatus("error");
-    }
-  }
+  // Flush pending saves when the page is hidden, closed, or unmounted.
+  useEffect(() => {
+    const onHide = () => { if (document.visibilityState === "hidden") flushNow(); };
+    window.addEventListener("pagehide", flushNow);
+    document.addEventListener("visibilitychange", onHide);
+    return () => {
+      window.removeEventListener("pagehide", flushNow);
+      document.removeEventListener("visibilitychange", onHide);
+      flushNow();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function update(key: string, val: string) {
     setValues((prev) => {
       const next = { ...prev, [key]: val };
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
+      valuesRef.current = next;
+      dirtyRef.current = true;
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        localStorage.setItem(SAVED_AT_KEY, new Date().toISOString());
+      } catch {}
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
       saveTimerRef.current = setTimeout(() => {
-        persistToSupabase(next);
         saveTimerRef.current = null;
-      }, 1500);
+        void persist(next);
+      }, 1000);
       return next;
     });
   }
@@ -241,6 +306,7 @@ export default function QuestionsClient() {
                     <AutoTextarea
                       value={values[key] ?? ""}
                       onChange={(v) => update(key, v)}
+                      onBlur={flushNow}
                       placeholder="Write your question here..."
                     />
                   </div>
