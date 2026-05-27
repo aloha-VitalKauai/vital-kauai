@@ -188,6 +188,7 @@ const MEDICAL_DISCLAIMER: DisclaimerBlock[] = [
 ];
 
 const STRIPE_LOVE_OFFERING_URL = "https://buy.stripe.com/test_cNi4gzcoG3ZBeQUcmZbo400";
+const ONBOARDING_CALL_URL = "https://calendly.com/aloha-vitalkauai/onboarding";
 
 const PREP_ITEMS: { text: string; link?: string; external?: boolean; isLab?: boolean }[] = [
   { text: "Complete all three required steps (Donation, Membership Agreement, Medical Disclaimer)", link: "/portal" },
@@ -232,6 +233,7 @@ export function PortalHomePage({
   const [memberId, setMemberId] = useState<string | null>(null);
   const [labDoc, setLabDoc] = useState<{ id: string; file_name: string; status: string; uploaded_at: string } | null>(null);
   const [labUploading, setLabUploading] = useState(false);
+  const [callScheduled, setCallScheduled] = useState(false);
 
   const fetchProfile = useCallback(async () => {
     const profileData = await getMyProfile(supabase, userId);
@@ -280,12 +282,14 @@ export function PortalHomePage({
         const map: Record<string, boolean> = {};
         for (const item of items) map[item.item_key] = item.completed;
         setCheckedItems(PREP_ITEMS.map((_, i) => map[`prep_${i}`] ?? false));
+        setCallScheduled(map["onboarding_call_scheduled"] ?? false);
       } else {
         try {
           const saved = JSON.parse(localStorage.getItem("vk-prep-checks") || "[]");
           if (saved.length === PREP_ITEMS.length) setCheckedItems(saved);
           else setCheckedItems(new Array(PREP_ITEMS.length).fill(false));
         } catch { setCheckedItems(new Array(PREP_ITEMS.length).fill(false)); }
+        try { setCallScheduled(localStorage.getItem("vk-onboarding-call") === "true"); } catch {}
       }
     }
     loadChecklist();
@@ -313,11 +317,26 @@ export function PortalHomePage({
   const checkedCount = checkedItems.filter(Boolean).length;
   const checkPct = PREP_ITEMS.length > 0 ? Math.round((checkedCount / PREP_ITEMS.length) * 100) : 0;
 
-  // Required steps status
+  // Onboarding step status
   const donationDone = profile?.deposit_paid ?? false;
   const agreementDone = profile?.membership_agreement_signed ?? false;
   const medicalDone = profile?.medical_disclaimer_signed ?? false;
+  const intakeDone = profile?.intake_form_completed ?? false;
   const allRequiredDone = donationDone && agreementDone && medicalDone;
+  const beginStepsComplete = [donationDone, agreementDone, medicalDone, intakeDone, callScheduled].filter(Boolean).length;
+
+  function markCallScheduled() {
+    setCallScheduled(true);
+    try { localStorage.setItem("vk-onboarding-call", "true"); } catch {}
+    if (memberId) {
+      supabase.from("member_checklist").upsert({
+        member_id: memberId,
+        item_key: "onboarding_call_scheduled",
+        completed: true,
+        completed_at: new Date().toISOString(),
+      }, { onConflict: "member_id,item_key" }).then(() => {});
+    }
+  }
 
   const firstName = profile?.full_name?.split(" ")[0] || userEmail.split("@")[0];
   const initials = profile?.full_name
@@ -506,15 +525,15 @@ export function PortalHomePage({
           </div>
         </div>
 
-        {/* THREE STEPS TO BEGIN */}
+        {/* FIVE STEPS TO BEGIN */}
         <section className={styles.unlockBlock}>
           <div className={styles.sectionHead}>
-            <span className={styles.sectionEyebrow}>Three Steps to Begin</span>
+            <span className={styles.sectionEyebrow}>Five Steps to Begin</span>
             <h2 className={styles.sectionTitle}>
-              Sign These and <em>Begin Your Journey</em>
+              Make Your Contribution, Fill Out Your Forms, and Schedule Your Onboarding Call Before You <em>Begin Your Journey</em>
             </h2>
             <p className={styles.unlockProgress}>
-              {[donationDone, agreementDone, medicalDone].filter(Boolean).length} of 3 complete
+              {beginStepsComplete} of 5 complete
             </p>
           </div>
 
@@ -535,7 +554,7 @@ export function PortalHomePage({
               </div>
               <div className={styles.docFooter}>
                 <span className={`${styles.docTag} ${styles.tagRequired}`}>
-                  {donationDone ? "Complete" : "Payment Required"}
+                  {donationDone ? "Complete" : "Your Offering"}
                 </span>
                 <span className={`${styles.docAction} ${donationDone ? styles.docActionSigned : ""}`}>
                   {donationDone ? "\u2713 Complete" : "Complete \u2192"}
@@ -557,7 +576,7 @@ export function PortalHomePage({
               </div>
               <div className={styles.docFooter}>
                 <span className={`${styles.docTag} ${styles.tagRequired}`}>
-                  {agreementDone ? "Signed" : "Signature Required"}
+                  {agreementDone ? "Signed" : "To Sign"}
                 </span>
                 <span className={`${styles.docAction} ${agreementDone ? styles.docActionSigned : ""}`}>
                   {agreementDone ? "\u2713 Signed" : "Sign \u2192"}
@@ -579,10 +598,59 @@ export function PortalHomePage({
               </div>
               <div className={styles.docFooter}>
                 <span className={`${styles.docTag} ${styles.tagRequired}`}>
-                  {medicalDone ? "Signed" : "Signature Required"}
+                  {medicalDone ? "Signed" : "To Sign"}
                 </span>
                 <span className={`${styles.docAction} ${medicalDone ? styles.docActionSigned : ""}`}>
                   {medicalDone ? "\u2713 Signed" : "Sign \u2192"}
+                </span>
+              </div>
+            </button>
+
+            <button
+              id="intake-card"
+              className={`${styles.docCard} ${intakeDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
+              onClick={() => {
+                window.open("/intake-form", "_blank", "noopener,noreferrer");
+              }}
+            >
+              <div className={styles.docTitle}>
+                Fill Out Your <em>Forms</em>
+              </div>
+              <div className={styles.docDesc}>
+                Your Member Intake &amp; Readiness Form &mdash; emergency contact and the basic
+                information that helps us care for you well.
+              </div>
+              <div className={styles.docFooter}>
+                <span className={`${styles.docTag} ${styles.tagRequired}`}>
+                  {intakeDone ? "Complete" : "Your Forms"}
+                </span>
+                <span className={`${styles.docAction} ${intakeDone ? styles.docActionSigned : ""}`}>
+                  {intakeDone ? "\u2713 Complete" : "Begin \u2192"}
+                </span>
+              </div>
+            </button>
+
+            <button
+              id="onboarding-call-card"
+              className={`${styles.docCard} ${callScheduled ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
+              onClick={() => {
+                window.open(ONBOARDING_CALL_URL, "_blank", "noopener,noreferrer");
+                markCallScheduled();
+              }}
+            >
+              <div className={styles.docTitle}>
+                Schedule Your <em>Onboarding Call</em>
+              </div>
+              <div className={styles.docDesc}>
+                A welcome call with Rachel and Josh to meet you and hear what is alive for you
+                as you step into this work.
+              </div>
+              <div className={styles.docFooter}>
+                <span className={`${styles.docTag} ${styles.tagRequired}`}>
+                  {callScheduled ? "Scheduled" : "With Rachel & Josh"}
+                </span>
+                <span className={`${styles.docAction} ${callScheduled ? styles.docActionSigned : ""}`}>
+                  {callScheduled ? "\u2713 Scheduled" : "Schedule \u2192"}
                 </span>
               </div>
             </button>
