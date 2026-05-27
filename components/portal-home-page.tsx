@@ -529,9 +529,6 @@ export function PortalHomePage({
         <section className={styles.unlockBlock}>
           <div className={styles.sectionHead}>
             <span className={styles.sectionEyebrow}>Five Steps to Begin</span>
-            <h2 className={styles.sectionTitle}>
-              Make Your Contribution, Fill Out Your Forms, and Schedule Your Onboarding Call Before You <em>Begin Your Journey</em>
-            </h2>
             <p className={styles.unlockProgress}>
               {beginStepsComplete} of 5 complete
             </p>
