@@ -63,9 +63,10 @@ const SECTIONS = [
 ];
 
 const STORAGE_KEY = "vk-questions-data";
-// Timestamp of the last local write, used on load to decide whether the
-// device copy or the server copy is more recent.
-const SAVED_AT_KEY = "vk-questions-saved-at";
+// localStorage payload shape: { memberId, savedAt, data }. Scoping the cache to
+// the signed-in member keeps one member's answers from showing up for — or
+// saving into — another member on a shared device. savedAt lets the loader pick
+// the most recently written copy (device vs. server).
 // Prefix used for Questions-for-the-Medicine keys inside the shared
 // `member_journals.responses` JSONB blob, so they don't collide with the
 // pre/post-ceremony journal prompt keys.
@@ -142,7 +143,7 @@ export default function QuestionsClient() {
           { onConflict: "member_id" },
         );
       if (error) throw error;
-      try { localStorage.setItem(SAVED_AT_KEY, savedAt); } catch {}
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ memberId: userId, savedAt, data: next })); } catch {}
       dirtyRef.current = false;
       setSaveStatus("saved");
       setTimeout(() => setSaveStatus("idle"), 1800);
@@ -167,24 +168,33 @@ export default function QuestionsClient() {
     void persist(valuesRef.current);
   }
 
-  // Load: localStorage first (instant), then reconcile with Supabase. Whichever
-  // copy was written most recently wins — so a dropped save on this device is
-  // not overwritten by an older server copy (the cause of edits "reverting"),
-  // while a newer copy saved on another device still syncs in.
+  // Load this member's answers. The local cache is scoped to the signed-in
+  // member id, so one member's writing on a shared device never appears for, or
+  // saves into, another member's account. We read the cache only after auth
+  // resolves and only when it belongs to the current member; the most recently
+  // written copy (device vs. server) then wins, so a dropped save is not
+  // overwritten by an older server copy while a newer copy from another device
+  // still syncs in.
   useEffect(() => {
-    let localSavedAt: string | null = null;
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-      if (saved && typeof saved === "object") { setValues(saved); valuesRef.current = saved; }
-      localSavedAt = localStorage.getItem(SAVED_AT_KEY);
-    } catch {}
-
     let cancelled = false;
     (async () => {
       const supabase = supabaseRef.current;
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || cancelled) return;
       userIdRef.current = user.id;
+
+      let localSavedAt: string | null = null;
+      try {
+        const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        if (raw && typeof raw === "object" && raw.memberId === user.id && raw.data && typeof raw.data === "object") {
+          localSavedAt = typeof raw.savedAt === "string" ? raw.savedAt : null;
+          setValues(raw.data); valuesRef.current = raw.data;
+        } else if (raw && typeof raw === "object" && raw.memberId && raw.memberId !== user.id) {
+          // A different member used this device — drop their cached answers.
+          localStorage.removeItem(STORAGE_KEY);
+        }
+      } catch {}
+
       const { data } = await supabase
         .from("member_journals")
         .select("responses, last_saved_at")
@@ -232,8 +242,7 @@ export default function QuestionsClient() {
       valuesRef.current = next;
       dirtyRef.current = true;
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-        localStorage.setItem(SAVED_AT_KEY, new Date().toISOString());
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ memberId: userIdRef.current, savedAt: new Date().toISOString(), data: next }));
       } catch {}
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
       saveTimerRef.current = setTimeout(() => {
