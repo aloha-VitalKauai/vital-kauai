@@ -244,11 +244,37 @@ export default function QuestionsClient() {
     });
   }
 
+  function handlePrint() {
+    flushNow();
+    window.print();
+  }
+
   return (
     <div style={{ minHeight: "100vh", background: "#FDFBF7", fontFamily: "'Jost', sans-serif", fontWeight: 300, color: "#1A1A18" }}>
-      {/* Nav */}
+      <style>{`
+        .qftm-print { display: none; }
+        @media print {
+          .qftm-screen { display: none !important; }
+          .qftm-print { display: block !important; }
+          @page { margin: 0.75in; }
+        }
+      `}</style>
 
+      <div className="qftm-screen">
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "64px 48px 96px" }}>
+        {/* Print */}
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
+          <button
+            onClick={handlePrint}
+            style={{
+              fontFamily: "'Jost', sans-serif", fontSize: 12, letterSpacing: "0.18em", textTransform: "uppercase",
+              fontWeight: 500, color: "#1C2B1E", background: "transparent", border: "1px solid #C8A96E",
+              borderRadius: 999, padding: "10px 22px", cursor: "pointer",
+            }}
+          >
+            Print
+          </button>
+        </div>
         {/* Header */}
         <div style={{ borderBottom: "1px solid #C8A96E", paddingBottom: 40, marginBottom: 48 }}>
           <p style={{ fontSize: 12, letterSpacing: "0.32em", textTransform: "uppercase", color: "#7A9E7E", marginBottom: 18, fontWeight: 500 }}>Iboga Ceremony Preparation</p>
@@ -324,6 +350,27 @@ export default function QuestionsClient() {
             The medicine already knows. You are simply learning to ask.
           </p>
         </div>
+      </div>
+      </div>{/* /qftm-screen */}
+
+      {/* Print-only view: just the prompts and the full answers */}
+      <div className="qftm-print" style={{ padding: "0.25in 0", color: "#111", fontFamily: "'Jost', sans-serif" }}>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 30, fontWeight: 400, color: "#1C2B1E", marginBottom: 2 }}>Questions for the Medicine</h1>
+        <p style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "#7A7466", marginBottom: 28 }}>Iboga Ceremony Preparation</p>
+        {SECTIONS.map((section, si) => {
+          const answers = Array.from({ length: section.count }, (_, qi) => (values[`s${si}-q${qi}`] ?? "").trim()).filter(Boolean);
+          if (answers.length === 0) return null;
+          return (
+            <div key={si} style={{ marginBottom: 24, pageBreakInside: "avoid", breakInside: "avoid" }}>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 19, fontWeight: 500, color: "#1C2B1E", marginBottom: 10 }}>{section.title}</h2>
+              <ol style={{ margin: 0, paddingLeft: 22 }}>
+                {answers.map((a, i) => (
+                  <li key={i} style={{ fontSize: 14, lineHeight: 1.65, marginBottom: 8, whiteSpace: "pre-wrap" }}>{a}</li>
+                ))}
+              </ol>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
