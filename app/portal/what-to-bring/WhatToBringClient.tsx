@@ -1,7 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { createClient } from "@/lib/supabase/client";
 
+// Scoped to the signed-in member so one member's packing progress is never
+// shown to another on a shared device. Payload shape: { memberId, checks }.
 const STORAGE_KEY = "vk-packing-checks";
 
 const PRACTICAL_ITEMS = [
@@ -54,20 +57,45 @@ function CheckSvg() {
 
 export default function WhatToBringClient() {
   const [checked, setChecked] = useState<boolean[]>([]);
+  const supabaseRef = useRef(createClient());
+  const userIdRef = useRef<string | null>(null);
 
+  // Load this member's checklist. The cache carries the member id and is only
+  // applied when it belongs to the signed-in member, so a shared device never
+  // shows one member's packing progress to another.
   useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-      if (Array.isArray(saved) && saved.length === ALL_ITEMS.length) setChecked(saved);
-      else setChecked(Array(ALL_ITEMS.length).fill(false));
-    } catch { setChecked(Array(ALL_ITEMS.length).fill(false)); }
+    const blank = () => Array(ALL_ITEMS.length).fill(false);
+    let cancelled = false;
+    (async () => {
+      const { data: { user } } = await supabaseRef.current.auth.getUser();
+      if (cancelled) return;
+      userIdRef.current = user?.id ?? null;
+      try {
+        const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        if (raw && typeof raw === "object" && user && raw.memberId === user.id
+            && Array.isArray(raw.checks) && raw.checks.length === ALL_ITEMS.length) {
+          setChecked(raw.checks);
+          return;
+        }
+        if (raw && typeof raw === "object" && raw.memberId && (!user || raw.memberId !== user.id)) {
+          // A different member used this device — drop their checklist.
+          localStorage.removeItem(STORAGE_KEY);
+        }
+      } catch {}
+      setChecked(blank());
+    })();
+    return () => { cancelled = true };
   }, []);
+
+  function writeChecks(next: boolean[]) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ memberId: userIdRef.current, checks: next })); } catch {}
+  }
 
   function toggle(i: number) {
     setChecked((prev) => {
       const next = [...prev];
       next[i] = !next[i];
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
+      writeChecks(next);
       return next;
     });
   }
@@ -75,7 +103,7 @@ export default function WhatToBringClient() {
   function resetAll() {
     const next = Array(ALL_ITEMS.length).fill(false);
     setChecked(next);
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
+    writeChecks(next);
   }
 
   const total = ALL_ITEMS.length;
