@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyFounder } from '@/lib/auth/founder-check'
-import { renderSetupLinkEmail } from '@/lib/email-renderers'
+import { renderAppInstallEmail, renderSetupLinkEmail } from '@/lib/email-renderers'
 import { createSetupToken, setupAccountUrl } from '@/lib/setup-tokens'
 
 function db() {
@@ -254,6 +254,15 @@ async function handleApproval(token: string, source: string) {
   // Send branded setup instructions email
   await sendSetupEmail(lead.email, lead.full_name, setupLink)
 
+  // Follow-up: "Add to Home Screen" install instructions. Non-blocking —
+  // if it fails the member is still fully onboarded, and Rachel can
+  // re-send manually from the dashboard if needed.
+  try {
+    await sendAppInstallEmail(lead.email, lead.full_name)
+  } catch (err: any) {
+    console.error('[approve-member] STEP:install-email, FAILED (non-blocking):', err?.message || err)
+  }
+
   return respond(source, true, null, lead.full_name, false)
 }
 
@@ -302,6 +311,31 @@ async function sendSetupEmail(email: string, fullName: string, setupLink: string
     }),
   })
   if (!res.ok) console.error('Resend failed:', await res.text())
+}
+
+async function sendAppInstallEmail(email: string, fullName: string) {
+  if (!env().resendKey) { console.log('No RESEND_API_KEY \u2014 skipping install email'); return }
+
+  const firstName = fullName?.split(' ')[0] || 'Friend'
+  const { subject, html } = await renderAppInstallEmail({
+    firstName,
+    appUrl: env().appUrl,
+  })
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${env().resendKey}` },
+    body: JSON.stringify({
+      from:    'Vital Kaua\u02BBi <aloha@vitalkauai.com>',
+      to:      email,
+      subject,
+      html,
+    }),
+  })
+  if (!res.ok) {
+    const txt = await res.text()
+    throw new Error(`Resend ${res.status}: ${txt}`)
+  }
 }
 
 async function adminFetch(method: string, path: string, body?: object) {

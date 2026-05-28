@@ -15,6 +15,7 @@ import { createClient as createServiceSupabase } from '@supabase/supabase-js'
 
 export type TransactionalEmailKey =
   | 'setup_link'
+  | 'app_install'
   | 'free_guide'
   | 'payment_link'
   | 'discovery_call_notification'

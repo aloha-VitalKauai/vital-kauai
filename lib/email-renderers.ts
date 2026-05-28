@@ -109,6 +109,103 @@ export async function renderSetupLinkEmail(args: {
   return { subject: fields.subject, html }
 }
 
+// ─── app_install ──────────────────────────────────────────────
+//
+// Sent immediately after the setup_link email when a member is approved
+// (via Calendly or the manual-add tool). Walks them through pinning the
+// site to their iPhone home screen as a PWA so it opens like a native
+// app. Copy is editable via transactional_email_templates if a row
+// exists; otherwise falls back to the defaults defined below.
+
+export async function renderAppInstallEmail(args: {
+  firstName: string
+  appUrl: string
+}): Promise<{ subject: string; html: string }> {
+  const { firstName, appUrl } = args
+  const safeFirst = esc(firstName)
+  const safeUrl = esc(appUrl)
+
+  const fields = await resolveTemplate(
+    'app_install',
+    { firstName: safeFirst, appUrl: safeUrl },
+    {
+      subject: `Add Vital Kauaʻi to your iPhone home screen`,
+      eyebrow: 'Vital Kauaʻi · Member Portal',
+      heading: `Aloha, <em>${safeFirst}.</em>`,
+      lead_html: `<p>We wanted to let you know that Vital Kauaʻi can now be added directly to your iPhone home screen and used like an app.</p><p>Once installed, it opens with a single tap and gives you quick access to your journal, resources, journey materials, and member portal.</p>`,
+      body_html: '',
+      cta_label: 'Open Vital Kauaʻi in Safari →',
+      closing_html: `<p class="note">A few notes:</p><ul class="notes-list"><li>This is currently installed directly through Safari rather than through the App Store.</li><li>Your journal, resources, and portal access remain exactly the same.</li><li>Future updates happen automatically. You won't need to reinstall the app when new features are added.</li></ul><p class="note">If you have any questions or need support, simply reply to this email.</p><p class="note" style="margin-top:18px">With aloha,<br>Josh &amp; Rachel<br><span style="color:rgba(245,240,232,.45)">Vital Kauaʻi</span></p>`,
+    },
+  )
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    *{box-sizing:border-box}
+    body{font-family:Georgia,'Times New Roman',serif;background:#f5f0e8;margin:0;padding:40px 16px}
+    .wrap{max-width:560px;margin:0 auto}
+    .card{background:#1a2e1c;border-radius:6px;overflow:hidden}
+    .top-bar{background:#c8a96e;height:4px}
+    .inner{padding:48px 44px 44px}
+    .eyebrow{font-family:'Helvetica Neue',sans-serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#c8a96e;margin:0 0 22px}
+    h1{color:#f5f0e8;font-size:30px;font-weight:400;line-height:1.2;margin:0 0 20px}
+    h1 em{font-style:italic;color:rgba(245,240,232,.7)}
+    p{color:rgba(245,240,232,.7);font-size:16px;line-height:1.75;margin:0 0 18px}
+    .cta-wrap{margin:32px 0 28px;text-align:center}
+    .cta{display:inline-block;background:#c8a96e;color:#1a2e1c;text-decoration:none;font-family:'Helvetica Neue',sans-serif;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:17px 38px;border-radius:3px}
+    .steps{margin:28px 0;padding:22px 26px;background:rgba(245,240,232,.05);border-radius:6px;border-left:2px solid #c8a96e}
+    .step{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+    .step:last-child{margin-bottom:0}
+    .step-num{font-family:'Helvetica Neue',sans-serif;font-size:11px;font-weight:700;color:#c8a96e;background:rgba(200,169,110,.15);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+    .step-text{font-family:'Helvetica Neue',sans-serif;font-size:14px;color:rgba(245,240,232,.65);line-height:1.55}
+    .step-text strong{color:#f5f0e8}
+    .step-text code{font-family:'Helvetica Neue',sans-serif;color:#c8a96e}
+    hr{border:none;border-top:1px solid rgba(200,169,110,.15);margin:28px 0}
+    .url-box{background:rgba(245,240,232,.04);border:1px solid rgba(245,240,232,.1);border-radius:6px;padding:18px 22px;margin:12px 0 24px}
+    .url-box p{font-family:'Helvetica Neue',sans-serif;font-size:13px;color:rgba(245,240,232,.5);margin:0 0 4px}
+    .url-value{font-family:'Helvetica Neue',sans-serif;font-size:14px;color:#c8a96e;word-break:break-all}
+    .note{font-family:'Helvetica Neue',sans-serif;font-size:13px;color:rgba(245,240,232,.55);line-height:1.65;margin:0 0 10px}
+    .note a{color:#c8a96e;text-decoration:none}
+    .notes-list{font-family:'Helvetica Neue',sans-serif;font-size:13px;color:rgba(245,240,232,.55);line-height:1.65;padding-left:20px;margin:0 0 14px}
+    .notes-list li{margin-bottom:8px}
+    .footer{font-family:'Helvetica Neue',sans-serif;font-size:11px;color:rgba(245,240,232,.22);text-align:center;line-height:1.9}
+  </style>
+</head>
+<body>
+  <div class="wrap"><div class="card">
+    <div class="top-bar"></div>
+    <div class="inner">
+      <p class="eyebrow">${fields.eyebrow}</p>
+      <h1>${fields.heading}</h1>
+      ${fields.lead_html}
+      <p style="color:rgba(245,240,232,.7);font-family:Georgia,serif;font-size:16px;margin:24px 0 12px">To install on iPhone:</p>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-text">Open <strong>Safari</strong> on your iPhone.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text">Visit <span style="color:#c8a96e">${safeUrl}</span></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text">Tap the <strong>Share</strong> button at the bottom of Safari.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-text">Scroll down and select <strong>"Add to Home Screen."</strong></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-text">Tap <strong>"Add."</strong></div></div>
+      </div>
+      <p style="color:rgba(245,240,232,.7);font-family:Georgia,serif;font-size:16px;margin:24px 0 12px">The Vital Kauaʻi icon will now appear on your home screen. You can open it anytime just like an app.</p>
+      <div class="cta-wrap">
+        <a class="cta" href="${safeUrl}">${fields.cta_label}</a>
+      </div>
+      <hr>
+      ${fields.closing_html}
+      <hr>
+      <div class="footer">© 2026 Vital Kauaʻi Church · PO Box 932, Hanalei, HI 96714<br>aloha@vitalkauai.com</div>
+    </div>
+  </div></div>
+</body>
+</html>`
+
+  return { subject: fields.subject, html }
+}
+
 // ─── password_reset ────────────────────────────────────────────
 //
 // Self-service "Forgot password" flow. Visually mirrors setup_link but
