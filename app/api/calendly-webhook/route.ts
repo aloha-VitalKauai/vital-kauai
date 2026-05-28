@@ -207,6 +207,26 @@ export async function POST(req: NextRequest) {
   }
   console.log('[webhook] STEP:idempotency, OK, not a duplicate')
 
+  // === STEP 7b: Existing member check ===
+  // If this email already belongs to a member (manually added via the
+  // dashboard, or previously approved), we don't need a second approval
+  // pass. Auto-mark the lead as approved so it doesn't sit in the queue,
+  // skip the approve/decline founder email, and send an FYI notice instead.
+  // Calendly still sends its own native invite email natively for the call
+  // itself, so founders won't miss the appointment.
+  let existingMember: { id: string; full_name: string | null } | null = null
+  {
+    const { data: m } = await supabase
+      .from('members')
+      .select('id, full_name')
+      .ilike('email', email)
+      .maybeSingle()
+    if (m) {
+      existingMember = m
+      console.log(`[webhook] STEP:existing-member, ${email} already a member (${m.id}) — auto-approving lead, no founder approval email`)
+    }
+  }
+
   // === STEP 8: Smart upsert, preserve approval_token if lead already exists ===
   const { data: existingLead } = await supabase
     .from('leads')
@@ -238,41 +258,58 @@ export async function POST(req: NextRequest) {
     lead = data
     leadError = error
   } else if (existingLead) {
-    // Existing pending lead, update booking info, keep existing token (or backfill if missing)
-    console.log(`[webhook] STEP:upsert, existing pending lead, token ${existingLead.approval_token ? 'preserved' : 'backfilled'}`)
+    // Existing pending lead, update booking info, keep existing token (or backfill if missing).
+    // If we also detected an existing member, flip the lead to approved so the queue stays clean.
+    console.log(`[webhook] STEP:upsert, existing pending lead, token ${existingLead.approval_token ? 'preserved' : 'backfilled'}${existingMember ? ', auto-approving (existing member)' : ''}`)
+    const update: Record<string, any> = {
+      full_name: fullName,
+      source: 'Calendly',
+      discovery_call_booked: true,
+      discovery_call_date: startTime ? startTime.split('T')[0] : null,
+      calendly_event_id: calendlyEventId,
+      calendly_booked_at: new Date().toISOString(),
+      // Backfill token if the existing lead was created without one (e.g. via client-side form)
+      approval_token: approvalToken,
+    }
+    if (existingMember) {
+      update.approval_status     = 'approved'
+      update.approval_decided_at = new Date().toISOString()
+      update.approval_decided_by = 'auto_existing_member'
+      update.converted_to_member = true
+      update.member_id           = existingMember.id
+    }
     const { data, error } = await supabase
       .from('leads')
-      .update({
-        full_name: fullName,
-        source: 'Calendly',
-        discovery_call_booked: true,
-        discovery_call_date: startTime ? startTime.split('T')[0] : null,
-        calendly_event_id: calendlyEventId,
-        calendly_booked_at: new Date().toISOString(),
-        // Backfill token if the existing lead was created without one (e.g. via client-side form)
-        approval_token: approvalToken,
-      })
+      .update(update)
       .eq('email', email)
       .select()
       .single()
     lead = data
     leadError = error
   } else {
-    // Brand new lead
-    console.log(`[webhook] STEP:upsert, new lead`)
+    // Brand new lead. If the email already belongs to a member, mark approved
+    // immediately so the lead never lands in the pending queue.
+    console.log(`[webhook] STEP:upsert, new lead${existingMember ? ' (auto-approved, existing member)' : ''}`)
+    const insert: Record<string, any> = {
+      full_name: fullName,
+      email,
+      source: 'Calendly',
+      discovery_call_booked: true,
+      discovery_call_date: startTime ? startTime.split('T')[0] : null,
+      calendly_event_id: calendlyEventId,
+      calendly_booked_at: new Date().toISOString(),
+      approval_status: existingMember ? 'approved' : 'pending',
+      approval_token: approvalToken,
+    }
+    if (existingMember) {
+      insert.approval_decided_at = new Date().toISOString()
+      insert.approval_decided_by = 'auto_existing_member'
+      insert.converted_to_member = true
+      insert.member_id           = existingMember.id
+    }
     const { data, error } = await supabase
       .from('leads')
-      .insert({
-        full_name: fullName,
-        email,
-        source: 'Calendly',
-        discovery_call_booked: true,
-        discovery_call_date: startTime ? startTime.split('T')[0] : null,
-        calendly_event_id: calendlyEventId,
-        calendly_booked_at: new Date().toISOString(),
-        approval_status: 'pending',
-        approval_token: approvalToken,
-      })
+      .insert(insert)
       .select()
       .single()
     lead = data
@@ -297,6 +334,49 @@ export async function POST(req: NextRequest) {
     .eq('id', receiptId)
 
   // === STEP 9: Queue + send founder notification ===
+  if (existingMember) {
+    // Existing-member path: log a profile timeline event and send an
+    // FYI-only notice to founders (no approve/decline buttons).
+    const { error: timelineErr } = await supabase
+      .from('member_timelines')
+      .insert({
+        member_id:    existingMember.id,
+        event_type:   'discovery_call_booked_existing_member',
+        event_title:  'Booked a discovery call',
+        event_detail: startTime ? `Scheduled for ${new Date(startTime).toLocaleString('en-US')}` : 'Date TBD',
+        is_system:    true,
+      })
+    if (timelineErr) {
+      console.error(`[webhook] STEP:timeline, FAILED (non-blocking): ${timelineErr.message}`)
+    }
+
+    const notificationId = await logNotification(supabase, {
+      lead_id: lead.id,
+      notification_type: 'existing_member_booked',
+      recipient: ['joshuaperdue2@gmail.com', 'aloha@vitalkauai.com'],
+      status: 'queued',
+      payload: { fullName, email, eventName, startTime, member_id: existingMember.id },
+    })
+
+    try {
+      await sendExistingMemberBookedNotice({
+        fullName,
+        email,
+        eventName,
+        startTime,
+        memberId: existingMember.id,
+      })
+      console.log(`[webhook] STEP:notify, SENT existing-member FYI for ${fullName}`)
+      await updateNotification(supabase, notificationId, 'sent')
+    } catch (emailErr: any) {
+      console.error(`[webhook] STEP:notify, FYI FAILED (non-blocking): ${emailErr.message}`)
+      await updateNotification(supabase, notificationId, 'failed', emailErr.message)
+    }
+
+    console.log(`[webhook] DONE (existing-member), lead: ${lead.id}, member: ${existingMember.id}, receipt: ${receiptId}`)
+    return NextResponse.json({ ok: true, leadId: lead.id, existingMemberId: existingMember.id })
+  }
+
   // Use the lead's current approval_token (may be existing if already decided)
   const tokenForEmail = lead.approval_token || approvalToken
 
@@ -523,6 +603,100 @@ export async function sendFounderNotification({
       from: 'Vital Kaua\u02BBi <aloha@vitalkauai.com>',
       to: ['joshuaperdue2@gmail.com', 'aloha@vitalkauai.com'],
       subject: `New discovery call: ${safeName} \u2014 ${callDate}`,
+      html,
+    }),
+  })
+
+  if (!res.ok) {
+    const errorText = await res.text()
+    throw new Error(`Resend ${res.status}: ${errorText}`)
+  }
+}
+
+// ---------------------------------------------------------------------------
+// EXISTING-MEMBER FYI EMAIL
+// Sent when an already-onboarded member books a discovery call. No approve
+// or decline buttons — they're already in the system. The Calendly invite
+// itself handles the calendar side.
+// ---------------------------------------------------------------------------
+export async function sendExistingMemberBookedNotice({
+  fullName, email, eventName, startTime, memberId,
+}: {
+  fullName: string
+  email: string
+  eventName: string
+  startTime: string | null
+  memberId: string
+}) {
+  const resendKey = process.env.RESEND_API_KEY
+  if (!resendKey) throw new Error('No RESEND_API_KEY configured')
+
+  const safeName = esc(fullName)
+  const safeEmail = esc(email)
+  const safeEventName = esc(eventName)
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://vital-kauai.vercel.app'
+  const profileUrl = `${baseUrl}/dashboard/${memberId}`
+
+  const callDate = startTime
+    ? new Date(startTime).toLocaleDateString('en-US', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+        hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
+      })
+    : 'Date TBD'
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body{font-family:-apple-system,sans-serif;background:#f5f5f5;margin:0;padding:32px 0}
+    .card{max-width:540px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+    .header{background:#1a2e1c;padding:24px 32px}
+    .header-label{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#c8a96e;margin:0 0 8px}
+    .header h1{color:#f5f0e8;font-size:20px;font-weight:400;margin:0}
+    .body{padding:28px 32px}
+    .field{margin-bottom:16px}
+    .label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:4px}
+    .value{font-size:16px;color:#1a1a1a}
+    hr{border:none;border-top:1px solid #eee;margin:24px 0}
+    .note{font-size:14px;color:#555;line-height:1.6;background:#f9f9f9;padding:16px;border-radius:6px;border-left:3px solid #c8a96e;margin-bottom:24px}
+    .profile-link{text-align:center;font-size:13px;color:#888}
+    .profile-link a{color:#c8a96e;text-decoration:none}
+    .footer{background:#f9f9f9;padding:16px 32px;font-size:11px;color:#aaa;text-align:center;border-top:1px solid #eee}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <p class="header-label">Vital Kauaʻi · Existing Member</p>
+      <h1>${safeName} booked a discovery call</h1>
+    </div>
+    <div class="body">
+      <div class="field"><div class="label">Email</div><div class="value">${safeEmail}</div></div>
+      <div class="field"><div class="label">Call type</div><div class="value">${safeEventName}</div></div>
+      <div class="field"><div class="label">Scheduled for</div><div class="value">${callDate}</div></div>
+      <hr>
+      <div class="note">
+        <strong>No action needed.</strong> ${safeName} is already a member in the portal, so no approval is required. This call has been logged on their profile timeline.
+      </div>
+      <div class="profile-link">View their <a href="${profileUrl}">member profile →</a></div>
+    </div>
+    <div class="footer">Vital Kauaʻi Church · aloha@vitalkauai.com</div>
+  </div>
+</body>
+</html>`
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization:  `Bearer ${resendKey}`,
+    },
+    body: JSON.stringify({
+      from:    'Vital Kauaʻi <aloha@vitalkauai.com>',
+      to:      ['joshuaperdue2@gmail.com', 'aloha@vitalkauai.com'],
+      subject: `FYI: ${safeName} (existing member) booked a discovery call — ${callDate}`,
       html,
     }),
   })
