@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyFounder } from '@/lib/auth/founder-check'
-import { renderSetupLinkEmail } from '@/lib/email-renderers'
+import { renderAppInstallEmail, renderSetupLinkEmail } from '@/lib/email-renderers'
 import { createSetupToken, setupAccountUrl } from '@/lib/setup-tokens'
 
 /**
@@ -189,6 +189,13 @@ export async function POST(req: NextRequest) {
             .update({ status: 'sent', sent_at: new Date().toISOString() })
             .eq('id', notifRow.id)
         }
+        // Follow-up "Add to Home Screen" email. Non-blocking — setup link
+        // already shipped, member is fully onboarded.
+        try {
+          await sendAppInstallEmail(email, fullName)
+        } catch (installErr: any) {
+          console.error('[add-member-manually] install email failed (non-blocking):', installErr?.message || installErr)
+        }
       } catch (emailErr: any) {
         console.error('[add-member-manually] email send failed:', emailErr?.message || emailErr)
         if (notifRow) {
@@ -266,6 +273,35 @@ async function sendSetupEmail(email: string, fullName: string, setupLink: string
   const { subject, html } = await renderSetupLinkEmail({
     firstName,
     setupLink,
+    appUrl: env().appUrl,
+  })
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization:  `Bearer ${env().resendKey}`,
+    },
+    body: JSON.stringify({
+      from:    'Vital Kauaʻi <aloha@vitalkauai.com>',
+      to:      email,
+      subject,
+      html,
+    }),
+  })
+  if (!res.ok) {
+    const txt = await res.text()
+    throw new Error(`Resend ${res.status}: ${txt}`)
+  }
+}
+
+async function sendAppInstallEmail(email: string, fullName: string) {
+  if (!env().resendKey) {
+    console.log('[add-member-manually] No RESEND_API_KEY — skipping install email')
+    return
+  }
+  const firstName = fullName.split(' ')[0] || 'Friend'
+  const { subject, html } = await renderAppInstallEmail({
+    firstName,
     appUrl: env().appUrl,
   })
   const res = await fetch('https://api.resend.com/emails', {
