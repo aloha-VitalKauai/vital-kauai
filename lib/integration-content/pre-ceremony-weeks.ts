@@ -13,7 +13,10 @@ export type ActionCard =
   | { kind: 'external'; href: string; text: string }
   | { kind: 'static';   text: string; links?: ActionLinkArr }
 
-export const STRIPE_LOVE_OFFERING_URL = 'https://buy.stripe.com/test_cNi4gzcoG3ZBeQUcmZbo400'
+// Member-facing contribution destination. Both the portal home docCard and
+// the pre-ceremony week content route here; the page itself picks the right
+// payment provider (Stripe today, Square once PAYMENT_PROVIDER=square).
+export const STRIPE_LOVE_OFFERING_URL = '/portal/donate'
 
 export const actionsForWeek = (
   weekIdx: number,
@@ -69,7 +72,7 @@ export const WEEKS = [
         text: 'Submit your contribution',
         note: 'Your donation completes the container. It signals to your nervous system: I have chosen this. I am in.',
         links: [
-          { text: 'Submit your contribution', href: STRIPE_LOVE_OFFERING_URL, external: true },
+          { text: 'Submit your contribution', href: STRIPE_LOVE_OFFERING_URL },
         ],
       },
       {

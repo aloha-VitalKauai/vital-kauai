@@ -11,14 +11,20 @@ function fmt(cents: number) {
   }).format(cents / 100);
 }
 
+type Provider = "stripe" | "square";
+
 export default function JourneyPaymentCard({
+  provider = "stripe",
   journeyId,
+  bookingId,
   expected,
   paid,
   remaining,
   status,
 }: {
+  provider?: Provider;
   journeyId: string;
+  bookingId?: string;
   expected: number;
   paid: number;
   remaining: number;
@@ -35,26 +41,38 @@ export default function JourneyPaymentCard({
   );
   const [failed, setFailed] = useState(params.get("payment") === "cancelled");
 
-  // Poll until paid_cents reflects the new payment or status flips to 'paid'
+  // Poll until the payment closes. Source differs by provider — Square mode
+  // polls bookings (the authoritative state); Stripe polls the legacy view.
   useEffect(() => {
     if (!processing) return;
     let cancelled = false;
     let attempts = 0;
     const startingPaid = paid;
-    const MAX = 20; // ~60s at 3s interval
+    const MAX = 20;
 
     const tick = async () => {
       attempts++;
-      const { data } = await supabase
-        .from("journey_financial_summary")
-        .select("collected_amount_cents, payment_status")
-        .eq("journey_id", journeyId)
-        .single();
+      let advanced = false;
+      let nowPaid = false;
+      if (provider === "square" && bookingId) {
+        const { data } = await supabase
+          .from("bookings")
+          .select("amount_paid_cents, payment_status")
+          .eq("id", bookingId)
+          .maybeSingle();
+        advanced = (data?.amount_paid_cents ?? 0) > startingPaid;
+        nowPaid = data?.payment_status === "paid" || data?.payment_status === "deposit_paid";
+      } else {
+        const { data } = await supabase
+          .from("journey_financial_summary")
+          .select("collected_amount_cents, payment_status")
+          .eq("journey_id", journeyId)
+          .single();
+        advanced = (data?.collected_amount_cents ?? 0) > startingPaid;
+        nowPaid = data?.payment_status === "paid";
+      }
       if (cancelled) return;
-      if (
-        (data?.collected_amount_cents ?? 0) > startingPaid ||
-        data?.payment_status === "paid"
-      ) {
+      if (advanced || nowPaid) {
         router.replace("/portal/journey/payment?payment=confirmed");
         return;
       }
@@ -69,17 +87,25 @@ export default function JourneyPaymentCard({
     return () => {
       cancelled = true;
     };
-  }, [processing, paid, journeyId, router, supabase]);
+  }, [processing, paid, journeyId, bookingId, provider, router, supabase]);
 
   async function pay(amountCents?: number) {
     const popup = window.open("", "_blank", "noopener,noreferrer");
     setLoading(true);
     setFailed(false);
     try {
-      const res = await fetch("/api/payments/create-journey-session", {
+      const endpoint =
+        provider === "square"
+          ? "/api/square/create-payment-link"
+          : "/api/payments/create-journey-session";
+      const body =
+        provider === "square"
+          ? { booking_id: bookingId, amount_cents: amountCents }
+          : { journey_id: journeyId, amount_cents: amountCents };
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ journey_id: journeyId, amount_cents: amountCents }),
+        body: JSON.stringify(body),
       });
       const { url, error } = await res.json();
       if (error || !url) throw new Error(error ?? "no url");
@@ -94,13 +120,14 @@ export default function JourneyPaymentCard({
     }
   }
 
+  const providerName = provider === "square" ? "Square" : "Stripe";
+
   if (processing) {
     return (
       <div style={cardStyle}>
         <h2 style={h2Style}>Confirming payment…</h2>
         <p style={subtitleStyle}>
-          We&apos;re waiting on Stripe to confirm. This usually takes a few
-          seconds.
+          We&apos;re waiting on {providerName} to confirm. This usually takes a few seconds.
         </p>
         <div style={spinnerStyle} />
       </div>
@@ -116,9 +143,8 @@ export default function JourneyPaymentCard({
     );
   }
 
-  const partialCents = partial
-    ? Math.round(parseFloat(partial) * 100)
-    : 0;
+  const partialCents = partial ? Math.round(parseFloat(partial) * 100) : 0;
+  const canPay = remaining > 0;
 
   return (
     <div style={cardStyle}>
@@ -144,9 +170,9 @@ export default function JourneyPaymentCard({
       )}
 
       <div style={{ marginTop: "1.5rem", display: "flex", flexDirection: "column", gap: 10 }}>
-        <button style={btnStyle} disabled={loading} onClick={() => pay()}>
+        <button style={btnStyle} disabled={loading || !canPay} onClick={() => pay()}>
           {loading
-            ? "Opening Stripe…"
+            ? `Opening ${providerName}…`
             : failed
               ? `🔁 Retry Full Remaining — ${fmt(remaining)}`
               : `💳 Pay Full Remaining — ${fmt(remaining)}`}
