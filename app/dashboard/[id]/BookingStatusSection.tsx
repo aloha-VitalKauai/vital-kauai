@@ -28,19 +28,29 @@ export default function BookingStatusSection({ booking, memberId, memberName }: 
     booking?.payment_status ?? "unpaid",
   );
   const [packageName, setPackageName] = useState(booking?.package_name ?? "");
-  const [amountDollars, setAmountDollars] = useState(
-    booking?.amount_cents != null ? (booking.amount_cents / 100).toString() : "",
+  const [amountDueDollars, setAmountDueDollars] = useState(
+    booking?.amount_due_cents != null ? (booking.amount_due_cents / 100).toString() : "",
+  );
+  const [amountPaidDollars, setAmountPaidDollars] = useState(
+    booking?.amount_paid_cents != null ? (booking.amount_paid_cents / 100).toString() : "0",
   );
   const [notes, setNotes] = useState(booking?.notes ?? "");
+  const [reason, setReason] = useState("");
 
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ text: string; err?: boolean } | null>(null);
+
+  const initialAmountDue =
+    booking?.amount_due_cents != null ? (booking.amount_due_cents / 100).toString() : "";
+  const initialAmountPaid =
+    booking?.amount_paid_cents != null ? (booking.amount_paid_cents / 100).toString() : "0";
 
   const dirty =
     bookingStatus !== (booking?.booking_status ?? "invited") ||
     paymentStatus !== (booking?.payment_status ?? "unpaid") ||
     packageName !== (booking?.package_name ?? "") ||
-    amountDollars !== (booking?.amount_cents != null ? (booking.amount_cents / 100).toString() : "") ||
+    amountDueDollars !== initialAmountDue ||
+    amountPaidDollars !== initialAmountPaid ||
     notes !== (booking?.notes ?? "");
 
   function flash(text: string, err?: boolean) {
@@ -50,13 +60,11 @@ export default function BookingStatusSection({ booking, memberId, memberName }: 
 
   async function handleSave() {
     setSaving(true);
-    const amountTrim = amountDollars.trim();
-    const amount_cents = amountTrim === ""
-      ? null
-      : Math.round(parseFloat(amountTrim) * 100);
-    if (amount_cents !== null && (!Number.isFinite(amount_cents) || amount_cents < 0)) {
+    const amount_due_cents = dollarsToCents(amountDueDollars);
+    const amount_paid_cents = dollarsToCents(amountPaidDollars);
+    if (amount_due_cents === "invalid" || amount_paid_cents === "invalid") {
       setSaving(false);
-      flash("Amount must be a positive number", true);
+      flash("Amounts must be positive numbers", true);
       return;
     }
 
@@ -69,8 +77,10 @@ export default function BookingStatusSection({ booking, memberId, memberName }: 
         booking_status: bookingStatus,
         payment_status: paymentStatus,
         package_name: packageName.trim() === "" ? null : packageName.trim(),
-        amount_cents,
+        amount_due_cents,
+        amount_paid_cents: amount_paid_cents ?? 0,
         notes: notes.trim() === "" ? null : notes.trim(),
+        reason: reason.trim() === "" ? null : reason.trim(),
       }),
     });
     const json = await res.json().catch(() => ({}));
@@ -80,6 +90,7 @@ export default function BookingStatusSection({ booking, memberId, memberName }: 
       flash(json.error ?? "Save failed", true);
       return;
     }
+    setReason("");
     flash(memberName ? `Booking updated for ${memberName}` : "Booking updated");
     startTransition(() => router.refresh());
   }
@@ -167,14 +178,26 @@ export default function BookingStatusSection({ booking, memberId, memberName }: 
           />
         </div>
         <div>
-          <label style={FIELD_LABEL}>Amount ($, optional)</label>
+          <label style={FIELD_LABEL}>Amount due ($)</label>
           <input
             type="number"
             min={0}
             step="0.01"
             placeholder="0.00"
-            value={amountDollars}
-            onChange={(e) => setAmountDollars(e.target.value)}
+            value={amountDueDollars}
+            onChange={(e) => setAmountDueDollars(e.target.value)}
+            style={DARK_INPUT}
+          />
+        </div>
+        <div>
+          <label style={FIELD_LABEL}>Amount paid ($)</label>
+          <input
+            type="number"
+            min={0}
+            step="0.01"
+            placeholder="0.00"
+            value={amountPaidDollars}
+            onChange={(e) => setAmountPaidDollars(e.target.value)}
             style={DARK_INPUT}
           />
         </div>
@@ -185,6 +208,16 @@ export default function BookingStatusSection({ booking, memberId, memberName }: 
             placeholder="Anything to remember about this booking"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
+            style={DARK_INPUT}
+          />
+        </div>
+        <div style={{ gridColumn: "1 / -1" }}>
+          <label style={FIELD_LABEL}>Reason for this change (saved to audit log)</label>
+          <input
+            type="text"
+            placeholder="e.g. Received wire transfer, member requested refund"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
             style={DARK_INPUT}
           />
         </div>
@@ -263,6 +296,16 @@ function paymentBadgeTone(s: PaymentStatus): "neutral" | "warn" | "ok" | "danger
   if (s === "deposit_paid" || s === "payment_plan_active") return "warn";
   if (s === "failed" || s === "refunded") return "danger";
   return "neutral";
+}
+
+// Parse a dollar string to integer cents. Returns null for empty, "invalid"
+// for a non-numeric or negative value, integer cents otherwise.
+function dollarsToCents(s: string): number | null | "invalid" {
+  const trim = s.trim();
+  if (trim === "") return null;
+  const cents = Math.round(parseFloat(trim) * 100);
+  if (!Number.isFinite(cents) || cents < 0) return "invalid";
+  return cents;
 }
 
 const CARD: React.CSSProperties = {

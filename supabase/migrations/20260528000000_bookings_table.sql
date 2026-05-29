@@ -22,7 +22,7 @@ create type public.booking_status as enum (
 
 create type public.payment_status as enum (
   'unpaid',
-  'deposit_sent',
+  'payment_link_sent',
   'deposit_paid',
   'paid',
   'payment_plan_active',
@@ -30,21 +30,28 @@ create type public.payment_status as enum (
   'refunded'
 );
 
+-- Bookings holds the current lifecycle state for a member's journey.
+-- Money detail (per-transaction history) lives on `donations`; we keep
+-- `amount_due_cents` and `amount_paid_cents` denormalized here so the
+-- dashboard + portal can render totals without joining donations every
+-- time. The Square webhook (PR 2) and founder edits keep them in sync.
 create table if not exists public.bookings (
-  id                   uuid primary key default gen_random_uuid(),
-  member_id            uuid not null references public.members(id) on delete cascade,
-  journey_id           uuid,
-  booking_status       public.booking_status not null default 'inquiry',
-  payment_status       public.payment_status not null default 'unpaid',
-  package_name         text,
-  amount_cents         integer,
-  square_payment_id    text,
-  square_order_id      text,
-  square_customer_id   text,
-  paid_at              timestamptz,
-  notes                text,
-  created_at           timestamptz not null default now(),
-  updated_at           timestamptz not null default now()
+  id                       uuid primary key default gen_random_uuid(),
+  member_id                uuid not null references public.members(id) on delete cascade,
+  journey_id               uuid,
+  booking_status           public.booking_status not null default 'inquiry',
+  payment_status           public.payment_status not null default 'unpaid',
+  package_name             text,
+  amount_due_cents         integer,
+  amount_paid_cents        integer not null default 0,
+  square_payment_link_id   text,
+  square_payment_id        text,
+  square_order_id          text,
+  square_customer_id       text,
+  paid_at                  timestamptz,
+  notes                    text,
+  created_at               timestamptz not null default now(),
+  updated_at               timestamptz not null default now()
 );
 
 create index if not exists bookings_member_id_idx        on public.bookings (member_id);

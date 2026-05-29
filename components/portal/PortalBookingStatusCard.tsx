@@ -73,9 +73,12 @@ export default function PortalBookingStatusCard({ userEmail }: Props) {
         </Badge>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-        {booking.amount_cents != null && (
-          <Stat label="Amount" value={fmtMoney(booking.amount_cents)} />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+        {booking.amount_due_cents != null && (
+          <Stat label="Amount due" value={fmtMoney(booking.amount_due_cents)} />
+        )}
+        {(booking.amount_paid_cents > 0 || booking.amount_due_cents != null) && (
+          <Stat label="Paid so far" value={fmtMoney(booking.amount_paid_cents)} />
         )}
         {booking.paid_at && (
           <Stat label="Last payment" value={fmtDate(booking.paid_at)} />

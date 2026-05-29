@@ -16,7 +16,7 @@ export const BOOKING_STATUS_VALUES = [
 
 export const PAYMENT_STATUS_VALUES = [
   "unpaid",
-  "deposit_sent",
+  "payment_link_sent",
   "deposit_paid",
   "paid",
   "payment_plan_active",
@@ -34,7 +34,9 @@ export type Booking = {
   booking_status: BookingStatus;
   payment_status: PaymentStatus;
   package_name: string | null;
-  amount_cents: number | null;
+  amount_due_cents: number | null;
+  amount_paid_cents: number;
+  square_payment_link_id: string | null;
   square_payment_id: string | null;
   square_order_id: string | null;
   square_customer_id: string | null;
@@ -45,7 +47,7 @@ export type Booking = {
 };
 
 const BOOKING_COLUMNS =
-  "id, member_id, journey_id, booking_status, payment_status, package_name, amount_cents, square_payment_id, square_order_id, square_customer_id, paid_at, notes, created_at, updated_at";
+  "id, member_id, journey_id, booking_status, payment_status, package_name, amount_due_cents, amount_paid_cents, square_payment_link_id, square_payment_id, square_order_id, square_customer_id, paid_at, notes, created_at, updated_at";
 
 export async function getCurrentBookingForMember(
   supabase: SupabaseClient,
@@ -99,7 +101,7 @@ export const BOOKING_STATUS_LABEL: Record<BookingStatus, string> = {
 
 export const PAYMENT_STATUS_LABEL: Record<PaymentStatus, string> = {
   unpaid: "Unpaid",
-  deposit_sent: "Deposit sent",
+  payment_link_sent: "Payment link sent",
   deposit_paid: "Deposit paid",
   paid: "Paid",
   payment_plan_active: "Payment plan active",
