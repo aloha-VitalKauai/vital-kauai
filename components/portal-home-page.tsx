@@ -188,13 +188,13 @@ const MEDICAL_DISCLAIMER: DisclaimerBlock[] = [
   },
 ];
 
-const STRIPE_LOVE_OFFERING_URL = "https://buy.stripe.com/test_cNi4gzcoG3ZBeQUcmZbo400";
+const CONTRIBUTION_URL = "/portal/donate";
 const ONBOARDING_CALL_URL = "https://calendly.com/aloha-vitalkauai/onboarding";
 
 const PREP_ITEMS: { text: string; link?: string; external?: boolean; isLab?: boolean }[] = [
   { text: "Complete all three required steps (Donation, Membership Agreement, Medical Disclaimer)", link: "/portal" },
   { text: "Fill out the Intake Form, basic information required (emergency contact, etc.); all other questions optional", link: "/intake-form" },
-  { text: "Submit your Contribution/Donate", link: STRIPE_LOVE_OFFERING_URL, external: true },
+  { text: "Submit your Contribution/Donate", link: CONTRIBUTION_URL },
   { text: "Read Iboga Preparedness Guide", link: "/iboga-preparedness-guide.html" },
   { text: "Book your preparation calls with your integration guide", link: "/portal#integration-specialist" },
   { text: "Discuss all medications and supplements with Rachel and Josh \u2014 confirm any required washout periods" },
@@ -540,7 +540,7 @@ export function PortalHomePage({
               className={`${styles.docCard} ${donationDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
               onClick={() => {
                 if (donationDone) return;
-                window.open(STRIPE_LOVE_OFFERING_URL, "_blank", "noopener,noreferrer");
+                window.location.href = CONTRIBUTION_URL;
               }}
             >
               <div className={styles.docTitle}>
