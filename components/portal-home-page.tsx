@@ -15,7 +15,6 @@ import {
 } from "@/lib/api/member";
 import { PortalNav } from "./portal-nav";
 import PortalJourneyCard from "@/components/portal/PortalJourneyCard";
-import PortalBookingStatusCard from "@/components/portal/PortalBookingStatusCard";
 import { members as HEALING_CIRCLE_MEMBERS } from "@/components/healing-circle-data";
 import styles from "./portal-home-page.module.css";
 
@@ -649,17 +648,6 @@ export function PortalHomePage({
       {/* ── LOWER BAND (forest) ─── */}
       <section className={styles.lowerBand}>
         <div className={styles.lowerInner}>
-
-        {/* BOOKING STATUS */}
-        <section className={styles.dateBlock} id="booking-status">
-          <div className={styles.sectionHead}>
-            <span className={styles.sectionEyebrow}>Your Booking</span>
-            <h2 className={styles.sectionTitle}>
-              Where You <em>Stand</em>
-            </h2>
-          </div>
-          <PortalBookingStatusCard userEmail={userEmail} />
-        </section>
 
         {/* CEREMONY DATE */}
         <section className={styles.dateBlock} id="upcoming-ceremony">
