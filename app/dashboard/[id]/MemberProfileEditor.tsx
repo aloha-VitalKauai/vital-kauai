@@ -4,6 +4,8 @@ import { useState, useTransition } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import MemberFinancialSection from "./MemberFinancialSection";
+import BookingStatusSection from "./BookingStatusSection";
+import type { Booking } from "@/lib/api/bookings";
 /* Integration Specialist options come from the integration_specialists
    table via the `specialists` prop. Same source as /dashboard/integration
    and the portal card — one source of truth. */
@@ -118,6 +120,7 @@ export default function MemberProfileEditor({
   outcomesRows = [],
   bookedCents = null,
   expenseCents = null,
+  booking = null,
 }: {
   member: Member;
   profile: Profile;
@@ -138,6 +141,7 @@ export default function MemberProfileEditor({
   outcomesRows?: Array<Record<string, any>>;
   bookedCents?: number | null;
   expenseCents?: number | null;
+  booking?: Booking | null;
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -1174,6 +1178,14 @@ export default function MemberProfileEditor({
           </div>
         </div>
       )}
+
+      {/* Booking & payment status (Square era) */}
+      <div id="booking-status" style={{ scrollMarginTop: 80 }} />
+      <BookingStatusSection
+        booking={booking}
+        memberId={member.id}
+        memberName={member.full_name ?? null}
+      />
 
       {/* Journey payment — full financial section */}
       <div id="journey-financials" style={{ scrollMarginTop: 80 }} />

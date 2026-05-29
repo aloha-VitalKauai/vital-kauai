@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import MemberProfileEditor from "./MemberProfileEditor";
+import { getCurrentBookingForMember } from "@/lib/api/bookings";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -171,6 +172,8 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
     .order("name", { ascending: true });
   const specialists = (specialistRows ?? []).map((s) => s.name);
 
+  const booking = await getCurrentBookingForMember(supabase, id);
+
   return (
     <MemberProfileEditor
       member={member}
@@ -192,6 +195,7 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       outcomesRows={outcomesRows ?? []}
       bookedCents={bookedCents}
       expenseCents={expenseCents}
+      booking={booking}
     />
   );
 }
