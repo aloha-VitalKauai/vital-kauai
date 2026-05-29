@@ -318,13 +318,13 @@ export function PortalHomePage({
   const checkedCount = checkedItems.filter(Boolean).length;
   const checkPct = PREP_ITEMS.length > 0 ? Math.round((checkedCount / PREP_ITEMS.length) * 100) : 0;
 
-  // Onboarding step status
-  const donationDone = profile?.deposit_paid ?? false;
+  // Onboarding step status. The "Make your Contribution" step is hidden
+  // from the portal for now — onboarding gate doesn't require it.
   const agreementDone = profile?.membership_agreement_signed ?? false;
   const medicalDone = profile?.medical_disclaimer_signed ?? false;
   const intakeDone = profile?.intake_form_completed ?? false;
-  const allRequiredDone = donationDone && agreementDone && medicalDone;
-  const beginStepsComplete = [donationDone, agreementDone, medicalDone, intakeDone, callScheduled].filter(Boolean).length;
+  const allRequiredDone = agreementDone && medicalDone;
+  const beginStepsComplete = [agreementDone, medicalDone, intakeDone, callScheduled].filter(Boolean).length;
 
   function markCallScheduled() {
     setCallScheduled(true);
@@ -526,40 +526,16 @@ export function PortalHomePage({
           </div>
         </div>
 
-        {/* FIVE STEPS TO BEGIN */}
+        {/* FOUR STEPS TO BEGIN \u2014 contribution step temporarily hidden */}
         <section className={styles.unlockBlock}>
           <div className={styles.sectionHead}>
-            <span className={styles.sectionEyebrow}>Five Steps to Begin</span>
+            <span className={styles.sectionEyebrow}>Four Steps to Begin</span>
             <p className={styles.unlockProgress}>
-              {beginStepsComplete} of 5 complete
+              {beginStepsComplete} of 4 complete
             </p>
           </div>
 
           <div className={styles.docGrid}>
-            <button
-              className={`${styles.docCard} ${donationDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
-              onClick={() => {
-                if (donationDone) return;
-                window.location.href = CONTRIBUTION_URL;
-              }}
-            >
-              <div className={styles.docTitle}>
-                Make your Contribution
-              </div>
-              <div className={styles.docDesc}>
-                Your gift supports the ministry, our gatherings, and the work Nature is doing
-                through Vital Kaua&#699;i. Every offering is received with gratitude.
-              </div>
-              <div className={styles.docFooter}>
-                <span className={`${styles.docTag} ${styles.tagRequired}`}>
-                  {donationDone ? "Complete" : "Your Offering"}
-                </span>
-                <span className={`${styles.docAction} ${donationDone ? styles.docActionSigned : ""}`}>
-                  {donationDone ? "\u2713 Complete" : "Complete \u2192"}
-                </span>
-              </div>
-            </button>
-
             <button
               id="agreement-card"
               className={`${styles.docCard} ${agreementDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
