@@ -242,12 +242,9 @@ export function AboutPage() {
               &ldquo;What healed me was Africa itself, the real initiation, held in its original lineage, with the people who have tended it for centuries.&rdquo;
             </p>
           </div>
-          <div className={styles.africaPair}>
+          <div className={styles.africaPair} style={{ gridTemplateColumns: "1fr", maxWidth: 320 }}>
             <div className={styles.africaImg}>
               <Image src="/images/about/josh-bwiti-initiation.jpg" alt="Josh in Bwiti initiation, Gabon" fill sizes="25vw" style={{ objectFit: "cover", objectPosition: "center top" }} />
-            </div>
-            <div className={styles.africaImg}>
-              <Image src="/images/about/josh-bwiti-ceremony.jpg" alt="Josh in ceremony with Bwiti, Gabon" fill sizes="25vw" style={{ objectFit: "cover", objectPosition: "center top" }} />
             </div>
           </div>
           <p className={styles.storyPara}>
