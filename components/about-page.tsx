@@ -310,13 +310,6 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* ── Family ── */}
-      <section className={styles.family} id="family">
-        <div className={styles.familyWrap}>
-          <Image src="/images/about/family-hanalei.jpg" alt="Rachel, Josh and family at Hanalei Bay" fill sizes="100vw" className={styles.familyImg} />
-        </div>
-      </section>
-
       {/* ── Close ── */}
       <section className={styles.close} id="close">
         <p className={`${styles.closeEyebrow} ${styles.reveal}`}>An Invitation</p>
