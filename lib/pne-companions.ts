@@ -40,7 +40,6 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     status: "live",
     videoSummary:
       "Internal safety, what happens when the system senses threat, and how internal and external structures build the ground your nervous system can rest into.",
-    videoUrl: "https://www.youtube.com/embed/oAY5AUzcFBw",
   },
   {
     phase: "pre",
@@ -52,7 +51,6 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     status: "live",
     videoSummary:
       "Tracking the body through fight, flight, freeze, and fawn, and the practices that bring the system back to center.",
-    videoUrl: "https://www.youtube.com/embed/lB7qut-bZdg",
   },
   {
     phase: "pre",
