@@ -53,16 +53,17 @@ export const members: Member[] = [
       "Judith Johnson is a pioneer of body-oriented healing and the founder of PsychoNeuroEnergetics (PNE). Her path spans Transactional Analysis, Gestalt, neo-Reichian work, and Somatic Experiencing with Peter Levine. PNE works through the vagus nerve to unwind traumatic imprints held deep in the nervous system. She has integrated Stephen Porges' Polyvagal Theory throughout her practice and teaching. Judith serves as Head Somatic Therapy Integration Director for Americans for Ibogaine, and authors the preparation and integration protocols used by both Americans for Ibogaine and Vital Kauaʻi, leading the ongoing research into what actually supports lasting transformation.",
     bio: "Judith Johnson is a pioneer of body-oriented healing and the founder of PsychoNeuroEnergetics (PNE). Her path spans Transactional Analysis, Gestalt, neo-Reichian work, Body Electronics with John Ray, and Somatic Experiencing with Peter Levine, giving her the foundation to develop something entirely her own: a modality that accesses the deepest layers of traumatic imprint held in the nervous system, using the healing power of the vagus nerve as its primary gateway. She has deeply integrated Stephen Porges' Polyvagal Theory and Social Engagement work into her teaching and practice. Judith serves as the Head Somatic Therapy Integration Director for Americans for Ibogaine, bringing her lifetime of nervous system expertise directly into the field of plant medicine integration. She authors the preparation and integration protocols that shape both Americans for Ibogaine and Vital Kauaʻi, and leads the ongoing research into efficacy and best practice, turning decades of somatic wisdom into a standard the field can trust, so every member is held by what actually works. We are honored to have Judith as a cornerstone of the Vital Kauaʻi circle.",
   },
-  {
-    id: "liz",
-    name: "Dr. Liz Esalen",
-    role: "Director of On-Island Integration",
-    cat: "somatic",
-    photo: "/images/lizesalen.jpeg",
-    shortBio:
-      "Dr. Liz Esalen is a Doctor of Clinical Psychology with over 30 years of holistic, life-affirming care. She is the founder and CEO of Luminous Healing Center and The Lotus Collaborative in California. Her work bridges psychology, shamanic wisdom, MDMA-assisted therapy, and embodied healing. She is a lineage-initiated mesa carrier and shamanic energy medicine practitioner. At Vital Kauaʻi, Dr. Liz serves as both a pre-ceremony preparation guide and post-ceremony integration specialist.",
-    bio: "Dr. Liz Esalen is a Doctor of Clinical Psychology and the founder of Luminous Healing Center, one of only ten centers in the nation approved to offer MDMA-assisted therapy through MAPS. With over 30 years of holistic, life-affirming care, her work bridges clinical psychology, shamanic energy medicine, Internal Family Systems, the Enneagram, and embodied movement practices. She is a lineage-initiated mesa carrier and leads transformational dance journeys and feminine leadership retreats around the world. At Vital Kauaʻi, Dr. Liz serves as both a pre-ceremony preparation specialist and post-ceremony integration guide, holding guests with the full breadth of her clinical and ceremonial intelligence at every stage of their journey.",
-  },
+  // Temporarily hidden from the public healing circle page.
+  // {
+  //   id: "liz",
+  //   name: "Dr. Liz Esalen",
+  //   role: "Director of On-Island Integration",
+  //   cat: "somatic",
+  //   photo: "/images/lizesalen.jpeg",
+  //   shortBio:
+  //     "Dr. Liz Esalen is a Doctor of Clinical Psychology with over 30 years of holistic, life-affirming care. She is the founder and CEO of Luminous Healing Center and The Lotus Collaborative in California. Her work bridges psychology, shamanic wisdom, MDMA-assisted therapy, and embodied healing. She is a lineage-initiated mesa carrier and shamanic energy medicine practitioner. At Vital Kauaʻi, Dr. Liz serves as both a pre-ceremony preparation guide and post-ceremony integration specialist.",
+  //   bio: "Dr. Liz Esalen is a Doctor of Clinical Psychology and the founder of Luminous Healing Center, one of only ten centers in the nation approved to offer MDMA-assisted therapy through MAPS. With over 30 years of holistic, life-affirming care, her work bridges clinical psychology, shamanic energy medicine, Internal Family Systems, the Enneagram, and embodied movement practices. She is a lineage-initiated mesa carrier and leads transformational dance journeys and feminine leadership retreats around the world. At Vital Kauaʻi, Dr. Liz serves as both a pre-ceremony preparation specialist and post-ceremony integration guide, holding guests with the full breadth of her clinical and ceremonial intelligence at every stage of their journey.",
+  // },
   {
     id: "nafisseh",
     name: "Dr. Nafisseh Soroudi",
@@ -152,16 +153,17 @@ export const members: Member[] = [
       "Dorothea Barth-Jorgensen is deeply devoted to helping others remember their true nature, the wholesome, joyous, and creatively connected essence that flows from Source itself. She trained in Breathwork Levels 1–3 with David Elliott and is a certified Sound Healer through The Soul of Yoga in Encinitas. Her approach is gentle yet profound, rooted in compassion, curiosity, and the belief that true healing arises through surrender, not force. Since 2022 she has called Kauaʻi home, offering workshops and private sessions. Her work has been shared at Soho House, The Mindry, and healing spaces across the world.",
     bio: "Dorothea Barth-Jorgensen is deeply devoted to helping others remember their true nature, the wholesome, joyous, and creatively connected essence that flows from Source itself. She trained in Breathwork Levels 1–3 with David Elliott and is a certified Sound Healer through The Soul of Yoga in Encinitas. Her approach is gentle yet profound, rooted in compassion, curiosity, and the belief that true healing arises through surrender, not force. Since 2022 she has called Kauaʻi home, offering workshops and private sessions. Her work has been shared at Soho House, The Mindry, and healing spaces across the world.",
   },
-  {
-    id: "mary",
-    name: "Mary Mailhot",
-    role: "Kundalini · Hatha Yoga · Sound · Reiki",
-    cat: "healers",
-    photo: "/images/marymailhot.jpeg",
-    shortBio:
-      "Born into a world of music and movement, Mary Mailhot grew up singing and dancing as a way of life. Now a trained musician, dancer, devoted yogi, and mother, she blends the sacred arts of Kundalini, Hatha, and Bhakti yoga with mantra, sound, and embodied flow. Her training includes a 220-hour Kundalini certification, 200-hour Kripalu Hatha, 100-hour Advanced Anusara, Yin Yoga, and Reiki Master. As a recording artist, she has released three albums including the Kundalini mantra album Angels and Space under the name MM'Honey. Her sessions are a living prayer, an invitation to radical self-love and inner radiance.",
-    bio: "Born into a world of music and movement, Mary Mailhot grew up singing and dancing as a way of life. Now a trained musician, dancer, devoted yogi, and mother, she blends the sacred arts of Kundalini, Hatha, and Bhakti yoga with mantra, sound, and embodied flow. Her training includes a 220-hour Kundalini certification, 200-hour Kripalu Hatha, 100-hour Advanced Anusara, Yin Yoga, and Reiki Master. As a recording artist, she has released three albums including the Kundalini mantra album Angels and Space under the name MM'Honey. Her sessions are a living prayer, an invitation to radical self-love and inner radiance.",
-  },
+  // Temporarily hidden from the public healing circle page.
+  // {
+  //   id: "mary",
+  //   name: "Mary Mailhot",
+  //   role: "Kundalini · Hatha Yoga · Sound · Reiki",
+  //   cat: "healers",
+  //   photo: "/images/marymailhot.jpeg",
+  //   shortBio:
+  //     "Born into a world of music and movement, Mary Mailhot grew up singing and dancing as a way of life. Now a trained musician, dancer, devoted yogi, and mother, she blends the sacred arts of Kundalini, Hatha, and Bhakti yoga with mantra, sound, and embodied flow. Her training includes a 220-hour Kundalini certification, 200-hour Kripalu Hatha, 100-hour Advanced Anusara, Yin Yoga, and Reiki Master. As a recording artist, she has released three albums including the Kundalini mantra album Angels and Space under the name MM'Honey. Her sessions are a living prayer, an invitation to radical self-love and inner radiance.",
+  //   bio: "Born into a world of music and movement, Mary Mailhot grew up singing and dancing as a way of life. Now a trained musician, dancer, devoted yogi, and mother, she blends the sacred arts of Kundalini, Hatha, and Bhakti yoga with mantra, sound, and embodied flow. Her training includes a 220-hour Kundalini certification, 200-hour Kripalu Hatha, 100-hour Advanced Anusara, Yin Yoga, and Reiki Master. As a recording artist, she has released three albums including the Kundalini mantra album Angels and Space under the name MM'Honey. Her sessions are a living prayer, an invitation to radical self-love and inner radiance.",
+  // },
   {
     id: "samantha",
     name: "Samantha Nordstrom",
