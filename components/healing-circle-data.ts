@@ -184,7 +184,7 @@ export const members: Member[] = [
   },
   {
     id: "kurtis",
-    name: "Kurtis Kunesh",
+    name: "J Kurtis Kunesh",
     role: "Deep Tissue Massage",
     cat: "healers",
     photo: "/images/kurtiskunesh.jpeg",
