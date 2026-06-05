@@ -15,12 +15,13 @@ const teamMembers = [
     bio: "A pioneer of body-oriented healing, Judith is the founder and developer of PsychoNeuroEnergetics (PNE), a breakthrough modality that unwinds traumatic imprints held in the nervous system through the healing power of the vagus nerve. With decades of practice across Somatic Experiencing, Polyvagal Theory, and body electronics, she brings an extraordinary depth of wisdom to every container at Vital Kauaʻi.",
     image: "/images/judithjohnson.jpeg",
   },
-  {
-    name: "Dr. Liz Esalen",
-    role: "Director of On-Island Integration",
-    bio: "A Doctor of Clinical Psychology and lineage-initiated shamanic energy medicine practitioner, Dr. Liz bridges the depth of evidence-based psychology with the precision of shamanic wisdom and embodied healing. Founder of Luminous Healing Center and The Lotus Collaborative, she brings over 25 years of transformational care, illuminating unconscious patterns, supporting psychedelic integration, and guiding members into authentic wholeness at the intersection of mind, body, and spirit.",
-    image: "/images/lizesalen.jpeg",
-  },
+  // Temporarily hidden from the homepage feature row.
+  // {
+  //   name: "Dr. Liz Esalen",
+  //   role: "Director of On-Island Integration",
+  //   bio: "A Doctor of Clinical Psychology and lineage-initiated shamanic energy medicine practitioner, Dr. Liz bridges the depth of evidence-based psychology with the precision of shamanic wisdom and embodied healing. Founder of Luminous Healing Center and The Lotus Collaborative, she brings over 25 years of transformational care, illuminating unconscious patterns, supporting psychedelic integration, and guiding members into authentic wholeness at the intersection of mind, body, and spirit.",
+  //   image: "/images/lizesalen.jpeg",
+  // },
 ];
 
 const faqs = [
@@ -265,9 +266,6 @@ export function HomePage() {
                 <Link href="/church-information">About Vital Kauaʻi Church</Link>
               </li>
               <li>
-                <Link href="/healing-circle">Our Healing Circle</Link>
-              </li>
-              <li>
                 <Link href="/faq">FAQ</Link>
               </li>
             </ul>
@@ -310,9 +308,6 @@ export function HomePage() {
         </Link>
         <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>
           About Vital Kauaʻi Church
-        </Link>
-        <Link href="/healing-circle" onClick={() => setIsMobileNavOpen(false)}>
-          Our Healing Circle
         </Link>
         <Link href="/faq" onClick={() => setIsMobileNavOpen(false)}>
           FAQ
@@ -800,11 +795,6 @@ export function HomePage() {
           ))}
         </div>
 
-        <div className={`${styles.teamCta} ${styles.reveal}`}>
-          <Link href="/healing-circle" className={styles.kalaLink}>
-            Explore the Circle →
-          </Link>
-        </div>
       </section>
 
       <section id="faq" className={styles.faq}>
@@ -990,9 +980,6 @@ export function HomePage() {
             </li>
             <li>
               <Link href="/about">Josh & Rachel</Link>
-            </li>
-            <li>
-              <Link href="/healing-circle">Our Healing Circle</Link>
             </li>
             <li>
               <Link href="/faq">FAQ</Link>

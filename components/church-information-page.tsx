@@ -96,9 +96,6 @@ export function ChurchInformationPage() {
                 <Link href="/church-information">About Vital Kauaʻi Church</Link>
               </li>
               <li>
-                <Link href="/healing-circle">Our Healing Circle</Link>
-              </li>
-              <li>
                 <Link href="/faq">FAQ</Link>
               </li>
             </ul>
@@ -141,9 +138,6 @@ export function ChurchInformationPage() {
         </Link>
         <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>
           About Vital Kauaʻi Church
-        </Link>
-        <Link href="/healing-circle" onClick={() => setIsMobileNavOpen(false)}>
-          Our Healing Circle
         </Link>
         <Link href="/faq" onClick={() => setIsMobileNavOpen(false)}>
           FAQ
@@ -350,7 +344,6 @@ export function ChurchInformationPage() {
           <ul className={styles.footerLinks}>
             <li><Link href="/iboga-journey">The Iboga Journey</Link></li>
             <li><Link href="/about">Josh & Rachel</Link></li>
-            <li><Link href="/healing-circle">Our Healing Circle</Link></li>
             <li><Link href="/faq">FAQ</Link></li>
             <li><span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/island-residents">Island Residents</Link></span></span></li>
           </ul>

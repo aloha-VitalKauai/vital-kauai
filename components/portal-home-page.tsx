@@ -781,9 +781,6 @@ export function PortalHomePage({
                 Behind every ceremony is a circle of practitioners, somatic specialists, and
                 integration guides, holding you in concert with Rachel and Josh.
               </p>
-              <Link href="/healing-circle" target="_blank" rel="noopener noreferrer" className={styles.teamCta}>
-                Meet Our Healing Circle &rarr;
-              </Link>
             </div>
           </div>
         </div>
