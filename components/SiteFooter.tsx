@@ -16,7 +16,6 @@ export default function SiteFooter() {
           <ul className="vk-footer-links">
             <li><Link href="/iboga-journey" target="_blank" rel="noopener noreferrer">The Iboga Journey</Link></li>
             <li><Link href="/about" target="_blank" rel="noopener noreferrer">Josh &amp; Rachel</Link></li>
-            <li><Link href="/healing-circle" target="_blank" rel="noopener noreferrer">Our Healing Circle</Link></li>
             <li><Link href="/faq" target="_blank" rel="noopener noreferrer">FAQ</Link></li>
             <li><Link href="/stay" target="_blank" rel="noopener noreferrer">Stay With Us</Link></li>
           </ul>

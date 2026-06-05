@@ -1,5 +1,7 @@
-import { HealingCirclePage } from "@/components/healing-circle-page";
+import { redirect } from "next/navigation";
 
-export default function HealingCircleRoute() {
-  return <HealingCirclePage />;
+// Healing circle page temporarily hidden — redirect any visitors home.
+// The page component and data file remain in the repo to restore later.
+export default function HealingCircleRoute(): never {
+  redirect("/");
 }
