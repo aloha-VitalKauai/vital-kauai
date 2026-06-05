@@ -28,9 +28,20 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
   const path = request.nextUrl.pathname;
 
-  // Not logged in — protect portal, dashboard, ops, and founders
-  if (!user && (path.startsWith("/portal") || path.startsWith("/dashboard") || path.startsWith("/ops") || path.startsWith("/founders"))) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  // Pages that are reachable without a session. Everything else on the site is
+  // members-only — visitors get sent to /login. API routes and static assets
+  // are excluded via the matcher below, not here.
+  const isPublicPath =
+    path === "/login" ||
+    path.startsWith("/auth/") ||
+    path === "/auth";
+
+  if (!user && !isPublicPath) {
+    const loginUrl = new URL("/login", request.url);
+    if (path && path !== "/") {
+      loginUrl.searchParams.set("next", path + request.nextUrl.search);
+    }
+    return NextResponse.redirect(loginUrl);
   }
 
   if (user) {
@@ -60,5 +71,11 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/portal/:path*", "/dashboard/:path*", "/ops/:path*", "/founders/:path*", "/login"],
+  // Run on every request except Next.js internals, API routes (each handler
+  // manages its own auth — Stripe webhooks, intake submission, etc.), and
+  // static asset extensions. Public HTML pages like the Preparedness Guide
+  // are intentionally included so they require a session too.
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff2?|ttf|map|txt|xml)$).*)",
+  ],
 };
