@@ -47,9 +47,6 @@ export function TermsOfUsePage() {
                 <Link href="/church-information">About Vital Kauaʻi Church</Link>
               </li>
               <li>
-                <Link href="/healing-circle">Our Healing Circle</Link>
-              </li>
-              <li>
                 <Link href="/faq">FAQ</Link>
               </li>
             </ul>
@@ -92,9 +89,6 @@ export function TermsOfUsePage() {
         </Link>
         <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>
           About Vital Kauaʻi Church
-        </Link>
-        <Link href="/healing-circle" onClick={() => setIsMobileNavOpen(false)}>
-          Our Healing Circle
         </Link>
         <Link href="/faq" onClick={() => setIsMobileNavOpen(false)}>
           FAQ
@@ -348,9 +342,6 @@ export function TermsOfUsePage() {
             </li>
             <li>
               <Link href="/about">Josh & Rachel</Link>
-            </li>
-            <li>
-              <Link href="/healing-circle">Our Healing Circle</Link>
             </li>
             <li>
               <Link href="/faq">FAQ</Link>

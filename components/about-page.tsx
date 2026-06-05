@@ -122,9 +122,6 @@ export function AboutPage() {
         <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>
           About Vital Kaua&#699;i Church
         </Link>
-        <Link href="/healing-circle" onClick={() => setIsMobileNavOpen(false)}>
-          Our Healing Circle
-        </Link>
         <Link href="/faq" onClick={() => setIsMobileNavOpen(false)}>
           FAQ
         </Link>
@@ -343,9 +340,6 @@ export function AboutPage() {
             </li>
             <li>
               <Link href="/about">Josh &amp; Rachel</Link>
-            </li>
-            <li>
-              <Link href="/healing-circle">Our Healing Circle</Link>
             </li>
             <li>
               <Link href="/faq">FAQ</Link>

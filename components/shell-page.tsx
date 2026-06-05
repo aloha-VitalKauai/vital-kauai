@@ -45,9 +45,6 @@ export function ShellPage({ title, description }: ShellPageProps) {
                 <Link href="/church-information">About Vital Kauaʻi Church</Link>
               </li>
               <li>
-                <Link href="/healing-circle">Our Healing Circle</Link>
-              </li>
-              <li>
                 <Link href="/faq">FAQ</Link>
               </li>
             </ul>
@@ -91,9 +88,6 @@ export function ShellPage({ title, description }: ShellPageProps) {
         <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>
           About Vital Kauaʻi Church
         </Link>
-        <Link href="/healing-circle" onClick={() => setIsMobileNavOpen(false)}>
-          Our Healing Circle
-        </Link>
         <Link href="/faq" onClick={() => setIsMobileNavOpen(false)}>
           FAQ
         </Link>
@@ -133,9 +127,6 @@ export function ShellPage({ title, description }: ShellPageProps) {
             </li>
             <li>
               <Link href="/about">Josh & Rachel</Link>
-            </li>
-            <li>
-              <Link href="/healing-circle">Our Healing Circle</Link>
             </li>
             <li>
               <Link href="/faq">FAQ</Link>
