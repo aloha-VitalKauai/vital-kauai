@@ -441,9 +441,6 @@ export function HomePage() {
               Vital Kauaʻi is a ceremonial container: a living relationship between practitioner,
               plant, participant, and land. We offer the most in-depth preparation and integration we know in this work: a six-week preparation arc before ceremony and a six-week integration after, with weekly teachings, somatic guidance, and one-on-one support throughout. From there, you become a lifelong member of the Vital Kauaʻi community, with monthly group calls and optional ongoing one-on-one support.
             </p>
-            <p className={styles.medicineBody}>
-              Our approach honors the Bwiti tradition from which Iboga comes, drawing on the whole-plant intelligence of the root bark. As stewards of this ʻāina, we hold Hawaiian tradition with kuleana, caring for the land, water, and lineage that make our ceremony possible.
-            </p>
             <div className={styles.medicineDistinction}>
               <p>
                 &quot;Our commitment is to walk beside you through preparation, into ceremony, and months after in the work of integration.&quot;
@@ -481,10 +478,9 @@ export function HomePage() {
         </div>
         <div className={`${styles.medicineDistinction} ${styles.reveal}`} style={{ maxWidth: 920, margin: "64px auto 0", padding: "0 32px" }}>
           <p>
-            &quot;Most providers work with isolated ibogaine, a single alkaloid. We work with the
-            whole root bark, honoring the ancient wisdom in which this plant has been used for
-            millennia. The difference is the difference between a symphony and a single
-            note.&quot;
+            &quot;We work with the whole root bark, rather than isolated Ibogaine, honoring the
+            wisdom of this plant. The difference is the difference between a symphony and a
+            single note.&quot;
           </p>
           <p style={{ marginTop: 16, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(245,240,232,0.45)", fontStyle: "normal" }}>
             — Vital Kaua&#699;i
@@ -736,7 +732,7 @@ export function HomePage() {
           {[
             {
               name: "Josh",
-              title: "Co-Founder · Medicine Keeper · Mentor",
+              title: "Co-Founder · Mentor",
               bio: "Josh's path has taken him from Stanford Design School to the red earth of Africa, where he underwent initiation with the Bwiti tribe and trained in the deep traditions of plant medicine. He has trained at Highden Mystery School Temple in New Zealand and brings a rare integration of indigenous wisdom, somatic practice, and entrepreneurial vision to holding space for transformation.",
               image: "/images/about/josh-perdue.jpg",
             },

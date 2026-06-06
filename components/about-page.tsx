@@ -199,13 +199,12 @@ export function AboutPage() {
           <div className={styles.storyPhotoFloat}>
             <Image src="/images/about/josh-perdue.jpg" alt="Josh Perdue" width={400} height={530} className={styles.storyImg} />
             <div className={styles.photoTagInline}>
-              <span className={styles.tagRole}>Co-Founder &amp; Medicine Keeper</span>
+              <span className={styles.tagRole}>Co-Founder</span>
               <h2>Josh Perdue</h2>
             </div>
           </div>
           <p className={styles.storyRole}>
-            Medicine Keeper &middot; Somatic Arts &middot; EFT Guide &middot; Men&apos;s Group
-            Leader &middot; Visionary
+            Somatic Arts &middot; EFT Guide &middot; Men&apos;s Group Leader &middot; Visionary
           </p>
           <h2 className={styles.storyName}>
             Josh
