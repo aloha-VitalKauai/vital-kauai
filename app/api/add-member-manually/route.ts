@@ -65,12 +65,13 @@ export async function POST(req: NextRequest) {
 
     const { error: memberErr } = await supabase.from('members').upsert(
       {
-        id:        userId,
-        full_name: fullName,
+        id:         userId,
+        profile_id: userId,
+        full_name:  fullName,
         email,
         phone,
-        lead_id:   null,
-        status:    'Signed, Awaiting Intake',
+        lead_id:    null,
+        status:     'Signed, Awaiting Intake',
       },
       { onConflict: 'id' },
     )
