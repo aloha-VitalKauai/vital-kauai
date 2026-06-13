@@ -43,6 +43,13 @@ export type EnneagramFields = {
   enneagram_instinct: string | null;
 };
 
+export type ChineseZodiacFields = {
+  chinese_zodiac_animal: string | null;
+  chinese_zodiac_element: string | null;
+  chinese_zodiac_yin_yang: string | null;
+  chinese_zodiac_year_label: string | null;
+};
+
 export type BirthFields = {
   birth_date: string | null;
   birth_time: string | null;
@@ -55,7 +62,8 @@ export type VitalProfile = BirthFields &
   ZodiacFields &
   HumanDesignFields &
   GeneKeysFields &
-  EnneagramFields;
+  EnneagramFields &
+  ChineseZodiacFields;
 
 export const VITAL_PROFILE_COLUMNS = [
   "birth_date",
@@ -78,6 +86,10 @@ export const VITAL_PROFILE_COLUMNS = [
   "enneagram_type",
   "enneagram_wing",
   "enneagram_instinct",
+  "chinese_zodiac_animal",
+  "chinese_zodiac_element",
+  "chinese_zodiac_yin_yang",
+  "chinese_zodiac_year_label",
 ] as const satisfies readonly (keyof VitalProfile)[];
 
 export type VitalProfileUpdate = Partial<VitalProfile>;
