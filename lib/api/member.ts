@@ -20,6 +20,11 @@ export type Profile = {
   medical_disclaimer_signed_at: string | null;
   deposit_paid_at: string | null;
   deposit_amount: number | null;
+  safety_agreement_signed: boolean;
+  safety_agreement_signed_at: string | null;
+  safety_agreement_initials: Record<string, string> | null;
+  safety_agreement_signature: string | null;
+  safety_agreement_preferences: Record<string, boolean> | null;
 };
 
 export type MemberRow = {
@@ -88,6 +93,25 @@ export function markMedicalSigned(supabase: SupabaseClient, userId: string) {
     .update({
       medical_disclaimer_signed: true,
       medical_disclaimer_signed_at: new Date().toISOString(),
+    })
+    .eq("id", userId);
+}
+
+export function markSafetyAgreementSigned(
+  supabase: SupabaseClient,
+  userId: string,
+  initials: Record<string, string>,
+  signature: string,
+  preferences: Record<string, boolean>,
+) {
+  return supabase
+    .from("member_profiles")
+    .update({
+      safety_agreement_signed: true,
+      safety_agreement_signed_at: new Date().toISOString(),
+      safety_agreement_initials: initials,
+      safety_agreement_signature: signature,
+      safety_agreement_preferences: preferences,
     })
     .eq("id", userId);
 }
