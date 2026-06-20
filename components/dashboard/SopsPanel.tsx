@@ -1,10 +1,10 @@
 'use client'
 
 const C = {
-  card:'#1A1613', border:'#4A3D2E', text:'#EDE8DF', muted:'#C4B199', dim:'#8A7A64', faint:'#221A12',
-  terra:'#C96A52', terraBg:'rgba(201,106,82,.16)',
-  amber:'#D89428', amberBg:'rgba(216,148,40,.16)',
-  low:'#4AA082',   lowBg:'rgba(74,160,130,.16)',
+  card:'#FBF7EE', border:'#E2DCC8', text:'#1A1A18', muted:'#5C5C58', dim:'#8A8A82', faint:'#F1EFE8',
+  terra:'#085041', terraBg:'rgba(8,80,65,0.10)',
+  amber:'#A07A2A', amberBg:'rgba(160,122,42,0.12)',
+  low:'#3F8A6F',   lowBg:'rgba(63,138,111,0.14)',
 }
 
 function pill(color: string, bg: string) {

@@ -2,7 +2,7 @@ import SopsPanel from '@/components/dashboard/SopsPanel'
 
 export const metadata = { title: 'SOPs — Vital Kauaʻi' }
 
-const C = { bg:'#0D0B09', border:'#4A3D2E', text:'#EDE8DF', muted:'#C4B199', dim:'#A89680' }
+const C = { bg:'#F8F5EE', border:'#E2DCC8', text:'#1A1A18', muted:'#5C5C58', dim:'#8A8A82' }
 
 export default function SopsPage() {
   return (
