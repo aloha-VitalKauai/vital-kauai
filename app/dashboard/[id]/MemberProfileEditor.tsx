@@ -151,7 +151,6 @@ export default function MemberProfileEditor({
   /* Editable member fields */
   const [status, setStatus] = useState(member.status ?? "");
   const [assignedPartner, setAssignedPartner] = useState(member.assigned_partner ?? "");
-  const [membershipTier, setMembershipTier] = useState(member.membership_tier ?? "");
   const [programPrice, setProgramPrice] = useState(member.program_price?.toString() ?? "");
   const [costOfService, setCostOfService] = useState(member.cost_of_service?.toString() ?? "");
   const [arrivalDate, setArrivalDate] = useState(member.arrival_date ?? "");
@@ -333,7 +332,6 @@ export default function MemberProfileEditor({
       .update({
         status,
         assigned_partner: assignedPartner || null,
-        membership_tier: membershipTier || null,
         program_price: priceNum,
         cost_of_service: costOfService ? Number(costOfService) : null,
         arrival_date: arrivalDate || null,
@@ -563,15 +561,6 @@ export default function MemberProfileEditor({
                     <option value="__custom__">{assignedPartner} (legacy)</option>
                   )}
                 </select>
-              </div>
-              <div>
-                <label style={LABEL}>Membership tier</label>
-                <input
-                  style={INPUT}
-                  value={membershipTier}
-                  onChange={(e) => setMembershipTier(e.target.value)}
-                  placeholder="e.g. Premium"
-                />
               </div>
               <div>
                 <label style={LABEL}>Journey focus</label>
