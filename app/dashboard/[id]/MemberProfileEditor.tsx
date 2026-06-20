@@ -801,7 +801,7 @@ export default function MemberProfileEditor({
               </div>
             )}
 
-            {/* Membership agreement & medical disclaimer from profile */}
+            {/* Membership agreement, medical disclaimer, safety agreement — from profile */}
             {profile && (
               <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 6 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -814,7 +814,7 @@ export default function MemberProfileEditor({
                       display: "inline-block",
                     }}
                   />
-                  <span style={{ fontSize: 13, color: "#1A1A18" }}>
+                  <span style={{ fontSize: 13, color: "#1A1A18", flex: 1 }}>
                     Membership agreement
                     {profile.membership_agreement_signed_at && (
                       <span style={{ color: "#9E9E9A", marginLeft: 8, fontSize: 11 }}>
@@ -822,6 +822,14 @@ export default function MemberProfileEditor({
                       </span>
                     )}
                   </span>
+                  <a
+                    href="/dashboard/sops/membership-agreement"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ fontSize: 11, color: "#085041", textDecoration: "none", letterSpacing: "0.04em" }}
+                  >
+                    View →
+                  </a>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <span
@@ -833,7 +841,7 @@ export default function MemberProfileEditor({
                       display: "inline-block",
                     }}
                   />
-                  <span style={{ fontSize: 13, color: "#1A1A18" }}>
+                  <span style={{ fontSize: 13, color: "#1A1A18", flex: 1 }}>
                     Medical disclaimer
                     {profile.medical_disclaimer_signed_at && (
                       <span style={{ color: "#9E9E9A", marginLeft: 8, fontSize: 11 }}>
@@ -841,6 +849,41 @@ export default function MemberProfileEditor({
                       </span>
                     )}
                   </span>
+                  <a
+                    href="/dashboard/sops/medical-disclaimer"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ fontSize: 11, color: "#085041", textDecoration: "none", letterSpacing: "0.04em" }}
+                  >
+                    View →
+                  </a>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      background: profile.safety_agreement_signed ? "#639922" : "#D4D4D0",
+                      display: "inline-block",
+                    }}
+                  />
+                  <span style={{ fontSize: 13, color: "#1A1A18", flex: 1 }}>
+                    Participant safety & informed consent
+                    {profile.safety_agreement_signed_at && (
+                      <span style={{ color: "#9E9E9A", marginLeft: 8, fontSize: 11 }}>
+                        {fmtDate(profile.safety_agreement_signed_at)}
+                      </span>
+                    )}
+                  </span>
+                  <a
+                    href="/dashboard/sops/safety-agreement"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ fontSize: 11, color: "#085041", textDecoration: "none", letterSpacing: "0.04em" }}
+                  >
+                    View →
+                  </a>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <span

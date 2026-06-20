@@ -45,6 +45,24 @@ export const IMPORTANT_DOCUMENTS: ImportantDocument[] = [
     summary: 'The safety frame and informed consent each participant agrees to before ceremony. Members initial and sign digitally from the portal; print this version for in-person signing on arrival.',
     href: '/dashboard/sops/safety-agreement',
   },
+  {
+    id: 'medical-disclaimer',
+    title: 'Medical Disclaimer & Risk Acknowledgment',
+    owner: 'Rachel · Josh · Dr. Liz',
+    updated: new Date().toISOString().slice(0, 10),
+    status: 'active',
+    summary: 'Ecclesiastical context, sacramental practice and inherent risk, member responsibility, and the Iboga sacrament. Members sign this digitally from the portal as part of the Begin Your Journey flow.',
+    href: '/dashboard/sops/medical-disclaimer',
+  },
+  {
+    id: 'membership-agreement',
+    title: 'Church Membership Agreement',
+    owner: 'Rachel · Josh',
+    updated: new Date().toISOString().slice(0, 10),
+    status: 'active',
+    summary: 'The private religious association terms each member agrees to upon joining Vital Kauaʻi Church. Signed digitally from the portal.',
+    href: '/dashboard/sops/membership-agreement',
+  },
 ];
 
 export const SOPS: Sop[] = [
