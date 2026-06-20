@@ -25,6 +25,28 @@ export type Sop = {
   href?: string
 }
 
+export type ImportantDocument = {
+  id: string;
+  title: string;
+  owner: string;
+  updated: string;
+  status: 'active' | 'draft';
+  summary: string;
+  href: string;
+};
+
+export const IMPORTANT_DOCUMENTS: ImportantDocument[] = [
+  {
+    id: 'safety-agreement',
+    title: 'Participant Safety & Informed Consent Agreement',
+    owner: 'Rachel · Josh · Dr. Liz',
+    updated: new Date().toISOString().slice(0, 10),
+    status: 'active',
+    summary: 'The safety frame and informed consent each participant agrees to before ceremony. Members initial and sign digitally from the portal; print this version for in-person signing on arrival.',
+    href: '/dashboard/sops/safety-agreement',
+  },
+];
+
 export const SOPS: Sop[] = [
   {
     id: 'reference-itinerary',
@@ -133,6 +155,30 @@ export default function SopsPanel() {
           ))}
         </div>
       ))}
+
+      {IMPORTANT_DOCUMENTS.length > 0 && (
+        <>
+          <div style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:12,padding:'16px 18px',margin:'24px 0 12px'}}>
+            <div style={{fontSize:9,color:C.dim,letterSpacing:'.1em',textTransform:'uppercase',marginBottom:6}}>Vital Kauaʻi · Internal Playbook</div>
+            <div style={{fontSize:18,fontWeight:500,color:C.text,fontFamily:'var(--font-cormorant-garamond,serif)',marginBottom:2}}>Important Documents</div>
+            <div style={{fontSize:11,color:C.muted}}>Member-facing agreements and forms. Each document is signed digitally by members from the portal and printable here for in-person signing on arrival.</div>
+          </div>
+          {IMPORTANT_DOCUMENTS.map(d=>(
+            <div key={d.id} id={`doc-${d.id}`} style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:12,padding:'18px 20px',marginBottom:12,scrollMarginTop:80}}>
+              <div style={{display:'flex',alignItems:'baseline',gap:10,flexWrap:'wrap',marginBottom:8}}>
+                <div style={{fontSize:16,fontWeight:500,color:C.text,fontFamily:'var(--font-cormorant-garamond,serif)'}}>{d.title}</div>
+                <SopStatusPill status={d.status}/>
+              </div>
+              <div style={{display:'flex',gap:14,flexWrap:'wrap',fontSize:10,color:C.dim,letterSpacing:'.06em',textTransform:'uppercase',marginBottom:10}}>
+                <span>Owner · <span style={{color:C.muted,textTransform:'none',letterSpacing:0}}>{d.owner}</span></span>
+                <span>Updated · <span style={{color:C.muted,textTransform:'none',letterSpacing:0}}>{d.updated}</span></span>
+              </div>
+              <div style={{fontSize:12,color:C.muted,fontStyle:'italic',borderLeft:`2px solid ${C.terra}`,paddingLeft:10,marginBottom:14}}>{d.summary}</div>
+              <a href={d.href} style={{display:'inline-block',fontSize:11,color:C.terra,textDecoration:'none',fontWeight:600,letterSpacing:'.06em',textTransform:'uppercase',padding:'6px 12px',border:`0.5px solid ${C.terra}55`,background:C.terraBg,borderRadius:6}}>Open printable version →</a>
+            </div>
+          ))}
+        </>
+      )}
     </div>
   )
 }

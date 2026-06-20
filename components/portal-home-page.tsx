@@ -46,6 +46,8 @@ type Profile = {
   medical_disclaimer_signed_at: string | null;
   deposit_paid_at: string | null;
   deposit_amount: number | null;
+  safety_agreement_signed: boolean;
+  safety_agreement_signed_at: string | null;
 };
 
 type MemberData = {
@@ -322,8 +324,9 @@ export function PortalHomePage({
   const agreementDone = profile?.membership_agreement_signed ?? false;
   const medicalDone = profile?.medical_disclaimer_signed ?? false;
   const intakeDone = profile?.intake_form_completed ?? false;
+  const safetyDone = profile?.safety_agreement_signed ?? false;
   const allRequiredDone = agreementDone && medicalDone;
-  const beginStepsComplete = [agreementDone, medicalDone, intakeDone, callScheduled].filter(Boolean).length;
+  const beginStepsComplete = [agreementDone, medicalDone, intakeDone, callScheduled, safetyDone].filter(Boolean).length;
 
   function markCallScheduled() {
     setCallScheduled(true);
@@ -528,9 +531,9 @@ export function PortalHomePage({
         {/* FOUR STEPS TO BEGIN \u2014 contribution step temporarily hidden */}
         <section className={styles.unlockBlock}>
           <div className={styles.sectionHead}>
-            <span className={styles.sectionEyebrow}>Four Steps to Begin</span>
+            <span className={styles.sectionEyebrow}>Five Steps to Begin</span>
             <p className={styles.unlockProgress}>
-              {beginStepsComplete} of 4 complete
+              {beginStepsComplete} of 5 complete
             </p>
           </div>
 
@@ -627,6 +630,29 @@ export function PortalHomePage({
                 </span>
               </div>
             </button>
+
+            <Link
+              id="safety-agreement-card"
+              href="/portal/safety-agreement"
+              className={`${styles.docCard} ${safetyDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <div className={styles.docTitle}>
+                Participant Safety &amp; <em>Informed Consent</em>
+              </div>
+              <div className={styles.docDesc}>
+                The safety frame within which Vital Kaua&#699;i Church holds ceremony. Initial
+                each section and sign so we know you have read it with care.
+              </div>
+              <div className={styles.docFooter}>
+                <span className={`${styles.docTag} ${styles.tagRequired}`}>
+                  {safetyDone ? "Signed" : "To Read & Sign"}
+                </span>
+                <span className={`${styles.docAction} ${safetyDone ? styles.docActionSigned : ""}`}>
+                  {safetyDone ? "\u2713 Signed" : "Open \u2192"}
+                </span>
+              </div>
+            </Link>
           </div>
         </section>
 
