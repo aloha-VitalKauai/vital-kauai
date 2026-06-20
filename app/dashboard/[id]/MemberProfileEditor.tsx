@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { createJourney, rescheduleJourney } from "@/app/actions/journeys";
 import MemberFinancialSection from "./MemberFinancialSection";
 import BookingStatusSection from "./BookingStatusSection";
 import type { Booking } from "@/lib/api/bookings";
@@ -154,7 +155,142 @@ export default function MemberProfileEditor({
   const [programPrice, setProgramPrice] = useState(member.program_price?.toString() ?? "");
   const [costOfService, setCostOfService] = useState(member.cost_of_service?.toString() ?? "");
   const [arrivalDate, setArrivalDate] = useState(member.arrival_date ?? "");
+  const [departureDate, setDepartureDate] = useState(member.departure_date ?? "");
   const [journeyFocus, setJourneyFocus] = useState(member.journey_focus ?? "");
+
+  /* Scheduling: cohort dropdown + individual journey dates */
+  type CohortRow = {
+    id: string;
+    title: string | null;
+    start_at: string | null;
+    end_at: string | null;
+    status: string | null;
+  };
+  type ActiveJourney = {
+    id: string;
+    cohort_id: string | null;
+    start_at: string | null;
+    end_at: string | null;
+  };
+  const [cohorts, setCohorts] = useState<CohortRow[]>([]);
+  const [activeJourney, setActiveJourney] = useState<ActiveJourney | null>(null);
+  // "" = individual / private journey; otherwise = cohort id
+  const [schedCohortId, setSchedCohortId] = useState<string>("");
+  const [schedStart, setSchedStart] = useState("");
+  const [schedEnd, setSchedEnd] = useState("");
+  const [schedSaving, setSchedSaving] = useState(false);
+  const [schedMsg, setSchedMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const todayIso = new Date().toISOString().slice(0, 10);
+      const [cohortRes, journeyRes] = await Promise.all([
+        supabase
+          .from("cohorts")
+          .select("id, title, start_at, end_at, status")
+          .gte("start_at", todayIso)
+          .not("status", "in", "(canceled,closed)")
+          .order("start_at", { ascending: true }),
+        supabase
+          .from("journeys")
+          .select("id, cohort_id, start_at, end_at, status")
+          .eq("member_id", member.id)
+          .not("status", "in", "(canceled,completed)")
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+      ]);
+      if (cancelled) return;
+      const cohortRows = (cohortRes.data ?? []) as CohortRow[];
+      setCohorts(cohortRows);
+      const j = journeyRes.data as ActiveJourney | null;
+      setActiveJourney(j);
+      if (j) {
+        if (j.cohort_id) {
+          // If the journey is linked to a cohort that's no longer in the
+          // upcoming-open list (past or closed), still show it as the
+          // current selection so we don't silently drop it.
+          if (!cohortRows.some((c) => c.id === j.cohort_id)) {
+            // pull the linked cohort so the dropdown can render it
+            const { data: linked } = await supabase
+              .from("cohorts")
+              .select("id, title, start_at, end_at, status")
+              .eq("id", j.cohort_id)
+              .maybeSingle();
+            if (linked && !cancelled) setCohorts((prev) => [linked as CohortRow, ...prev]);
+          }
+          setSchedCohortId(j.cohort_id);
+        } else {
+          setSchedCohortId("");
+          if (j.start_at) setSchedStart(j.start_at.slice(0, 10));
+          if (j.end_at) setSchedEnd(j.end_at.slice(0, 10));
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [supabase, member.id]);
+
+  async function handleSaveScheduling() {
+    setSchedSaving(true);
+    setSchedMsg(null);
+
+    const isCohort = schedCohortId !== "";
+
+    let payload: Parameters<typeof createJourney>[0];
+    if (isCohort) {
+      const cohort = cohorts.find((c) => c.id === schedCohortId);
+      const start = cohort?.start_at ? cohort.start_at.slice(0, 10) : null;
+      const end = cohort?.end_at ? cohort.end_at.slice(0, 10) : null;
+      const useRange = !!(start && end && end > start);
+      payload = {
+        memberId: member.id,
+        bookingType: "cohort",
+        scheduleType: useRange ? "date_range" : "single_date",
+        startDate: start,
+        endDate: useRange ? end : null,
+        cohortId: schedCohortId,
+        notes: null,
+      };
+    } else {
+      if (!schedStart) {
+        setSchedSaving(false);
+        setSchedMsg({ kind: "err", text: "Enter a start date for the individual journey" });
+        return;
+      }
+      const useRange = !!(schedEnd && schedEnd > schedStart);
+      payload = {
+        memberId: member.id,
+        bookingType: "private",
+        scheduleType: useRange ? "date_range" : "single_date",
+        startDate: schedStart,
+        endDate: useRange ? schedEnd : null,
+        cohortId: null,
+        notes: null,
+      };
+    }
+
+    const result = activeJourney
+      ? await rescheduleJourney(activeJourney.id, {
+          scheduleType: payload.scheduleType!,
+          startDate: payload.startDate,
+          endDate: payload.endDate,
+          cohortId: payload.cohortId,
+          notes: null,
+        })
+      : await createJourney(payload);
+
+    setSchedSaving(false);
+    if (!result.ok) {
+      setSchedMsg({ kind: "err", text: result.error || "Failed to save" });
+      return;
+    }
+    setSchedMsg({ kind: "ok", text: "Saved" });
+    startTransition(() => router.refresh());
+    setTimeout(() => setSchedMsg(null), 3000);
+  }
   const [notes, setNotes] = useState(member.notes ?? "");
   const [medicalCleared, setMedicalCleared] = useState(member.medical_cleared ?? false);
   const [portalUnlocked, setPortalUnlocked] = useState(member.portal_unlocked ?? false);
@@ -201,6 +337,7 @@ export default function MemberProfileEditor({
         program_price: priceNum,
         cost_of_service: costOfService ? Number(costOfService) : null,
         arrival_date: arrivalDate || null,
+        departure_date: departureDate || null,
         journey_focus: journeyFocus || null,
         notes: notes || null,
         medical_cleared: medicalCleared,
@@ -466,10 +603,26 @@ export default function MemberProfileEditor({
                 />
               </div>
               <div>
-                <label style={LABEL}>Ceremony date</label>
-                <p style={{ fontSize: 12, color: '#888', margin: '4px 0 0', fontStyle: 'italic' }}>
-                  {member.ceremony_date ? fmtDate(member.ceremony_date) : 'Not set'} — manage via Journey Scheduling tab
-                </p>
+                <label style={LABEL}>Ceremony scheduling</label>
+                <select
+                  style={SELECT}
+                  value={schedCohortId}
+                  onChange={(e) => setSchedCohortId(e.target.value)}
+                >
+                  <option value="">Individual journey (custom dates)</option>
+                  {cohorts.map((c) => {
+                    const start = c.start_at ? fmtDate(c.start_at) : "TBD";
+                    const end =
+                      c.end_at && c.end_at.slice(0, 10) !== (c.start_at ?? "").slice(0, 10)
+                        ? ` – ${fmtDate(c.end_at)}`
+                        : "";
+                    return (
+                      <option key={c.id} value={c.id}>
+                        {(c.title || "Untitled cohort") + ` · ${start}${end}`}
+                      </option>
+                    );
+                  })}
+                </select>
               </div>
               <div>
                 <label style={LABEL}>Arrival date</label>
@@ -478,6 +631,89 @@ export default function MemberProfileEditor({
                   type="date"
                   value={arrivalDate}
                   onChange={(e) => setArrivalDate(e.target.value)}
+                />
+              </div>
+
+              <div>
+                {schedCohortId === "" ? (
+                  <>
+                    <label style={LABEL}>Journey dates</label>
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <input
+                        style={INPUT}
+                        type="date"
+                        value={schedStart}
+                        onChange={(e) => setSchedStart(e.target.value)}
+                        placeholder="Start"
+                      />
+                      <input
+                        style={INPUT}
+                        type="date"
+                        value={schedEnd}
+                        onChange={(e) => setSchedEnd(e.target.value)}
+                        placeholder="End (optional)"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <label style={LABEL}>Cohort dates</label>
+                    <p style={{ fontSize: 13, color: "#1A1A18", margin: "4px 0 0" }}>
+                      {(() => {
+                        const c = cohorts.find((x) => x.id === schedCohortId);
+                        if (!c) return "—";
+                        const s = c.start_at ? fmtDate(c.start_at) : "TBD";
+                        const e =
+                          c.end_at && c.end_at.slice(0, 10) !== (c.start_at ?? "").slice(0, 10)
+                            ? ` – ${fmtDate(c.end_at)}`
+                            : "";
+                        return s + e;
+                      })()}
+                    </p>
+                  </>
+                )}
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8 }}>
+                  <button
+                    type="button"
+                    onClick={handleSaveScheduling}
+                    disabled={schedSaving}
+                    style={{
+                      background: schedSaving ? "#9E9E9A" : "#085041",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: 8,
+                      padding: "8px 16px",
+                      fontSize: 13,
+                      fontWeight: 500,
+                      fontFamily: "var(--font-body, sans-serif)",
+                      cursor: schedSaving ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    {schedSaving
+                      ? "Saving…"
+                      : activeJourney
+                        ? "Update scheduling"
+                        : "Save scheduling"}
+                  </button>
+                  {schedMsg && (
+                    <span
+                      style={{
+                        fontSize: 12,
+                        color: schedMsg.kind === "ok" ? "#085041" : "#9b1c1c",
+                      }}
+                    >
+                      {schedMsg.text}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div>
+                <label style={LABEL}>Departure date</label>
+                <input
+                  style={INPUT}
+                  type="date"
+                  value={departureDate}
+                  onChange={(e) => setDepartureDate(e.target.value)}
                 />
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 6 }}>
