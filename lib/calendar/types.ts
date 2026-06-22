@@ -29,6 +29,14 @@ export const CALENDAR_CATEGORIES = [
   "sound",
   "transport",
   "admin",
+  // Operational categories introduced by The Seven-Day Ceremony Arc protocol.
+  "somatic",
+  "movement",
+  "preparation",
+  "nature",
+  "practitioner_session",
+  "ceremony_support",
+  "cultural",
   "other",
 ] as const;
 
@@ -65,6 +73,21 @@ export const CATEGORY_META: Record<CalendarCategory, CategoryMeta> = {
   sound: { label: "Sound", accent: "#9A5BA0", soft: "#F3E8F4" },
   transport: { label: "Transport", accent: "#5B6B7A", soft: "#E8ECEF" },
   admin: { label: "Admin", accent: "#6B6B67", soft: "#EFEEE9" },
+  somatic: { label: "Somatic", accent: "#9C6B8E", soft: "#F2E8EF" },
+  movement: { label: "Movement", accent: "#4E8C7A", soft: "#E2F0EC" },
+  preparation: { label: "Preparation", accent: "#8A7E66", soft: "#F1EDE2" },
+  nature: { label: "Nature", accent: "#4F7A4A", soft: "#E7F0E5" },
+  practitioner_session: {
+    label: "Practitioner Session",
+    accent: "#3E6E8C",
+    soft: "#E2EDF3",
+  },
+  ceremony_support: {
+    label: "Ceremony Support",
+    accent: "#5A4A6E",
+    soft: "#ECE6F2",
+  },
+  cultural: { label: "Cultural", accent: "#A85C3A", soft: "#F4E4DB" },
   other: { label: "Other", accent: "#6B6B67", soft: "#EFEEE9" },
 };
 
