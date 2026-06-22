@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
+import { useState, useMemo, useTransition, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { createJourney, rescheduleJourney } from "@/app/actions/journeys";
@@ -15,10 +15,12 @@ import {
   IntegrationProgressCards,
   DosingCard,
   FinancialRecordsCard,
+  TimelineCard,
   type DosingRecord,
   type SignedDocument,
   type CeremonyRecord,
 } from "./MemberProfileSections";
+import { buildMemberTimeline } from "./memberTimeline";
 /* Integration Specialist options come from the integration_specialists
    table via the `specialists` prop. Same source as /dashboard/integration
    and the portal card — one source of truth. */
@@ -51,10 +53,6 @@ const MEMBER_TABS: string[] = [
   "Documents",
   "Timeline",
 ];
-
-const TAB_PLACEHOLDER: Record<string, string> = {
-  Timeline: "Timeline will live here in a future PR.",
-};
 
 /* ── Types ─────────────────────────────────────────────────────── */
 type Member = Record<string, any>;
@@ -181,6 +179,27 @@ export default function MemberProfileEditor({
      intake + lab documents. Same data/logic as the standalone ops Medical
      view, scoped to the current member. */
   const medMember = { ...member, intake, labs } as MedMember;
+
+  /* Read-only Journey Timeline (V1): aggregate existing timestamps from the
+     records already loaded for this member. Pure derivation — no new data. */
+  const timeline = useMemo(
+    () =>
+      buildMemberTimeline({
+        member,
+        profile,
+        intake,
+        checklist,
+        ceremonies,
+        donations,
+        tokens,
+        labs,
+        dosing,
+        booking,
+        preProgress,
+        postProgress,
+      }),
+    [member, profile, intake, checklist, ceremonies, donations, tokens, labs, dosing, booking, preProgress, postProgress],
+  );
 
   /* Editable member fields */
   const [status, setStatus] = useState(member.status ?? "");
@@ -1070,24 +1089,9 @@ export default function MemberProfileEditor({
             memberEmail={member.email ?? null}
           />
         </div>
-      ) : (
-        <div style={CARD}>
-          <p
-            style={{
-              fontFamily: "var(--font-display, serif)",
-              fontSize: 18,
-              fontWeight: 400,
-              color: "#1A1A18",
-              margin: "0 0 6px",
-            }}
-          >
-            {activeTab}
-          </p>
-          <p style={{ fontSize: 14, color: "#6B6B67", margin: 0 }}>
-            {TAB_PLACEHOLDER[activeTab]}
-          </p>
-        </div>
-      )}
+      ) : activeTab === "Timeline" ? (
+        <TimelineCard events={timeline} />
+      ) : null}
     </div>
   );
 }
