@@ -7,6 +7,7 @@ const TABS = [
   { label: "Overview", href: "/dashboard" },
   { label: "Members", href: "/dashboard/clients" },
   { label: "Leads", href: "/dashboard/leads" },
+  { label: "Calendar", href: "/dashboard/calendar" },
   // Ceremonies, Integration, Medical, and Dosing are hidden from top-level
   // navigation in preparation for the member-centered workflow, where each
   // Member Profile becomes the single source of truth for a person's journey.
