@@ -28,6 +28,7 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
     { data: commitment },
     { data: memberDonationsData },
     { data: privateCeremonyRows },
+    { data: labDocs },
   ] = await Promise.all([
     supabase.from("members").select("*").eq("id", id).maybeSingle(),
     supabase.from("member_profiles").select("*").eq("id", id).maybeSingle(),
@@ -60,6 +61,13 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       .from("private_ceremony_summary")
       .select("booked_cents, expense_cents")
       .eq("member_id", id),
+    // Lab documents power the Member Profile Medical tab (same source as the
+    // standalone ops Medical view), scoped to this member.
+    supabase
+      .from("lab_documents")
+      .select("*")
+      .eq("member_id", id)
+      .order("uploaded_at", { ascending: false }),
   ]);
 
   // Roll up booked + expenses across this member's private ceremony journeys so
@@ -196,6 +204,7 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       bookedCents={bookedCents}
       expenseCents={expenseCents}
       booking={booking}
+      labs={labDocs ?? []}
     />
   );
 }
