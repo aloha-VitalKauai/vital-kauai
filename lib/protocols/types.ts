@@ -60,8 +60,31 @@ export type ProtocolTemplateItem = {
   updated_at: string;
 };
 
+// Day identity — the title, theme, and meaning of each day in a protocol
+// (e.g. Day 3 = "Ceremony — The Medicine"). Optional layer: a protocol with no
+// day rows simply falls back to "Day N". day_number is 1-based.
+export type ProtocolTemplateDay = {
+  id: string;
+  template_id: string;
+  day_number: number; // 1-based
+  title: string;
+  theme: string | null;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ProtocolTemplateDayInput = {
+  day_number: number;
+  title: string;
+  theme?: string | null;
+  description?: string | null;
+};
+
 export type ProtocolTemplateWithItems = ProtocolTemplate & {
   items: ProtocolTemplateItem[];
+  // Day identity records (may be empty for protocols without identity).
+  days: ProtocolTemplateDay[];
 };
 
 // ── Input shapes (API request bodies) ───────────────────────────────────────

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { categoryMeta } from "@/lib/calendar/types";
 import { formatClock } from "@/lib/calendar/dates";
 import type {
+  ProtocolTemplateDay,
   ProtocolTemplateItem,
   ProtocolTemplateWithItems,
 } from "@/lib/protocols/types";
@@ -38,7 +39,20 @@ export default function ProtocolCard({
     list.push(item);
     byDay.set(item.day_offset, list);
   }
-  const days = Array.from(byDay.keys()).sort((a, b) => a - b);
+
+  // Day identity (title / theme / description), keyed by 1-based day number.
+  // Optional — a protocol without identity rows falls back to "Day N".
+  const identityByNumber = new Map<number, ProtocolTemplateDay>();
+  for (const d of template.days) identityByNumber.set(d.day_number, d);
+
+  // Render the union of days that have blocks and days that carry identity, in
+  // order (identity is 1-based; day_offset is 0-based).
+  const dayOffsets = Array.from(
+    new Set<number>([
+      ...byDay.keys(),
+      ...template.days.map((d) => d.day_number - 1),
+    ]),
+  ).sort((a, b) => a - b);
 
   async function deleteItem(item: ProtocolTemplateItem) {
     if (!window.confirm(`Delete "${item.title}"?`)) return;
@@ -191,7 +205,7 @@ export default function ProtocolCard({
             background: "#FAFAF8",
           }}
         >
-          {days.length === 0 && (
+          {dayOffsets.length === 0 && (
             <p
               style={{
                 margin: "0 0 10px",
@@ -204,22 +218,11 @@ export default function ProtocolCard({
             </p>
           )}
 
-          {days.map((day) => (
-            <div key={day} style={{ marginBottom: 12 }}>
-              <div
-                style={{
-                  fontSize: 10,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
-                  color: "#6B6B67",
-                  marginBottom: 5,
-                  fontFamily: "var(--font-body, sans-serif)",
-                }}
-              >
-                Day {day + 1}
-              </div>
+          {dayOffsets.map((day) => (
+            <div key={day} style={{ marginBottom: 14 }}>
+              <DayHeader dayNumber={day + 1} identity={identityByNumber.get(day + 1)} />
               <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-                {byDay.get(day)!.map((item) => {
+                {(byDay.get(day) ?? []).map((item) => {
                   const meta = categoryMeta(item.category);
                   return (
                     <div
@@ -290,7 +293,9 @@ export default function ProtocolCard({
           <button
             type="button"
             onClick={() =>
-              setItemForm({ defaultDayOffset: days.length ? days[0] : 0 })
+              setItemForm({
+                defaultDayOffset: dayOffsets.length ? dayOffsets[0] : 0,
+              })
             }
             style={{
               fontSize: 12,
@@ -377,3 +382,93 @@ const primaryMini: React.CSSProperties = {
   fontFamily: "var(--font-body, sans-serif)",
   whiteSpace: "nowrap",
 };
+
+const DAY_WORDS = [
+  "Zero",
+  "One",
+  "Two",
+  "Three",
+  "Four",
+  "Five",
+  "Six",
+  "Seven",
+  "Eight",
+  "Nine",
+  "Ten",
+  "Eleven",
+  "Twelve",
+];
+
+// "DAY THREE" for 1–12, else "DAY 13".
+function dayLabel(dayNumber: number): string {
+  const word = DAY_WORDS[dayNumber];
+  return (word ? `Day ${word}` : `Day ${dayNumber}`).toUpperCase();
+}
+
+// Day section header: the spelled day label plus the day's identity (title,
+// theme, optional description) when present. Falls back to just the label when
+// a protocol has no identity for this day.
+function DayHeader({
+  dayNumber,
+  identity,
+}: {
+  dayNumber: number;
+  identity?: ProtocolTemplateDay;
+}) {
+  return (
+    <div style={{ marginBottom: 7 }}>
+      <div
+        style={{
+          fontSize: 10,
+          textTransform: "uppercase",
+          letterSpacing: "0.12em",
+          color: "#9E9E9A",
+          fontWeight: 600,
+          fontFamily: "var(--font-body, sans-serif)",
+        }}
+      >
+        {dayLabel(dayNumber)}
+      </div>
+      {identity && (
+        <>
+          <div
+            style={{
+              fontSize: 16,
+              color: "#1A1A18",
+              fontWeight: 500,
+              fontFamily: "var(--font-display, serif)",
+              marginTop: 1,
+            }}
+          >
+            {identity.title}
+          </div>
+          {identity.theme && (
+            <div
+              style={{
+                fontSize: 13,
+                color: "#6B6B67",
+                fontStyle: "italic",
+                fontFamily: "var(--font-body, sans-serif)",
+              }}
+            >
+              {identity.theme}
+            </div>
+          )}
+          {identity.description && (
+            <div
+              style={{
+                fontSize: 12,
+                color: "#9E9E9A",
+                marginTop: 3,
+                lineHeight: 1.5,
+                fontFamily: "var(--font-body, sans-serif)",
+              }}
+            >
+              {identity.description}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}

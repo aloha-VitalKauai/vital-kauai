@@ -12,6 +12,7 @@ import type {
   ApplyMode,
   ApplyResult,
   ProtocolTemplate,
+  ProtocolTemplateDay,
   ProtocolTemplateInput,
   ProtocolTemplateItem,
   ProtocolTemplateItemInput,
@@ -23,6 +24,9 @@ const TEMPLATE_COLUMNS =
 
 const ITEM_COLUMNS =
   "id, template_id, day_offset, title, category, start_time, end_time, location, assigned_to, notes, is_private, sort_order, created_at, updated_at";
+
+const DAY_COLUMNS =
+  "id, template_id, day_number, title, theme, description, created_at, updated_at";
 
 function pruneUndefined<T extends Record<string, unknown>>(patch: T): Partial<T> {
   const out: Record<string, unknown> = {};
@@ -38,7 +42,7 @@ function pruneUndefined<T extends Record<string, unknown>>(patch: T): Partial<T>
 export async function getProtocolTemplates(
   supabase: SupabaseClient,
 ): Promise<ProtocolTemplateWithItems[]> {
-  const [templatesRes, itemsRes] = await Promise.all([
+  const [templatesRes, itemsRes, daysRes] = await Promise.all([
     supabase
       .from("protocol_templates")
       .select(TEMPLATE_COLUMNS)
@@ -49,22 +53,39 @@ export async function getProtocolTemplates(
       .order("day_offset", { ascending: true })
       .order("sort_order", { ascending: true })
       .order("start_time", { ascending: true }),
+    supabase
+      .from("protocol_template_days")
+      .select(DAY_COLUMNS)
+      .order("day_number", { ascending: true }),
   ]);
 
   if (templatesRes.error) throw templatesRes.error;
   if (itemsRes.error) throw itemsRes.error;
+  if (daysRes.error) throw daysRes.error;
 
   const templates = (templatesRes.data ?? []) as unknown as ProtocolTemplate[];
   const items = (itemsRes.data ?? []) as unknown as ProtocolTemplateItem[];
+  const days = (daysRes.data ?? []) as unknown as ProtocolTemplateDay[];
 
-  const byTemplate = new Map<string, ProtocolTemplateItem[]>();
+  const itemsByTemplate = new Map<string, ProtocolTemplateItem[]>();
   for (const item of items) {
-    const list = byTemplate.get(item.template_id) ?? [];
+    const list = itemsByTemplate.get(item.template_id) ?? [];
     list.push(item);
-    byTemplate.set(item.template_id, list);
+    itemsByTemplate.set(item.template_id, list);
   }
 
-  return templates.map((t) => ({ ...t, items: byTemplate.get(t.id) ?? [] }));
+  const daysByTemplate = new Map<string, ProtocolTemplateDay[]>();
+  for (const day of days) {
+    const list = daysByTemplate.get(day.template_id) ?? [];
+    list.push(day);
+    daysByTemplate.set(day.template_id, list);
+  }
+
+  return templates.map((t) => ({
+    ...t,
+    items: itemsByTemplate.get(t.id) ?? [],
+    days: daysByTemplate.get(t.id) ?? [],
+  }));
 }
 
 export async function getProtocolTemplate(
@@ -80,19 +101,28 @@ export async function getProtocolTemplate(
   if (error) throw error;
   if (!template) return null;
 
-  const { data: items, error: itemsError } = await supabase
-    .from("protocol_template_items")
-    .select(ITEM_COLUMNS)
-    .eq("template_id", id)
-    .order("day_offset", { ascending: true })
-    .order("sort_order", { ascending: true })
-    .order("start_time", { ascending: true });
+  const [itemsRes, daysRes] = await Promise.all([
+    supabase
+      .from("protocol_template_items")
+      .select(ITEM_COLUMNS)
+      .eq("template_id", id)
+      .order("day_offset", { ascending: true })
+      .order("sort_order", { ascending: true })
+      .order("start_time", { ascending: true }),
+    supabase
+      .from("protocol_template_days")
+      .select(DAY_COLUMNS)
+      .eq("template_id", id)
+      .order("day_number", { ascending: true }),
+  ]);
 
-  if (itemsError) throw itemsError;
+  if (itemsRes.error) throw itemsRes.error;
+  if (daysRes.error) throw daysRes.error;
 
   return {
     ...(template as unknown as ProtocolTemplate),
-    items: (items ?? []) as unknown as ProtocolTemplateItem[],
+    items: (itemsRes.data ?? []) as unknown as ProtocolTemplateItem[],
+    days: (daysRes.data ?? []) as unknown as ProtocolTemplateDay[],
   };
 }
 
