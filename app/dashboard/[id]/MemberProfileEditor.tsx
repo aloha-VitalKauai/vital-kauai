@@ -23,6 +23,34 @@ const STATUS_COLORS: Record<string, { bg: string; text: string; dot: string }> =
 const fallbackColor = { bg: "#F1EFE8", text: "#444441", dot: "#888780" };
 const STATUSES = Object.keys(STATUS_COLORS);
 
+/* ── Internal profile section tabs ─────────────────────────────────
+   The existing profile overview lives under "Snapshot" for now. The
+   remaining tabs are placeholders today — Intake, Medical, Ceremony,
+   Dosing, Integration, Financials, Documents, and Timeline move into
+   this member-centered profile in future PRs. */
+const MEMBER_TABS: string[] = [
+  "Snapshot",
+  "Intake",
+  "Medical",
+  "Ceremony",
+  "Dosing",
+  "Integration",
+  "Financials",
+  "Documents",
+  "Timeline",
+];
+
+const TAB_PLACEHOLDER: Record<string, string> = {
+  Intake: "Intake information will live here in a future PR.",
+  Medical: "Medical information will live here in a future PR.",
+  Ceremony: "Ceremony information will live here in a future PR.",
+  Dosing: "Dosing information will live here in a future PR.",
+  Integration: "Integration information will live here in a future PR.",
+  Financials: "Financial information will live here in a future PR.",
+  Documents: "Documents will live here in a future PR.",
+  Timeline: "Timeline will live here in a future PR.",
+};
+
 /* ── Types ─────────────────────────────────────────────────────── */
 type Member = Record<string, any>;
 type Profile = Record<string, any> | null;
@@ -147,6 +175,9 @@ export default function MemberProfileEditor({
   const router = useRouter();
   const supabase = createClient();
   const [isPending, startTransition] = useTransition();
+
+  /* Active internal section tab (local UI state only). */
+  const [activeTab, setActiveTab] = useState("Snapshot");
 
   /* Editable member fields */
   const [status, setStatus] = useState(member.status ?? "");
@@ -478,6 +509,46 @@ export default function MemberProfileEditor({
         </div>
       </div>
 
+      {/* Internal section tabs */}
+      <nav
+        style={{
+          display: "flex",
+          gap: 0,
+          overflowX: "auto",
+          borderBottom: "0.5px solid rgba(0,0,0,0.1)",
+          marginBottom: "1.5rem",
+        }}
+      >
+        {MEMBER_TABS.map((t) => {
+          const active = activeTab === t;
+          return (
+            <button
+              key={t}
+              type="button"
+              onClick={() => setActiveTab(t)}
+              style={{
+                fontSize: 13,
+                color: active ? "#1A1A18" : "#6B6B67",
+                padding: "10px 16px",
+                background: "none",
+                border: "none",
+                borderBottom: active ? "2px solid #085041" : "2px solid transparent",
+                whiteSpace: "nowrap",
+                fontWeight: active ? 500 : 400,
+                fontFamily: "var(--font-body, sans-serif)",
+                flexShrink: 0,
+                cursor: "pointer",
+                transition: "all 0.15s",
+              }}
+            >
+              {t}
+            </button>
+          );
+        })}
+      </nav>
+
+      {activeTab === "Snapshot" ? (
+        <>
       {/* Quick stats row */}
       <div
         style={{
@@ -1468,6 +1539,25 @@ export default function MemberProfileEditor({
         memberName={member.full_name ?? null}
         memberEmail={member.email ?? null}
       />
+        </>
+      ) : (
+        <div style={CARD}>
+          <p
+            style={{
+              fontFamily: "var(--font-display, serif)",
+              fontSize: 18,
+              fontWeight: 400,
+              color: "#1A1A18",
+              margin: "0 0 6px",
+            }}
+          >
+            {activeTab}
+          </p>
+          <p style={{ fontSize: 14, color: "#6B6B67", margin: 0 }}>
+            {TAB_PLACEHOLDER[activeTab]}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
