@@ -1,5 +1,7 @@
 "use client";
 
+import type { TimelineEvent, TimelineCategory } from "./memberTimeline";
+
 /* ──────────────────────────────────────────────────────────────────
    Reusable, read-only Member Profile sections.
 
@@ -807,6 +809,74 @@ export function DosingCard({ records }: { records: DosingRecord[] }) {
                     {r.adverse_events}
                   </p>
                 )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Member Journey Timeline (read-only V1) ────────────────────────
+   Renders the aggregated events from buildMemberTimeline() in reverse
+   chronological order. Pure presentation — the profile computes the
+   events and passes them in. */
+const TIMELINE_DOT: Record<TimelineCategory, string> = {
+  lifecycle: "#6B6B67",
+  intake: "#639922",
+  documents: "#3C3489",
+  medical: "#A32D2D",
+  financial: "#085041",
+  ceremony: "#B8683D",
+  dosing: "#633806",
+  integration: "#1D9E75",
+};
+
+function fmtLongDate(d: string) {
+  return new Date(d).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+}
+
+export function TimelineCard({ events }: { events: TimelineEvent[] }) {
+  return (
+    <div style={CARD}>
+      <p style={{ ...LABEL, marginBottom: 16 }}>Journey timeline</p>
+      {events.length === 0 ? (
+        <p style={{ fontSize: 13, color: "#9E9E9A" }}>No timeline events yet</p>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {events.map((e, i) => {
+            const dot = TIMELINE_DOT[e.category] ?? "#9E9E9A";
+            const last = i === events.length - 1;
+            return (
+              <div key={e.id} style={{ display: "flex", gap: 14 }}>
+                {/* Date */}
+                <div style={{ width: 112, flexShrink: 0, textAlign: "right", paddingTop: 1 }}>
+                  <span style={{ fontSize: 12, color: "#6B6B67" }}>{fmtLongDate(e.date)}</span>
+                </div>
+                {/* Rail: dot + connecting line */}
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0 }}>
+                  <span
+                    style={{
+                      width: 9,
+                      height: 9,
+                      borderRadius: "50%",
+                      background: dot,
+                      marginTop: 4,
+                      flexShrink: 0,
+                    }}
+                  />
+                  {!last && (
+                    <span style={{ width: 1, flex: 1, background: "rgba(0,0,0,0.1)", minHeight: 18 }} />
+                  )}
+                </div>
+                {/* Content */}
+                <div style={{ paddingBottom: last ? 0 : 18, flex: 1 }}>
+                  <p style={{ fontSize: 14, fontWeight: 500, color: "#1A1A18", margin: 0 }}>{e.title}</p>
+                  {e.description && (
+                    <p style={{ fontSize: 12, color: "#6B6B67", margin: "2px 0 0" }}>{e.description}</p>
+                  )}
+                </div>
               </div>
             );
           })}
