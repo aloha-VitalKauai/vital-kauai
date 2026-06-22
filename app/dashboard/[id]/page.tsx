@@ -29,6 +29,7 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
     { data: memberDonationsData },
     { data: privateCeremonyRows },
     { data: labDocs },
+    { data: dosing },
   ] = await Promise.all([
     supabase.from("members").select("*").eq("id", id).maybeSingle(),
     supabase.from("member_profiles").select("*").eq("id", id).maybeSingle(),
@@ -68,6 +69,13 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       .select("*")
       .eq("member_id", id)
       .order("uploaded_at", { ascending: false }),
+    // Dosing records power the Member Profile Dosing tab (read-only), scoped
+    // to this member. Same source as the standalone ops Dosing view.
+    supabase
+      .from("dosing_records")
+      .select("*, medicine_batches ( batch_code, ibogaine_pct, total_alkaloids_pct, medicine_form ), ceremony_records ( ceremony_date, status )")
+      .eq("member_id", id)
+      .order("administered_at", { ascending: false }),
   ]);
 
   // Roll up booked + expenses across this member's private ceremony journeys so
@@ -205,6 +213,7 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       expenseCents={expenseCents}
       booking={booking}
       labs={labDocs ?? []}
+      dosing={dosing ?? []}
     />
   );
 }
