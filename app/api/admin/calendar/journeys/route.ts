@@ -1,10 +1,37 @@
 import { NextResponse } from "next/server";
 import { requireFounder } from "@/lib/auth/founder-check";
-import { createJourney } from "@/lib/calendar/queries";
-import { validateJourneyInput } from "@/lib/calendar/types";
+import { createJourney, getJourneys } from "@/lib/calendar/queries";
+import { isIsoDate, validateJourneyInput } from "@/lib/calendar/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+// GET /api/admin/calendar/journeys[?from=YYYY-MM-DD]
+// Lists journeys (most recent first). Optional `from` hides stays that ended
+// before that date. Used by the protocol "apply to journey" picker.
+export async function GET(req: Request) {
+  const ctx = await requireFounder();
+  if (!ctx.ok) {
+    return NextResponse.json({ error: ctx.error }, { status: ctx.status });
+  }
+  const { searchParams } = new URL(req.url);
+  const from = searchParams.get("from");
+  if (from && !isIsoDate(from)) {
+    return NextResponse.json(
+      { error: "from must be YYYY-MM-DD" },
+      { status: 400 },
+    );
+  }
+  try {
+    const journeys = await getJourneys(ctx.supabase, from ? { from } : undefined);
+    return NextResponse.json({ journeys });
+  } catch {
+    return NextResponse.json(
+      { error: "Failed to load journeys" },
+      { status: 500 },
+    );
+  }
+}
 
 // POST /api/admin/calendar/journeys
 // Body: { display_name, start_date, end_date, client_id?, status?, color?, notes? }

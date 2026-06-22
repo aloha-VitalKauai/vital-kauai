@@ -142,6 +142,23 @@ export async function generateJourneyDays(
   return days;
 }
 
+// All journeys, most recent first. Used by the protocol "apply to journey"
+// picker. Optionally filter to journeys ending on/after `from` (e.g. today) to
+// hide long-past stays.
+export async function getJourneys(
+  supabase: SupabaseClient,
+  opts?: { from?: string },
+): Promise<ClientJourney[]> {
+  let query = supabase
+    .from("client_journeys")
+    .select(JOURNEY_COLUMNS)
+    .order("start_date", { ascending: false });
+  if (opts?.from) query = query.gte("end_date", opts.from);
+  const { data, error } = await query;
+  if (error) throw error;
+  return (data ?? []) as unknown as ClientJourney[];
+}
+
 // ── Journey writes ──────────────────────────────────────────────────────────
 
 export async function createJourney(
