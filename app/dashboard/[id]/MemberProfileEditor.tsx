@@ -7,6 +7,7 @@ import { createJourney, rescheduleJourney } from "@/app/actions/journeys";
 import MemberFinancialSection from "./MemberFinancialSection";
 import BookingStatusSection from "./BookingStatusSection";
 import type { Booking } from "@/lib/api/bookings";
+import MemberMedicalPanel, { type MedMember, type LabDoc } from "../medical/MemberMedicalPanel";
 /* Integration Specialist options come from the integration_specialists
    table via the `specialists` prop. Same source as /dashboard/integration
    and the portal card — one source of truth. */
@@ -42,7 +43,6 @@ const MEMBER_TABS: string[] = [
 
 const TAB_PLACEHOLDER: Record<string, string> = {
   Intake: "Intake information will live here in a future PR.",
-  Medical: "Medical information will live here in a future PR.",
   Ceremony: "Ceremony information will live here in a future PR.",
   Dosing: "Dosing information will live here in a future PR.",
   Integration: "Integration information will live here in a future PR.",
@@ -150,6 +150,7 @@ export default function MemberProfileEditor({
   bookedCents = null,
   expenseCents = null,
   booking = null,
+  labs = [],
 }: {
   member: Member;
   profile: Profile;
@@ -171,6 +172,7 @@ export default function MemberProfileEditor({
   bookedCents?: number | null;
   expenseCents?: number | null;
   booking?: Booking | null;
+  labs?: LabDoc[];
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -178,6 +180,11 @@ export default function MemberProfileEditor({
 
   /* Active internal section tab (local UI state only). */
   const [activeTab, setActiveTab] = useState("Snapshot");
+
+  /* Shape the shared Medical panel expects: this member's medical fields +
+     intake + lab documents. Same data/logic as the standalone ops Medical
+     view, scoped to the current member. */
+  const medMember = { ...member, intake, labs } as MedMember;
 
   /* Editable member fields */
   const [status, setStatus] = useState(member.status ?? "");
@@ -1540,6 +1547,10 @@ export default function MemberProfileEditor({
         memberEmail={member.email ?? null}
       />
         </>
+      ) : activeTab === "Medical" ? (
+        <div style={CARD}>
+          <MemberMedicalPanel member={medMember} />
+        </div>
       ) : (
         <div style={CARD}>
           <p
