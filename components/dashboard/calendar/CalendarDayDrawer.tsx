@@ -1,7 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { CalendarDay, CalendarEvent } from "@/lib/calendar/types";
+import type {
+  CalendarDay,
+  CalendarEvent,
+  ClientJourney,
+} from "@/lib/calendar/types";
 import { hourOf, isoToLocalDate } from "@/lib/calendar/dates";
 import CalendarEventCard from "./CalendarEventCard";
 import CalendarEventForm from "./CalendarEventForm";
@@ -28,10 +32,12 @@ export default function CalendarDayDrawer({
   date,
   onClose,
   onChanged,
+  onEditJourney,
 }: {
   date: string;
   onClose: () => void;
   onChanged: () => void;
+  onEditJourney: (journey: ClientJourney) => void;
 }) {
   const [day, setDay] = useState<CalendarDay | null>(null);
   const [loading, setLoading] = useState(true);
@@ -193,8 +199,11 @@ export default function CalendarDayDrawer({
               style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 }}
             >
               {journeys.map((jd) => (
-                <span
+                <button
                   key={jd.journey.id}
+                  type="button"
+                  onClick={() => onEditJourney(jd.journey)}
+                  title="Edit or delete this journey"
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
@@ -202,9 +211,11 @@ export default function CalendarDayDrawer({
                     fontSize: 12,
                     color: "#1A1A18",
                     background: "#F1EFE8",
+                    border: "0.5px solid rgba(0,0,0,0.08)",
                     borderLeft: `3px solid ${jd.journey.color || "#085041"}`,
                     borderRadius: 5,
                     padding: "3px 9px",
+                    cursor: "pointer",
                     fontFamily: "var(--font-body, sans-serif)",
                   }}
                 >
@@ -212,7 +223,8 @@ export default function CalendarDayDrawer({
                   <span style={{ color: "#6B6B67" }}>
                     Day {jd.dayNumber} of {jd.totalDays}
                   </span>
-                </span>
+                  <span style={{ color: "#9E9E9A", fontSize: 11 }}>✎</span>
+                </button>
               ))}
             </div>
           ) : (

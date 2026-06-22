@@ -209,6 +209,7 @@ export default function CalendarClient() {
           date={selectedDate}
           onClose={() => setSelectedDate(null)}
           onChanged={refetch}
+          onEditJourney={(j) => setJourneyForm({ existing: j })}
         />
       )}
 
@@ -216,7 +217,11 @@ export default function CalendarClient() {
         <JourneyForm
           existing={journeyForm.existing}
           onSaved={() => {
+            // A journey edit/delete can change which clients appear on the open
+            // day (delete cascades to its events), so close the drawer and
+            // return to a refreshed month view.
             setJourneyForm(null);
+            setSelectedDate(null);
             refetch();
           }}
           onCancel={() => setJourneyForm(null)}
