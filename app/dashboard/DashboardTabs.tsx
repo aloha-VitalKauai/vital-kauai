@@ -7,13 +7,18 @@ const TABS = [
   { label: "Overview", href: "/dashboard" },
   { label: "Members", href: "/dashboard/clients" },
   { label: "Leads", href: "/dashboard/leads" },
-  { label: "Ceremonies", href: "/dashboard/ceremonies" },
-  { label: "Integration", href: "/dashboard/integration" },
-  { label: "Medical", href: "/dashboard/medical" },
+  // Ceremonies, Integration, Medical, and Dosing are hidden from top-level
+  // navigation in preparation for the member-centered workflow, where each
+  // Member Profile becomes the single source of truth for a person's journey.
+  // Their pages, routes, components, data, and APIs remain intact — restore a
+  // tab by uncommenting its line.
+  // { label: "Ceremonies", href: "/dashboard/ceremonies" },
+  // { label: "Integration", href: "/dashboard/integration" },
+  // { label: "Medical", href: "/dashboard/medical" },
   // Outcomes tab hidden while the outcomes experience is being refined.
   // Restore by uncommenting this line.
   // { label: "Outcomes", href: "/dashboard/outcomes" },
-  { label: "Dosing", href: "/dashboard/dosing" },
+  // { label: "Dosing", href: "/dashboard/dosing" },
   { label: "Financials", href: "/dashboard/financials" },
   { label: "Automatic Emails", href: "/dashboard/automatic-emails" },
   { label: "SOPs", href: "/dashboard/sops" },
