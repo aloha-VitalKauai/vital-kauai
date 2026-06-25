@@ -52,7 +52,7 @@ const FAQ_SECTIONS: FaqSection[] = [
       {
         question: "How long is a typical stay?",
         answer:
-          "Our group ceremony is a seven-day arc, arriving on Day 1, two days of preparation, ceremony on Day 3, three days of integration, and a closing on Day 7. We discuss your specific journey and any additional support you may need on your discovery call.",
+          "Our group ceremony moves through arrival, preparation, ceremony, integration, and closing. We discuss your specific journey and any additional support you may need on your discovery call.",
       },
       {
         question: "Are accommodations included?",
@@ -61,14 +61,8 @@ const FAQ_SECTIONS: FaqSection[] = [
       },
       {
         question: "What is the contribution?",
-        answer: (
-          <>
-            Vital Kauaʻi is a legally established church, and all contributions support our sacred mission. For members joining the weeklong ceremony arc, the contribution begins at $15,000.<sup>*</sup> This covers six weeks of preparation with two sessions with your personal integration guide and three check-ins with Rachel and Josh. It includes your accommodations, therapeutic modalities, and meals during ceremony week. It also includes six weeks of integration afterward — six weekly sessions with your guide and two follow-ups with Rachel and Josh. Members also receive lifelong access to a library of resources in the member portal and ongoing support in our community.{"\n\n"}
-            Private journeys start at $7,500.<sup>*</sup>{"\n\n"}
-            We believe this work should be accessible to anyone who is truly called: kamaʻāina rates and need-based arrangements are always welcome in that conversation, and we encourage you to reach out to us.{"\n\n"}
-            <em style={{ fontSize: "0.88em", opacity: 0.85 }}>*No portion of the contribution pays for the medicine. It supports the people and place that hold you through your journey.</em>
-          </>
-        ),
+        answer:
+          "The contribution is discussed privately with each member, so we can meet you where you are. We intend to offer scholarship opportunities and kamaʻāina rates so this work remains accessible to anyone called to it.",
       },
       {
         question: "What does the discovery call look like?",

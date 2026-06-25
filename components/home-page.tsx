@@ -69,14 +69,8 @@ const faqs = [
   },
   {
     question: "What is the contribution?",
-    answer: (
-      <>
-        Vital Kauaʻi is a legally established church, and all contributions support our sacred mission. For members joining the weeklong ceremony arc, the contribution begins at $15,000.<sup>*</sup> This covers six weeks of preparation with two sessions with your personal integration guide and three check-ins with the Vital Kauaʻi founders. It includes your accommodations, therapeutic modalities, and meals during ceremony week. It also includes six weeks of integration afterward—six weekly sessions with your guide and two follow-ups with the founders. Members also receive lifelong access to a library of resources in the member portal and ongoing support in our community.{"\n\n"}
-        Private journeys start at $7,500.<sup>*</sup>{"\n\n"}
-        We believe this work should be accessible to anyone who is truly called: kamaʻāina rates and need-based arrangements are always welcome in that conversation, and we encourage you to reach out to us.{"\n\n"}
-        <em style={{ fontSize: "0.88em", opacity: 0.85 }}>*No portion of the contribution pays for the medicine. It supports the people and place that hold you through your journey.</em>
-      </>
-    ),
+    answer:
+      "The contribution is discussed privately with each member, so we can meet you where you are. We intend to offer scholarship opportunities and kamaʻāina rates so this work remains accessible to anyone called to it.",
   },
   {
     question: "How do I know if I'm ready?",
@@ -581,7 +575,7 @@ export function HomePage() {
         </div>
 
         <div className={`${styles.offeringTags} ${styles.reveal}`}>
-          {["1:1 Somatic Coaching (PNE)", "Nervous System Safety", "Weeklong Ceremony Arc", "Clear Integration Plan", "Held in Community"].map(
+          {["1:1 Somatic Coaching (PNE)", "Nervous System Safety", "Ceremony Arc", "Clear Integration Plan", "Held in Community"].map(
             (tag, index) => (
               <span key={tag} className={index % 2 === 0 ? styles.tagSage : styles.tagGold}>
                 {tag}
@@ -666,8 +660,8 @@ export function HomePage() {
             <em style={{ color: "var(--terra-pale)" }}>Ceremonies</em>
           </h2>
           <p className={`${styles.sectionSub} ${styles.reveal}`} style={{ maxWidth: 600, margin: "0 auto 48px" }}>
-            Each ceremony is a small, held gathering: up to six members, seven days. Book a
-            discovery call to learn about the next available date.
+            Each ceremony is a small, held gathering of up to six members. Book a discovery
+            call to learn about the next available date.
           </p>
           <div className={`${styles.ceremoniesGrid} ${styles.reveal}`}>
             {(() => {
