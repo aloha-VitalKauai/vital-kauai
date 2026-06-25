@@ -24,7 +24,7 @@ const teamMembers = [
   {
     name: "Josh Perdue",
     role: "Co-Founder · Director of Operations",
-    bio: "Josh's path took him from Stanford Design School to Gabon, where he underwent a private initiation with the Bwiti. He brings somatic practice and a steady, devoted presence to the operations of Vital Kauaʻi.",
+    bio: "Josh's path took him from Stanford Design School to Gabon, where he underwent private initiation with the Bwiti. He brings humility, humor, and steady, devoted presence to the operations of Vital Kauaʻi.",
     image: "/images/about/josh-perdue.jpg",
   },
   // Temporarily hidden from the homepage feature row.
@@ -263,7 +263,7 @@ export function HomePage() {
         </Link>
         <ul className={styles.navLinks}>
           <li>
-            <span className="nav-dropdown-wrap"><Link href="/iboga-journey">The Iboga Journey</Link><span className="nav-dropdown"><Link href="/upcoming-ceremonies">Upcoming Ceremonies</Link></span></span>
+            <Link href="/iboga-journey">The Iboga Journey</Link>
           </li>
           <li>
             <span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/island-residents">Island Residents</Link></span></span>
@@ -302,9 +302,6 @@ export function HomePage() {
         </Link>
         <Link href="/iboga-journey" onClick={() => setIsMobileNavOpen(false)}>
           The Iboga Journey
-        </Link>
-        <Link href="/upcoming-ceremonies" onClick={() => setIsMobileNavOpen(false)}>
-          Upcoming Ceremonies
         </Link>
         <Link href="/stay" onClick={() => setIsMobileNavOpen(false)}>
           Stay With Us
@@ -584,7 +581,7 @@ export function HomePage() {
         </div>
 
         <div className={`${styles.offeringTags} ${styles.reveal}`}>
-          {["Evidence-Based Preparation", "Nervous System Safety", "1:1 Somatic Coaching (PNE)", "Deeply Held Transformative Journey", "Held in Community", "Clear Integration Plan", "Weeklong Ceremony Arc", "Yoga", "Breathwork", "Movement", "Bodywork", "Sound Healing", "Energetics", "Cleansing", "Nature Immersion"].map(
+          {["1:1 Somatic Coaching (PNE)", "Nervous System Safety", "Weeklong Ceremony Arc", "Clear Integration Plan", "Held in Community"].map(
             (tag, index) => (
               <span key={tag} className={index % 2 === 0 ? styles.tagSage : styles.tagGold}>
                 {tag}

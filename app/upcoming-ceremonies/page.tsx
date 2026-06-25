@@ -1,11 +1,7 @@
-import { UpcomingCeremoniesPage } from "@/components/upcoming-ceremonies-page";
+import { redirect } from "next/navigation";
 
-export const metadata = {
-  title: "Upcoming Ceremonies · Vital Kauaʻi",
-  description:
-    "All upcoming Iboga ceremonies on Kauaʻi — small, held gatherings of up to six members for seven days.",
-};
-
-export default function Page() {
-  return <UpcomingCeremoniesPage />;
+// Upcoming Ceremonies page temporarily hidden — redirect any visitors home.
+// The page component remains in the repo to restore later.
+export default function UpcomingCeremoniesRoute(): never {
+  redirect("/");
 }
