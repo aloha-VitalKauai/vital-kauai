@@ -145,8 +145,8 @@ export function JourneyArc() {
           Months of <em>Transformation</em>
         </h2>
         <p className={styles.lead}>
-          The Iboga Journey is a held arc of preparation, ceremony, and integration that unfolds
-          over months. Every phase is guided, every step supported.
+          The Iboga Journey is a held offering of preparation, ceremony, and integration that
+          unfolds over months. Every phase is guided, every step supported.
         </p>
       </div>
 

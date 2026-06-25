@@ -1274,7 +1274,7 @@ const BODY_CONTENT = `
     <div class="included-card reveal reveal-delay-1">
       <div class="included-rule"></div>
       <h3 class="included-title">Full-Spectrum Support</h3>
-      <p class="included-body">Our team is with you across the arc of your journey. Text support, check-ins, and the reassurance of knowing someone who genuinely cares is always close.</p>
+      <p class="included-body">Our team is with you throughout your journey. Text support, check-ins, and the reassurance of knowing someone who genuinely cares is always close.</p>
     </div>
     <div class="included-card reveal reveal-delay-2">
       <div class="included-rule"></div>

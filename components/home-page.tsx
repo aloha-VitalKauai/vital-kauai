@@ -405,7 +405,7 @@ export function HomePage() {
           <p className={styles.medicineIntroQuote}>
             &quot;Every journey here is a one-of-a-kind creation. We learn who you are, what you carry,
             what you are moving toward, and what this moment in your life is asking of you. We shape
-            your experience through an evidence-informed arc of preparation, ceremony, and
+            your experience through evidence-informed preparation, ceremony, and
             integration. This depth of holding is what we felt was missing from medicine spaces, and
             it is what we bring to every member.&quot;
           </p>
@@ -437,7 +437,7 @@ export function HomePage() {
             </p>
             <p className={styles.medicineBody}>
               Vital Kauaʻi is a ceremonial container: a living relationship between practitioner,
-              plant, participant, and land. We offer the most in-depth preparation and integration we know in this work: a six-week preparation arc before ceremony and a six-week integration after, with weekly teachings, somatic guidance, and one-on-one support throughout. From there, you become a lifelong member of the Vital Kauaʻi community, with monthly group calls and optional ongoing one-on-one support.
+              plant, participant, and land. We offer the most in-depth preparation and integration we know in this work: six weeks of preparation before ceremony and six weeks of integration after, with weekly teachings, somatic guidance, and one-on-one support throughout. From there, you become a lifelong member of the Vital Kauaʻi community, with monthly group calls and optional ongoing one-on-one support.
             </p>
             <div className={styles.medicineDistinction}>
               <p>
@@ -544,8 +544,9 @@ export function HomePage() {
               </p>
               <h3 className={styles.supportHeader}>Preparation &amp; Integration</h3>
               <p>
-                Full preparation and integration support across months: a six-week arc before
-                ceremony and a six-week arc after. Optional 1:1 support continues for as long as
+                Full preparation and integration support across months: six weeks of
+                preparation before ceremony and six weeks of integration after. Optional 1:1
+                support continues for as long as
                 it serves, and your place in the Vital Kauaʻi Church community is for life.
               </p>
               <h3 className={styles.supportHeader}>Community</h3>
@@ -575,7 +576,7 @@ export function HomePage() {
         </div>
 
         <div className={`${styles.offeringTags} ${styles.reveal}`}>
-          {["1:1 Somatic Coaching (PNE)", "Nervous System Safety", "Ceremony Arc", "Clear Integration Plan", "Held in Community"].map(
+          {["1:1 Somatic Coaching (PNE)", "Nervous System Safety", "Clear Integration Plan", "Held in Community"].map(
             (tag, index) => (
               <span key={tag} className={index % 2 === 0 ? styles.tagSage : styles.tagGold}>
                 {tag}
