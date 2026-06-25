@@ -53,7 +53,7 @@ const PHASES: Phase[] = [
     week: "1 Week · Hanalei, Kauaʻi",
     essence: "A deeply held week, rooted in support.",
     items: [
-      "A small cohort of up to six members over seven days",
+      "A small cohort of up to six members",
       "Daily meditation, breathwork, movement, and/or yoga",
       "Three therapeutic bodywork or energy work sessions",
       "Ceremonial walk along the Nā Pali coast and water ritual",

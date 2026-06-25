@@ -1505,7 +1505,7 @@ const BODY_CONTENT = `
   <div style="max-width:860px;margin:0 auto;">
     <span class="section-label reveal" style="color:var(--terra);">Come As You Are</span>
     <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,52px);font-weight:300;color:var(--cream);line-height:1.1;margin-bottom:16px;" class="reveal">Upcoming<br><em style="font-style:italic;color:var(--terra-pale);">Ceremonies</em></h2>
-    <p class="reveal" style="font-size:15px;color:rgba(245,240,232,0.6);line-height:1.95;margin-bottom:48px;max-width:600px;margin-left:auto;margin-right:auto;">Each ceremony is a small, held gathering: up to six members, seven days. Book a discovery call to learn about the next available date.</p>
+    <p class="reveal" style="font-size:15px;color:rgba(245,240,232,0.6);line-height:1.95;margin-bottom:48px;max-width:600px;margin-left:auto;margin-right:auto;">Each ceremony is a small, held gathering of up to six members. Book a discovery call to learn about the next available date.</p>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-bottom:44px;" class="reveal">
       <div id="upcoming-ceremony-card-0" style="background:rgba(28,43,30,0.5);padding:28px 20px;">
         <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.75);margin-bottom:10px;">Upcoming</p>
@@ -1548,7 +1548,7 @@ const BODY_CONTENT = `
           <span class="faq-icon" aria-hidden="true"></span>
         </summary>
         <div class="faq-answer">
-          <p>Our group ceremony is a seven-day arc, arriving on Day 1, two days of preparation, ceremony on Day 3, three days of integration, and a closing on Day 7. We discuss your specific journey and any additional support you may need on your discovery call.</p>
+          <p>Our group ceremony moves through arrival, preparation, ceremony, integration, and closing. We discuss your specific journey and any additional support you may need on your discovery call.</p>
         </div>
       </details>
 
@@ -1588,7 +1588,7 @@ const BODY_CONTENT = `
           <span class="faq-icon" aria-hidden="true"></span>
         </summary>
         <div class="faq-answer">
-          <p>Meals are prepared with the same intentionality as everything else at Vital Kauaʻi. We source locally and seasonally, farms, farmers' markets, and the ocean. All dietary needs, allergies, and protocol-specific requirements are gathered from your member intake and honored throughout your stay. Your nutrition is held with care across all seven days.</p>
+          <p>Meals are prepared with the same intentionality as everything else at Vital Kauaʻi. We source locally and seasonally, farms, farmers' markets, and the ocean. All dietary needs, allergies, and protocol-specific requirements are gathered from your member intake and honored throughout your stay. Your nutrition is held with care throughout your stay.</p>
         </div>
       </details>
 
