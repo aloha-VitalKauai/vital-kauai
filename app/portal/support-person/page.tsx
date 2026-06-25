@@ -131,7 +131,7 @@ export default async function SupportPersonPage() {
           {[
             { title: "Ground Yourself", body: "Nature, movement, breath \u2014 the practices that help you feel like yourself are essential right now." },
             { title: "Find Your People", body: "Let your own network hold your needs so they have somewhere to land." },
-            { title: "Reach Out to Us", body: "Rachel and Josh are available to you too \u2014 for clarity, reassurance, or simply a conversation." },
+            { title: "Reach Out to Us", body: "Our team is available to you too \u2014 for clarity, reassurance, or simply a conversation." },
           ].map((card) => (
             <div key={card.title} style={{ padding: 28, border: `1px solid ${border}`, borderRadius: 4, background: "rgba(247,243,238,0.6)" }}>
               <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 21, fontWeight: 500, marginBottom: 10 }}>{card.title}</h4>
@@ -150,7 +150,7 @@ export default async function SupportPersonPage() {
             Questions, concerns, or simply need to talk, we are here for you at any point in this journey.
           </p>
           <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: 11, letterSpacing: "0.32em", textTransform: "uppercase", color: gold, opacity: 0.75 }}>Reach Rachel & Josh</span>
+            <span style={{ fontSize: 11, letterSpacing: "0.32em", textTransform: "uppercase", color: gold, opacity: 0.75 }}>Reach the Vital Kauaʻi team</span>
             <a href="mailto:aloha@vitalkauai.com" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontStyle: "italic", color: cream, textDecoration: "none", borderBottom: "1px solid rgba(247,243,238,0.2)", paddingBottom: 4 }}>aloha@vitalkauai.com</a>
           </div>
         </div>

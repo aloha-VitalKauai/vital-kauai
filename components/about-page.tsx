@@ -68,9 +68,6 @@ export function AboutPage() {
             <Link href="/church-information" className={styles.navDropdownLabel}>About</Link>
             <ul className={styles.navDropdownMenu}>
               <li>
-                <Link href="/about">About the Founders</Link>
-              </li>
-              <li>
                 <Link href="/church-information">About Vital Kaua&#699;i Church</Link>
               </li>
               <li>
@@ -115,9 +112,6 @@ export function AboutPage() {
         </Link>
         <Link href="/island-residents" onClick={() => setIsMobileNavOpen(false)}>
           Island Residents
-        </Link>
-        <Link href="/about" onClick={() => setIsMobileNavOpen(false)}>
-          About the Founders
         </Link>
         <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>
           About Vital Kaua&#699;i Church
@@ -164,9 +158,9 @@ export function AboutPage() {
               <em>of Your True Nature</em>
             </h2>
             <p className={`${styles.meetingPara} ${styles.reveal}`}>
-              We found each other after a yoga class. Josh put down roots on Kaua&#699;i after years
-              of travel, studying with masters of somatics, plant medicine, detoxification, and
-              indigenous ceremony. Rachel was raising two boys while tending to her heart.
+              We came together on Kaua&#699;i after years of independent study and practice,
+              somatics, plant medicine, detoxification, indigenous ceremony, and the long work
+              of tending to our own hearts.
             </p>
             <p className={`${styles.meetingPara} ${styles.reveal} ${styles.d1}`}>
               Months passed, and then our fields began weaving organically, merging daily without
@@ -336,9 +330,6 @@ export function AboutPage() {
           <ul className={styles.footerLinks}>
             <li>
               <Link href="/iboga-journey">The Iboga Journey</Link>
-            </li>
-            <li>
-              <Link href="/about">Josh &amp; Rachel</Link>
             </li>
             <li>
               <Link href="/faq">FAQ</Link>

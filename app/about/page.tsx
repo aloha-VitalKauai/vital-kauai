@@ -1,5 +1,7 @@
-import { AboutPage } from "@/components/about-page";
+import { redirect } from "next/navigation";
 
-export default function AboutRoute() {
-  return <AboutPage />;
+// About the Founders page temporarily hidden — redirect any visitors home.
+// The page component and content remain in the repo to restore later.
+export default function AboutRoute(): never {
+  redirect("/");
 }

@@ -124,9 +124,6 @@ export function TestimonialsPage() {
             <Link href="/church-information" className={styles.navDropdownLabel}>About</Link>
             <ul className={styles.navDropdownMenu}>
               <li>
-                <Link href="/about">About the Founders</Link>
-              </li>
-              <li>
                 <Link href="/church-information">About Vital Kauaʻi Church</Link>
               </li>
               <li>
@@ -169,9 +166,6 @@ export function TestimonialsPage() {
         </Link>
         <Link href="/island-residents" onClick={() => setIsMobileNavOpen(false)}>
           Island Residents
-        </Link>
-        <Link href="/about" onClick={() => setIsMobileNavOpen(false)}>
-          About the Founders
         </Link>
         <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>
           About Vital Kauaʻi Church
@@ -333,7 +327,6 @@ export function TestimonialsPage() {
           <h4>Explore</h4>
           <ul className={styles.footerLinks}>
             <li><Link href="/iboga-journey">The Iboga Journey</Link></li>
-            <li><Link href="/about">Josh &amp; Rachel</Link></li>
             <li><span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/island-residents">Island Residents</Link></span></span></li>
             <li><Link href="/testimonials">Testimonials</Link></li>
             <li><Link href="/faq">FAQ</Link></li>

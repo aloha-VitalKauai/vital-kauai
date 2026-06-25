@@ -10,10 +10,22 @@ import styles from "./home-page.module.css";
 
 const teamMembers = [
   {
+    name: "Rachel Nelson",
+    role: "Co-Founder · Guide and Facilitator",
+    bio: "Rachel weaves over two decades of devotion to embodied awakening, bridging yogic and tantric philosophy with doctorate and masters-level education in naturopathic medicine and transpersonal psychology. Her work is helping people return to their own self-love and to one another. Her containers are known to be powerful, deeply trustworthy, and radically transformative.",
+    image: "/images/about/rachel-nelson.jpg",
+  },
+  {
     name: "Judith Johnson",
     role: "Founder, PsychoNeuroEnergetics · Somatic Integration Director, Americans for Ibogaine",
     bio: "A pioneer of body-oriented healing, Judith is the founder and developer of PsychoNeuroEnergetics (PNE), a breakthrough modality that unwinds traumatic imprints held in the nervous system through the healing power of the vagus nerve. With decades of practice across Somatic Experiencing, Polyvagal Theory, and body electronics, she brings an extraordinary depth of wisdom to every container at Vital Kauaʻi.",
     image: "/images/judithjohnson.jpeg",
+  },
+  {
+    name: "Josh Perdue",
+    role: "Co-Founder · Director of Operations",
+    bio: "Josh's path took him from Stanford Design School to Gabon, where he underwent a private initiation with the Bwiti. He brings somatic practice and a steady, devoted presence to the operations of Vital Kauaʻi.",
+    image: "/images/about/josh-perdue.jpg",
   },
   // Temporarily hidden from the homepage feature row.
   // {
@@ -59,7 +71,7 @@ const faqs = [
     question: "What is the contribution?",
     answer: (
       <>
-        Vital Kauaʻi is a legally established church, and all contributions support our sacred mission. For members joining the weeklong ceremony arc, the contribution begins at $15,000.<sup>*</sup> This covers six weeks of preparation with two sessions with your personal integration guide and three check-ins with Rachel and Josh. It includes your accommodations, therapeutic modalities, and meals during ceremony week. It also includes six weeks of integration afterward — six weekly sessions with your guide and two follow-ups with Rachel and Josh. Members also receive lifelong access to a library of resources in the member portal and ongoing support in our community.{"\n\n"}
+        Vital Kauaʻi is a legally established church, and all contributions support our sacred mission. For members joining the weeklong ceremony arc, the contribution begins at $15,000.<sup>*</sup> This covers six weeks of preparation with two sessions with your personal integration guide and three check-ins with the Vital Kauaʻi founders. It includes your accommodations, therapeutic modalities, and meals during ceremony week. It also includes six weeks of integration afterward—six weekly sessions with your guide and two follow-ups with the founders. Members also receive lifelong access to a library of resources in the member portal and ongoing support in our community.{"\n\n"}
         Private journeys start at $7,500.<sup>*</sup>{"\n\n"}
         We believe this work should be accessible to anyone who is truly called: kamaʻāina rates and need-based arrangements are always welcome in that conversation, and we encourage you to reach out to us.{"\n\n"}
         <em style={{ fontSize: "0.88em", opacity: 0.85 }}>*No portion of the contribution pays for the medicine. It supports the people and place that hold you through your journey.</em>
@@ -165,11 +177,11 @@ export function HomePage() {
     const firstName = contactForm.firstName.trim();
     const autoReply = [
       `Aloha ${firstName},`,
-      `Thank you for reaching out. We're honored you're considering this path, and we want you to know your message has been received and will be read personally by Rachel and Josh.`,
+      `Thank you for reaching out. We're honored you're considering this path, and we want you to know your message has been received and will be read personally by the Vital Kauaʻi team.`,
       `We'll be in touch within 48 hours.`,
       `If you're feeling ready to take the next step, you're welcome to book a discovery call with us. It's simply a space to share what's calling you and explore whether this journey is the right fit.`,
       `Book a Discovery Call: https://vital-kauai.vercel.app/begin-your-journey`,
-      `With aloha,\nRachel & Josh\nVital Kaua\u02BBi · Hanalei, Kaua\u02BBi`,
+      `With aloha,\nThe Vital Kauaʻi team\nHanalei, Kauaʻi`,
     ].join("\n\n");
 
     supabase.functions.invoke("send-notification", {
@@ -260,9 +272,6 @@ export function HomePage() {
             <Link href="/church-information" className={styles.navDropdownLabel}>About</Link>
             <ul className={styles.navDropdownMenu}>
               <li>
-                <Link href="/about">About the Founders</Link>
-              </li>
-              <li>
                 <Link href="/church-information">About Vital Kauaʻi Church</Link>
               </li>
               <li>
@@ -302,9 +311,6 @@ export function HomePage() {
         </Link>
         <Link href="/island-residents" onClick={() => setIsMobileNavOpen(false)}>
           Island Residents
-        </Link>
-        <Link href="/about" onClick={() => setIsMobileNavOpen(false)}>
-          About the Founders
         </Link>
         <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>
           About Vital Kauaʻi Church
@@ -381,18 +387,19 @@ export function HomePage() {
             </div>
             <div>
               <span className={styles.storyEyebrow}>Why Iboga</span>
-              <p className={styles.storyLead}>&quot;Nothing we have ever encountered goes this deep.&quot;</p>
               <p className={styles.storyBody}>
-                We came to this medicine through years of therapy, practice, and study. Iboga
-                reached the deeper places and dissolved patterns, programs, and tendencies we had
-                been carrying our whole lives. What it gave back was freedom: freedom from the
-                weight of anxiety and depression, freedom to create, to serve, and to live in
-                unconditional love.
+                We are a religious organization of dedicated professionals in service to
+                transformation, to people reawakening to who they truly are, ready to live more
+                alive and free.
               </p>
               <p className={styles.storyBody}>
-                Iboga is unlike any plant we have known. We built Vital Kauaʻi because this is
-                the only work we can imagine doing. Everything here exists to serve the medicine:
-                the land, the team, the preparation, and every branch that grows from the root.
+                We built Vital Kauaʻi for those seeking freedom from what has held them—patterns
+                of addiction, anxiety, depression, trauma—and a deeper return to their own
+                nature.
+              </p>
+              <p className={styles.storyBody}>
+                Everything we do exists in service: the team, the preparation, the ceremony, and
+                every part of the journey that grows from the root.
               </p>
               <Link href="/iboga-journey" className={styles.storyLink}>
                 Explore the Iboga Journey →
@@ -411,7 +418,7 @@ export function HomePage() {
             integration. This depth of holding is what we felt was missing from medicine spaces, and
             it is what we bring to every member.&quot;
           </p>
-          <p className={styles.medicineIntroByline}>— Rachel & Josh</p>
+          <p className={styles.medicineIntroByline}>— Vital Kauaʻi</p>
         </div>
         <div className={styles.medicineGrid}>
           <div className={styles.medicineImagePane}>
@@ -487,7 +494,7 @@ export function HomePage() {
           </p>
         </div>
         <div className={`${styles.medicinePills} ${styles.reveal}`} style={{ maxWidth: 920, margin: "32px auto 0", padding: "0 32px" }}>
-          {["Whole-Plant Protocol", "Titrated Dosing", "Ancient Lineage", "Integration Support", "Responsibility for Land, Water, and Culture"].map(
+          {["Whole-Plant Protocol", "Titrated Dosing", "Integration Support", "Responsibility, Reciprocity, and Service"].map(
             (pill) => (
               <span key={pill} className={styles.pill}>
                 {pill}
@@ -507,8 +514,7 @@ export function HomePage() {
             </h2>
             <p className={`${styles.sectionSub} ${styles.reveal}`}>
               Download our comprehensive guide covering the history of Iboga, what to expect during
-              ceremony, preparation protocols, and how to choose a safe, qualified provider. This is
-              the resource we wish existed when we began our own journeys.
+              ceremony, preparation protocols, and how to choose a safe, qualified provider.
             </p>
           </div>
           <HomeLeadCard />
@@ -531,38 +537,31 @@ export function HomePage() {
                 Internal cleansing, detoxification, and deep restoration prepare the body to
                 receive.
               </p>
-              <h3 className={styles.supportHeader}>PsychoNeuroEnergetics</h3>
+              <h3 className={styles.supportHeader}>PsychoNeuroEnergetics (PNE)</h3>
               <p>
-                Somatic support and guidance prepares the body, mind, and spirit to work with the
-                medicine and to move with what arises. You build the capacity to feel safe, to
-                track the nervous system, to self-resource, and to integrate what the medicine
-                reveals. From this ground, you begin to open the imprints that no longer serve,
-                safely and held. A dedicated integration guide and 1:1 calls walk alongside you
-                before and after ceremony.
+                1:1 coaching support to help you build the capacity to feel safe, to track the
+                nervous system, to self-resource, and to integrate what the root reveals.
               </p>
               <h3 className={styles.supportHeader}>Somatic Practices</h3>
-              <p>
-                Yoga, breathwork, movement, sound, and energetic practice open presence and
-                aliveness across every dimension of the experience.
-              </p>
+              <p>Yoga, breathwork, hiking, and sound baths.</p>
               <h3 className={styles.supportHeader}>Nature</h3>
               <p>
-                The land and waters of Kauaʻi are part of the medicine, too. Time in the ocean, on
-                the ʻāina, and in the elements is woven through your stay.
+                We come to this land as guests. Kauaʻi holds this work—her ocean, her ʻāina, her
+                elements—and we hold our kuleana to her in return. Time in nature moves through
+                the days because we are in relationship with what cares for us, in reciprocity,
+                respect, and service.
               </p>
               <h3 className={styles.supportHeader}>Preparation &amp; Integration</h3>
               <p>
-                Most importantly, we offer full preparation and integration support across months,
-                a six-week arc before ceremony and a six-week arc after, so the depth that opens
-                here continues to deepen long after you leave. Optional 1:1 support continues for
-                as long as it serves, and your place in the Vital Kauaʻi community is for life.
+                Full preparation and integration support across months: a six-week arc before
+                ceremony and a six-week arc after. Optional 1:1 support continues for as long as
+                it serves, and your place in the Vital Kauaʻi Church community is for life.
               </p>
               <h3 className={styles.supportHeader}>Community</h3>
               <p>
-                Healing deepens when it is held with others. Bi-monthly Vital Kauaʻi community
-                calls keep you connected and accountable as you integrate new ways into daily
-                living. Your home team is part of the container too, and we help prepare them
-                before your arrival and in receiving you when you return home.
+                Healing deepens when it is held with others. Monthly community calls keep you
+                connected and accountable as you integrate new ways into daily living. We also
+                help prepare your home team to hold you before and after ceremony.
               </p>
             </div>
           </div>
@@ -724,47 +723,6 @@ export function HomePage() {
         </div>
       </section>
 
-      <section id="founders" className={styles.founders}>
-        <p className={`${styles.sectionLabel} ${styles.reveal}`}>The Hearts Behind the Work</p>
-        <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>Josh & Rachel</h2>
-
-        <div className={styles.foundersGrid}>
-          {[
-            {
-              name: "Josh",
-              title: "Co-Founder · Mentor",
-              bio: "Josh's path has taken him from Stanford Design School to the red earth of Africa, where he underwent initiation with the Bwiti tribe and trained in the deep traditions of plant medicine. He has trained at Highden Mystery School Temple in New Zealand and brings a rare integration of indigenous wisdom, somatic practice, and entrepreneurial vision to holding space for transformation.",
-              image: "/images/about/josh-perdue.jpg",
-            },
-            {
-              name: "Rachel",
-              title: "Co-Founder · Healer · Somatic Integration Guide",
-              bio: "Rachel weaves over two decades of devotion to embodied awakening, bridging yogic and tantric philosophy with doctorate and masters-level education in naturopathic medicine and transpersonal psychology, consciousness, and spirituality. Rachel's passion is helping guide people back to their own self-love and couples back to one another. Her containers are known to be powerful, deeply trustworthy, and radically transformative.",
-              image: "/images/about/rachel-nelson.jpg",
-            },
-          ].map((founder, index) => (
-            <div key={founder.name} className={`${styles.founderCard} ${styles.reveal} ${index ? styles.revealDelay1 : ""}`}>
-              <Image className={styles.founderImg} src={founder.image} alt={founder.name} width={400} height={500} />
-              <div>
-                <h3 className={styles.founderName}>{founder.name}</h3>
-                <p className={styles.founderTitle}>{founder.title}</p>
-                <p className={styles.founderBio}>{founder.bio}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className={`${styles.foundersStory} ${styles.reveal}`}>
-          <p>
-            &quot;We found each other at exactly the right moment. This sanctuary is our offering,
-            built in service of something far greater than either of us.&quot;
-          </p>
-          <Link href="/about" className={styles.storyLink} style={{ display: "inline-block", marginTop: 40, fontSize: 11 }}>
-            Meet the Founders →
-          </Link>
-        </div>
-      </section>
-
       <section id="team" className={styles.team}>
         <p className={`${styles.sectionLabel} ${styles.reveal}`}>Our Practitioners</p>
         <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>
@@ -871,7 +829,7 @@ export function HomePage() {
           <p className={`${styles.sectionLabel} ${styles.reveal}`}>Begin the Journey</p>
           <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>Let&apos;s Connect</h2>
           <p className={styles.contactCopy}>
-            Every inquiry is read personally by Rachel and Josh. Tell us what&apos;s calling you.
+            Every inquiry is read personally by the Vital Kauaʻi team. Tell us what&apos;s calling you.
           </p>
           <div className={styles.contactDetail}>
             <span className={styles.contactDetailLabel}>Location</span>
@@ -973,9 +931,6 @@ export function HomePage() {
           <ul className={styles.footerLinks}>
             <li>
               <Link href="/iboga-journey">The Iboga Journey</Link>
-            </li>
-            <li>
-              <Link href="/about">Josh & Rachel</Link>
             </li>
             <li>
               <Link href="/faq">FAQ</Link>
