@@ -41,7 +41,6 @@ export function IslandResidentsPage() {
           <li className={styles.navDropdown}>
             <Link href="/church-information" className={styles.navDropdownLabel}>About</Link>
             <ul className={styles.navDropdownMenu}>
-              <li><Link href="/about">About the Founders</Link></li>
               <li><Link href="/church-information">About Vital Kauaʻi Church</Link></li>
               <li><Link href="/faq">FAQ</Link></li>
             </ul>
@@ -69,7 +68,6 @@ export function IslandResidentsPage() {
         <Link href="/upcoming-ceremonies" onClick={() => setIsMobileNavOpen(false)}>Upcoming Ceremonies</Link>
         <Link href="/stay" onClick={() => setIsMobileNavOpen(false)}>Stay With Us</Link>
         <Link href="/island-residents" onClick={() => setIsMobileNavOpen(false)}>Island Residents</Link>
-        <Link href="/about" onClick={() => setIsMobileNavOpen(false)}>About the Founders</Link>
         <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>About Vital Kauaʻi Church</Link>
         <Link href="/faq" onClick={() => setIsMobileNavOpen(false)}>FAQ</Link>
         <Link href="/portal" onClick={() => setIsMobileNavOpen(false)}>Member Portal</Link>
@@ -95,8 +93,7 @@ export function IslandResidentsPage() {
           </h1>
           <div className={styles.heroRule} />
           <p className={styles.heroSub}>
-            For those who live on Kauaʻi and feel the pull of this work. Rachel and Josh come
-            to you.
+            For those who live on Kauaʻi and feel the pull of this work. We come to you.
           </p>
         </div>
       </section>
@@ -111,9 +108,9 @@ export function IslandResidentsPage() {
             breathwork, energy work, and our attuned presence support you throughout.
           </p>
           <p className={styles.bodyText}>
-            Rachel and Josh hold a quiet circle of island residents who seek the depth of a
-            Vital Kauaʻi journey without leaving home. Sessions happen in your space. The
-            container is just as held.
+            We hold a quiet circle of island residents who seek the depth of a Vital Kauaʻi
+            journey without leaving home. Sessions happen in your space. The container is just
+            as held.
           </p>
           <p className={styles.bodyText}>
             If you are local and something in you is ready, reach out.
@@ -141,8 +138,7 @@ export function IslandResidentsPage() {
           <h4>Explore</h4>
           <ul className={styles.footerLinks}>
             <li><Link href="/iboga-journey">The Iboga Journey</Link></li>
-            <li><Link href="/about">Josh & Rachel</Link></li>
-              <li><Link href="/faq">FAQ</Link></li>
+            <li><Link href="/faq">FAQ</Link></li>
             <li><span className="nav-dropdown-wrap"><Link href="/stay">Stay With Us</Link><span className="nav-dropdown"><Link href="/island-residents">Island Residents</Link></span></span></li>
           </ul>
         </div>

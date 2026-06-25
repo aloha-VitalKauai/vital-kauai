@@ -207,7 +207,7 @@ export default function WhatToBringClient() {
                 { text: "Alcohol" },
                 { text: "Plant medicines", note: "If you have questions about this, please reach out before you arrive" },
                 { text: "Additional supplements", note: "Unless essential to your health \u2014 let us know in advance" },
-                { text: "Unnecessary medications", note: "For Iboga journeys especially \u2014 please discuss all medications with Rachel and Josh before your arrival" },
+                { text: "Unnecessary medications", note: "For Iboga journeys especially \u2014 please discuss all medications with our team before your arrival" },
               ].map((item) => (
                 <li key={item.text} style={{ display: "flex", alignItems: "flex-start", gap: 12, fontSize: 14, lineHeight: 1.5 }}>
                   <span style={{ color: sage, fontWeight: 600, flexShrink: 0, marginTop: 1 }}>&mdash;</span>

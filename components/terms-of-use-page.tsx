@@ -41,9 +41,6 @@ export function TermsOfUsePage() {
             <Link href="/church-information" className={styles.navDropdownLabel}>About</Link>
             <ul className={styles.navDropdownMenu}>
               <li>
-                <Link href="/about">About the Founders</Link>
-              </li>
-              <li>
                 <Link href="/church-information">About Vital Kauaʻi Church</Link>
               </li>
               <li>
@@ -83,9 +80,6 @@ export function TermsOfUsePage() {
         </Link>
         <Link href="/island-residents" onClick={() => setIsMobileNavOpen(false)}>
           Island Residents
-        </Link>
-        <Link href="/about" onClick={() => setIsMobileNavOpen(false)}>
-          About the Founders
         </Link>
         <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>
           About Vital Kauaʻi Church
@@ -339,9 +333,6 @@ export function TermsOfUsePage() {
           <ul className={styles.footerLinks}>
             <li>
               <Link href="/iboga-journey">The Iboga Journey</Link>
-            </li>
-            <li>
-              <Link href="/about">Josh & Rachel</Link>
             </li>
             <li>
               <Link href="/faq">FAQ</Link>

@@ -608,7 +608,7 @@ const BODY_CONTENT = `
     </div>
     <div class="s-confirm" id="s-confirm">
       <div class="s-conf-title">Your reflection has been received.</div>
-      <div class="s-conf-txt">It has been passed to Rachel and Josh. If it resonates with others walking this path, it may be shared anonymously in a future week, as a thread in the shared weaving. Either way, it is held.</div>
+      <div class="s-conf-txt">It has been passed to our team. If it resonates with others walking this path, it may be shared anonymously in a future week, as a thread in the shared weaving. Either way, it is held.</div>
     </div>
   </div>
 

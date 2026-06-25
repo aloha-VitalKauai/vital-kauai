@@ -83,7 +83,6 @@ export function UpcomingCeremoniesPage() {
           <li className={styles.navDropdown}>
             <Link href="/church-information" className={styles.navDropdownLabel}>About</Link>
             <ul className={styles.navDropdownMenu}>
-              <li><Link href="/about">About the Founders</Link></li>
               <li><Link href="/church-information">About Vital Kaua&#699;i Church</Link></li>
               <li><Link href="/faq">FAQ</Link></li>
             </ul>
@@ -114,7 +113,6 @@ export function UpcomingCeremoniesPage() {
         <Link href="/upcoming-ceremonies" onClick={() => setIsMobileNavOpen(false)}>Upcoming Ceremonies</Link>
         <Link href="/stay" onClick={() => setIsMobileNavOpen(false)}>Stay With Us</Link>
         <Link href="/island-residents" onClick={() => setIsMobileNavOpen(false)}>Island Residents</Link>
-        <Link href="/about" onClick={() => setIsMobileNavOpen(false)}>About the Founders</Link>
         <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>About Vital Kaua&#699;i Church</Link>
         <Link href="/faq" onClick={() => setIsMobileNavOpen(false)}>FAQ</Link>
         <Link href="/portal" onClick={() => setIsMobileNavOpen(false)}>Member Portal</Link>
