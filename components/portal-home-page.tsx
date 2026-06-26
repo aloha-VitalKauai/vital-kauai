@@ -417,8 +417,9 @@ export function PortalHomePage({
                 Schedule Your <em>Onboarding Call</em>
               </div>
               <div className={styles.docDesc}>
-                A welcome call with Rachel and Josh to meet you and hear what is alive for you
-                as you step into this work.
+                A welcome call with Rachel and Josh to help you get acquainted with your
+                portal, answer questions, and hear what is alive for you as you step into
+                this work.
               </div>
               <div className={styles.docFooter}>
                 <span className={`${styles.docTag} ${styles.tagRequired}`}>
