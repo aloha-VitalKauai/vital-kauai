@@ -86,10 +86,13 @@ capability string is a **compile-time error**, not a runtime miss.
 
 ## The seed
 
-One concrete object, fully specified: a production **CRM Note** (`record`) with
-`identity`, `timestamp`, and `content` observed present — so `provenance`,
-`versioning`, `relationships`, and `timeline_participation` derive as absent.
-Observation only; the real CRM Note is untouched.
+A small cast of production objects, each fully specified. The first is a
+production **CRM Note** (`record`) with `identity`, `timestamp`, and `content`
+observed present — so `provenance`, `versioning`, `relationships`, and
+`timeline_participation` derive as absent. Alongside it: **Member** (`entity`),
+**Operational Task** (`task`), **Journey Milestone** (`event`), and **Integration
+Session** (`event`) — a small connected cast for later experiments to describe.
+Observation only; the real objects are untouched.
 
 ## Module boundary (not a runtime assertion)
 
@@ -100,17 +103,11 @@ this module imports no production code, database, React, Next.js, or Supabase. I
 does not even import its sibling experiments (provenance, registry), so it stays
 independently deletable.
 
-## Implementation Questions (the Charter)
+## The Charter
 
-Ask these before adding anything here:
-
-1. Does this **observe** rather than modify?
-2. Does production remain **untouched**?
-3. Can this be **deleted tomorrow**?
-4. Does this help us **understand** the existing system better?
-5. Does this **reduce assumptions**?
-
-If not, simplify.
+This layer is held to the lab's single Charter — the Implementation Questions
+documented once in [`../registry/README.md`](../registry/README.md). Individual
+experiments do not keep their own divergent copies.
 
 ## Verifying
 

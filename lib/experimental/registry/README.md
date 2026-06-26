@@ -17,14 +17,15 @@ from `experiment-001` to `experiment-003`; the gap is deliberate.)
 
 ## Implementation Questions (the Charter)
 
-The lab's "Charter" is simply the questions we ask before adding any experiment.
-There is no separate charter artifact — it lives here:
+The lab's "Charter" is the single fixed set of questions we ask before adding any
+experiment. It lives here, once — individual experiments point to it rather than
+keeping divergent copies:
 
-1. What is true now?
-2. What hypothesis are we testing?
-3. Does this affect production?
-4. Can this be deleted tomorrow?
-5. Does this make the lab more disciplined — does it reduce assumptions?
+1. Does this observe rather than modify?
+2. Does this reduce assumptions?
+3. Can this be deleted tomorrow?
+4. Does production remain untouched?
+5. Does this increase our understanding of context?
 
 If an experiment cannot answer these cleanly, simplify it until it can. Each
 experiment also records its own answers in its `hypothesis`, `safety_boundary`,

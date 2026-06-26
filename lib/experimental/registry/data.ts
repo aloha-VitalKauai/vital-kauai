@@ -143,4 +143,42 @@ export const REGISTRY: readonly ExperimentalPilot[] = deepFreeze<ExperimentalPil
     created_at: "2026-06-25T00:00:00.000Z",
     updated_at: "2026-06-25T00:00:00.000Z",
   },
+  {
+    id: "experiment-004",
+    name: "Experimental Relationship Layer",
+    status: "active",
+    production_impact: "internal_only",
+    hypothesis:
+      "Can observed objects be connected through a small typed immutable " +
+      "relationship model without assumptions, production changes, or business " +
+      "logic?",
+    safety_boundary:
+      "No production imports, no runtime production reads, no DB/UI/API, no " +
+      "PHI, no Level-4 data, no inference. Depends only on the observation " +
+      "module's read-only API.",
+    removability:
+      "Deleting lib/experimental/relationships/ (and its registry entry) leaves " +
+      "production and the other experiments unchanged. Must be deleted before, " +
+      "or together with, observation.",
+    success_criteria: [
+      "Types are closed unions.",
+      "Symmetry is modeled.",
+      "Every endpoint resolves to an observation.",
+      "Duplicates and self-references are rejected.",
+      "Outputs are immutable.",
+      "The five API functions behave per spec.",
+      "TypeScript passes.",
+      "ESLint passes.",
+      "Verification passes.",
+    ],
+    future_unlocks: [
+      "Relationship-aware navigation",
+      "Timeline ordering",
+      "Contextual search",
+      "Graph description",
+    ],
+    decision: "undecided",
+    created_at: "2026-06-25T00:00:00.000Z",
+    updated_at: "2026-06-25T00:00:00.000Z",
+  },
 ]);

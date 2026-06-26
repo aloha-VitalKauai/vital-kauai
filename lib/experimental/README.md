@@ -44,6 +44,10 @@ real, reviewed PR against the production system.
 - [`observation/`](./observation) — the Experimental Observation Layer: a typed,
   immutable lens that describes existing production objects without touching
   them, so future experiments reason from observation instead of assumption.
+- [`relationships/`](./relationships) — the Experimental Relationship Layer: a
+  small, typed, immutable vocabulary for stating that two observed objects are
+  connected. Depends one-way on `observation/`; describes context, never infers
+  it.
 
 ## Pilot Registry
 
