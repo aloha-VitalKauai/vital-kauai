@@ -199,6 +199,9 @@ export default function MemberProfileEditor({
   );
 
   /* Editable member fields */
+  const [fullName, setFullName] = useState(member.full_name ?? "");
+  const [email, setEmail] = useState(member.email ?? "");
+  const [phone, setPhone] = useState(member.phone ?? "");
   const [status, setStatus] = useState(member.status ?? "");
   const [assignedPartner, setAssignedPartner] = useState(member.assigned_partner ?? "");
   const [programPrice, setProgramPrice] = useState(member.program_price?.toString() ?? "");
@@ -347,6 +350,7 @@ export default function MemberProfileEditor({
 
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveErr, setSaveErr] = useState<string | null>(null);
 
   const [resendingSetup, setResendingSetup] = useState(false);
   const [setupResendMsg, setSetupResendMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
@@ -374,12 +378,27 @@ export default function MemberProfileEditor({
   }
 
   async function handleSave() {
+    // Full name and email are NOT NULL on members — guard before saving.
+    const trimmedName = fullName.trim();
+    const trimmedEmail = email.trim();
+    if (!trimmedName) {
+      setSaveErr("Full name can't be empty.");
+      return;
+    }
+    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setSaveErr("Enter a valid email address.");
+      return;
+    }
+    setSaveErr(null);
     setSaving(true);
     setSaved(false);
     const priceNum = programPrice ? Number(programPrice) : null;
     const { error } = await supabase
       .from("members")
       .update({
+        full_name: trimmedName,
+        email: trimmedEmail,
+        phone: phone.trim() || null,
         status,
         assigned_partner: assignedPartner || null,
         program_price: priceNum,
@@ -413,6 +432,12 @@ export default function MemberProfileEditor({
       setSaved(true);
       startTransition(() => router.refresh());
       setTimeout(() => setSaved(false), 2000);
+    } else {
+      setSaveErr(
+        /duplicate|unique/i.test(error.message)
+          ? "That email is already in use by another member."
+          : error.message,
+      );
     }
   }
 
@@ -620,6 +645,38 @@ export default function MemberProfileEditor({
           <div style={CARD}>
             <p style={{ ...LABEL, marginBottom: 16 }}>Member details</p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <div style={{ gridColumn: "1 / -1" }}>
+                <label style={LABEL}>Full name</label>
+                <input
+                  style={INPUT}
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Member's full name"
+                />
+              </div>
+              <div style={{ gridColumn: "1 / -1" }}>
+                <label style={LABEL}>Email</label>
+                <input
+                  style={INPUT}
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@example.com"
+                />
+                <p style={{ fontSize: 11, color: "#9E9E9A", margin: "4px 0 0" }}>
+                  Updates this member&rsquo;s contact record. Does not change their portal login email.
+                </p>
+              </div>
+              <div>
+                <label style={LABEL}>Phone</label>
+                <input
+                  style={INPUT}
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="(808) 555-0123"
+                />
+              </div>
               <div>
                 <label style={LABEL}>Status</label>
                 <select style={SELECT} value={status} onChange={(e) => setStatus(e.target.value)}>
@@ -831,6 +888,9 @@ export default function MemberProfileEditor({
           </div>
 
           {/* Save button */}
+          {saveErr && (
+            <p style={{ fontSize: 13, color: "#9b1c1c", margin: "0 0 -4px" }}>{saveErr}</p>
+          )}
           <button
             onClick={handleSave}
             disabled={saving}
