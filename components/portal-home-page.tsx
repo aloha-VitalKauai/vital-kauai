@@ -595,7 +595,7 @@ export function PortalHomePage({
                 height={92}
                 className={styles.teamPhoto}
               />
-              <p className={styles.teamRole}>Medicine Guide, Co-Creator</p>
+              <p className={styles.teamRole}>Space Holder</p>
               <p className={styles.teamName}>Josh Perdue</p>
               <p className={styles.teamBio}>
                 Josh is the primary sitter and space holder through the full ceremony &mdash;
