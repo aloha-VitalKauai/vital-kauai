@@ -181,4 +181,39 @@ export const REGISTRY: readonly ExperimentalPilot[] = deepFreeze<ExperimentalPil
     created_at: "2026-06-25T00:00:00.000Z",
     updated_at: "2026-06-25T00:00:00.000Z",
   },
+  {
+    id: "experiment-005",
+    name: "Experimental Lens Framework",
+    status: "active",
+    production_impact: "internal_only",
+    hypothesis:
+      "Can multiple interpretive frameworks be catalogued through one " +
+      "interface while staying completely separate from observed reality?",
+    safety_boundary:
+      "Metadata only. No production imports, no calculations, no " +
+      "interpretation, no diagnosis, no framework-specific logic, no DB/UI/API, " +
+      "no AI, no PHI, no Level-4 data. No field may assert truth, rank, " +
+      "confidence, or diagnosis.",
+    removability:
+      "Deleting lib/experimental/lenses/ (and its registry entry) leaves " +
+      "production and every other experiment unchanged; lenses is a standalone " +
+      "leaf.",
+    success_criteria: [
+      "Categories and status are closed unions.",
+      "Lens objects carry only the allowed keys.",
+      "Ids and names are unique.",
+      "Outputs are immutable.",
+      "The four API functions behave per spec.",
+      "TypeScript passes.",
+      "ESLint passes.",
+      "Verification passes.",
+    ],
+    future_unlocks: [
+      "An optional interpretation layer mapping observations to lenses without making any lens authoritative.",
+      "Multi-perspective views that keep evidence and interpretation separate.",
+    ],
+    decision: "undecided",
+    created_at: "2026-06-25T00:00:00.000Z",
+    updated_at: "2026-06-25T00:00:00.000Z",
+  },
 ]);
