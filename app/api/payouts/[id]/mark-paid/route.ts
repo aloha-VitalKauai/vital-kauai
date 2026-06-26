@@ -26,7 +26,7 @@ export async function POST(
 
   const { data, error } = await supabase
     .from("payout_commitments")
-    .update({ status: "paid" })
+    .update({ status: "paid", paid_at: new Date().toISOString() })
     .eq("id", id)
     .in("status", ["pending", "scheduled"])
     .select()

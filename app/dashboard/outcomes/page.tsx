@@ -45,13 +45,13 @@ export default async function OutcomesPage() {
     phq9BaselineMean: baseline?.phq9_mean ?? null,
     phq9OneMonthMean: oneMonth?.phq9_mean ?? null,
     phq9Delta:
-      baseline?.phq9_mean && oneMonth?.phq9_mean
+      baseline?.phq9_mean != null && oneMonth?.phq9_mean != null
         ? Number((oneMonth.phq9_mean - baseline.phq9_mean).toFixed(1))
         : null,
     gad7BaselineMean: baseline?.gad7_mean ?? null,
     gad7OneMonthMean: oneMonth?.gad7_mean ?? null,
     gad7Delta:
-      baseline?.gad7_mean && oneMonth?.gad7_mean
+      baseline?.gad7_mean != null && oneMonth?.gad7_mean != null
         ? Number((oneMonth.gad7_mean - baseline.gad7_mean).toFixed(1))
         : null,
     relapseRate3m: threeMonth?.relapse_rate_pct ?? null,

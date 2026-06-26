@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment, useState, useEffect, useCallback } from 'react'
+import { Fragment, useState, useEffect, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -546,7 +546,7 @@ export default function PostCeremonyPage() {
   }, [userId])
 
   // Journal auto-save with debounce
-  const journalTimerRef = { current: null as ReturnType<typeof setTimeout> | null }
+  const journalTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const updateJournal = (key: string, value: string) => {
     const next = { ...journal, [key]: value }
     setJournal(next)
@@ -554,11 +554,22 @@ export default function PostCeremonyPage() {
     journalTimerRef.current = setTimeout(() => {
       save(completed, checklist, weeklyTracking, next)
       syncToMainJournal(next, key)
+      journalTimerRef.current = null
     }, 1500)
   }
 
+  // Flush any pending debounced journal save immediately and wait for it to finish.
+  const flushJournalSave = useCallback(async () => {
+    if (journalTimerRef.current) {
+      clearTimeout(journalTimerRef.current)
+      journalTimerRef.current = null
+      await save(completed, checklist, weeklyTracking, journal)
+    }
+  }, [save, completed, checklist, weeklyTracking, journal])
+
   const handleCheckInComplete = async (weekIdx: number, data: Omit<WeekTracking, 'completed'>) => {
     setCheckInWeek(null)
+    await flushJournalSave()
     const newTracking = { ...weeklyTracking, [weekIdx]: { ...data, completed: true } }
     const newCompleted = new Set(completed)
     newCompleted.add(weekIdx)
@@ -568,7 +579,7 @@ export default function PostCeremonyPage() {
       setActiveWeek(Math.min(weekIdx + 1, 5))
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }, 350)
-    await save(newCompleted, checklist, newTracking)
+    await save(newCompleted, checklist, newTracking, journal)
   }
 
   const toggleCheck = async (id: string) => {
@@ -858,7 +869,11 @@ export default function PostCeremonyPage() {
             <section className="w1-section" id="journal-prompts">
               <h3 className="w1-h3">Journal Prompts</h3>
               {w.prompts.map((p, pi) => {
-                const jKey = `w${i}-p${pi}`
+                // Use the prompt's explicit key so entries match the Journal page
+                // and pre-ceremony view. Fall back to the legacy positional key
+                // for reads so entries saved before this fix still appear.
+                const legacyKey = `w${i}-p${pi}`
+                const jKey = p.key ?? legacyKey
                 return (
                   <div className="w1-prompt" key={pi}>
                     <span className="w1-prompt-num">0{pi + 1}</span>
@@ -866,7 +881,7 @@ export default function PostCeremonyPage() {
                     {p.hint && <p className="w1-prompt-hint">{p.hint}</p>}
                     <textarea
                       className="journal-textarea"
-                      value={journal[jKey] ?? ''}
+                      value={journal[jKey] ?? journal[legacyKey] ?? ''}
                       onChange={(e) => updateJournal(jKey, e.target.value)}
                       placeholder="Write freely..."
                       rows={4}

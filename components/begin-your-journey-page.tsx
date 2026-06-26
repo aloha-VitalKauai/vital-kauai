@@ -217,31 +217,35 @@ export function BeginYourJourneyPage() {
 function LeadForm() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
+    setError(false);
 
     const form = e.currentTarget;
     const firstName = (form.elements.namedItem("first-name") as HTMLInputElement).value.trim();
     const email = (form.elements.namedItem("email") as HTMLInputElement).value.trim();
 
     try {
-      await fetch("/.netlify/functions/lead-capture", {
+      const res = await fetch("/api/lead-capture", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           fullName: firstName,
           email,
           source: "Begin the Journey",
-          submittedAt: new Date().toISOString(),
         }),
       });
+      if (!res.ok) throw new Error(`lead-capture ${res.status}`);
+      setSubmitted(true);
     } catch (err) {
       console.error("Lead capture error:", err);
+      setError(true);
+    } finally {
+      setLoading(false);
     }
-
-    setSubmitted(true);
   }
 
   if (submitted) {
@@ -267,6 +271,11 @@ function LeadForm() {
       <button className={styles.leadBtn} type="submit" disabled={loading}>
         {loading ? "..." : "Send"}
       </button>
+      {error && (
+        <p className={styles.leadSuccess} role="alert">
+          Something went wrong. Please email us at aloha@vitalkauai.com.
+        </p>
+      )}
     </form>
   );
 }

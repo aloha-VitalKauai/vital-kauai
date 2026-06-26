@@ -1315,7 +1315,7 @@ const BODY_CONTENT = `
             <p class="setting-feature-desc">Cold plunges, quiet floats, elemental baptisms</p>
           </div>
         </div>
-      </details>
+      </div>
     </div>
   </div>
 </section>
@@ -1620,7 +1620,7 @@ const BODY_CONTENT = `
         <div class="faq-answer">
           <p>We understand that life moves and plans shift. Cancellations made within 30 days of arrival are eligible for a full transfer. Reach out to us directly and we will find a path forward together.</p>
         </div>
-      </div>
+      </details>
 
     </div>
   </div>
@@ -1663,7 +1663,7 @@ const BODY_CONTENT = `
     <h4>Explore</h4>
     <ul class="footer-links">
       <li><a href="/">Home</a></li>
-      <li><a href="iboga-journey.html">Iboga Journey</a></li>
+      <li><a href="/iboga-journey">Iboga Journey</a></li>
       <li><a href="/stay">Stay With Us</a></li>
     </ul>
   </div>
@@ -1671,16 +1671,16 @@ const BODY_CONTENT = `
     <h4>Connect</h4>
     <ul class="footer-links">
       <li><a href="/begin-your-journey">Contact</a></li>
-      <li><a href="portal.html">Member Portal</a></li>
+      <li><a href="/portal">Member Portal</a></li>
     </ul>
   </div>
   <div class="footer-col">
     <h4>Sacred Policies</h4>
     <ul class="footer-links">
-      <li><a href="privacy.html">Privacy</a></li>
-      <li><a href="terms.html">Terms</a></li>
-      <li><a href="medical-disclaimer.html">Medical Disclaimer</a></li>
-      <li><a href="church-information.html">Church Information</a></li>
+      <li><a href="/privacy-policy">Privacy</a></li>
+      <li><a href="/terms-of-use">Terms</a></li>
+      <li><a href="/medical-disclaimer">Medical Disclaimer</a></li>
+      <li><a href="/church-information">Church Information</a></li>
     </ul>
   </div>
 </footer>

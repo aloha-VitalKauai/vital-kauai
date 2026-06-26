@@ -84,17 +84,19 @@ export default function OutcomesClient({
     window.location.reload();
   }
 
-  // Chart data
-  const chartPoints = TIMEPOINT_ORDER.map((tp) => cohort.find((r) => r.timepoint === tp)).filter(Boolean);
+  // Chart data — keep one slot per timepoint (null when absent) so each point
+  // stays on its true x-position even when earlier timepoints have no data.
+  const chartPoints = TIMEPOINT_ORDER.map((tp) => cohort.find((r) => r.timepoint === tp) ?? null);
+  const hasChartData = chartPoints.some(Boolean);
   const xPos = [80, 152, 224, 296, 368, 440];
   const yFromScore = (score: number, max: number) => 180 - (score / max) * 160;
 
   const phq9Points = chartPoints
-    .map((r, i) => (r?.phq9_mean ? `${xPos[i]},${yFromScore(r.phq9_mean, 27).toFixed(1)}` : null))
+    .map((r, i) => (r?.phq9_mean != null ? `${xPos[i]},${yFromScore(r.phq9_mean, 27).toFixed(1)}` : null))
     .filter(Boolean)
     .join(" ");
   const gad7Points = chartPoints
-    .map((r, i) => (r?.gad7_mean ? `${xPos[i]},${yFromScore(r.gad7_mean, 21).toFixed(1)}` : null))
+    .map((r, i) => (r?.gad7_mean != null ? `${xPos[i]},${yFromScore(r.gad7_mean, 21).toFixed(1)}` : null))
     .filter(Boolean)
     .join(" ");
 
@@ -143,7 +145,7 @@ export default function OutcomesClient({
                 </div>
               ))}
             </div>
-            {chartPoints.length === 0 ? (
+            {!hasChartData ? (
               <div style={{ padding: "2rem", textAlign: "center", color: "#9E9E9A", fontSize: 13 }}>No outcome data yet — assessments appear here as members complete surveys.</div>
             ) : (
               <svg viewBox="0 0 460 200" style={{ width: "100%", overflow: "visible" }}>
@@ -151,9 +153,9 @@ export default function OutcomesClient({
                 {[{ y: 20, v: 27 }, { y: 60, v: 20 }, { y: 100, v: 14 }, { y: 140, v: 7 }, { y: 180, v: 0 }].map((l) => (
                   <text key={l.v} x="38" y={l.y + 3} fontSize="10" fill="#9E9E9A" fontFamily="Jost,sans-serif" textAnchor="end">{l.v}</text>
                 ))}
-                {chartPoints.map((r, i) => (
-                  <text key={r.timepoint} x={xPos[i]} y="198" fontSize="10" fill="#9E9E9A" fontFamily="Jost,sans-serif" textAnchor="middle">
-                    {TIMEPOINTS.find((t) => t.key === r.timepoint)?.label ?? r.timepoint}
+                {TIMEPOINT_ORDER.map((tp, i) => (
+                  <text key={tp} x={xPos[i]} y="198" fontSize="10" fill="#9E9E9A" fontFamily="Jost,sans-serif" textAnchor="middle">
+                    {TIMEPOINTS.find((t) => t.key === tp)?.label ?? tp}
                   </text>
                 ))}
                 <line x1="80" y1="20" x2="80" y2="182" stroke="#C8A96E" strokeWidth="1" strokeDasharray="3,3" />
@@ -161,9 +163,9 @@ export default function OutcomesClient({
                 {phq9Points && <polyline points={phq9Points} stroke="#1D6B4A" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />}
                 {gad7Points && <polyline points={gad7Points} stroke="#378ADD" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />}
                 {chartPoints.map((r, i) => (
-                  <g key={r.timepoint}>
-                    {r.phq9_mean && <circle cx={xPos[i]} cy={yFromScore(r.phq9_mean, 27)} r="4" fill="#1D6B4A" />}
-                    {r.gad7_mean && <circle cx={xPos[i]} cy={yFromScore(r.gad7_mean, 21)} r="4" fill="#378ADD" />}
+                  <g key={TIMEPOINT_ORDER[i]}>
+                    {r?.phq9_mean != null && <circle cx={xPos[i]} cy={yFromScore(r.phq9_mean, 27)} r="4" fill="#1D6B4A" />}
+                    {r?.gad7_mean != null && <circle cx={xPos[i]} cy={yFromScore(r.gad7_mean, 21)} r="4" fill="#378ADD" />}
                   </g>
                 ))}
               </svg>
