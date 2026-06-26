@@ -77,22 +77,32 @@ export async function getAssignedSpecialist(
   return (data as Specialist | null) ?? null;
 }
 
-export function markAgreementSigned(supabase: SupabaseClient, userId: string) {
+export function markAgreementSigned(
+  supabase: SupabaseClient,
+  userId: string,
+  signature: string,
+) {
   return supabase
     .from("member_profiles")
     .update({
       membership_agreement_signed: true,
       membership_agreement_signed_at: new Date().toISOString(),
+      membership_agreement_signature: signature,
     })
     .eq("id", userId);
 }
 
-export function markMedicalSigned(supabase: SupabaseClient, userId: string) {
+export function markMedicalSigned(
+  supabase: SupabaseClient,
+  userId: string,
+  signature: string,
+) {
   return supabase
     .from("member_profiles")
     .update({
       medical_disclaimer_signed: true,
       medical_disclaimer_signed_at: new Date().toISOString(),
+      medical_disclaimer_signature: signature,
     })
     .eq("id", userId);
 }
