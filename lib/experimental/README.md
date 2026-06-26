@@ -38,6 +38,15 @@ real, reviewed PR against the production system.
   came from, who created it, and what kind of information it is. This is the
   first building block: every later Human Record idea depends on knowing the
   origin of information.
+- [`registry/`](./registry) — the Experimental Pilot Registry: an in-memory,
+  read-only record of every experiment in this namespace and the discipline that
+  governs it.
+
+## Pilot Registry
+
+Every experiment in this namespace is tracked in `registry/`. See
+`registry/README.md` for how experiments are added, evaluated, promoted,
+and removed.
 
 ## What does not live here yet
 
