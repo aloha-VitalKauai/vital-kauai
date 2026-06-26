@@ -48,6 +48,9 @@ real, reviewed PR against the production system.
   small, typed, immutable vocabulary for stating that two observed objects are
   connected. Depends one-way on `observation/`; describes context, never infers
   it.
+- [`lenses/`](./lenses) — the Experimental Lens Framework: a catalogue of
+  optional interpretive frameworks as metadata only. A standalone leaf that keeps
+  evidence (observation) separate from interpretation; no lens is authoritative.
 
 ## Pilot Registry
 
