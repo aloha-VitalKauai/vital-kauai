@@ -41,6 +41,9 @@ real, reviewed PR against the production system.
 - [`registry/`](./registry) — the Experimental Pilot Registry: an in-memory,
   read-only record of every experiment in this namespace and the discipline that
   governs it.
+- [`observation/`](./observation) — the Experimental Observation Layer: a typed,
+  immutable lens that describes existing production objects without touching
+  them, so future experiments reason from observation instead of assumption.
 
 ## Pilot Registry
 

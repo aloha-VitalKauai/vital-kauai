@@ -11,7 +11,24 @@ ourselves to naming what we are testing and what it is allowed to touch.
 This is discipline, not architecture. The registry is a small, pure, in-memory
 TypeScript model with a read-only API. It has no database, no persistence, no UI,
 and no production import. The registry itself is **infrastructure for tracking
-experiments, not an experiment** — so it is not registered as a pilot.
+experiments, not an experiment** — so it is not registered as a pilot. (The lab
+narrative counts it as the second capability, which is why experiment ids skip
+from `experiment-001` to `experiment-003`; the gap is deliberate.)
+
+## Implementation Questions (the Charter)
+
+The lab's "Charter" is simply the questions we ask before adding any experiment.
+There is no separate charter artifact — it lives here:
+
+1. What is true now?
+2. What hypothesis are we testing?
+3. Does this affect production?
+4. Can this be deleted tomorrow?
+5. Does this make the lab more disciplined — does it reduce assumptions?
+
+If an experiment cannot answer these cleanly, simplify it until it can. Each
+experiment also records its own answers in its `hypothesis`, `safety_boundary`,
+and `removability` fields.
 
 ## The model
 
