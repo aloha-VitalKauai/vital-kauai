@@ -834,7 +834,11 @@ const TIMELINE_DOT: Record<TimelineCategory, string> = {
 };
 
 function fmtLongDate(d: string) {
-  return new Date(d).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  // Date-only values (YYYY-MM-DD — e.g. arrival/ceremony/departure dates) parse
+  // as UTC midnight, which renders a day early in Americas timezones. Pin them
+  // to local midnight so the timeline shows the intended calendar day.
+  const local = /^\d{4}-\d{2}-\d{2}$/.test(d) ? `${d}T00:00:00` : d;
+  return new Date(local).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 }
 
 export function TimelineCard({ events }: { events: TimelineEvent[] }) {

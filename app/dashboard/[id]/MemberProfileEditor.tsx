@@ -13,7 +13,6 @@ import {
   CeremonyRecordsCard,
   IntakeCard,
   IntegrationProgressCards,
-  DosingCard,
   FinancialRecordsCard,
   TimelineCard,
   type DosingRecord,
@@ -46,8 +45,6 @@ const MEMBER_TABS: string[] = [
   "Snapshot",
   "Intake",
   "Medical",
-  "Ceremony",
-  "Dosing",
   "Integration",
   "Financials",
   "Documents",
@@ -999,40 +996,6 @@ export default function MemberProfileEditor({
         </div>
       ) : activeTab === "Intake" ? (
         <IntakeCard intake={intake} memberId={member.id} />
-      ) : activeTab === "Ceremony" ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <div style={CARD}>
-            <p style={{ ...LABEL, marginBottom: 12 }}>Ceremony scheduling</p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, fontSize: 13 }}>
-              <div>
-                <p style={{ color: "#6B6B67", margin: "0 0 2px" }}>Ceremony date</p>
-                <p style={{ color: member.ceremony_date ? "#1A1A18" : "#9E9E9A", margin: 0 }}>{fmtDate(member.ceremony_date)}</p>
-              </div>
-              <div>
-                <p style={{ color: "#6B6B67", margin: "0 0 2px" }}>Arrival date</p>
-                <p style={{ color: member.arrival_date ? "#1A1A18" : "#9E9E9A", margin: 0 }}>{fmtDate(member.arrival_date)}</p>
-              </div>
-              <div>
-                <p style={{ color: "#6B6B67", margin: "0 0 2px" }}>Departure date</p>
-                <p style={{ color: member.departure_date ? "#1A1A18" : "#9E9E9A", margin: 0 }}>{fmtDate(member.departure_date)}</p>
-              </div>
-              <div>
-                <p style={{ color: "#6B6B67", margin: "0 0 2px" }}>Assigned guide</p>
-                <p style={{ color: assignedPartner ? "#1A1A18" : "#9E9E9A", margin: 0 }}>{assignedPartner || "—"}</p>
-              </div>
-              <div>
-                <p style={{ color: "#6B6B67", margin: "0 0 2px" }}>Status</p>
-                <p style={{ color: status ? "#1A1A18" : "#9E9E9A", margin: 0 }}>{status || "—"}</p>
-              </div>
-            </div>
-            <p style={{ fontSize: 11, color: "#9E9E9A", margin: "12px 0 0", fontStyle: "italic" }}>
-              Manage scheduling from the Snapshot tab.
-            </p>
-          </div>
-          <CeremonyRecordsCard ceremonies={ceremonies as CeremonyRecord[]} />
-        </div>
-      ) : activeTab === "Dosing" ? (
-        <DosingCard records={dosing} />
       ) : activeTab === "Integration" ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={CARD}>
