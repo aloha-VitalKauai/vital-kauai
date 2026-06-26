@@ -8,16 +8,12 @@ import {
   getMyProfile,
   getMyMember,
   getAssignedSpecialist,
-  markAgreementSigned,
-  markMedicalSigned,
   markDonationPaid,
   markOnboardingComplete,
 } from "@/lib/api/member";
 import { PortalNav } from "./portal-nav";
 import PortalJourneyCard from "@/components/portal/PortalJourneyCard";
 import { members as HEALING_CIRCLE_MEMBERS } from "@/components/healing-circle-data";
-import { MEMBERSHIP_AGREEMENT } from "@/lib/membership-agreement";
-import { MEDICAL_DISCLAIMER, type DisclaimerBlock } from "@/lib/medical-disclaimer";
 import styles from "./portal-home-page.module.css";
 
 function findIntegrationGuidePhoto(name: string | null | undefined): string | null {
@@ -100,7 +96,7 @@ export function PortalHomePage({
 
   // Modal state for signing documents
   const [modal, setModal] = useState<"donation" | "agreement" | "medical" | null>(null);
-  const [modalChecked, setModalChecked] = useState(false);
+  const [, setModalChecked] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
   const [modalMsg, setModalMsg] = useState<{ type: string; text: string } | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "venmo">("card");
@@ -225,34 +221,6 @@ export function PortalHomePage({
         .toUpperCase()
         .slice(0, 2)
     : userEmail[0].toUpperCase();
-
-  async function handleSignAgreement() {
-    setModalLoading(true);
-    setModalMsg(null);
-    const { error } = await markAgreementSigned(supabase, userId);
-    setModalLoading(false);
-    if (error) {
-      setModalMsg({ type: "error", text: error.message });
-      return;
-    }
-    await fetchProfile();
-    setModal(null);
-    setModalChecked(false);
-  }
-
-  async function handleSignMedical() {
-    setModalLoading(true);
-    setModalMsg(null);
-    const { error } = await markMedicalSigned(supabase, userId);
-    setModalLoading(false);
-    if (error) {
-      setModalMsg({ type: "error", text: error.message });
-      return;
-    }
-    await fetchProfile();
-    setModal(null);
-    setModalChecked(false);
-  }
 
   async function handleDonation() {
     // Simulate payment for now
@@ -414,50 +382,6 @@ export function PortalHomePage({
 
           <div className={styles.docGrid}>
             <button
-              id="agreement-card"
-              className={`${styles.docCard} ${agreementDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
-              onClick={() => setModal("agreement")}
-            >
-              <div className={styles.docTitle}>
-                Church Membership <em>Agreement</em>
-              </div>
-              <div className={styles.docDesc}>
-                Your membership agreement with Vital Kauai Church, the private religious
-                context within which all ceremonial work is held.
-              </div>
-              <div className={styles.docFooter}>
-                <span className={`${styles.docTag} ${styles.tagRequired}`}>
-                  {agreementDone ? "Signed" : "To Sign"}
-                </span>
-                <span className={`${styles.docAction} ${agreementDone ? styles.docActionSigned : ""}`}>
-                  {agreementDone ? "\u2713 Signed" : "Sign \u2192"}
-                </span>
-              </div>
-            </button>
-
-            <button
-              id="medical-card"
-              className={`${styles.docCard} ${medicalDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
-              onClick={() => setModal("medical")}
-            >
-              <div className={styles.docTitle}>
-                Medical Disclaimer <em>&amp; Risk Acknowledgment</em>
-              </div>
-              <div className={styles.docDesc}>
-                A clear acknowledgment of the nature of plant medicine work and your informed
-                consent.
-              </div>
-              <div className={styles.docFooter}>
-                <span className={`${styles.docTag} ${styles.tagRequired}`}>
-                  {medicalDone ? "Signed" : "To Sign"}
-                </span>
-                <span className={`${styles.docAction} ${medicalDone ? styles.docActionSigned : ""}`}>
-                  {medicalDone ? "\u2713 Signed" : "Sign \u2192"}
-                </span>
-              </div>
-            </button>
-
-            <button
               id="intake-card"
               className={`${styles.docCard} ${intakeDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
               onClick={() => {
@@ -505,6 +429,52 @@ export function PortalHomePage({
                 </span>
               </div>
             </button>
+
+            <Link
+              id="agreement-card"
+              href="/portal/membership-agreement"
+              className={`${styles.docCard} ${agreementDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <div className={styles.docTitle}>
+                Church Membership <em>Agreement</em>
+              </div>
+              <div className={styles.docDesc}>
+                Your membership agreement with Vital Kauai Church, the private religious
+                context within which all ceremonial work is held.
+              </div>
+              <div className={styles.docFooter}>
+                <span className={`${styles.docTag} ${styles.tagRequired}`}>
+                  {agreementDone ? "Signed" : "To Sign"}
+                </span>
+                <span className={`${styles.docAction} ${agreementDone ? styles.docActionSigned : ""}`}>
+                  {agreementDone ? "\u2713 Signed" : "Sign \u2192"}
+                </span>
+              </div>
+            </Link>
+
+            <Link
+              id="medical-card"
+              href="/portal/medical-disclaimer"
+              className={`${styles.docCard} ${medicalDone ? styles.docCardCompleted : styles.docCardRequired} ${styles.fadeIn}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <div className={styles.docTitle}>
+                Medical Disclaimer <em>&amp; Risk Acknowledgment</em>
+              </div>
+              <div className={styles.docDesc}>
+                A clear acknowledgment of the nature of plant medicine work and your informed
+                consent.
+              </div>
+              <div className={styles.docFooter}>
+                <span className={`${styles.docTag} ${styles.tagRequired}`}>
+                  {medicalDone ? "Signed" : "To Sign"}
+                </span>
+                <span className={`${styles.docAction} ${medicalDone ? styles.docActionSigned : ""}`}>
+                  {medicalDone ? "\u2713 Signed" : "Sign \u2192"}
+                </span>
+              </div>
+            </Link>
 
             <Link
               id="safety-agreement-card"
@@ -704,144 +674,6 @@ export function PortalHomePage({
       {modal && (
         <div className={styles.modalOverlay} onClick={() => { setModal(null); setModalChecked(false); setModalMsg(null); setPaymentMethod("card"); setVenmoOpened(false); }}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            {modal === "agreement" && (
-              <>
-                <div className={styles.modalBanner}>
-                  <p className={styles.modalEyebrow}>Required Document</p>
-                  <h2 className={styles.modalTitle}>Membership Agreement</h2>
-                </div>
-                <div className={styles.modalBody}>
-                  <p className={styles.agreementSubtitle}>{MEMBERSHIP_AGREEMENT.subtitle}</p>
-                  <h3 className={styles.agreementHeading}>{MEMBERSHIP_AGREEMENT.heading}</h3>
-                  <p className={styles.agreementPreamble}>{MEMBERSHIP_AGREEMENT.preamble}</p>
-                  <ol className={styles.agreementTerms}>
-                    {MEMBERSHIP_AGREEMENT.terms.map((term, i) => (
-                      <li key={i}>{term}</li>
-                    ))}
-                  </ol>
-                </div>
-                <div className={styles.modalFooter}>
-                  {agreementDone ? (
-                    <>
-                      <div className={styles.signConfirm}>
-                        <label>
-                          &#10003; Signed{profile?.membership_agreement_signed_at
-                            ? ` on ${new Date(profile.membership_agreement_signed_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}`
-                            : ""}
-                          {profile?.full_name ? ` by ${profile.full_name}` : ""}.
-                        </label>
-                      </div>
-                      <button
-                        className={styles.btnSign}
-                        onClick={() => { setModal(null); setModalChecked(false); setModalMsg(null); }}
-                      >
-                        Close
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                  <div className={styles.signConfirm}>
-                    <input
-                      type="checkbox"
-                      id="sign-chk"
-                      checked={modalChecked}
-                      onChange={(e) => setModalChecked(e.target.checked)}
-                    />
-                    <label htmlFor="sign-chk">
-                      I have read and agree to the Vital Kauai Membership Agreement.
-                    </label>
-                  </div>
-                  {modalMsg && <div className={`${styles.alert} ${styles[`alert${modalMsg.type.charAt(0).toUpperCase() + modalMsg.type.slice(1)}`]}`}>{modalMsg.text}</div>}
-                  <button
-                    className={styles.btnSign}
-                    disabled={!modalChecked || modalLoading}
-                    onClick={handleSignAgreement}
-                  >
-                    {modalLoading ? "Signing\u2026" : "Sign & Continue"}
-                  </button>
-                    </>
-                  )}
-                </div>
-              </>
-            )}
-
-            {modal === "medical" && (
-              <>
-                <div className={styles.modalBanner}>
-                  <p className={styles.modalEyebrow}>Required Document</p>
-                  <h2 className={styles.modalTitle}>Medical Disclaimer</h2>
-                </div>
-                <div className={styles.modalBody}>
-                  {MEDICAL_DISCLAIMER.map((block, i) => {
-                    if (block.kind === "h") {
-                      return <h3 key={i} dangerouslySetInnerHTML={{ __html: block.html }} />;
-                    }
-                    if (block.kind === "ul") {
-                      return (
-                        <ul key={i} className={styles.disclaimerList}>
-                          {block.items.map((item, j) => (
-                            <li key={j}>{item}</li>
-                          ))}
-                        </ul>
-                      );
-                    }
-                    if (block.kind === "highlight") {
-                      return (
-                        <div key={i} className={styles.disclaimerHighlight}>
-                          <p dangerouslySetInnerHTML={{ __html: block.html }} />
-                        </div>
-                      );
-                    }
-                    return <p key={i} dangerouslySetInnerHTML={{ __html: block.html }} />;
-                  })}
-                </div>
-                <div className={styles.modalFooter}>
-                  {medicalDone ? (
-                    <>
-                      <div className={styles.signConfirm}>
-                        <label>
-                          &#10003; Signed{profile?.medical_disclaimer_signed_at
-                            ? ` on ${new Date(profile.medical_disclaimer_signed_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}`
-                            : ""}
-                          {profile?.full_name ? ` by ${profile.full_name}` : ""}.
-                        </label>
-                      </div>
-                      <button
-                        className={styles.btnSign}
-                        onClick={() => { setModal(null); setModalChecked(false); setModalMsg(null); }}
-                      >
-                        Close
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <div className={styles.signConfirm}>
-                        <input
-                          type="checkbox"
-                          id="sign-chk-med"
-                          checked={modalChecked}
-                          onChange={(e) => setModalChecked(e.target.checked)}
-                        />
-                        <label htmlFor="sign-chk-med">
-                          I have read and understood this Medical Disclaimer in full. I acknowledge the
-                          sacramental nature of the work, accept personal responsibility for my health
-                          disclosures and sovereign participation, and enter as a consenting adult of
-                          my own free will.
-                        </label>
-                      </div>
-                      {modalMsg && <div className={`${styles.alert} ${styles.alertError}`}>{modalMsg.text}</div>}
-                      <button
-                        className={styles.btnSign}
-                        disabled={!modalChecked || modalLoading}
-                        onClick={handleSignMedical}
-                      >
-                        {modalLoading ? "Signing\u2026" : "Sign & Continue"}
-                      </button>
-                    </>
-                  )}
-                </div>
-              </>
-            )}
 
             {modal === "donation" && (
               <>
