@@ -88,8 +88,11 @@ function observe(
 }
 
 /**
- * The seed observations. One concrete object, fully specified: a production CRM
- * Note. Observation only — nothing here reads or modifies the real CRM Note.
+ * The seed observations. A small cast of production objects, each fully
+ * specified. Observation only — nothing here reads or modifies the real objects.
+ * CRM Note came first; Member, Operational Task, Journey Milestone, and
+ * Integration Session were added so the lab has a small connected cast to
+ * describe.
  */
 export const OBSERVATIONS: readonly ObservationReport[] = deepFreeze([
   observe({
@@ -108,5 +111,65 @@ export const OBSERVATIONS: readonly ObservationReport[] = deepFreeze([
     notes:
       "Observation only. Provenance is a candidate future integration; not " +
       "present today.",
+  }),
+  observe({
+    object_name: "Member",
+    object_location: "production — member records",
+    object_category: "entity",
+    current_capabilities: ["identity", "timestamp", "content"],
+    attributes: {
+      mutable: true,
+      member_visible: true,
+      operational: true,
+      experimental: false,
+    },
+    production_scope: "operational",
+    experimental_scope: "observed",
+    notes: "Observation only. The member entity as it exists in production.",
+  }),
+  observe({
+    object_name: "Operational Task",
+    object_location: "production ops — task records",
+    object_category: "task",
+    current_capabilities: ["identity", "timestamp", "content"],
+    attributes: {
+      mutable: true,
+      member_visible: false,
+      operational: true,
+      experimental: false,
+    },
+    production_scope: "operational",
+    experimental_scope: "observed",
+    notes: "Observation only. An operational task record.",
+  }),
+  observe({
+    object_name: "Journey Milestone",
+    object_location: "production — journey milestone events",
+    object_category: "event",
+    current_capabilities: ["identity", "timestamp"],
+    attributes: {
+      mutable: false,
+      member_visible: true,
+      operational: true,
+      experimental: false,
+    },
+    production_scope: "operational",
+    experimental_scope: "observed",
+    notes: "Observation only. A milestone event in a member journey.",
+  }),
+  observe({
+    object_name: "Integration Session",
+    object_location: "production — integration session events",
+    object_category: "event",
+    current_capabilities: ["identity", "timestamp", "content"],
+    attributes: {
+      mutable: true,
+      member_visible: true,
+      operational: true,
+      experimental: false,
+    },
+    production_scope: "operational",
+    experimental_scope: "observed",
+    notes: "Observation only. An integration session event.",
   }),
 ]);
