@@ -110,4 +110,37 @@ export const REGISTRY: readonly ExperimentalPilot[] = deepFreeze<ExperimentalPil
     created_at: "2026-06-25T00:00:00.000Z",
     updated_at: "2026-06-25T00:00:00.000Z",
   },
+  {
+    id: "experiment-003",
+    name: "Experimental Observation Layer",
+    status: "active",
+    production_impact: "internal_only",
+    hypothesis:
+      "Can we describe existing production objects with a typed, immutable " +
+      "observation model without modifying them?",
+    safety_boundary:
+      "No production imports, no runtime production reads, no DB/UI/API, no AI, " +
+      "no PHI, no Level-4 data, no workflow changes. Observation is read-only " +
+      "and static.",
+    removability:
+      "Deleting lib/experimental/observation/ (and its registry entry) leaves " +
+      "production and the other experiments unchanged.",
+    success_criteria: [
+      "Observations are immutable.",
+      "Absent set equals the exact complement.",
+      "The four API functions behave per spec.",
+      "No production imports.",
+      "TypeScript passes.",
+      "ESLint passes.",
+      "Verification passes.",
+    ],
+    future_unlocks: [
+      "Observation-driven object model",
+      "Provenance gap analysis",
+      "Timeline-participation mapping",
+    ],
+    decision: "keep",
+    created_at: "2026-06-25T00:00:00.000Z",
+    updated_at: "2026-06-25T00:00:00.000Z",
+  },
 ]);
