@@ -545,9 +545,9 @@ export function PortalHomePage({
               <div
                 style={{
                   position: "relative",
-                  width: "100%",
-                  height: 210,
-                  borderRadius: 12,
+                  width: 92,
+                  height: 92,
+                  borderRadius: "50%",
                   overflow: "hidden",
                   margin: "0 auto 18px",
                   border: "2px solid var(--gold-rule, rgba(176,141,87,0.45))",
@@ -556,14 +556,10 @@ export function PortalHomePage({
                 <Image
                   src="/images/about/rachel-josh.jpg"
                   alt="Josh and Rachel"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 400px"
-                  style={{
-                    objectFit: "cover",
-                    objectPosition: "40% 14%",
-                    transform: "scale(1.7)",
-                    transformOrigin: "40% 14%",
-                  }}
+                  width={300}
+                  height={300}
+                  sizes="92px"
+                  style={{ position: "absolute", left: -56, top: -3, maxWidth: "none" }}
                 />
               </div>
               <p className={styles.teamRole}>Your Guides</p>
@@ -572,7 +568,7 @@ export function PortalHomePage({
                 Josh and Rachel are with you from your very first conversation through months of
                 deep transformation. As your guides and coaches, they hold space through
                 preparation, ceremony, and integration &mdash; and carry a steady belief in the
-                highest potential of your life, long after you&apos;ve returned home.
+                highest potential for your life.
               </p>
             </div>
             <div id="integration-specialist" className={styles.teamCard}>
