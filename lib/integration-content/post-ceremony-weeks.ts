@@ -61,9 +61,9 @@ export const WEEKS = [
       { color: 'gold', text: 'Each day, name one thing you are grateful for, aloud, in writing, or in silence', note: 'One moment of thanks, every day. Said aloud, written down, or simply held. Gratitude practiced daily becomes the ground everything else roots into.' },
       {
         color: 'amber',
-        text: 'Schedule two or three follow-up calls with your integration guide, in any weeks you choose',
+        text: 'Schedule your remaining two or three integration-guide calls so you use all six',
         links: [
-          { text: 'Schedule two or three follow-up calls with your integration guide, in any weeks you choose', href: '/portal#integration-specialist' },
+          { text: 'Schedule your remaining two or three integration-guide calls so you use all six', href: '/portal#integration-specialist' },
         ],
       },
     ],
@@ -98,14 +98,6 @@ export const WEEKS = [
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
       { color: 'gold', text: 'Notice one thread from ceremony as it weaves into daily life, and write it down', note: 'A feeling, an image, a knowing from ceremony showing up in an ordinary moment. Catch it. Name it. This is unity becoming lived.' },
-      {
-        color: 'sage',
-        text: 'Connect with your integration guide',
-        note: 'Your weekly call. Bring the threads that are weaving together, and the ones still asking to be understood.',
-        links: [
-          { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
-        ],
-      },
     ],
     prompts: POST_CEREMONY_WEEKS[1].prompts,
     thread: 'What weaves together this week becomes the whole you carry forward. The threads are many. Letting them become one is the work.',
@@ -137,14 +129,6 @@ export const WEEKS = [
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
-      {
-        color: 'sage',
-        text: 'Connect with your integration guide',
-        note: 'Your weekly call. Bring whatever is alive, what is settling, what is surprising you, what is asking for tending.',
-        links: [
-          { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
-        ],
-      },
       { color: 'gold', text: 'Establish one morning practice, and do it every day. Write it down below', note: 'Coherent Heart Breath. Journaling. Movement. Prayer. One thing. Done every morning. The medicine opened the door. Repetition is how you walk through it.' },
       {
         color: 'blue',
@@ -189,14 +173,6 @@ export const WEEKS = [
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
-      {
-        color: 'gold',
-        text: 'Connect with your integration guide',
-        note: 'This is one of the most important calls of the integration arc. Bring the return of the familiar. Bring what is still unresolved. Your guide is trained to work with exactly this territory. Book via the Integration Specialist section on your Dashboard.',
-        links: [
-          { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
-        ],
-      },
       { color: 'sage', text: 'Continue your daily practice, especially on the days you least want to', note: 'The days you least want to show up are the days it matters most.' },
     ],
     prompts: POST_CEREMONY_WEEKS[3].prompts,
@@ -235,14 +211,6 @@ export const WEEKS = [
       { color: 'green', text: "Complete this week's PNE Reflection" },
       { color: 'gold', text: 'Ask yourself this week if your thoughts, words, and actions are pono', note: 'Pause through the day and check the alignment. When something feels off, name it, choose again, return to pono.' },
       { color: 'green', text: 'Continue Hoʻoponopono with anyone or anything still carrying weight', note: 'I\'m sorry. Please forgive me. Thank you. I love you. The Hoʻoponopono you practiced on Kauaʻi is a lifelong practice. Return to it whenever something resurfaces.' },
-      {
-        color: 'amber',
-        text: 'Connect with your integration guide',
-        note: 'Bring the decisions that are surfacing. Your guide can help you stay present to what is being asked of you without abandoning yourself.',
-        links: [
-          { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
-        ],
-      },
     ],
     prompts: POST_CEREMONY_WEEKS[4].prompts,
     thread: 'Pono is built choice by choice. The integration that holds is the integration that shows up in your decisions, especially the small ones, especially when no one is watching.',
@@ -274,14 +242,6 @@ export const WEEKS = [
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
-      {
-        color: 'blue',
-        text: 'Connect with your integration guide',
-        note: 'You have sessions remaining in your six-session arc, and you can also continue beyond that as a living practice. Your guide can help you establish a monthly rhythm or meet you as the work keeps moving. Book via the Integration Specialist section on your Dashboard.',
-        links: [
-          { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
-        ],
-      },
     ],
     prompts: POST_CEREMONY_WEEKS[5].prompts,
     thread: 'Kuleana is an honor, the recognition that you have been shown something real and that you are capable of living it. The medicine opened a window. You chose to walk through it, week by week, practice by practice, honest conversation by honest conversation. What you have built is a foundation. The work continues. We continue with you.',
