@@ -60,18 +60,10 @@ export const WEEKS = [
       { color: 'green', text: "Complete this week's PNE Reflection" },
       { color: 'gold', text: 'Each day, name one thing you are grateful for, aloud, in writing, or in silence', note: 'One moment of thanks, every day. Said aloud, written down, or simply held. Gratitude practiced daily becomes the ground everything else roots into.' },
       {
-        color: 'sage',
-        text: 'Connect with your integration guide, your post-ceremony call, within 48 hours of ceremony (while still on Kauaʻi)',
-        note: 'Your first integration-guide call. Held within 48 hours of ceremony so what was shown is still alive in the body. Bring whatever you need to bring, questions, gratitude, exhaustion. They are there to meet you.',
-        links: [
-          { text: 'Connect with your integration guide, your post-ceremony call, within 48 hours of ceremony (while still on Kauaʻi)', href: '/portal#integration-specialist' },
-        ],
-      },
-      {
         color: 'amber',
-        text: 'Schedule 5 more weekly calls with your integration guide',
+        text: 'Schedule two or three follow-up calls with your integration guide, in any weeks you choose',
         links: [
-          { text: 'Schedule 5 more weekly calls with your integration guide', href: '/portal#integration-specialist' },
+          { text: 'Schedule two or three follow-up calls with your integration guide, in any weeks you choose', href: '/portal#integration-specialist' },
         ],
       },
     ],

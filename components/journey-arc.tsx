@@ -31,7 +31,7 @@ const PHASES: Phase[] = [
     week: "6+ Weeks",
     essence: "Your commitment before you sit with the medicine.",
     items: [
-      "Two 1:1 calls with your personal integration guide (Weeks 2 and 4)",
+      "Three to four 1:1 calls with your personal integration guide",
       "Two 1:1 preparation and check-in calls with Rachel & Josh",
       "Weekly journal prompts and reflections in your member portal",
       "The PsychoNeuroEnergetics (PNE) Guide — week-by-week teachings, reflections, and practices to expand your nervous-system capacity",
@@ -79,7 +79,7 @@ const PHASES: Phase[] = [
     essence: "Where the work takes root.",
     items: [
       "Two 1:1 integration and completion calls with Rachel & Josh",
-      "Weekly 1:1 calls with your integration guide",
+      "Two to three 1:1 follow-up calls with your integration guide, in any weeks you choose",
       "Continued member-portal support to anchor what arose into new patterns",
       "The PsychoNeuroEnergetics (PNE) Guide — week-by-week teachings, reflections, and practices to integrate your journey",
       "Lifetime invitation into the Vital Kauaʻi community of those who’ve walked this path",
