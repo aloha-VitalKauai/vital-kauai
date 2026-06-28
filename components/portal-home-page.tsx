@@ -598,16 +598,11 @@ export function PortalHomePage({
               </p>
               {specialist?.bio ? (
                 <p className={styles.teamBio}>{specialist.bio}</p>
-              ) : (
-                <p className={styles.teamBio}>
-                  Your integration guide walks alongside you as a steady presence: someone who
-                  knows the terrain of this medicine and can hold you in it. They meet you in
-                  preparation, in the days after ceremony, and across the 6+ weeks of
-                  integration as you return home and carry the work forward.
-                </p>
-              )}
+              ) : null}
               <p className={styles.teamBio}>
-                The arc includes six total calls with your integration guide.
+                Your journey includes six total sessions with your integration guide. They
+                help you access core memories and establish new beliefs in your mind and body
+                over the course of 3 months.
               </p>
               {specialist?.calendly_url ? (
                 <a
