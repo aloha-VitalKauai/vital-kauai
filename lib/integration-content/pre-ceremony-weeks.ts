@@ -29,7 +29,7 @@ export const actionsForWeek = (
       { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Guide: The Language of the Body' },
       { kind: 'static',                                              text: "Complete this week's PNE Practice" },
       { kind: 'static',                                              text: "Complete this week's PNE Reflection" },
-      { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule three or four pre-ceremony calls with your integration guide' },
+      { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule three or four of your six integration-guide calls up front' },
     ]
   }
   return actions.map(a => {
