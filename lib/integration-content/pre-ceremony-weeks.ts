@@ -29,7 +29,7 @@ export const actionsForWeek = (
       { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Guide: The Language of the Body' },
       { kind: 'static',                                              text: "Complete this week's PNE Practice" },
       { kind: 'static',                                              text: "Complete this week's PNE Reflection" },
-      { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule your two pre-ceremony calls with your integration guide, one in week two and one in week four' },
+      { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule three or four pre-ceremony calls with your integration guide' },
     ]
   }
   return actions.map(a => {
@@ -52,7 +52,7 @@ export const WEEKS = [
     theme: 'Perception',
     title: 'Seeing clearly.',
     subtitle: 'This is the beginning of something real.',
-    sub: 'You are the creator of your reality and your life. This week is an invitation to honestly look at the reality you have created for yourself. It’s an opportunity to notice the patterns, environments, relationships, thoughts, and beliefs that have shaped your current experience, and from that awareness begin creating in a way that is more aligned with who you truly are today.',
+    sub: 'You are the creator of your reality and your life. This first week is an invitation to honestly look at the reality you have created for yourself. It’s an opportunity to notice the patterns, environments, relationships, thoughts, and beliefs that have shaped your current experience, and from that awareness begin creating in a way that is more aligned with who you truly are today.',
     italic: 'This week calls for presence. Just begin.',
     video: { label: 'A Message from Rachel & Josh · Week 1', text: 'In this week’s video, Rachel and Josh share what Ike has meant in their own lives and how it has shaped the way they walk through the world.' },
     box: { type: 'info', label: 'The most important safety factor is your honesty.', text: 'Your labs, your diet, and your supplement plan all matter—but it\'s your willingness to see yourself clearly that shapes how the medicine meets you. Iboga brings truth to the surface. When you arrive having already begun that process with yourself, the experience becomes something you can move through with awareness. This is how the medicine meets you.' },
@@ -170,7 +170,7 @@ export const WEEKS = [
     title: 'Presence is the practice.',
     subtitle: '',
     carryForward: 'You named what must change and what you\'re committing to. This week the work moves from mind into body. The clarity you found last week needs a regulated nervous system to land in. That\'s what this week builds.',
-    reentry: { strong: 'Arriving at this week behind?', text: ' If you haven\'t yet completed Week 2\'s integration call, do that first, before starting anything here. One real conversation with your guide is worth more than moving forward alone. If you\'re behind on journaling, write just five minutes on Week 1\'s prompts before opening Week 3. Start here: one integration call scheduled, one journal prompt written.' },
+    reentry: { strong: 'Arriving at this week behind?', text: ' If you haven\'t yet completed your first integration call with your guide, do that first, before starting anything here. One real conversation with your guide is worth more than moving forward alone. If you\'re behind on journaling, write just five minutes on Week 1\'s prompts before opening Week 3. Start here: one integration call scheduled, one journal prompt written.' },
     sub: 'You have everything you need, right here, in this moment. The past is memory; the future is imaginary. Now is the only ground that is true, and the only place where change and choice can happen.\n\nMany of us have learned to leave the present moment because it is how our bodies keep us safe. Presence means meeting the past or future anxieties with care.\n\nWeek 3 is about remembering the power of the present moment. Through simple practices of breath, body awareness, and sensation, you build the muscle of presence, and the capacity to be with what is.',
     video: { label: 'A Message from Rachel & Josh · Week 3', text: 'In this week’s video, Rachel and Josh share what Manawa has meant in their own lives and how returning to the body has shaped the way they meet what each day brings.' },
     box: { type: 'info', label: 'If something surfaces this week', text: 'Iboga is intelligent and relational. It begins its work the moment you say yes. If difficult material arises, old grief, anxiety, somatic intensity, here is what to do: slow down deliberately. Bring your attention to one physical sensation at a time. Breathe. Place both feet on the floor. Be with what is arising, presence is enough. Your integration guide is available between sessions. Reach out whenever you need support.\n\nSome days will feel harder to begin. Noticing that, naming it honestly, is itself the practice.' },
@@ -441,13 +441,6 @@ export const WEEKS = [
         note: 'Bring your finalized Questions for the Medicine. Bring anything still alive. Speak everything that is ready to be said.',
         links: [
           { text: 'Connect with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true },
-        ],
-      },
-      {
-        color: 'amber',
-        text: 'Schedule your call with your integration guide before you arrive, for Day 5 (two days after ceremony, still on Kauaʻi), after 12pm Hawaiʻi time',
-        links: [
-          { text: 'Schedule your call with your integration guide before you arrive, for Day 5 (two days after ceremony, still on Kauaʻi), after 12pm Hawaiʻi time', href: '/portal#integration-specialist' },
         ],
       },
     ],

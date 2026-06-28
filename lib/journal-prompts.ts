@@ -47,7 +47,7 @@ export type PneWeekDetails = {
 
 export const PRE_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
   {
-    teaching: 'A teaching from PsychoNeuroEnergetics: internal safety, what happens when the system senses threat, and how internal and external structures build the ground your nervous system can rest into.',
+    teaching: 'A teaching from PsychoNeuroEnergetics: internal safety, what happens when the system senses threat, and how internal and external structures can build safety.',
     practice: 'Breath regulation practice',
     reflection: 'What do you notice differently in your body after practicing the 4 / 7 / 8 Breath?',
   },
@@ -101,8 +101,8 @@ export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
     theme: 'Perception',
     title: 'Seeing clearly',
     prompts: [
-      { key: 'w0-p1', q: 'If you create your reality, what’s possible for your life after this journey?' },
-      { key: 'w0-p2', q: 'What stories are you still believing that no longer belong to the life you want?' },
+      { key: 'w0-p1', q: 'If you create your reality, what’s possible for your life after this journey?', hint: 'Take a moment to close your eyes, breathe, and see and feel the life you want.' },
+      { key: 'w0-p2', q: 'What stories are you still believing that no longer serve the life you want?' },
     ],
   },
   {
