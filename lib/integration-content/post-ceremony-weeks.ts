@@ -66,6 +66,14 @@ export const WEEKS = [
           { text: 'Schedule your remaining two or three integration-guide calls so you use all six', href: '/portal#integration-specialist' },
         ],
       },
+      {
+        color: 'blue',
+        text: 'Schedule your three integration coaching calls with Rachel & Josh',
+        note: 'Book all three now so they are on the calendar; space them across your integration however serves you.',
+        links: [
+          { text: 'Schedule your three integration coaching calls with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-check-in-call', external: true },
+        ],
+      },
     ],
     prompts: POST_CEREMONY_WEEKS[0].prompts,
     thread: 'What you give thanks for this week becomes the ground the integration work grows from. Let gratitude exist on the page. Next week you begin to weave it together.',
@@ -130,14 +138,6 @@ export const WEEKS = [
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
       { color: 'gold', text: 'Establish one morning practice, and do it every day. Write it down below', note: 'Coherent Heart Breath. Journaling. Movement. Prayer. One thing. Done every morning. The medicine opened the door. Repetition is how you walk through it.' },
-      {
-        color: 'blue',
-        text: 'Schedule a check-in call with Rachel & Josh',
-        note: 'An optional mid-integration touchpoint to bring what is still moving, notice what has anchored, and speak honestly about what is alive.',
-        links: [
-          { text: 'Schedule a check-in call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-check-in-call', external: true },
-        ],
-      },
     ],
     prompts: POST_CEREMONY_WEEKS[2].prompts,
     thread: 'The practice you establish this week has a disproportionate impact on everything that follows. The medicine opened the door. This week you decide what you\'re building.',
