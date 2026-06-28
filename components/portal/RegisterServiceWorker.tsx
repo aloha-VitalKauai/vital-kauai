@@ -22,6 +22,22 @@ export function RegisterServiceWorker() {
     const isSecure =
       protocol === "https:" || hostname === "localhost" || hostname === "127.0.0.1";
     if (!isSecure) return;
+
+    // If a service worker is already controlling this page, a newer worker
+    // (deployed with a bumped cache version) will take over and fire
+    // `controllerchange`. Reload once so the member lands on fresh content
+    // instead of the previously cached shell. Guarded against loops, and
+    // skipped on first-ever install (no prior controller) so new visitors
+    // never get an extra reload.
+    if (navigator.serviceWorker.controller) {
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (refreshing) return;
+        refreshing = true;
+        window.location.reload();
+      });
+    }
+
     navigator.serviceWorker.register("/sw.js").catch(() => {
       // Silent. SW failure must not disrupt the member.
     });
