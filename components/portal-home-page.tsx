@@ -602,13 +602,12 @@ export function PortalHomePage({
                 <p className={styles.teamBio}>
                   Your integration guide walks alongside you as a steady presence: someone who
                   knows the terrain of this medicine and can hold you in it. They meet you in
-                  preparation, within the 48 hours after ceremony, and across the 6+ weeks of
+                  preparation, in the days after ceremony, and across the 6+ weeks of
                   integration as you return home and carry the work forward.
                 </p>
               )}
               <p className={styles.teamBio}>
-                The arc includes eight sessions with your guide: two before ceremony and six
-                after.
+                The arc includes six total calls with your integration guide.
               </p>
               {specialist?.calendly_url ? (
                 <a
