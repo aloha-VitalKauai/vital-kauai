@@ -61,9 +61,13 @@ export function inputValueToJourneyIso(dateStr: string | null): string | null {
  * formatJourneyDate
  * The canonical display formatter for portal cards and pages.
  *
+ * A date_range journey represents two distinct ceremony days (the start
+ * and end dates), not one continuous span — so we list them as two
+ * separate dates joined by "&" rather than an en-dash range.
+ *
  *   single_date  → "May 9, 2026"
- *   date_range, same month → "May 9–12, 2026"
- *   date_range, cross month → "May 30 – June 2, 2026"
+ *   date_range, same month → "May 9 & 12, 2026"
+ *   date_range, cross month → "May 30 & June 2, 2026"
  *   tbd / null → "Date TBD"
  */
 export function formatJourneyDate(
@@ -85,11 +89,11 @@ export function formatJourneyDate(
       start.getMonth() === end.getMonth() &&
       start.getFullYear() === end.getFullYear()
     ) {
-      // "May 9–12, 2026"
-      return `${_monthName(start)} ${start.getDate()}–${end.getDate()}, ${end.getFullYear()}`
+      // Two ceremony days, same month → "May 9 & 12, 2026"
+      return `${_monthName(start)} ${start.getDate()} & ${end.getDate()}, ${end.getFullYear()}`
     }
-    // "May 30 – June 2, 2026"
-    return `${_monthName(start)} ${start.getDate()} – ${_monthName(end)} ${end.getDate()}, ${end.getFullYear()}`
+    // Two ceremony days, cross month → "May 30 & June 2, 2026"
+    return `${_monthName(start)} ${start.getDate()} & ${_monthName(end)} ${end.getDate()}, ${end.getFullYear()}`
   }
 
   return 'Date TBD'
