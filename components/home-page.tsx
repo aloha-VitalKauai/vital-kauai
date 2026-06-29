@@ -17,13 +17,13 @@ const teamMembers = [
   },
   {
     name: "Judith Johnson",
-    role: "Founder, PsychoNeuroEnergetics · Somatic Integration Director, Americans for Ibogaine",
+    role: "Founder, PsychoNeuroEnergetics · Somatic Integration Director",
     bio: "A pioneer of body-oriented healing, Judith is the founder and developer of PsychoNeuroEnergetics (PNE), a breakthrough modality that unwinds traumatic imprints held in the nervous system through the healing power of the vagus nerve. With decades of practice across Somatic Experiencing, Polyvagal Theory, and body electronics, she brings an extraordinary depth of wisdom to every container at Vital Kauaʻi.",
     image: "/images/judithjohnson.jpeg",
   },
   {
     name: "Josh Perdue",
-    role: "Co-Founder · Director of Operations",
+    role: "Co-Founder · Director of Operations & Development",
     bio: "Josh's path took him from Stanford Design School to Gabon, where he underwent private initiation with the Bwiti. He brings humility, humor, and steady, devoted presence to the operations of Vital Kauaʻi.",
     image: "/images/about/josh-perdue.jpg",
   },
