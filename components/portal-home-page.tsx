@@ -596,9 +596,10 @@ export function PortalHomePage({
                 <p className={styles.teamBio}>{specialist.bio}</p>
               ) : null}
               <p className={styles.teamBio}>
-                Your journey includes six total sessions with your integration guide. They
-                help you access core memories and establish new beliefs in your mind and body
-                over the course of 3 months.
+                Your journey includes six total sessions with your integration guide. Your
+                guide helps you access core imprints, bring awareness to sensations, learn how
+                to regulate and create safety, and establish new beliefs over the course of
+                3+ months.
               </p>
               {specialist?.calendly_url ? (
                 <a
