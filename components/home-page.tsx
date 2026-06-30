@@ -12,7 +12,7 @@ const teamMembers = [
   {
     name: "Rachel Nelson",
     role: "Co-Founder · Guide and Facilitator",
-    bio: "Rachel weaves over two decades of devotion to embodied awakening, bridging Eastern philosophy with Western science. Her foundation includes graduate-level study in naturopathic medicine and transpersonal psychology, along with certifications in life coaching, mind-body nutrition, and hypnotherapy. Her work is helping people return to their own self-love and to one another. Her containers are known to be powerful, deeply trustworthy, and radically transformative.",
+    bio: "Rachel weaves over two decades of devotion to embodied awakening, bridging Eastern philosophy with Western science. Her foundation includes graduate-level study in naturopathic medicine and transpersonal psychology, along with certifications in life coaching, mind-body nutrition, and hypnotherapy. Her work helps people reawaken to their true nature through her compassionate, powerful, and radically transformative presence.",
     image: "/images/about/rachel-nelson.jpg",
   },
   {
