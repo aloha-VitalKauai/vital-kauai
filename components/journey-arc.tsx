@@ -64,7 +64,7 @@ const PHASES: Phase[] = [
       "Group support and 1:1 integration with your integration guide",
       "Held by experienced facilitators from arrival through closing",
     ],
-    image: "/images/ibogaroot.jpeg",
+    image: "/images/ibogabark.jpeg",
     imageAlt: "Iboga root bark",
     imagePosition: "center center",
     accent: "#9c4423",
