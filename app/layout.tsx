@@ -64,6 +64,28 @@ export default function RootLayout({
       <body className={`${cormorant.variable} ${jost.variable}`}>
         <RecoveryRedirect />
         {children}
+        {/* Site-wide legal / medical disclaimer — renders on every route. */}
+        <footer
+          role="contentinfo"
+          style={{
+            background: "#0D0B09",
+            color: "rgba(237, 232, 223, 0.62)",
+            fontFamily: "var(--font-body, sans-serif)",
+            fontSize: 12,
+            lineHeight: 1.7,
+            textAlign: "center",
+            padding: "22px 24px",
+            borderTop: "1px solid rgba(237, 232, 223, 0.08)",
+          }}
+        >
+          <p style={{ maxWidth: 860, margin: "0 auto" }}>
+            This site is for educational and informational purposes only. It does
+            not constitute medical, legal, or therapeutic advice. Consult a
+            qualified healthcare professional before making any health decisions.
+            Vital Kauaʻi operates as a legally established church, holding the iboga
+            plant sacrament within a sacred and protected religious context.
+          </p>
+        </footer>
       </body>
       <GoogleAnalytics gaId="G-VFF127QR7J" />
     </html>
