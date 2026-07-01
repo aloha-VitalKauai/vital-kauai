@@ -882,9 +882,9 @@ export default function PostCeremonyPage() {
               })}
             </section>
 
-            {/* PNE PERSPECTIVE (placeholder until per-week content ships) */}
+            {/* PNE GUIDE (placeholder until per-week content ships) */}
             <section className="w1-section" id="pne-perspective">
-              <h3 className="w1-h3">PNE Perspective</h3>
+              <h3 className="w1-h3">PNE (PsychoNeuroEnergetics) Guide</h3>
               {(() => {
                 const c = POST_PNE_COMPANION[i]
                 const label = `Read Week ${i + 1} in The PsychoNeuroEnergetics (PNE) Integration Guide${c?.theme ? `: ${c.theme}` : ''}`
