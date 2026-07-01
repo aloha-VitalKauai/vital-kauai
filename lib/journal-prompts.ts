@@ -102,7 +102,7 @@ export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
     title: 'Seeing clearly',
     prompts: [
       { key: 'w0-p1', q: 'If you create your reality, what’s possible for your life after this journey?', hint: 'Take a moment to close your eyes, breathe, and see and feel the life you want.' },
-      { key: 'w0-p2', q: 'What stories are you still believing that no longer serve the life you want?' },
+      { key: 'w0-p2', q: 'What stories are you still believing that no longer serve the life you want?', hint: 'Describe your beliefs about yourself, relationships, work, money, health, spirituality, or religion.' },
     ],
   },
   {
