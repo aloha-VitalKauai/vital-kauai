@@ -718,9 +718,9 @@ export function HomePage() {
       <section id="team" className={styles.team}>
         <p className={`${styles.sectionLabel} ${styles.reveal}`}>Our Practitioners</p>
         <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>
-          The Healing
+          The Hearts Behind
           <br />
-          <em className={styles.sageEmphasis}>Circle</em>
+          <em className={styles.sageEmphasis}>the Work</em>
         </h2>
         <p className={`${styles.sectionSubDark} ${styles.reveal}`}>
           Every member of our team is a devoted practitioner in their own right: healers,
