@@ -702,10 +702,15 @@ export default function PreCeremonyPage() {
                 {actionsForWeek(i, w.actions).map((card, ai) => {
                   // PNE Practice + Reflection are folded into the single
                   // "Read … PNE Guide, complete the practice and PNE reflection"
-                  // action. They remain in the data array so saved checkbox
-                  // positions (pre-w{i}-a{ai}) stay stable for members already
-                  // mid-preparation; we just don't render them as separate rows.
-                  if (card.text.startsWith("Complete this week's PNE")) return null
+                  // action, and the per-week "Connect with your integration guide"
+                  // item is retired (members book their 3–4 guide calls up front
+                  // in Week 1). These entries stay in the data array so saved
+                  // checkbox positions (pre-w{i}-a{ai}) remain stable for members
+                  // already mid-preparation; we just don't render them as rows.
+                  if (
+                    card.text.startsWith("Complete this week's PNE") ||
+                    card.text === "Connect with your integration guide"
+                  ) return null
                   const checkId = `pre-w${i}-a${ai}`
                   const isChecked = !!checklist[checkId]
                   const decorateHref = (href: string): string => {
