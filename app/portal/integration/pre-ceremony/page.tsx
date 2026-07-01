@@ -711,7 +711,7 @@ export default function PreCeremonyPage() {
                     card.text.startsWith("Complete this week's PNE") ||
                     card.text === "Connect with your integration guide"
                   ) return null
-                  const checkId = `pre-w${i}-a${ai}`
+                  const checkId = `pre-w${i}-${card.key}`
                   const isChecked = !!checklist[checkId]
                   const decorateHref = (href: string): string => {
                     if (!href.startsWith('/iboga-preparedness-guide.html')) return href

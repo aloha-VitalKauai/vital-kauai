@@ -8,22 +8,23 @@ import { POST_CEREMONY_WEEKS } from '@/lib/journal-prompts'
 
 export type ActionLinkArr = { text: string; href: string; external?: boolean }[]
 export type ActionCard =
-  | { kind: 'internal'; href: string; text: string }
-  | { kind: 'hash';     href: string; text: string }
-  | { kind: 'external'; href: string; text: string }
-  | { kind: 'static';   text: string; links?: ActionLinkArr }
+  | { kind: 'internal'; href: string; text: string; key: string }
+  | { kind: 'hash';     href: string; text: string; key: string }
+  | { kind: 'external'; href: string; text: string; key: string }
+  | { kind: 'static';   text: string; links?: ActionLinkArr; key: string }
 
 export const actionsForWeek = (
-  actions: ReadonlyArray<{ text: string; links?: ActionLinkArr }>,
+  actions: ReadonlyArray<{ text: string; links?: ActionLinkArr; key?: string }>,
 ): ActionCard[] =>
-  actions.map(a => {
+  actions.map((a, idx) => {
+    const key = a.key ?? `a${idx}`
     const links = a.links ?? []
-    if (links.length === 0) return { kind: 'static', text: a.text }
-    if (links.length > 1)   return { kind: 'static', text: a.text, links }
+    if (links.length === 0) return { kind: 'static', text: a.text, key }
+    if (links.length > 1)   return { kind: 'static', text: a.text, links, key }
     const lnk = links[0]
-    if (lnk.external)              return { kind: 'external', href: lnk.href, text: a.text }
-    if (lnk.href.startsWith('#'))  return { kind: 'hash',     href: lnk.href, text: a.text }
-    return { kind: 'internal', href: lnk.href, text: a.text }
+    if (lnk.external)              return { kind: 'external', href: lnk.href, text: a.text, key }
+    if (lnk.href.startsWith('#'))  return { kind: 'hash',     href: lnk.href, text: a.text, key }
+    return { kind: 'internal', href: lnk.href, text: a.text, key }
   })
 
 export const WEEKS = [
@@ -46,6 +47,7 @@ export const WEEKS = [
     actionLabel: 'This week, 4 things',
     actions: [
       {
+        key: 'a0',
         color: 'blue',
         text: 'Respond to this week’s journal prompts',
         links: [
@@ -53,13 +55,15 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a1',
         color: 'green',
         text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Integration Guide, complete the practice and PNE reflection',
       },
-      { color: 'green', text: "Complete this week's PNE Practice" },
-      { color: 'green', text: "Complete this week's PNE Reflection" },
-      { color: 'gold', text: 'Each day, name one thing you are grateful for, aloud, in writing, or in silence', note: 'One moment of thanks, every day. Said aloud, written down, or simply held. Gratitude practiced daily becomes the ground everything else roots into.' },
+      { key: 'a2', color: 'green', text: "Complete this week's PNE Practice" },
+      { key: 'a3', color: 'green', text: "Complete this week's PNE Reflection" },
+      { key: 'a4', color: 'gold', text: 'Each day, name one thing you are grateful for, aloud, in writing, or in silence', note: 'One moment of thanks, every day. Said aloud, written down, or simply held. Gratitude practiced daily becomes the ground everything else roots into.' },
       {
+        key: 'a5',
         color: 'amber',
         text: 'Schedule your remaining two or three integration-guide calls so you use all six',
         links: [
@@ -67,6 +71,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a6',
         color: 'blue',
         text: 'Schedule your three integration coaching calls with Rachel & Josh',
         note: 'Book all three now so they are on the calendar; space them across your integration however serves you.',
@@ -93,6 +98,7 @@ export const WEEKS = [
     actionLabel: 'This week, 4 things',
     actions: [
       {
+        key: 'a0',
         color: 'blue',
         text: 'Respond to this week’s journal prompts',
         links: [
@@ -100,12 +106,13 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a1',
         color: 'green',
         text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Integration Guide, complete the practice and PNE reflection',
       },
-      { color: 'green', text: "Complete this week's PNE Practice" },
-      { color: 'green', text: "Complete this week's PNE Reflection" },
-      { color: 'gold', text: 'Notice one thread from ceremony as it weaves into daily life, and write it down', note: 'A feeling, an image, a knowing from ceremony showing up in an ordinary moment. Catch it. Name it. This is unity becoming lived.' },
+      { key: 'a2', color: 'green', text: "Complete this week's PNE Practice" },
+      { key: 'a3', color: 'green', text: "Complete this week's PNE Reflection" },
+      { key: 'a4', color: 'gold', text: 'Notice one thread from ceremony as it weaves into daily life, and write it down', note: 'A feeling, an image, a knowing from ceremony showing up in an ordinary moment. Catch it. Name it. This is unity becoming lived.' },
     ],
     prompts: POST_CEREMONY_WEEKS[1].prompts,
     thread: 'What weaves together this week becomes the whole you carry forward. The threads are many. Letting them become one is the work.',
@@ -125,6 +132,7 @@ export const WEEKS = [
     actionLabel: 'This week, 4 things',
     actions: [
       {
+        key: 'a0',
         color: 'blue',
         text: 'Respond to this week’s journal prompts',
         links: [
@@ -132,12 +140,13 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a1',
         color: 'green',
         text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Integration Guide, complete the practice and PNE reflection',
       },
-      { color: 'green', text: "Complete this week's PNE Practice" },
-      { color: 'green', text: "Complete this week's PNE Reflection" },
-      { color: 'gold', text: 'Establish one morning practice, and do it every day. Write it down below', note: 'Coherent Heart Breath. Journaling. Movement. Prayer. One thing. Done every morning. The medicine opened the door. Repetition is how you walk through it.' },
+      { key: 'a2', color: 'green', text: "Complete this week's PNE Practice" },
+      { key: 'a3', color: 'green', text: "Complete this week's PNE Reflection" },
+      { key: 'a4', color: 'gold', text: 'Establish one morning practice, and do it every day. Write it down below', note: 'Coherent Heart Breath. Journaling. Movement. Prayer. One thing. Done every morning. The medicine opened the door. Repetition is how you walk through it.' },
     ],
     prompts: POST_CEREMONY_WEEKS[2].prompts,
     thread: 'The practice you establish this week has a disproportionate impact on everything that follows. The medicine opened the door. This week you decide what you\'re building.',
@@ -161,6 +170,7 @@ export const WEEKS = [
     actionLabel: 'This week, 3 things',
     actions: [
       {
+        key: 'a0',
         color: 'blue',
         text: 'Respond to this week’s journal prompts',
         links: [
@@ -168,12 +178,13 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a1',
         color: 'green',
         text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Integration Guide, complete the practice and PNE reflection',
       },
-      { color: 'green', text: "Complete this week's PNE Practice" },
-      { color: 'green', text: "Complete this week's PNE Reflection" },
-      { color: 'sage', text: 'Continue your daily practice, especially on the days you least want to', note: 'The days you least want to show up are the days it matters most.' },
+      { key: 'a2', color: 'green', text: "Complete this week's PNE Practice" },
+      { key: 'a3', color: 'green', text: "Complete this week's PNE Reflection" },
+      { key: 'a4', color: 'sage', text: 'Continue your daily practice, especially on the days you least want to', note: 'The days you least want to show up are the days it matters most.' },
     ],
     prompts: POST_CEREMONY_WEEKS[3].prompts,
     thread: 'Every person who has done deep transformational work meets this week. The ones who move through it are the ones who keep showing up to their practice. You are in the long arc now.',
@@ -197,6 +208,7 @@ export const WEEKS = [
     actionLabel: 'This week, 4 things',
     actions: [
       {
+        key: 'a0',
         color: 'blue',
         text: 'Respond to this week’s journal prompts',
         links: [
@@ -204,13 +216,14 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a1',
         color: 'green',
         text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Integration Guide, complete the practice and PNE reflection',
       },
-      { color: 'green', text: "Complete this week's PNE Practice" },
-      { color: 'green', text: "Complete this week's PNE Reflection" },
-      { color: 'gold', text: 'Ask yourself this week if your thoughts, words, and actions are pono', note: 'Pause through the day and check the alignment. When something feels off, name it, choose again, return to pono.' },
-      { color: 'green', text: 'Continue Hoʻoponopono with anyone or anything still carrying weight', note: 'I\'m sorry. Please forgive me. Thank you. I love you. The Hoʻoponopono you practiced on Kauaʻi is a lifelong practice. Return to it whenever something resurfaces.' },
+      { key: 'a2', color: 'green', text: "Complete this week's PNE Practice" },
+      { key: 'a3', color: 'green', text: "Complete this week's PNE Reflection" },
+      { key: 'a4', color: 'gold', text: 'Ask yourself this week if your thoughts, words, and actions are pono', note: 'Pause through the day and check the alignment. When something feels off, name it, choose again, return to pono.' },
+      { key: 'a5', color: 'green', text: 'Continue Hoʻoponopono with anyone or anything still carrying weight', note: 'I\'m sorry. Please forgive me. Thank you. I love you. The Hoʻoponopono you practiced on Kauaʻi is a lifelong practice. Return to it whenever something resurfaces.' },
     ],
     prompts: POST_CEREMONY_WEEKS[4].prompts,
     thread: 'Pono is built choice by choice. The integration that holds is the integration that shows up in your decisions, especially the small ones, especially when no one is watching.',
@@ -230,6 +243,7 @@ export const WEEKS = [
     actionLabel: 'This week, 4 completions',
     actions: [
       {
+        key: 'a0',
         color: 'blue',
         text: 'Respond to this week’s journal prompts',
         links: [
@@ -237,11 +251,12 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a1',
         color: 'green',
         text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Integration Guide, complete the practice and PNE reflection',
       },
-      { color: 'green', text: "Complete this week's PNE Practice" },
-      { color: 'green', text: "Complete this week's PNE Reflection" },
+      { key: 'a2', color: 'green', text: "Complete this week's PNE Practice" },
+      { key: 'a3', color: 'green', text: "Complete this week's PNE Reflection" },
     ],
     prompts: POST_CEREMONY_WEEKS[5].prompts,
     thread: 'Kuleana is an honor, the recognition that you have been shown something real and that you are capable of living it. The medicine opened a window. You chose to walk through it, week by week, practice by practice, honest conversation by honest conversation. What you have built is a foundation. The work continues. We continue with you.',
