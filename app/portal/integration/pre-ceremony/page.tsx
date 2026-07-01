@@ -846,22 +846,22 @@ export default function PreCeremonyPage() {
               ))}
             </section>
 
-            {/* PNE PERSPECTIVE */}
+            {/* PNE GUIDE */}
             <section className="w1-section" id="pne-perspective">
               <h3 className="w1-h3">
                 {i === 0 ? (
-                  <>PNE (PsychoNeuroEnergetics) Perspective: <em>The Language of the Body</em></>
+                  <>PNE (PsychoNeuroEnergetics) Guide: <em>The Language of the Body</em></>
                 ) : i === 1 ? (
-                  <>PNE (PsychoNeuroEnergetics) Perspective: <em>Nervous System Regulation</em></>
+                  <>PNE (PsychoNeuroEnergetics) Guide: <em>Nervous System Regulation</em></>
                 ) : i === 2 ? (
-                  <>PNE (PsychoNeuroEnergetics) Perspective: <em>Building Somatic Awareness</em></>
+                  <>PNE (PsychoNeuroEnergetics) Guide: <em>Building Somatic Awareness</em></>
                 ) : i === 3 ? (
-                  <>PNE (PsychoNeuroEnergetics) Perspective: <em>The Language of Emotion</em></>
+                  <>PNE (PsychoNeuroEnergetics) Guide: <em>The Language of Emotion</em></>
                 ) : i === 4 ? (
-                  <>PNE (PsychoNeuroEnergetics) Perspective: <em>The Architecture of Belief</em></>
+                  <>PNE (PsychoNeuroEnergetics) Guide: <em>The Architecture of Belief</em></>
                 ) : i === 5 ? (
-                  <>PNE (PsychoNeuroEnergetics) Perspective: <em>Spirit and the Sacred</em></>
-                ) : 'PNE Perspective'}
+                  <>PNE (PsychoNeuroEnergetics) Guide: <em>Spirit and the Sacred</em></>
+                ) : 'PNE (PsychoNeuroEnergetics) Guide'}
               </h3>
               {i === 0 && (
                 <>
@@ -943,7 +943,7 @@ export default function PreCeremonyPage() {
                   <div className="video-embed">
                     <iframe
                       src={PRE_PNE_COMPANION[i].videoUrl}
-                      title={`PNE Perspective: ${PRE_PNE_COMPANION[i].theme}`}
+                      title={`PNE Guide: ${PRE_PNE_COMPANION[i].theme}`}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
                     />
