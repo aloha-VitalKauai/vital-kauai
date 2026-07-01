@@ -8,10 +8,10 @@ import { PRE_CEREMONY_WEEKS } from '@/lib/journal-prompts'
 
 export type ActionLinkArr = { text: string; href: string; external?: boolean }[]
 export type ActionCard =
-  | { kind: 'internal'; href: string; text: string }
-  | { kind: 'hash';     href: string; text: string }
-  | { kind: 'external'; href: string; text: string }
-  | { kind: 'static';   text: string; links?: ActionLinkArr }
+  | { kind: 'internal'; href: string; text: string; key: string }
+  | { kind: 'hash';     href: string; text: string; key: string }
+  | { kind: 'external'; href: string; text: string; key: string }
+  | { kind: 'static';   text: string; links?: ActionLinkArr; key: string }
 
 // Member-facing contribution destination. Both the portal home docCard and
 // the pre-ceremony week content route here; the page itself picks the right
@@ -20,26 +20,27 @@ export const STRIPE_LOVE_OFFERING_URL = '/portal/donate'
 
 export const actionsForWeek = (
   weekIdx: number,
-  actions: ReadonlyArray<{ text: string; links?: ActionLinkArr }>,
+  actions: ReadonlyArray<{ text: string; links?: ActionLinkArr; key?: string }>,
 ): ActionCard[] => {
   if (weekIdx === 0) {
     return [
-      { kind: 'hash',     href: '#journal-prompts',                    text: 'Respond to this week’s journal prompts' },
-      { kind: 'external', href: '/iboga-preparedness-guide.html#iboga', text: 'Read "Understanding Iboga" and "What Iboga Works On" in your Preparedness Guide' },
-      { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection' },
-      { kind: 'static',                                              text: "Complete this week's PNE Practice" },
-      { kind: 'static',                                              text: "Complete this week's PNE Reflection" },
-      { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule three or four of your six integration-guide calls up front' },
+      { kind: 'hash',     href: '#journal-prompts',                    text: 'Respond to this week’s journal prompts', key: 'a0' },
+      { kind: 'external', href: '/iboga-preparedness-guide.html#iboga', text: 'Read "Understanding Iboga" and "What Iboga Works On" in your Preparedness Guide', key: 'a1' },
+      { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', key: 'a2' },
+      { kind: 'static',                                              text: "Complete this week's PNE Practice", key: 'a3' },
+      { kind: 'static',                                              text: "Complete this week's PNE Reflection", key: 'a4' },
+      { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule three or four of your six integration-guide calls up front', key: 'a5' },
     ]
   }
-  return actions.map(a => {
+  return actions.map((a, idx) => {
+    const key = a.key ?? `a${idx}`
     const links = a.links ?? []
-    if (links.length === 0) return { kind: 'static', text: a.text }
-    if (links.length > 1)   return { kind: 'static', text: a.text, links }
+    if (links.length === 0) return { kind: 'static', text: a.text, key }
+    if (links.length > 1)   return { kind: 'static', text: a.text, links, key }
     const lnk = links[0]
-    if (lnk.external)              return { kind: 'external', href: lnk.href, text: a.text }
-    if (lnk.href.startsWith('#'))  return { kind: 'hash',     href: lnk.href, text: a.text }
-    return { kind: 'internal', href: lnk.href, text: a.text }
+    if (lnk.external)              return { kind: 'external', href: lnk.href, text: a.text, key }
+    if (lnk.href.startsWith('#'))  return { kind: 'hash',     href: lnk.href, text: a.text, key }
+    return { kind: 'internal', href: lnk.href, text: a.text, key }
   })
 }
 
@@ -59,6 +60,7 @@ export const WEEKS = [
     actionLabel: 'Actions this week, 4 only',
     actions: [
       {
+        key: 'a0',
         color: 'blue',
         text: 'Sign both required documents, Membership Agreement, Medical Disclaimer',
         note: 'Each document is an act of commitment. Read them with care.',
@@ -68,6 +70,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a1',
         color: 'blue',
         text: 'Submit your contribution',
         note: 'Your donation completes the container. It signals to your nervous system: I have chosen this. I am in.',
@@ -76,6 +79,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a2',
         color: 'blue',
         text: 'Read "Understanding Iboga" and "What Iboga Works On" in your Preparedness Guide',
         note: 'Begin an honest relationship with what you\'re stepping into.',
@@ -107,6 +111,7 @@ export const WEEKS = [
     actionIntro: 'Identity shifts happen in the noticing. This week your job is to begin seeing clearly, the changes will follow.',
     actions: [
       {
+        key: 'a0',
         color: 'blue',
         text: 'Respond to this week’s journal prompts',
         links: [
@@ -114,6 +119,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a1',
         color: 'blue',
         text: 'Read "Iboga & Ibogaine" and "Medical Preparation & Contraindications" in your Preparedness Guide',
         note: 'Two short sections. The first names what we work with; the second is the safety frame your physician will use.',
@@ -126,15 +132,17 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a2',
         color: 'green',
         text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection',
         links: [
           { text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/somatic-companion/week-2#top' },
         ],
       },
-      { color: 'green', text: "Complete this week's PNE Practice" },
-      { color: 'green', text: "Complete this week's PNE Reflection" },
+      { key: 'a3', color: 'green', text: "Complete this week's PNE Practice" },
+      { key: 'a4', color: 'green', text: "Complete this week's PNE Reflection" },
       {
+        key: 'a5',
         color: 'blue',
         text: 'Connect with your integration guide',
         note: 'Come with your intentions from Week 1. Come with your questions. Come as you are. This call is the beginning of a relationship that will hold you through the hardest parts of what\'s ahead.',
@@ -143,6 +151,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a6',
         color: 'blue',
         text: 'Schedule your required medical appointments and labs',
         note: 'EKG and labs must be completed before Week 5. Schedule now, medical appointments take time. This protects you.',
@@ -151,6 +160,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a7',
         color: 'amber',
         text: 'Schedule next week\'s call with Rachel & Josh',
         links: [
@@ -177,6 +187,7 @@ export const WEEKS = [
     actionLabel: 'Actions this week, 4 only',
     actions: [
       {
+        key: 'a0',
         color: 'blue',
         text: 'Respond to this week’s journal prompts',
         links: [
@@ -184,6 +195,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a1',
         color: 'blue',
         text: 'Read "Body, Mind, Spirit Preparation" in your Preparedness Guide',
         note: 'A short orientation to how the body lands into ceremony, paired with the Dietary Guide you\'re beginning this week.',
@@ -196,15 +208,17 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a2',
         color: 'green',
         text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection',
         links: [
           { text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/somatic-companion/week-3#top' },
         ],
       },
-      { color: 'green', text: "Complete this week's PNE Practice" },
-      { color: 'green', text: "Complete this week's PNE Reflection" },
+      { key: 'a3', color: 'green', text: "Complete this week's PNE Practice" },
+      { key: 'a4', color: 'green', text: "Complete this week's PNE Reflection" },
       {
+        key: 'a5',
         color: 'blue',
         text: 'Begin writing your questions for the medicine',
         note: 'Open the questions document and let the first lines arrive. You\'ll keep adding to it as the weeks unfold; Week 4 is when you draft the first version, and Week 6 is when you finalize.',
@@ -213,6 +227,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a6',
         color: 'blue',
         text: 'Connect with Rachel & Josh',
         links: [
@@ -220,6 +235,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a7',
         color: 'amber',
         text: 'Begin dietary protocol',
         note: 'Read the Dietary Preparation guide. The body you bring to ceremony is built in these four weeks. This is about arriving as a clear vessel, prepared, open, and ready to receive.',
@@ -248,6 +264,7 @@ export const WEEKS = [
     actionLabel: 'Actions this week, 4 only',
     actions: [
       {
+        key: 'a0',
         color: 'blue',
         text: 'Respond to this week’s journal prompts',
         links: [
@@ -255,15 +272,17 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a1',
         color: 'green',
         text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection',
         links: [
           { text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/somatic-companion/week-4#top' },
         ],
       },
-      { color: 'green', text: "Complete this week's PNE Practice" },
-      { color: 'green', text: "Complete this week's PNE Reflection" },
+      { key: 'a2', color: 'green', text: "Complete this week's PNE Practice" },
+      { key: 'a3', color: 'green', text: "Complete this week's PNE Reflection" },
       {
+        key: 'a4',
         color: 'blue',
         text: 'Connect with your integration guide',
         note: 'Bring the material that is surfacing. Your guide is trained to hold exactly this territory.',
@@ -272,6 +291,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a5',
         color: 'amber',
         text: 'Begin clearing contraindicated substances per your protocol timeline',
         note: 'Cannabis: clear fully 2 weeks before ceremony. All other substances: review the Preparedness Guide. Questions about specific medications, reach out to the team now, not later.',
@@ -299,6 +319,7 @@ export const WEEKS = [
     actionLabel: 'Actions this week, 3 only',
     actions: [
       {
+        key: 'a0',
         color: 'blue',
         text: 'Respond to this week’s journal prompts',
         links: [
@@ -306,6 +327,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a1',
         color: 'blue',
         text: 'Read "Ceremony Day" and "The Days After" in your Preparedness Guide',
         note: 'A walkthrough of the ceremony arc and the days that follow, share what feels useful with your support people.',
@@ -318,15 +340,17 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a2',
         color: 'green',
         text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection',
         links: [
           { text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/somatic-companion/week-5#top' },
         ],
       },
-      { color: 'green', text: "Complete this week's PNE Practice" },
-      { color: 'green', text: "Complete this week's PNE Reflection" },
+      { key: 'a3', color: 'green', text: "Complete this week's PNE Practice" },
+      { key: 'a4', color: 'green', text: "Complete this week's PNE Reflection" },
       {
+        key: 'a5',
         color: 'green',
         text: 'Share the Support Person Guide with your home circle',
         note: 'Not after ceremony. Now. So they have time to read it, ask questions, and show up prepared for your return.',
@@ -335,6 +359,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a6',
         color: 'blue',
         text: 'Start packing',
         note: 'Practical, yes, and also a ritualized act of arrival. Let the packing be intentional.',
@@ -343,6 +368,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a7',
         color: 'amber',
         text: 'Schedule next week\'s call with Rachel & Josh',
         links: [
@@ -368,6 +394,7 @@ export const WEEKS = [
     actionLabel: 'Actions this week, 5 operational completions',
     actions: [
       {
+        key: 'a0',
         color: 'blue',
         text: 'Respond to this week’s journal prompts',
         links: [
@@ -375,6 +402,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a1',
         color: 'blue',
         text: 'Read "Integration, The Real Work" in your Preparedness Guide',
         note: 'A simple orientation to the integration arc that begins the moment ceremony ends.',
@@ -387,6 +415,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a2',
         color: 'blue',
         text: 'Read the Ceremony Day Guide and Ceremony Guidelines',
         note: 'A walkthrough of how the day itself unfolds, and the agreements that hold the container.',
@@ -396,15 +425,17 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a3',
         color: 'green',
         text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection',
         links: [
           { text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/somatic-companion/week-6#top' },
         ],
       },
-      { color: 'green', text: "Complete this week's PNE Practice" },
-      { color: 'green', text: "Complete this week's PNE Reflection" },
+      { key: 'a4', color: 'green', text: "Complete this week's PNE Practice" },
+      { key: 'a5', color: 'green', text: "Complete this week's PNE Reflection" },
       {
+        key: 'a6',
         color: 'green',
         text: 'Finalize your Questions for the Medicine',
         note: 'The truest question, that is the one. Hold it with open hands.',
@@ -413,6 +444,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a7',
         color: 'red',
         text: 'Confirm labs are submitted',
         note: 'If you haven\'t received confirmation, reach out now and confirm directly. This is a safety step, it directly affects whether your ceremony proceeds as planned.',
@@ -421,6 +453,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a8',
         color: 'blue',
         text: 'Review your arrival packet',
         note: 'Everything you need for the days right before ceremony, in one place.',
@@ -429,6 +462,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a9',
         color: 'blue',
         text: 'Finish packing',
         links: [
@@ -436,6 +470,7 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a10',
         color: 'blue',
         text: 'Connect with Rachel & Josh',
         note: 'Bring your finalized Questions for the Medicine. Bring anything still alive. Speak everything that is ready to be said.',

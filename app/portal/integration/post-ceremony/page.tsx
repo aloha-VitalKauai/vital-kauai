@@ -763,7 +763,7 @@ export default function PostCeremonyPage() {
                   // checkbox positions (post-w{i}-a{ai}) stay stable for members
                   // already in integration; we just don't render them as rows.
                   if (card.text.startsWith("Complete this week's PNE")) return null
-                  const checkId = `post-w${i}-a${ai}`
+                  const checkId = `post-w${i}-${card.key}`
                   const isChecked = !!checklist[checkId]
                   const decorateHref = (href: string): string => {
                     if (!href.startsWith('/iboga-preparedness-guide.html')) return href
