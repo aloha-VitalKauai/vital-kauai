@@ -54,7 +54,7 @@ export const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Integration Guide',
+        text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Integration Guide, complete the practice and PNE reflection',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -101,7 +101,7 @@ export const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Integration Guide',
+        text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Integration Guide, complete the practice and PNE reflection',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -133,7 +133,7 @@ export const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Integration Guide',
+        text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Integration Guide, complete the practice and PNE reflection',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -169,7 +169,7 @@ export const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Integration Guide',
+        text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Integration Guide, complete the practice and PNE reflection',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -205,7 +205,7 @@ export const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Integration Guide',
+        text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Integration Guide, complete the practice and PNE reflection',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
@@ -238,7 +238,7 @@ export const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Integration Guide',
+        text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Integration Guide, complete the practice and PNE reflection',
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
       { color: 'green', text: "Complete this week's PNE Reflection" },
