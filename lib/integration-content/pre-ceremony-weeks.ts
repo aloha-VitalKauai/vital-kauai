@@ -26,7 +26,7 @@ export const actionsForWeek = (
     return [
       { kind: 'hash',     href: '#journal-prompts',                    text: 'Respond to this week’s journal prompts' },
       { kind: 'external', href: '/iboga-preparedness-guide.html#iboga', text: 'Read "Understanding Iboga" and "What Iboga Works On" in your Preparedness Guide' },
-      { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Guide: The Language of the Body' },
+      { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection' },
       { kind: 'static',                                              text: "Complete this week's PNE Practice" },
       { kind: 'static',                                              text: "Complete this week's PNE Reflection" },
       { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule three or four of your six integration-guide calls up front' },
@@ -127,9 +127,9 @@ export const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Guide: Nervous System Regulation',
+        text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection',
         links: [
-          { text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Guide: Nervous System Regulation', href: '/portal/somatic-companion/week-2#top' },
+          { text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/somatic-companion/week-2#top' },
         ],
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
@@ -197,9 +197,9 @@ export const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Guide: Building Somatic Awareness',
+        text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection',
         links: [
-          { text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Guide: Building Somatic Awareness', href: '/portal/somatic-companion/week-3#top' },
+          { text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/somatic-companion/week-3#top' },
         ],
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
@@ -256,9 +256,9 @@ export const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Guide: The Language of Emotion',
+        text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection',
         links: [
-          { text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Guide: The Language of Emotion', href: '/portal/somatic-companion/week-4#top' },
+          { text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/somatic-companion/week-4#top' },
         ],
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
@@ -319,9 +319,9 @@ export const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Guide: The Architecture of Belief',
+        text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection',
         links: [
-          { text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Guide: The Architecture of Belief', href: '/portal/somatic-companion/week-5#top' },
+          { text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/somatic-companion/week-5#top' },
         ],
       },
       { color: 'green', text: "Complete this week's PNE Practice" },
@@ -397,9 +397,9 @@ export const WEEKS = [
       },
       {
         color: 'green',
-        text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Guide: Spirit and the Sacred',
+        text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection',
         links: [
-          { text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Guide: Spirit and the Sacred', href: '/portal/somatic-companion/week-6#top' },
+          { text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/somatic-companion/week-6#top' },
         ],
       },
       { color: 'green', text: "Complete this week's PNE Practice" },

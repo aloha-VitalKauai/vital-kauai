@@ -757,6 +757,12 @@ export default function PostCeremonyPage() {
               <h3 className="w1-h3">Action Items</h3>
               <div className="w1-actions">
                 {actionsForWeek(w.actions).map((card, ai) => {
+                  // PNE Practice + Reflection are folded into the single
+                  // "Read … PNE Integration Guide, complete the practice and PNE
+                  // reflection" action. They remain in the data array so saved
+                  // checkbox positions (post-w{i}-a{ai}) stay stable for members
+                  // already in integration; we just don't render them as rows.
+                  if (card.text.startsWith("Complete this week's PNE")) return null
                   const checkId = `post-w${i}-a${ai}`
                   const isChecked = !!checklist[checkId]
                   const decorateHref = (href: string): string => {
