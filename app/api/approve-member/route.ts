@@ -155,7 +155,7 @@ async function handleApproval(token: string, source: string) {
     member_id:    userId,
     event_type:   'account_approved',
     event_title:  'Membership approved',
-    event_detail: `Approved via ${source} \u2014 setup instructions sent`,
+    event_detail: `Approved via ${source}`,
     is_system:    true,
   })
   if (timelineErr) {
@@ -252,19 +252,31 @@ async function handleApproval(token: string, source: string) {
     return respond(source, false, 'Account created but setup link generation failed. Try resending from the dashboard.')
   }
 
-  // Send branded setup instructions email
-  await sendSetupEmail(lead.email, lead.full_name, setupLink)
+  // Send branded setup instructions email. The approval itself has already
+  // committed, so a send failure surfaces as a warning on the success
+  // response — the founder is told the truth and pointed at "Resend setup
+  // link" instead of seeing a success message for an email that never left.
+  let emailWarning: string | null = null
+  try {
+    await sendSetupEmail(lead.email, lead.full_name, setupLink)
+    console.log(`[approve-member] STEP:setup-email, sent`)
+  } catch (err: any) {
+    console.error('[approve-member] STEP:setup-email, FAILED:', err?.message || err)
+    emailWarning = `${lead.full_name} is approved and their account is ready, but the Welcome email failed to send. Use "Resend setup link" on their member profile.`
+  }
 
   // Follow-up: "Add to Home Screen" install instructions. Non-blocking —
   // if it fails the member is still fully onboarded, and Rachel can
   // re-send manually from the dashboard if needed.
-  try {
-    await sendAppInstallEmail(lead.email, lead.full_name)
-  } catch (err: any) {
-    console.error('[approve-member] STEP:install-email, FAILED (non-blocking):', err?.message || err)
+  if (!emailWarning) {
+    try {
+      await sendAppInstallEmail(lead.email, lead.full_name)
+    } catch (err: any) {
+      console.error('[approve-member] STEP:install-email, FAILED (non-blocking):', err?.message || err)
+    }
   }
 
-  return respond(source, true, null, lead.full_name, false)
+  return respond(source, true, null, lead.full_name, false, emailWarning)
 }
 
 async function getOrCreateAuthUser(email: string, fullName: string): Promise<string> {
@@ -292,7 +304,11 @@ function esc(s: string): string {
 }
 
 async function sendSetupEmail(email: string, fullName: string, setupLink: string) {
-  if (!env().resendKey) { console.log('No RESEND_API_KEY \u2014 skipping setup email'); return }
+  if (!env().resendKey) {
+    // Throw so the approval response carries a warning \u2014 reporting success
+    // for an email that never left would mislead the founder.
+    throw new Error('RESEND_API_KEY missing \u2014 Welcome email skipped')
+  }
 
   const firstName = fullName?.split(' ')[0] || 'Friend'
   const { subject, html } = await renderSetupLinkEmail({
@@ -311,7 +327,10 @@ async function sendSetupEmail(email: string, fullName: string, setupLink: string
       html,
     }),
   })
-  if (!res.ok) console.error('Resend failed:', await res.text())
+  if (!res.ok) {
+    const txt = await res.text()
+    throw new Error(`Resend ${res.status}: ${txt}`)
+  }
 }
 
 async function sendAppInstallEmail(email: string, fullName: string) {
@@ -351,12 +370,19 @@ async function adminFetch(method: string, path: string, body?: object) {
   })
 }
 
-function respond(source: string, success: boolean, message: string | null, name?: string, alreadyDone?: boolean) {
+function respond(
+  source: string,
+  success: boolean,
+  message: string | null,
+  name?: string,
+  alreadyDone?: boolean,
+  warning?: string | null,
+) {
   if (source === 'email_button') {
-    return htmlResponse(success ? successPage(name!, alreadyDone!) : errorPage(message!), success ? 200 : 400)
+    return htmlResponse(success ? successPage(name!, alreadyDone!, warning) : errorPage(message!), success ? 200 : 400)
   }
   return success
-    ? NextResponse.json({ ok: true })
+    ? NextResponse.json(warning ? { ok: true, warning } : { ok: true })
     : NextResponse.json({ error: message }, { status: 400 })
 }
 
@@ -364,18 +390,26 @@ function htmlResponse(html: string, status: number) {
   return new NextResponse(html, { status, headers: { 'Content-Type': 'text/html' } })
 }
 
-function successPage(name: string, alreadyDone: boolean) {
+function successPage(name: string, alreadyDone: boolean, warning?: string | null) {
   const safe = esc(name)
+  const body = warning
+    ? `<p class="warn">\u26a0 ${esc(warning)}</p>`
+    : `<p>${
+        alreadyDone
+          ? `${safe} was already approved. If they still need their Welcome email, use "Resend setup link" on their member profile.`
+          : 'Setup instructions have been sent to their email. You can close this tab.'
+      }</p>`
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Approved</title>
   <style>body{font-family:Georgia,serif;background:#f5f0e8;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
   .card{background:#1a2e1c;padding:52px 44px;border-radius:8px;max-width:440px;text-align:center}
   .check{font-size:32px;color:#c8a96e;margin-bottom:20px}
   h1{color:#f5f0e8;font-size:24px;font-weight:400;margin:0 0 14px}
   p{color:rgba(245,240,232,.6);font-size:15px;line-height:1.65;margin:0}
+  .warn{color:#c8a96e;border:1px solid rgba(200,169,110,.4);border-radius:6px;padding:12px 16px;text-align:left}
   </style></head><body><div class="card">
-  <div class="check">\u2713</div>
+  <div class="check">${warning ? '\u26a0' : '\u2713'}</div>
   <h1>${alreadyDone ? 'Already approved' : `${safe} approved`}</h1>
-  <p>${alreadyDone ? `${safe} was already approved. Their setup email was sent.` : 'Setup instructions have been sent to their email. You can close this tab.'}</p>
+  ${body}
   </div></body></html>`
 }
 
