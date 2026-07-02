@@ -461,7 +461,7 @@ export function HomePage() {
           <div className={styles.riverFeatureOverlay}>
             <span className={styles.riverFeatureEyebrow}>The Healing Power of Iboga</span>
             <h3 className={styles.riverFeatureTitle}>
-              Nature&apos;s Most Ancient Medicine
+              Nature&apos;s Most Ancient Plant Ally
             </h3>
             <p className={styles.riverFeatureBody}>
               Iboga goes deep, interrupting long-held patterns and unconscious conditioning. Many
@@ -470,7 +470,7 @@ export function HomePage() {
               their true nature.
             </p>
             <Link href="/iboga-journey" className={styles.riverFeatureLink}>
-              The Medicine →
+              About Iboga →
             </Link>
           </div>
         </div>
