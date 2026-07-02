@@ -43,17 +43,23 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => ({}))
     const rawEmail = typeof body?.email === 'string' ? body.email.trim() : ''
 
-    if (!rawEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawEmail)) {
+    // '*' is rejected outright: PostgREST aliases it to the LIKE '%' wildcard
+    // even when backslash-escaped, so it can never match literally.
+    if (!rawEmail || rawEmail.includes('*') || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawEmail)) {
       return NextResponse.json({ error: 'Please enter a valid email address.' }, { status: 400 })
     }
 
     const email = rawEmail.toLowerCase()
     const supabase = db()
 
+    // Escape LIKE wildcards so a submitted "b%@yahoo.com" matches literally
+    // instead of pattern-matching across member emails.
+    const emailPattern = email.replace(/[\\%_]/g, (m: string) => `\\${m}`)
+
     const { data: member } = await supabase
       .from('members')
       .select('id, full_name, email, lead_id')
-      .ilike('email', email)
+      .ilike('email', emailPattern)
       .maybeSingle()
 
     if (!member || !member.email) {
