@@ -304,8 +304,7 @@ const BODY_CONTENT = `
       <p class="body-text">Perhaps the most essential thing to understand: the Bwiti experience iboga as a being, a plant teacher with intelligence and intention. It shows the truth of your life. The clearer you arrive, the deeper it goes. The more open your hands, the more the medicine can place in them.</p>
     </div>
     <div>
-      <p class="body-text">Josh Perdue, co-founder of Vital Kauaʻi, was initiated in Gabon in deep relationship with the plant and the people who have carried it for generations. That reverence, for the land, the medicine, and the wisdom traditions that have held iboga across millennia, is woven into everything we do.</p>
-      <p class="body-text">We bring this reverence into our work on the North Shore of Kauaʻi, allowing African initiatory wisdom to inspire the container while remaining grounded in our own ceremonial path. The ceremony opens around the fire. The medicine meets you in the dark. And the land of Kauaʻi holds everything.</p>
+      <p class="body-text">We bring reverence into our work on the North Shore of Kauaʻi, grounded in our own ceremonial path. The ceremony opens around the fire. The medicine meets you in the dark. And the land and spirit of Kauaʻi holds everything.</p>
       <div class="pull-quote" style="border-left-color:var(--sage-light);">
         <p>"Ceremony opens around a sacred fire, drawing on the wisdom of those who have carried iboga for thousands of years, where fire illuminates what is ready to be released and calls in what wants to arrive."</p>
         <cite>Vital Kauaʻi · The Iboga Journey</cite>
