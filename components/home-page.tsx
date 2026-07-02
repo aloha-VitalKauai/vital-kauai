@@ -515,7 +515,7 @@ export function HomePage() {
       <section id="offerings" className={styles.offerings}>
         <div className={styles.offeringsHeader}>
           <div>
-            <p className={`${styles.sectionLabel} ${styles.reveal}`}>In Support of the Medicine</p>
+            <p className={`${styles.sectionLabel} ${styles.reveal}`}>In Support of the Sacrament</p>
             <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>
               What Supports
               <br />
@@ -523,31 +523,28 @@ export function HomePage() {
             </h2>
             <div className={`${styles.sectionSub} ${styles.reveal} ${styles.revealDelay1}`}>
               <p>We offer support at every level.</p>
-              <h3 className={styles.supportHeader}>Vitality</h3>
-              <p>
-                Internal cleansing, detoxification, and deep restoration prepare the body to
-                receive.
-              </p>
-              <h3 className={styles.supportHeader}>PsychoNeuroEnergetics (PNE)</h3>
-              <p>
-                1:1 coaching support to help you build the capacity to feel safe, to track the
-                nervous system, to self-resource, and to integrate what the root reveals.
-              </p>
-              <h3 className={styles.supportHeader}>Somatic Practices</h3>
-              <p>Yoga, breathwork, hiking, and sound baths.</p>
-              <h3 className={styles.supportHeader}>Nature</h3>
-              <p>
-                We come to this land as guests. Kauaʻi holds this work—her ocean, her ʻāina, her
-                elements—and we hold our kuleana to her in return. Time in nature moves through
-                the days because we are in relationship with what cares for us, in reciprocity,
-                respect, and service.
-              </p>
               <h3 className={styles.supportHeader}>Preparation &amp; Integration</h3>
               <p>
-                Full preparation and integration support across months: six weeks of
-                preparation before ceremony and six weeks of integration after. Optional 1:1
-                support continues for as long as
-                it serves, and your place in the Vital Kauaʻi Church community is for life.
+                Full preparation and integration support across months: six weeks of preparation
+                before ceremony and six weeks of integration after. Optional 1:1 support continues
+                for as long as it serves, and your place in the Vital Kauaʻi Church community is
+                for life.
+              </p>
+              <h3 className={styles.supportHeader}>Coaching &amp; Psychoneuroenergetics (PNE)</h3>
+              <p>
+                1:1 coaching and PNE support to help you build the capacity to feel safe, track the
+                nervous system, self-resource, and integrate what the root reveals.
+              </p>
+              <h3 className={styles.supportHeader}>Somatic Practices</h3>
+              <p>Yoga, breathwork, movement, bodywork, sound baths, and more.</p>
+              <h3 className={styles.supportHeader}>Vitality &amp; Nutrition</h3>
+              <p>
+                Personalized nutrition guidance and vitality support prepare the body to receive.
+              </p>
+              <h3 className={styles.supportHeader}>Nature</h3>
+              <p>
+                The ocean and land of Kauaʻi share in this work, and we hold our kuleana to her in
+                return—in reciprocity and respect.
               </p>
               <h3 className={styles.supportHeader}>Community</h3>
               <p>
