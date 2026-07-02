@@ -24,7 +24,7 @@ const teamMembers = [
   {
     name: "Josh Perdue",
     role: "Co-Founder · Director of Operations & Development",
-    bio: "Josh's path took him from Stanford Design School to Gabon, where he underwent private initiation with the Bwiti. He brings humility, humor, and steady, devoted presence to the operations of Vital Kauaʻi.",
+    bio: "Josh's path took him from Stanford Design School into conscious business, somatic healing, and relational transformation. He brings humility, humor, and steady, devoted presence to the operations of Vital Kauaʻi.",
     image: "/images/about/josh-perdue.jpg",
   },
   // Temporarily hidden from the homepage feature row.
