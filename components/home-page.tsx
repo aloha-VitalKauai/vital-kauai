@@ -379,18 +379,22 @@ export function HomePage() {
             <div>
               <span className={styles.storyEyebrow}>Why Iboga</span>
               <p className={styles.storyBody}>
-                We are a religious organization of dedicated professionals in service to
-                transformation, to people reawakening to who they truly are, ready to live more
-                alive and free.
+                Vital Kauaʻi is a religious organization offering an in-depth program of holistic
+                preparation and integration, held in sacred ceremony with Iboga.
               </p>
               <p className={styles.storyBody}>
-                We built Vital Kauaʻi for those seeking freedom from what has held them—patterns
-                of addiction, anxiety, depression, trauma—and a deeper return to their own
-                nature.
+                We birthed Vital Kauaʻi so people can come home to themselves—lighter, freer, and
+                more alive.
               </p>
               <p className={styles.storyBody}>
-                Everything we do exists in service: the team, the preparation, the ceremony, and
-                every part of the journey that grows from the root.
+                Iboga is a powerful plant ally. Research is only beginning to reveal its many
+                gifts, and it has profoundly shaped our own lives. We’ve seen it walk with people
+                through suffering, and guide them into deeper alignment with their purpose.
+              </p>
+              <p className={styles.storyBody}>
+                We bring great care, safety, and integrity to everything we do. Every part of what
+                we offer exists in service: the team, the preparation, the ceremony, and every step
+                of the journey that grows from the root.
               </p>
               <Link href="/iboga-journey" className={styles.storyLink}>
                 Explore the Iboga Journey →
