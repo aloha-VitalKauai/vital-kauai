@@ -40,6 +40,7 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     status: "live",
     videoSummary:
       "Internal safety, what happens when the system senses threat, and how internal and external structures build the ground your nervous system can rest into.",
+    videoUrl: "https://www.youtube.com/embed/k_hxugBtDIw?rel=0",
   },
   {
     phase: "pre",

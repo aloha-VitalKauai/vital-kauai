@@ -27,18 +27,11 @@ export default function SurveyPage() {
         return;
       }
 
+      // Select all columns so every step's saved answers (GAD-7, sleep, PTSD,
+      // functioning, etc.) rehydrate on resume — not just the PHQ-9 subset.
       const { data, error } = await supabase
         .from('outcome_assessments')
-        .select(
-          'id,member_id,operational_member_id,ceremony_id,timepoint,' +
-          'is_final,is_locked,submitted_at,started_at,last_saved_at,' +
-          'assessment_date,eligibility_snapshot,' +
-          'window_open_at,window_due_at,window_hard_close_at,' +
-          'phq9_q1,phq9_q2,phq9_q3,phq9_q4,phq9_q5,' +
-          'phq9_q6,phq9_q7,phq9_q8,phq9_q9,phq9_total,' +
-          'overall_change,regulation_score,primary_intention,' +
-          'support_needed_now,adverse_event_flag'
-        )
+        .select('*')
         .eq('id', assessmentId)
         .eq('member_id', user.id)
         .maybeSingle();

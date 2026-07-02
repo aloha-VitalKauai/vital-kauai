@@ -425,7 +425,7 @@ export const WEEKS = [
         text: 'Review your arrival packet',
         note: 'Everything you need for the days right before ceremony, in one place.',
         links: [
-          { text: 'Review your arrival packet', href: '/portal/arrival-packet' },
+          { text: 'Review your arrival packet', href: '/portal/ceremony-guidelines' },
         ],
       },
       {

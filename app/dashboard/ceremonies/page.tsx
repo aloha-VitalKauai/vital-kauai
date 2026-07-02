@@ -41,9 +41,9 @@ export default async function CeremoniesPage() {
 
   const completed = rows.filter((c) => c.status === "Complete").length;
   const upcoming = rows.filter((c) => c.status !== "Complete").length;
-  const totalCalls = rows.reduce((s, c) => s + (c.integration_calls ?? 0), 0);
   const completedWithCalls = rows.filter((c) => c.status === "Complete" && c.integration_calls != null);
-  const avgCalls = completedWithCalls.length > 0 ? (totalCalls / completedWithCalls.length).toFixed(1) : "—";
+  const completedCallsTotal = completedWithCalls.reduce((s, c) => s + (c.integration_calls ?? 0), 0);
+  const avgCalls = completedWithCalls.length > 0 ? (completedCallsTotal / completedWithCalls.length).toFixed(1) : "—";
 
   const LABEL: React.CSSProperties = { fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: "#6B6B67", marginBottom: 6, fontWeight: 500 };
 

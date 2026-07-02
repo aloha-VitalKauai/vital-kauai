@@ -6,11 +6,11 @@ const T = {
 
 const CHANGE_OPTIONS: { value: string; label: string }[] = [
   { value: 'much_worse', label: 'Much worse' },
-  { value: 'moderately_worse', label: 'Moderately worse' },
+  { value: 'worse', label: 'Somewhat worse' },
   { value: 'slightly_worse', label: 'Slightly worse' },
   { value: 'no_change', label: 'No change' },
   { value: 'slightly_improved', label: 'Slightly improved' },
-  { value: 'moderately_improved', label: 'Moderately improved' },
+  { value: 'improved', label: 'Improved' },
   { value: 'much_improved', label: 'Much improved' },
 ];
 

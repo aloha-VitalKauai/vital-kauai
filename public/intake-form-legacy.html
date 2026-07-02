@@ -749,15 +749,21 @@ async function initAutosave() {
     return;
   }
   draftKey = DRAFT_KEY_PREFIX + memberId;
-  // Pull all three sources in parallel: local draft, server draft, and the
-  // member's last submitted intake. Drafts (in-progress autosave) take
-  // priority over the submission so we don't clobber unsaved edits, but if
-  // there's no draft we fall back to the submission instead of a blank form.
-  const [localDraft, serverDraft, submitted] = await Promise.all([
-    Promise.resolve(readLocalDraft()),
-    readServerDraft(),
-    readSubmittedIntake(),
-  ]);
+  // Pull three sources: local draft, server draft, and the member's last
+  // submitted intake. Drafts (in-progress autosave) take priority over the
+  // submission so we don't clobber unsaved edits, but if there's no draft we
+  // fall back to the submission instead of a blank form.
+  //
+  // The two server reads are awaited SEQUENTIALLY, not in parallel. This page
+  // is a static file, so the only thing refreshing the Supabase access token
+  // is each /api request itself. Firing two authenticated requests at once can
+  // make both refresh the token simultaneously, which trips Supabase's
+  // refresh-token reuse detection and REVOKES the member's session mid-form
+  // (observed as a "session doesn't exist" 401 on submit). Sequencing them
+  // means the first request refreshes the token and the second reuses it.
+  const localDraft = readLocalDraft();
+  const serverDraft = await readServerDraft();
+  const submitted = await readSubmittedIntake();
   const draft = pickNewerDraft(localDraft, serverDraft);
   let restored = false;
   let restoredFromSubmission = false;

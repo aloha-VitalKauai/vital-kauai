@@ -334,9 +334,26 @@ export default function MemberProfileEditor({
         })
       : await createJourney(payload);
 
-    setSchedSaving(false);
     if (!result.ok) {
+      setSchedSaving(false);
       setSchedMsg({ kind: "err", text: result.error || "Failed to save" });
+      return;
+    }
+
+    // Also persist the member's arrival/departure dates from this card, so the
+    // single "Update scheduling" action saves them to the profile too (they
+    // were previously only saved by the separate "Save changes" button).
+    const { error: memberErr } = await supabase
+      .from("members")
+      .update({
+        arrival_date: arrivalDate || null,
+        departure_date: departureDate || null,
+      })
+      .eq("id", member.id);
+
+    setSchedSaving(false);
+    if (memberErr) {
+      setSchedMsg({ kind: "err", text: "Journey saved, but arrival/departure failed to save" });
       return;
     }
     setSchedMsg({ kind: "ok", text: "Saved" });

@@ -31,10 +31,17 @@ export async function middleware(request: NextRequest) {
   // Pages that are reachable without a session. Everything else on the site is
   // members-only — visitors get sent to /login. API routes and static assets
   // are excluded via the matcher below, not here.
+  //
+  // /setup-account (token-based password creation for newly approved members)
+  // and /pay/* (emailed, token-validated payment links) are deliberately
+  // session-less, so they must stay public even with the whole-site login wall.
   const isPublicPath =
     path === "/login" ||
     path.startsWith("/auth/") ||
-    path === "/auth";
+    path === "/auth" ||
+    path === "/setup-account" ||
+    path === "/pay" ||
+    path.startsWith("/pay/");
 
   if (!user && !isPublicPath) {
     const loginUrl = new URL("/login", request.url);
