@@ -140,7 +140,7 @@ export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) 
   const heading = isForgot ? "Reset Password" : "Sign In";
   const description = isForgot
     ? "Enter the email on file and we'll send a link to choose a new password."
-    : "Enter the email and password sent to you after your discovery call.";
+    : "Enter your email and the password you created when you set up your account. Just joined? Open your Welcome email and tap “Set Up My Account” to choose your password.";
 
   return (
     <main className={styles.wrapper}>
@@ -241,8 +241,9 @@ export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) 
         )}
 
         <p className={styles.notice}>
-          Access is invitation-only. After your discovery call, you&apos;ll receive login
-          credentials from the Vital Kaua&#699;i team.
+          Access is invitation-only. After your discovery call, you&apos;ll receive a
+          Welcome email from the Vital Kaua&#699;i team with a link to set up your
+          account and choose your own password.
         </p>
       </section>
     </main>
