@@ -355,7 +355,7 @@ export function HomePage() {
               <em>Kauaʻi</em>
             </h1>
             <p className={styles.heroSub}>
-              Iboga ceremony in service of whole-being transformation on Kauaʻi&apos;s North Shore.
+              In service of whole-being transformation
             </p>
             <div className={styles.heroActions}>
               <Link href="/iboga-journey" className={styles.btnPrimary}>
