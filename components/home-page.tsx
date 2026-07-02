@@ -439,10 +439,6 @@ export function HomePage() {
               the deepest self, interrupting patterns of addiction, trauma, and unconscious
               conditioning at their root.
             </p>
-            <p className={styles.medicineBody}>
-              Vital Kauaʻi is a ceremonial container: a living relationship between practitioner,
-              plant, participant, and land. We offer the most in-depth preparation and integration we know in this work: six weeks of preparation before ceremony and six weeks of integration after, with weekly teachings, somatic guidance, and one-on-one support throughout. From there, you become a lifelong member of the Vital Kauaʻi community, with monthly group calls and optional ongoing one-on-one support.
-            </p>
             <div className={styles.medicineDistinction}>
               <p>
                 &quot;Our commitment is to walk beside you through preparation, into ceremony, and months after in the work of integration.&quot;
