@@ -1160,7 +1160,7 @@ const BODY_CONTENT = `
   <div class="hero-content">
     <p class="hero-eyebrow">Hanalei, Kauaʻi's North Shore</p>
     <h1 class="hero-title">Come,<br><em>Stay & Transform</em></h1>
-    <p class="hero-sub">Iboga ceremony in service of whole-being transformation, held in a private home on Kauaʻi's North Shore.</p>
+    <p class="hero-sub">In service of whole-being transformation</p>
   </div>
 </section>
 
@@ -1319,130 +1319,6 @@ const BODY_CONTENT = `
     </div>
   </div>
 </section>
-
-<!-- GUEST EXPERIENCE -->
-<section id="experience" style="background:var(--sand-light);padding:100px 60px;">
-  <div style="max-width:900px;margin:0 auto;">
-    <div style="margin-bottom:64px;">
-      <span class="section-label reveal">What to Expect</span>
-      <h2 class="section-title reveal" style="color:var(--text-dark);">Seven Days.<br><em>One Arc.</em></h2>
-      <p class="reveal" style="font-size:15px;color:var(--text-mid);line-height:2.0;font-weight:300;max-width:560px;margin-top:16px;">Two days of preparation, one day of ceremony, three days of integration, and a closing. Each phase has its own rhythm.</p>
-    </div>
-
-    <div style="display:flex;flex-direction:column;position:relative;">
-
-      <!-- Vertical line -->
-      <div style="position:absolute;left:38px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,rgba(184,105,74,0.3),rgba(184,105,74,0.05));"></div>
-
-      <!-- Day 01 -->
-      <div class="reveal" style="display:grid;grid-template-columns:80px 1fr;gap:32px;align-items:start;margin-bottom:36px;">
-        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;">
-          <div style="width:16px;height:16px;border-radius:50%;background:rgba(184,105,74,0.25);border:1px solid rgba(184,105,74,0.4);position:relative;z-index:1;flex-shrink:0;"></div>
-        </div>
-        <div style="padding-bottom:36px;border-bottom:1px solid rgba(184,105,74,0.1);">
-          <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:rgba(184,105,74,0.5);letter-spacing:0.1em;">01</span>
-            <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Arrival</span>
-          </div>
-          <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Arriving & Settling In</h3>
-          <p style="font-size:15px;color:var(--text-mid);line-height:1.85;">Your home is ready. A nourishing meal, an orientation, and the chance to feel what it is like to be here.</p>
-        </div>
-      </div>
-
-      <!-- Day 02 -->
-      <div class="reveal" style="display:grid;grid-template-columns:80px 1fr;gap:32px;align-items:start;margin-bottom:36px;">
-        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;">
-          <div style="width:16px;height:16px;border-radius:50%;background:rgba(184,105,74,0.25);border:1px solid rgba(184,105,74,0.4);position:relative;z-index:1;flex-shrink:0;"></div>
-        </div>
-        <div style="padding-bottom:36px;border-bottom:1px solid rgba(184,105,74,0.1);">
-          <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:rgba(184,105,74,0.5);letter-spacing:0.1em;">02</span>
-            <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Preparation</span>
-          </div>
-          <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Time on the Land & in the Water</h3>
-          <p style="font-size:15px;color:var(--text-mid);line-height:1.85;">Time in nature, on the bay, in the rivers, a guided walk along the Nā Pali Coast. Body and spirit readied for what follows.</p>
-        </div>
-      </div>
-
-      <!-- Day 03, CEREMONY (highlighted) -->
-      <div class="reveal" style="display:grid;grid-template-columns:80px 1fr;gap:32px;align-items:start;margin-bottom:36px;">
-        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;">
-          <div style="width:22px;height:22px;border-radius:50%;background:var(--terra);border:2px solid var(--terra-light);position:relative;z-index:1;flex-shrink:0;margin-left:-3px;"></div>
-        </div>
-        <div style="padding:24px 28px;background:rgba(184,105,74,0.07);border-left:2px solid var(--terra);margin-bottom:36px;">
-          <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:var(--terra);letter-spacing:0.1em;">03</span>
-            <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Ceremony</span>
-          </div>
-          <h3 style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">The Iboga Ceremony</h3>
-          <p style="font-size:15px;color:var(--text-mid);line-height:1.85;">The heart of the journey. You enter with intention. You leave having been met by the medicine, changed at the root.</p>
-        </div>
-      </div>
-
-      <!-- Day 04 -->
-      <div class="reveal" style="display:grid;grid-template-columns:80px 1fr;gap:32px;align-items:start;margin-bottom:36px;">
-        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;">
-          <div style="width:16px;height:16px;border-radius:50%;background:rgba(184,105,74,0.25);border:1px solid rgba(184,105,74,0.4);position:relative;z-index:1;flex-shrink:0;"></div>
-        </div>
-        <div style="padding-bottom:36px;border-bottom:1px solid rgba(184,105,74,0.1);">
-          <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:rgba(184,105,74,0.5);letter-spacing:0.1em;">04</span>
-            <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Integration</span>
-          </div>
-          <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Rest & Receiving</h3>
-          <p style="font-size:15px;color:var(--text-mid);line-height:1.85;">The day after ceremony is for rest. The medicine is still moving. We hold you close.</p>
-        </div>
-      </div>
-
-      <!-- Day 05 -->
-      <div class="reveal" style="display:grid;grid-template-columns:80px 1fr;gap:32px;align-items:start;margin-bottom:36px;">
-        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;">
-          <div style="width:16px;height:16px;border-radius:50%;background:rgba(184,105,74,0.25);border:1px solid rgba(184,105,74,0.4);position:relative;z-index:1;flex-shrink:0;"></div>
-        </div>
-        <div style="padding-bottom:36px;border-bottom:1px solid rgba(184,105,74,0.1);">
-          <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:rgba(184,105,74,0.5);letter-spacing:0.1em;">05</span>
-            <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Integration</span>
-          </div>
-          <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Land & Reflection</h3>
-          <p style="font-size:15px;color:var(--text-mid);line-height:1.85;">Nature, somatic integration sessions with your guide, and the quiet where the deeper layers begin to settle and clarify.</p>
-        </div>
-      </div>
-
-      <!-- Day 06 -->
-      <div class="reveal" style="display:grid;grid-template-columns:80px 1fr;gap:32px;align-items:start;margin-bottom:36px;">
-        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;">
-          <div style="width:16px;height:16px;border-radius:50%;background:rgba(184,105,74,0.25);border:1px solid rgba(184,105,74,0.4);position:relative;z-index:1;flex-shrink:0;"></div>
-        </div>
-        <div style="padding-bottom:36px;border-bottom:1px solid rgba(184,105,74,0.1);">
-          <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:rgba(184,105,74,0.5);letter-spacing:0.1em;">06</span>
-            <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Integration</span>
-          </div>
-          <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Embodying the Shift</h3>
-          <p style="font-size:15px;color:var(--text-mid);line-height:1.85;">Movement, community, and mapping the path forward into the life waiting for you.</p>
-        </div>
-      </div>
-
-      <!-- Day 07 -->
-      <div class="reveal" style="display:grid;grid-template-columns:80px 1fr;gap:32px;align-items:start;">
-        <div style="display:flex;flex-direction:column;align-items:center;padding-top:4px;">
-          <div style="width:16px;height:16px;border-radius:50%;background:rgba(184,105,74,0.25);border:1px solid rgba(184,105,74,0.4);position:relative;z-index:1;flex-shrink:0;"></div>
-        </div>
-        <div>
-          <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px;">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;color:rgba(184,105,74,0.5);letter-spacing:0.1em;">07</span>
-            <span style="font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:var(--terra);">Return</span>
-          </div>
-          <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text-dark);margin-bottom:8px;">Closing & Going Home</h3>
-          <p style="font-size:15px;color:var(--text-mid);line-height:1.85;">A closing ceremony and a gentle transition, carried by what Iboga opened in you and what Kauaʻi gave you.</p>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
 
 <!-- EXPLORE THE LAND -->
 <section id="explore-land" style="background:var(--cream);padding:60px 40px;overflow:hidden;">
