@@ -306,7 +306,7 @@ const BODY_CONTENT = `
     <div>
       <p class="body-text">We bring reverence into our work on the North Shore of Kauaʻi, grounded in our own ceremonial path. The ceremony opens around the fire. The medicine meets you in the dark. And the land and spirit of Kauaʻi holds everything.</p>
       <div class="pull-quote" style="border-left-color:var(--sage-light);">
-        <p>"Ceremony opens around a sacred fire, drawing on the wisdom of those who have carried iboga for thousands of years, where fire illuminates what is ready to be released and calls in what wants to arrive."</p>
+        <p>"Six weeks of deep preparation carries you into ceremony—illuminating what is ready to be released and calling in what wants to arrive."</p>
         <cite>Vital Kauaʻi · The Iboga Journey</cite>
       </div>
     </div>
