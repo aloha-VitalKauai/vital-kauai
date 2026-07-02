@@ -6,12 +6,13 @@ import { lookupSetupToken, markSetupTokenUsed } from '@/lib/setup-tokens'
  * POST /api/setup-account/complete
  * Body: { token: string, password: string }
  *
- * Validates the setup token, sets the password on the underlying auth user
- * via the admin API, and marks the token used. The client then signs in
+ * Validates the setup token, atomically consumes it, then sets the password
+ * on the underlying auth user via the admin API. The client then signs in
  * with the password it just created.
  *
- * Token is consumed even on partial success (password set but bookkeeping
- * fails), to avoid double-use windows.
+ * Consume-first means two concurrent submissions resolve to exactly one
+ * winner; when the password set itself fails afterward, the token is
+ * restored so the same link stays usable for a retry.
  */
 function db() {
   return createClient(
@@ -42,11 +43,35 @@ export async function POST(req: NextRequest) {
     if (!lookup.ok) {
       const message =
         lookup.reason === 'expired'
-          ? 'This setup link has expired. Use "Forgot password" on the sign-in page to get a fresh link.'
-          : lookup.reason === 'used'
-            ? 'This setup link has already been used. Sign in with the password you created, or use "Forgot password".'
-            : 'This setup link is invalid.'
+          ? 'This setup link has expired. Email yourself a fresh one from this page.'
+          : lookup.reason === 'superseded'
+            ? 'A newer setup link replaced this one. Open your most recent Welcome email, or email yourself a fresh link from this page.'
+            : lookup.reason === 'used'
+              ? 'Your account is already set up. Sign in with the password you created, or use "Forgot password" on the sign-in page.'
+              : 'Email yourself a fresh setup link from this page.'
       return NextResponse.json({ ok: false, reason: lookup.reason, error: message }, { status: 400 })
+    }
+
+    // Consume the token BEFORE setting the password so two concurrent
+    // submissions resolve to exactly one winner.
+    const consumed = await markSetupTokenUsed(token)
+    if (!consumed) {
+      // Lost the race — re-check the token so the reason is accurate
+      // (a founder re-mint mid-flight reads 'superseded', a completed
+      // setup reads 'used').
+      const recheck = await lookupSetupToken(token)
+      const reason = !recheck.ok && recheck.reason === 'superseded' ? 'superseded' : 'used'
+      return NextResponse.json(
+        {
+          ok: false,
+          reason,
+          error:
+            reason === 'superseded'
+              ? 'A newer setup link replaced this one. Open your most recent Welcome email, or email yourself a fresh link from this page.'
+              : 'Your account is already set up. Sign in with the password you created, or use "Forgot password" on the sign-in page.',
+        },
+        { status: 400 },
+      )
     }
 
     const supabase = db()
@@ -55,13 +80,22 @@ export async function POST(req: NextRequest) {
     })
     if (updateErr) {
       console.error('[setup-account/complete] updateUserById failed:', updateErr.message)
+      // This request was the sole consumer and the password stayed unset —
+      // restore the token so the same link works for a retry instead of
+      // burning one link per failed attempt.
+      await supabase
+        .from('setup_tokens')
+        .update({ used_at: null })
+        .eq('token', token)
       return NextResponse.json(
-        { ok: false, error: 'Could not set password. Please try again or contact aloha@vitalkauai.com.' },
+        {
+          ok: false,
+          error:
+            'Something interrupted the setup. Give it another try in a moment, or contact aloha@vitalkauai.com.',
+        },
         { status: 500 },
       )
     }
-
-    await markSetupTokenUsed(token)
 
     return NextResponse.json({ ok: true, email: lookup.email })
   } catch (err: any) {

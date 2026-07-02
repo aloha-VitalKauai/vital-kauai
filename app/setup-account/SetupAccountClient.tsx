@@ -23,6 +23,9 @@ export default function SetupAccountClient() {
   const [error, setError]           = useState<string | null>(null)
   const [errorMsg, setErrorMsg]     = useState<string | null>(null)
   const [userName, setUserName]     = useState('')
+  const [resendEmail, setResendEmail] = useState('')
+  const [resendState, setResendState] = useState<'idle' | 'sending' | 'sent' | 'failed'>('idle')
+  const [errReason, setErrReason]     = useState<string | null>(null)
 
   useEffect(() => {
     async function init() {
@@ -44,17 +47,20 @@ export default function SetupAccountClient() {
             setStage('set-password')
             return
           }
+          setErrReason(data.reason || null)
           setErrorMsg(
             data.reason === 'expired'
-              ? 'This setup link has expired. Use "Forgot password" on the sign-in page to get a fresh one.'
-              : data.reason === 'used'
-                ? 'This setup link has already been used. Sign in with the password you created, or use "Forgot password".'
-                : 'This setup link is invalid. Use "Forgot password" on the sign-in page to get a fresh one.',
+              ? 'This setup link has expired. Enter your email below and we’ll send a fresh one to the address we have on file.'
+              : data.reason === 'superseded'
+                ? 'A newer setup link replaced this one. Open your most recent Welcome email, or enter your email below for a fresh link.'
+                : data.reason === 'used'
+                  ? 'Your account is already set up. Sign in with the password you created, or use “Forgot password” on the sign-in page.'
+                  : 'Enter your email below and we’ll send a working setup link to the address we have on file.',
           )
           setStage('error')
           return
         } catch {
-          setErrorMsg('We could not verify this link. Please try again or use "Forgot password" on the sign-in page.')
+          setErrorMsg('Enter your email below and we’ll send a fresh setup link to the address we have on file.')
           setStage('error')
           return
         }
@@ -89,7 +95,7 @@ export default function SetupAccountClient() {
         }
       }
 
-      setErrorMsg('Setup links expire after 30 days. Go to the sign-in page and use "Forgot password" to get a fresh one sent to your email.')
+      setErrorMsg('Setup links stay good for 30 days. Enter your email below and we’ll send a fresh one to the address we have on file.')
       setStage('error')
     }
     init()
@@ -112,6 +118,7 @@ export default function SetupAccountClient() {
   }
 
   async function handleSubmit() {
+    if (submitting) return
     setError(null)
     if (password.length < 8) { setError('Password must be at least 8 characters.'); return }
     if (password !== confirm) { setError('Passwords don’t match.'); return }
@@ -126,6 +133,15 @@ export default function SetupAccountClient() {
         })
         const data = await res.json()
         if (!res.ok || !data.ok) {
+          // Token became stale mid-flight (used/superseded/expired) — route to
+          // the recovery screen so the fresh-link form is right there.
+          if (['used', 'superseded', 'expired', 'not_found'].includes(data?.reason)) {
+            setErrReason(data.reason)
+            setErrorMsg(data.error || 'Enter your email below and we’ll send a fresh setup link to the address we have on file.')
+            setStage('error')
+            setSubmitting(false)
+            return
+          }
           setError(data.error || 'Something went wrong. Please try again.')
           setSubmitting(false)
           return
@@ -180,19 +196,76 @@ export default function SetupAccountClient() {
     </div>
   )
 
-  if (stage === 'error') return (
-    <div style={base}>
-      <div style={{ background: '#1a2e1c', borderRadius: 8, padding: '52px 44px', maxWidth: 440, width: '100%', textAlign: 'center' }}>
-        <h1 style={{ color: '#f5f0e8', fontFamily: 'Georgia,serif', fontWeight: 400, fontSize: 24, margin: '0 0 16px' }}>This link can&rsquo;t be used</h1>
-        <p style={{ color: 'rgba(245,240,232,0.6)', fontFamily: 'sans-serif', fontSize: 15, lineHeight: 1.6, marginBottom: 32 }}>
-          {errorMsg || 'Setup links expire after 30 days. Go to the sign-in page and use “Forgot password” to get a fresh one sent to your email.'}
-        </p>
-        <a href="/login" style={{ display: 'block', background: '#c8a96e', color: '#1a2e1c', textDecoration: 'none', textAlign: 'center', padding: '15px', borderRadius: 6, fontFamily: 'sans-serif', fontSize: 13, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-          Go to sign-in page
-        </a>
+  if (stage === 'error') {
+    const alreadySetUp = errReason === 'used'
+    const canResend = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(resendEmail.trim())
+    async function handleResend() {
+      if (!canResend || resendState === 'sending') return
+      setResendState('sending')
+      try {
+        const res = await fetch('/api/setup-account/resend', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: resendEmail.trim() }),
+        })
+        setResendState(res.ok ? 'sent' : 'failed')
+      } catch {
+        setResendState('failed')
+      }
+    }
+    return (
+      <div style={base}>
+        <div style={{ background: '#1a2e1c', borderRadius: 8, padding: '52px 44px', maxWidth: 440, width: '100%', textAlign: 'center' }}>
+          <h1 style={{ color: '#f5f0e8', fontFamily: 'Georgia,serif', fontWeight: 400, fontSize: 24, margin: '0 0 16px' }}>
+            {alreadySetUp ? <>You&rsquo;re all set &mdash; sign in</> : <>Let&rsquo;s get you a working link</>}
+          </h1>
+          <p style={{ color: 'rgba(245,240,232,0.6)', fontFamily: 'sans-serif', fontSize: 15, lineHeight: 1.6, marginBottom: 28 }}>
+            {errorMsg || 'Enter your email below and we’ll send a fresh setup link to the address we have on file.'}
+          </p>
+          {alreadySetUp ? (
+            <a href="/login" style={{ display: 'block', background: '#c8a96e', color: '#1a2e1c', textDecoration: 'none', textAlign: 'center', padding: '15px', borderRadius: 6, fontFamily: 'sans-serif', fontSize: 13, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+              Go to the sign-in page
+            </a>
+          ) : (
+            <>
+              {resendState === 'sent' ? (
+                <p style={{ background: 'rgba(93,202,165,0.1)', border: '1px solid rgba(93,202,165,0.3)', borderRadius: 6, color: '#5DCAA5', fontFamily: 'sans-serif', fontSize: 14, lineHeight: 1.6, padding: '14px 16px', marginBottom: 28, textAlign: 'left' }}>
+                  Check your inbox in a moment — if an account for that email still needs setup, a fresh link is on its way. It stays good for up to 30 days. Need a hand? Write to aloha@vitalkauai.com and we&rsquo;ll get you set up.
+                </p>
+              ) : (
+                <div style={{ marginBottom: 28 }}>
+                  {resendState === 'failed' && (
+                    <p style={{ background: 'rgba(224,92,58,0.12)', border: '1px solid rgba(224,92,58,0.3)', borderRadius: 6, color: '#e05c3a', fontFamily: 'sans-serif', fontSize: 14, lineHeight: 1.6, padding: '12px 16px', marginBottom: 12, textAlign: 'left' }}>
+                      Something interrupted that — give it another try.
+                    </p>
+                  )}
+                  <input
+                    type="email"
+                    value={resendEmail}
+                    onChange={e => setResendEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    autoComplete="email"
+                    onKeyDown={e => e.key === 'Enter' && handleResend()}
+                    style={{ width: '100%', background: 'rgba(245,240,232,0.06)', border: '1px solid rgba(245,240,232,0.12)', borderRadius: 6, color: '#f5f0e8', fontFamily: 'sans-serif', fontSize: 16, padding: '14px 16px', outline: 'none', marginBottom: 12, textAlign: 'center' }}
+                  />
+                  <button
+                    onClick={handleResend}
+                    disabled={!canResend || resendState === 'sending'}
+                    style={{ width: '100%', background: canResend ? '#c8a96e' : 'rgba(200,169,110,0.4)', color: '#1a2e1c', border: 'none', borderRadius: 6, fontFamily: 'sans-serif', fontSize: 13, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', padding: '15px', cursor: canResend ? 'pointer' : 'default' }}
+                  >
+                    {resendState === 'sending' ? 'Sending…' : 'Email me a fresh setup link'}
+                  </button>
+                </div>
+              )}
+              <a href="/login" style={{ display: 'block', color: 'rgba(245,240,232,0.55)', textDecoration: 'underline', textAlign: 'center', fontFamily: 'sans-serif', fontSize: 13 }}>
+                Go to the sign-in page
+              </a>
+            </>
+          )}
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   if (stage === 'success') return (
     <div style={base}>
