@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import {
+  PUBLIC_CEREMONY_DATES_VISIBLE,
   fetchPublicCohorts,
   formatCohortRange,
   groupCohortsByDate,
@@ -36,6 +37,7 @@ export function UpcomingCeremoniesPage() {
   }, []);
 
   useEffect(() => {
+    if (!PUBLIC_CEREMONY_DATES_VISIBLE) { setLoaded(true); return; } // shows "Dates coming soon"
     const supabase = createClient();
     fetchPublicCohorts(supabase)
       .then(setPublicCohorts)

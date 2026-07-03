@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { fetchPublicCohorts, formatCohortRange, groupCohortsByDate, isCohortFull, spotsLeftLabel, type PublicCohort } from "@/lib/cohorts";
+import { PUBLIC_CEREMONY_DATES_VISIBLE, fetchPublicCohorts, formatCohortRange, groupCohortsByDate, isCohortFull, spotsLeftLabel, type PublicCohort } from "@/lib/cohorts";
 import styles from "./home-page.module.css";
 
 const teamMembers = [
@@ -108,6 +108,7 @@ export function HomePage() {
   const pageRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
+    if (!PUBLIC_CEREMONY_DATES_VISIBLE) return; // cards render as TBA / Dates Coming
     const supabase = createClient();
     fetchPublicCohorts(supabase).then(setPublicCohorts).catch(() => setPublicCohorts([]));
   }, []);

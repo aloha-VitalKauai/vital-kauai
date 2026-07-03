@@ -2,13 +2,18 @@
 
 import { useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { fetchPublicCohorts, formatCohortRange, groupCohortsByDate, isCohortFull, spotsLeftLabel } from "@/lib/cohorts";
+import { PUBLIC_CEREMONY_DATES_VISIBLE, fetchPublicCohorts, formatCohortRange, groupCohortsByDate, isCohortFull, spotsLeftLabel } from "@/lib/cohorts";
 
 export function StayPage() {
   useEffect(() => {
     let cancelled = false;
     const supabase = createClient();
-    fetchPublicCohorts(supabase).then((rawCohorts) => {
+    // With public dates hidden, run the same pipeline with an empty list so
+    // the hero keeps its plain location line and the cards render TBA.
+    const cohortsPromise = PUBLIC_CEREMONY_DATES_VISIBLE
+      ? fetchPublicCohorts(supabase)
+      : Promise.resolve([]);
+    cohortsPromise.then((rawCohorts) => {
       if (cancelled) return;
       const cohorts = groupCohortsByDate(rawCohorts);
       // "Next Ceremony" treatment lands on the first non-Full slot so a
