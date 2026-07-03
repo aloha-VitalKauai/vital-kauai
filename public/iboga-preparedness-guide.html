@@ -673,11 +673,41 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 
 /* ── PRINT ── */
+.print-bar {
+  background: var(--cream);
+  padding: 0.75rem 2rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.print-bar span {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+}
+.btn-print {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  background: transparent;
+  color: #9A7A3E;
+  border: 1px solid var(--gold);
+  padding: 0.45rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-print:hover { background: var(--gold); color: var(--forest); }
+
 @media print {
   html, body { background: #F3EEE6; margin: 0; padding: 0; }
   .hero { page-break-after: always; }
   .toc { display: none; }
   nav { display: none; }
+  .print-bar, .btn-print { display: none !important; }
   .section { page-break-before: auto; padding-top: 36px !important; padding-bottom: 36px !important; }
   .section-warm { background: var(--warm-white) !important; }
   .section-cream { background: #F3EEE6 !important; }
@@ -753,6 +783,12 @@ footer a { color: rgba(200,169,110,0.38); text-decoration: none; }
   <span class="nav-badge">Iboga Preparedness Guide</span>
   <a href="/portal" class="nav-back" onclick="event.preventDefault(); if (window.__vkReturnTo) { window.location.href = window.__vkReturnTo; return false; } var r = document.referrer; if (r &amp;&amp; r.indexOf(location.origin) === 0 &amp;&amp; r !== location.href) { window.history.back(); } else { window.location.href = '/portal'; } return false;">← Return to Portal</a>
 </nav>
+
+<!-- PRINT / DOWNLOAD BAR -->
+<div class="print-bar">
+  <span>Save for offline reading</span>
+  <button class="btn-print" onclick="window.print()">Download / Print</button>
+</div>
 
 <!-- HERO -->
 <div class="hero">
