@@ -11,7 +11,7 @@ const PRACTICAL_ITEMS = [
   { label: "Sarongs", note: "Versatile for the beach, lounging, and ceremony spaces" },
   { label: "Eye mask and earplugs", note: "The island roosters are enthusiastic \u2014 earplugs make for deeper rest" },
   { label: "Notebook or journal" },
-  { label: "Swimwear" },
+  { label: "Swimwear", note: "Swim goggles and a wetsuit top recommended; snorkel gear optional." },
   { label: "Flip-flops or sandals" },
   { label: "Sunglasses" },
   { label: "Sun hat" },
@@ -34,7 +34,8 @@ const SACRED_ITEMS = [
 ];
 
 const IBOGA_ITEMS = [
-  { label: "Comfortable all-white outfit", note: "White is worn as a reflection of openness and intention. Bring enough for the full ceremony period." },
+  { label: "Comfortable all-black outfit", note: "Worn for the first ceremony, honoring what is being released." },
+  { label: "Comfortable all-white outfit", note: "Worn for the second ceremony as a reflection of purification and rebirth." },
   { label: "Sleep aid", note: "Iboga is a stimulant and sleep in the days following ceremony can be challenging. Consult with your doctor before arrival about a sleep aid or prescription support, and fill it in advance so you have it on hand." },
 ];
 
