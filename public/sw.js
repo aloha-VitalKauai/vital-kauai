@@ -14,7 +14,7 @@
 // themselves. A subsequent deploy can restore behavior or leave the
 // site SW-free.
 
-const CACHE_NAME = "vk-shell-v2";
+const CACHE_NAME = "vk-shell-v3";
 
 self.addEventListener("install", () => {
   // Activate the new SW immediately. Safe because we don't precache

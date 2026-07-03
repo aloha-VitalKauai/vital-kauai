@@ -426,7 +426,7 @@ export function HomePage() {
             />
           </div>
           <div className={styles.medicineContent}>
-            <p className={styles.sectionLabel}>The Plant Medicine</p>
+            <p className={styles.sectionLabel}>The Plant Ally</p>
             <h2 className={styles.sectionTitle}>
               Iboga —
               <br />
