@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { PrintBar } from "./PrintBar";
 
 export const metadata = { title: "Ceremony Guidelines — Vital Kauaʻi" };
 
@@ -19,7 +20,7 @@ export default async function CeremonyGuidelinesPage() {
 
   function Card({ accent, icon, title, children }: { accent: string; icon: string; title: string; children: React.ReactNode }) {
     return (
-      <div style={{ background: cardBg, border: `1px solid ${rule}`, borderRadius: 2, padding: "2.25rem 2.5rem", marginBottom: "1.75rem", position: "relative", borderLeft: `3px solid ${accent}` }}>
+      <div className="cg-card" style={{ background: cardBg, border: `1px solid ${rule}`, borderRadius: 2, padding: "2.25rem 2.5rem", marginBottom: "1.75rem", position: "relative", borderLeft: `3px solid ${accent}` }}>
         <span style={{ fontSize: "1.3rem", marginBottom: "0.6rem", display: "block" }}>{icon}</span>
         <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500, fontSize: "1.45rem", marginBottom: "1rem", lineHeight: 1.2 }}>{title}</h3>
         {children}
@@ -32,8 +33,9 @@ export default async function CeremonyGuidelinesPage() {
   const agreementItem: React.CSSProperties = { fontSize: "0.875rem", color: ink, padding: "0.55rem 0 0.55rem 2rem", position: "relative", borderBottom: "1px solid rgba(184,149,106,0.12)", lineHeight: 1.65 };
 
   return (
-    <div style={{ minHeight: "100vh", background: cream, fontFamily: "'Jost', sans-serif", fontWeight: 300, lineHeight: 1.75, color: ink }}>
-      {/* Nav */}
+    <div className="cg-page" style={{ minHeight: "100vh", background: cream, fontFamily: "'Jost', sans-serif", fontWeight: 300, lineHeight: 1.75, color: ink }}>
+      {/* Print / download bar — matches the static portal guides */}
+      <PrintBar />
 
       <div style={{ maxWidth: 820, margin: "0 auto", padding: "3rem 1.5rem 5rem" }}>
         {/* Header */}
