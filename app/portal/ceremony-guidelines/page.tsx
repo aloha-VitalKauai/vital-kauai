@@ -43,7 +43,7 @@ export default async function CeremonyGuidelinesPage() {
           <span style={{ display: "block", fontWeight: 400, fontSize: "0.7rem", letterSpacing: "0.22em", textTransform: "uppercase", color: gold, marginBottom: "0.75rem" }}>Member Portal</span>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "clamp(2rem, 5vw, 2.75rem)", lineHeight: 1.2, marginBottom: "1.25rem" }}>Ceremony Guidelines</h2>
           <p style={{ fontSize: "0.95rem", color: inkSoft, maxWidth: 580, margin: "0 auto", lineHeight: 1.8 }}>
-            These guidelines exist to support your deepest transformation. They are a living invitation, held with care by your facilitators and by each person who enters this space.
+            These guidelines exist to support your deepest transformation. They are an invitation, held with care by your facilitators and by each person who enters this space.
           </p>
           <div style={{ width: 48, height: 1, background: gold, margin: "1.5rem auto 0" }} />
         </div>
@@ -54,7 +54,7 @@ export default async function CeremonyGuidelinesPage() {
           <ul style={{ listStyle: "none", padding: 0, margin: "0.75rem 0 0" }}>
             {[
               "I align with my highest positive intention for the good of all.",
-              "I arrive on time, having eaten lightly and remained free of alcohol and substances.",
+              "I arrive on time, and I remain free of caffeine, alcohol, and substances.",
               "I hold complete confidentiality, the identities, experiences, and private shares of those in this space stay within it.",
               "I keep ceremony and session spaces photo-free, video-free, and social-media-free.",
               "I respect all practices, protocols, and teachings as proprietary to Vital Kaua\u02BBi and hold them within this container.",
@@ -100,11 +100,10 @@ export default async function CeremonyGuidelinesPage() {
             {[
               { bold: "Alone Together:", text: " Imagine a soft energy bubble around you. Stay anchored in your own process." },
               { bold: "Body Wisdom:", text: " Relax and be present. Your body holds intelligence that the thinking mind cannot access." },
-              { bold: "Heart Guardians:", text: " You are always held and protected within this container. Surrender is safe here." },
-              { bold: "Everything is a suggestion:", text: " The invitations we offer are exactly that. Your body\u2019s wisdom always takes precedence." },
+              { bold: "Facilitators as Heart Guardians:", text: " You are always held and protected within this container. Surrender is safe here." },
+              { bold: "Everything we offer is a suggestion.", text: "" },
               { bold: "Trauma and activation:", text: " When your body activates, breath, sound, and gentle movement are your guides back to presence." },
-              { bold: "Save questions:", text: " Hold questions until the designated Q&A time so the space stays open for everyone." },
-              { bold: "Gentleness:", text: " Be gentle with yourself and with one another. This is the most important thing." },
+              { bold: "Gentleness:", text: " Be gentle with yourself and with one another." },
             ].map((item) => (
               <li key={item.bold} style={listItem}>
                 <span style={{ position: "absolute", left: 0, color: gold, fontWeight: 400 }}>&mdash;</span>
@@ -119,7 +118,7 @@ export default async function CeremonyGuidelinesPage() {
           <p style={p}>Your facilitators hold this space as mirrors, guides, and fellow travelers, never as authority over your experience.</p>
           <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0" }}>
             {[
-              { bold: "Healer as Mirror:", text: " Your facilitators are human. When personal material arises in us, we name it internally and return our full presence to you." },
+              { bold: "Facilitator as Mirror:", text: " Your facilitators are human. When personal material arises in us, we name it internally and return our full presence to you." },
               { bold: "Empathic Presence:", text: " We meet you in your experience — accompanying rather than absorbing, witnessing rather than fixing." },
               { bold: "Unconditional Love:", text: " There is nothing you can bring into this space that will be met with anything other than compassionate presence." },
               { bold: "Trust & Sovereignty:", text: " We hold structure and safety \u2014 and within that, we honor your process fully." },
