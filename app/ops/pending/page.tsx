@@ -45,7 +45,17 @@ export default function PendingApprovalsPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token: lead.approval_token, decidedBy: 'dashboard' }),
     })
-    showToast(res.ok ? `\u2713 ${lead.full_name} approved \u2014 invite sent` : 'Something went wrong. Try again.')
+    const data = await res.json().catch(() => ({} as { warning?: string; error?: string }))
+    // The approval can commit while the Welcome email fails \u2014 surface that
+    // warning so the founder knows to use "Resend setup link".
+    showToast(
+      res.ok
+        ? data.warning
+          ? `\u26a0 ${data.warning}`
+          : `\u2713 ${lead.full_name} approved \u2014 invite sent`
+        : data.error || 'Something went wrong. Try again.',
+      data.warning ? 9000 : 4000,
+    )
     if (res.ok) loadLeads()
     setActing(null)
   }
@@ -74,9 +84,9 @@ export default function PendingApprovalsPage() {
     setActing(null)
   }
 
-  function showToast(msg: string) {
+  function showToast(msg: string, ms = 4000) {
     setToast(msg)
-    setTimeout(() => setToast(null), 4000)
+    setTimeout(() => setToast(null), ms)
   }
 
   function formatAgo(date: Date) {
@@ -161,7 +171,7 @@ export default function PendingApprovalsPage() {
       </div>
 
       {toast && (
-        <div style={{ position: 'fixed', bottom: 32, left: '50%', transform: 'translateX(-50%)', background: '#c8a96e', color: '#1a2e1c', padding: '12px 24px', borderRadius: 6, fontFamily: 'sans-serif', fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap' }}>
+        <div style={{ position: 'fixed', bottom: 32, left: '50%', transform: 'translateX(-50%)', background: '#c8a96e', color: '#1a2e1c', padding: '12px 24px', borderRadius: 6, fontFamily: 'sans-serif', fontSize: 14, fontWeight: 600, maxWidth: 520, textAlign: 'center' }}>
           {toast}
         </div>
       )}

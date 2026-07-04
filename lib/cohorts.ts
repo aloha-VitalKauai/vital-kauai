@@ -1,5 +1,14 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
+/**
+ * Public-site switch for scheduled ceremony dates. While false, the marketing
+ * pages (home, stay, iboga-journey, upcoming-ceremonies) skip the cohort
+ * fetch and render their "TBA / Dates Coming" states, and the stay-page hero
+ * keeps its plain "Hanalei, Kauaʻi" line. The member portal scheduling form
+ * reads cohorts directly and stays live. Flip to true to show dates again.
+ */
+export const PUBLIC_CEREMONY_DATES_VISIBLE = false
+
 export type PublicCohort = {
   id: string
   title: string
