@@ -574,7 +574,7 @@ export function HomePage() {
         </div>
 
         <div className={`${styles.offeringTags} ${styles.reveal}`}>
-          {["1:1 Somatic Coaching (PNE)", "Nervous System Safety", "Clear Integration Plan", "Held in Community"].map(
+          {["1:1 Somatic Coaching (PNE)", "Nervous System Safety", "Evidence-Informed Preparation & Integration Plan", "Held in Community"].map(
             (tag, index) => (
               <span key={tag} className={index % 2 === 0 ? styles.tagSage : styles.tagGold}>
                 {tag}
