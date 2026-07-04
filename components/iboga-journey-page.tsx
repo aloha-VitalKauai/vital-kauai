@@ -121,7 +121,7 @@ export function IbogaJourneyPage() {
         />
         <div className={styles.heroOverlay} />
         <div className={styles.heroContent}>
-          <p className={styles.heroEyebrow}>Godparent Medicine &middot; Immersive Protocol</p>
+          <p className={styles.heroEyebrow}>Godparent Plant &middot; Immersive Protocol</p>
           <h1 className={styles.heroTitle}>
             The Iboga
             <br />
