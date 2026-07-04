@@ -684,14 +684,30 @@ export default function PreCeremonyPage() {
             <section className="w1-section" id="week-video">
               <span className="section-label">Message from the Founders</span>
               <div className="video-frame">
-                <div className="video-primer">
-                  <div className="vp-play"><span className="vp-play-icon">▶</span></div>
-                  <div>
-                    <div className="vp-label">{w.video.label}</div>
-                    <div className="vp-text">{w.video.text}</div>
-                    <div className="vp-coming-soon">Coming Soon</div>
+                {'url' in w.video && w.video.url ? (
+                  <>
+                    <div className="video-embed">
+                      <iframe
+                        src={w.video.url}
+                        title={w.video.label}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    </div>
+                    <div className="vp-text" style={{ background: 'var(--forest)', padding: '18px 22px' }}>
+                      {w.video.text}
+                    </div>
+                  </>
+                ) : (
+                  <div className="video-primer">
+                    <div className="vp-play"><span className="vp-play-icon">▶</span></div>
+                    <div>
+                      <div className="vp-label">{w.video.label}</div>
+                      <div className="vp-text">{w.video.text}</div>
+                      <div className="vp-coming-soon">Coming Soon</div>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </section>
 
