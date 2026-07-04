@@ -61,7 +61,7 @@ const PHASES: Phase[] = [
       "Sound healing ceremony",
       "Hoʻoponopono ceremony",
       "Nourishment sourced from the ʻāina",
-      "Group support and 1:1 integration with your integration guide",
+      "Group support",
       "Held by experienced facilitators from arrival through closing",
     ],
     image: "/images/ibogabark.jpeg",
