@@ -55,7 +55,7 @@ export const WEEKS = [
     subtitle: 'This is the beginning of something real.',
     sub: 'You are the creator of your life. This first week is an invitation to honestly look at the reality you have created for yourself. It’s an opportunity to notice the patterns, environments, relationships, thoughts, and beliefs that have shaped your current experience, and from that awareness begin creating in a way that is more aligned with who you truly are.',
     italic: 'This week calls for presence. Just begin.',
-    video: { label: 'A Message from Rachel & Josh · Week 1', text: 'In this week’s video, Rachel and Josh share what Ike has meant in their own lives and how it has shaped the way they walk through the world.', url: 'https://www.youtube.com/embed/_qdr02dq_NU' },
+    video: { label: 'A Message from Rachel & Josh · Week 1', text: 'In this opening session of the Vital Kauaʻi series, we explore ʻIke — the Hawaiian principle of seeing, knowing, and perceiving — and how your awareness shapes the reality you experience. We move from the science of the mind and body as one system, through epigenetics and neuroplasticity, to what it means to live beyond the senses.', url: 'https://www.youtube.com/embed/_qdr02dq_NU' },
     box: { type: 'info', label: 'The most important safety factor is your honesty.', text: 'Your labs, your diet, and your supplement plan all matter—but it\'s your willingness to see yourself clearly that shapes how the medicine meets you. Iboga brings truth to the surface. When you arrive having already begun that process with yourself, the experience becomes something you can move through with awareness. This is how the medicine meets you.' },
     actionLabel: 'Actions this week, 4 only',
     actions: [
