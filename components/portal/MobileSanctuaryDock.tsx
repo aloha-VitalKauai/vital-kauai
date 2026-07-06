@@ -16,7 +16,10 @@ import { usePathname } from "next/navigation";
 
 const ITEMS: { label: string; href: string }[] = [
   { label: "Dashboard", href: "/portal" },
-  { label: "Journey", href: "/portal/integration/pre-ceremony" },
+  // Journey routes through the wayfinder, which drops the member on the
+  // calendar week they're in — pre-ceremony preparation before ceremony
+  // day, post-ceremony integration after.
+  { label: "Journey", href: "/portal/journey" },
   { label: "Resources", href: "/portal/resources" },
   { label: "Contribute", href: "/portal/donate" },
 ];

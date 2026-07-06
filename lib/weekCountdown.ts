@@ -75,3 +75,29 @@ export function getWeekCountdown(
 
   return { phase, daysUntilStart, daysUntilEnd, label };
 }
+
+/**
+ * The (arc, week) a member is in right now, by the same calendar the
+ * weekly journey emails follow. Clamped at both ends: earlier than 42
+ * days before ceremony lands on pre Week 1; later than 42 days after
+ * lands on post Week 6. Returns null if the ceremony date is unknown —
+ * caller can fall back to the resume-where-you-left-off behavior.
+ */
+export function getCurrentArcWeek(
+  ceremonyStartAt: string | null | undefined,
+  now: Date = new Date(),
+): { arc: WeekArc; weekIndex: number } | null {
+  if (!ceremonyStartAt) return null;
+  const ceremony = new Date(ceremonyStartAt);
+  if (Number.isNaN(ceremony.getTime())) return null;
+
+  // Days since pre-ceremony Week 1 began (42 days before ceremony).
+  const arcStart = new Date(ceremony.getTime() - 42 * MS_PER_DAY);
+  const daysIn = diffDaysUTC(now, arcStart);
+  if (daysIn < 0) return { arc: "pre", weekIndex: 0 };
+
+  // Weeks 0..5 are pre-ceremony; week 6 begins on ceremony day.
+  const week = Math.floor(daysIn / 7);
+  if (week <= 5) return { arc: "pre", weekIndex: week };
+  return { arc: "post", weekIndex: Math.min(week - 6, 5) };
+}

@@ -483,10 +483,21 @@ export default function PostCeremonyPage() {
       setUserId(user.id)
       setUserEmail(user.email ?? '')
 
+      // ?week=N (1–6) forces a specific week and skips the resume-where-you-
+      // left-off behavior. Used by the /portal/journey wayfinder so the
+      // Journey tab lands on the member's current calendar week.
+      const params = new URLSearchParams(window.location.search)
+      const weekParam = parseInt(params.get('week') ?? '', 10)
+      const forcedWeek =
+        Number.isInteger(weekParam) && weekParam >= 1 && weekParam <= 6
+          ? weekParam - 1
+          : null
+
       // #week-N (from the nav dropdown) forces a specific week so the resume
       // logic below doesn't overwrite the deep-link selection.
       const hashMatch = /^#week-([1-6])$/.exec(window.location.hash)
       const hashWeek = hashMatch ? Number(hashMatch[1]) - 1 : null
+      const explicitWeek = forcedWeek ?? hashWeek
 
       const { data } = await supabase
         .from('post_ceremony_progress')
@@ -499,15 +510,20 @@ export default function PostCeremonyPage() {
         setChecklist(data.checklist_items ?? {})
         setWeeklyTracking(data.weekly_tracking ?? {})
         setJournal(data.journal_responses ?? {})
-        if (hashWeek !== null) {
-          setActiveWeek(hashWeek)
+        if (explicitWeek !== null) {
+          setActiveWeek(explicitWeek)
         } else {
           const next = [0,1,2,3,4,5].find(w => !done.has(w))
           setActiveWeek(next !== undefined ? next : 5)
         }
-      } else if (hashWeek !== null) {
-        setActiveWeek(hashWeek)
+      } else if (explicitWeek !== null) {
+        setActiveWeek(explicitWeek)
       }
+
+      if (forcedWeek !== null) {
+        window.scrollTo({ top: 0, behavior: 'auto' })
+      }
+
       setLoading(false)
     }
     load()
