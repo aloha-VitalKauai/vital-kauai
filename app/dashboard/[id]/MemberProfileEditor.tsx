@@ -20,6 +20,7 @@ import {
   type CeremonyRecord,
 } from "./MemberProfileSections";
 import { buildMemberTimeline } from "./memberTimeline";
+import MedicalNotesLog from "@/components/dashboard/MedicalNotesLog";
 /* Integration Specialist options come from the integration_specialists
    table via the `specialists` prop. Same source as /dashboard/integration
    and the portal card — one source of truth. */
@@ -138,6 +139,7 @@ export default function MemberProfileEditor({
   journeyTitle = null,
   journeyEndAt = null,
   specialists = [],
+  nurses = [],
   outcomesRows = [],
   bookedCents = null,
   expenseCents = null,
@@ -161,6 +163,7 @@ export default function MemberProfileEditor({
   journeyTitle?: string | null;
   journeyEndAt?: string | null;
   specialists?: string[];
+  nurses?: Array<{ id: string; full_name: string }>;
   outcomesRows?: Array<Record<string, any>>;
   bookedCents?: number | null;
   expenseCents?: number | null;
@@ -207,6 +210,7 @@ export default function MemberProfileEditor({
   const [phone, setPhone] = useState(member.phone ?? "");
   const [status, setStatus] = useState(member.status ?? "");
   const [assignedPartner, setAssignedPartner] = useState(member.assigned_partner ?? "");
+  const [assignedNurseId, setAssignedNurseId] = useState(member.assigned_nurse_id ?? "");
   const [programPrice, setProgramPrice] = useState(member.program_price?.toString() ?? "");
   const [costOfService, setCostOfService] = useState(member.cost_of_service?.toString() ?? "");
   const [arrivalDate, setArrivalDate] = useState(member.arrival_date ?? "");
@@ -421,6 +425,7 @@ export default function MemberProfileEditor({
         phone: phone.trim() || null,
         status,
         assigned_partner: assignedPartner || null,
+        assigned_nurse_id: assignedNurseId || null,
         program_price: priceNum,
         cost_of_service: costOfService ? Number(costOfService) : null,
         arrival_date: arrivalDate || null,
@@ -728,6 +733,22 @@ export default function MemberProfileEditor({
                     <option value="__custom__">{assignedPartner} (legacy)</option>
                   )}
                 </select>
+              </div>
+              <div>
+                <label style={LABEL}>Assigned nurse</label>
+                <select
+                  style={SELECT}
+                  value={assignedNurseId}
+                  onChange={(e) => setAssignedNurseId(e.target.value)}
+                >
+                  <option value="">— Unassigned —</option>
+                  {nurses.map((n) => (
+                    <option key={n.id} value={n.id}>{n.full_name}</option>
+                  ))}
+                </select>
+                <p style={{ fontSize: 11, color: "#9E9E9A", margin: "4px 0 0" }}>
+                  Nurses come from the Team tab and see this member&rsquo;s medical profile only.
+                </p>
               </div>
               <div>
                 <label style={LABEL}>Journey focus</label>
@@ -1071,8 +1092,11 @@ export default function MemberProfileEditor({
       <IntegrationProgressCards preProgress={preProgress} postProgress={postProgress} />
         </>
       ) : activeTab === "Medical" ? (
-        <div style={CARD}>
-          <MemberMedicalPanel member={medMember} />
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={CARD}>
+            <MemberMedicalPanel member={medMember} />
+          </div>
+          <MedicalNotesLog memberId={member.id} authorRole="founder" />
         </div>
       ) : activeTab === "Intake" ? (
         <IntakeCard intake={intake} memberId={member.id} />

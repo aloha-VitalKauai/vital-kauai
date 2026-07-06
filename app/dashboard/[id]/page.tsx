@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import MemberProfileEditor from "./MemberProfileEditor";
 import { getCurrentBookingForMember } from "@/lib/api/bookings";
+import { NURSE_ROLES } from "@/lib/practitioners";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -188,6 +189,15 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
     .order("name", { ascending: true });
   const specialists = (specialistRows ?? []).map((s) => s.name);
 
+  // Active nurse-eligible practitioners for the Assigned Nurse dropdown.
+  const { data: nurseRows } = await supabase
+    .from("practitioners")
+    .select("id, full_name")
+    .eq("active", true)
+    .in("role", NURSE_ROLES)
+    .order("full_name", { ascending: true });
+  const nurses = (nurseRows ?? []) as Array<{ id: string; full_name: string }>;
+
   const booking = await getCurrentBookingForMember(supabase, id);
 
   return (
@@ -208,6 +218,7 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       journeyTitle={journeyTitle}
       journeyEndAt={journeyEndAt}
       specialists={specialists}
+      nurses={nurses}
       outcomesRows={outcomesRows ?? []}
       bookedCents={bookedCents}
       expenseCents={expenseCents}

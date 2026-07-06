@@ -7,12 +7,16 @@
 export const PRACTITIONER_ROLES = [
   "Medicine Guide",
   "Integration Specialist",
+  "Nurse",
   "Medical / Clinical",
   "Facilitator",
   "Operations",
   "Contractor",
   "Staff",
 ] as const;
+
+// Roster roles eligible for the "Assigned nurse" dropdown on member profiles.
+export const NURSE_ROLES = ["Nurse", "Medical / Clinical"];
 
 export const ENGAGEMENT_TYPES = [
   { value: "contractor", label: "Contractor" },
@@ -85,6 +89,7 @@ export type Practitioner = {
   active: boolean;
   notes: string | null;
   created_at: string;
+  auth_user_id?: string | null;
 };
 
 export type PractitionerDocument = {

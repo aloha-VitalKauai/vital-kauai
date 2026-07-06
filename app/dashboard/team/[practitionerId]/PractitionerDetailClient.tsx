@@ -15,6 +15,7 @@ import {
   ENGAGEMENT_TYPES,
   DOC_TYPES,
   REQUIRED_DOC_TYPES,
+  NURSE_ROLES,
   docTypeLabel,
   paperworkStatus,
   type Practitioner,
@@ -100,6 +101,9 @@ export default function PractitionerDetailClient({
   });
   const [detailsMsg, setDetailsMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
 
+  const [nurseSending, setNurseSending] = useState(false);
+  const [nurseMsg, setNurseMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [upload, setUpload] = useState({
     doc_type: "membership_agreement",
@@ -138,6 +142,31 @@ export default function PractitionerDetailClient({
       }
       router.push("/dashboard/team");
     });
+  }
+
+  async function sendNurseAccess() {
+    setNurseSending(true);
+    setNurseMsg(null);
+    try {
+      const res = await fetch("/api/nurse-access", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ practitioner_id: practitioner.id }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setNurseMsg({ kind: "err", text: data.error || "Something went wrong" });
+      } else if (data.warning) {
+        setNurseMsg({ kind: "err", text: data.warning });
+      } else {
+        setNurseMsg({ kind: "ok", text: `Login link sent to ${practitioner.email}` });
+        router.refresh();
+      }
+    } catch {
+      setNurseMsg({ kind: "err", text: "Network error — try again" });
+    } finally {
+      setNurseSending(false);
+    }
   }
 
   async function handleUpload() {
@@ -373,6 +402,57 @@ export default function PractitionerDetailClient({
               </button>
             </div>
           </div>
+
+          {/* Nurse portal access — shown for clinically-eligible roles */}
+          {NURSE_ROLES.includes(practitioner.role) && (
+            <div style={CARD}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                <p style={{ ...LABEL, marginBottom: 0 }}>Nurse portal access</p>
+                <span
+                  style={{
+                    background: practitioner.auth_user_id ? "#E1F5EE" : "#F1EFE8",
+                    color: practitioner.auth_user_id ? "#085041" : "#6B6B67",
+                    padding: "3px 10px",
+                    borderRadius: 99,
+                    fontSize: 12,
+                    fontWeight: 500,
+                  }}
+                >
+                  {practitioner.auth_user_id ? "Login enabled" : "No login yet"}
+                </span>
+              </div>
+              <p style={{ fontSize: 13, color: "#6B6B67", margin: "0 0 12px", lineHeight: 1.5 }}>
+                A nurse login opens the care-team portal at /nurse: the medical profile,
+                intake form, labs, and notes log for members assigned to them — and
+                nothing else. Assign members from their profile&rsquo;s &ldquo;Assigned nurse&rdquo; field.
+              </p>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                <button
+                  onClick={sendNurseAccess}
+                  disabled={nurseSending || !practitioner.email}
+                  style={{
+                    ...BTN,
+                    background: nurseSending || !practitioner.email ? "#9E9E9A" : "#085041",
+                    cursor: nurseSending || !practitioner.email ? "not-allowed" : "pointer",
+                  }}
+                >
+                  {nurseSending
+                    ? "Sending…"
+                    : practitioner.auth_user_id
+                      ? "Resend login link"
+                      : "Enable login & send setup link"}
+                </button>
+                {!practitioner.email && (
+                  <span style={{ fontSize: 12, color: "#854F0B" }}>Add an email above first.</span>
+                )}
+                {nurseMsg && (
+                  <span style={{ fontSize: 12, color: nurseMsg.kind === "ok" ? "#085041" : "#A32D2D" }}>
+                    {nurseMsg.text}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Upload card */}
           <div style={CARD}>
