@@ -4,15 +4,22 @@ import { getCurrentArcWeek } from "@/lib/weekCountdown";
 
 /**
  * Journey wayfinder. The mobile dock's "Journey" tab lands here; we look
- * up the member's ceremony date and drop them on the calendar week they
- * are in right now — the same week the weekly journey emails follow.
- * Pre-ceremony weeks count down from 42 days before ceremony; on ceremony
- * day the arc hands off to post-ceremony integration.
+ * up the member's ceremony date and drop them on the week they are in
+ * right now — using the same week calendar the weekly journey emails
+ * follow (six preparation weeks before ceremony, six integration weeks
+ * after). Pre-ceremony weeks count down from 42 days before ceremony; on
+ * ceremony day the arc hands off to post-ceremony integration.
  *
- * Members with an unscheduled ceremony (start_at null, schedule_type tbd)
- * go to the preparation page, which resumes at their first uncompleted
- * week. Completed journeys still count — post-ceremony integration runs
- * for six weeks after ceremony day; only canceled journeys are ignored.
+ * A ?week token is appended so a repeat tap re-snaps the integration page
+ * to the current week even when the member has browsed to another week
+ * (the App Router keeps the page mounted across a query-only change, so a
+ * fresh token is what re-triggers the page's re-apply effect).
+ *
+ * When no journey has a ceremony date inside the twelve-week arc — a
+ * member not yet scheduled, booked far out, or long past integration — we
+ * hand off to the integration page without a forced week so its
+ * resume-where-you-left-off logic picks the right week. Only canceled
+ * journeys are ignored; the newest live arc wins for returning members.
  */
 export default async function JourneyPage() {
   const supabase = await createClient();
@@ -21,18 +28,34 @@ export default async function JourneyPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/portal");
 
-  const { data: journey } = await supabase
+  const { data: journeys } = await supabase
     .from("journeys")
-    .select("start_at")
+    .select("start_at, created_at")
     .eq("member_id", user.id)
     .neq("status", "canceled")
     .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(5);
 
-  const current = getCurrentArcWeek(journey?.start_at);
-  if (!current) redirect("/portal/integration/pre-ceremony");
+  const rows = journeys ?? [];
 
-  const page = current.arc === "post" ? "post-ceremony" : "pre-ceremony";
-  redirect(`/portal/integration/${page}?week=${current.weekIndex + 1}`);
+  // Prefer the newest journey whose twelve-week arc contains today.
+  for (const j of rows) {
+    const current = getCurrentArcWeek(j.start_at);
+    if (current) {
+      const page =
+        current.arc === "post" ? "post-ceremony" : "pre-ceremony";
+      redirect(
+        `/portal/integration/${page}?week=${current.weekIndex + 1}&t=${Date.now()}`,
+      );
+    }
+  }
+
+  // No live arc: resume-where-you-left-off. A ceremony already in the past
+  // means integration; otherwise preparation.
+  const latest = rows[0];
+  const ceremonyPast =
+    !!latest?.start_at && new Date(latest.start_at).getTime() < Date.now();
+  redirect(
+    `/portal/integration/${ceremonyPast ? "post-ceremony" : "pre-ceremony"}`,
+  );
 }

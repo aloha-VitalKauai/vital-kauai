@@ -77,11 +77,13 @@ export function getWeekCountdown(
 }
 
 /**
- * The (arc, week) a member is in right now, by the same calendar the
- * weekly journey emails follow. Clamped at both ends: earlier than 42
- * days before ceremony lands on pre Week 1; later than 42 days after
- * lands on post Week 6. Returns null if the ceremony date is unknown —
- * caller can fall back to the resume-where-you-left-off behavior.
+ * The (arc, week) a member is in right now, by the same week calendar the
+ * weekly journey emails follow. The arc spans 42 days before ceremony
+ * through 42 days after (six preparation weeks, then six integration
+ * weeks). Returns null when today falls outside that window — before it
+ * begins, after it ends, or when the ceremony date is unknown — so the
+ * caller can fall back to resume-where-you-left-off instead of pinning
+ * the member to Week 1 or the final week.
  */
 export function getCurrentArcWeek(
   ceremonyStartAt: string | null | undefined,
@@ -94,10 +96,12 @@ export function getCurrentArcWeek(
   // Days since pre-ceremony Week 1 began (42 days before ceremony).
   const arcStart = new Date(ceremony.getTime() - 42 * MS_PER_DAY);
   const daysIn = diffDaysUTC(now, arcStart);
-  if (daysIn < 0) return { arc: "pre", weekIndex: 0 };
+  if (daysIn < 0) return null; // before the arc begins
 
-  // Weeks 0..5 are pre-ceremony; week 6 begins on ceremony day.
+  // Week 0..5 = pre-ceremony; week 6..11 = post-ceremony (week 6 begins on
+  // ceremony day). Beyond week 11 the twelve-week arc is complete.
   const week = Math.floor(daysIn / 7);
   if (week <= 5) return { arc: "pre", weekIndex: week };
-  return { arc: "post", weekIndex: Math.min(week - 6, 5) };
+  if (week <= 11) return { arc: "post", weekIndex: week - 6 };
+  return null; // arc complete
 }
