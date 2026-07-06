@@ -22,6 +22,14 @@ to the App Store. The Xcode project lives at `ios/App/App.xcodeproj`.
 - Release build verified compiling for device (unsigned) with Xcode 26.3.
 - Privacy policy and terms already live on the site: `/privacy-policy`,
   `/terms-of-use` — use those URLs in the listing.
+- App Review demo member provisioned in production
+  (`applereview@vitalkauai.com`, "Kai Makana": Ceremony Scheduled,
+  journey Aug 14 & 16 2026, agreements signed, active contribution).
+  Password shared privately; enter it only in App Store Connect.
+- Screenshots captured at required sizes, signed in as the demo member:
+  `ios/screenshots/` (6 × iPhone 6.9" 1290×2796, 6 × iPad 13"
+  2064×2752).
+- Listing copy drafted for Rachel's review: `ios/APP-STORE-LISTING.md`.
 
 ## One-time setup (requires Rachel/Josh — cannot be done by tooling)
 
