@@ -29,6 +29,8 @@ WITH THE APP
 • Integration — structured support and resources for the weeks and
   months after you return home
 • Contributions — complete payments for your in-person services securely
+• Gentle reminders — arrival and integration check-ins that meet you
+  where you are
 • Quick return — Face ID welcomes you back without retyping your
   password
 
