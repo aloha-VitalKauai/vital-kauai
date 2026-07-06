@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import TeamClient from "./TeamClient";
-import type { Practitioner } from "@/lib/practitioners";
+import { paperworkStatus, type Practitioner, type PaperworkStatus } from "@/lib/practitioners";
 
 export const metadata = { title: "Team — Vital Kauaʻi" };
 
@@ -13,12 +13,20 @@ export default async function TeamPage() {
       .select("id, full_name, email, phone, role, engagement_type, active, notes, created_at")
       .order("active", { ascending: false })
       .order("full_name", { ascending: true }),
-    supabase.from("practitioner_documents").select("practitioner_id"),
+    supabase.from("practitioner_documents").select("practitioner_id, doc_type, expires_at"),
   ]);
 
   const docCounts: Record<string, number> = {};
+  const docsByPractitioner: Record<string, Array<{ doc_type: string; expires_at: string | null }>> = {};
   for (const d of docRows ?? []) {
     docCounts[d.practitioner_id] = (docCounts[d.practitioner_id] ?? 0) + 1;
+    (docsByPractitioner[d.practitioner_id] ??= []).push(d);
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  const paperwork: Record<string, PaperworkStatus> = {};
+  for (const p of practitioners ?? []) {
+    paperwork[p.id] = paperworkStatus(docsByPractitioner[p.id] ?? [], today);
   }
 
   return (
@@ -42,6 +50,7 @@ export default async function TeamPage() {
       <TeamClient
         practitioners={(practitioners ?? []) as Practitioner[]}
         docCounts={docCounts}
+        paperwork={paperwork}
       />
     </div>
   );

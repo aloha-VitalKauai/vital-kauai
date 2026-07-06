@@ -14,7 +14,9 @@ import {
   PRACTITIONER_ROLES,
   ENGAGEMENT_TYPES,
   DOC_TYPES,
+  REQUIRED_DOC_TYPES,
   docTypeLabel,
+  paperworkStatus,
   type Practitioner,
   type PractitionerDocument,
 } from "@/lib/practitioners";
@@ -207,6 +209,12 @@ export default function PractitionerDetailClient({
   }
 
   const today = new Date().toISOString().slice(0, 10);
+  const paperwork = paperworkStatus(documents, today);
+  const docsOnFileByType = new Map(
+    documents
+      .filter((d) => !d.expires_at || d.expires_at >= today)
+      .map((d) => [d.doc_type, d] as const)
+  );
 
   return (
     <div style={{ fontFamily: "var(--font-body, sans-serif)" }}>
@@ -450,7 +458,55 @@ export default function PractitionerDetailClient({
         </div>
 
         {/* Documents on file */}
-        <div style={{ minWidth: 0 }}>
+        <div style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: 16 }}>
+          {/* Required paperwork checklist */}
+          <div style={CARD}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+              <p style={{ ...LABEL, marginBottom: 0 }}>Required paperwork</p>
+              <span
+                style={{
+                  background: paperwork.complete ? "#E1F5EE" : "#FAEEDA",
+                  color: paperwork.complete ? "#085041" : "#854F0B",
+                  padding: "3px 10px",
+                  borderRadius: 99,
+                  fontSize: 12,
+                  fontWeight: 500,
+                }}
+              >
+                {paperwork.complete ? "Complete" : `${paperwork.missing.length} missing`}
+              </span>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {REQUIRED_DOC_TYPES.map((t) => {
+                const doc = docsOnFileByType.get(t);
+                return (
+                  <div key={t} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13 }}>
+                    <span
+                      style={{
+                        width: 18,
+                        height: 18,
+                        borderRadius: "50%",
+                        flexShrink: 0,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 11,
+                        background: doc ? "#085041" : "#F1EFE8",
+                        color: doc ? "#fff" : "#9E9E9A",
+                      }}
+                    >
+                      {doc ? "✓" : "•"}
+                    </span>
+                    <span style={{ color: doc ? "#1A1A18" : "#6B6B67" }}>{docTypeLabel(t)}</span>
+                    <span style={{ color: "#9E9E9A", fontSize: 12, marginLeft: "auto" }}>
+                      {doc ? (doc.signed_at ? `Signed ${fmtDate(doc.signed_at)}` : "On file") : "Missing"}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
           <div style={CARD}>
             <p style={{ ...LABEL, marginBottom: 16 }}>
               Documents on file ({documents.length})

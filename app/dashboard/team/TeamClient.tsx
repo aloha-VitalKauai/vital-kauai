@@ -4,7 +4,13 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { upsertPractitioner, type PractitionerInput } from "./actions";
-import { PRACTITIONER_ROLES, ENGAGEMENT_TYPES, type Practitioner } from "@/lib/practitioners";
+import {
+  PRACTITIONER_ROLES,
+  ENGAGEMENT_TYPES,
+  docTypeLabel,
+  type Practitioner,
+  type PaperworkStatus,
+} from "@/lib/practitioners";
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
@@ -41,9 +47,11 @@ const emptyDraft: PractitionerInput = {
 export default function TeamClient({
   practitioners,
   docCounts,
+  paperwork,
 }: {
   practitioners: Practitioner[];
   docCounts: Record<string, number>;
+  paperwork: Record<string, PaperworkStatus>;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -212,7 +220,7 @@ export default function TeamClient({
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead>
                 <tr>
-                  {["Name", "Role", "Engagement", "Contact", "Documents", "Status"].map((h) => (
+                  {["Name", "Role", "Engagement", "Contact", "Documents", "Paperwork", "Status"].map((h) => (
                     <th
                       key={h}
                       style={{
@@ -253,6 +261,20 @@ export default function TeamClient({
                     </td>
                     <td style={{ padding: "10px 14px", borderBottom: "0.5px solid rgba(0,0,0,0.05)", fontSize: 13, color: "#6B6B67" }}>
                       {docCounts[p.id] ?? 0} on file
+                    </td>
+                    <td style={{ padding: "10px 14px", borderBottom: "0.5px solid rgba(0,0,0,0.05)", fontSize: 12 }}>
+                      {paperwork[p.id]?.complete ? (
+                        <span style={{ background: "#E1F5EE", color: "#085041", padding: "3px 10px", borderRadius: 99, fontWeight: 500 }}>
+                          Complete
+                        </span>
+                      ) : (
+                        <span
+                          style={{ background: "#FAEEDA", color: "#854F0B", padding: "3px 10px", borderRadius: 99, fontWeight: 500 }}
+                          title={`Missing: ${(paperwork[p.id]?.missing ?? []).map(docTypeLabel).join(", ")}`}
+                        >
+                          Missing {paperwork[p.id]?.missing.length ?? 0}
+                        </span>
+                      )}
                     </td>
                     <td style={{ padding: "10px 14px", borderBottom: "0.5px solid rgba(0,0,0,0.05)", fontSize: 12 }}>
                       <span

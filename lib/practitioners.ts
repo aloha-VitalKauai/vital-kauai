@@ -40,6 +40,32 @@ export function docTypeLabel(value: string): string {
   return DOC_TYPES.find((d) => d.value === value)?.label ?? value;
 }
 
+// Paperwork every team member must have on file before they're compliant.
+// Rachel's requirement (2026-07-06): membership agreement + contracting form.
+export const REQUIRED_DOC_TYPES: DocTypeValue[] = [
+  "membership_agreement",
+  "contractor_agreement",
+];
+
+export type PaperworkStatus = {
+  complete: boolean;
+  missing: DocTypeValue[];
+};
+
+// A doc satisfies a requirement only while unexpired.
+export function paperworkStatus(
+  docs: Array<{ doc_type: string; expires_at: string | null }>,
+  today: string
+): PaperworkStatus {
+  const onFile = new Set(
+    docs
+      .filter((d) => !d.expires_at || d.expires_at >= today)
+      .map((d) => d.doc_type)
+  );
+  const missing = REQUIRED_DOC_TYPES.filter((t) => !onFile.has(t));
+  return { complete: missing.length === 0, missing };
+}
+
 // Doc types that carry an expiry date worth tracking (Phase 2 alerts read this).
 export const EXPIRING_DOC_TYPES: DocTypeValue[] = [
   "insurance_coi",
