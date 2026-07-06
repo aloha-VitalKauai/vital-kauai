@@ -10,6 +10,11 @@ to the App Store. The Xcode project lives at `ios/App/App.xcodeproj`.
   checkout, and Vercel domains stay inside the WebView.
 - Native Face ID / Touch ID re-entry lock (`@aparajita/capacitor-biometric-auth`,
   wired in `app/portal/layout.tsx` + `components/portal/BiometricGate.tsx`).
+- Native journey reminders (`@capacitor/local-notifications`): six
+  on-device notifications around each member's journey — one week and
+  one day before arrival, then integration check-ins at 3/7/14/30 days
+  home (`lib/native-notifications.ts`). Scheduled locally; no push
+  server or APNs key needed, so it works ahead of Apple enrollment.
 - Brand app icon (italic serif V, cream on forest) — 1024×1024, opaque,
   compiled into the asset catalog.
 - Privacy manifest (`ios/App/App/PrivacyInfo.xcprivacy`): no tracking,
@@ -144,13 +149,12 @@ to the App Store. The Xcode project lives at `ios/App/App.xcodeproj`.
 
 1. **Guideline 4.2 (minimum functionality)** — the app is a remote-loading
    WebView shell, and 4.2 is actively enforced against "repackaged
-   websites" through 2026. Face ID is currently the sole native feature —
-   thin mitigation on its own. The strongest next moves are push
-   notifications (ceremony reminders, integration check-ins) and a native
-   camera flow — both already scoped as follow-ups in
-   `capacitor.config.ts`. If rejected, use Reply to App Review first
-   (same reviewer, faster) and consider booking a free "Meet with Apple"
-   App Review consultation.
+   websites" through 2026. Native features shipped so far: Face ID
+   re-entry lock and on-device journey reminders (arrival countdowns +
+   integration check-ins). Remote push via APNs and a native camera
+   flow are the strongest additions once enrollment lands. If rejected,
+   use Reply to App Review first (same reviewer, faster) and consider
+   booking a free "Meet with Apple" App Review consultation.
 2. **Substance-related content** — mitigated by the review notes above
    and an honest 16+/18+ rating; the private, login-gated nature helps.
    Never itemize any payment as the purchase of a substance — services
