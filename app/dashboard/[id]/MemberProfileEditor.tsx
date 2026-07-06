@@ -88,6 +88,9 @@ const CARD: React.CSSProperties = {
 
 const INPUT: React.CSSProperties = {
   width: "100%",
+  // Date inputs and selects have wide intrinsic minimums; without this they
+  // refuse to shrink and push the card past its grid track.
+  minWidth: 0,
   padding: "8px 10px",
   border: "0.5px solid rgba(0,0,0,0.15)",
   borderRadius: 6,
@@ -657,11 +660,11 @@ export default function MemberProfileEditor({
         }}
       >
         {/* ── Left column: Editable details ─────────────────── */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
           {/* Member details card */}
           <div style={CARD}>
             <p style={{ ...LABEL, marginBottom: 16 }}>Member details</p>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 14 }}>
               <div style={{ gridColumn: "1 / -1" }}>
                 <label style={LABEL}>Full name</label>
                 <input
@@ -930,7 +933,7 @@ export default function MemberProfileEditor({
         </div>
 
         {/* ── Right column: Read-only data ──────────────────── */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
           {/* Document signing status */}
           <DocumentsCard documents={documents as SignedDocument[]} profile={profile} />
 
