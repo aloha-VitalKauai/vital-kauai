@@ -6,6 +6,7 @@ import { MobileSanctuaryDock } from "@/components/portal/MobileSanctuaryDock";
 import { RegisterServiceWorker } from "@/components/portal/RegisterServiceWorker";
 import { BiometricGate } from "@/components/portal/BiometricGate";
 import { BiometricEnrollPrompt } from "@/components/portal/BiometricEnrollPrompt";
+import { NativeReminderScheduler } from "@/components/portal/NativeReminderScheduler";
 
 export const metadata = { title: "Member Portal — Vital Kauaʻi" };
 
@@ -45,6 +46,7 @@ export default async function PortalLayout({ children }: { children: React.React
       <PortalNav email={user.email ?? ""} />
       <BiometricGate>
         <BiometricEnrollPrompt />
+        <NativeReminderScheduler />
         {children}
         <MobileSanctuaryDock />
       </BiometricGate>

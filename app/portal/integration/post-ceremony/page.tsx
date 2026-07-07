@@ -1,8 +1,8 @@
 'use client'
 
-import { Fragment, useState, useEffect, useCallback } from 'react'
+import { Fragment, Suspense, useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { POST_CEREMONY_WEEKS, POST_PNE_DETAILS } from '@/lib/journal-prompts'
 import { companionsFor } from '@/lib/pne-companions'
@@ -450,8 +450,9 @@ const POST_TO_JOURNAL_MAP: Record<string, string> = {
 }
 
 // ─── Main component ───────────────────────────────────────
-export default function PostCeremonyPage() {
+function PostCeremonyPageInner() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClient()
 
   const [loading, setLoading] = useState(true)
@@ -476,6 +477,20 @@ export default function PostCeremonyPage() {
     return () => window.removeEventListener('hashchange', applyHash)
   }, [])
 
+  // ── Re-apply ?week=N whenever the query changes. The Journey wayfinder
+  // soft-navigates here with a fresh token each tap; the App Router keeps
+  // this component mounted across a search-param-only change, so the mount
+  // effect below never re-runs. Subscribing to searchParams lets a repeat
+  // tap re-snap to the current calendar week even if the member had browsed
+  // to a different week in the meantime.
+  useEffect(() => {
+    const n = parseInt(searchParams.get('week') ?? '', 10)
+    if (Number.isInteger(n) && n >= 1 && n <= 6) {
+      setActiveWeek(n - 1)
+      window.scrollTo({ top: 0, behavior: 'auto' })
+    }
+  }, [searchParams])
+
   useEffect(() => {
     const load = async () => {
       const { data: { user } } = await supabase.auth.getUser()
@@ -483,10 +498,21 @@ export default function PostCeremonyPage() {
       setUserId(user.id)
       setUserEmail(user.email ?? '')
 
+      // ?week=N (1–6) forces a specific week and skips the resume-where-you-
+      // left-off behavior. Used by the /portal/journey wayfinder so the
+      // Journey tab lands on the member's current calendar week.
+      const params = new URLSearchParams(window.location.search)
+      const weekParam = parseInt(params.get('week') ?? '', 10)
+      const forcedWeek =
+        Number.isInteger(weekParam) && weekParam >= 1 && weekParam <= 6
+          ? weekParam - 1
+          : null
+
       // #week-N (from the nav dropdown) forces a specific week so the resume
       // logic below doesn't overwrite the deep-link selection.
       const hashMatch = /^#week-([1-6])$/.exec(window.location.hash)
       const hashWeek = hashMatch ? Number(hashMatch[1]) - 1 : null
+      const explicitWeek = forcedWeek ?? hashWeek
 
       const { data } = await supabase
         .from('post_ceremony_progress')
@@ -499,15 +525,20 @@ export default function PostCeremonyPage() {
         setChecklist(data.checklist_items ?? {})
         setWeeklyTracking(data.weekly_tracking ?? {})
         setJournal(data.journal_responses ?? {})
-        if (hashWeek !== null) {
-          setActiveWeek(hashWeek)
+        if (explicitWeek !== null) {
+          setActiveWeek(explicitWeek)
         } else {
           const next = [0,1,2,3,4,5].find(w => !done.has(w))
           setActiveWeek(next !== undefined ? next : 5)
         }
-      } else if (hashWeek !== null) {
-        setActiveWeek(hashWeek)
+      } else if (explicitWeek !== null) {
+        setActiveWeek(explicitWeek)
       }
+
+      if (forcedWeek !== null) {
+        window.scrollTo({ top: 0, behavior: 'auto' })
+      }
+
       setLoading(false)
     }
     load()
@@ -1045,5 +1076,14 @@ export default function PostCeremonyPage() {
         {saveStatus==='saving' ? 'Saving…' : 'Saved ✓'}
       </div>
     </>
+  )
+}
+
+// useSearchParams requires a Suspense boundary for static prerendering.
+export default function PostCeremonyPage() {
+  return (
+    <Suspense>
+      <PostCeremonyPageInner />
+    </Suspense>
   )
 }

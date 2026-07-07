@@ -1,8 +1,8 @@
 'use client'
 
-import { Fragment, useState, useEffect, useCallback, useRef } from 'react'
+import { Fragment, Suspense, useState, useEffect, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { PRE_CEREMONY_WEEKS, PRE_PNE_DETAILS } from '@/lib/journal-prompts'
 import { companionsFor } from '@/lib/pne-companions'
@@ -133,8 +133,9 @@ const PRE_TO_JOURNAL_MAP: Record<string, string> = {
 }
 
 // ─── Component ────────────────────────────────────────────
-export default function PreCeremonyPage() {
+function PreCeremonyPageInner() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClient()
 
   const [loading, setLoading] = useState(true)
@@ -156,6 +157,20 @@ export default function PreCeremonyPage() {
     window.addEventListener('hashchange', applyHash)
     return () => window.removeEventListener('hashchange', applyHash)
   }, [])
+
+  // ── Re-apply ?week=N whenever the query changes. The Journey wayfinder
+  // soft-navigates here with a fresh token each tap; the App Router keeps
+  // this component mounted across a search-param-only change, so the mount
+  // effect below never re-runs. Subscribing to searchParams lets a repeat
+  // tap re-snap to the current calendar week even if the member had browsed
+  // to a different week in the meantime.
+  useEffect(() => {
+    const n = parseInt(searchParams.get('week') ?? '', 10)
+    if (Number.isInteger(n) && n >= 1 && n <= 6) {
+      setActiveWeek(n - 1)
+      window.scrollTo({ top: 0, behavior: 'auto' })
+    }
+  }, [searchParams])
 
   // ── Auth + data load
   useEffect(() => {
@@ -684,14 +699,30 @@ export default function PreCeremonyPage() {
             <section className="w1-section" id="week-video">
               <span className="section-label">Message from the Founders</span>
               <div className="video-frame">
-                <div className="video-primer">
-                  <div className="vp-play"><span className="vp-play-icon">▶</span></div>
-                  <div>
-                    <div className="vp-label">{w.video.label}</div>
-                    <div className="vp-text">{w.video.text}</div>
-                    <div className="vp-coming-soon">Coming Soon</div>
+                {'url' in w.video && w.video.url ? (
+                  <>
+                    <div className="video-embed">
+                      <iframe
+                        src={w.video.url}
+                        title={w.video.label}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    </div>
+                    <div className="vp-text" style={{ background: 'var(--forest)', padding: '18px 22px' }}>
+                      {w.video.text}
+                    </div>
+                  </>
+                ) : (
+                  <div className="video-primer">
+                    <div className="vp-play"><span className="vp-play-icon">▶</span></div>
+                    <div>
+                      <div className="vp-label">{w.video.label}</div>
+                      <div className="vp-text">{w.video.text}</div>
+                      <div className="vp-coming-soon">Coming Soon</div>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </section>
 
@@ -1146,5 +1177,14 @@ export default function PreCeremonyPage() {
         {saveStatus === 'saving' ? 'Saving…' : 'Saved ✓'}
       </div>
     </>
+  )
+}
+
+// useSearchParams requires a Suspense boundary for static prerendering.
+export default function PreCeremonyPage() {
+  return (
+    <Suspense>
+      <PreCeremonyPageInner />
+    </Suspense>
   )
 }
