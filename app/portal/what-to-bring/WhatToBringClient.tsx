@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 const STORAGE_KEY = "vk-packing-checks";
 
 const PRACTICAL_ITEMS = [
-  { label: "Sarongs", note: "Versatile for the beach, lounging, and ceremony spaces" },
+  { label: "Water bottle" },
   { label: "Eye mask and earplugs", note: "The island roosters are enthusiastic \u2014 earplugs make for deeper rest" },
   { label: "Notebook or journal" },
   { label: "Swimwear", note: "Swim goggles and a wetsuit top recommended; snorkel gear optional." },
@@ -17,6 +17,7 @@ const PRACTICAL_ITEMS = [
   { label: "Sun hat" },
   { label: "Comfortable hiking shoes", note: "Winter (Oct\u2013Apr): waterproof or trail shoes strongly recommended. Summer (May\u2013Sep): sturdy trail shoes or sneakers work well." },
   { label: "Movement and yoga attire" },
+  { label: "Sarongs", note: "Versatile for the beach, lounging, and ceremony spaces" },
   { label: "Warm layers", note: "Winter: sweatshirt, sweatpants, and socks. Summer: a light sweater for cooler evenings." },
   { label: "Enough clothing for the full duration of your stay", note: "Laundry facilities available on property." },
   { label: "Rain jacket" },
