@@ -8,36 +8,36 @@ import { createClient } from "@/lib/supabase/client";
 const STORAGE_KEY = "vk-packing-checks";
 
 const PRACTICAL_ITEMS = [
-  { label: "Water bottle" },
-  { label: "Eye mask and earplugs", note: "The island roosters are enthusiastic \u2014 earplugs make for deeper rest" },
-  { label: "Notebook or journal" },
-  { label: "Swimwear", note: "Swim goggles and a wetsuit top recommended; snorkel gear optional." },
-  { label: "Flip-flops or sandals" },
-  { label: "Sunglasses" },
-  { label: "Sun hat" },
-  { label: "Comfortable hiking shoes", note: "Winter (Oct\u2013Apr): waterproof or trail shoes strongly recommended. Summer (May\u2013Sep): sturdy trail shoes or sneakers work well." },
-  { label: "Movement and yoga attire" },
-  { label: "Sarongs", note: "Versatile for the beach, lounging, and ceremony spaces" },
-  { label: "Warm layers", note: "Winter: sweatshirt, sweatpants, and socks. Summer: a light sweater for cooler evenings." },
-  { label: "Enough clothing for the full duration of your stay", note: "Laundry facilities available on property." },
-  { label: "Rain jacket" },
-  { label: "Zinc-based reef-safe sunscreen", note: "Required for ocean activities. Non-reef-safe sunscreen is banned in Hawai\u02BBi." },
-  { label: "Organic mosquito repellent and/or lavender essential oil" },
-  { label: "Personal toiletries \u2014 shampoo, conditioner, and your favorites", note: "We provide hand soap. Bring everything else you love and rely on." },
-  { label: "Yoga mat (optional)", note: "We have loaners available \u2014 bring your own if you prefer." },
-  { label: "Alarm clock or phone for waking", note: "For those on a digital detox, a simple travel alarm clock keeps mornings device-free." },
-  { label: "Musical instruments, costumes, special poetry, readings, songs (optional)", note: "If something calls to you to bring and offer \u2014 trust that. There will be space for it." },
+  { key: "water-bottle", label: "Water bottle" },
+  { key: "eye-mask-earplugs", label: "Eye mask and earplugs", note: "The island roosters are enthusiastic \u2014 earplugs make for deeper rest" },
+  { key: "notebook", label: "Notebook or journal" },
+  { key: "swimwear", label: "Swimwear", note: "Swim goggles and a wetsuit top recommended; snorkel gear optional." },
+  { key: "flip-flops", label: "Flip-flops or sandals" },
+  { key: "sunglasses", label: "Sunglasses" },
+  { key: "sun-hat", label: "Sun hat" },
+  { key: "hiking-shoes", label: "Comfortable hiking shoes", note: "Winter (Oct\u2013Apr): waterproof or trail shoes strongly recommended. Summer (May\u2013Sep): sturdy trail shoes or sneakers work well." },
+  { key: "movement-attire", label: "Movement and yoga attire" },
+  { key: "sarongs", label: "Sarongs", note: "Versatile for the beach, lounging, and ceremony spaces" },
+  { key: "warm-layers", label: "Warm layers", note: "Winter: sweatshirt, sweatpants, and socks. Summer: a light sweater for cooler evenings." },
+  { key: "clothing-duration", label: "Enough clothing for the full duration of your stay", note: "Laundry facilities available on property." },
+  { key: "rain-jacket", label: "Rain jacket" },
+  { key: "sunscreen", label: "Zinc-based reef-safe sunscreen", note: "Required for ocean activities. Non-reef-safe sunscreen is banned in Hawai\u02BBi." },
+  { key: "mosquito-repellent", label: "Organic mosquito repellent and/or lavender essential oil" },
+  { key: "toiletries", label: "Personal toiletries \u2014 shampoo, conditioner, and your favorites", note: "We provide hand soap. Bring everything else you love and rely on." },
+  { key: "yoga-mat", label: "Yoga mat (optional)", note: "We have loaners available \u2014 bring your own if you prefer." },
+  { key: "alarm-clock", label: "Alarm clock or phone for waking", note: "For those on a digital detox, a simple travel alarm clock keeps mornings device-free." },
+  { key: "instruments", label: "Musical instruments, costumes, special poetry, readings, songs (optional)", note: "If something calls to you to bring and offer \u2014 trust that. There will be space for it." },
 ];
 
 const SACRED_ITEMS = [
-  { label: "Crystals, photos, or other sacred power objects", note: "Anything that carries meaning, memory, or protective energy for you" },
-  { label: "Anything that helps you feel grounded, held, and at home" },
+  { key: "sacred-objects", label: "Crystals, photos, or other sacred power objects", note: "Anything that carries meaning, memory, or protective energy for you" },
+  { key: "grounding-items", label: "Anything that helps you feel grounded, held, and at home" },
 ];
 
 const IBOGA_ITEMS = [
-  { label: "Comfortable all-black outfit", note: "Worn for the first ceremony, honoring what is being released." },
-  { label: "Comfortable all-white outfit", note: "Worn for the second ceremony as a reflection of purification and rebirth." },
-  { label: "Sleep aid", note: "Iboga is a stimulant and sleep in the days following ceremony can be challenging. Consult with your doctor before arrival about a sleep aid or prescription support, and fill it in advance so you have it on hand." },
+  { key: "iboga-black", label: "Comfortable all-black outfit", note: "Worn for the first ceremony, honoring what is being released." },
+  { key: "iboga-white", label: "Comfortable all-white outfit", note: "Worn for the second ceremony as a reflection of purification and rebirth." },
+  { key: "iboga-sleep-aid", label: "Sleep aid", note: "Iboga is a stimulant and sleep in the days following ceremony can be challenging. Consult with your doctor before arrival about a sleep aid or prescription support, and fill it in advance so you have it on hand." },
 ];
 
 const ALL_ITEMS = [...PRACTICAL_ITEMS, ...SACRED_ITEMS, ...IBOGA_ITEMS];
@@ -58,15 +58,17 @@ function CheckSvg() {
 }
 
 export default function WhatToBringClient() {
-  const [checked, setChecked] = useState<boolean[]>([]);
+  const [checked, setChecked] = useState<Record<string, boolean>>({});
   const supabaseRef = useRef(createClient());
   const userIdRef = useRef<string | null>(null);
 
-  // Load this member's checklist. The cache carries the member id and is only
-  // applied when it belongs to the signed-in member, so a shared device never
-  // shows one member's packing progress to another.
+  // Load this member's checklist. Progress is stored as a map of stable
+  // per-item `key` -> true, so adding, removing, or reordering items never
+  // disturbs the checks a member has already made (only editing an item's key
+  // would). The cache carries the member id and is only applied when it
+  // belongs to the signed-in member, so a shared device never shows one
+  // member's packing progress to another.
   useEffect(() => {
-    const blank = () => Array(ALL_ITEMS.length).fill(false);
     let cancelled = false;
     (async () => {
       const { data: { user } } = await supabaseRef.current.auth.getUser();
@@ -74,48 +76,54 @@ export default function WhatToBringClient() {
       userIdRef.current = user?.id ?? null;
       try {
         const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-        if (raw && typeof raw === "object" && user && raw.memberId === user.id
-            && Array.isArray(raw.checks) && raw.checks.length === ALL_ITEMS.length) {
-          setChecked(raw.checks);
-          return;
-        }
-        if (raw && typeof raw === "object" && raw.memberId && (!user || raw.memberId !== user.id)) {
-          // A different member used this device — drop their checklist.
-          localStorage.removeItem(STORAGE_KEY);
+        if (raw && typeof raw === "object" && raw.memberId) {
+          if (user && raw.memberId === user.id
+              && raw.checks && typeof raw.checks === "object" && !Array.isArray(raw.checks)) {
+            // Keep only keys that still exist in the current list.
+            const valid: Record<string, boolean> = {};
+            for (const item of ALL_ITEMS) {
+              if (raw.checks[item.key]) valid[item.key] = true;
+            }
+            setChecked(valid);
+            return;
+          }
+          if (!user || raw.memberId !== user.id) {
+            // A different member used this device — drop their checklist.
+            localStorage.removeItem(STORAGE_KEY);
+          }
         }
       } catch {}
-      setChecked(blank());
+      setChecked({});
     })();
     return () => { cancelled = true };
   }, []);
 
-  function writeChecks(next: boolean[]) {
+  function writeChecks(next: Record<string, boolean>) {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ memberId: userIdRef.current, checks: next })); } catch {}
   }
 
-  function toggle(i: number) {
+  function toggle(key: string) {
     setChecked((prev) => {
-      const next = [...prev];
-      next[i] = !next[i];
+      const next = { ...prev };
+      if (next[key]) delete next[key]; else next[key] = true;
       writeChecks(next);
       return next;
     });
   }
 
   function resetAll() {
-    const next = Array(ALL_ITEMS.length).fill(false);
-    setChecked(next);
-    writeChecks(next);
+    setChecked({});
+    writeChecks({});
   }
 
   const total = ALL_ITEMS.length;
-  const done = checked.filter(Boolean).length;
+  const done = ALL_ITEMS.filter((item) => checked[item.key]).length;
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
 
-  function renderItem(item: { label: string; note?: string }, idx: number) {
-    const isChecked = checked[idx];
+  function renderItem(item: { label: string; note?: string; key: string }) {
+    const isChecked = !!checked[item.key];
     return (
-      <li key={idx} onClick={() => toggle(idx)} style={{ display: "flex", alignItems: "flex-start", gap: 14, padding: "10px 14px", borderRadius: 5, cursor: "pointer", opacity: isChecked ? 0.4 : 1, transition: "background 0.15s" }}>
+      <li key={item.key} onClick={() => toggle(item.key)} style={{ display: "flex", alignItems: "flex-start", gap: 14, padding: "10px 14px", borderRadius: 5, cursor: "pointer", opacity: isChecked ? 0.4 : 1, transition: "background 0.15s" }}>
         <div style={{ width: 20, height: 20, border: `1.5px solid ${isChecked ? ink : border}`, borderRadius: 4, flexShrink: 0, marginTop: 2, display: "flex", alignItems: "center", justifyContent: "center", background: isChecked ? ink : "white", transition: "all 0.15s" }}>
           {isChecked && <CheckSvg />}
         </div>
@@ -166,7 +174,7 @@ export default function WhatToBringClient() {
             <div style={{ flex: 1, height: 1, background: border }} />
           </div>
           <ul style={{ listStyle: "none", display: "grid", gap: 2 }}>
-            {PRACTICAL_ITEMS.map((item, i) => renderItem(item, i))}
+            {PRACTICAL_ITEMS.map((item) => renderItem(item))}
           </ul>
         </div>
 
@@ -178,7 +186,7 @@ export default function WhatToBringClient() {
             <div style={{ flex: 1, height: 1, background: border }} />
           </div>
           <ul style={{ listStyle: "none", display: "grid", gap: 2 }}>
-            {SACRED_ITEMS.map((item, i) => renderItem(item, PRACTICAL_ITEMS.length + i))}
+            {SACRED_ITEMS.map((item) => renderItem(item))}
           </ul>
         </div>
 
@@ -193,7 +201,7 @@ export default function WhatToBringClient() {
           <div style={{ background: goldBg, borderLeft: `3px solid ${gold}`, borderRadius: 8, padding: "20px 24px", marginBottom: 16 }}>
             <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 500, marginBottom: 10, letterSpacing: "0.02em" }}>Iboga Journey</h3>
             <ul style={{ listStyle: "none", display: "grid", gap: 2, padding: 0, margin: 0 }}>
-              {IBOGA_ITEMS.map((item, i) => renderItem(item, PRACTICAL_ITEMS.length + SACRED_ITEMS.length + i))}
+              {IBOGA_ITEMS.map((item) => renderItem(item))}
             </ul>
           </div>
         </div>
