@@ -106,7 +106,7 @@ export async function POST(req: Request) {
   const chargeCents = Math.min(Math.max(Math.round(requested), 100), remaining || requested);
 
   const idempotencyKey = randomUUID();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://vital-kauai.vercel.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://vitalkauai.com";
 
   // 1. Insert pending donation row FIRST so the webhook always has something
   //    to find. square_* IDs fill in below once Square responds.

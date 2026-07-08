@@ -11,7 +11,7 @@ function env() {
   return {
     supabaseUrl:  process.env.NEXT_PUBLIC_SUPABASE_URL!,
     serviceKey:   process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    appUrl:       process.env.NEXT_PUBLIC_APP_URL || 'https://vital-kauai.vercel.app',
+    appUrl:       process.env.NEXT_PUBLIC_APP_URL || 'https://vitalkauai.com',
     resendKey:    process.env.RESEND_API_KEY!,
   }
 }

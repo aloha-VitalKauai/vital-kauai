@@ -17,7 +17,7 @@ export const runtime = "nodejs";
 
 function env() {
   return {
-    siteUrl:    process.env.NEXT_PUBLIC_SITE_URL ?? "https://vital-kauai.vercel.app",
+    siteUrl:    process.env.NEXT_PUBLIC_SITE_URL ?? "https://vitalkauai.com",
     resendKey:  process.env.RESEND_API_KEY,
   };
 }

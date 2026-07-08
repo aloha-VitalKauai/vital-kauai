@@ -4,7 +4,7 @@ import { interpolate, type TransactionalEmailTemplate } from '@/lib/transactiona
 
 export const runtime = 'nodejs'
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://vital-kauai.vercel.app'
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://vitalkauai.com'
 
 /**
  * Renders the founder's draft template (whatever they currently have on
