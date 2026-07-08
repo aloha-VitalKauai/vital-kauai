@@ -33,7 +33,7 @@ function db() {
 }
 function env() {
   return {
-    appUrl:    process.env.NEXT_PUBLIC_APP_URL || 'https://vital-kauai.vercel.app',
+    appUrl:    process.env.NEXT_PUBLIC_APP_URL || 'https://vitalkauai.com',
     resendKey: process.env.RESEND_API_KEY!,
   }
 }

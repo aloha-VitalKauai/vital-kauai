@@ -930,7 +930,7 @@ export default function OpsDashboardPage() {
                     memberName={f.full_name}
                     smsMessage={buildFollowupSMS(f.full_name.split(' ')[0],f.timepoint)}
                     emailSubject={buildFollowupEmailSubject(f.timepoint)}
-                    emailBody={buildFollowupEmailBody(f.full_name.split(' ')[0],f.timepoint,f.survey_token?`https://vital-kauai.vercel.app/checkin/${f.survey_token}`:undefined)}
+                    emailBody={buildFollowupEmailBody(f.full_name.split(' ')[0],f.timepoint,f.survey_token?`https://vitalkauai.com/checkin/${f.survey_token}`:undefined)}
                     memberId={f.member_id}
                     onSent={onNotifySent}
                     small

@@ -530,7 +530,7 @@ export async function sendFounderNotification({
   const safeName = esc(fullName)
   const safeEmail = esc(email)
   const safeEventName = esc(eventName)
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://vital-kauai.vercel.app'
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://vitalkauai.com'
   const approveUrl = `${baseUrl}/api/approve-member?token=${approvalToken}`
   const declineUrl = `${baseUrl}/api/decline-member?token=${approvalToken}`
   const dashUrl = `${baseUrl}/ops/pending`
@@ -634,7 +634,7 @@ export async function sendExistingMemberBookedNotice({
   const safeName = esc(fullName)
   const safeEmail = esc(email)
   const safeEventName = esc(eventName)
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://vital-kauai.vercel.app'
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://vitalkauai.com'
   const profileUrl = `${baseUrl}/dashboard/${memberId}`
 
   const callDate = startTime

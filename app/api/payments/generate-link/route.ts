@@ -73,7 +73,7 @@ export async function POST(req: Request) {
   }
 
   const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://vital-kauai.vercel.app";
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://vitalkauai.com";
   return NextResponse.json({
     url: `${siteUrl}/pay/${token}`,
     expires_at: expiresAt,

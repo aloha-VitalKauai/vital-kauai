@@ -49,10 +49,11 @@ const config: CapacitorConfig = {
   appName: "Vital Kauaʻi",
   webDir: "out",
   server: {
-    url: "https://vital-kauai.vercel.app/portal",
+    url: "https://vitalkauai.com/portal",
     cleartext: false,
     allowNavigation: [
-      "vital-kauai.vercel.app",
+      "vitalkauai.com",
+      "www.vitalkauai.com",
       "*.vercel.app",
       "*.supabase.co",
       "*.supabase.in",

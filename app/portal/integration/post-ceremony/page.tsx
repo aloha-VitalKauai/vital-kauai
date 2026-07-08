@@ -105,7 +105,7 @@ function downloadReturnICS() {
   if (typeof window === 'undefined') return
   const now = new Date()
   const stamp = toICSDate(now)
-  const desc = 'Return to your Vital Kauaʻi integration portal. Notice what has moved, what has deepened, what still asks for attention.\\n\\nhttps://vital-kauai.vercel.app/portal/integration/post-ceremony'
+  const desc = 'Return to your Vital Kauaʻi integration portal. Notice what has moved, what has deepened, what still asks for attention.\\n\\nhttps://vitalkauai.com/portal/integration/post-ceremony'
   const events = returnDates().map((r, i) => {
     const end = new Date(r.date.getTime() + 30 * 60 * 1000)
     return [
@@ -144,7 +144,7 @@ function returnMailto(): string {
     'A gentle reminder to return to your Vital Kauaʻi integration portal at these three markers:\n\n' +
     lines +
     '\n\nWhen each arrives, return and notice what has moved.\n\n' +
-    'https://vital-kauai.vercel.app/portal/integration/post-ceremony'
+    'https://vitalkauai.com/portal/integration/post-ceremony'
   return `mailto:?subject=${encodeURIComponent('Vital Kauaʻi · Integration return dates')}&body=${encodeURIComponent(body)}`
 }
 
