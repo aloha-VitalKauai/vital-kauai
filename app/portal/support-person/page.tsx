@@ -57,7 +57,7 @@ export default async function SupportPersonPage() {
       {/* Section 1: Understanding Iboga */}
       <Section id="understanding" num="01" label="The Foundation" title="Understanding" titleEm="Iboga" rose={rose} border={border} sage={sage}>
         <p style={prose}>Iboga is a sacred root medicine from the Bwiti tradition of Central Africa. At Vital Kaua&#699;i, ceremonies are held with deep reverence, rooted in lineage, conducted by trained guides, within a carefully prepared container on the North Shore of Kaua&#699;i.</p>
-        <p style={prose}>Iboga works on a profound level, moving through the nervous system, the emotional body, and the unconscious over a ceremony that typically spans 12 to 36 hours. People come for many reasons: to release addiction, to metabolize grief or trauma, to step into a new chapter.</p>
+        <p style={prose}>Iboga works on a profound level, moving through the nervous system, the emotional body, and the unconscious over a ceremony that typically spans 12 to 24 hours. People come for many reasons: to release addiction, to metabolize grief or trauma, to step into a new chapter.</p>
         <p style={prose}>The medicine&rsquo;s work does not end with ceremony. In the days and weeks that follow, it continues, reorganizing how a person relates to themselves and the world. This is called integration, and your role during this time matters enormously.</p>
       </Section>
 
