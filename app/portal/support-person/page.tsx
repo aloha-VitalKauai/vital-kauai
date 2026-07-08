@@ -105,7 +105,7 @@ export default async function SupportPersonPage() {
           {[
             { time: "First days home", title: "Landing", text: "They are stepping back into ordinary life after several days of held space on Kaua\u02bbi. Welcome them gently. Invite them to share if they want to share, and let silence be welcome too." },
             { time: "Week 1\u20132", title: "Emergence", text: "Gradual return of presence, appetite, and speech. Emotions may move unexpectedly. Let them share at their own pace." },
-            { time: "Weeks 2\u20138", title: "Active Integration", text: "Insights become changes, in habits, relationships, and perspective. Your person is meeting with their Vital Kaua\u02bbi guides, Rachel and Josh, for coaching sessions and continuing their journaling and integration work through this stretch. Your role here is to witness with open presence." },
+            { time: "Weeks 2\u20138", title: "Active Integration", text: "Insights become changes, in habits, relationships, and perspective. Your person is meeting with their Vital Kaua\u02bbi guides and continuing their integration work through this stretch. Your role here is to witness with open presence." },
             { time: "Months 2\u20136", title: "Stabilization", text: "The new ground becomes the new normal. Relationships often grow richer, more honest, and more present." },
           ].map((item, i, arr) => (
             <div key={item.title} style={{ display: "grid", gridTemplateColumns: "120px 1fr", gap: "0 32px", padding: "28px 0", borderBottom: i < arr.length - 1 ? `1px solid ${border}` : "none" }}>
