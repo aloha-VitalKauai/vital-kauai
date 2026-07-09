@@ -794,7 +794,8 @@ export function HomePage() {
         </div>
       </section>
 
-      <section id="reciprocity" className={styles.reciprocity}>
+      {/* Temporarily hidden — reciprocity section + "Stewards We Walk Alongside" link. */}
+      <section id="reciprocity" className={styles.reciprocity} style={{ display: "none" }}>
         <div className={styles.reciprocityInner}>
           <p className={`${styles.sectionLabel} ${styles.reveal}`}>Rooted in Reciprocity & Regeneration</p>
           <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>

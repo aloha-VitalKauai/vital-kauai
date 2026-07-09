@@ -1325,8 +1325,8 @@ const BODY_CONTENT = `
   </div>
 </section>
 
-<!-- EXPLORE THE LAND -->
-<section id="explore-land" style="background:var(--cream);padding:60px 40px;overflow:hidden;">
+<!-- EXPLORE THE LAND — temporarily hidden (Stewards We Walk Alongside) -->
+<section id="explore-land" style="display:none;background:var(--cream);padding:60px 40px;overflow:hidden;">
   <div style="max-width:1100px;margin:0 auto;">
 
     <div style="margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid rgba(184,105,74,0.15);">
