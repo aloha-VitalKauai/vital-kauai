@@ -105,7 +105,7 @@ export const WEEKS = [
     subtitle: 'turns toward you.',
     carryForward: 'You named what you want and what is asking to change. That honesty is already in motion. This week you begin aligning your whole life, your body, your choices, your attention, toward what\'s coming.',
     sub: 'Makia means energy flows where attention goes. Where is your attention going? This week asks you to look at what you are feeding with your focus, and what that is growing.',
-    video: { label: 'A Message from Rachel & Josh · Week 2', text: 'In this week’s video, Rachel and Josh share what Makia has meant in their own lives and how learning to focus and follow their attention has shaped what they have built and what they have let go of.' },
+    video: { label: 'A Message from Rachel · Week 2', text: 'This week we explore Makia, the Hawaiian principle of focus and aim. Last week we looked at the lens of perception. This week we choose where to point it. Rachel shares the science behind attention and how Iboga can help us rewire new habits. She shares a story from her own experience and how reinforcing and redirecting attention can help us grow.', url: 'https://www.youtube.com/embed/Zstm7cLyEHE' },
     box: { type: 'info', label: 'The identity shift', text: 'You are no longer the person who was considering this. The moment you committed, something changed. This week\'s job is to feel that shift, as a lived, embodied orientation. The portal, this video, and the prompts below all serve one thing: moving you from "I signed up for something" to "I am inside a process."' },
     actionLabel: 'Actions this week, 3 only',
     actionIntro: 'Identity shifts happen in the noticing. This week your job is to begin seeing clearly, the changes will follow.',

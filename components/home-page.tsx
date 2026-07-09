@@ -175,7 +175,7 @@ export function HomePage() {
       `Thank you for reaching out. We're honored you're considering this path, and we want you to know your message has been received and will be read personally by the Vital Kauaʻi team.`,
       `We'll be in touch within 48 hours.`,
       `If you're feeling ready to take the next step, you're welcome to book a discovery call with us. It's simply a space to share what's calling you and explore whether this journey is the right fit.`,
-      `Book a Discovery Call: https://vital-kauai.vercel.app/begin-your-journey`,
+      `Book a Discovery Call: https://vitalkauai.com/begin-your-journey`,
       `With aloha,\nThe Vital Kauaʻi team\nHanalei, Kauaʻi`,
     ].join("\n\n");
 

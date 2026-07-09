@@ -86,7 +86,7 @@ export async function POST() {
 
   // 6. Create Checkout session with dynamic price_data
   const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://vital-kauai.vercel.app";
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://vitalkauai.com";
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     customer_email: user.email ?? undefined,

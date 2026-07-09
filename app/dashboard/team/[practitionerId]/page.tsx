@@ -25,7 +25,7 @@ export default async function PractitionerPage({
   const [{ data: practitioner }, { data: documents }] = await Promise.all([
     supabase
       .from("practitioners")
-      .select("id, full_name, email, phone, role, engagement_type, active, notes, created_at")
+      .select("id, full_name, email, phone, role, engagement_type, active, notes, created_at, auth_user_id")
       .eq("id", practitionerId)
       .maybeSingle(),
     supabase

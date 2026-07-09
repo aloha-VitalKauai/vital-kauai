@@ -431,7 +431,7 @@ const BODY_CONTENT = `
         </tr>
         <tr style="border-bottom:1px solid rgba(28,43,30,0.06);background:rgba(28,43,30,0.02);">
           <td style="padding:12px 16px;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--stone);">Duration</td>
-          <td style="padding:12px 16px;color:var(--text-mid);font-weight:400;">12 – 36 hours</td>
+          <td style="padding:12px 16px;color:var(--text-mid);font-weight:400;">12 – 24 hours</td>
           <td style="padding:12px 16px;color:var(--text-mid);">4 – 8 hours</td>
           <td style="padding:12px 16px;color:var(--text-mid);">4 – 6 hours</td>
           <td style="padding:12px 16px;color:var(--text-mid);">1 – 2 hours</td>
@@ -525,7 +525,7 @@ const BODY_CONTENT = `
           </div>
           <div style="display:flex;gap:18px;align-items:flex-start;">
             <span style="font-family:'Cormorant Garamond',serif;font-size:28px;color:rgba(200,169,110,0.3);line-height:1;flex-shrink:0;">02</span>
-            <div><p style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage-light);margin-bottom:5px;">Week 7 · Kauaʻi · Ceremony</p><p style="font-size:13px;color:rgba(245,240,232,0.6);line-height:1.7;">Opened at the fire, held in sacred indoor space in harmony with the land. 12–36 hours of deep work with your care team present throughout. Integration in the days that follow happens in nature.</p></div>
+            <div><p style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--sage-light);margin-bottom:5px;">Week 7 · Kauaʻi · Ceremony</p><p style="font-size:13px;color:rgba(245,240,232,0.6);line-height:1.7;">Opened at the fire, held in sacred indoor space in harmony with the land. 12–24 hours of deep work with your care team present throughout. Integration in the days that follow happens in nature.</p></div>
           </div>
           <div style="display:flex;gap:18px;align-items:flex-start;">
             <span style="font-family:'Cormorant Garamond',serif;font-size:28px;color:rgba(200,169,110,0.3);line-height:1;flex-shrink:0;">03</span>
@@ -688,7 +688,7 @@ const BODY_CONTENT = `
     <span class="eyebrow" style="display:block;text-align:center;margin-bottom:24px;">Kauaʻi, Hawaiʻi</span>
     <h2 class="cta-heading">The Medicine Shows<br>You the Door.<br><em>We Walk Through It With You.</em></h2>
     <p class="cta-body">If you feel called, we encourage you to book a discovery session with us through our website.</p>
-    <span class="cta-sub"><a href="https://vital-kauai.vercel.app/begin-your-journey" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(245,240,232,0.25);">vitalkauai.com</a> · <a href="mailto:aloha&#64;vitalkauai.com" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(245,240,232,0.25);">aloha&#64;vitalkauai.com</a></span>
+    <span class="cta-sub"><a href="https://vitalkauai.com/begin-your-journey" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(245,240,232,0.25);">vitalkauai.com</a> · <a href="mailto:aloha&#64;vitalkauai.com" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(245,240,232,0.25);">aloha&#64;vitalkauai.com</a></span>
   </div>
 </section>
 

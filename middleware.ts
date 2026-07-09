@@ -58,6 +58,23 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/portal", request.url));
     }
 
+    // Protect /nurse — nurse role only. The role query runs only on /nurse
+    // paths, keeping the common case (member portal traffic) query-free.
+    // The nurse layout re-checks server-side, so this is belt and braces.
+    if (path.startsWith("/nurse")) {
+      if (isFounder) {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
+      const { data: roleRow } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (roleRow?.role !== "nurse") {
+        return NextResponse.redirect(new URL("/portal", request.url));
+      }
+    }
+
     // If founder is on /login, send them to dashboard
     if (path === "/login" && isFounder) {
       return NextResponse.redirect(new URL("/dashboard", request.url));

@@ -7,7 +7,7 @@ import type { TransactionalEmailTemplate } from '@/lib/transactional-emails'
 
 export const runtime = 'nodejs'
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://vital-kauai.vercel.app'
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://vitalkauai.com'
 
 /**
  * Sends a real test copy of a transactional email to the founder. Uses the

@@ -159,7 +159,8 @@ export default function SetupAccountClient() {
           return
         }
         setStage('success')
-        setTimeout(() => router.push('/portal'), 1500)
+        const destination = await postSetupDestination()
+        setTimeout(() => router.push(destination), 1500)
         return
       } catch (e: any) {
         setError(e?.message || 'Something went wrong. Please try again.')
@@ -176,7 +177,24 @@ export default function SetupAccountClient() {
       return
     }
     setStage('success')
-    setTimeout(() => router.push('/portal'), 2000)
+    const destination = await postSetupDestination()
+    setTimeout(() => router.push(destination), 2000)
+  }
+
+  // Nurses land on the care-team portal; members (and anyone else) on /portal.
+  async function postSetupDestination(): Promise<string> {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return '/portal'
+      const { data: roleRow } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .maybeSingle()
+      return roleRow?.role === 'nurse' ? '/nurse' : '/portal'
+    } catch {
+      return '/portal'
+    }
   }
 
   const strength = getStrength(password)

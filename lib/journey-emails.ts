@@ -24,7 +24,7 @@ export interface JourneyEmailTemplate {
   updated_at?: string
 }
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://vital-kauai.vercel.app'
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://vitalkauai.com'
 
 function esc(s: string): string {
   return String(s)
