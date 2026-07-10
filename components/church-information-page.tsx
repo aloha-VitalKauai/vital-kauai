@@ -268,6 +268,43 @@ export function ChurchInformationPage() {
         </div>
       </section>
 
+      {/* Honor, Humility, and Reciprocity */}
+      <section className={`${styles.section} ${styles.sectionCream}`}>
+        <div className={styles.sectionInner}>
+          <span className={styles.eyebrow}>Our Commitment</span>
+          <h2 className={styles.sectionTitle}>
+            Honor, Humility,
+            <br />
+            <em>and Reciprocity</em>
+          </h2>
+          <p className={styles.bodyText}>
+            True healing cannot exist without absolute integrity, transparency, and respect for the
+            roots from which we draw our inspiration. At Vital Kauaʻi, we stand firmly in a posture
+            of cultural humility and active reciprocity:
+          </p>
+          <p className={styles.bodyText}>
+            <strong>Honoring the Medicine:</strong> We acknowledge that our appreciation for
+            profound transformative tools is deeply inspired by the ancient Bwiti traditions and the
+            sacred plant wisdom protected by the Disumba, Mitsogo, Punu, and Fang peoples of Gabon
+            and West-Central Africa. We are not initiates of these indigenous cultures, nor do we
+            claim their titles, lineages, or languages as our own. We speak strictly from personal
+            transformation and what has genuinely helped us heal.
+          </p>
+          <p className={styles.bodyText}>
+            <strong>Honoring the Land:</strong> We live, practice, and serve with deep humility as
+            guests on the ancestral, unceded lands of the Kānaka Maoli here in Hawaiʻi. It is our
+            core kuleana (sacred responsibility) to ensure our presence brings no harm, extracts no
+            knowledge, and actively honors the host culture of Kauaʻi.
+          </p>
+          <p className={styles.bodyText}>
+            <strong>Active Support:</strong> We believe in a continuous circle of giving back. Vital
+            Kauaʻi is actively committed to acknowledging, respecting, and materially supporting both
+            the traditional indigenous guardians in Gabon and surrounding areas, and the host culture
+            here on the island that sustains our service work.
+          </p>
+        </div>
+      </section>
+
       {/* Membership CTA */}
       <section className={styles.membershipBand}>
         <span className={styles.membershipEyebrow}>Membership</span>
