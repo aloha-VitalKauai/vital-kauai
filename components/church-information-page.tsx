@@ -33,23 +33,7 @@ const tenets = [
   {
     numeral: "VI",
     title: "The Earth as Sacred Ground",
-    body: (
-      <>
-        <p style={{ margin: 0 }}>
-          We believe the natural world is an active participant in spiritual life. Kauaʻi&apos;s
-          land, waters, and living systems are part of our congregation.
-        </p>
-        <p style={{ margin: "14px 0 0" }}>
-          While you are here, we invite you to tour the land, spend time in the soil, or make a
-          donation to one of our{" "}
-          <Link href="/stay#explore-land" style={{ color: "var(--gold)", textDecoration: "underline", textUnderlineOffset: 3 }}>
-            local nonprofits
-          </Link>
-          . As Vital Kauaʻi grows, we are building toward direct support of the organizations
-          protecting this ʻāina.
-        </p>
-      </>
-    ),
+    body: "We believe the natural world is an active participant in spiritual life. Kauaʻi's land, waters, and living systems are part of our congregation.",
   },
   {
     numeral: "VII",
