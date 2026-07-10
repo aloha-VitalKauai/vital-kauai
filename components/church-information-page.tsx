@@ -55,26 +55,6 @@ const tenets = [
     title: "Sacred Trust",
     body: "We hold what is shared in this community as sacred trust. Confidentiality and discretion protect the vulnerability that genuine healing requires.",
   },
-  {
-    numeral: "VII",
-    title: "Reciprocity & Right Relationship",
-    body: "We hold that what we receive, we are called to return. Our practice lives in right relationship with the lineages, lands, and peoples who carry this medicine, met with humility, acknowledgment, and tangible support.",
-  },
-  {
-    numeral: "VIII",
-    title: "Safety as Sacred",
-    body: "We hold that depth and care are inseparable. Every ceremony rests on thorough preparation, honest screening, and attentive presence, so that the deepest work unfolds within the safest container.",
-  },
-  {
-    numeral: "IX",
-    title: "Integration as the Work",
-    body: "We believe transformation is completed in daily living. What opens in ceremony takes root through sustained integration, held in community over time.",
-  },
-  {
-    numeral: "X",
-    title: "Sacred Trust",
-    body: "We hold what is shared in this community as sacred trust. Confidentiality and discretion protect the vulnerability that genuine healing requires.",
-  },
 ];
 
 export function ChurchInformationPage() {
