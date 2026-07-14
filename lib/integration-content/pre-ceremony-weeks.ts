@@ -254,7 +254,7 @@ export const WEEKS = [
     principleName: 'Kala',
     principle: 'You are unlimited.',
     theme: 'Release',
-    title: 'Kala means to free',
+    title: 'Kala means to free.',
     subtitle: '',
     carryForward: 'Your nervous system is more regulated. Your body has begun its preparation. You have a map of your own inner states. You are ready for what this week asks, trust what you\'ve built.',
     reentry: { strong: 'A note on pacing:', text: ' Let the Coherent Heart Breath be with you this week. Return to it before each journal prompt, let it settle you before you begin, and steady you when the material goes deep.' },
