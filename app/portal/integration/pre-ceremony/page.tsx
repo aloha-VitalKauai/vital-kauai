@@ -683,7 +683,7 @@ function PreCeremonyPageInner() {
                   : i === 2
                   ? <>Presence is the <em>practice.</em></>
                   : i === 3
-                  ? <>Iboga sees the <em>truth.</em></>
+                  ? <>Kala means to <em>free</em></>
                   : i === 4
                   ? <>You walk this with <em>others.</em></>
                   : i === 5
