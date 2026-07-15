@@ -134,3 +134,20 @@
   color: rgba(245, 240, 232, 0.5);
   line-height: 1.7;
 }
+
+.noticeLead {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: rgba(245, 240, 232, 0.72);
+  line-height: 1.7;
+}
+
+.noticeCta {
+  display: inline-block;
+  margin-bottom: 16px;
+  text-decoration: none;
+}
+
+.noticeFine {
+  margin: 0;
+}

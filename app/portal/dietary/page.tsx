@@ -59,9 +59,6 @@ function DietaryContent() {
           <p style={{ fontSize: 14.5, color: inkLight, letterSpacing: "0.02em", lineHeight: 1.7 }}>
             Begin as early as feels right. Four weeks before your arrival is a strong foundation. Two weeks of clean eating still makes a meaningful difference. The sooner, the better.
           </p>
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: 15, color: clay, lineHeight: 1.7, marginTop: 22, maxWidth: 560, marginLeft: "auto", marginRight: "auto" }}>
-            Drawn to a deeper detox protocol, or pre-ceremony cleansing or fasting? <a href="/portal/contact" style={{ color: clay, textDecoration: "underline", textUnderlineOffset: 3 }}>Ask us</a> and we will guide you through what fits your body and your timeline.
-          </p>
         </div>
 
         {/* Foundation Principles */}

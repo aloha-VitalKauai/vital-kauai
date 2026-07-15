@@ -251,11 +251,25 @@ export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) 
           </form>
         )}
 
-        <p className={styles.notice}>
-          Access is invitation-only. After your discovery call, you&apos;ll receive a
-          Welcome email from the Vital Kaua&#699;i team with a link to set up your
-          account and choose your own password.
-        </p>
+        <div className={styles.notice}>
+          <p className={styles.noticeLead}>
+            New to Vital Kaua&#699;i? Begin with a discovery call &mdash; a
+            conversation to explore whether this path is right for you.
+          </p>
+          <a
+            className={`${styles.button} ${styles.buttonPrimary} ${styles.noticeCta}`}
+            href="https://calendly.com/aloha-vitalkauai/30min"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Book a Discovery Call
+          </a>
+          <p className={styles.noticeFine}>
+            Access is invitation-only. After your discovery call, you&apos;ll
+            receive a Welcome email from the Vital Kaua&#699;i team with a link
+            to set up your account and choose your own password.
+          </p>
+        </div>
       </section>
     </main>
   );
