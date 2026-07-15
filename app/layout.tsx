@@ -27,8 +27,8 @@ export const metadata: Metadata = {
   },
   description: "A living sanctuary of transformation and awakening on Kauaʻi's sacred North Shore.",
   robots: {
-    index: false,
-    follow: false,
+    index: true,
+    follow: true,
   },
   openGraph: {
     title: "Vital Kauaʻi",
