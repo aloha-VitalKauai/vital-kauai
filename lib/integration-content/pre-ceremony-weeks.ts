@@ -299,6 +299,14 @@ export const WEEKS = [
           { text: 'Begin clearing contraindicated substances per your protocol timeline', href: '/iboga-preparedness-guide.html#contraindications', external: true },
         ],
       },
+      {
+        key: 'a6',
+        color: 'blue',
+        text: 'Book next week’s support team call and invite your home circle',
+        links: [
+          { text: 'Book next week’s support team call and invite your home circle', href: 'https://calendly.com/aloha-vitalkauai/30-minute-check-in-call', external: true },
+        ],
+      },
     ],
     prompts: PRE_CEREMONY_WEEKS[3].prompts,
     thread: 'What you name here, you are no longer carrying unconsciously. Iboga surfaces what we hold in the dark. You are turning on a light before you arrive. Next week you turn toward your people.',
