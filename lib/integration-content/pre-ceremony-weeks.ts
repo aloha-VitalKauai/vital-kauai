@@ -367,6 +367,15 @@ export const WEEKS = [
         ],
       },
       {
+        key: 'a8',
+        color: 'amber',
+        text: 'Complete the Iboga Liver Cleanse',
+        note: 'A four-day liver flush that assists the medicine by preparing the body. Complete it at least 7 days before arrival, following the daily instructions in your Dietary Preparation guide.',
+        links: [
+          { text: 'Complete the Iboga Liver Cleanse', href: '/portal/dietary#liver-cleanse' },
+        ],
+      },
+      {
         key: 'a6',
         color: 'blue',
         text: 'Start packing',

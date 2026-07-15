@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import LiverCleanseCard from "./LiverCleanseCard";
 
 export const metadata = { title: "Dietary Preparation — Vital Kauaʻi" };
 
@@ -120,39 +121,10 @@ function DietaryContent() {
           </div>
         </div>
 
-        {/* Proper Preparation */}
-        <div style={{ marginBottom: 52 }}>
-          <SectionHeader dot={universal} title="Proper Preparation of Whole Foods" />
-          <div style={{ marginBottom: 24 }}>
-            <p style={{ fontSize: 15, color: inkLight, lineHeight: 1.75, maxWidth: 680 }}>
-              Beans, grains, nuts, and seeds are deeply nourishing, and they carry natural compounds called phytic acid, lectins, and enzyme inhibitors that block mineral absorption and cause gas and bloating when left unprepared. Traditional food cultures have always soaked, sprouted, or fermented these foods before eating them.
-            </p>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            {[
-              { dot: sage, title: "Beans & Legumes", note: "Chickpeas, black beans, kidney beans, navy beans, cannellini", steps: ["Rinse thoroughly under cold water", "Soak in filtered water for 12\u201324 hours", "Add 1 tbsp apple cider vinegar or lemon juice per cup", "Change soaking water at least once mid-soak", "Drain, rinse well, and cook in fresh water", "Discard any beans that float"], tip: "Kidney beans require the full 24-hour soak and a vigorous rolling boil for at least 10 minutes." },
-              { dot: sage, title: "Lentils & Split Peas", note: "Red, green, black, and French lentils; yellow and green split peas", steps: ["Rinse thoroughly, removing any debris", "Soak in filtered water for 4\u20138 hours", "Add a splash of apple cider vinegar to the soaking water", "Drain, rinse well, and cook in fresh water"], tip: "Even a 4-hour soak significantly reduces gas-producing oligosaccharides. Adding kombu seaweed during cooking further aids digestibility." },
-              { dot: universal, title: "Whole Grains & Rice", note: "Brown rice, millet, oats, quinoa, barley, farro", steps: ["Rinse under cold water until water runs clear", "Soak in warm filtered water for 8\u201324 hours", "Add 1 tbsp apple cider vinegar or lemon juice per cup", "Drain, rinse, and cook in fresh water", "Quinoa: rinse vigorously to remove saponins, then soak 4\u20138 hours"], tip: "Sprouted grains go straight to cooking \u2014 their phytic acid has already been significantly reduced." },
-              { dot: universal, title: "Nuts & Seeds", note: "Almonds, walnuts, cashews, pumpkin seeds, sunflower seeds", steps: ["Place raw nuts or seeds in a bowl with filtered water to cover", "Add a generous pinch of sea salt", "Soak for 7\u201312 hours (softer nuts like cashews: 4\u20136 hours)", "Drain, rinse well, and use immediately or refrigerate up to 3 days"], tip: "Soaked and dried nuts have a noticeably lighter, creamier quality and are far easier to digest." },
-            ].map((card) => (
-              <div key={card.title} style={{ background: warmWhite, border: `1px solid ${border}`, borderRadius: 8, padding: "22px 24px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                  <div style={{ width: 7, height: 7, borderRadius: "50%", background: card.dot, flexShrink: 0 }} />
-                  <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 19, fontWeight: 400, letterSpacing: "0.02em" }}>{card.title}</h3>
-                </div>
-                <p style={{ fontSize: 13, color: inkLight, fontStyle: "italic", marginBottom: 14, paddingLeft: 17 }}>{card.note}</p>
-                <ul style={{ listStyle: "none", display: "grid", gap: 6, marginBottom: 14 }}>
-                  {card.steps.map((s) => (
-                    <li key={s} style={{ fontSize: 14, lineHeight: 1.6, paddingLeft: 14, position: "relative" }}>
-                      <span style={{ position: "absolute", left: 0, color: sage, fontWeight: 700 }}>&middot;</span>
-                      {s}
-                    </li>
-                  ))}
-                </ul>
-                <p style={{ fontSize: 13, color: inkLight, fontStyle: "italic", borderTop: `1px solid ${border}`, paddingTop: 12, lineHeight: 1.65 }}>{card.tip}</p>
-              </div>
-            ))}
-          </div>
+        {/* Iboga Liver Cleanse */}
+        <div id="liver-cleanse" style={{ marginBottom: 52, scrollMarginTop: 80 }}>
+          <SectionHeader dot={gold} title="Iboga Liver Cleanse" />
+          <LiverCleanseCard />
         </div>
 
         {/* Iboga Supplement Protocol */}
