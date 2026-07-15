@@ -352,10 +352,10 @@ export const WEEKS = [
       {
         key: 'a5',
         color: 'green',
-        text: 'Share the Support Person Guide with your home circle',
+        text: 'Share the Support Person Guide with your home circle and have your support team call with us',
         note: 'Not after ceremony. Now. So they have time to read it, ask questions, and show up prepared for your return.',
         links: [
-          { text: 'Share the Support Person Guide with your home circle', href: '/portal/support-person' },
+          { text: 'Share the Support Person Guide with your home circle and have your support team call with us', href: '/portal/support-person' },
         ],
       },
       {
