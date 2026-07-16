@@ -219,7 +219,7 @@ export function ChurchInformationPage() {
             <span className={styles.eyebrow}>Our Mission</span>
             <p className={styles.missionText}>
               Vital Kauaʻi Church is a living sanctuary of transformation. We support the remembrance
-              of our interconnectedness through the intelligence of plant medicine, somatic healing,
+              of our interconnectedness through the intelligence of plant allies, somatic healing,
               and the wisdom of nature as a reflection of our true inner nature. We hold space for
               people to return to greater aliveness, truth, and wholeness.
             </p>
@@ -287,7 +287,7 @@ export function ChurchInformationPage() {
             of cultural humility and active reciprocity:
           </p>
           <p className={styles.bodyText}>
-            <strong>Honoring the Medicine:</strong> We acknowledge that our appreciation for
+            <strong>Honoring the Sacrament:</strong> We acknowledge that our appreciation for
             profound transformative tools is deeply inspired by the ancient Bwiti traditions and the
             sacred plant wisdom protected by the Disumba, Mitsogo, Punu, and Fang peoples of Gabon
             and West-Central Africa. We are not initiates of these indigenous cultures, nor do we

@@ -491,8 +491,8 @@ export function IbogaJourneyPage() {
         </div>
       </section>
 
-      {/* ── Testimonials ── */}
-      <section className={styles.testimonials}>
+      {/* ── Testimonials — temporarily hidden (placeholder content) ── */}
+      <section className={styles.testimonials} style={{ display: "none" }}>
         <div className={styles.testimonialsIntro}>
           <span className={styles.sectionLabel}>Voices from the Journey</span>
           <h2 className={styles.sectionTitle}>Those Who Have Walked Through</h2>
