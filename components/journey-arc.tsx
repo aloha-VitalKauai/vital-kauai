@@ -78,7 +78,7 @@ const PHASES: Phase[] = [
     week: "6+ Weeks & Beyond",
     essence: "Where the work takes root.",
     items: [
-      "Three 1:1 integration coaching calls with Rachel & Josh",
+      "Six weekly 1:1 integration coaching calls with Rachel & Josh",
       "Two to three 1:1 follow-up calls with your integration guide, in any weeks you choose",
       "Continued member-portal support to anchor what arose into new patterns",
       "The PsychoNeuroEnergetics (PNE) Guide — week-by-week teachings, reflections, and practices to integrate your journey",
