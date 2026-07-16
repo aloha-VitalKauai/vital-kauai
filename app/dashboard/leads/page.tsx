@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import AddLeadButton from "./AddLeadButton";
 
 export const metadata = { title: "Leads — Vital Kauaʻi" };
 
@@ -56,7 +57,10 @@ export default async function LeadsPage() {
       <div style={{ background: "#fff", border: "0.5px solid rgba(0,0,0,0.1)", borderRadius: 10, overflow: "hidden" }}>
         <div style={{ padding: "0.875rem 1.25rem", borderBottom: "0.5px solid rgba(0,0,0,0.07)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: "#6B6B67", fontWeight: 500 }}>All leads</span>
-          <span style={{ fontSize: 11, color: "#9E9E9A" }}>{rows.length} total</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ fontSize: 11, color: "#9E9E9A" }}>{rows.length} total</span>
+            <AddLeadButton />
+          </div>
         </div>
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
