@@ -173,8 +173,14 @@ export function MedicalDisclaimerPage() {
             Cardiovascular or other physiological effects in connection with sacramental plant
             ceremonies
           </li>
-          <li>In rare circumstances, serious physiological risk including death</li>
+          <li>In extremely rare circumstances, serious physiological risk, including death</li>
         </ul>
+        <p>
+          Serious cardiac events are rare and are most associated with pre-existing heart conditions,
+          certain medications—including opioids and drugs that affect heart rhythm—and inadequate
+          preparation. Our required screening, lab work, and medical clearance exist to identify and
+          reduce these risks before ceremony.
+        </p>
         <p>
           These risks vary significantly by individual and are influenced by personal health history,
           current medications, mental health status, and life circumstances. Full and truthful health
