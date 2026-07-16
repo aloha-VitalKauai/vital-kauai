@@ -1381,8 +1381,8 @@ const BODY_CONTENT = `
   </div>
 </section>
 
-<!-- UPCOMING DATES -->
-<section style="background:var(--forest-dark);padding:80px 60px;text-align:center;">
+<!-- UPCOMING DATES — temporarily hidden -->
+<section style="display:none;background:var(--forest-dark);padding:80px 60px;text-align:center;">
   <div style="max-width:860px;margin:0 auto;">
     <span class="section-label reveal" style="color:var(--terra);">Come As You Are</span>
     <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,52px);font-weight:300;color:var(--cream);line-height:1.1;margin-bottom:16px;" class="reveal">Upcoming<br><em style="font-style:italic;color:var(--terra-pale);">Ceremonies</em></h2>

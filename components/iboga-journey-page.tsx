@@ -348,8 +348,8 @@ export function IbogaJourneyPage() {
         </div>
       </section>
 
-      {/* ── Upcoming Ceremonies ── */}
-      <section style={{ padding: "112px 32px", background: "var(--cream, #F5F0E8)", textAlign: "center" }}>
+      {/* ── Upcoming Ceremonies — temporarily hidden ── */}
+      <section style={{ display: "none", padding: "112px 32px", background: "var(--cream, #F5F0E8)", textAlign: "center" }}>
         <div style={{ maxWidth: 1080, margin: "0 auto" }}>
           {/* Decorative gold rule above the eyebrow */}
           <div style={{ width: 36, height: 1, background: "var(--gold, #C8A96E)", margin: "0 auto 20px", opacity: 0.6 }} />

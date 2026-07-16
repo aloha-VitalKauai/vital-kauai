@@ -650,7 +650,8 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className={styles.ceremonies}>
+      {/* Upcoming Ceremonies — temporarily hidden */}
+      <section className={styles.ceremonies} style={{ display: "none" }}>
         <div className={styles.ceremoniesInner}>
           <p className={`${styles.sectionLabel} ${styles.reveal}`} style={{ color: "var(--terra)" }}>Come As You Are</p>
           <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>
