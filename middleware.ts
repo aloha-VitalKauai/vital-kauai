@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import {
   FRONTEND_ACCESS_COOKIE,
   isPublicFrontendPath,
+  isStaticAssetPath,
   verifyFrontendAccessToken,
 } from "@/lib/frontend-access";
 
@@ -52,7 +53,7 @@ export async function middleware(request: NextRequest) {
       request.cookies.get(FRONTEND_ACCESS_COOKIE)?.value,
     );
     if (hasFrontendAccess) {
-      if (isPublicFrontendPath(path)) {
+      if (isPublicFrontendPath(path) || isStaticAssetPath(path)) {
         return supabaseResponse;
       }
       return NextResponse.redirect(new URL("/", request.url));
