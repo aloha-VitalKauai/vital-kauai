@@ -16,7 +16,7 @@ const FAQ_SECTIONS: FaqSection[] = [
       {
         question: "Is Iboga legal?",
         answer:
-          "Vital Kauaʻi operates as a legally established church. Our medicine work is held within a protected religious context. We are happy to speak with you directly about our legal structure.",
+          "Vital Kauaʻi operates as a legally established church. Our plant sacrament work is held within a protected religious context. We are happy to speak with you directly about our legal structure.",
       },
       {
         question: "Who is Iboga right for?",
