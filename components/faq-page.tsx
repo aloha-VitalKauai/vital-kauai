@@ -19,6 +19,11 @@ const FAQ_SECTIONS: FaqSection[] = [
           "Vital Kauaʻi operates as a legally established church. Our plant sacrament work is held within a protected religious context. We are happy to speak with you directly about our legal structure.",
       },
       {
+        question: "Is Iboga safe?",
+        answer:
+          "Iboga has an excellent safety record when it is approached with careful preparation. The rare serious risks are primarily cardiac and are closely associated with pre-existing heart conditions and certain medications—which is exactly why our process centers on thorough screening, required lab work, and medical clearance before ceremony. We work only with whole-plant iboga root bark, titrated slowly and in continuous dialogue with your body, and our team holds you with attentive medical presence throughout. Your full and honest health disclosure is the foundation that keeps this work safe.",
+      },
+      {
         question: "Who is Iboga right for?",
         answer:
           "Those who are genuinely ready for deep inner work, whether that means lasting change, spiritual awakening, or a profound reset. We screen carefully and honestly. If it is right for you, we will know together.",
