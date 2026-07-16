@@ -40,7 +40,8 @@ export async function middleware(request: NextRequest) {
   const isPublicPath =
     path === "/login" ||
     path.startsWith("/auth/") ||
-    path === "/auth";
+    path === "/auth" ||
+    path === "/preview-logout";
 
   if (!user && !isPublicPath) {
     // Front-end-only access: a signed, HTTP-only cookie that lets an approved
