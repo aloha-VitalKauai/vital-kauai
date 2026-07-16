@@ -1,5 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import {
+  FRONTEND_ACCESS_COOKIE,
+  isPublicFrontendPath,
+  verifyFrontendAccessToken,
+} from "@/lib/frontend-access";
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -37,6 +42,22 @@ export async function middleware(request: NextRequest) {
     path === "/auth";
 
   if (!user && !isPublicPath) {
+    // Front-end-only access: a signed, HTTP-only cookie that lets an approved
+    // visitor (who is NOT a Supabase member) view the public marketing site.
+    // It never confers member or founder status — it only unlocks the
+    // deny-by-default public allowlist; every other route (portal, dashboard,
+    // ops, intake, etc.) redirects them to the public homepage.
+    const hasFrontendAccess = await verifyFrontendAccessToken(
+      process.env.FRONTEND_ACCESS_COOKIE_SECRET,
+      request.cookies.get(FRONTEND_ACCESS_COOKIE)?.value,
+    );
+    if (hasFrontendAccess) {
+      if (isPublicFrontendPath(path)) {
+        return supabaseResponse;
+      }
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+
     const loginUrl = new URL("/login", request.url);
     if (path && path !== "/") {
       loginUrl.searchParams.set("next", path + request.nextUrl.search);

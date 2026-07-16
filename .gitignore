@@ -10,6 +10,10 @@ coverage
 *.tsbuildinfo
 .vercel
 
+# Local environment overrides — never commit secrets (e.g. the
+# FRONTEND_ACCESS_* values used for local testing live here).
+.env*.local
+
 # Claude Code workspace artifacts
 .agents/
 .claude/skills/

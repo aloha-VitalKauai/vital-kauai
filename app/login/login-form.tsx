@@ -55,6 +55,28 @@ export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) 
     setStatus({ type: "idle", message: "" });
 
     try {
+      // Front-end-only access runs on the server first. If the typed
+      // credentials match the shared front-end login, the server sets a signed,
+      // HTTP-only cookie and we send the visitor to the public homepage — the
+      // password never reaches Supabase and no member session is created. The
+      // special credentials are never present in this bundle; we only forward
+      // what was typed and act on the server's yes/no. Any error falls through
+      // to the standard member sign-in below.
+      try {
+        const frontendRes = await fetch("/api/frontend-access", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        const frontendData = await frontendRes.json().catch(() => ({}));
+        if (frontendData?.ok === true) {
+          window.location.href = "/";
+          return;
+        }
+      } catch {
+        // Ignore and continue to the standard member sign-in.
+      }
+
       const supabase = createClient();
 
       const { data: { user, session }, error } = await supabase.auth.signInWithPassword({
