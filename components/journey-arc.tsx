@@ -33,6 +33,7 @@ const PHASES: Phase[] = [
     items: [
       "Three or four 1:1 integration-guide calls up front (six total across your journey)",
       "Two 1:1 preparation and check-in calls with Rachel & Josh",
+      "A support-team call with Rachel & Josh, with your home circle invited",
       "Weekly journal prompts and reflections in your member portal",
       "The PsychoNeuroEnergetics (PNE) Guide — week-by-week teachings, reflections, and practices to expand your nervous-system capacity",
       "Medical screening, labs, and EKG with your physician",
