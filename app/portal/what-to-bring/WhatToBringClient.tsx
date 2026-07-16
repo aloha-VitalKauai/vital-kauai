@@ -16,6 +16,8 @@ const PRACTICAL_ITEMS = [
   { key: "sunglasses", label: "Sunglasses" },
   { key: "sun-hat", label: "Sun hat" },
   { key: "hiking-shoes", label: "Comfortable hiking shoes", note: "Winter (Oct\u2013Apr): waterproof or trail shoes strongly recommended. Summer (May\u2013Sep): sturdy trail shoes or sneakers work well." },
+  { key: "small-backpack", label: "Small backpack" },
+  { key: "hiking-poles", label: "Hiking poles (optional)" },
   { key: "movement-attire", label: "Movement and yoga attire" },
   { key: "sarongs", label: "Sarongs", note: "Versatile for the beach, lounging, and ceremony spaces" },
   { key: "warm-layers", label: "Warm layers", note: "Winter: sweatshirt, sweatpants, and socks. Summer: a light sweater for cooler evenings." },
