@@ -397,8 +397,8 @@ export function HomePage() {
                 we offer exists in service: the team, the preparation, the ceremony, and every step
                 of the journey that grows from the root.
               </p>
-              <Link href="/iboga-journey" className={styles.storyLink}>
-                Explore the Iboga Journey →
+              <Link href="/begin-your-journey" className={styles.storyLink}>
+                Book a Discovery Call →
               </Link>
             </div>
           </div>
@@ -526,8 +526,9 @@ export function HomePage() {
               <p>We offer support at every level.</p>
               <h3 className={styles.supportHeader}>Preparation &amp; Integration</h3>
               <p>
-                Full preparation and integration support across months: six weeks of preparation
-                before ceremony and six weeks of integration after. Optional 1:1 support continues
+                Full preparation and integration support across months: 16 total calls; six weeks
+                of preparation before ceremony and six weeks of integration after. Optional 1:1
+                support continues
                 for as long as it serves, and your place in the Vital Kauaʻi Church community is
                 for life.
               </p>

@@ -146,7 +146,8 @@ export function JourneyArc() {
         </h2>
         <p className={styles.lead}>
           The Iboga Journey is a held offering of preparation, ceremony, and integration that
-          unfolds over months. Every phase is guided, every step supported.
+          unfolds over months. Every phase is guided, every step supported, with 16 personal calls
+          across your journey—ten with Rachel &amp; Josh and six with your integration guide.
         </p>
       </div>
 

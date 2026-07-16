@@ -414,7 +414,7 @@ export function PortalHomePage({
               }}
             >
               <div className={styles.docTitle}>
-                Schedule Your <em>Onboarding Call</em>
+                Schedule Your <em>Welcome Call</em>
               </div>
               <div className={styles.docDesc}>
                 A welcome call with Rachel and Josh to help you get acquainted with your
@@ -600,6 +600,11 @@ export function PortalHomePage({
                 guide helps you access core imprints, bring awareness to sensations, learn how
                 to regulate and create safety, and establish new beliefs over the course of
                 3+ months.
+              </p>
+              <p className={styles.teamBio}>
+                Across your full journey you have 16 personal calls—ten with Rachel &amp; Josh
+                (a welcome call, two preparation calls, a call with your support circle, and six
+                weekly integration calls) and these six integration-guide sessions.
               </p>
               {specialist?.calendly_url ? (
                 <a
