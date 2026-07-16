@@ -73,10 +73,10 @@ export const WEEKS = [
       {
         key: 'a6',
         color: 'blue',
-        text: 'Schedule your three integration coaching calls with Rachel & Josh',
-        note: 'Book all three now so they are on the calendar; space them across your integration however serves you.',
+        text: 'Schedule your six weekly integration coaching calls with Rachel & Josh',
+        note: 'Book all six now so they are on the calendar; one call each week supports steady integration.',
         links: [
-          { text: 'Schedule your three integration coaching calls with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-check-in-call', external: true },
+          { text: 'Schedule your six weekly integration coaching calls with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-check-in-call', external: true },
         ],
       },
     ],
