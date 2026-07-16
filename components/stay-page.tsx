@@ -1429,7 +1429,7 @@ const BODY_CONTENT = `
           <span class="faq-icon" aria-hidden="true"></span>
         </summary>
         <div class="faq-answer">
-          <p>A typical group journey is about eight days and holds two ceremonies, moving through arrival, preparation, ceremony, integration, and closing. Private and semi-private journeys are uniquely tailored to each person — we shape your specific path and any additional support you may need together on your discovery call.</p>
+          <p>A typical group journey is about eight days and holds two ceremonies, moving through arrival, preparation, ceremony, integration, and closing. Private and semi-private journeys are uniquely tailored to each person—we shape your specific path and any additional support you may need together on your discovery call.</p>
         </div>
       </details>
 
