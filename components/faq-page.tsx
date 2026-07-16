@@ -52,7 +52,7 @@ const FAQ_SECTIONS: FaqSection[] = [
       {
         question: "How long is a typical stay?",
         answer:
-          "Our group ceremony moves through arrival, preparation, ceremony, integration, and closing. We discuss your specific journey and any additional support you may need on your discovery call.",
+          "A typical group journey is about eight days and holds two ceremonies, moving through arrival, preparation, ceremony, integration, and closing. Private and semi-private journeys are uniquely tailored to each person — we shape your specific path and any additional support you may need together on your discovery call.",
       },
       {
         question: "Are accommodations included?",
