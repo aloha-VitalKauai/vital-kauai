@@ -51,6 +51,18 @@ export function isPublicFrontendPath(pathname: string): boolean {
   return PUBLIC_FRONTEND_PATHS.has(p);
 }
 
+// Static media/asset files the public pages need to render (hero video, audio,
+// fonts, etc.). The middleware matcher already lets images/css/js through; this
+// covers the extensions it does NOT (notably video like .mp4/.webm). Content
+// files that are deliberately gated — .html guides, .pdf, data — are excluded.
+const STATIC_ASSET_RE =
+  /\.(?:mp4|webm|mov|m4v|ogv|ogg|mp3|wav|m4a|aac|flac|avif|apng|svg|png|jpe?g|gif|webp|ico|css|js|mjs|cjs|woff2?|ttf|otf|eot|map)$/i;
+
+/** True for static asset requests (by file extension) that public pages load. */
+export function isStaticAssetPath(pathname: string): boolean {
+  return STATIC_ASSET_RE.test(pathname);
+}
+
 function base64url(bytes: Uint8Array): string {
   let binary = "";
   for (const b of bytes) binary += String.fromCharCode(b);
