@@ -622,8 +622,15 @@ export function PortalHomePage({
             <div className={styles.teamCard}>
               <div className={styles.circlePhotos}>
                 <Image
-                  src="/images/lizesalen.jpeg"
-                  alt="Dr. Liz Esalen"
+                  src="/images/about/josh-perdue.jpg"
+                  alt="Josh"
+                  width={56}
+                  height={56}
+                  className={styles.circlePhoto}
+                />
+                <Image
+                  src="/images/about/rachel-nelson.jpg"
+                  alt="Rachel"
                   width={56}
                   height={56}
                   className={styles.circlePhoto}
@@ -631,13 +638,6 @@ export function PortalHomePage({
                 <Image
                   src="/images/judithjohnson.jpeg"
                   alt="Judith Johnson"
-                  width={56}
-                  height={56}
-                  className={styles.circlePhoto}
-                />
-                <Image
-                  src="/images/robyndebonet.JPG"
-                  alt="Robyn deBonet"
                   width={56}
                   height={56}
                   className={styles.circlePhoto}
