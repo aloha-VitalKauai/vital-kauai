@@ -298,7 +298,7 @@ export default function DonateClient({
                 onChange={() => setPledgeMode("full")}
                 style={{ accentColor: "#7A9E7E", marginRight: 10 }}
               />
-              Full remaining&ensp;—&ensp;<strong>{fmt(remaining)}</strong>
+              Full remaining—<strong>{fmt(remaining)}</strong>
             </label>
 
             <label style={radioRowStyle}>

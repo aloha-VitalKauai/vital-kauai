@@ -1038,7 +1038,7 @@ function PreCeremonyPageInner() {
                   <p className="vp-text pne-practice-p">When a feeling arises this week, pause and walk it gently through the three steps.</p>
                   <div className="pne-practice-steps">
                     <div className="pne-step"><span className="pne-step-time">I</span><span className="pne-step-text"><strong>Identify the Sensation.</strong> &ldquo;What is happening in my body right now?&rdquo;</span></div>
-                    <div className="pne-step"><span className="pne-step-time">II</span><span className="pne-step-text"><strong>Identify the Emotion.</strong> &ldquo;Which primary emotion is asking to be felt — joy, anger, sadness, fear, or disgust?&rdquo;</span></div>
+                    <div className="pne-step"><span className="pne-step-time">II</span><span className="pne-step-text"><strong>Identify the Emotion.</strong> &ldquo;Which primary emotion is asking to be felt—joy, anger, sadness, fear, or disgust?&rdquo;</span></div>
                     <div className="pne-step"><span className="pne-step-time">III</span><span className="pne-step-text"><strong>Show the Body It Is Safe.</strong> &ldquo;I am here. You are safe to feel this.&rdquo;</span></div>
                   </div>
                   <p className="vp-text pne-practice-closer">Notice which primary emotion sits beneath the secondary one. The pattern often softens once it has been seen.</p>

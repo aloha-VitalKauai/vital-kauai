@@ -296,7 +296,7 @@ export default function QuestionsClient() {
           <p style={{ fontSize: 12.5, fontStyle: "italic", color: "#8B8070", marginTop: 16 }}>
             {saveStatus === "saving" && "Saving…"}
             {saveStatus === "saved" && "Saved."}
-            {saveStatus === "error" && "Couldn’t save just now — your writing is kept on this device."}
+            {saveStatus === "error" && "Couldn’t save just now—your writing is kept on this device."}
             {saveStatus === "idle" && "Your writing saves automatically as you type. Return any time to continue."}
           </p>
         </div>

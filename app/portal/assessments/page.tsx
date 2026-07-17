@@ -225,7 +225,7 @@ function AssessmentsPageInner() {
               <article
                 key={tp}
                 role="listitem"
-                aria-label={`${meta.label} — locked until ceremony scheduled`}
+                aria-label={`${meta.label}—locked until ceremony scheduled`}
                 style={{ position: 'relative', marginBottom: '1.25rem', animation: 'fadeUp 0.4s ease both', animationDelay: `${i * 0.07}s` }}
               >
                 <div style={{

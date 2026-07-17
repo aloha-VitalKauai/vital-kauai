@@ -148,7 +148,7 @@ function guidance(b: BookingStatus, p: PaymentStatus): string {
   if (b === "confirmed" && p === "paid") return "You are confirmed and paid in full. Aloha.";
   if (b === "confirmed") return "Your place is confirmed. Payment details follow below.";
   if (b === "booked")    return "Your seat is held. Final confirmation arrives once payment clears.";
-  if (b === "invited")   return "Welcome — your invitation is open. Begin with onboarding below.";
+  if (b === "invited")   return "Welcome—your invitation is open. Begin with onboarding below.";
   return "Your inquiry is received. We'll be in touch soon.";
 }
 

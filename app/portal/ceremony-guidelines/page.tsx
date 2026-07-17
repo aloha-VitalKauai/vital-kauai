@@ -119,7 +119,7 @@ export default async function CeremonyGuidelinesPage() {
           <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0" }}>
             {[
               { bold: "Facilitator as Mirror:", text: " Your facilitators are human. When personal material arises in us, we name it internally and return our full presence to you." },
-              { bold: "Empathic Presence:", text: " We meet you in your experience — accompanying rather than absorbing, witnessing rather than fixing." },
+              { bold: "Empathic Presence:", text: " We meet you in your experience—accompanying rather than absorbing, witnessing rather than fixing." },
               { bold: "Unconditional Love:", text: " There is nothing you can bring into this space that will be met with anything other than compassionate presence." },
               { bold: "Trust & Sovereignty:", text: " We hold structure and safety \u2014 and within that, we honor your process fully." },
               { bold: "Ask before offering:", text: " Facilitators will always check in before extending physical support or energy work." },
