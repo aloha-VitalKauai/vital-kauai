@@ -170,7 +170,7 @@ export default async function ReadingListPage() {
                       {b.title}
                     </p>
                     {b.author && (
-                      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: 15, color: GOLD, marginTop: 3 }}>
+                      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: 15, color: "#6B5320", marginTop: 3 }}>
                         {b.author}
                       </p>
                     )}
