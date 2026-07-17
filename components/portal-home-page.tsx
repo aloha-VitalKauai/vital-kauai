@@ -441,7 +441,7 @@ export function PortalHomePage({
                 Church Membership <em>Agreement</em>
               </div>
               <div className={styles.docDesc}>
-                Your membership agreement with Vital Kauai Church, the private religious
+                Your membership agreement with Vital Kauaʻi Church, the private religious
                 context within which all ceremonial work is held.
               </div>
               <div className={styles.docFooter}>
