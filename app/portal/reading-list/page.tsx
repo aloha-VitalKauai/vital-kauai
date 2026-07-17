@@ -104,7 +104,8 @@ const READING_LIST: Category[] = [
       },
       {
         title: "Vijñana Bhairava Tantra (VBT)",
-        isbn: "9788120808201",
+        author: "Swami Satyasangananda Saraswati (The Ascent)",
+        cover: "/images/reading-list/vbt-the-ascent.jpg",
         note: "A collection of 112 meditation techniques presented as a dialogue on the nature of awareness: a timeless, practical toolkit for entering expanded states of consciousness.",
       },
       {
