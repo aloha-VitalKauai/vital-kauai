@@ -10,9 +10,9 @@ const PHQ9_QUESTIONS = [
   "Trouble falling or staying asleep, or sleeping too much",
   "Feeling tired or having little energy",
   "Poor appetite or overeating",
-  "Feeling bad about yourself — or that you are a failure",
+  "Feeling bad about yourself—or that you are a failure",
   "Trouble concentrating on things",
-  "Moving or speaking slowly — or being fidgety and restless",
+  "Moving or speaking slowly—or being fidgety and restless",
   "Thoughts that you would be better off dead or of hurting yourself",
 ];
 

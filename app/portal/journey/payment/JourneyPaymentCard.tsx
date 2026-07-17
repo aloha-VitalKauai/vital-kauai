@@ -138,7 +138,7 @@ export default function JourneyPaymentCard({
     return (
       <div style={cardStyle}>
         <h2 style={h2Style}>Journey Contribution</h2>
-        <p style={subtitleStyle}>Paid in full — {fmt(paid)}</p>
+        <p style={subtitleStyle}>Paid in full—{fmt(paid)}</p>
       </div>
     );
   }
@@ -174,8 +174,8 @@ export default function JourneyPaymentCard({
           {loading
             ? `Opening ${providerName}…`
             : failed
-              ? `🔁 Retry Full Remaining — ${fmt(remaining)}`
-              : `💳 Pay Full Remaining — ${fmt(remaining)}`}
+              ? `🔁 Retry Full Remaining—${fmt(remaining)}`
+              : `💳 Pay Full Remaining—${fmt(remaining)}`}
         </button>
 
         <div style={{ borderTop: "0.5px solid rgba(0,0,0,0.08)", paddingTop: 12 }}>

@@ -132,8 +132,8 @@ export default function DonationCard({
         {loading
           ? "Opening Stripe…"
           : failed
-            ? `🔁 Retry Payment — ${amountLabel}`
-            : `💳 Continue to Payment — ${amountLabel}`}
+            ? `🔁 Retry Payment—${amountLabel}`
+            : `💳 Continue to Payment—${amountLabel}`}
       </button>
       <p className="label-note">{label}</p>
       <style jsx>{styles}</style>

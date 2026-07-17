@@ -392,7 +392,7 @@ export function PortalHomePage({
                 Fill Out Your <em>Forms</em>
               </div>
               <div className={styles.docDesc}>
-                Your Member Intake &amp; Readiness Form &mdash; emergency contact and the basic
+                Your Member Intake &amp; Readiness Form&mdash;emergency contact and the basic
                 information that helps us care for you well.
               </div>
               <div className={styles.docFooter}>
@@ -567,7 +567,7 @@ export function PortalHomePage({
               <p className={styles.teamBio}>
                 Josh and Rachel are with you from your very first conversation through months of
                 deep transformation. As your guides and coaches, they hold space through
-                preparation, ceremony, and integration &mdash; and carry a steady belief in the
+                preparation, ceremony, and integration&mdash;and carry a steady belief in the
                 highest potential for your life.
               </p>
               <p className={styles.teamBio}>
