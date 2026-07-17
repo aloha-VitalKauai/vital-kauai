@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { BookCover } from "./BookCover";
 
 export const metadata = { title: "Recommended Reading — Vital Kauaʻi" };
 
@@ -8,8 +9,17 @@ const CREAM = "#F5F0E8";
 const SAGE_LT = "#A8C5AC";
 const GOLD = "#C8A96E";
 
-type Book = { title: string; author?: string; note: string; cover?: string };
+type Book = { title: string; author?: string; note: string; isbn?: string; cover?: string };
 type Category = { name: string; accent: string; books: Book[] };
+
+// Cover art: an explicit `cover` path wins; otherwise pull from Open Library's
+// free cover service by ISBN. ?default=false makes missing covers 404 so the
+// <BookCover> onError fallback shows the monogram instead of a "no cover" gray.
+function coverSrc(b: Book): string | undefined {
+  if (b.cover) return b.cover;
+  if (b.isbn) return `https://covers.openlibrary.org/b/isbn/${b.isbn}-M.jpg?default=false`;
+  return undefined;
+}
 
 // Purchase links. Search-based so they resolve to the right listing without
 // hardcoding volatile ASINs; audiobook seekers land on Audible.
@@ -34,11 +44,13 @@ const READING_LIST: Category[] = [
       {
         title: "The Iboga Experience",
         author: "Leo van Veenendaal",
+        isbn: "9789403651729",
         note: "Twenty-three firsthand stories alongside practical guidance on preparation, safety, and integration: a grounded, human introduction to what the journey actually asks of you.",
       },
       {
         title: "The Cosmic Serpent",
         author: "Jeremy Narby",
+        isbn: "9780874779646",
         note: "An anthropologist explores whether ancient indigenous plant knowledge and modern molecular biology point to the same hidden source. A favorite in plant-medicine circles and a fascinating bridge between the sacred and the scientific.",
       },
     ],
@@ -50,26 +62,31 @@ const READING_LIST: Category[] = [
       {
         title: "Breaking the Habit of Being Yourself",
         author: "Dr. Joe Dispenza",
+        isbn: "9781401938093",
         note: "A practical bridge between neuroscience and meditation, showing how to break the neural and emotional loops that keep us stuck in old versions of ourselves.",
       },
       {
         title: "Becoming Supernatural",
         author: "Dr. Joe Dispenza",
+        isbn: "9781401953115",
         note: "Goes further into the science of energy, meditation, and healing: a natural companion for the work of rewiring the self before and after deep inner experiences.",
       },
       {
         title: "Living Deeply",
         author: "Marilyn Schlitz, Cassandra Vieten & Tina Amorok (Institute of Noetic Sciences)",
+        isbn: "9781572245334",
         note: "A decade of research into how lasting transformation actually happens, drawn from many traditions. A map for making deep change sustainable rather than fleeting.",
       },
       {
         title: "Sacred Knowledge",
         author: "William Richards",
+        isbn: "9780231174060",
         note: "A Johns Hopkins researcher on psychedelics and mystical experience, and one of the most respected, grounded books bridging rigorous science and the sacred.",
       },
       {
         title: "The Way of the Psychonaut",
         author: "Stanislav Grof",
+        isbn: "9780998276595",
         note: "From the pioneer of transpersonal psychology: an authoritative exploration of non-ordinary states of consciousness and their profound healing potential.",
       },
     ],
@@ -80,24 +97,29 @@ const READING_LIST: Category[] = [
     books: [
       {
         title: "The Yoga Sutras of Patanjali",
+        isbn: "9781938477072",
         note: "The foundational text on stilling the mind, offering a map of consciousness that has guided practitioners for two thousand years toward clarity and liberation.",
       },
       {
         title: "Vijñana Bhairava Tantra (VBT)",
+        isbn: "9788120808201",
         note: "A collection of 112 meditation techniques presented as a dialogue on the nature of awareness: a timeless, practical toolkit for entering expanded states of consciousness.",
       },
       {
         title: "The Power of Now",
         author: "Eckhart Tolle",
+        isbn: "9781577314806",
         note: "A modern classic on presence, teaching how to step out of compulsive thinking and meet each moment, and each uncertainty, directly.",
       },
       {
         title: "The Untethered Soul",
         author: "Michael Singer",
+        isbn: "9781572245372",
         note: "A widely loved, deeply accessible book on releasing the inner voice and living from awareness: an easy on-ramp for anyone newer to this material.",
       },
       {
         title: "The Tibetan Book of the Dead",
+        isbn: "9780143104940",
         note: "More than a text about dying, it is a manual for the living: a teaching on releasing the ego and meeting uncertainty and impermanence with a clear, fearless mind.",
       },
     ],
@@ -109,21 +131,25 @@ const READING_LIST: Category[] = [
       {
         title: "When Breath Becomes Air",
         author: "Paul Kalanithi",
+        isbn: "9780812988406",
         note: "A neurosurgeon's luminous, honest reckoning with his own mortality, and one of the most moving and readable meditations on death written in recent years.",
       },
       {
         title: "The Tao of Physics",
         author: "Fritjof Capra",
+        isbn: "9781590308356",
         note: "The acclaimed classic drawing parallels between quantum physics and Eastern mysticism: highly readable, and a perfect bridge between the scientific and the spiritual.",
       },
       {
         title: "How to Change Your Mind",
         author: "Michael Pollan",
+        isbn: "9781594204227",
         note: "A rigorous, beautifully written survey of psychedelic science and the mystical experience, respected across both scientific and spiritual audiences.",
       },
       {
         title: "Biocentrism",
         author: "Robert Lanza & Bob Berman",
+        isbn: "9781935251743",
         note: "A physician-scientist argues that consciousness is fundamental to reality itself: accessible and provocative, a natural bridge between the quantum and the spiritual.",
       },
     ],
@@ -202,20 +228,12 @@ export default async function ReadingListPage() {
                         textDecoration: "none",
                       }}
                     >
-                      {b.cover ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={b.cover}
-                          alt={`${b.title} cover`}
-                          width={62}
-                          height={92}
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                        />
-                      ) : (
-                        <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 30, color: cat.accent, opacity: 0.55 }}>
-                          {monogram(b.title)}
-                        </span>
-                      )}
+                      <BookCover
+                        src={coverSrc(b)}
+                        alt={`${b.title} cover`}
+                        accent={cat.accent}
+                        monogram={monogram(b.title)}
+                      />
                     </a>
 
                     {/* Details */}
