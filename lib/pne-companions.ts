@@ -228,4 +228,10 @@ export const PNE_ADDITIONAL_RESOURCES: ReadonlyArray<PneAdditionalResource> = [
     href: "/portal/ceremony-guidelines",
     status: "live",
   },
+  {
+    title: "Recommended Reading",
+    description: "A curated reading list spanning iboga and plant medicine, the science of the mind, and the great spiritual traditions.",
+    href: "/portal/reading-list",
+    status: "live",
+  },
 ]

@@ -97,6 +97,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
                 <a href="/portal/what-to-bring" className="pn-dropdown-subitem">Packing Guide</a>
                 <a href="/ceremony-day-guide.html" className="pn-dropdown-subitem">Ceremony Day Guide</a>
                 <a href="/portal/ceremony-guidelines" className="pn-dropdown-subitem">Ceremony Guidelines</a>
+                <a href="/portal/reading-list" className="pn-dropdown-subitem">Recommended Reading</a>
               </div>
             </div>
             <a href="/portal/donate" className="pn-link">Contribute</a>
@@ -181,6 +182,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
           <a href="/portal/what-to-bring" className="pn-mobile-week" onClick={close}>Packing Guide</a>
           <a href="/ceremony-day-guide.html" className="pn-mobile-week" onClick={close}>Ceremony Day Guide</a>
           <a href="/portal/ceremony-guidelines" className="pn-mobile-week" onClick={close}>Ceremony Guidelines</a>
+          <a href="/portal/reading-list" className="pn-mobile-week" onClick={close}>Recommended Reading</a>
         </div>
         <a href="/portal/donate" onClick={close}>Contribute</a>
         <a href="/portal/contact" onClick={close}>Contact</a>
