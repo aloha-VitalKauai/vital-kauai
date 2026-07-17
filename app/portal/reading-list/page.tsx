@@ -45,6 +45,7 @@ const READING_LIST: Category[] = [
         title: "The Iboga Experience",
         author: "Leo van Veenendaal",
         isbn: "9789403651729",
+        cover: "/images/reading-list/iboga-experience.jpg",
         note: "Twenty-three firsthand stories alongside practical guidance on preparation, safety, and integration: a grounded, human introduction to what the journey actually asks of you.",
       },
       {
@@ -69,6 +70,7 @@ const READING_LIST: Category[] = [
         title: "Becoming Supernatural",
         author: "Dr. Joe Dispenza",
         isbn: "9781401953115",
+        cover: "/images/reading-list/becoming-supernatural.jpg",
         note: "Goes further into the science of energy, meditation, and healing: a natural companion for the work of rewiring the self before and after deep inner experiences.",
       },
       {
@@ -150,6 +152,7 @@ const READING_LIST: Category[] = [
         title: "Biocentrism",
         author: "Robert Lanza & Bob Berman",
         isbn: "9781935251743",
+        cover: "/images/reading-list/biocentrism.jpg",
         note: "A physician-scientist argues that consciousness is fundamental to reality itself: accessible and provocative, a natural bridge between the quantum and the spiritual.",
       },
     ],
