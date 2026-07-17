@@ -8,8 +8,23 @@ const CREAM = "#F5F0E8";
 const SAGE_LT = "#A8C5AC";
 const GOLD = "#C8A96E";
 
-type Book = { title: string; author?: string; note: string };
+type Book = { title: string; author?: string; note: string; cover?: string };
 type Category = { name: string; accent: string; books: Book[] };
+
+// Purchase links. Search-based so they resolve to the right listing without
+// hardcoding volatile ASINs; audiobook seekers land on Audible.
+function amazonUrl(b: Book): string {
+  const q = [b.title, b.author, "book"].filter(Boolean).join(" ");
+  return `https://www.amazon.com/s?k=${encodeURIComponent(q)}`;
+}
+function audibleUrl(b: Book): string {
+  const q = [b.title, b.author].filter(Boolean).join(" ");
+  return `https://www.audible.com/search?keywords=${encodeURIComponent(q)}`;
+}
+// First meaningful letter, for the placeholder cover monogram.
+function monogram(title: string): string {
+  return title.replace(/^(The|A|An)\s+/i, "").charAt(0).toUpperCase();
+}
 
 const READING_LIST: Category[] = [
   {
@@ -159,24 +174,85 @@ export default async function ReadingListPage() {
                   <div
                     key={b.title}
                     style={{
+                      display: "flex",
+                      gap: 18,
                       background: "#FFFFFF",
                       border: "1px solid rgba(28,43,30,0.1)",
                       borderLeft: `3px solid ${cat.accent}`,
                       borderRadius: 6,
-                      padding: "22px 26px",
+                      padding: "22px 24px",
                     }}
                   >
-                    <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 23, fontWeight: 400, lineHeight: 1.2, color: "#1A1A18" }}>
-                      {b.title}
-                    </p>
-                    {b.author && (
-                      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: 15, color: "#6B5320", marginTop: 3 }}>
-                        {b.author}
+                    {/* Cover — the book's cover art, or a monogram placeholder */}
+                    <a
+                      href={amazonUrl(b)}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        flex: "none",
+                        width: 62,
+                        height: 92,
+                        borderRadius: 3,
+                        overflow: "hidden",
+                        border: `1px solid ${cat.accent}33`,
+                        background: `linear-gradient(150deg, ${cat.accent}18, ${cat.accent}06)`,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        textDecoration: "none",
+                      }}
+                    >
+                      {b.cover ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={b.cover}
+                          alt={`${b.title} cover`}
+                          width={62}
+                          height={92}
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                      ) : (
+                        <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 30, color: cat.accent, opacity: 0.55 }}>
+                          {monogram(b.title)}
+                        </span>
+                      )}
+                    </a>
+
+                    {/* Details */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <a
+                        href={amazonUrl(b)}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          fontFamily: "'Cormorant Garamond', serif",
+                          fontSize: 23,
+                          fontWeight: 400,
+                          lineHeight: 1.2,
+                          color: "#1A1A18",
+                          textDecoration: "none",
+                          borderBottom: `1px solid ${cat.accent}55`,
+                        }}
+                      >
+                        {b.title}
+                      </a>
+                      {b.author && (
+                        <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: 15, color: "#6B5320", marginTop: 4 }}>
+                          {b.author}
+                        </p>
+                      )}
+                      <p style={{ fontSize: 13.5, color: "#3D4D3F", lineHeight: 1.7, marginTop: 11 }}>
+                        {b.note}
                       </p>
-                    )}
-                    <p style={{ fontSize: 13.5, color: "#3D4D3F", lineHeight: 1.7, marginTop: 12 }}>
-                      {b.note}
-                    </p>
+                      <div style={{ display: "flex", gap: 18, marginTop: 12 }}>
+                        <a href={amazonUrl(b)} target="_blank" rel="noreferrer" style={{ fontSize: 10.5, letterSpacing: "0.12em", textTransform: "uppercase", color: cat.accent, textDecoration: "none", fontWeight: 400 }}>
+                          Amazon&nbsp;&#8599;
+                        </a>
+                        <a href={audibleUrl(b)} target="_blank" rel="noreferrer" style={{ fontSize: 10.5, letterSpacing: "0.12em", textTransform: "uppercase", color: cat.accent, textDecoration: "none", fontWeight: 400 }}>
+                          Audible&nbsp;&#8599;
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
