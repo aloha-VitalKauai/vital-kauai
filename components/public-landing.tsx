@@ -36,7 +36,7 @@ export function PublicLanding() {
         </p>
       </section>
 
-      <LoginForm hideReturnHome />
+      <LoginForm hideReturnHome hideInviteNote />
 
       <footer className={styles.footer}>
         Vital Kauaʻi Church · Hanalei, Hawaiʻi · A Hawaiʻi nonprofit corporation

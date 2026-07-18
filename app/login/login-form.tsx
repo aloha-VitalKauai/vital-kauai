@@ -26,9 +26,12 @@ type LoginFormProps = {
   // Hide the "Return Home" button when the form is embedded on the homepage
   // itself (there is nowhere to return to). Defaults to showing it on /login.
   hideReturnHome?: boolean;
+  // Hide the "Access is invitation-only…" fine print. Used on the public
+  // landing, where it's redundant beside the discovery-call invitation.
+  hideInviteNote?: boolean;
 };
 
-export function LoginForm({ nextPathParam, errorMessageParam, hideReturnHome }: LoginFormProps) {
+export function LoginForm({ nextPathParam, errorMessageParam, hideReturnHome, hideInviteNote }: LoginFormProps) {
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -291,11 +294,13 @@ export function LoginForm({ nextPathParam, errorMessageParam, hideReturnHome }: 
           >
             Book a Discovery Call
           </a>
-          <p className={styles.noticeFine}>
-            Access is invitation-only. After your discovery call, you&apos;ll
-            receive a Welcome email from the Vital Kaua&#699;i team with a link
-            to set up your account and choose your own password.
-          </p>
+          {hideInviteNote ? null : (
+            <p className={styles.noticeFine}>
+              Access is invitation-only. After your discovery call, you&apos;ll
+              receive a Welcome email from the Vital Kaua&#699;i team with a link
+              to set up your account and choose your own password.
+            </p>
+          )}
         </div>
       </section>
     </main>
