@@ -37,7 +37,12 @@ export async function middleware(request: NextRequest) {
   // Pages that are reachable without a session. Everything else on the site is
   // members-only — visitors get sent to /login. API routes and static assets
   // are excluded via the matcher below, not here.
+  //
+  // "/" is the public landing (org identity + member sign-in). It must stay
+  // reachable without a session so the site presents a public, functional
+  // homepage — required for Apple Developer organization verification.
   const isPublicPath =
+    path === "/" ||
     path === "/login" ||
     path.startsWith("/auth/") ||
     path === "/auth" ||
@@ -75,6 +80,12 @@ export async function middleware(request: NextRequest) {
     ];
 
     const isFounder = FOUNDER_IDS.includes(user.id);
+
+    // Signed-in visitors don't need the public landing at "/" — route them to
+    // their own home (dashboard for founders, portal for members).
+    if (path === "/") {
+      return NextResponse.redirect(new URL(isFounder ? "/dashboard" : "/portal", request.url));
+    }
 
     // Protect /dashboard, /ops, /founders — founders only
     if ((path.startsWith("/dashboard") || path.startsWith("/ops") || path.startsWith("/founders")) && !isFounder) {
@@ -115,7 +126,12 @@ export const config = {
   // manages its own auth — Stripe webhooks, intake submission, etc.), and
   // static asset extensions. Public HTML pages like the Preparedness Guide
   // are intentionally included so they require a session too.
+  //
+  // Media (mp4/webm) is excluded like images so it is served publicly — the
+  // homepage hero video must load for logged-out visitors. The only videos
+  // under /public are the decorative hero loop; member media is hosted
+  // elsewhere, so nothing sensitive is exposed by this.
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff2?|ttf|map|txt|xml)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff2?|ttf|map|txt|xml|mp4|webm)$).*)",
   ],
 };
