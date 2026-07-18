@@ -121,6 +121,12 @@ const READING_LIST: Category[] = [
         note: "A widely loved, deeply accessible book on releasing the inner voice and living from awareness: an easy on-ramp for anyone newer to this material.",
       },
       {
+        title: "Radical Acceptance",
+        author: "Tara Brach",
+        isbn: "9780553380996",
+        note: "A beloved guide to meeting your life, and yourself, with mindful and compassionate presence, weaving Buddhist practice together with years of psychotherapy into a path toward wholeness.",
+      },
+      {
         title: "The Tibetan Book of the Dead",
         isbn: "9780143104940",
         note: "More than a text about dying, it is a manual for the living: a teaching on releasing the ego and meeting uncertainty and impermanence with a clear, fearless mind.",
