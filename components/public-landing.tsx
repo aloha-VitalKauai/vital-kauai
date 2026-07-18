@@ -20,8 +20,8 @@ export function PublicLanding() {
             <em>Kauaʻi</em>
           </h1>
           <p className={styles.heroSub}>
-            We are a member-based spiritual community offering ceremony,
-            preparation, and integration in service of whole-being
+            We are a member-based spiritual community offering preparation,
+            ceremony, and integration in service of whole-being
             transformation.
           </p>
         </div>
