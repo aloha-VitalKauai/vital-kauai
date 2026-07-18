@@ -1,4 +1,5 @@
 import { LoginForm } from "@/app/login/login-form";
+import { HeroVideo } from "./hero-video";
 import styles from "./public-landing.module.css";
 
 // The public front door at "/". This is the only marketing-facing surface that
@@ -9,17 +10,7 @@ export function PublicLanding() {
   return (
     <>
       <section className={styles.hero} aria-label="Vital Kauaʻi">
-        <video
-          className={styles.heroVideo}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-        >
-          <source src="/videos/hero-loop.webm" type="video/webm" />
-          <source src="/videos/hero-loop.mp4" type="video/mp4" />
-        </video>
+        <HeroVideo className={styles.heroVideo} />
         <div className={styles.heroOverlay} />
         <div className={styles.heroContent}>
           <p className={styles.eyebrow}>A Living Sanctuary</p>
