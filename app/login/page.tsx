@@ -1,4 +1,4 @@
-import { LoginForm } from "./login-form";
+import { LoginLanding } from "@/components/login-landing";
 
 type LoginPageProps = {
   searchParams: Promise<{
@@ -9,5 +9,5 @@ type LoginPageProps = {
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
-  return <LoginForm nextPathParam={params.next} errorMessageParam={params.error} />;
+  return <LoginLanding nextPathParam={params.next} errorMessageParam={params.error} />;
 }
