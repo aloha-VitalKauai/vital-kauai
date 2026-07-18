@@ -21,7 +21,8 @@ export function PublicLanding() {
           </h1>
           <p className={styles.heroSub}>
             We are a member-based spiritual community offering ceremony,
-            preparation, and integration support to our members.
+            preparation, and integration in service of whole-being
+            transformation.
           </p>
         </div>
       </section>
@@ -31,7 +32,7 @@ export function PublicLanding() {
         <p className={styles.identityKicker}>A religious nonprofit</p>
         <div className={styles.rule} />
         <p className={styles.identityBody}>
-          Membership is by application. To learn more or begin, reach out — we
+          Membership is by application. To learn more or begin, reach out. We
           would be honored to hear from you.
         </p>
       </section>

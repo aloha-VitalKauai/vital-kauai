@@ -283,7 +283,7 @@ export function LoginForm({ nextPathParam, errorMessageParam, hideReturnHome, hi
 
         <div className={styles.notice}>
           <p className={styles.noticeLead}>
-            New to Vital Kaua&#699;i? Begin with a discovery call &mdash; a
+            New to Vital Kaua&#699;i? Begin with a discovery call, a
             conversation to explore whether this path is right for you.
           </p>
           <a
