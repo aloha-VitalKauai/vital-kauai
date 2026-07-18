@@ -37,7 +37,12 @@ export async function middleware(request: NextRequest) {
   // Pages that are reachable without a session. Everything else on the site is
   // members-only — visitors get sent to /login. API routes and static assets
   // are excluded via the matcher below, not here.
+  //
+  // "/" is the public landing (org identity + member sign-in). It must stay
+  // reachable without a session so the site presents a public, functional
+  // homepage — required for Apple Developer organization verification.
   const isPublicPath =
+    path === "/" ||
     path === "/login" ||
     path.startsWith("/auth/") ||
     path === "/auth" ||
@@ -75,6 +80,12 @@ export async function middleware(request: NextRequest) {
     ];
 
     const isFounder = FOUNDER_IDS.includes(user.id);
+
+    // Signed-in visitors don't need the public landing at "/" — route them to
+    // their own home (dashboard for founders, portal for members).
+    if (path === "/") {
+      return NextResponse.redirect(new URL(isFounder ? "/dashboard" : "/portal", request.url));
+    }
 
     // Protect /dashboard, /ops, /founders — founders only
     if ((path.startsWith("/dashboard") || path.startsWith("/ops") || path.startsWith("/founders")) && !isFounder) {

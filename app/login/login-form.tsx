@@ -23,9 +23,12 @@ function sanitizeNextPath(input: string | null) {
 type LoginFormProps = {
   nextPathParam?: string;
   errorMessageParam?: string;
+  // Hide the "Return Home" button when the form is embedded on the homepage
+  // itself (there is nowhere to return to). Defaults to showing it on /login.
+  hideReturnHome?: boolean;
 };
 
-export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) {
+export function LoginForm({ nextPathParam, errorMessageParam, hideReturnHome }: LoginFormProps) {
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -266,9 +269,11 @@ export function LoginForm({ nextPathParam, errorMessageParam }: LoginFormProps) 
               <button className={`${styles.button} ${styles.buttonPrimary}`} type="submit" disabled={loading}>
                 {loading ? "Signing In..." : "Sign In"}
               </button>
-              <Link href="/" className={`${styles.button} ${styles.buttonSecondary}`}>
-                Return Home
-              </Link>
+              {hideReturnHome ? null : (
+                <Link href="/" className={`${styles.button} ${styles.buttonSecondary}`}>
+                  Return Home
+                </Link>
+              )}
             </div>
           </form>
         )}
