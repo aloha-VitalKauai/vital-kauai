@@ -126,7 +126,12 @@ export const config = {
   // manages its own auth — Stripe webhooks, intake submission, etc.), and
   // static asset extensions. Public HTML pages like the Preparedness Guide
   // are intentionally included so they require a session too.
+  //
+  // Media (mp4/webm) is excluded like images so it is served publicly — the
+  // homepage hero video must load for logged-out visitors. The only videos
+  // under /public are the decorative hero loop; member media is hosted
+  // elsewhere, so nothing sensitive is exposed by this.
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff2?|ttf|map|txt|xml)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff2?|ttf|map|txt|xml|mp4|webm)$).*)",
   ],
 };
