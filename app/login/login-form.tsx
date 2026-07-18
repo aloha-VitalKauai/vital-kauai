@@ -29,9 +29,12 @@ type LoginFormProps = {
   // Hide the "Access is invitation-only…" fine print. Used on the public
   // landing, where it's redundant beside the discovery-call invitation.
   hideInviteNote?: boolean;
+  // Hide the entire discovery-call notice. Used on the public landing, which
+  // renders that invitation higher up (under the church introduction).
+  hideDiscoveryNote?: boolean;
 };
 
-export function LoginForm({ nextPathParam, errorMessageParam, hideReturnHome, hideInviteNote }: LoginFormProps) {
+export function LoginForm({ nextPathParam, errorMessageParam, hideReturnHome, hideInviteNote, hideDiscoveryNote }: LoginFormProps) {
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -281,27 +284,29 @@ export function LoginForm({ nextPathParam, errorMessageParam, hideReturnHome, hi
           </form>
         )}
 
-        <div className={styles.notice}>
-          <p className={styles.noticeLead}>
-            New to Vital Kaua&#699;i? Begin with a discovery call, a
-            conversation to explore whether this path is right for you.
-          </p>
-          <a
-            className={`${styles.button} ${styles.buttonPrimary} ${styles.noticeCta}`}
-            href="https://calendly.com/aloha-vitalkauai/30min"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Book a Discovery Call
-          </a>
-          {hideInviteNote ? null : (
-            <p className={styles.noticeFine}>
-              Access is invitation-only. After your discovery call, you&apos;ll
-              receive a Welcome email from the Vital Kaua&#699;i team with a link
-              to set up your account and choose your own password.
+        {hideDiscoveryNote ? null : (
+          <div className={styles.notice}>
+            <p className={styles.noticeLead}>
+              New to Vital Kaua&#699;i? Begin with a discovery call, a
+              conversation to explore whether this path is right for you.
             </p>
-          )}
-        </div>
+            <a
+              className={`${styles.button} ${styles.buttonPrimary} ${styles.noticeCta}`}
+              href="https://calendly.com/aloha-vitalkauai/30min"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Book a Discovery Call
+            </a>
+            {hideInviteNote ? null : (
+              <p className={styles.noticeFine}>
+                Access is invitation-only. After your discovery call, you&apos;ll
+                receive a Welcome email from the Vital Kaua&#699;i team with a link
+                to set up your account and choose your own password.
+              </p>
+            )}
+          </div>
+        )}
       </section>
     </main>
   );

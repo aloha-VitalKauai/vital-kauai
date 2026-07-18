@@ -1,6 +1,7 @@
 import { LoginForm } from "@/app/login/login-form";
 import { HeroVideo } from "./hero-video";
 import styles from "./public-landing.module.css";
+import loginStyles from "@/app/login/login-form.module.css";
 
 // The public front door at "/". This is the only marketing-facing surface that
 // renders without a session — it carries the organization's identity (needed
@@ -35,9 +36,25 @@ export function PublicLanding() {
           Membership is by application. To learn more or begin, reach out. We
           would be honored to hear from you.
         </p>
+        <div className={styles.discoveryWrap}>
+          <div className={loginStyles.notice}>
+            <p className={loginStyles.noticeLead}>
+              New to Vital Kauaʻi? Begin with a discovery call, a conversation
+              to explore whether this path is right for you.
+            </p>
+            <a
+              className={`${loginStyles.button} ${loginStyles.buttonPrimary} ${loginStyles.noticeCta}`}
+              href="https://calendly.com/aloha-vitalkauai/30min"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Book a Discovery Call
+            </a>
+          </div>
+        </div>
       </section>
 
-      <LoginForm hideReturnHome hideInviteNote />
+      <LoginForm hideReturnHome hideDiscoveryNote />
 
       <footer className={styles.footer}>
         Vital Kauaʻi Church · Hanalei, Hawaiʻi · A Hawaiʻi nonprofit corporation

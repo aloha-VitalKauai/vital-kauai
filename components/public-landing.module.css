@@ -116,6 +116,15 @@
   color: rgb(245 240 232 / 0.82);
 }
 
+/* Discovery-call invitation, moved directly under the church introduction so
+   a first-time visitor's next step is immediate. Reuses the login form's
+   .notice card styling; this wrapper just centers and constrains it. */
+.discoveryWrap {
+  max-width: 460px;
+  margin: 8px auto 0;
+  text-align: left;
+}
+
 .footer {
   background: #0b160f;
   padding: 22px 28px;
