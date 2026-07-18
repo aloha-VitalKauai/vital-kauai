@@ -118,11 +118,12 @@
 
 /* Discovery-call invitation, moved directly under the church introduction so
    a first-time visitor's next step is immediate. Reuses the login form's
-   .notice card styling; this wrapper just centers and constrains it. */
+   .notice card styling; this wrapper centers, constrains, and centers the
+   text and button within the card. */
 .discoveryWrap {
   max-width: 460px;
   margin: 8px auto 0;
-  text-align: left;
+  text-align: center;
 }
 
 .footer {
