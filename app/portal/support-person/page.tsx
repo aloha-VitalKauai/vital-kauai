@@ -77,7 +77,7 @@ export default async function SupportPersonPage() {
       <Section id="during" num="03" label="The Ceremony Days" title="While They Are" titleEm="in Ceremony" rose={rose} border={border} sage={sage}>
         <p style={prose}>Ceremony typically begins in the evening and continues through the night and into the following day. During this time, your person will have no access to their phone. You will hear nothing from them, and that silence is by design.</p>
         <Callout color={rose} bg={roseLt} label="For You, While You Wait">
-          The waiting is its own experience. You may feel restless, concerned, or simply aware of an open space. This is a meaningful time to hold them in your heart, to pray or set an intention for their wellbeing, or simply to go about your life knowing they are cared for.
+          The waiting is its own experience. You may feel restless, concerned, or simply aware of an open space. This is a meaningful time to hold them in your heart, to pray or set an intention for their wellbeing, or simply to go about your life knowing they are cared for. Should you need to reach us, call Rachel (808-855-5033) or Josh (623-330-8017), and we will connect with your person directly.
         </Callout>
         <p style={prose}>After ceremony concludes, there is typically a period of profound stillness and rest before your person is ready to connect. They will most likely reach out after 48 hours have passed, please allow that timeline to unfold naturally.</p>
       </Section>
