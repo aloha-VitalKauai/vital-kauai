@@ -64,6 +64,7 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     status: "live",
     videoSummary:
       "Listening to sensation as information, and learning to stay with what arises in the body.",
+    videoUrl: "https://www.youtube.com/embed/KSkcO2ITz8o?rel=0",
   },
   {
     phase: "pre",
