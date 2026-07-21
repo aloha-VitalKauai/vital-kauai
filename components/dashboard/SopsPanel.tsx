@@ -98,12 +98,13 @@ export const SOPS: Sop[] = [
   },
   {
     id: 'sacred-hospitality-coordinator',
-    title: 'Sacred Hospitality Coordinator SOP',
-    owner: '—',
-    updated: '—',
-    status: 'draft',
-    summary: 'Awaiting upload. Paste hospitality coordinator protocols here.',
+    title: 'Sacred Hospitality Guide',
+    owner: 'Rachel · Josh',
+    updated: '2026-07-21',
+    status: 'active',
+    summary: 'The hospitality guide’s full playbook: before-arrival prep, property and kitchen readiness, welcoming members, temple ceremony setup, daily rhythm, and departure.',
     sections: [],
+    href: '/dashboard/sops/sacred-hospitality-coordinator',
   },
 ]
 
