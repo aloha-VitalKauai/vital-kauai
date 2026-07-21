@@ -77,6 +77,16 @@ export const SOPS: Sop[] = [
     href: '/dashboard/sops/reference-itinerary',
   },
   {
+    id: 'aftercare-guide',
+    title: 'Aftercare Guide',
+    owner: 'Rachel · Josh',
+    updated: '2026-07-21',
+    status: 'active',
+    summary: 'For Aftercare Guides holding space through integration and recovery: core values, the ten guiding principles, role and responsibilities, dysregulation and electrolyte protocols, and when to call 911.',
+    sections: [],
+    href: '/dashboard/sops/aftercare-guide',
+  },
+  {
     id: 'emergency-protocols',
     title: 'Emergency Protocols',
     owner: '—',
