@@ -75,7 +75,7 @@ export default async function SupportPersonPage() {
 
       {/* Section 3: During the Ceremony */}
       <Section id="during" num="03" label="The Ceremony Days" title="While They Are" titleEm="in Ceremony" rose={rose} border={border} sage={sage}>
-        <p style={prose}>Ceremony typically begins in the evening and continues through the night and into the following day. During this time, your person will have no access to their phone and will be in a fully darkened ceremonial space. You will hear nothing from them, and that silence is by design.</p>
+        <p style={prose}>Ceremony typically begins in the evening and continues through the night and into the following day. During this time, your person will have no access to their phone. You will hear nothing from them, and that silence is by design.</p>
         <Callout color={rose} bg={roseLt} label="For You, While You Wait">
           The waiting is its own experience. You may feel restless, concerned, or simply aware of an open space. This is a meaningful time to hold them in your heart, to pray or set an intention for their wellbeing, or simply to go about your life knowing they are cared for.
         </Callout>
