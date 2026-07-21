@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { PrintBar } from "./PrintBar";
 
 export const metadata = { title: "Support Person Guide — Vital Kauaʻi" };
 
@@ -26,11 +27,12 @@ export default async function SupportPersonPage() {
   const prose: React.CSSProperties = { fontSize: 17.5, color: textMid, lineHeight: 1.9, marginBottom: 24 };
 
   return (
-    <div style={{ minHeight: "100vh", background: cream, fontFamily: "'Jost', sans-serif", fontWeight: 300, lineHeight: 1.75, fontSize: 17, color: ink }}>
-      {/* Nav */}
+    <div className="sp-page" style={{ minHeight: "100vh", background: cream, fontFamily: "'Jost', sans-serif", fontWeight: 300, lineHeight: 1.75, fontSize: 17, color: ink }}>
+      {/* Print / Save-as-PDF bar */}
+      <PrintBar />
 
       {/* Hero */}
-      <section style={{ padding: "100px 40px 80px", maxWidth: 820, margin: "0 auto", textAlign: "center" }}>
+      <section className="sp-hero" style={{ padding: "100px 40px 80px", maxWidth: 820, margin: "0 auto", textAlign: "center" }}>
         <span style={{ display: "inline-block", fontSize: 11, letterSpacing: "0.38em", textTransform: "uppercase", color: sage, marginBottom: 28 }}>For the People Who Love You</span>
         <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(42px, 6.5vw, 68px)", fontWeight: 300, lineHeight: 1.15, marginBottom: 28 }}>
           You are part of <em style={{ fontStyle: "italic", color: rose }}>this journey</em> too.
@@ -42,7 +44,7 @@ export default async function SupportPersonPage() {
       </section>
 
       {/* Section Nav */}
-      <nav style={{ maxWidth: 960, margin: "0 auto", padding: "0 40px 72px", display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
+      <nav className="sp-jump" style={{ maxWidth: 960, margin: "0 auto", padding: "0 40px 72px", display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
         {[
           { label: "Understanding Iboga", id: "understanding" },
           { label: "Before They Leave", id: "before" },
@@ -142,7 +144,7 @@ export default async function SupportPersonPage() {
       </Section>
 
       {/* Closing */}
-      <section style={{ background: ink, color: cream, padding: "80px 40px", textAlign: "center" }}>
+      <section className="sp-closing" style={{ background: ink, color: cream, padding: "80px 40px", textAlign: "center" }}>
         <div style={{ maxWidth: 600, margin: "0 auto" }}>
           <span style={{ display: "inline-block", fontSize: 11, letterSpacing: "0.38em", textTransform: "uppercase", color: gold, opacity: 0.8, marginBottom: 28 }}>We Are Here for You Too</span>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 4.5vw, 52px)", fontWeight: 300, lineHeight: 1.25, marginBottom: 20 }}>You do not have to navigate this alone.</h2>
@@ -168,7 +170,7 @@ function Section({ id, num, label, title, titleEm, rose, border, sage, children 
   return (
     <section id={id} style={{ maxWidth: 820, margin: "0 auto", padding: "0 40px 96px", scrollMarginTop: 80 }}>
       <div style={{ display: "flex", alignItems: "flex-start", gap: 28, marginBottom: 48, paddingBottom: 32, borderBottom: `1px solid ${border}` }}>
-        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 64, fontWeight: 300, lineHeight: 1, color: "rgba(184,151,74,0.22)", flexShrink: 0, marginTop: -6 }}>{num}</div>
+        <div className="sp-num" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 64, fontWeight: 300, lineHeight: 1, color: "rgba(184,151,74,0.22)", flexShrink: 0, marginTop: -6 }}>{num}</div>
         <div style={{ flex: 1 }}>
           <span style={{ fontSize: 11, letterSpacing: "0.38em", textTransform: "uppercase", color: sage, display: "block", marginBottom: 12 }}>{label}</span>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(30px, 4.5vw, 44px)", fontWeight: 400, lineHeight: 1.2 }}>
@@ -192,7 +194,7 @@ function Callout({ color, bg, label, children }: { color: string; bg: string; la
 
 function Divider() {
   return (
-    <div style={{ maxWidth: 820, margin: "0 auto 80px", padding: "0 40px" }}>
+    <div className="sp-divider" style={{ maxWidth: 820, margin: "0 auto 80px", padding: "0 40px" }}>
       <div style={{ height: 1, background: "linear-gradient(to right, transparent, rgba(184,151,74,0.18), transparent)" }} />
     </div>
   );
