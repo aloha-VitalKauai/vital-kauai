@@ -153,7 +153,7 @@ export default function ReferenceItineraryPage() {
               <div className="time-row"><div className="time">9:00 AM</div><div className="activity">Breakfast.</div></div>
               <div className="time-row"><div className="time">11:00 AM</div><div className="activity"><strong>Personal meetings.</strong></div></div>
               <div className="time-row"><div className="time">1:00 PM</div><div className="activity">Lunch.</div></div>
-              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Breath + sound bath with Dorothea.</strong></div></div>
+              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Breath + sound bath with Dorothea, or Hoʻoponopono ceremony.</strong></div></div>
               <div className="time-row"><div className="time">5:30 PM</div><div className="activity"><strong>Sharing circle</strong> + Jeffersonian dinner.</div></div>
             </div>
           </div>
