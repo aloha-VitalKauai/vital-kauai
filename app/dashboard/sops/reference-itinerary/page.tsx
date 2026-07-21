@@ -82,7 +82,7 @@ const STYLES = `
 @media (max-width:720px) { .ref-itinerary .wrapper { padding:48px 24px; } .ref-itinerary h1 { font-size:40px; } .ref-itinerary .day { grid-template-columns:1fr; gap:12px; } .ref-itinerary .time-row { grid-template-columns:1fr; gap:4px; } .ref-itinerary .team-role { grid-template-columns:1fr; gap:4px; } .ref-itinerary .reference { padding:36px 28px; } .ref-itinerary .team-block { padding:32px 24px; } .ref-itinerary .meta-row { flex-direction:column; gap:10px; } }
 `
 
-export const metadata = { title: 'Reference Itinerary — Vital Kauaʻi' }
+export const metadata = { title: 'Standard Itinerary — Vital Kauaʻi' }
 
 export default function ReferenceItineraryPage() {
   return (
@@ -92,13 +92,13 @@ export default function ReferenceItineraryPage() {
         <div className="wrapper">
           <DownloadItineraryButton />
           <header>
-            <div className="eyebrow">Founders Dashboard · Ceremony Arc</div>
-            <h1>The Seven-Day <em>Ceremony Arc</em></h1>
-            <p className="lede">Each ceremony is a small, held gathering — six members, seven days, one sacred arc. Every phase guided. Every step supported.</p>
+            <div className="eyebrow">Founders Dashboard · Standard Itinerary</div>
+            <h1>The Eight-Day <em>Standard Itinerary</em></h1>
+            <p className="lede">Eight days in Hanalei: arrival, two ceremonies held with rest and integration between, embodiment, and a closing departure.</p>
             <div className="meta-row">
               <span>Hanalei · Kauaʻi</span>
               <span>Up to 6 Members</span>
-              <span>Working Draft</span>
+              <span>Two Ceremonies</span>
             </div>
           </header>
 
@@ -106,109 +106,111 @@ export default function ReferenceItineraryPage() {
             <div className="day-marker"><div className="day-number">01</div><div className="day-label">Arrival</div></div>
             <div className="day-content">
               <h3>Day One</h3>
-              <div className="day-title">Weaving the <em>Container</em></div>
-              <div className="time-row"><div className="time">2:00 PM</div><div className="activity"><strong>Arrivals. Pūpūs served.</strong> Members settle in, meet the team, and begin to feel the land.</div></div>
-              <div className="time-row"><div className="time">3:30 PM</div><div className="activity"><strong>Welcome ceremony &amp; opening circle with Rachel &amp; Josh.</strong> Name game and introductions. Container agreements, consent, confidentiality, how to ask for support. Overview of the week ahead. Brief medical and medication confirmation.<span className="note">Phones are turned off and put away. No phones or devices in group spaces.</span></div></div>
-              <div className="time-row"><div className="time">~ 4:30 PM</div><div className="activity"><strong>Paired somatic practice.</strong> A first threshold of intimacy and coherence in the group. Practice to be determined.</div></div>
-              <div className="time-row"><div className="time">5:30 PM</div><div className="activity"><strong>Welcome meal.</strong> Grounding, nourishing, prepared by the culinary team. The first gathering at the table.</div></div>
-              <div className="time-row"><div className="time">~ 6:45 PM</div><div className="activity"><strong>Movement journey with Dr. Liz Esalen.</strong> Dropping out of the head and into the body. Arriving fully on the land.</div></div>
-              <div className="time-row"><div className="time">By 8:30 PM</div><div className="activity">Complete. Tea. Early sleep so the body is rested for the day ahead.</div></div>
+              <div className="day-title">Arriving on the <em>Land</em></div>
+              <div className="day-subtitle">Settling in, meeting the team, feeling the ground.</div>
+              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Welcome orientation &amp; paperwork.</strong> Members settle in, meet the team, and begin to feel the land.</div></div>
+              <div className="time-row"><div className="time">5:00 PM</div><div className="activity"><strong>Jeffersonian-style dinner.</strong> The first gathering at the table, one shared conversation.</div></div>
+              <div className="time-row"><div className="time">6:30 PM</div><div className="activity"><strong>Welcome baptism &amp; fire ceremony with Rachel &amp; Josh.</strong> Opening the container.</div></div>
+              <div className="time-row"><div className="time">7:00 PM</div><div className="activity"><strong>Talk story.</strong> A gentle evening circle to arrive together.</div></div>
             </div>
           </div>
 
           <div className="day">
-            <div className="day-marker"><div className="day-number">02</div><div className="day-label">Release</div></div>
+            <div className="day-marker"><div className="day-number">02</div><div className="day-label">Ceremony</div></div>
             <div className="day-content">
               <h3>Day Two</h3>
-              <div className="day-title">Laying Down <em>the Old</em></div>
-              <div className="day-subtitle">What is being released. What is being called in.</div>
-              <div className="time-row"><div className="time">6:30 AM</div><div className="activity"><strong>Yoga + breathwork.</strong> A gentle practice meeting the body before the day.</div></div>
-              <div className="time-row"><div className="time">7:45 AM</div><div className="activity"><strong>Breakfast.</strong> Nourishing, prepared by the culinary team. Fueling for the trail.</div></div>
-              <div className="time-row"><div className="time">8:45 AM</div><div className="activity">Prepare for the walk — hydration, nourishment for the trail, layers, sunscreen.</div></div>
-              <div className="time-row"><div className="time">9:15 AM</div><div className="activity">Depart for the trailhead.</div></div>
-              <div className="time-row"><div className="time">9:45 AM</div><div className="activity"><strong>The Nā Pali silent walk to Hanakāpīʻai.</strong> A ceremonial walk along the Nā Pali coast to release, invoke, and arrive ready for what you&apos;re calling in. Held in silence from trailhead to return. Elements ceremony at the water — laying to rest what is being released, calling forward what is being invoked.</div></div>
-              <div className="time-row"><div className="time">~ 3:30 PM</div><div className="activity">Return to the home. Shower, rest, rehydrate.</div></div>
-              <div className="time-row"><div className="time">4:30 PM</div><div className="activity"><strong>Therapeutic bodywork or energy work — open slot.</strong> Pre-scheduled by the Sacred Hospitality Coordinator. Matched to each member&apos;s needs. Receiving what the body is asking for after the walk — settling, integrating, preparing for ceremony.<div className="modality-slots"><span>Reiki</span><span>Craniosacral</span><span>Massage</span><span>Acupuncture</span><span>PNE</span><span>BioGeometry</span></div><span className="note">Practitioners trained in PNE (PsychoNeuroEnergetics) integrate jaw and base point holding into their sessions — supporting vagal regulation and the settling of held patterns in the nervous system before ceremony.</span></div></div>
-              <div className="time-row"><div className="time">6:30 PM</div><div className="activity">Dinner. Nourishing, easy to digest — preparing the system.</div></div>
-              <div className="time-row"><div className="time">8:00 PM</div><div className="activity">Quiet evening. Early sleep.</div></div>
+              <div className="day-title">The First <em>Door</em></div>
+              <div className="day-subtitle">Release, the Nā Pali hike, and the first ceremony.</div>
+              <div className="time-row"><div className="time">7:15 AM</div><div className="activity"><strong>Breakfast to go; silent Nā Pali Coast hike &amp; spiritual shower.</strong> Held with Rachel &amp; Josh, in silence from trailhead to return.</div></div>
+              <div className="time-row"><div className="time">12:00 PM</div><div className="activity"><strong>Light lunch.</strong> Review of the ceremony guidelines and what to expect, with Rachel &amp; Josh.</div></div>
+              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Massage &amp; bodywork.</strong> Settling the system before ceremony.</div></div>
+              <div className="time-row"><div className="time">5:00 PM</div><div className="activity">Rest, journal, review intentions and questions for the medicine.</div></div>
+              <div className="time-row"><div className="time">7:30 PM</div><div className="activity"><strong>Ceremony.</strong></div></div>
             </div>
           </div>
 
           <div className="day">
-            <div className="day-marker"><div className="day-number">03</div><div className="day-label">Ceremony</div></div>
+            <div className="day-marker"><div className="day-number">03</div><div className="day-label">Rest</div></div>
             <div className="day-content">
               <h3>Day Three</h3>
-              <div className="day-title">The <em>Medicine</em></div>
-              <div className="day-subtitle">The door, walked through together.</div>
-              <div className="time-row"><div className="time">Gentle Morning</div><div className="activity">Optional light yoga or breath. Morning nourishment if the body is asking: banana, eggs, coconut water, electrolytes, fresh ginger root tea. Light, easy to digest.</div></div>
-              <div className="time-row"><div className="time">Midday</div><div className="activity"><strong>Nervous system treatments.</strong> One per member. Pre-scheduled, matched to what the body needs before ceremony.<div className="modality-slots"><span>Shen Po Acupuncture</span><span>Deep Tissue</span><span>BioGeometry</span><span>Craniosacral</span><span>Reiki</span><span>PNE</span><span>Somatic Bodywork</span></div><span className="note">Practitioners trained in PNE integrate jaw and base point holding into their sessions — deep vagal regulation to settle the system in the hours before ceremony begins.</span></div></div>
-              <div className="time-row"><div className="time">After Midday</div><div className="activity">Minimal food. The system clears for the medicine. Food and drink pause fully in the six hours before ceremony begins.</div></div>
-              <div className="time-row"><div className="time">Late Afternoon</div><div className="activity"><strong>Dress in all white.</strong> The traditional color of ceremony, clarity, and openness to what arrives.</div></div>
-              <div className="time-row"><div className="time">Fire</div><div className="activity"><strong>Fire ceremony.</strong> Rachel and Josh invoke and hold the space, supported by Paul, Dr. Liz, and another female sitter. Members speak what they are releasing, their intentions, their prayers. Ritual water bathing — the beginning of the container opening.</div></div>
-              <div className="time-row"><div className="time">~ 5:00 PM</div><div className="activity"><strong>Return to temple space.</strong> Titrated dosing begins. Bwiti music flowing into medicine music at low volume.</div></div>
-              <div className="time-row"><div className="time">Overnight</div><div className="activity"><strong>Josh and Paul hold overnight as sitters</strong>, with another female sitter and a nurse or physician present as needed per each member&apos;s medical context. Rachel and Dr. Liz hold the container into the evening and depart by 8–9 PM, returning at 7 AM.</div></div>
+              <div className="day-title">Rest, Silence, <em>Stillness</em></div>
+              <div className="day-subtitle">Sleep is the greatest medicine. Members are accompanied throughout.</div>
+              <div className="time-row"><div className="time">All Day</div><div className="activity"><strong>On-site care present.</strong> A guide is with members through the day and overnight.</div></div>
+              <div className="time-row"><div className="time">10:00 AM</div><div className="activity"><strong>Meditation.</strong> Recordings and seed sounds.</div></div>
+              <div className="time-row"><div className="time">12:15 PM</div><div className="activity">Vegetarian lunch.</div></div>
+              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Acupuncture.</strong></div></div>
+              <div className="time-row"><div className="time">5:30 PM</div><div className="activity">Jeffersonian dinner.</div></div>
             </div>
           </div>
 
           <div className="day">
-            <div className="day-marker"><div className="day-number">04</div><div className="day-label">Long Day</div></div>
+            <div className="day-marker"><div className="day-number">04</div><div className="day-label">Integration</div></div>
             <div className="day-content">
               <h3>Day Four</h3>
-              <div className="day-title">The <em>Emergence</em></div>
-              <div className="day-subtitle">Sleep is the greatest medicine.</div>
-              <div className="time-row"><div className="time">Dawn</div><div className="activity">Most members are still journeying. The container continues — held, quiet, protected. Rachel and Dr. Liz return at 7 AM to hold the integration space. Josh, Paul, and the overnight team transition out as members come through.</div></div>
-              <div className="time-row"><div className="time">Midday — Early Evening</div><div className="activity"><strong>Emergence.</strong> Members come out of the medicine gradually, each at their own pace.</div></div>
-              <div className="time-row"><div className="time">All Day</div><div className="activity"><strong>Integration support on-site.</strong> Rachel and Dr. Liz hold the integration container throughout the day, available for 1:1 support as members begin to move. Soft presence. Members are not left alone.</div></div>
-              <div className="time-row"><div className="time">Nourishment</div><div className="activity">Very light through the day: broth, fruit, coconut water, electrolytes. Ginger tea if settling is needed.</div></div>
-              <div className="time-row"><div className="time">Late Afternoon</div><div className="activity">Optional light movement or nature time for those who have emerged. Bare feet on the earth. Soft presence.</div></div>
-              <div className="time-row"><div className="time">Evening Meal</div><div className="activity"><strong>A nourishing meal for those who are ready.</strong> Congee, a simple soup, lean protein, lightly steamed vegetables. Warm, gentle, restorative.</div></div>
-              <div className="time-row"><div className="time">Close</div><div className="activity">Silent hours protocol. The field is protected. Early sleep.</div></div>
+              <div className="day-title">Letting It <em>Land</em></div>
+              <div className="day-subtitle">Meeting what moved, in the light of day.</div>
+              <div className="time-row"><div className="time">7:15 AM</div><div className="activity"><strong>Beach breath, meditation, yoga + swim.</strong> Held with Rachel.</div></div>
+              <div className="time-row"><div className="time">9:00 AM</div><div className="activity">Breakfast.</div></div>
+              <div className="time-row"><div className="time">11:00 AM</div><div className="activity"><strong>Personal meetings.</strong></div></div>
+              <div className="time-row"><div className="time">1:00 PM</div><div className="activity">Lunch.</div></div>
+              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Breath + sound bath with Dorothea.</strong></div></div>
+              <div className="time-row"><div className="time">5:30 PM</div><div className="activity"><strong>Sharing circle</strong> + Jeffersonian dinner.</div></div>
             </div>
           </div>
 
           <div className="day">
-            <div className="day-marker"><div className="day-number">05</div><div className="day-label">Integration</div></div>
+            <div className="day-marker"><div className="day-number">05</div><div className="day-label">Ceremony</div></div>
             <div className="day-content">
               <h3>Day Five</h3>
-              <div className="day-title">Making <em>Right</em></div>
-              <div className="day-subtitle">What arose in the night finds its place in the day.</div>
-              <div className="time-row"><div className="time">Morning</div><div className="activity"><strong>Light meditation and gentle breath.</strong></div></div>
-              <div className="time-row"><div className="time">Breakfast</div><div className="activity">Nourishing, restorative.</div></div>
-              <div className="time-row"><div className="time">Late Morning</div><div className="activity"><strong>Hoʻoponopono with Mahina.</strong> Our Director of Culture and Kuleana guides the group through a traditional practice of reconciliation and release — honoring the land, the ancestors, and the inner process before the work of the day.</div></div>
-              <div className="time-row"><div className="time">Midday</div><div className="activity"><strong>Group sharing circle.</strong> Held by Rachel and Dr. Liz. What the medicine showed. What is asking to be named.</div></div>
-              <div className="time-row"><div className="time">Lunch</div><div className="activity">Full meal.</div></div>
-              <div className="time-row"><div className="time">Afternoon</div><div className="activity"><strong>1:1 integration session — session 1 of 6 suggested.</strong> Each member meets with their assigned integration guide. Nature time and journaling around the session.</div></div>
-              <div className="time-row"><div className="time">Late Afternoon</div><div className="activity"><strong>Integration bodywork — open slot.</strong> Nervous system support while everything is still moving.<div className="modality-slots"><span>Reiki</span><span>Craniosacral</span><span>Massage</span><span>Acupuncture</span><span>PNE</span><span>BioGeometry</span></div></div></div>
-              <div className="time-row"><div className="time">Evening</div><div className="activity"><strong>Optional second dose.</strong> Not a full flood. Titrated low, for members who want to go further. Held in sacred space with the care team present. Members who take it have Days 6 and 7 to integrate.</div></div>
-              <div className="time-row"><div className="time">Dinner</div><div className="activity">Full meal for those not dosing.</div></div>
+              <div className="day-title">The Second <em>Door</em></div>
+              <div className="day-subtitle">Going deeper, held in the same care.</div>
+              <div className="time-row"><div className="time">7:15 AM</div><div className="activity"><strong>Breath &amp; yoga, or a Tunnels swim.</strong> Held with Rachel.</div></div>
+              <div className="time-row"><div className="time">9:00 AM</div><div className="activity">Light breakfast.</div></div>
+              <div className="time-row"><div className="time">12:00 PM</div><div className="activity">Lunch.</div></div>
+              <div className="time-row"><div className="time">2:00 PM</div><div className="activity"><strong>Creative or energy practice.</strong> Art, Reiki, craniosacral, or hypnotherapy, with Rachel.</div></div>
+              <div className="time-row"><div className="time">4:30 PM</div><div className="activity">Rest, journal, intentions.</div></div>
+              <div className="time-row"><div className="time">7:30 PM</div><div className="activity"><strong>Ceremony.</strong></div></div>
             </div>
           </div>
 
           <div className="day">
-            <div className="day-marker"><div className="day-number">06</div><div className="day-label">Embodiment</div></div>
+            <div className="day-marker"><div className="day-number">06</div><div className="day-label">Rest</div></div>
             <div className="day-content">
               <h3>Day Six</h3>
-              <div className="day-title">Back Into <em>the World</em></div>
-              <div className="day-subtitle">The body remembers. The land holds.</div>
-              <div className="time-row"><div className="time">Morning</div><div className="activity"><strong>Yoga + breathwork.</strong> Moving fuller now. The system is landing.</div></div>
-              <div className="time-row"><div className="time">Breakfast</div><div className="activity">Full, nourishing.</div></div>
-              <div className="time-row"><div className="time">Midmorning to Afternoon</div><div className="activity"><strong>Land and water connection — choice of:</strong><span className="note">Visit to Hui Makaʻāinana o Makana at Limahuli or Hāʻena (coordinated in advance) · Tunnels Beach · Hanalei Bay — swim, rest, be.</span></div></div>
-              <div className="time-row"><div className="time">Late Afternoon</div><div className="activity"><strong>Sound healing.</strong> Held by Dorothea or Samantha. The nervous system integrating at the deepest frequency.</div></div>
-              <div className="time-row"><div className="time">Dinner</div><div className="activity">Gathered, full meal.</div></div>
-              <div className="time-row"><div className="time">Evening</div><div className="activity"><strong>Movement or dance session.</strong> Held by Dr. Liz or Rachel. A celebration of what has moved through.</div></div>
+              <div className="day-title">Rest, Silence, <em>Stillness</em></div>
+              <div className="day-subtitle">The body integrates. Members are accompanied throughout.</div>
+              <div className="time-row"><div className="time">All Day</div><div className="activity"><strong>On-site care present.</strong> A guide is with members through the day.</div></div>
+              <div className="time-row"><div className="time">12:15 PM</div><div className="activity">Vegetarian lunch.</div></div>
+              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Massage &amp; bodywork.</strong></div></div>
+              <div className="time-row"><div className="time">5:15 PM</div><div className="activity">Jeffersonian dinner.</div></div>
+              <div className="time-row"><div className="time">7:00 PM</div><div className="activity"><strong>Yoga Nidra + sound.</strong> Held with Rachel.</div></div>
             </div>
           </div>
 
           <div className="day">
-            <div className="day-marker"><div className="day-number">07</div><div className="day-label">Closing</div></div>
+            <div className="day-marker"><div className="day-number">07</div><div className="day-label">Embodiment</div></div>
             <div className="day-content">
               <h3>Day Seven</h3>
+              <div className="day-title">Back Into <em>the World</em></div>
+              <div className="day-subtitle">The body remembers. The land holds.</div>
+              <div className="time-row"><div className="time">7:15 AM</div><div className="activity"><strong>Gentle yoga, breathwork &amp; meditation.</strong></div></div>
+              <div className="time-row"><div className="time">9:00 AM</div><div className="activity">Breakfast.</div></div>
+              <div className="time-row"><div className="time">11:00 AM</div><div className="activity"><strong>Land offering &amp; Hapé ceremony.</strong></div></div>
+              <div className="time-row"><div className="time">12:30 PM</div><div className="activity">Lunch.</div></div>
+              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Breath + sound bath with Dorothea.</strong></div></div>
+              <div className="time-row"><div className="time">5:30 PM</div><div className="activity"><strong>Closing sharing circle.</strong> Final Jeffersonian dinner celebration, beach bonfire, and swim.</div></div>
+            </div>
+          </div>
+
+          <div className="day">
+            <div className="day-marker"><div className="day-number">08</div><div className="day-label">Departure</div></div>
+            <div className="day-content">
+              <h3>Day Eight</h3>
               <div className="day-title">Carrying It <em>Home</em></div>
-              <div className="day-subtitle">The real work is the life that follows.</div>
-              <div className="time-row"><div className="time">Morning</div><div className="activity">Meditation or gentle movement.</div></div>
-              <div className="time-row"><div className="time">Breakfast</div><div className="activity">The final shared meal.</div></div>
-              <div className="time-row"><div className="time">Late Morning</div><div className="activity"><strong>Closing circle with Rachel, Josh, and Dr. Liz.</strong> What you are carrying home. Integration commitments. How the remaining integration sessions and aftercare unfold from here.</div></div>
-              <div className="time-row"><div className="time">Midday</div><div className="activity">Departures with aloha.</div></div>
+              <div className="day-subtitle">The work is the life that follows.</div>
+              <div className="time-row"><div className="time">7:00 AM</div><div className="activity"><strong>Gentle swim or snorkel at Makua.</strong> Integrating new beliefs.</div></div>
+              <div className="time-row"><div className="time">8:30 AM</div><div className="activity">Breakfast.</div></div>
+              <div className="time-row"><div className="time">9:30 AM</div><div className="activity">Departures with aloha.</div></div>
             </div>
           </div>
 
@@ -229,20 +231,6 @@ export default function ReferenceItineraryPage() {
             <div className="pillar">
               <div className="pillar-label">Practical Reverence</div>
               <p>We take nothing from the land. We leave nothing behind. We honor stones, plants, and sacred sites. We pause at the water&apos;s edge and let the ocean witness what is being released. We stay out of the water at Hanakāpīʻai and honor the currents that run there. And then we walk back.</p>
-            </div>
-          </div>
-
-          <div className="reference" style={{background:'#2d3529'}}>
-            <div className="eyebrow">Team Reference · Hoʻoponopono</div>
-            <h2>Making <em>Right</em></h2>
-            <p><strong>Hoʻoponopono</strong> means <em>to make right</em> or <em>to correct</em>. It is a traditional Hawaiian practice of reconciliation and release — held within families, between individuals, or within oneself. A kahu or respected elder facilitates. <strong>Mahina</strong> guides what form is appropriate for our members in the context of each ceremony.</p>
-            <div className="pillar">
-              <div className="pillar-label">The Traditional Arc</div>
-              <p><strong>Pule</strong> — opening prayer, invoking ancestors and the divine.<br/><strong>Kūkulu kumuhana</strong> — gathering of intention, pooling of spiritual strength.<br/><strong>Mihi</strong> — honest acknowledgment of what has been held, said, done, or carried. Each person speaks their truth.<br/><strong>Kala</strong> — the letting go. Releasing the hold that grievance, guilt, or entanglement has on the spirit. Cutting the cord.<br/><strong>Oki</strong> — severing. The completion of release.<br/><strong>Pani</strong> — closing, often with a shared offering.</p>
-            </div>
-            <div className="pillar">
-              <div className="pillar-label">Why Day Five</div>
-              <p>Members have moved through ceremony. Emotions and memories have been stirred. Hoʻoponopono offers a structured, sacred way to name what arose and release it — before the group sharing circle that follows. It honors the land, the ancestors, and the inner process all at once.</p>
             </div>
           </div>
 
@@ -306,7 +294,7 @@ export default function ReferenceItineraryPage() {
             </div>
             <div className="team-role">
               <div className="role-name">Dr. Liz Esalen<em>Director of Integration</em></div>
-              <div className="role-desc">On-island for the ceremony week. Movement journey on Day 1. Primary integration presence across Days 4–7. Group sharing and 1:1 integration sessions.</div>
+              <div className="role-desc">On-island for the journey. Primary integration presence across the rest and integration days. Group sharing and 1:1 integration sessions.</div>
             </div>
             <div className="team-role">
               <div className="role-name">Judith Johnson<em>Director &amp; Overseer of Somatic Integration</em></div>
@@ -314,7 +302,7 @@ export default function ReferenceItineraryPage() {
             </div>
             <div className="team-role">
               <div className="role-name">Mahina<em>Director of Culture &amp; Kuleana</em></div>
-              <div className="role-desc">Morning of Day 5. Hoʻoponopono and cultural stewardship. Holding the Hawaiian thread of the container.</div>
+              <div className="role-desc">Cultural stewardship and the land offering. Holding the Hawaiian thread of the container.</div>
             </div>
             <div className="team-role">
               <div className="role-name">Healing Circle Practitioners<em>Rotating · Scheduled Pre-Week</em></div>
