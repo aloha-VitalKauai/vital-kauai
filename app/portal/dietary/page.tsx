@@ -102,10 +102,11 @@ function DietaryContent() {
               <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 400, letterSpacing: "0.03em", marginBottom: 16, color: clay }}>Step Away From</h3>
               <div style={{ display: "grid", gap: 9 }}>
                 {[
+                  { text: "Fasting or skipping meals", note: "Arrive well-nourished. Think of your meals beforehand as fuel for an athletic event: strong, balanced, and well-fed. The medicine can quiet your appetite for 24–36 hours, so build your reserves now, and it steadies the nervous system too. Pack healthy snacks for travel, since airport food can unsettle digestion." },
                   { text: "Refined sugar and sweetened beverages", note: "This includes fruit juice, sodas, sweetened coffees and teas" },
                   { text: "Processed and packaged foods", note: "Anything with artificial ingredients, preservatives, or seed oils" },
                   { text: "Alcohol" },
-                  { text: "Coffee, caffeinated beverages, and energy drinks", note: ["Minimize early and eliminate in the final 1\u20132 weeks before arrival. A caffeine detox can bring strong headaches, so taper down in advance.", "Strong stimulants can affect cardiac rhythms and must be avoided in the 30 days prior to the medicine. We recommend avoiding or greatly limiting strong cacao/chocolate, coffee, or caffeine in the two weeks or more prior to the medicine, for the smoothest possible experience on the nervous system.", "Consider matcha green tea, chicory coffee, guayusa, or adaptogenic and functional-mushroom coffee alternatives."] },
+                  { text: "Coffee, caffeinated beverages, and energy drinks", note: ["Minimize early and eliminate in the final 1\u20132 weeks before arrival. A caffeine detox can bring strong headaches, so taper down in advance.", "Strong stimulants can affect cardiac rhythms and should be avoided in the two weeks or more prior to the medicine. We recommend avoiding or greatly limiting strong cacao/chocolate, coffee, or caffeine in that same window, for the smoothest possible experience on the nervous system.", "Consider matcha green tea, chicory coffee, guayusa, or adaptogenic and functional-mushroom coffee alternatives."] },
                   { text: "Conventional dairy", note: "Particularly inflammatory for most; opt for fermented or skip entirely" },
                   { text: "Gluten" },
                   { text: "Factory-farmed meats" },
