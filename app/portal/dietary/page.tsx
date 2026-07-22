@@ -102,6 +102,7 @@ function DietaryContent() {
               <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 400, letterSpacing: "0.03em", marginBottom: 16, color: clay }}>Step Away From</h3>
               <div style={{ display: "grid", gap: 9 }}>
                 {[
+                  { text: "Fasting or skipping meals", note: "Arrive well-nourished. Think of your meals beforehand as fuel for an athletic event: strong, balanced, and well-fed. The medicine can quiet your appetite for 24–36 hours, so build your reserves now, and it steadies the nervous system too. Pack healthy snacks for travel, since airport food can unsettle digestion." },
                   { text: "Refined sugar and sweetened beverages", note: "This includes fruit juice, sodas, sweetened coffees and teas" },
                   { text: "Processed and packaged foods", note: "Anything with artificial ingredients, preservatives, or seed oils" },
                   { text: "Alcohol" },
