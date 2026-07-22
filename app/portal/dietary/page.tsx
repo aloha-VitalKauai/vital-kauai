@@ -105,7 +105,7 @@ function DietaryContent() {
                   { text: "Refined sugar and sweetened beverages", note: "This includes fruit juice, sodas, sweetened coffees and teas" },
                   { text: "Processed and packaged foods", note: "Anything with artificial ingredients, preservatives, or seed oils" },
                   { text: "Alcohol" },
-                  { text: "Coffee, caffeinated beverages, and energy drinks", note: "Minimize early and eliminate in the final 1\u20132 weeks before arrival. A caffeine detox can bring strong headaches, so taper down in advance. Consider matcha green tea, chicory coffee, guayusa, or adaptogenic and functional-mushroom coffee alternatives." },
+                  { text: "Coffee, caffeinated beverages, and energy drinks", note: ["Minimize early and eliminate in the final 1\u20132 weeks before arrival. A caffeine detox can bring strong headaches, so taper down in advance.", "Strong stimulants can affect cardiac rhythms and must be avoided in the 30 days prior to the medicine. We recommend avoiding or greatly limiting strong cacao/chocolate, coffee, or caffeine in the two weeks or more prior to the medicine, for the smoothest possible experience on the nervous system.", "Consider matcha green tea, chicory coffee, guayusa, or adaptogenic and functional-mushroom coffee alternatives."] },
                   { text: "Conventional dairy", note: "Particularly inflammatory for most; opt for fermented or skip entirely" },
                   { text: "Gluten" },
                   { text: "Factory-farmed meats" },
@@ -116,7 +116,7 @@ function DietaryContent() {
                 ].map((item) => (
                   <div key={item.text} style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 13.5, lineHeight: 1.5 }}>
                     <span style={{ width: 5, height: 5, borderRadius: "50%", background: clay, flexShrink: 0, marginTop: 7 }} />
-                    <span>{item.text}{item.note && <span style={{ display: "block", fontSize: 11.5, color: inkLight, fontStyle: "italic", marginTop: 2 }}>{item.note}</span>}</span>
+                    <span>{item.text}{item.note && (Array.isArray(item.note) ? item.note : [item.note]).map((n, k) => <span key={k} style={{ display: "block", fontSize: 11.5, color: inkLight, fontStyle: "italic", marginTop: k === 0 ? 2 : 8 }}>{n}</span>)}</span>
                   </div>
                 ))}
               </div>
