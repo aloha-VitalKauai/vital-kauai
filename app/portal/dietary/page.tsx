@@ -112,6 +112,7 @@ function DietaryContent() {
                   { text: "Factory-farmed meats" },
                   { text: "Fried foods and fast food" },
                   { text: "Foods containing quinine (like grapefruit, tonic water, and bitter lemon flavoring)", note: "And bergamot, found in earl grey tea" },
+                  { text: "Kratom, St. John's Wort, passionflower, ashwagandha, vitex, foxglove, Mucuna pruriens, and ephedra", note: "These can interfere with serotonin levels, neurochemistry, or the functioning of the heart, kidneys, and liver." },
                   { text: "Artificial electrolyte supplements or those with citric acid" },
                   { text: "Recreational substances" },
                 ].map((item) => (
