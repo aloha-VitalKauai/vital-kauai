@@ -89,7 +89,7 @@ function DietaryContent() {
             <div style={{ background: sageBg, border: `1px solid ${sageSoft}`, borderRadius: 8, padding: "26px 28px" }}>
               <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 400, letterSpacing: "0.03em", marginBottom: 16, color: sage }}>Lean Into</h3>
               <div style={{ display: "grid", gap: 9 }}>
-                {["Dark leafy greens\u2014kale, chard, spinach, arugula", "Colorful vegetables and seasonal fruits", "Sprouts and microgreens", "Beans, lentils, and legumes", "Whole and sprouted grains\u2014quinoa, millet, brown rice, oats", "Quality fats\u2014avocado, coconut, cold-pressed olive oil, raw nuts and seeds, and ghee for brain function and health", "Organic, pasture-raised eggs and wild-caught fish", "Organic, grass-fed meats", "Fermented foods\u2014sauerkraut, kimchi, miso, kefir", "Fresh herbs and medicinal teas", "Clean water and coconut water\u2014hydrate generously", "Natural electrolytes\u2014coconut water, dates, avocados, lime, and cucumber"].map((item) => (
+                {["Dark leafy greens\u2014kale, chard, spinach, arugula", "Colorful vegetables and seasonal fruits", "Sprouts and microgreens", "Beans, lentils, and legumes", "Whole and sprouted grains\u2014quinoa, millet, brown rice, oats", "Quality fats\u2014avocado, coconut, cold-pressed olive oil, raw nuts and seeds, and ghee for brain function and health", "Organic, pasture-raised eggs and wild-caught fish", "Organic, grass-fed meats", "Fermented foods\u2014sauerkraut, kimchi, miso, kefir", "Fresh herbs and medicinal teas", "Clean water and coconut water\u2014hydrate generously", "Natural electrolytes\u2014coconut water, dates, avocados, lime, and cucumber", "Healthy snacks packed for travel"].map((item) => (
                   <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 13.5, lineHeight: 1.5 }}>
                     <span style={{ width: 5, height: 5, borderRadius: "50%", background: sage, flexShrink: 0, marginTop: 7 }} />
                     <span>{item}</span>
@@ -102,7 +102,7 @@ function DietaryContent() {
               <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 400, letterSpacing: "0.03em", marginBottom: 16, color: clay }}>Step Away From</h3>
               <div style={{ display: "grid", gap: 9 }}>
                 {[
-                  { text: "Fasting or skipping meals", note: "Arrive well-nourished, like fueling for an athletic event. The medicine can quiet your appetite for 24–36 hours, so build reserves now. Pack healthy snacks for travel." },
+                  { text: "Fasting or skipping meals", note: "Arrive well-nourished, like fueling for an athletic event. The medicine can quiet your appetite for 24–36 hours, so build reserves now." },
                   { text: "Refined sugar and sweetened beverages", note: "This includes fruit juice, sodas, sweetened coffees and teas" },
                   { text: "Processed and packaged foods", note: "Anything with artificial ingredients, preservatives, or seed oils" },
                   { text: "Alcohol" },
@@ -141,10 +141,10 @@ function DietaryContent() {
               Supporting the Vessel<br /><em style={{ fontStyle: "italic", fontWeight: 300 }}>Before Ceremony</em>
             </h2>
             <p style={{ fontSize: 13.5, color: inkLight, lineHeight: 1.75, marginBottom: 28, maxWidth: 580 }}>
-              These supplements support your heart, liver, nervous system, and gut microbiome in the weeks before your Iboga journey. Magnesium is the one we ask everyone to take. The rest are suggestions to bring to your physician, who can advise on which ones fit your body and history.
+              These supplements support your heart, liver, nervous system, and gut microbiome in the weeks before your Iboga journey. Magnesium is the one we ask everyone to take. The rest are suggestions to bring to your healthcare provider, who can advise on which ones fit your body and history.
             </p>
             <div style={{ background: "rgba(139,105,20,0.08)", borderLeft: `3px solid ${gold}`, borderRadius: 4, padding: "14px 18px", fontSize: 12.5, color: inkLight, lineHeight: 1.65, marginBottom: 28, fontStyle: "italic" }}>
-              All dosing is guided by your physician. Bring this list to your healthcare provider and follow their recommendations.
+              All dosing is guided by your healthcare provider. Bring this list to them and follow their recommendations. Plain vitamins and minerals are generally fine up to a few days before ceremony; discontinue herbs and other supplements two to three weeks before, and scrutinize labels for hidden herbs.
             </div>
 
             <p style={{ fontSize: 9.5, letterSpacing: "0.26em", textTransform: "uppercase", color: gold, fontWeight: 600, marginBottom: 12 }}>Required</p>
@@ -161,13 +161,13 @@ function DietaryContent() {
             </div>
 
             <p style={{ fontSize: 9.5, letterSpacing: "0.26em", textTransform: "uppercase", color: gold, fontWeight: 600, marginBottom: 6 }}>Suggested</p>
-            <p style={{ fontSize: 12.5, color: inkLight, lineHeight: 1.65, marginBottom: 14, fontStyle: "italic" }}>Discuss with your physician. They can advise on which of these fit your body and history.</p>
+            <p style={{ fontSize: 12.5, color: inkLight, lineHeight: 1.65, marginBottom: 14, fontStyle: "italic" }}>Discuss with your healthcare provider. They can advise on which of these fit your body and history.</p>
             <div style={{ display: "grid", gap: 10 }}>
               {[
                 [{ name: "CoQ10", purpose: "Mitochondrial and heart support. Antioxidant that supports energy production.", timing: "Begin 4 weeks before" }, { name: "Vitamin C", purpose: "Immune and adrenal support. Powerful antioxidant that supports detoxification.", timing: "Begin 4 weeks before" }],
                 [{ name: "DHA + EPA (Omega-3)", purpose: "Brain and nervous system support. Supports membrane integrity.", timing: "Begin 4 weeks before" }, { name: "B Complex", purpose: "Nervous system and energy support. Supports methylation and mood stability.", timing: "Begin 4 weeks before" }],
-                [{ name: "NAC (N-Acetyl Cysteine)", purpose: "Liver support and antioxidant. Precursor to glutathione.", timing: "Begin 4 weeks, discontinue 72 hrs before" }, { name: "Milk Thistle", purpose: "Liver support and gentle detoxification.", timing: "Begin 4 weeks, discontinue 1 week before" }],
-                [{ name: "Probiotics", purpose: "Gut microbiome support. A healthy gut supports mood, immunity, and integration.", timing: "Begin 4 weeks before" }, { name: "Lion's Mane", purpose: "Nerve growth factor and BDNF support. Mushroom that supports the brain's repair pathways through the neuroplasticity window.", timing: "Begin 4 weeks before, continue through integration" }],
+                [{ name: "NAC (N-Acetyl Cysteine)", purpose: "Liver support and antioxidant. Precursor to glutathione.", timing: "Begin 4 weeks, discontinue 72 hrs before" }, { name: "Milk Thistle", purpose: "Liver support and gentle detoxification.", timing: "Begin 4 weeks, discontinue 2 weeks before" }],
+                [{ name: "Probiotics", purpose: "Gut microbiome support. A healthy gut supports mood, immunity, and integration.", timing: "Begin 4 weeks before" }, { name: "Lion's Mane", purpose: "Nerve growth factor and BDNF support. Mushroom that supports the brain's repair pathways through the neuroplasticity window.", timing: "Begin 4 weeks, pause before ceremony, resume through integration" }],
               ].map((row, ri) => (
                 <div key={ri} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                   {row.map((s) => (
