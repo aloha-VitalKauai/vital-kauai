@@ -89,7 +89,7 @@ function DietaryContent() {
             <div style={{ background: sageBg, border: `1px solid ${sageSoft}`, borderRadius: 8, padding: "26px 28px" }}>
               <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 400, letterSpacing: "0.03em", marginBottom: 16, color: sage }}>Lean Into</h3>
               <div style={{ display: "grid", gap: 9 }}>
-                {["Dark leafy greens \u2014 kale, chard, spinach, arugula", "Colorful vegetables and seasonal fruits", "Sprouts and microgreens", "Beans, lentils, and legumes", "Whole and sprouted grains \u2014 quinoa, millet, brown rice, oats", "Quality fats \u2014 avocado, coconut, olive oil, raw nuts and seeds", "Free-range eggs and wild-caught fish", "Fermented foods \u2014 sauerkraut, kimchi, miso, kefir", "Fresh herbs and medicinal teas", "Clean water and coconut water \u2014 hydrate generously"].map((item) => (
+                {["Dark leafy greens\u2014kale, chard, spinach, arugula", "Colorful vegetables and seasonal fruits", "Sprouts and microgreens", "Beans, lentils, and legumes", "Whole and sprouted grains\u2014quinoa, millet, brown rice, oats", "Quality fats\u2014avocado, coconut, cold-pressed olive oil, raw nuts and seeds, and ghee for brain function and health", "Organic, pasture-raised eggs and wild-caught fish", "Organic, grass-fed meats", "Fermented foods\u2014sauerkraut, kimchi, miso, kefir", "Fresh herbs and medicinal teas", "Clean water and coconut water\u2014hydrate generously", "Natural electrolytes\u2014coconut water, dates, avocados, lime, and cucumber"].map((item) => (
                   <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 13.5, lineHeight: 1.5 }}>
                     <span style={{ width: 5, height: 5, borderRadius: "50%", background: sage, flexShrink: 0, marginTop: 7 }} />
                     <span>{item}</span>
@@ -105,10 +105,13 @@ function DietaryContent() {
                   { text: "Refined sugar and sweetened beverages", note: "This includes fruit juice, sodas, sweetened coffees and teas" },
                   { text: "Processed and packaged foods", note: "Anything with artificial ingredients, preservatives, or seed oils" },
                   { text: "Alcohol" },
-                  { text: "Coffee and caffeinated beverages", note: "Minimize early, and eliminate in the final 1\u20132 weeks before arrival" },
+                  { text: "Coffee, caffeinated beverages, and energy drinks", note: "Minimize early and eliminate in the final 1\u20132 weeks before arrival. A caffeine detox can bring strong headaches, so taper down in advance. Consider matcha green tea, chicory coffee, guayusa, adaptogenic and functional-mushroom coffee alternatives, or cacao." },
                   { text: "Conventional dairy", note: "Particularly inflammatory for most; opt for fermented or skip entirely" },
+                  { text: "Gluten" },
                   { text: "Factory-farmed meats" },
                   { text: "Fried foods and fast food" },
+                  { text: "Foods containing quinine (like grapefruit and tonic water)" },
+                  { text: "Artificial electrolyte supplements or those with citric acid" },
                   { text: "Recreational substances" },
                 ].map((item) => (
                   <div key={item.text} style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 13.5, lineHeight: 1.5 }}>
