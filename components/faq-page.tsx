@@ -21,7 +21,7 @@ const FAQ_SECTIONS: FaqSection[] = [
       {
         question: "Is Iboga safe?",
         answer:
-          "Iboga has an excellent safety record when it is approached with careful preparation. The rare serious risks are primarily cardiac and are closely associated with pre-existing heart conditions and certain medications—which is exactly why our process centers on thorough screening, required lab work, and medical clearance before ceremony. We work only with whole-plant iboga root bark, titrated slowly and in continuous dialogue with your body, and our team holds you with attentive medical presence throughout. Your full and honest health disclosure is the foundation that keeps this work safe.",
+          "Iboga has an excellent safety record. The rare serious risks are primarily cardiac, and are most closely associated with ibogaine, the isolated and concentrated alkaloid, along with pre-existing heart conditions and certain medications. We work only with whole-plant iboga root bark, titrated slowly and in continuous dialogue with your body. We seek to meet the clinical standard of care wherever we can: thorough screening, required lab work, EKG, and medical clearance before ceremony, a doctor present overnight at every ceremony, and attentive medical presence throughout. Your full and honest health disclosure is the foundation that keeps this work safe.",
       },
       {
         question: "Who is Iboga right for?",
