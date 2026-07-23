@@ -21,7 +21,7 @@ const FAQ_SECTIONS: FaqSection[] = [
       {
         question: "Is Iboga safe?",
         answer:
-          "Iboga has an excellent safety record. The rare serious risks are primarily cardiac, and are most closely associated with ibogaine, the isolated and concentrated alkaloid, along with pre-existing heart conditions and certain medications. We work only with whole-plant iboga root bark, titrated slowly and in continuous dialogue with your body. We seek to meet the clinical standard of care wherever we can: thorough screening, required lab work, EKG, and medical clearance before ceremony, a doctor present overnight at every ceremony, and attentive medical presence throughout. Your full and honest health disclosure is the foundation that keeps this work safe.",
+          "Iboga has an excellent safety record. The rare serious risks are primarily cardiac, and are most closely associated with ibogaine, the isolated and concentrated alkaloid. We work only with whole-plant iboga root bark, titrated slowly and in continuous dialogue with your body. We seek to meet the clinical standard of care wherever we can: thorough screening, required lab work, EKG, and medical clearance before ceremony, a doctor present overnight at every ceremony, and attentive medical presence throughout. Your full and honest health disclosure is the foundation that keeps this work safe.",
       },
       {
         question: "Who is Iboga right for?",
@@ -231,8 +231,7 @@ export function FaqPage() {
           </h1>
           <div className={styles.heroRule} />
           <p className={styles.heroSub}>
-            The questions members and visitors ask most often, gathered in one place. If something
-            specific is on your mind, perhaps you&apos;ll find it answered here&mdash;or you can reach
+            If something specific is on your mind, perhaps you&apos;ll find it answered here&mdash;or you can reach
             out and ask.
           </p>
         </div>
