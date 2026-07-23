@@ -52,6 +52,26 @@ export function journalSharingNotice(state: JournalSharingState): string | null 
   return null;
 }
 
+// Count non-empty journal-prompt answers vs. PNE reflections across any number
+// of journal_responses maps (pre + post). These counts are progress metadata —
+// shown to the care team regardless of sharing consent — so they are computed
+// server-side from the raw maps before response text is stripped.
+export function summarizeJournalResponses(
+  ...maps: Array<Record<string, unknown> | null | undefined>
+): { journal: number; pne: number } {
+  let journal = 0;
+  let pne = 0;
+  for (const map of maps) {
+    if (!map) continue;
+    for (const [key, value] of Object.entries(map)) {
+      if (typeof value !== "string" || value.trim() === "") continue;
+      if (key.includes("pne-reflection")) pne += 1;
+      else journal += 1;
+    }
+  }
+  return { journal, pne };
+}
+
 // Remove response text from a progress row so private journal/PNE content never
 // reaches the founder client. Progress metadata (weeks_completed, last_updated,
 // checklist_items, weekly_tracking) is preserved so the dashboard still shows

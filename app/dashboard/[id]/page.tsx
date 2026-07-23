@@ -7,6 +7,7 @@ import {
   canCareTeamViewJournal,
   resolveJournalSharingState,
   sanitizeProgressForFounder,
+  summarizeJournalResponses,
 } from "@/lib/journal-sharing";
 import { extractMedicineQuestions } from "@/lib/medicine-questions";
 
@@ -121,28 +122,32 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
   let preProgress = null;
   let postProgress = null;
   let medicineQuestions: ReturnType<typeof extractMedicineQuestions> = [];
+  let medicineQuestionCount = 0;
   if (profileByEmail) {
-    const [{ data: pre }, { data: post }] = await Promise.all([
+    const [{ data: pre }, { data: post }, { data: mj }] = await Promise.all([
       supabase.from("pre_ceremony_progress").select("weeks_completed, checklist_items, journal_responses, last_updated").eq("member_id", profileByEmail.id).maybeSingle(),
       supabase.from("post_ceremony_progress").select("weeks_completed, checklist_items, weekly_tracking, journal_responses, last_updated").eq("member_id", profileByEmail.id).maybeSingle(),
+      supabase.from("member_journals").select("responses").eq("member_id", profileByEmail.id).maybeSingle(),
     ]);
     preProgress = pre;
     postProgress = post;
 
-    // Load Questions-for-the-Medicine (member_journals) only when the member
-    // has shared, so private text is never fetched into server memory need-
-    // lessly — and never below into client props.
-    if (canViewJournal) {
-      const { data: mj } = await supabase
-        .from("member_journals")
-        .select("responses")
-        .eq("member_id", profileByEmail.id)
-        .maybeSingle();
-      medicineQuestions = extractMedicineQuestions(
-        (mj?.responses as Record<string, string> | null) ?? null,
-      );
-    }
+    // Questions-for-the-Medicine: the submitted COUNT is progress metadata and
+    // is shown regardless of sharing; the question TEXT is only forwarded to the
+    // client when the member has shared.
+    const mqGroups = extractMedicineQuestions(
+      (mj?.responses as Record<string, string> | null) ?? null,
+    );
+    medicineQuestionCount = mqGroups.reduce((n, g) => n + g.questions.length, 0);
+    if (canViewJournal) medicineQuestions = mqGroups;
   }
+
+  // Response/reflection counts are metadata — computed from the raw maps here,
+  // before response text is stripped below, so they display for every member.
+  const responseSummary = summarizeJournalResponses(
+    preProgress?.journal_responses as Record<string, unknown> | null,
+    postProgress?.journal_responses as Record<string, unknown> | null,
+  );
 
   // Consent gate: strip pre/post journal + PNE response text before it reaches
   // the founder's browser when the member has not shared. Progress metadata
@@ -248,6 +253,9 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       postProgress={safePostProgress}
       journalSharingState={journalSharingState}
       medicineQuestions={medicineQuestions}
+      medicineQuestionCount={medicineQuestionCount}
+      journalResponseCount={responseSummary.journal}
+      pneReflectionCount={responseSummary.pne}
       commitment={commitment ?? undefined}
       collectedCents={collectedCents}
       tokens={tokens}
