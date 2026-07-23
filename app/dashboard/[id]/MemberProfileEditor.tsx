@@ -1093,12 +1093,16 @@ export default function MemberProfileEditor({
         </div>
       </div>
 
-      {/* Integration Progress */}
-      <IntegrationProgressCards
-        preProgress={preProgress}
-        postProgress={postProgress}
-        onWeekSelect={(phase, weekIdx) => setJournalSelection({ phase, weekIdx })}
-      />
+      {/* Integration Progress — Snapshot keeps its prior behavior of showing
+          the cards only when the member has activity; the always-on version
+          lives on the Integration tab. */}
+      {(preProgress || postProgress) && (
+        <IntegrationProgressCards
+          preProgress={preProgress}
+          postProgress={postProgress}
+          onWeekSelect={(phase, weekIdx) => setJournalSelection({ phase, weekIdx })}
+        />
+      )}
         </>
       ) : activeTab === "Medical" ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -1124,17 +1128,14 @@ export default function MemberProfileEditor({
               </div>
             </div>
           </div>
-          {preProgress || postProgress ? (
-            <IntegrationProgressCards
-              preProgress={preProgress}
-              postProgress={postProgress}
-              onWeekSelect={(phase, weekIdx) => setJournalSelection({ phase, weekIdx })}
-            />
-          ) : (
-            <div style={CARD}>
-              <p style={{ fontSize: 13, color: "#9E9E9A", margin: 0 }}>No integration activity yet.</p>
-            </div>
-          )}
+          {/* Always render both progress cards, even with no progress rows —
+              missing data normalizes to 0/6 and every week stays clickable so
+              founders can view the read-only journal for any member. */}
+          <IntegrationProgressCards
+            preProgress={preProgress}
+            postProgress={postProgress}
+            onWeekSelect={(phase, weekIdx) => setJournalSelection({ phase, weekIdx })}
+          />
         </div>
       ) : activeTab === "Documents" ? (
         <DocumentsCard documents={documents as SignedDocument[]} profile={profile} />
