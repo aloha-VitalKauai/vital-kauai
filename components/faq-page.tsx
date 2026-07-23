@@ -230,10 +230,6 @@ export function FaqPage() {
             Common <em>Questions</em>
           </h1>
           <div className={styles.heroRule} />
-          <p className={styles.heroSub}>
-            If something specific is on your mind, perhaps you&apos;ll find it answered here&mdash;or you can reach
-            out and ask.
-          </p>
         </div>
       </section>
 
