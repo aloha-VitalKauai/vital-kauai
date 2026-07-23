@@ -20,6 +20,9 @@ import {
   type CeremonyRecord,
 } from "./MemberProfileSections";
 import MemberJournalViewer, { type JournalPhase } from "./MemberJournalViewer";
+import MemberMedicineQuestions from "./MemberMedicineQuestions";
+import { type JournalSharingState } from "@/lib/journal-sharing";
+import { type MedicineQuestionGroup } from "@/lib/medicine-questions";
 import { buildMemberTimeline } from "./memberTimeline";
 import MedicalNotesLog from "@/components/dashboard/MedicalNotesLog";
 /* Integration Specialist options come from the integration_specialists
@@ -132,6 +135,8 @@ export default function MemberProfileEditor({
   checklist,
   preProgress,
   postProgress,
+  journalSharingState = "undecided",
+  medicineQuestions = [],
   commitment,
   collectedCents = 0,
   tokens = [],
@@ -156,6 +161,8 @@ export default function MemberProfileEditor({
   checklist: ChecklistItem[];
   preProgress: any;
   postProgress: any;
+  journalSharingState?: JournalSharingState;
+  medicineQuestions?: MedicineQuestionGroup[];
   commitment?: Commitment;
   collectedCents?: number;
   tokens?: PaymentToken[];
@@ -1126,6 +1133,18 @@ export default function MemberProfileEditor({
                 <p style={{ color: "#6B6B67", margin: "0 0 2px" }}>Integration access</p>
                 <p style={{ color: "#1A1A18", margin: 0 }}>{integrationUnlocked ? "Unlocked" : "Locked"}</p>
               </div>
+              <div>
+                <p style={{ color: "#6B6B67", margin: "0 0 2px" }}>Journal sharing</p>
+                <p style={{ color: "#1A1A18", margin: 0 }}>
+                  {journalSharingState === "shared"
+                    ? member.journal_sharing_enabled
+                      ? "Shared by member"
+                      : "Legacy access"
+                    : journalSharingState === "private"
+                    ? "Private (member chose)"
+                    : "Not yet shared"}
+                </p>
+              </div>
             </div>
           </div>
           {/* Always render both progress cards, even with no progress rows —
@@ -1136,6 +1155,12 @@ export default function MemberProfileEditor({
             postProgress={postProgress}
             onWeekSelect={(phase, weekIdx) => setJournalSelection({ phase, weekIdx })}
           />
+          {/* Questions for the Medicine — only rendered when the member has
+              shared. When not shared the server sends no medicine-question
+              text, so nothing here can leak. */}
+          {journalSharingState === "shared" ? (
+            <MemberMedicineQuestions groups={medicineQuestions} />
+          ) : null}
         </div>
       ) : activeTab === "Documents" ? (
         <DocumentsCard documents={documents as SignedDocument[]} profile={profile} />
@@ -1179,6 +1204,7 @@ export default function MemberProfileEditor({
           memberName={member.full_name ?? member.email ?? "Member"}
           phase={journalSelection.phase}
           weekIdx={journalSelection.weekIdx}
+          sharingState={journalSharingState}
           responses={
             (journalSelection.phase === "pre"
               ? preProgress?.journal_responses
