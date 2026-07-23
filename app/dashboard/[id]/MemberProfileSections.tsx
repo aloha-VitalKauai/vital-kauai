@@ -439,9 +439,13 @@ export function IntakeCard({ intake, memberId }: { intake: IntakeData; memberId:
 export function IntegrationProgressCards({
   preProgress,
   postProgress,
+  onWeekSelect,
 }: {
   preProgress: Progress;
   postProgress: Progress;
+  // When provided, every week circle (completed or not) becomes a button
+  // that opens the member's read-only journal for that phase + week.
+  onWeekSelect?: (phase: "pre" | "post", weekIdx: number) => void;
 }) {
   if (!preProgress && !postProgress) return null;
   return (
@@ -461,11 +465,16 @@ export function IntegrationProgressCards({
                 <span style={{ fontSize: 12, color: "#085041", fontWeight: 500 }}>{weeks.length}/6 weeks</span>
               </div>
               <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                {[0,1,2,3,4,5].map(w => (
-                  <span key={w} style={{ width: 28, height: 28, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 500, background: weeks.includes(w) ? "#E1F5EE" : "#FAFAF8", color: weeks.includes(w) ? "#085041" : "#9E9E9A", border: `0.5px solid ${weeks.includes(w) ? "#1D9E75" : "rgba(0,0,0,0.1)"}` }}>
-                    {w + 1}
-                  </span>
-                ))}
+                {[0,1,2,3,4,5].map(w => {
+                  const style: React.CSSProperties = { width: 28, height: 28, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 500, background: weeks.includes(w) ? "#E1F5EE" : "#FAFAF8", color: weeks.includes(w) ? "#085041" : "#9E9E9A", border: `0.5px solid ${weeks.includes(w) ? "#1D9E75" : "rgba(0,0,0,0.1)"}` };
+                  return onWeekSelect ? (
+                    <button key={w} type="button" aria-label={`View Pre-Ceremony Week ${w + 1} journal entries`} onClick={() => onWeekSelect("pre", w)} style={{ ...style, cursor: "pointer", padding: 0, fontFamily: "inherit" }}>
+                      {w + 1}
+                    </button>
+                  ) : (
+                    <span key={w} style={style}>{w + 1}</span>
+                  );
+                })}
               </div>
               {preProgress.last_updated && <p style={{ fontSize: 11, color: "#9E9E9A", marginTop: 8 }}>Last active: {fmtDate(preProgress.last_updated)}</p>}
             </>
@@ -488,11 +497,16 @@ export function IntegrationProgressCards({
                 <span style={{ fontSize: 12, color: "#633806", fontWeight: 500 }}>{weeks.length}/6 weeks</span>
               </div>
               <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                {[0,1,2,3,4,5].map(w => (
-                  <span key={w} style={{ width: 28, height: 28, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 500, background: weeks.includes(w) ? "#FAEEDA" : "#FAFAF8", color: weeks.includes(w) ? "#633806" : "#9E9E9A", border: `0.5px solid ${weeks.includes(w) ? "#C8A96E" : "rgba(0,0,0,0.1)"}` }}>
-                    {w + 1}
-                  </span>
-                ))}
+                {[0,1,2,3,4,5].map(w => {
+                  const style: React.CSSProperties = { width: 28, height: 28, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 500, background: weeks.includes(w) ? "#FAEEDA" : "#FAFAF8", color: weeks.includes(w) ? "#633806" : "#9E9E9A", border: `0.5px solid ${weeks.includes(w) ? "#C8A96E" : "rgba(0,0,0,0.1)"}` };
+                  return onWeekSelect ? (
+                    <button key={w} type="button" aria-label={`View Post-Ceremony Week ${w + 1} journal entries`} onClick={() => onWeekSelect("post", w)} style={{ ...style, cursor: "pointer", padding: 0, fontFamily: "inherit" }}>
+                      {w + 1}
+                    </button>
+                  ) : (
+                    <span key={w} style={style}>{w + 1}</span>
+                  );
+                })}
               </div>
               {postProgress.last_updated && <p style={{ fontSize: 11, color: "#9E9E9A", marginTop: 8 }}>Last active: {fmtDate(postProgress.last_updated)}</p>}
             </>
