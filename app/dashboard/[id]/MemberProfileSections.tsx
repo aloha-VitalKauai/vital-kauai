@@ -439,66 +439,54 @@ export function IntakeCard({ intake, memberId }: { intake: IntakeData; memberId:
 export function IntegrationProgressCards({
   preProgress,
   postProgress,
+  onWeekSelect,
 }: {
   preProgress: Progress;
   postProgress: Progress;
+  // When provided, every week circle (completed or not) becomes a button
+  // that opens the member's read-only journal for that phase + week.
+  onWeekSelect?: (phase: "pre" | "post", weekIdx: number) => void;
 }) {
-  if (!preProgress && !postProgress) return null;
+  // Both cards always render. A missing progress row normalizes to an empty
+  // 0/6 display (no completed weeks, no Last active date) rather than hiding
+  // the card, so founders can open the read-only journal for every member —
+  // the prompts live in lib/journal-prompts and never depend on a DB row.
+  // Phase-specific palette; everything else is shared between the two cards.
+  const PHASES = [
+    { phase: "pre" as const, progress: preProgress, label: "Pre-ceremony progress", viewer: "Pre-Ceremony", bar: "#E1F5EE", fill: "#1D9E75", count: "#085041", doneBg: "#E1F5EE", doneText: "#085041", doneBorder: "#1D9E75" },
+    { phase: "post" as const, progress: postProgress, label: "Post-ceremony progress", viewer: "Post-Ceremony", bar: "#FAEEDA", fill: "#C8A96E", count: "#633806", doneBg: "#FAEEDA", doneText: "#633806", doneBorder: "#C8A96E" },
+  ];
   return (
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: "1.5rem" }}>
-      {/* Pre-Ceremony */}
-      <div style={CARD}>
-        <p style={{ ...LABEL, marginBottom: 12 }}>Pre-ceremony progress</p>
-        {preProgress ? (() => {
-          const weeks = preProgress.weeks_completed ?? [];
-          const pct = Math.round((weeks.length / 6) * 100);
-          return (
-            <>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                <div style={{ flex: 1, height: 4, background: "#E1F5EE", borderRadius: 2 }}>
-                  <div style={{ height: "100%", width: `${pct}%`, background: "#1D9E75", borderRadius: 2 }} />
-                </div>
-                <span style={{ fontSize: 12, color: "#085041", fontWeight: 500 }}>{weeks.length}/6 weeks</span>
+      {PHASES.map(p => {
+        const weeks = p.progress?.weeks_completed ?? [];
+        const pct = Math.round((weeks.length / 6) * 100);
+        return (
+          <div key={p.phase} style={CARD}>
+            <p style={{ ...LABEL, marginBottom: 12 }}>{p.label}</p>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+              <div style={{ flex: 1, height: 4, background: p.bar, borderRadius: 2 }}>
+                <div style={{ height: "100%", width: `${pct}%`, background: p.fill, borderRadius: 2 }} />
               </div>
-              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                {[0,1,2,3,4,5].map(w => (
-                  <span key={w} style={{ width: 28, height: 28, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 500, background: weeks.includes(w) ? "#E1F5EE" : "#FAFAF8", color: weeks.includes(w) ? "#085041" : "#9E9E9A", border: `0.5px solid ${weeks.includes(w) ? "#1D9E75" : "rgba(0,0,0,0.1)"}` }}>
+              <span style={{ fontSize: 12, color: p.count, fontWeight: 500 }}>{weeks.length}/6 weeks</span>
+            </div>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              {[0,1,2,3,4,5].map(w => {
+                const done = weeks.includes(w);
+                const style: React.CSSProperties = { width: 28, height: 28, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 500, background: done ? p.doneBg : "#FAFAF8", color: done ? p.doneText : "#9E9E9A", border: `0.5px solid ${done ? p.doneBorder : "rgba(0,0,0,0.1)"}` };
+                return onWeekSelect ? (
+                  <button key={w} type="button" aria-label={`View ${p.viewer} Week ${w + 1} journal entries`} onClick={() => onWeekSelect(p.phase, w)} style={{ ...style, cursor: "pointer", padding: 0, fontFamily: "inherit" }}>
                     {w + 1}
-                  </span>
-                ))}
-              </div>
-              {preProgress.last_updated && <p style={{ fontSize: 11, color: "#9E9E9A", marginTop: 8 }}>Last active: {fmtDate(preProgress.last_updated)}</p>}
-            </>
-          );
-        })() : <p style={{ fontSize: 13, color: "#9E9E9A" }}>Not started</p>}
-      </div>
-
-      {/* Post-Ceremony */}
-      <div style={CARD}>
-        <p style={{ ...LABEL, marginBottom: 12 }}>Post-ceremony progress</p>
-        {postProgress ? (() => {
-          const weeks = postProgress.weeks_completed ?? [];
-          const pct = Math.round((weeks.length / 6) * 100);
-          return (
-            <>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                <div style={{ flex: 1, height: 4, background: "#FAEEDA", borderRadius: 2 }}>
-                  <div style={{ height: "100%", width: `${pct}%`, background: "#C8A96E", borderRadius: 2 }} />
-                </div>
-                <span style={{ fontSize: 12, color: "#633806", fontWeight: 500 }}>{weeks.length}/6 weeks</span>
-              </div>
-              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                {[0,1,2,3,4,5].map(w => (
-                  <span key={w} style={{ width: 28, height: 28, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 500, background: weeks.includes(w) ? "#FAEEDA" : "#FAFAF8", color: weeks.includes(w) ? "#633806" : "#9E9E9A", border: `0.5px solid ${weeks.includes(w) ? "#C8A96E" : "rgba(0,0,0,0.1)"}` }}>
-                    {w + 1}
-                  </span>
-                ))}
-              </div>
-              {postProgress.last_updated && <p style={{ fontSize: 11, color: "#9E9E9A", marginTop: 8 }}>Last active: {fmtDate(postProgress.last_updated)}</p>}
-            </>
-          );
-        })() : <p style={{ fontSize: 13, color: "#9E9E9A" }}>Not started</p>}
-      </div>
+                  </button>
+                ) : (
+                  <span key={w} style={style}>{w + 1}</span>
+                );
+              })}
+            </div>
+            {p.progress?.last_updated && <p style={{ fontSize: 11, color: "#9E9E9A", marginTop: 8 }}>Last active: {fmtDate(p.progress.last_updated)}</p>}
+          </div>
+        );
+      })}
     </div>
   );
 }

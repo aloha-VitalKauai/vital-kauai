@@ -19,6 +19,7 @@ import {
   type SignedDocument,
   type CeremonyRecord,
 } from "./MemberProfileSections";
+import MemberJournalViewer, { type JournalPhase } from "./MemberJournalViewer";
 import { buildMemberTimeline } from "./memberTimeline";
 import MedicalNotesLog from "@/components/dashboard/MedicalNotesLog";
 /* Integration Specialist options come from the integration_specialists
@@ -371,6 +372,10 @@ export default function MemberProfileEditor({
   const [medicalCleared, setMedicalCleared] = useState(member.medical_cleared ?? false);
   const [portalUnlocked, setPortalUnlocked] = useState(member.portal_unlocked ?? false);
   const [integrationUnlocked, setIntegrationUnlocked] = useState(member.integration_unlocked ?? false);
+
+  // Read-only journal viewer, opened by clicking a week circle in the
+  // Integration progress cards (Snapshot and Integration tabs).
+  const [journalSelection, setJournalSelection] = useState<{ phase: JournalPhase; weekIdx: number } | null>(null);
 
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -1088,8 +1093,16 @@ export default function MemberProfileEditor({
         </div>
       </div>
 
-      {/* Integration Progress */}
-      <IntegrationProgressCards preProgress={preProgress} postProgress={postProgress} />
+      {/* Integration Progress — Snapshot keeps its prior behavior of showing
+          the cards only when the member has activity; the always-on version
+          lives on the Integration tab. */}
+      {(preProgress || postProgress) && (
+        <IntegrationProgressCards
+          preProgress={preProgress}
+          postProgress={postProgress}
+          onWeekSelect={(phase, weekIdx) => setJournalSelection({ phase, weekIdx })}
+        />
+      )}
         </>
       ) : activeTab === "Medical" ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -1115,13 +1128,14 @@ export default function MemberProfileEditor({
               </div>
             </div>
           </div>
-          {preProgress || postProgress ? (
-            <IntegrationProgressCards preProgress={preProgress} postProgress={postProgress} />
-          ) : (
-            <div style={CARD}>
-              <p style={{ fontSize: 13, color: "#9E9E9A", margin: 0 }}>No integration activity yet.</p>
-            </div>
-          )}
+          {/* Always render both progress cards, even with no progress rows —
+              missing data normalizes to 0/6 and every week stays clickable so
+              founders can view the read-only journal for any member. */}
+          <IntegrationProgressCards
+            preProgress={preProgress}
+            postProgress={postProgress}
+            onWeekSelect={(phase, weekIdx) => setJournalSelection({ phase, weekIdx })}
+          />
         </div>
       ) : activeTab === "Documents" ? (
         <DocumentsCard documents={documents as SignedDocument[]} profile={profile} />
@@ -1159,6 +1173,28 @@ export default function MemberProfileEditor({
       ) : activeTab === "Timeline" ? (
         <TimelineCard events={timeline} />
       ) : null}
+
+      {journalSelection && (
+        <MemberJournalViewer
+          memberName={member.full_name ?? member.email ?? "Member"}
+          phase={journalSelection.phase}
+          weekIdx={journalSelection.weekIdx}
+          responses={
+            (journalSelection.phase === "pre"
+              ? preProgress?.journal_responses
+              : postProgress?.journal_responses) ?? {}
+          }
+          lastUpdated={
+            journalSelection.phase === "pre"
+              ? preProgress?.last_updated
+              : postProgress?.last_updated
+          }
+          onWeekChange={(weekIdx) =>
+            setJournalSelection((cur) => (cur ? { ...cur, weekIdx } : cur))
+          }
+          onClose={() => setJournalSelection(null)}
+        />
+      )}
     </div>
   );
 }
