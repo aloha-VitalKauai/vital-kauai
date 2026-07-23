@@ -78,6 +78,7 @@ export default function MemberJournalViewer({
   weekIdx,
   responses,
   lastUpdated,
+  sharingState = "shared",
   onWeekChange,
   onClose,
 }: {
@@ -86,9 +87,17 @@ export default function MemberJournalViewer({
   weekIdx: number; // 0-based, 0–5
   responses: Record<string, string>;
   lastUpdated?: string | null;
+  // When not "shared", the server has stripped all response text; the viewer
+  // shows prompt titles plus a privacy notice instead of response boxes.
+  sharingState?: "shared" | "private" | "undecided";
   onWeekChange: (weekIdx: number) => void;
   onClose: () => void;
 }) {
+  const isShared = sharingState === "shared";
+  const privacyNotice =
+    sharingState === "private"
+      ? "This member has chosen to keep their journal and reflection responses private."
+      : "This member has not shared their journal and reflection responses with the care team.";
   const weeks = phase === "pre" ? PRE_CEREMONY_WEEKS : POST_CEREMONY_WEEKS;
   const pneDetails = phase === "pre" ? PRE_PNE_DETAILS : POST_PNE_DETAILS;
   const week = weeks[weekIdx];
@@ -222,6 +231,22 @@ export default function MemberJournalViewer({
 
         {/* Content */}
         <div style={{ overflowY: "auto", padding: "1.25rem 1.5rem 1.5rem" }}>
+          {!isShared && (
+            <div
+              style={{
+                background: "#FAFAF8",
+                border: "0.5px solid rgba(0,0,0,0.1)",
+                borderRadius: 8,
+                padding: "14px 16px",
+                marginBottom: 18,
+                fontSize: 13,
+                color: "#6B6B67",
+                lineHeight: 1.6,
+              }}
+            >
+              {privacyNotice}
+            </div>
+          )}
           {week.prompts.length === 0 && pneEntries.length === 0 ? (
             <p style={{ fontSize: 13, color: "#9E9E9A", textAlign: "center", padding: "2.5rem 0" }}>
               No journal prompts are configured for this week.
@@ -235,7 +260,7 @@ export default function MemberJournalViewer({
                     <p style={{ fontSize: 11, fontWeight: 600, color: "#6B6B67", margin: "0 0 6px" }}>{pj + 1}</p>
                     <p style={PROMPT_Q}>{prompt.q}</p>
                     {prompt.hint && <p style={PROMPT_HINT}>{prompt.hint}</p>}
-                    <ResponseBlock text={responses[key]} />
+                    {isShared && <ResponseBlock text={responses[key]} />}
                   </div>
                 );
               })}
@@ -248,7 +273,7 @@ export default function MemberJournalViewer({
                   {pneEntries.map((r) => (
                     <div key={r.key} style={{ marginBottom: 14 }}>
                       <p style={PROMPT_Q}>{r.q || "Earlier PNE reflection"}</p>
-                      <ResponseBlock text={responses[r.key]} />
+                      {isShared && <ResponseBlock text={responses[r.key]} />}
                     </div>
                   ))}
                 </div>

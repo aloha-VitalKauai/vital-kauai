@@ -20,6 +20,9 @@ import {
   type CeremonyRecord,
 } from "./MemberProfileSections";
 import MemberJournalViewer, { type JournalPhase } from "./MemberJournalViewer";
+import MemberMedicineQuestions from "./MemberMedicineQuestions";
+import { type JournalSharingState } from "@/lib/journal-sharing";
+import { type MedicineQuestionGroup } from "@/lib/medicine-questions";
 import { buildMemberTimeline } from "./memberTimeline";
 import MedicalNotesLog from "@/components/dashboard/MedicalNotesLog";
 /* Integration Specialist options come from the integration_specialists
@@ -132,6 +135,11 @@ export default function MemberProfileEditor({
   checklist,
   preProgress,
   postProgress,
+  journalSharingState = "undecided",
+  medicineQuestions = [],
+  medicineQuestionCount = 0,
+  journalResponseCount = 0,
+  pneReflectionCount = 0,
   commitment,
   collectedCents = 0,
   tokens = [],
@@ -156,6 +164,11 @@ export default function MemberProfileEditor({
   checklist: ChecklistItem[];
   preProgress: any;
   postProgress: any;
+  journalSharingState?: JournalSharingState;
+  medicineQuestions?: MedicineQuestionGroup[];
+  medicineQuestionCount?: number;
+  journalResponseCount?: number;
+  pneReflectionCount?: number;
   commitment?: Commitment;
   collectedCents?: number;
   tokens?: PaymentToken[];
@@ -376,6 +389,7 @@ export default function MemberProfileEditor({
   // Read-only journal viewer, opened by clicking a week circle in the
   // Integration progress cards (Snapshot and Integration tabs).
   const [journalSelection, setJournalSelection] = useState<{ phase: JournalPhase; weekIdx: number } | null>(null);
+  const [medicineDrawerOpen, setMedicineDrawerOpen] = useState(false);
 
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -1126,6 +1140,18 @@ export default function MemberProfileEditor({
                 <p style={{ color: "#6B6B67", margin: "0 0 2px" }}>Integration access</p>
                 <p style={{ color: "#1A1A18", margin: 0 }}>{integrationUnlocked ? "Unlocked" : "Locked"}</p>
               </div>
+              <div>
+                <p style={{ color: "#6B6B67", margin: "0 0 2px" }}>Journal sharing</p>
+                <p style={{ color: "#1A1A18", margin: 0 }}>
+                  {journalSharingState === "shared"
+                    ? member.journal_sharing_enabled
+                      ? "Shared by member"
+                      : "Legacy access"
+                    : journalSharingState === "private"
+                    ? "Private (member chose)"
+                    : "Not yet shared"}
+                </p>
+              </div>
             </div>
           </div>
           {/* Always render both progress cards, even with no progress rows —
@@ -1136,6 +1162,54 @@ export default function MemberProfileEditor({
             postProgress={postProgress}
             onWeekSelect={(phase, weekIdx) => setJournalSelection({ phase, weekIdx })}
           />
+          {/* Questions for the Medicine — count is metadata (always shown);
+              the responses drawer opens only when the member has shared, and
+              the server sends no question text otherwise. */}
+          <div style={CARD}>
+            <p style={{ ...LABEL, marginBottom: 10 }}>Questions for the Medicine</p>
+            <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+              <div style={{ flex: 1, minWidth: 220 }}>
+                <p style={{ fontFamily: "var(--font-display, serif)", fontSize: 20, fontWeight: 400, color: "#1A1A18", margin: "0 0 2px" }}>
+                  {medicineQuestionCount} {medicineQuestionCount === 1 ? "Question" : "Questions"} Submitted
+                </p>
+                <p style={{ fontSize: 12, color: "#9E9E9A", margin: 0 }}>
+                  Questions this member has submitted for their journey.
+                </p>
+              </div>
+              {journalSharingState === "shared" && medicineQuestionCount > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => setMedicineDrawerOpen(true)}
+                  style={{ fontSize: 12, fontWeight: 500, color: "#1A1A18", background: "#fff", border: "0.5px solid rgba(0,0,0,0.25)", borderRadius: 8, padding: "9px 16px", cursor: "pointer" }}
+                >
+                  View Responses →
+                </button>
+              ) : (
+                <span style={{ fontSize: 12, color: "#9E9E9A", fontStyle: "italic" }}>
+                  {journalSharingState === "shared" ? "None submitted yet" : "Private"}
+                </span>
+              )}
+            </div>
+            <p style={{ fontSize: 11, color: "#6B6B67", margin: "14px 0 0", display: "flex", alignItems: "center", gap: 8 }}>
+              <span aria-hidden>🔒</span> Questions for the Medicine are shared based on the member&rsquo;s sharing preference.
+            </p>
+          </div>
+
+          {/* Journal & PNE summary — counts only (progress metadata). Response
+              text is viewed via the week circles above, gated by sharing. */}
+          <div style={CARD}>
+            <p style={{ ...LABEL, marginBottom: 12 }}>Journal &amp; PNE Summary</p>
+            <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
+              <div>
+                <p style={{ fontFamily: "var(--font-display, serif)", fontSize: 18, color: "#1A1A18", margin: "0 0 2px" }}>Journal Responses</p>
+                <p style={{ fontSize: 13, color: "#6B6B67", margin: 0 }}>{journalResponseCount} {journalResponseCount === 1 ? "response" : "responses"}</p>
+              </div>
+              <div>
+                <p style={{ fontFamily: "var(--font-display, serif)", fontSize: 18, color: "#1A1A18", margin: "0 0 2px" }}>PNE Reflections</p>
+                <p style={{ fontSize: 13, color: "#6B6B67", margin: 0 }}>{pneReflectionCount} {pneReflectionCount === 1 ? "reflection" : "reflections"}</p>
+              </div>
+            </div>
+          </div>
         </div>
       ) : activeTab === "Documents" ? (
         <DocumentsCard documents={documents as SignedDocument[]} profile={profile} />
@@ -1179,6 +1253,7 @@ export default function MemberProfileEditor({
           memberName={member.full_name ?? member.email ?? "Member"}
           phase={journalSelection.phase}
           weekIdx={journalSelection.weekIdx}
+          sharingState={journalSharingState}
           responses={
             (journalSelection.phase === "pre"
               ? preProgress?.journal_responses
@@ -1195,6 +1270,13 @@ export default function MemberProfileEditor({
           onClose={() => setJournalSelection(null)}
         />
       )}
+
+      <MemberMedicineQuestions
+        memberName={member.full_name ?? member.email ?? "Member"}
+        groups={medicineQuestions}
+        open={medicineDrawerOpen}
+        onClose={() => setMedicineDrawerOpen(false)}
+      />
     </div>
   );
 }

@@ -50,6 +50,7 @@ type Profile = {
 
 type MemberData = {
   assigned_partner: string | null;
+  journal_sharing_enabled?: boolean | null;
 };
 
 type Specialist = {
@@ -658,6 +659,14 @@ export function PortalHomePage({
 
       {/* ── FOOTER ── */}
       <footer className={styles.portalFooter}>
+        {/* Read-only journal-sharing status. Editing lives on the intake form
+            today; a member-editable toggle can follow when a settings page exists. */}
+        <p style={{ fontSize: 12, letterSpacing: "0.04em", color: "rgba(245,240,232,0.6)", marginBottom: 14 }}>
+          Journal sharing:{" "}
+          {memberData?.journal_sharing_enabled
+            ? "Shared with my Vital Kauaʻi care team"
+            : "Private to me"}
+        </p>
         <p className={styles.footerLogo}>Vital Kaua&#699;i Church</p>
         <p className={styles.footerCopy}>
           &copy; 2026 Vital Kauaʻi Church &middot; PO Box 932, Hanalei, HI 96714 &middot;
