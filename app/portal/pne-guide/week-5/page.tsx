@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { PneGuidePrintButton, PneGuideFooter } from "@/components/portal/PneGuidePrint";
 
 export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Guide · Week 5, Vital Kauaʻi" };
 
@@ -568,6 +569,7 @@ export default async function SomaticCompanionWeek5Page() {
 
       <div className="pne-companion-w5-page">
         <span id="top" />
+        <PneGuidePrintButton />
         <header className="hero">
           <div className="vk-wrap">
             <h1>Week Five <em>PNE Guide</em></h1>
@@ -809,6 +811,8 @@ export default async function SomaticCompanionWeek5Page() {
             <p>Every belief that surfaces is an invitation to see what the body has been carrying on your behalf. The work of this week is to meet those beliefs with curiosity, to thank them for what they once made possible, and to begin to remember the self that lives beneath them.</p>
           </div>
         </section>
+
+        <PneGuideFooter />
       </div>
     </>
   );

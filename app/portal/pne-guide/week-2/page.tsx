@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { PneGuidePrintButton, PneGuideFooter } from "@/components/portal/PneGuidePrint";
 
 export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Guide · Week 2, Vital Kauaʻi" };
 
@@ -508,6 +509,7 @@ export default async function SomaticCompanionWeek2Page() {
 
       <div className="pne-companion-w2-page">
         <span id="top" />
+        <PneGuidePrintButton />
         <header className="hero">
           <div className="vk-wrap">
             <h1>Week Two <em>PNE Guide</em></h1>
@@ -772,6 +774,8 @@ export default async function SomaticCompanionWeek2Page() {
             <p>Every state your nervous system has ever moved through has been a faithful attempt to keep you safe. The work of this week is simply to meet those patterns with curiosity, and to remember that the body always knows how to come home.</p>
           </div>
         </section>
+
+        <PneGuideFooter />
       </div>
     </>
   );
