@@ -10,16 +10,16 @@ import styles from "./home-page.module.css";
 
 const teamMembers = [
   {
+    name: "Judith Johnson",
+    role: "Founder, PsychoNeuroEnergetics · Somatic Integration Director",
+    bio: "For more than four decades, Judith has dedicated her life to understanding human suffering and helping people heal from trauma. As the founder of the PNE (PsychoNeuroEnergetics) approach, she has trained practitioners, developed educational programs, and inspired countless individuals to pursue lasting transformation through science, compassion, and human connection. With decades of practice across Somatic Experiencing, Polyvagal Theory, and body electronics, she brings an extraordinary depth of wisdom to Vital Kauaʻi.",
+    image: "/images/judithjohnson.jpeg",
+  },
+  {
     name: "Rachel Nelson",
     role: "Co-Founder · Guide and Facilitator",
     bio: "Rachel weaves over two decades of devotion to embodied awakening, bridging Eastern philosophy with Western science. Her foundation includes graduate-level study in naturopathic medicine and transpersonal psychology, along with certifications in life coaching, mind-body nutrition, and hypnotherapy. Her work helps people reawaken to their true nature through her compassionate, powerful, and radically transformative presence.",
     image: "/images/about/rachel-nelson.jpg",
-  },
-  {
-    name: "Judith Johnson",
-    role: "Founder, PsychoNeuroEnergetics · Somatic Integration Director",
-    bio: "A pioneer of body-oriented healing, Judith is the founder and developer of PsychoNeuroEnergetics (PNE), a breakthrough modality that unwinds traumatic imprints held in the nervous system through the healing power of the vagus nerve. With decades of practice across Somatic Experiencing, Polyvagal Theory, and body electronics, she brings an extraordinary depth of wisdom to every container at Vital Kauaʻi.",
-    image: "/images/judithjohnson.jpeg",
   },
   {
     name: "Josh Perdue",
