@@ -75,7 +75,7 @@ const PREP_ITEMS: { text: string; link?: string; external?: boolean; isLab?: boo
   { text: "Begin dietary preparation protocol", link: "/portal/dietary" },
   { text: "Begin journaling", link: "/portal/integration/pre-ceremony#journal-prompts" },
   { text: "Prepare your questions for the medicine", link: "/portal/questions" },
-  { text: "Begin nervous system preparation practices (breathwork, somatic self-regulation)", link: "/portal/somatic-companion" },
+  { text: "Begin nervous system preparation practices (breathwork, somatic self-regulation)", link: "/portal/pne-guide" },
   { text: "Share the Support Person Guide with your home circle", link: "/portal/support-person" },
   { text: "Confirm travel arrangements and send arrival details to aloha@vitalkauai.com" },
   { text: "Pack using the interactive packing guide", link: "/portal/what-to-bring" },

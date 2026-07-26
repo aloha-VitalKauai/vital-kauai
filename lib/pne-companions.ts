@@ -2,7 +2,7 @@
 //
 // Drives:
 //   - /portal/pne                            (the Resources landing page)
-//   - /portal/somatic-companion[/week-N]     (per-week companion pages)
+//   - /portal/pne-guide[/week-N]     (per-week companion pages)
 //   - PRE_PNE_COMPANION / POST_PNE_COMPANION (linked from the integration
 //     pages — see app/portal/integration/{pre,post}-ceremony/page.tsx)
 //
@@ -36,7 +36,7 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     code: "IKE",
     theme: "Perception",
     title: "The Language of the Body",
-    href: "/portal/somatic-companion",
+    href: "/portal/pne-guide",
     status: "live",
     videoSummary:
       "Internal safety, what happens when the system senses threat, and how internal and external structures build the ground your nervous system can rest into.",
@@ -48,7 +48,7 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     code: "MAKIA",
     theme: "Focus",
     title: "Nervous System Regulation",
-    href: "/portal/somatic-companion/week-2",
+    href: "/portal/pne-guide/week-2",
     status: "live",
     videoSummary:
       "Tracking the body through fight, flight, freeze, and fawn, and the practices that bring the system back to center.",
@@ -60,7 +60,7 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     code: "MANAWA",
     theme: "Presence",
     title: "Building Somatic Awareness",
-    href: "/portal/somatic-companion/week-3",
+    href: "/portal/pne-guide/week-3",
     status: "live",
     videoSummary:
       "Listening to sensation as information, and learning to stay with what arises in the body.",
@@ -72,7 +72,7 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     code: "KALA",
     theme: "Release",
     title: "The Language of Emotion",
-    href: "/portal/somatic-companion/week-4",
+    href: "/portal/pne-guide/week-4",
     status: "live",
     videoSummary:
       "The five primary emotions, the secondary patterns layered on top, and how to let what has been long held finally move through.",
@@ -83,7 +83,7 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     code: "ALOHA",
     theme: "Connection",
     title: "The Architecture of Belief",
-    href: "/portal/somatic-companion/week-5",
+    href: "/portal/pne-guide/week-5",
     status: "live",
     videoSummary:
       "Beliefs as embodied patterns, the survival truths that hold suffering in place, and how a trauma imprint softens when the body feels safe enough to know something new.",
@@ -94,7 +94,7 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     code: "MANA",
     theme: "Sovereignty",
     title: "Spirit and the Sacred",
-    href: "/portal/somatic-companion/week-6",
+    href: "/portal/pne-guide/week-6",
     status: "live",
     videoSummary:
       "Iboga as spiritual encounter, the life review that arises in ceremony, your own relationship to Higher Power, the PNE lens of ancestral healing, discerning the voice of the Divine, prayers to carry, and integration as ongoing spiritual practice.",
