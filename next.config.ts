@@ -21,12 +21,22 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/portal/nervous-system",
-        destination: "/portal/somatic-companion",
+        destination: "/portal/pne-guide",
         permanent: true,
       },
       {
         source: "/portal/nervous-system/:path*",
-        destination: "/portal/somatic-companion/:path*",
+        destination: "/portal/pne-guide/:path*",
+        permanent: true,
+      },
+      {
+        source: "/portal/somatic-companion",
+        destination: "/portal/pne-guide",
+        permanent: true,
+      },
+      {
+        source: "/portal/somatic-companion/:path*",
+        destination: "/portal/pne-guide/:path*",
         permanent: true,
       },
     ];

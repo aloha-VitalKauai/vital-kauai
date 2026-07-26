@@ -26,7 +26,7 @@ export const actionsForWeek = (
     return [
       { kind: 'hash',     href: '#journal-prompts',                    text: 'Respond to this week’s journal prompts', key: 'a0' },
       { kind: 'external', href: '/iboga-preparedness-guide.html#iboga', text: 'Read "Understanding Iboga" and "What Iboga Works On" in your Preparedness Guide', key: 'a1' },
-      { kind: 'internal', href: '/portal/somatic-companion#top',    text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', key: 'a2' },
+      { kind: 'internal', href: '/portal/pne-guide#top',    text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', key: 'a2' },
       { kind: 'static',                                              text: "Complete this week's PNE Practice", key: 'a3' },
       { kind: 'static',                                              text: "Complete this week's PNE Reflection", key: 'a4' },
       { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule three or four of your six integration-guide calls up front', key: 'a5' },
@@ -136,7 +136,7 @@ export const WEEKS = [
         color: 'green',
         text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection',
         links: [
-          { text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/somatic-companion/week-2#top' },
+          { text: 'Read Week 2 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/pne-guide/week-2#top' },
         ],
       },
       { key: 'a3', color: 'green', text: "Complete this week's PNE Practice" },
@@ -212,7 +212,7 @@ export const WEEKS = [
         color: 'green',
         text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection',
         links: [
-          { text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/somatic-companion/week-3#top' },
+          { text: 'Read Week 3 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/pne-guide/week-3#top' },
         ],
       },
       { key: 'a3', color: 'green', text: "Complete this week's PNE Practice" },
@@ -276,7 +276,7 @@ export const WEEKS = [
         color: 'green',
         text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection',
         links: [
-          { text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/somatic-companion/week-4#top' },
+          { text: 'Read Week 4 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/pne-guide/week-4#top' },
         ],
       },
       { key: 'a2', color: 'green', text: "Complete this week's PNE Practice" },
@@ -352,7 +352,7 @@ export const WEEKS = [
         color: 'green',
         text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection',
         links: [
-          { text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/somatic-companion/week-5#top' },
+          { text: 'Read Week 5 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/pne-guide/week-5#top' },
         ],
       },
       { key: 'a3', color: 'green', text: "Complete this week's PNE Practice" },
@@ -446,7 +446,7 @@ export const WEEKS = [
         color: 'green',
         text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection',
         links: [
-          { text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/somatic-companion/week-6#top' },
+          { text: 'Read Week 6 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', href: '/portal/pne-guide/week-6#top' },
         ],
       },
       { key: 'a4', color: 'green', text: "Complete this week's PNE Practice" },
