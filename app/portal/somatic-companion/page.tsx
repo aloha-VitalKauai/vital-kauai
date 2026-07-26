@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { PneGuidePrintButton, PneGuideFooter } from "@/components/portal/PneGuidePrint";
 
 export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Guide · Week 1, Vital Kauaʻi" };
 
@@ -738,6 +739,7 @@ export default async function SomaticCompanionPage() {
 
       <div className="pne-companion-page">
         <span id="top" />
+        <PneGuidePrintButton />
         <header className="hero">
           <div className="vk-wrap">
             <h1>Week One <em>PNE (PsychoNeuroEnergetics) Guide</em></h1>
@@ -877,6 +879,8 @@ export default async function SomaticCompanionPage() {
             <p>If you remember one thing, remember your breath.</p>
           </div>
         </section>
+
+        <PneGuideFooter />
       </div>
     </>
   );
