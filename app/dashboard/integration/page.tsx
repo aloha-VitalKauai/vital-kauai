@@ -41,7 +41,11 @@ export default async function IntegrationPage() {
     const lastActive = pre?.last_updated && post?.last_updated
       ? (new Date(pre.last_updated) > new Date(post.last_updated) ? pre.last_updated : post.last_updated)
       : pre?.last_updated || post?.last_updated;
-    return { ...m, pre, post, preWeeks, postWeeks, preJournal, postJournal, lastActive };
+    // Only derived counts/weeks/dates leave this scope — never the raw
+    // journal_responses text. The overview shows entry counts (progress
+    // metadata, visible regardless of sharing consent), so response text is
+    // reduced to a count here and never carried into a client-reachable object.
+    return { ...m, preWeeks, postWeeks, preJournal, postJournal, lastActive };
   });
 
   // Summary stats

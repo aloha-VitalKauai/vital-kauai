@@ -147,6 +147,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Failed to save intake form" }, { status: 500 });
     }
 
+    // Persist the member's portal-wide journal-sharing choice on their canonical
+    // members row. This is the member personally deciding, so we stamp
+    // journal_sharing_decided_at. We NEVER touch legacy_journal_access_enabled
+    // from the member-facing form — that flag is admin-only compatibility access,
+    // not consent. The update targets the authenticated member's own row
+    // (resolved via members.profile_id = auth.uid()), so no other member's
+    // preference can be written.
+    const journalSharingEnabled =
+      body.journal_sharing_enabled === true || body.journal_sharing_enabled === "true";
+    const { error: shareErr } = await service
+      .from("members")
+      .update({
+        journal_sharing_enabled: journalSharingEnabled,
+        journal_sharing_decided_at: nowIso,
+      })
+      .eq("id", memberId);
+    if (shareErr) {
+      console.error("[intake/complete] journal sharing update error:", shareErr.message);
+      return NextResponse.json({ error: "Failed to save sharing preference" }, { status: 500 });
+    }
+
     // Flip flag on member_profiles (user can update own row).
     const { error: profErr } = await supabase
       .from("member_profiles")

@@ -30,6 +30,7 @@ export type Profile = {
 export type MemberRow = {
   id: string;
   assigned_partner: string | null;
+  journal_sharing_enabled?: boolean | null;
 };
 
 export type Specialist = {
@@ -58,7 +59,7 @@ export async function getMyMember(
 ): Promise<MemberRow | null> {
   const { data } = await supabase
     .from("members")
-    .select("id, assigned_partner")
+    .select("id, assigned_partner, journal_sharing_enabled")
     .eq("email", userEmail)
     .single();
   return (data as MemberRow | null) ?? null;

@@ -3,6 +3,13 @@ import { notFound } from "next/navigation";
 import MemberProfileEditor from "./MemberProfileEditor";
 import { getCurrentBookingForMember } from "@/lib/api/bookings";
 import { NURSE_ROLES } from "@/lib/practitioners";
+import {
+  canCareTeamViewJournal,
+  resolveJournalSharingState,
+  sanitizeProgressForFounder,
+  summarizeJournalResponses,
+} from "@/lib/journal-sharing";
+import { extractMedicineQuestions } from "@/lib/medicine-questions";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -97,6 +104,14 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
 
   if (!member) notFound();
 
+  // Journal-sharing consent gate. The member row (loaded via founder RLS)
+  // carries journal_sharing_enabled / legacy_journal_access_enabled; only when
+  // one is true may the care team see this member's journal, PNE, and
+  // medicine-question responses. Enforced below by stripping response text from
+  // the props when access is not allowed.
+  const canViewJournal = canCareTeamViewJournal(member);
+  const journalSharingState = resolveJournalSharingState(member);
+
   // Look up auth user ID via member_profiles (for pre/post ceremony progress)
   const { data: profileByEmail } = await supabase
     .from("member_profiles")
@@ -106,14 +121,40 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
 
   let preProgress = null;
   let postProgress = null;
+  let medicineQuestions: ReturnType<typeof extractMedicineQuestions> = [];
+  let medicineQuestionCount = 0;
   if (profileByEmail) {
-    const [{ data: pre }, { data: post }] = await Promise.all([
+    const [{ data: pre }, { data: post }, { data: mj }] = await Promise.all([
       supabase.from("pre_ceremony_progress").select("weeks_completed, checklist_items, journal_responses, last_updated").eq("member_id", profileByEmail.id).maybeSingle(),
       supabase.from("post_ceremony_progress").select("weeks_completed, checklist_items, weekly_tracking, journal_responses, last_updated").eq("member_id", profileByEmail.id).maybeSingle(),
+      supabase.from("member_journals").select("responses").eq("member_id", profileByEmail.id).maybeSingle(),
     ]);
     preProgress = pre;
     postProgress = post;
+
+    // Questions-for-the-Medicine: the submitted COUNT is progress metadata and
+    // is shown regardless of sharing; the question TEXT is only forwarded to the
+    // client when the member has shared.
+    const mqGroups = extractMedicineQuestions(
+      (mj?.responses as Record<string, string> | null) ?? null,
+    );
+    medicineQuestionCount = mqGroups.reduce((n, g) => n + g.questions.length, 0);
+    if (canViewJournal) medicineQuestions = mqGroups;
   }
+
+  // Response/reflection counts are metadata — computed from the raw maps here,
+  // before response text is stripped below, so they display for every member.
+  const responseSummary = summarizeJournalResponses(
+    preProgress?.journal_responses as Record<string, unknown> | null,
+    postProgress?.journal_responses as Record<string, unknown> | null,
+  );
+
+  // Consent gate: strip pre/post journal + PNE response text before it reaches
+  // the founder's browser when the member has not shared. Progress metadata
+  // (weeks_completed, last_updated, …) is kept so the dashboard still shows
+  // counts, completed weeks, and last-active dates.
+  const safePreProgress = sanitizeProgressForFounder(preProgress, canViewJournal);
+  const safePostProgress = sanitizeProgressForFounder(postProgress, canViewJournal);
 
   // Outcomes timeline — every approved member with a scheduled ceremony has rows here.
   const { data: outcomesRows } = await supabase
@@ -208,8 +249,13 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       documents={documents ?? []}
       ceremonies={ceremonies ?? []}
       checklist={checklist ?? []}
-      preProgress={preProgress}
-      postProgress={postProgress}
+      preProgress={safePreProgress}
+      postProgress={safePostProgress}
+      journalSharingState={journalSharingState}
+      medicineQuestions={medicineQuestions}
+      medicineQuestionCount={medicineQuestionCount}
+      journalResponseCount={responseSummary.journal}
+      pneReflectionCount={responseSummary.pne}
       commitment={commitment ?? undefined}
       collectedCents={collectedCents}
       tokens={tokens}
