@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { PneGuidePrintButton, PneGuideFooter } from "@/components/portal/PneGuidePrint";
 
 export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Guide · Week 4, Vital Kauaʻi" };
 
@@ -683,6 +684,7 @@ export default async function SomaticCompanionWeek4Page() {
 
       <div className="pne-companion-w4-page">
         <span id="top" />
+        <PneGuidePrintButton />
         <header className="hero">
           <div className="vk-wrap">
             <h1>Week Four <em>PNE Guide</em></h1>
@@ -1020,6 +1022,8 @@ export default async function SomaticCompanionWeek4Page() {
             <p>Every feeling that arises is the body speaking. The work of this week is to meet emotion as it is, to let it move, and to trust that the more clearly you hear yourself, the more truly you can live.</p>
           </div>
         </section>
+
+        <PneGuideFooter />
       </div>
     </>
   );

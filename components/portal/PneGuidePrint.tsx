@@ -16,7 +16,7 @@
 
 const PRINT_STYLES = `
   /* Anchor the floating button to the guide, top-right. */
-  .pne-companion-page { position: relative; }
+  [class*="pne-companion"] { position: relative; }
 
   .pne-print-btn {
     position: absolute; top: 18px; right: 22px; z-index: 30;
@@ -58,33 +58,29 @@ const PRINT_STYLES = `
 
     /* White paper, dark ink on everything so nothing prints faint. */
     html, body { background: #fff !important; }
-    .pne-companion-page { background: #fff !important; }
-    .pne-companion-page, .pne-companion-page * { color: #1F2620 !important; }
+    [class*="pne-companion"] { background: #fff !important; }
+    [class*="pne-companion"], [class*="pne-companion"] * { color: #1F2620 !important; }
 
-    /* Flatten the dark hero and every tinted section/card to white. */
-    .pne-companion-page header.hero,
-    .pne-companion-page section,
-    .pne-companion-page .closing-band,
-    .pne-companion-page [class*="band"],
-    .pne-companion-page [class*="card"],
-    .pne-companion-page .pv-card,
-    .pne-companion-page .practice-card,
-    .pne-companion-page .pv-quote,
-    .pne-companion-page .safety-question {
-      background: #fff !important; background-image: none !important; box-shadow: none !important;
+    /* Flatten EVERYTHING to white — no tinted band, card, or quote block
+       prints as a solid ink slab (wasteful, and dark-on-dark is unreadable). */
+    [class*="pne-companion"], [class*="pne-companion"] *,
+    .pne-guide-footer, .pne-guide-footer * {
+      background-color: transparent !important;
+      background-image: none !important;
+      box-shadow: none !important;
     }
 
     /* Trim the generous on-screen spacing so the PDF has no big gaps. */
-    .pne-companion-page .vk-section { padding: 18px 0 !important; }
-    .pne-companion-page header.hero { padding: 8px 0 20px !important; }
-    .pne-companion-page .closing-band { padding: 22px 0 !important; }
+    [class*="pne-companion"] .vk-section { padding: 18px 0 !important; }
+    [class*="pne-companion"] header.hero { padding: 8px 0 20px !important; }
+    [class*="pne-companion"] .closing-band { padding: 22px 0 !important; }
 
     /* Keep cards, quotes, and callouts from splitting across pages. */
-    .pne-companion-page .pv-card,
-    .pne-companion-page .practice-card,
-    .pne-companion-page .pv-quote,
-    .pne-companion-page .safety-question { break-inside: avoid; }
-    .pne-companion-page h1, .pne-companion-page h2, .pne-companion-page h3 { break-after: avoid; }
+    [class*="pne-companion"] .pv-card,
+    [class*="pne-companion"] .practice-card,
+    [class*="pne-companion"] .pv-quote,
+    [class*="pne-companion"] .safety-question { break-inside: avoid; }
+    [class*="pne-companion"] h1, [class*="pne-companion"] h2, [class*="pne-companion"] h3 { break-after: avoid; }
 
     /* Keep the logo footer, on white. */
     .pne-guide-footer { background: #fff !important; border-top: 1px solid #cfcabb; }

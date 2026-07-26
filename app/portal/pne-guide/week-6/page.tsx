@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { PneGuidePrintButton, PneGuideFooter } from "@/components/portal/PneGuidePrint";
 
 export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Guide · Week 6, Vital Kauaʻi" };
 
@@ -514,6 +515,7 @@ export default async function SomaticCompanionWeek6Page() {
 
       <div className="pne-companion-w6-page">
         <span id="top" />
+        <PneGuidePrintButton />
         <header className="hero">
           <div className="vk-wrap">
             <h1>Week Six <em>PNE Guide</em></h1>
@@ -728,6 +730,8 @@ export default async function SomaticCompanionWeek6Page() {
             <p>What you complete in yourself, you release for the generations. The spiritual life is the ongoing practice of meeting what arises with Truth, Humility, Healing, and Compassion, until the meeting becomes the way you live.</p>
           </div>
         </section>
+
+        <PneGuideFooter />
       </div>
     </>
   );
