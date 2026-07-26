@@ -107,11 +107,11 @@ export default function ReferenceItineraryPage() {
             <div className="day-content">
               <h3>Day One</h3>
               <div className="day-title">Arriving on the <em>Land</em></div>
-              <div className="day-subtitle">Settling in, meeting the team, feeling the ground.</div>
-              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Welcome orientation &amp; paperwork.</strong> Members settle in, meet the team, and begin to feel the land.</div></div>
+              <div className="day-subtitle">Settling in, and the first gathering at the table.</div>
+              <div className="time-row"><div className="time">1:00 PM</div><div className="activity">Arrive in Hanalei, settle in.</div></div>
+              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Welcome orientation.</strong></div></div>
               <div className="time-row"><div className="time">5:00 PM</div><div className="activity"><strong>Jeffersonian-style dinner.</strong> The first gathering at the table, one shared conversation.</div></div>
-              <div className="time-row"><div className="time">6:30 PM</div><div className="activity"><strong>Welcome baptism &amp; fire ceremony with Rachel &amp; Josh.</strong> Opening the container.</div></div>
-              <div className="time-row"><div className="time">7:00 PM</div><div className="activity"><strong>Talk story.</strong> A gentle evening circle to arrive together.</div></div>
+              <div className="time-row"><div className="time">6:30 PM</div><div className="activity"><strong>Aloha fire talk.</strong> Opening the container together.</div></div>
             </div>
           </div>
 
@@ -119,25 +119,24 @@ export default function ReferenceItineraryPage() {
             <div className="day-marker"><div className="day-number">02</div><div className="day-label">Ceremony</div></div>
             <div className="day-content">
               <h3>Day Two</h3>
-              <div className="day-title">The First <em>Door</em></div>
-              <div className="day-subtitle">Release, the Nā Pali hike, and the first ceremony.</div>
-              <div className="time-row"><div className="time">7:15 AM</div><div className="activity"><strong>Breakfast to go; silent Nā Pali Coast hike &amp; spiritual shower.</strong> Held with Rachel &amp; Josh, in silence from trailhead to return.</div></div>
-              <div className="time-row"><div className="time">12:00 PM</div><div className="activity"><strong>Light lunch.</strong> Review of the ceremony guidelines and what to expect, with Rachel &amp; Josh.</div></div>
-              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Massage &amp; bodywork.</strong> Settling the system before ceremony.</div></div>
-              <div className="time-row"><div className="time">5:00 PM</div><div className="activity">Rest, journal, review intentions and questions for the medicine.</div></div>
+              <div className="day-title">Hike &amp; <em>Ceremony One</em></div>
+              <div className="day-subtitle">Silent release on the Nā Pali coast, and the first ceremony.</div>
+              <div className="time-row"><div className="time">7:15 AM</div><div className="activity"><strong>Silent release: Nā Pali Coast hike &amp; swim.</strong> Hapé ceremony and spiritual shower.</div></div>
+              <div className="time-row"><div className="time">12:00 PM</div><div className="activity"><strong>Lunch &amp; ceremony preparation.</strong></div></div>
+              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Bodywork.</strong></div></div>
+              <div className="time-row"><div className="time">5:00 PM</div><div className="activity">Rest, journal, review intentions and questions for the Root.</div></div>
               <div className="time-row"><div className="time">7:30 PM</div><div className="activity"><strong>Ceremony.</strong></div></div>
             </div>
           </div>
 
           <div className="day">
-            <div className="day-marker"><div className="day-number">03</div><div className="day-label">Rest</div></div>
+            <div className="day-marker"><div className="day-number">03</div><div className="day-label">Silence</div></div>
             <div className="day-content">
               <h3>Day Three</h3>
-              <div className="day-title">Rest, Silence, <em>Stillness</em></div>
-              <div className="day-subtitle">Sleep is the greatest medicine. Members are accompanied throughout.</div>
+              <div className="day-title">Silence &amp; <em>Stillness</em></div>
+              <div className="day-subtitle">Rest and quiet. Members are accompanied throughout.</div>
               <div className="time-row"><div className="time">All Day</div><div className="activity"><strong>On-site care present.</strong> A guide is with members through the day and overnight.</div></div>
-              <div className="time-row"><div className="time">10:00 AM</div><div className="activity"><strong>Meditation.</strong> Recordings and seed sounds.</div></div>
-              <div className="time-row"><div className="time">12:15 PM</div><div className="activity">Vegetarian lunch.</div></div>
+              <div className="time-row"><div className="time">12:15 PM</div><div className="activity">Lunch.</div></div>
               <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Acupuncture.</strong></div></div>
               <div className="time-row"><div className="time">5:30 PM</div><div className="activity">Jeffersonian dinner.</div></div>
             </div>
@@ -149,12 +148,12 @@ export default function ReferenceItineraryPage() {
               <h3>Day Four</h3>
               <div className="day-title">Letting It <em>Land</em></div>
               <div className="day-subtitle">Meeting what moved, in the light of day.</div>
-              <div className="time-row"><div className="time">7:15 AM</div><div className="activity"><strong>Beach breath, meditation, yoga + swim.</strong> Held with Rachel.</div></div>
+              <div className="time-row"><div className="time">7:30 AM</div><div className="activity"><strong>Breathwork &amp; meditation.</strong></div></div>
               <div className="time-row"><div className="time">9:00 AM</div><div className="activity">Breakfast.</div></div>
-              <div className="time-row"><div className="time">11:00 AM</div><div className="activity"><strong>Personal meetings.</strong></div></div>
+              <div className="time-row"><div className="time">11:00 AM</div><div className="activity"><strong>1:1 meetings &amp; coaching.</strong></div></div>
               <div className="time-row"><div className="time">1:00 PM</div><div className="activity">Lunch.</div></div>
-              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Breath + sound bath with Dorothea, or Hoʻoponopono ceremony.</strong></div></div>
-              <div className="time-row"><div className="time">5:30 PM</div><div className="activity"><strong>Sharing circle</strong> + Jeffersonian dinner.</div></div>
+              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Breath &amp; sound bath with Dorothea.</strong></div></div>
+              <div className="time-row"><div className="time">5:30 PM</div><div className="activity"><strong>Sharing circle</strong> &amp; Jeffersonian dinner.</div></div>
             </div>
           </div>
 
@@ -164,26 +163,26 @@ export default function ReferenceItineraryPage() {
               <h3>Day Five</h3>
               <div className="day-title">The Second <em>Door</em></div>
               <div className="day-subtitle">Going deeper, held in the same care.</div>
-              <div className="time-row"><div className="time">7:15 AM</div><div className="activity"><strong>Breath &amp; yoga, or a Tunnels swim.</strong> Held with Rachel.</div></div>
-              <div className="time-row"><div className="time">9:00 AM</div><div className="activity">Light breakfast.</div></div>
+              <div className="time-row"><div className="time">7:30 AM</div><div className="activity"><strong>Breath &amp; yoga.</strong></div></div>
+              <div className="time-row"><div className="time">9:00 AM</div><div className="activity">Breakfast.</div></div>
+              <div className="time-row"><div className="time">10:00 AM</div><div className="activity"><strong>1:1 meetings &amp; coaching.</strong></div></div>
               <div className="time-row"><div className="time">12:00 PM</div><div className="activity">Lunch.</div></div>
-              <div className="time-row"><div className="time">2:00 PM</div><div className="activity"><strong>Creative or energy practice.</strong> Art, Reiki, craniosacral, or hypnotherapy, with Rachel.</div></div>
-              <div className="time-row"><div className="time">4:30 PM</div><div className="activity">Rest, journal, intentions.</div></div>
+              <div className="time-row"><div className="time">Afternoon</div><div className="activity">Rest, journal, nature, review intentions.</div></div>
               <div className="time-row"><div className="time">7:30 PM</div><div className="activity"><strong>Ceremony.</strong></div></div>
             </div>
           </div>
 
           <div className="day">
-            <div className="day-marker"><div className="day-number">06</div><div className="day-label">Rest</div></div>
+            <div className="day-marker"><div className="day-number">06</div><div className="day-label">Silence</div></div>
             <div className="day-content">
               <h3>Day Six</h3>
-              <div className="day-title">Rest, Silence, <em>Stillness</em></div>
+              <div className="day-title">Silence &amp; <em>Stillness</em></div>
               <div className="day-subtitle">The body integrates. Members are accompanied throughout.</div>
               <div className="time-row"><div className="time">All Day</div><div className="activity"><strong>On-site care present.</strong> A guide is with members through the day.</div></div>
-              <div className="time-row"><div className="time">12:15 PM</div><div className="activity">Vegetarian lunch.</div></div>
-              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Massage &amp; bodywork.</strong></div></div>
+              <div className="time-row"><div className="time">12:15 PM</div><div className="activity">Lunch.</div></div>
+              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Bodywork.</strong></div></div>
               <div className="time-row"><div className="time">5:15 PM</div><div className="activity">Jeffersonian dinner.</div></div>
-              <div className="time-row"><div className="time">7:00 PM</div><div className="activity"><strong>Yoga Nidra + sound.</strong> Held with Rachel.</div></div>
+              <div className="time-row"><div className="time">6:30 PM</div><div className="activity"><strong>Yoga Nidra.</strong></div></div>
             </div>
           </div>
 
@@ -192,13 +191,14 @@ export default function ReferenceItineraryPage() {
             <div className="day-content">
               <h3>Day Seven</h3>
               <div className="day-title">Back Into <em>the World</em></div>
-              <div className="day-subtitle">The body remembers. The land holds.</div>
-              <div className="time-row"><div className="time">7:15 AM</div><div className="activity"><strong>Gentle yoga, breathwork &amp; meditation.</strong></div></div>
+              <div className="day-subtitle">Celebrating what has moved through.</div>
+              <div className="time-row"><div className="time">7:15 AM</div><div className="activity"><strong>Yoga, breathwork &amp; meditation.</strong></div></div>
               <div className="time-row"><div className="time">9:00 AM</div><div className="activity">Breakfast.</div></div>
               <div className="time-row"><div className="time">11:00 AM</div><div className="activity"><strong>Land offering &amp; Hapé ceremony.</strong></div></div>
               <div className="time-row"><div className="time">12:30 PM</div><div className="activity">Lunch.</div></div>
-              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Breath + sound bath with Dorothea.</strong></div></div>
-              <div className="time-row"><div className="time">5:30 PM</div><div className="activity"><strong>Closing sharing circle.</strong> Final Jeffersonian dinner celebration, beach bonfire, and swim.</div></div>
+              <div className="time-row"><div className="time">3:00 PM</div><div className="activity"><strong>Breath &amp; sound bath with Dorothea.</strong></div></div>
+              <div className="time-row"><div className="time">5:30 PM</div><div className="activity"><strong>Closing sharing circle</strong> &amp; Jeffersonian dinner celebration.</div></div>
+              <div className="time-row"><div className="time">7:00 PM</div><div className="activity"><strong>Beach bonfire.</strong></div></div>
             </div>
           </div>
 
@@ -208,7 +208,7 @@ export default function ReferenceItineraryPage() {
               <h3>Day Eight</h3>
               <div className="day-title">Carrying It <em>Home</em></div>
               <div className="day-subtitle">The work is the life that follows.</div>
-              <div className="time-row"><div className="time">7:00 AM</div><div className="activity"><strong>Gentle swim or snorkel at Makua.</strong> Integrating new beliefs.</div></div>
+              <div className="time-row"><div className="time">7:00 AM</div><div className="activity"><strong>Gentle swim &amp; snorkel at Makua.</strong> Integrating new beliefs, weather permitting.</div></div>
               <div className="time-row"><div className="time">8:30 AM</div><div className="activity">Breakfast.</div></div>
               <div className="time-row"><div className="time">9:30 AM</div><div className="activity">Departures with aloha.</div></div>
             </div>
