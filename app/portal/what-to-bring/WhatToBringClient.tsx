@@ -39,7 +39,7 @@ const SACRED_ITEMS = [
 const IBOGA_ITEMS = [
   { key: "iboga-black", label: "Comfortable all-black outfit", note: "Worn for the first ceremony, honoring what is being released." },
   { key: "iboga-white", label: "Comfortable all-white outfit", note: "Worn for the second ceremony as a reflection of purification and rebirth." },
-  { key: "iboga-sleep-aid", label: "Sleep aid", note: "Iboga is a stimulant and sleep in the days following ceremony can be challenging. Consult with your doctor before arrival about a sleep aid or prescription support, and fill it in advance so you have it on hand." },
+  { key: "iboga-sleep-aid", label: "Sleep aid", note: "Iboga is a stimulant and sleep following ceremony can be challenging. This is by design and part of the process. We lean toward natural sleep support like herbal tea whenever possible. Some may need more, so consult with your healthcare provider before arrival about a sleep aid or prescription support, and fill it in advance so you have it on hand." },
 ];
 
 const ALL_ITEMS = [...PRACTICAL_ITEMS, ...SACRED_ITEMS, ...IBOGA_ITEMS];
