@@ -37,11 +37,20 @@ export async function middleware(request: NextRequest) {
   // Pages that are reachable without a session. Everything else on the site is
   // members-only — visitors get sent to /login. API routes and static assets
   // are excluded via the matcher below, not here.
+  //
+  // /setup-account (token-based password creation for newly approved members)
+  // and /pay/* (emailed, token-validated payment links) are deliberately
+  // session-less: a brand-new member has no session yet, so they must stay
+  // public even under the whole-site login wall, or the emailed setup and
+  // payment links bounce straight to /login.
   const isPublicPath =
     path === "/login" ||
     path.startsWith("/auth/") ||
     path === "/auth" ||
-    path === "/preview-logout";
+    path === "/preview-logout" ||
+    path === "/setup-account" ||
+    path === "/pay" ||
+    path.startsWith("/pay/");
 
   if (!user && !isPublicPath) {
     // Front-end-only access: a signed, HTTP-only cookie that lets an approved
