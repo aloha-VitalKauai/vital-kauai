@@ -139,8 +139,22 @@ export const SAFETY_AGREEMENT_SECTIONS: AgreementSection[] = [
     ],
   },
   {
-    id: "general-liability",
+    id: "land-and-water",
     number: "10",
+    heading: "The Land, the Ocean, and the Natural Environment",
+    body: [
+      "Vital Kauaʻi is held on wild, living land on the island of Kauaʻi, near the ocean, rivers, and forest trails. These places carry their own beauty and their own power, and conditions here shift with the weather, the tides, and the season in ways no one governs. Time on the land and in the water is part of what makes this place what it is, and it is entered as a sovereign adult, at your own choice.",
+    ],
+    items: [
+      "You understand that Vital Kauaʻi is set on natural, undeveloped land whose conditions include uneven ground, streams and waterfalls, cliffs and rocks, changing weather, and the ordinary presence of wildlife. You move through it with awareness and care.",
+      "You understand that the ocean and fresh water carry serious inherent risk, including strong currents, shore break, surf, and the risk of drowning, and that conditions change quickly and remain outside anyone's control.",
+      "You enter any hiking, swimming, ocean or river time, excursion, or exploration as a sovereign adult at your own choice and risk, whether it is offered by Vital Kauaʻi, accompanied by staff, or chosen freely on your own time. You remain responsible for your own decisions, limits, and wellbeing.",
+      "You release Vital Kauaʻi Church, its founders, practitioners, stewards, staff, and affiliates from claims of liability arising from these activities and from the natural condition of the land and water, except in cases of gross negligence as defined by law.",
+    ],
+  },
+  {
+    id: "general-liability",
+    number: "11",
     heading: "General Liability and Acknowledgment of Risk",
     body: [
       "Voluntary participation in plant-medicine ceremony carries inherent physical, mental, emotional, and spiritual risk. By signing below, you acknowledge and accept that risk.",
@@ -153,7 +167,7 @@ export const SAFETY_AGREEMENT_SECTIONS: AgreementSection[] = [
   },
   {
     id: "psycho-spiritual-support",
-    number: "11",
+    number: "12",
     heading: "Psycho-Spiritual Journey Support",
     body: [
       "Vital Kauaʻi offers the option of an additional facilitator present as a neutral witness during the medicine ceremony — a person whose role is to hold space, offer reflective questions when invited, and bear witness, without directing or interfering with the unfolding experience. This support is optional.",
