@@ -472,10 +472,10 @@ export const WEEKS = [
       {
         key: 'a8',
         color: 'blue',
-        text: 'Review your arrival packet',
-        note: 'Everything you need for the days right before ceremony, in one place.',
+        text: 'Review your Medical Disclaimer & Risk Acknowledgment',
+        note: 'A final read-through before ceremony, so the risks and responsibilities you carry are clear and freely chosen.',
         links: [
-          { text: 'Review your arrival packet', href: '/portal/arrival-packet' },
+          { text: 'Review your Medical Disclaimer & Risk Acknowledgment', href: '/portal/medical-disclaimer' },
         ],
       },
       {
