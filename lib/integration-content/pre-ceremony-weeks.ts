@@ -322,7 +322,7 @@ export const WEEKS = [
     carryForward: 'You looked at the shadow. You named what you\'ve been avoiding. That took courage. This week the work moves outward, into your relationships, your home, and the people who will hold you from a distance while you\'re in ceremony.',
     reentry: { strong: 'Arriving at this week without having done Week 4\'s journaling?', text: ' Do one prompt from Week 4, just one, before you move forward. The shadow work and the relational work are connected. Ten minutes of Week 4 journaling is where to begin.' },
     sub: 'Aloha is mutual respect, kindness, and harmony, often interpreted as the “presence of breath” or “breath of life.” It is the alignment of mind and heart. It is how you meet a stranger, how you care for the land, how you hold the people closest to you, and how you return to yourself.\n\nThe Hawaiian teaching holds that to love is to be happy with: to be with what is, with who is, exactly as they are. Without trying to fix, change, or rearrange. This is the practice of relationship.',
-    video: { label: 'A Message from Rachel & Josh · Week 5', text: 'In this week’s video, Rachel and Josh share what Aloha has meant in their own lives and how it has shaped the way they show up for each other and for this community.' },
+    video: { label: 'A Message from Rachel & Josh · Week 5', text: 'Aloha is more than a greeting. It’s the alignment of mind and heart, the quiet return to love, peace, and compassion. This week we explore the hṛdaya, the spiritual heart, with a heart-breath meditation to rest attention there. We look at what pulls us from love, the pull of fear, and how truth clears the way back. The throughline is simple: honesty is the doorway, and aloha is what remains.', url: 'https://www.youtube.com/embed/9NjMfG9zVow' },
     box: { type: 'info', label: 'Why the relational field is the foundation of your return', text: 'The relational preparation you do this week is a structural protection for integration. The weeks and months after ceremony are when the insights are tender and the old world is asking you to return to who you were. The relational preparation you do this week is a structural protection against that pull. Share the Support Person Guide. Have the real conversations. Let your circle know you\'re asking for something from them, and be specific about what.' },
     actionLabel: 'Actions this week, 3 only',
     actions: [
@@ -472,10 +472,10 @@ export const WEEKS = [
       {
         key: 'a8',
         color: 'blue',
-        text: 'Review your arrival packet',
-        note: 'Everything you need for the days right before ceremony, in one place.',
+        text: 'Review your Medical Disclaimer & Risk Acknowledgment',
+        note: 'A final read-through before ceremony, so the risks and responsibilities you carry are clear and freely chosen.',
         links: [
-          { text: 'Review your arrival packet', href: '/portal/arrival-packet' },
+          { text: 'Review your Medical Disclaimer & Risk Acknowledgment', href: '/portal/medical-disclaimer' },
         ],
       },
       {
