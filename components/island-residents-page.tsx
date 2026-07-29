@@ -101,15 +101,16 @@ export function IslandResidentsPage() {
       <section className={styles.section}>
         <div className={styles.sectionInner}>
           <p className={styles.lead}>
-            Transformation arrives right where you are. If you live on Kauaʻi and feel the
-            pull of this work, we walk it with you. Six weeks of preparation, a deeply held
-            Iboga ceremony, and six weeks of integration. Somatic practice and guidance,
-            breathwork, energy work, and our attuned presence support you throughout.
+            If you live on Kauaʻi and feel the pull of this work, transformation
+            happens in your home environment.
           </p>
           <p className={styles.bodyText}>
-            We hold a quiet circle of island residents who seek the depth of a Vital Kauaʻi
-            journey without leaving home. Sessions happen in your space. The container is just
-            as held.
+            This is intimate work. We take the time to know you: your hopes, fears, and
+            what you most deeply long for. Whether you want to expand your creativity,
+            deepen your spiritual connection, reset old habits that no longer serve you,
+            or move through grief and heal old wounds, we hold that vision alongside you.
+            Our preparation, ceremony, and deep integration work support you in becoming
+            your most aligned, vital self.
           </p>
           <p className={styles.bodyText}>
             If you are local and something in you is ready, reach out.
