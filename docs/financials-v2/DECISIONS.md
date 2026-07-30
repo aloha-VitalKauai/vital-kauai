@@ -717,9 +717,9 @@ Table constraints make the intermediate states unreachable independently: `(reso
 ---
 
 ## D-068 — `INSERT` is a protected transition wherever `UPDATE` is
-**Date:** 2026-07-29 · **Status:** Approved · **Completes D-059, D-064 and D-067**
+**Date:** 2026-07-29 · **Status:** Approved · **Completes D-059, D-064 and D-067** · **Predicate corrected by D-070**
 
-**Decision.** `service_role` loses table-wide `INSERT` on `finance.reconciliation_exceptions` and `finance.reconciliation_runs`, replaced by column-scoped grants that exclude every protected lifecycle column. Two `BEFORE INSERT` triggers enforce the same rule independently of privileges: a new exception must have `resolution_status = 'open'` with all nine resolution, quarantine and release columns `NULL`; a new run must have `approved_by`, `approved_at` and `approval_note` all `NULL`. `authorized_by_run_id` remains insertable and is validated against a genuinely approved dry run. The resolution biconditional is completed with `(resolution_status = 'open') = (resolution_note IS NULL)`.
+**Decision.** `service_role` loses table-wide `INSERT` on `finance.reconciliation_exceptions` and `finance.reconciliation_runs`, replaced by column-scoped grants that exclude every protected lifecycle column. Two `BEFORE INSERT` triggers enforce the same rule independently of privileges: a new exception must have `resolution_status = 'open'` **and the remaining eight** resolution, quarantine and release columns `NULL` (`quarantined_at`, `quarantine_reason`, `released_at`, `released_by`, `release_note`, `resolved_at`, `resolved_by`, `resolution_note`) — `resolution_status` is itself protected, is `NOT NULL` with default `'open'`, and so is asserted rather than required `NULL`; a new run must have `approved_by`, `approved_at` and `approval_note` all `NULL`. `authorized_by_run_id` remains insertable and is validated against a genuinely approved dry run. The resolution biconditional is completed with `(resolution_status = 'open') = (resolution_note IS NULL)`.
 
 **Rationale.** Revoking `UPDATE` protects a transition only if the row cannot be **created** already in the destination state. With table-wide `INSERT`, `service_role` could insert an exception already `resolved` with an arbitrary resolver and backdated timestamp, already quarantined without reaching the three-failure threshold, or already released — and could insert a run already carrying `approved_by`, `approved_at`, `approval_note` and a completed report, then cite it through `authorized_by_run_id`. **The reconciliation job could manufacture its own authorization**, with `finance.approve_dry_run()` never called and the freeze trigger — which fires on `UPDATE` and keys on `OLD.approved_at` — never involved. Every guarantee D-059, D-064 and D-067 established was reachable around, by the one role that runs unattended.
 
@@ -730,10 +730,33 @@ The trigger is the load-bearing control and the grant is defence in depth, not t
 ---
 
 ## D-069 — Agreement creation requires its initial lifecycle event, enforced at commit
-**Date:** 2026-07-29 · **Status:** Approved
+**Date:** 2026-07-29 · **Status:** Approved · **Insertion order corrected by D-071**
 
 **Decision.** A `DEFERRABLE INITIALLY DEFERRED` constraint trigger requires every `finance.agreements` row to have exactly one `agreement_lifecycle_events` row with `from_status IS NULL`, checked at commit.
 
-**Rationale.** Found by the `INSERT`-bypass audit that B-69 and B-70 prompted. §4 claimed "no agreement can exist without a lifecycle" and §6 claimed current lifecycle "is never `NULL`", but both rested on everyone using `finance.create_agreement()` — while `service_role` holds `INSERT` and the PR 2 import legitimately creates agreements directly. A direct insert would leave `v_agreement_lifecycle` returning nothing for that agreement, quietly falsifying two stated invariants. Deferring to commit is what allows the agreement and its event to be inserted in either order within one transaction while still making the pair mandatory.
+**Rationale.** Found by the `INSERT`-bypass audit that B-69 and B-70 prompted. §4 claimed "no agreement can exist without a lifecycle" and §6 claimed current lifecycle "is never `NULL`", but both rested on everyone using `finance.create_agreement()` — while `service_role` holds `INSERT` and the PR 2 import legitimately creates agreements directly. A direct insert would leave `v_agreement_lifecycle` returning nothing for that agreement, quietly falsifying two stated invariants. Deferring to commit allows the agreement row to survive the instant between its own insert and its event's insert, without which the pair could not be created at all. It does **not** permit child-first insertion: `agreement_lifecycle_events.agreement_id` carries a non-deferrable foreign key to `agreements(id)`, and the transition trigger locks the parent, so the executable sequence is agreement first, then its initial event, then commit. The foreign key is deliberately left non-deferrable rather than relaxed to support an order nothing needs.
 
 **Audit result.** All nine tables were checked for this class. Three were genuinely bypassable — `agreements`, `reconciliation_exceptions`, `reconciliation_runs` — and all three are fixed. The remaining six are not, and the distinction is stated in ARCHITECTURE §15: a transition is bypassable at `INSERT` exactly when it is gated **against** a role that also holds `INSERT`. Where `service_role` legitimately owns every transition on a table, inserting a row in a later state grants it nothing it does not already hold.
+
+
+---
+
+## D-070 — The exception `INSERT` predicate asserts `'open'` and requires eight NULLs
+**Date:** 2026-07-29 · **Status:** Approved · **Corrects D-068**
+
+**Decision.** The `BEFORE INSERT` trigger on `finance.reconciliation_exceptions` raises unless `resolution_status = 'open'` **and** the remaining **eight** protected columns are `NULL`: `quarantined_at`, `quarantine_reason`, `released_at`, `released_by`, `release_note`, `resolved_at`, `resolved_by`, `resolution_note`. The column-scoped `INSERT` grant continues to exclude all **nine**, so the database default supplies `'open'`.
+
+**Rationale.** D-068 said a new exception must have `resolution_status = 'open'` *and* "all nine protected columns `NULL`" — but `resolution_status` is itself one of the nine. The predicate therefore demanded that one column be `'open'` and `NULL` simultaneously, which is unsatisfiable, so **every exception insert would have failed** and the queue would never have received a row. The same class as B-63's backstop: a rule that forbids the invalid state and the valid one together.
+
+**Consequence.** The grant and the trigger deliberately differ in scope. The grant excludes `resolution_status` so no writer can choose it; the trigger asserts its value rather than its absence. Nine excluded, one asserted, eight required `NULL`.
+
+---
+
+## D-071 — Agreement and initial event insert parent-first; deferral is not reordering
+**Date:** 2026-07-29 · **Status:** Approved · **Corrects D-069**
+
+**Decision.** The executable sequence is: insert the agreement, insert its initial `draft` lifecycle event in the same transaction, commit; the deferred constraint trigger then verifies exactly one initial event. The foreign key from `agreement_lifecycle_events.agreement_id` to `agreements(id)` remains **non-deferrable**, and the transition trigger is unchanged.
+
+**Rationale.** D-069 claimed the two rows could be inserted "in either order". They cannot: the foreign key is non-deferrable and is therefore checked immediately, so a child-first insert fails before deferral is ever consulted, and the transition trigger separately locks and validates the parent row. What deferral actually buys is narrower and still necessary — it lets the *completeness* check wait until commit, so the agreement row is not rejected in the instant between its own insert and its event's insert. Without it the pair could not be created at all.
+
+**Consequence.** The foreign key is deliberately left non-deferrable and the transition trigger is not redesigned, because no caller needs child-first insertion and relaxing either would weaken a check to support an order nothing uses. Test 133b asserts child-first is rejected, so the distinction is enforced rather than merely described.

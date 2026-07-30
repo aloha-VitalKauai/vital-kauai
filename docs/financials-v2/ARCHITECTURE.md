@@ -187,7 +187,18 @@ The row is immutable after insert, carries no amount (§5) and no status (§6).
 
 **Creation.** Agreements are created by `finance.create_agreement()`, a `SECURITY DEFINER` function that inserts the agreement **and its initial lifecycle event** in one transaction (§6).
 
-**That guarantee is enforced by the database, not by the function.** `service_role` legitimately inserts agreements during the PR 2 import, so a direct `INSERT` is a supported path — and a direct `INSERT` alone would leave an agreement with no lifecycle event, making `v_agreement_lifecycle` return nothing and contradicting §6's claim that current lifecycle is never `NULL`. A **`DEFERRABLE INITIALLY DEFERRED` constraint trigger** therefore checks **at commit** that every agreement has exactly one event with `from_status IS NULL`. Deferral is what lets the two inserts happen in either order within one transaction while still making the pair mandatory. No agreement can exist without a lifecycle, by any path.
+**That guarantee is enforced by the database, not by the function.** `service_role` legitimately inserts agreements during the PR 2 import, so a direct `INSERT` is a supported path — and a direct `INSERT` alone would leave an agreement with no lifecycle event, making `v_agreement_lifecycle` return nothing and contradicting §6's claim that current lifecycle is never `NULL`. A **`DEFERRABLE INITIALLY DEFERRED` constraint trigger** therefore checks **at commit** that every agreement has exactly one event with `from_status IS NULL`.
+
+The executable sequence is **parent first**, in one transaction:
+
+1. Insert the agreement.
+2. Insert its initial `draft` lifecycle event.
+3. Commit.
+4. At commit, the deferred trigger verifies exactly one initial event exists.
+
+**The order is fixed, not free.** `agreement_lifecycle_events.agreement_id` references `agreements(id)` with a **non-deferrable** foreign key, so PostgreSQL checks it immediately — a child-first insert fails on the FK before any deferral could apply. The transition trigger also locks and validates the parent row, which likewise requires the parent to exist. Deferral buys exactly one thing: it lets the *completeness* check wait until commit, so the agreement row is not rejected in the instant between step 1 and step 2. It does not, and is not intended to, permit child-first insertion.
+
+The foreign key is deliberately **not** made deferrable, and the transition trigger is not redesigned, to support an insertion order nothing needs. No agreement can exist without a lifecycle, by any path.
 
 ### Contribution applicability
 
@@ -814,7 +825,14 @@ first_run_id, last_run_id, consecutive_failure_runs
 
 `id` and `resolution_status` take their defaults; `dedup_key` is generated. **The nine protected lifecycle columns are excluded** — `quarantined_at`, `quarantine_reason`, `released_at`, `released_by`, `release_note`, `resolution_status`, `resolved_at`, `resolved_by`, `resolution_note`.
 
-**2. A `BEFORE INSERT` trigger enforces the same thing independently of privileges.** It raises unless the new row has `resolution_status = 'open'` and all nine protected columns `NULL`. The trigger is the load-bearing control: a grant can be widened by a later migration, or bypassed by a superuser or table owner, and the guarantee has to survive that. The grant makes the mistake unlikely; the trigger makes it impossible.
+**2. A `BEFORE INSERT` trigger enforces the same thing independently of privileges.** It raises unless:
+
+- `resolution_status = 'open'`, **and**
+- the remaining **eight** protected columns are `NULL` — `quarantined_at`, `quarantine_reason`, `released_at`, `released_by`, `release_note`, `resolved_at`, `resolved_by`, `resolution_note`.
+
+**The split matters.** `resolution_status` is one of the nine protected columns, but it is `NOT NULL` with a default of `'open'`, so a predicate demanding "all nine `NULL`" would require it to be `'open'` and `NULL` at once — unsatisfiable, and every insert would fail. The grant still excludes all nine (so the database default supplies `'open'`); the trigger asserts `'open'` for that one column and `NULL` for the other eight.
+
+The trigger is the load-bearing control: a grant can be widened by a later migration, or bypassed by a superuser or table owner, and the guarantee has to survive that. The grant makes the mistake unlikely; the trigger makes it impossible.
 
 **What still works unchanged:** ordinary exception creation, the deduplicating `ON CONFLICT` upsert (which touches only `last_detected_at`, `occurrence_count`, `detail`, `last_run_id` and `consecutive_failure_runs`), streak updates, and all three lifecycle functions — which are `SECURITY DEFINER` and therefore act with the function owner's rights, not the caller's grants.
 
