@@ -83,7 +83,9 @@ Any behaviour observed in those files during the audit describes the working tre
 
 **[INFERRED] Whether RLS is enabled at all on those tables.** It cannot be determined from the repository.
 
-**[INFERRED] `members.profile_id` uniqueness, and the population of rows where `profile_id IS NULL` or `id <> profile_id`.** These block one narrow implementation detail in PR 1 — see ARCHITECTURE §2.
+**[VERIFIED — resolved 2026-07-29] `members.profile_id` uniqueness and population.** Confirmed read-only against `Vital-Kauai-prod`: `uq_members_profile_id` already exists (`UNIQUE (profile_id) WHERE profile_id IS NOT NULL`); 0 duplicate groups; 0 rows with `profile_id IS NULL`; **2 of 17 rows with `id <> profile_id`**; PostgreSQL 17.6. See D-038. This was the last item blocking PR 1's identity work.
+
+**[VERIFIED] `public.is_founder()` is `SECURITY DEFINER` with no `SET search_path`.** Live definition confirmed 2026-07-29: `SELECT EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role = 'founder')`. Suitable for V2's purpose, but the missing `search_path` is a privilege-escalation shape that V2 inherits — see `HANDOFF.md` risk R-5.
 
 **[INFERRED] The definitions of `cohort_margin_summary` and `member_financial_overview`.**
 
@@ -106,7 +108,7 @@ Because so much of the legacy system is unreadable from the repository, **shadow
 | Orphan pending rows | Checkout attempts modelled separately from the ledger |
 | Multi-use tokens | Atomic consumption at session creation |
 | Allocation race | Ledger invariants with row locking |
-| Security in app code only | RLS forced on all eight tables, versioned `is_founder()`, no hardcoded UUIDs |
+| Security in app code only | RLS forced on all nine tables, versioned `is_founder()`, no hardcoded UUIDs |
 | Email-based member join | `finance.current_member_id()` via `members.profile_id`; email join forbidden |
 | Dollars-versus-cents drift | Integer cents throughout, no floating point |
 

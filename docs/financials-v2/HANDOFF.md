@@ -8,14 +8,14 @@
 ## Current status
 
 **Phase:** PR 0 — architecture and project-control documents.
-**State:** **PR 0 is not approved.** Documents written and revised across seven review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), a first external review of PR #838 (7 findings, B-3 … B-9), a clean-context re-verification (1 blocker, 6 minors), a second external review (6 findings, B-10 … B-15), a third external review at the Stripe boundary (6 findings, B-16 … B-21), and a PR 1 executability review (9 blockers, 8 minors — verdict NOT READY, B-22 … B-30). All resolved. Awaiting independent re-review.
+**State:** **PR 0 is not approved.** Documents written and revised across eight review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), a first external review of PR #838 (7 findings, B-3 … B-9), a clean-context re-verification (1 blocker, 6 minors), a second external review (6 findings, B-10 … B-15), a third external review at the Stripe boundary (6 findings, B-16 … B-21), a PR 1 executability review (9 blockers, 8 minors — B-22 … B-30), and an operational readiness review (7 blockers, 6 minors — **zero of twenty operational points defined**, B-31 … B-43). All resolved. Awaiting independent re-review.
 
 The clean-context pass caught a defect introduced by the B-7 fix itself: L12 originally defined "provider-originated" as `source='stripe' AND provider_object_id IS NOT NULL`, which contradicted L1 and D-020 — a Stripe payment imported without a charge-object id would have demanded a human actor that no document assigned. L12 now keys on `source` alone.
 
 | PR | Outcome | State |
 |---|---|---|
 | 0 | Architecture and project-control documents | **In review** |
-| 1 | `finance` schema foundation | Blocked — B-1, B-2 |
+| 1 | `finance` schema foundation | Blocked — **B-2 only** (B-1 closed by D-038) |
 | 2–9 | See [PR_PLAN.md](PR_PLAN.md) | Not started |
 
 ## Next action
@@ -24,18 +24,39 @@ Independent reviewer confirms the PR 0 documents contain **no unresolved contrad
 
 ## Blockers
 
-Both must clear before PR 1 begins.
+**B-2 is the only remaining blocker.** B-1 is closed.
 
-### B-1 — `members.profile_id` uniqueness is unverified (blocks a PR 1 migration detail)
-The identity **design** is settled: `finance.agreements.member_id` references `public.members(id)`, and the authenticated member resolves through `members.profile_id = auth.uid()` inside `finance.current_member_id()` (D-015). What remains unverified is whether `members.profile_id` carries a unique constraint — required for that function to be single-valued — and how many production rows have `profile_id IS NULL` or `id <> profile_id`. The base schema is not in version control, so this must be confirmed against the live database.
+### B-1 — CLOSED by live evidence (D-038)
+Verified read-only against `Vital-Kauai-prod` on 2026-07-29. `uq_members_profile_id` **already exists** (`UNIQUE (profile_id) WHERE profile_id IS NOT NULL`); 0 duplicate groups; 0 rows with `profile_id IS NULL`; **2 of 17 rows with `id <> profile_id`**; PostgreSQL 17.6. `finance.current_member_id()` is single-valued today and **PR 1 adds no index**.
 
-**Blocks:** creation of `finance.current_member_id()` and every member RLS policy depending on it. It does not block the architecture.
-**Resolution:** PR 1 confirms both, adds a unique index after verifying no duplicates if none exists, and records the answer as a superseding `DECISIONS.md` entry.
+The two divergent rows validate D-015 against production: 12% of members would silently return no financial data under a `member_id = auth.uid()` policy.
 
 ### B-2 — PR 0 review not yet complete (blocks PR 1)
 Per the working agreement, implementation waits on reviewer confirmation that the documents contain no unresolved contradiction in the financial model. **PR 0 is explicitly not approved.**
 
-### B-22 … B-30 — PR 1 executability review (resolved, pending re-review)
+### B-31 … B-43 — Operational readiness review (resolved, pending re-review)
+
+An eighth review asked what happens when reconciliation first runs against real Stripe data, finds ~4,000 mismatches, is interrupted, overlaps a scheduled run, hits 429s and timeouts, and is rerun. **Zero of twenty operational points were defined.**
+
+| ID | Finding | Resolution |
+|---|---|---|
+| B-31 | Live PR description stale — revision 3, 73 tests, D-032, five passes | Rewritten in full against the final documents and SHA |
+| B-32 | Test 31 stated L11 as "event **or session**" with no session join path; test 74 duplicated it correctly | Single event-based spec at 31; duplicate removed; count re-verified by script |
+| B-33 | Exceptions had no dedup identity — ~4,000 rows re-inserted every run | `dedup_key` + partial unique index on open rows, upsert-on-rediscovery, occurrence counting (D-040) |
+| B-34 | The job had nowhere to store a cursor, run id or lock | `finance.reconciliation_runs` as table 9, created in PR 1 (D-041) |
+| B-35 | "Never self-corrects" contradicted reconciliation issuing reversals | Ingest/correct boundary: may ingest verified provider money, may never reverse or resolve (D-039) |
+| B-36 | `service_role` could not update an exception, so recurrence could only re-insert | Column-scoped `UPDATE` grant added |
+| B-37 | "Reconciliation matching" was a ledger write path defined by a phrase | Identity-only matching, no heuristics (D-042) |
+| B-38 | PR 3 had no acceptance tests | 21 added |
+| B-39 | Exhaustive pagination required only for Refunds and Sessions | Required for all four object types |
+| B-40 | No `exception_kind` for operational failure | `reconciliation_run_failed` added |
+| B-41 | Retention job scheduled with no operational spec | Covered by §10a's batch and concurrency rules |
+| B-42 | PR template asked nothing a scheduled job would fail | Re-entrancy, retry and observability questions added |
+| B-43 | Reviewer remit had no re-entrancy coverage | Added to the reviewer agent and skill |
+
+All twenty operational points are now specified in ARCHITECTURE §10a.
+
+### B-22 … B-30 — PR 1 executability review (resolved)
 
 A clean-context review asked one question: *could a competent engineer write PR 1's migration and tests from these documents alone?* The answer was **no** — the documents read as complete while being unbuildable. Nine blockers, six of them pure documentation gaps.
 
@@ -80,7 +101,7 @@ All seven are resolved and listed here for the re-reviewer to confirm.
 
 | ID | Finding | Resolution |
 |---|---|---|
-| B-3 | `PR_PLAN` said nine enums and omitted `v_agreement_lifecycle` from PR 1's contents | Enum and view counts now stated consistently in both documents (twelve enums, five views after B-15); test 4 covers both |
+| B-3 | `PR_PLAN` said nine enums and omitted `v_agreement_lifecycle` from PR 1's contents | Enum and view counts now stated consistently in both documents (thirteen enums, nine tables, five views as of B-34); test 4 covers both |
 | B-4 | A reversed refund left the member marked `refunded` | `refunded_cents` counts **unreversed** refunds only; test 65 |
 | B-5 | Payment-link design assumed Stripe and Postgres share one transaction | Replaced by a persisted three-phase attempt with a deterministic Stripe idempotency key and a sweeper (D-024) |
 | B-6 | Refund statuses, failed refunds and list pagination unmodelled | Only `succeeded` refunds enter the ledger; regression raises an exception; enumeration is paginated (D-025) |
@@ -103,6 +124,14 @@ That branch carries 32 modified files, roughly 12 untracked files, and 7 unpushe
 ### R-3 — Legacy baseline schema is un-versioned
 The legacy money tables exist only in the live project. V2 is unaffected by design (D-001), but legacy behaviour cannot be fully reviewed from the repository. **Shadow comparison in PRs 3 and 4 therefore carries more evidentiary weight than code reading** — behaviour is settled by observed figures, not inference.
 
+### R-5 — `public.is_founder()` has no `SET search_path`
+Its live definition is `SECURITY DEFINER` without a pinned `search_path` — the shape ARCHITECTURE §9 forbids for every V2 function. A caller able to influence `search_path` may resolve `public.user_roles` to an object they control. V2 inherits this exposure because every founder policy calls it.
+
+**Fix:** `ALTER FUNCTION public.is_founder() SET search_path = pg_catalog, public;` — a one-line change to an existing object, **outside PR 0's documentation-only scope**. Not owned by Financials V2, but V2 depends on it.
+
+### R-6 — Duplicate index on `members.profile_id`
+Both `idx_members_profile_id` and `uq_members_profile_id` exist with the same predicate; the non-unique one is redundant. Harmless, minor write cost. Not V2's to fix.
+
 ### R-4 — Variance is expected at import
 V2 figures will differ from currently displayed figures wherever a legacy `adjust-collected` adjustment was applied (D-003), and historic refunds now import too (D-021). This is intended. The founder should expect some numbers to move when the shadow page first appears; PR 2's variance report explains each one.
 
@@ -117,7 +146,7 @@ Noticed during audit or design, deliberately not folded into any current PR.
 
 ## Decisions carried forward
 
-D-001 … D-037 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**, whose recovery mechanism is in turn **corrected by D-028**. **D-026's system-actor mechanism is corrected by D-032.** **D-028 is refined by D-035**, **D-029 by D-034**, and **D-013's founder-predicate clause is superseded by D-037**. No decision is open. See [DECISIONS.md](DECISIONS.md).
+D-001 … D-043 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**, whose recovery mechanism is in turn **corrected by D-028**. **D-026's system-actor mechanism is corrected by D-032.** **D-028 is refined by D-035**, **D-029 by D-034**, and **D-013's founder-predicate clause is superseded by D-037**. No decision is open. See [DECISIONS.md](DECISIONS.md).
 
 ## Working agreement
 

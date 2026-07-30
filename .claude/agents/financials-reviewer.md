@@ -36,7 +36,9 @@ You come to this fresh. Read `docs/financials-v2/ARCHITECTURE.md`, `DECISIONS.md
 - Every aggregate is `COALESCE`d. `SUM` over zero rows returns `NULL`.
 - Stripe-confirmed and founder-recorded money remain distinguishable by column, not convention.
 - Integer cents throughout; no floating point; no negative or `NULL` amount can reach a payment provider.
-- Ledger invariants L1–L12 **and L8b** match the migration's actual constraints — not the comments claiming them.
+- Ledger invariants L1–L13 **and L3b, L8b** match the migration's actual constraints — not the comments claiming them.
+
+**Re-entrancy**, for any scheduled or background work. Is it safe to interrupt and rerun? Is there a durable cursor, a single-flight guard, a bounded work limit, rate-limit and failure handling, and dedup by identity rather than check-then-insert? Are runs observable, and is failure distinguishable from success? A job that touches money and cannot be safely rerun is a blocking finding, however correct its logic.
 
 **Evidence.** Does the PR contain real test output, or a claim of test output? Does the output correspond to the tests the brief required? Are failures disclosed?
 

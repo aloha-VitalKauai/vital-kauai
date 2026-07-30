@@ -60,7 +60,7 @@ Two further distinctions are first-class, not metadata conventions:
 ### System
 
 - Ingest Stripe webhooks exactly once, and remain correct under duplicate delivery, out-of-order delivery, concurrent processing, and replay after failure.
-- Reconcile the ledger against Stripe on a schedule, raising exceptions rather than silently self-correcting.
+- Reconcile the ledger against Stripe on a schedule. Reconciliation may ingest provider payments and refunds it has verified and attributed — the same rule as the webhook path, reached by polling rather than push. It may **never** issue a reversal or resolve an exception; those are founder judgements (ARCHITECTURE §10a).
 - Never present a stale financial figure — every displayed number is computed at read time.
 - Never send a negative amount to a payment provider.
 
@@ -72,6 +72,7 @@ Two further distinctions are first-class, not metadata conventions:
 | **Auditability** | Every financial fact carries who, when, and why. Every amendment and lifecycle transition is attributed. |
 | **Determinism** | Contribution and payment state resolve through total orderings — never ambiguous, never dependent on row insertion order alone. |
 | **Reproducibility** | The entire schema is created from tracked migrations. A fresh database reset produces a working system. |
+| **Re-entrancy** | Every scheduled job is safe to interrupt, resume and rerun. A rerun over an already-processed window creates nothing new. |
 | **Isolation** | Member A cannot read Member B's financial data. Proven by automated test, not assumed. |
 | **Precision** | Integer cents only. No floating-point arithmetic in any financial path. |
 

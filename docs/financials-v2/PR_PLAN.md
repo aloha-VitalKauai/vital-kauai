@@ -26,9 +26,9 @@
 
 ### PR 1 — `finance` schema foundation
 **Outcome:** The complete V2 schema exists, is fully constrained, is protected by RLS, exposes the canonical views, and is proven by automated database tests.
-**Contains:** `CREATE SCHEMA finance`; the **twelve** enum types; the eight tables; all `CHECK` constraints and constraint triggers; append-only enforcement triggers; RLS policies, grants and default privileges **including `service_role`**; `finance.current_member_id()` and `finance.create_agreement()` (founder authority reuses the existing `public.is_founder()`); the **five** views — `v_agreement_lifecycle`, `v_agreement_balances`, `v_agreement_balances_test`, `v_member_financials`, `v_journey_financials`; the full acceptance test suite.
+**Contains:** `CREATE SCHEMA finance`; the **thirteen** enum types; the **nine** tables; all `CHECK` constraints and constraint triggers; append-only enforcement triggers; RLS policies, grants and default privileges **including `service_role`**; `finance.current_member_id()` and `finance.create_agreement()` (founder authority reuses the existing `public.is_founder()`); the **five** views — `v_agreement_lifecycle`, `v_agreement_balances`, `v_agreement_balances_test`, `v_member_financials`, `v_journey_financials`; the full acceptance test suite.
 **Excludes:** application code, data import, any UI.
-**Blocked on:** confirming `members.profile_id` uniqueness and the population of rows where `profile_id IS NULL` or `id <> profile_id`, against the live database, recorded in `DECISIONS.md` (D-015). The identity design itself is settled.
+**Not blocked.** Live verification is complete (D-038): `uq_members_profile_id` already exists, there are no duplicates and no NULL `profile_id`, and PostgreSQL is 17.6. **PR 1 adds no index for this.**
 **Done when:** every test in "PR 1 acceptance tests" below passes on a fresh database.
 
 ### PR 2 — Legacy fact import and variance report
@@ -50,7 +50,35 @@
 **Attribution during this window:** session tagging does not exist until PR 6, so PR 3 writes ledger entries only for events it can attribute to a V2 agreement by **reconciliation matching**. Tag-based routing becomes primary from PR 6.
 **Expected signal:** `provider_without_ledger` exceptions for legacy-tagged charges are the intended shadow output during this phase, not errors.
 **Excludes:** any change to which webhook handles live sessions. No payment-flow cutover.
-**Done when:** duplicate, out-of-order, concurrent and replayed events are proven safe; a crash mid-processing is proven recoverable rather than stranded; and reconciliation raises exceptions rather than self-correcting.
+**Operational requirements:** the reconciliation job implements ARCHITECTURE §10a in full — window and overlap, initial lookback, durable cursor, page and batch sizes, resume via heartbeat, single-flight lock, exhaustive pagination for all four object types, 429/`Retry-After`/backoff, error classification, retry budget and quarantine, exception dedup, mode isolation, run counters, alert thresholds, dry-run first, maximum-work limits, and the may/may-not write boundary.
+
+**Done when:** duplicate, out-of-order, concurrent and replayed events are proven safe; a crash mid-processing is proven recoverable rather than stranded; and every PR 3 acceptance test below passes.
+
+#### PR 3 acceptance tests
+
+Integration tests against the Stripe test-mode API and a seeded database. Each is blocking.
+
+1. A run covers `[window_start, window_end)` with the stated settlement lag and 60-minute overlap; the window is recorded on the run row.
+2. Run #1 with an empty ledger uses the 90-day lookback; with a populated ledger it uses the earliest `occurred_at`.
+3. The cursor advances only at page boundaries; a run killed mid-page resumes from the last committed boundary and processes no object twice.
+4. A second concurrent run for the same `livemode` is refused; a test-mode and a live-mode run proceed together.
+5. A `running` run with a stale heartbeat is marked `abandoned` and its cursor is resumed under a new run id.
+6. Every object type paginates to exhaustion — a charge with more refunds than one page yields every refund.
+7. A 429 with `Retry-After` honours it; without it, backoff doubles with jitter and caps; the call succeeds within 8 attempts.
+8. A timeout and a connection reset are both retried as transient.
+9. A terminal 4xx on one object raises an exception and the run continues.
+10. An ambiguous provider response raises an exception and writes **nothing** to the ledger.
+11. Exceeding the per-run retry budget ends the run `failed` with the cursor intact, and the next run resumes.
+12. An object failing terminally in three consecutive runs is quarantined and flagged for manual review.
+13. Running twice over the same window creates no second exception and no second ledger entry.
+14. A live-mode run creates no test-mode row, and the reverse.
+15. Every counter on the run row matches the observed work.
+16. A shadow-phase `provider_without_ledger` volume does not alert; a 3× median spike, a `failed` run, a live `unattributable_payment`, and a 14-day-old open exception each do.
+17. `dry_run = true` writes no ledger entry and no exception, and still reports accurate counters.
+18. A run hitting the object, API-call or time ceiling ends `completed` with the cursor preserved.
+19. **Reconciliation never writes a `reversal`** — attempting one is rejected, and a `refund_status_regression` produces an exception only.
+20. A verified `succeeded` PaymentIntent with valid metadata is ingested; one without resolvable attribution raises `unattributable_payment` and is not ingested.
+21. No heuristic match occurs — an amount-and-timestamp coincidence with no identity or metadata match raises an exception rather than matching.
 
 ### PR 4 — Founder-only shadow/diff page
 **Outcome:** The founder can compare V2 figures against legacy figures side by side, and can see and resolve reconciliation exceptions. **This PR is founder-visible.**
@@ -95,13 +123,13 @@
 
 ## PR 1 acceptance tests
 
-All of the following must pass through automated database tests before PR 1 opens. Each is a blocking requirement. Every test maps to an invariant in `ARCHITECTURE.md`; the list grew from 29 to 82 across seven review passes, which added coverage for zero-row aggregates, live mode, the parent matrix, lifecycle initialisation, concurrency, invariants L1–L3, L3b and L11–L12, `service_role` privileges, the persisted checkout attempt, one-live-session enforcement per mode, validated session reuse, PaymentIntent metadata propagation, provenance mutual exclusion, system attribution, and reversed-refund accounting.
+All of the following must pass through automated database tests before PR 1 opens. Each is a blocking requirement. Every test maps to an invariant in `ARCHITECTURE.md`; the list grew from 29 to **87** across eight review passes, which added coverage for zero-row aggregates, live mode, the parent matrix, lifecycle initialisation, concurrency, invariants L1–L3, L3b and L11–L13, `service_role` privileges, the persisted checkout attempt, one-live-session enforcement per mode, validated session reuse, PaymentIntent metadata propagation, provenance mutual exclusion, system attribution, reversed-refund accounting, reconciliation run state, and exception dedup identity. **PR 3 carries its own 21 acceptance tests**, listed with that PR.
 
 ### Schema and reproducibility
 1. Migrations apply cleanly to a fresh database.
 2. *(reviewer check, not pgTAP)* Every `finance` object is created entirely from tracked migrations — nothing pre-existing is assumed.
 3. A complete Supabase reset succeeds end to end.
-4. All twelve enum types exist with exactly the values listed in ARCHITECTURE §1, and all five views exist.
+4. All thirteen enum types exist with exactly the values listed in ARCHITECTURE §1, all nine tables exist, and all five views exist.
 
 ### Append-only enforcement
 5. Ledger entries cannot be updated through normal roles.
@@ -139,7 +167,7 @@ All of the following must pass through automated database tests before PR 1 open
 29. **L2** — an `external_payment` is rejected without `external_method`, with no attribution, with `source <> 'external'`, with a non-positive amount, or with a parent. It is **accepted with `recorded_by_system` alone**, so a legacy-imported external payment needs no human actor.
 30. **L3** — a `refund` is rejected without `parent_entry_id`, with a positive amount, with `source='stripe'` and a NULL `provider_object_id`, or with `source='external'` and no `external_method`.
 30b. **L3b** — a `source='stripe'` refund is rejected when its parent is not a `stripe_payment`.
-31. **L11** — a ledger entry whose `livemode` disagrees with its originating event or session is rejected; external and imported entries are `livemode = true`.
+31. **L11** — a ledger entry whose `livemode` disagrees with the `finance.stripe_events` row named by its `origin_stripe_event_id` is rejected. An entry with a NULL `origin_stripe_event_id` is accepted, and external and imported entries are `livemode = true` with a NULL origin.
 32. **L12** — an entry with `source = 'external'`, or of `entry_type = 'reversal'`, is rejected with a blank `reason` or with no attribution. It is **satisfied by either** `recorded_by` or `recorded_by_system`, and rejected when **both** are set. A `stripe_payment` is accepted without either, **including when `provider_object_id` is NULL**, so an imported Stripe payment never demands a human actor.
 32b. `recorded_by_system` requires no `auth.users` row — a fresh database with zero Auth users can insert a `legacy_import` entry.
 32c. **L13** — a `source='stripe'` entry carrying `external_method` is rejected.
@@ -196,9 +224,16 @@ All of the following must pass through automated database tests before PR 1 open
 71. `finance.create_agreement()` raises for a non-founder, raises on blank reason, creates the agreement and its initial `draft` lifecycle event in one transaction, and raises rather than returning silently on a duplicate `(member_id, journey_id, purpose)`.
 72. Every transition in the ARCHITECTURE §6 graph is accepted and every transition outside it is rejected, including both terminal states.
 73. `payment_links` status CHECKs hold — `creating` without `claimed_at`, `consumed` without `consumed_by_session_id`, and `revoked` without `revoked_by` are each rejected.
-74. **L11** — a ledger entry whose `livemode` disagrees with its `origin_stripe_event_id` event is rejected; an entry with a NULL origin is accepted.
-75. Members have no `SELECT` on `agreement_lifecycle_events`, `payment_links`, `stripe_events` or `reconciliation_exceptions`.
-76. `service_role` `UPDATE` is column-scoped — an update to a column outside the granted list is rejected.
+74. Members have no `SELECT` on `agreement_lifecycle_events`, `payment_links`, `stripe_events` or `reconciliation_exceptions`.
+75. `service_role` `UPDATE` is column-scoped — an update to a column outside the granted list is rejected.
 
 ### Currency
-77. USD constraints hold — a non-USD agreement or ledger entry is rejected.
+76. USD constraints hold — a non-USD agreement or ledger entry is rejected.
+
+### Reconciliation state and exception identity
+77. `reconciliation_runs` rejects `window_end <= window_start`, and rejects a `running` row carrying `finished_at`.
+78. **Single flight** — a second `running` run for the same `livemode` is rejected, while a `running` test-mode run and a `running` live-mode run coexist.
+79. **Exception dedup** — inserting the same `(dedup_key, livemode)` while one is `open` conflicts; the upsert raises `occurrence_count`, advances `last_detected_at`, leaves `first_detected_at` unchanged, and creates no second row.
+80. A resolved exception does not block a new row for the same `dedup_key`; recurrence inserts a fresh row and the resolved row is preserved.
+81. The same `dedup_key` in different `livemode` yields two independent rows.
+82. `last_detected_at >= first_detected_at` is enforced.

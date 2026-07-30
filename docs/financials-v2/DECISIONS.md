@@ -143,7 +143,7 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 ## D-013 — Service-role access is not the authorization model for founder routes
 **Date:** 2026-07-29 · **Status:** Approved
 
-**Decision.** RLS is enabled and forced on all eight tables. Founder policies call the **existing `public.is_founder()`** — see D-037, which supersedes this clause; member policies use `finance.current_member_id()`. No hardcoded founder UUIDs. No client `UPDATE` or `DELETE` policies on append-only facts. Service-role access is confined to verified server infrastructure — webhook ingestion and reconciliation jobs.
+**Decision.** RLS is enabled and forced on all V2 tables (eight at the time of writing; nine since D-041). Founder policies call the **existing `public.is_founder()`** — see D-037, which supersedes this clause; member policies use `finance.current_member_id()`. No hardcoded founder UUIDs. No client `UPDATE` or `DELETE` policies on append-only facts. Service-role access is confined to verified server infrastructure — webhook ingestion and reconciliation jobs.
 
 **Rationale.** The audit found no RLS in the repository for any money table, every `/api/payments/*` route using a service-role client, and the one in-repo money-adjacent policy set inlining founder UUIDs across three policies. Security lived entirely in application code and was invisible to schema review.
 
@@ -404,3 +404,76 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 **Rationale.** A readiness review asked whether an engineer could write PR 1's migration from these documents alone, and the answer was no — nine blockers, six of them pure documentation gaps. Principles are not specifications: "versioned, no hardcoded UUIDs" is a prohibition, not a definition, and it left the founder predicate undefined while `public.is_founder()` already existed in the repository and was already used by live RLS. Defining a second predicate would have created exactly the drift this project exists to eliminate. L11 was separately unenforceable: it required ledger `livemode` to match "the originating event or session" while no column connected a ledger row to either.
 
 **Consequences.** PR 1 confirms `public.is_founder()`'s definition against the live database before relying on it. The application-layer `verifyFounder()` hardcoded-UUID path in `lib/auth/founder-check.ts` is not used by V2 and is recorded as a future item.
+
+
+---
+
+## D-038 — B-1 resolved by live evidence; PR 1 adds no index
+**Date:** 2026-07-29 · **Status:** Approved · **Closes B-1**
+
+**Decision.** `finance.current_member_id()` may be created as specified. PR 1 adds **no** unique index on `members.profile_id`.
+
+**Evidence.** Confirmed read-only against `Vital-Kauai-prod` on 2026-07-29; aggregates only, no member identifier selected, nothing created or altered.
+
+| Check | Result |
+|---|---|
+| Unique index on `members.profile_id` | **Already exists** — `uq_members_profile_id`, `UNIQUE (profile_id) WHERE profile_id IS NOT NULL` |
+| Duplicate non-null `profile_id` groups | 0; max 1 row per `profile_id` |
+| `profile_id IS NULL` | 0 of 17 |
+| `id <> profile_id` | **2 of 17** |
+| `members.profile_id` FK | `REFERENCES member_profiles(id) ON DELETE SET NULL` |
+| PostgreSQL | 17.6 |
+| `public.is_founder()` | `SELECT EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role = 'founder')`, `STABLE SECURITY DEFINER` |
+
+**Consequence.** The two divergent rows validate D-015 against production: 12% of members would silently return no financial data under a `member_id = auth.uid()` policy. A separate finding — `public.is_founder()` carries no `SET search_path` — is recorded as risk R-5, outside PR 0's scope.
+
+---
+
+## D-039 — Reconciliation may ingest, never correct
+**Date:** 2026-07-29 · **Status:** Approved · **Resolves a contradiction between D-025 and D-032**
+
+**Decision.** Reconciliation may insert `stripe_payment` and `refund` entries for provider objects it has verified and attributed, and may create and reopen exceptions. It may **not** insert a `reversal`, resolve an exception, amend a Contribution, or alter any existing entry. `refund_status_regression` raises an exception; a founder approves the corrective reversal, which carries their `recorded_by`.
+
+**Rationale.** The documents simultaneously said reconciliation "raises exceptions and never silently self-corrects" and had it issue reversals for refund regressions. Both could not hold. The distinction that resolves it: recording a payment Stripe confirms is not a judgement — the money moved, and whether we learned of it by webhook or by polling is an implementation detail. Reversing an entry **is** a judgement, asserting a previously recorded fact was wrong. A job permitted to make that call unattended can silently unwind real money.
+
+**Consequence.** The `reconciliation` system actor attributes ingested entries only, never corrections. Enforced structurally: `service_role` holds no `UPDATE` on the fact tables and the append-only triggers fire regardless of role.
+
+---
+
+## D-040 — Reconciliation exceptions have a deterministic dedup identity
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** `finance.reconciliation_exceptions` gains `dedup_key`, `first_detected_at`, `last_detected_at`, `occurrence_count`, `first_run_id`, `last_run_id`, and a partial unique index on `(dedup_key, livemode) WHERE resolution_status = 'open'`. Rediscovery upserts. A resolved exception that recurs inserts a fresh row. `detected_at` is removed.
+
+**Rationale.** The table had a surrogate `id` and no identity for the mismatch itself, so the first real run's ~4,000 exceptions would re-insert in full on every subsequent run and the founder's queue would be unusable within days. `dedup_key` is computed from the fields identifying *which* mismatch this is, never from amounts or timestamps, which change while the mismatch persists. `detected_at` was ambiguous between first and latest detection; both questions matter and have different answers, so both are stored. Restricting uniqueness to open rows means a recurrence after resolution is recorded as the new fact it is, rather than silently reopening a row a founder already judged.
+
+**Consequence.** Row count scales with distinct unresolved mismatches, not runs × mismatches. Concurrent discovery is resolved by the index rather than by application checks.
+
+---
+
+## D-041 — Reconciliation job state lives in a ninth table, created in PR 1
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** `finance.reconciliation_runs` is added as table 9, created in PR 1 and first used in PR 3. It carries window bounds, a durable `cursor`, run counters, heartbeat, dry-run flag, and a partial unique index on `(livemode) WHERE status = 'running'` for single-flight.
+
+**Rationale.** The job needed a cursor to resume, a run identity for observability, and a lock for single-flight, and had nowhere to keep any of them. Adding the table in PR 3 would contradict PR 1's stated completeness and split schema ownership across two PRs; PR 1 owns all schema. Single-flight keyed on `livemode` lets test and live runs proceed independently.
+
+**Consequence.** Tables 8 → 9; enums 12 → 13 with `finance.run_status`.
+
+---
+
+## D-042 — Reconciliation matches by identity only; no heuristics
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** Matching is by provider object id, then by PaymentIntent under L8b, then by V2 metadata attribution. Amount, timestamp and email proximity are **never** used. An object that cannot be matched or attributed raises an exception. There is no confidence score and no tie-break.
+
+**Rationale.** "Reconciliation matching" was named as PR 3's sole basis for writing ledger entries and never defined — a ledger write path specified by a phrase. Heuristic matching would guess which member a payment belongs to, which is precisely the class of error this system exists to eliminate; a near-match is not evidence.
+
+---
+
+## D-043 — Operational rules are part of the architecture, not implementation detail
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** ARCHITECTURE §10a specifies all twenty operational properties of the reconciliation job — window and overlap, initial lookback, cursor, page and batch sizes, resume, single-flight, exhaustive pagination for all four object types, 429 and `Retry-After` handling with bounded backoff, failure classification, retry budget and quarantine, exception dedup, mode isolation, double-processing safety, run counters, alert thresholds, dry-run first, maximum-work limits, rerun safety, and the ingest/correct boundary. PR 3 carries 21 acceptance tests of its own.
+
+**Rationale.** An operational readiness review found **zero of twenty** defined. Every one was correct in principle and unbuildable in practice: against the stated scenario the job would have double-inserted thousands of exceptions per run and been unable to resume. A scheduled job that touches money is not implementation detail — its re-entrancy is an architectural property, and leaving it to the implementer means it is decided by whoever is least equipped to decide it.

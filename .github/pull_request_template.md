@@ -65,3 +65,16 @@ Complete this section for any change touching money. Delete it otherwise.
 - [ ] Amounts are integer cents; no floating-point arithmetic was introduced.
 - [ ] `DECISIONS.md` records any architecture change.
 - [ ] `HANDOFF.md` is updated as the final commit.
+
+### Scheduled or background work
+
+Complete this block if the change adds or alters a job, sweeper, webhook handler, or anything else that runs unattended. Delete it otherwise.
+
+- [ ] **Re-entrant** — safe to interrupt and rerun; a rerun over already-processed input creates nothing new.
+- [ ] **Single-flight or safely concurrent** — two overlapping runs cannot both act.
+- [ ] **Resumable** — durable cursor or checkpoint; a mid-run crash or deploy does not lose or repeat work.
+- [ ] **Bounded** — maximum work per run stated, so one run cannot exhaust execution time or an API quota.
+- [ ] **Rate limits and failures handled** — 429/`Retry-After`, backoff with a cap, retry budget, and transient vs terminal vs ambiguous classification.
+- [ ] **Writes are deduplicated by identity**, not by "check then insert".
+- [ ] **Observable** — run id, counts and duration recorded; failure is distinguishable from a clean run.
+- [ ] **Alert thresholds stated**, distinguishing expected volume from operational failure.

@@ -30,7 +30,7 @@ All four are read-only and temporary, and every one is removed or retired at PR 
 
 ---
 
-## 1. Object inventory — exactly eight tables
+## 1. Object inventory — exactly nine tables
 
 | # | Table | Purpose | Mutability |
 |---|---|---|---|
@@ -41,13 +41,16 @@ All four are read-only and temporary, and every one is removed or retired at PR 
 | 5 | `finance.stripe_events` | Webhook ingestion, idempotency, processing state. | Insert + processing-state update + retention nulling |
 | 6 | `finance.checkout_sessions` | Checkout attempts. An attempt is not a payment. | Insert + status update |
 | 7 | `finance.payment_links` | Hashed, expiring, revocable, single-use pay links. | Insert + claim / consume / release / revoke transitions (§12) |
-| 8 | `finance.reconciliation_exceptions` | Money that cannot be attributed, and provider/ledger mismatches. | Insert + resolution update |
+| 8 | `finance.reconciliation_exceptions` | Money that cannot be attributed, and provider/ledger mismatches. | Insert + reopen update + resolution update |
+| 9 | `finance.reconciliation_runs` | Reconciliation job state: window, cursor, single-flight lock, counters. | Insert + progress update |
 
-Tables 2–4 are the **append-only fact tables**; §0.4 applies to them and only them. Tables 5–8 are protocol and operational machinery carrying no financial truth, and they require bounded updates by design.
+Tables 2–4 are the **append-only fact tables**; §0.4 applies to them and only them. Tables 5–9 are protocol and operational machinery carrying no financial truth, and they require bounded updates by design.
+
+**Table 9 exists because PR 1 owns all schema.** Reconciliation needs a durable cursor, a run identity and a single-flight lock; without a table it has nowhere to keep them, and a job that cannot checkpoint cannot resume. Adding it in PR 3 would contradict PR 1's stated completeness and split schema ownership across two PRs, so it is created in PR 1 and first used in PR 3.
 
 ### Enum inventory
 
-PR 1 creates exactly twelve enum types:
+PR 1 creates exactly thirteen enum types:
 
 | Enum | Values | Defined in |
 |---|---|---|
@@ -63,6 +66,7 @@ PR 1 creates exactly twelve enum types:
 | `finance.checkout_status` | `creating`, `open`, `completed`, `expired`, `canceled` | §11 |
 | `finance.link_status` | `active`, `creating`, `consumed`, `revoked` | §12 |
 | `finance.system_actor` | `reconciliation`, `legacy_import`, `checkout_sweeper` | §7 |
+| `finance.run_status` | `running`, `completed`, `failed`, `abandoned` | §10a |
 
 ### View inventory
 
@@ -83,7 +87,22 @@ PR 1 creates exactly five views: `v_agreement_lifecycle` (§6), `v_agreement_bal
 
 `ON DELETE RESTRICT` throughout: a financial fact must never be silently orphaned or cascaded away. `public.journeys(id)` is confirmed as an existing FK target by `20260505000000_journey_email_templates.sql:30`.
 
-**V2 reuses the existing `public.is_founder()`** rather than defining `finance.is_founder()`. The function already exists and is used by current RLS — `20260621000000_internal_calendar.sql:34` documents it as "a `user_roles` lookup, `role = 'founder'`", and `20260621030000_protocol_template_days.sql:45` calls it in policy bodies. Defining a second founder predicate would create two places for the answer to drift, which is the defect class this project exists to remove. PR 1 confirms its definition against the live database and records it; if it proves unsuitable, a superseding decision is required before any alternative is written.
+**V2 reuses the existing `public.is_founder()`** rather than defining `finance.is_founder()`. Defining a second founder predicate would create two places for the answer to drift, which is the defect class this project exists to remove.
+
+Its live definition, confirmed read-only on 2026-07-29:
+
+```sql
+CREATE OR REPLACE FUNCTION public.is_founder() RETURNS boolean
+  LANGUAGE sql STABLE SECURITY DEFINER
+AS $function$
+  SELECT EXISTS (SELECT 1 FROM public.user_roles
+                 WHERE user_id = auth.uid() AND role = 'founder');
+$function$
+```
+
+Suitable for V2's purpose: a `user_roles` lookup keyed on `auth.uid()`, with no hardcoded identifiers.
+
+**One inherited exposure.** The function is `SECURITY DEFINER` with **no `SET search_path`** — the shape §9 forbids for every V2 function. Without a pinned path, a caller able to influence `search_path` may resolve `public.user_roles` to an object they control. V2 depends on this function for every founder policy, so it inherits the exposure. The remedy is a one-line `ALTER FUNCTION public.is_founder() SET search_path = pg_catalog, public` on an existing object, which is **outside PR 0's documentation-only scope**. Recorded as risk R-5.
 
 *Note for implementers:* the application-layer `verifyFounder()` in `lib/auth/founder-check.ts:4-7` uses a hardcoded `FOUNDER_IDS` array. **V2 does not use that path.** Founder authority in V2 is the database predicate.
 
@@ -103,14 +122,22 @@ Financial agreements are founder-managed operational records that must be able t
 
 **Two anti-patterns are forbidden outright.** Never write `member_id = auth.uid()` on a column that references `members(id)` — that is precisely the defect the two repoint migrations fixed, and `journey_email_log` still carries it. Never resolve a member by email join.
 
-### Narrow verification required in PR 1
+### Live-database verification — complete (D-038)
 
-The design decision above is settled and does not block. One implementation detail does: `finance.current_member_id()` must be single-valued, which requires `members.profile_id` to be unique. The base schema is not in version control, so PR 1 must confirm against the live database, before creating the function:
+Confirmed read-only against `Vital-Kauai-prod` on 2026-07-29. Nothing was created or altered; queries returned aggregates only, and no member identifier was selected.
 
-1. Does `members.profile_id` carry a unique constraint or index? If not, PR 1 adds one after verifying no duplicates exist.
-2. How many rows have `profile_id IS NULL`, and how many have `id <> profile_id`? These are the members for whom any `auth.uid()`-based assumption silently fails.
+| Check | Result |
+|---|---|
+| Unique index on `members.profile_id` | **Already exists** — `uq_members_profile_id`, `UNIQUE (profile_id) WHERE profile_id IS NOT NULL` |
+| Duplicate non-null `profile_id` groups | **0**; max rows per `profile_id` is 1 |
+| Rows with `profile_id IS NULL` | **0** of 17 |
+| Rows with `id <> profile_id` | **2** of 17 |
+| `members.profile_id` foreign key | `REFERENCES member_profiles(id) ON DELETE SET NULL` |
+| PostgreSQL version | **17.6** |
 
-The answers are recorded in `DECISIONS.md`. No foreign key or policy is written before they are.
+`finance.current_member_id()` is therefore single-valued today, and **PR 1 adds no index** — the constraint it would have added already exists.
+
+**The two divergent rows are the whole argument.** 12% of production members have `id <> profile_id`. A policy written as `member_id = auth.uid()` against a `members(id)` column returns nothing for those members — no error, no log, just a member whose financial data silently disappears. D-015 is not defensive; the data requires it.
 
 ---
 
@@ -444,7 +471,7 @@ A custom schema is **not** exposed through PostgREST or reachable by any role un
 - Sequence usage granted where `service_role` inserts.
 
 ### Row-level security
-- `ENABLE` **and** `FORCE ROW LEVEL SECURITY` on all eight tables.
+- `ENABLE` **and** `FORCE ROW LEVEL SECURITY` on all nine tables.
 - Member `SELECT` policies resolve identity through `finance.current_member_id()` — never an email join.
 - Founder policies call the **existing `public.is_founder()`** (§2), not a new V2 predicate. **No hardcoded founder UUIDs.**
 - **No client `UPDATE` or `DELETE` policies on the three append-only fact tables.** Enforced by absent policy *and* by a trigger raising on `UPDATE`/`DELETE`, so it holds even for roles bypassing RLS.
@@ -565,7 +592,7 @@ Refunds are the hardest case in the system: one charge can carry several genuine
 
 7. **Partial refunds accumulate and cannot exceed the settled payment.** Each Refund object is its own entry; **L7** caps cumulative unreversed refunds at the parent's original `amount_cents`, serialised by `SELECT … FOR UPDATE` on the parent so concurrent refund events cannot jointly overshoot.
 
-8. **Reconciliation trusts objects, not delivery.** The PR 3 job enumerates Stripe **PaymentIntent, Charge and Refund objects** over a window and diffs them against the ledger. It never assumes an event arrived. A refund present at Stripe with no corresponding ledger entry raises `provider_without_ledger`; a ledger entry with no provider object raises `ledger_without_provider`. Reconciliation raises exceptions and never silently self-corrects.
+8. **Reconciliation trusts objects, not delivery.** The PR 3 job enumerates Stripe **PaymentIntent, Charge and Refund objects** over a window and diffs them against the ledger. It never assumes an event arrived. A refund present at Stripe with no corresponding ledger entry raises `provider_without_ledger`; a ledger entry with no provider object raises `ledger_without_provider`. Reconciliation may ingest verified provider payments and refunds; it raises exceptions for everything else and never issues a reversal or resolves an exception on its own (§10a).
 
 ### Payload handling
 
@@ -585,7 +612,12 @@ finance.reconciliation_exceptions
   amount_cents        bigint NULL
   currency            text NULL CHECK (currency IS NULL OR currency = 'usd')
   detail              jsonb NOT NULL default '{}'::jsonb
-  detected_at         timestamptz NOT NULL default now()
+  dedup_key           text NOT NULL
+  first_detected_at   timestamptz NOT NULL default now()
+  last_detected_at    timestamptz NOT NULL default now()
+  occurrence_count    integer NOT NULL default 1 CHECK (occurrence_count >= 1)
+  first_run_id        uuid NULL -> finance.reconciliation_runs(id) (RESTRICT)
+  last_run_id         uuid NULL -> finance.reconciliation_runs(id) (RESTRICT)
   resolution_status   finance.exception_resolution NOT NULL default 'open'
   resolved_at         timestamptz NULL
   resolved_by         uuid NULL -> auth.users(id) (RESTRICT)
@@ -593,9 +625,125 @@ finance.reconciliation_exceptions
 
   CHECK (resolution_status = 'open'
          OR (resolved_at IS NOT NULL AND resolved_by IS NOT NULL))
+  CHECK (last_detected_at >= first_detected_at)
+
+  UNIQUE (dedup_key, livemode) WHERE resolution_status = 'open'
 ```
 
-`finance.exception_kind` values: `unattributable_payment`, `provider_without_ledger`, `ledger_without_provider`, `amount_mismatch`, `currency_violation`, `missing_provider_object`, `orphan_refund`, `refund_status_regression`, `stranded_checkout_attempt`, `stale_session_expiry_failed`.
+`finance.exception_kind` values: `unattributable_payment`, `provider_without_ledger`, `ledger_without_provider`, `amount_mismatch`, `currency_violation`, `missing_provider_object`, `orphan_refund`, `refund_status_regression`, `stranded_checkout_attempt`, `stale_session_expiry_failed`, **`reconciliation_run_failed`**.
+
+### Exception identity and lifecycle
+
+Without a dedup rule the first real run against ~4,000 mismatches inserts 4,000 rows, the next scheduled run inserts the same 4,000 again, and the founder's queue is unusable within days. `id` is a surrogate; **`dedup_key` is the identity of the mismatch itself.**
+
+It is deterministic and computed at write time from the fields identifying *which* mismatch this is — never from amounts or timestamps, which change while the mismatch stays the same:
+
+```
+kind || ':' || coalesce(provider_object_id, '')
+     || ':' || coalesce(ledger_entry_id::text, '')
+     || ':' || coalesce(agreement_id::text, '')
+     || ':' || coalesce(legacy_donation_id::text, '')
+```
+
+| Situation | Behaviour |
+|---|---|
+| New mismatch | Insert; `occurrence_count = 1`, `first_detected_at = last_detected_at = now()`, both run ids set |
+| **Same mismatch rediscovered while open** | **Upsert, not insert.** `ON CONFLICT (dedup_key, livemode) WHERE resolution_status='open'` → `last_detected_at = now()`, `occurrence_count = occurrence_count + 1`, `last_run_id = <run>` |
+| Material detail changed (the amount gap moved) | The same upsert merges `detail` and retains the prior value under `detail.history`, so a widening discrepancy is visible rather than overwritten |
+| Resolved, then recurs | The unique index covers **open rows only**, so a resolved row does not block a new one. Recurrence inserts a **fresh** row — a mismatch returning after a founder judged it is a new fact, and silently reopening the old row would erase the record that it was once resolved |
+| Different `livemode` | Separate rows; `livemode` is in the uniqueness key, so a test-mode mismatch never collapses onto a live one |
+| Two concurrent runs find it simultaneously | The unique index picks the winner; the loser takes the `ON CONFLICT` branch. Concurrency is resolved by the database, not by application checks |
+
+**`detected_at` is deliberately gone.** It was ambiguous — first detection or latest? — and the two questions have different answers and different uses. `first_detected_at` says how long this has been wrong; `last_detected_at` says whether it still is.
+
+**Bounded growth follows.** Rows scale with distinct unresolved mismatches, not with runs × mismatches. A permanently broken record accrues `occurrence_count`, not rows.
+
+---
+
+## 10a. Reconciliation operations (PR 3)
+
+The scenario this section answers: the job runs for the first time against real Stripe data, finds thousands of mismatches, is interrupted midway, overlaps a scheduled run, hits 429s and timeouts, and is rerun.
+
+### `finance.reconciliation_runs`
+
+```
+finance.reconciliation_runs
+  id                  uuid PK default gen_random_uuid()
+  livemode            boolean NOT NULL
+  window_start        timestamptz NOT NULL
+  window_end          timestamptz NOT NULL
+  cursor              jsonb NOT NULL default '{}'::jsonb  -- per object type: last id + page token
+  status              finance.run_status NOT NULL default 'running'
+  started_at          timestamptz NOT NULL default now()
+  heartbeat_at        timestamptz NOT NULL default now()
+  finished_at         timestamptz NULL
+  objects_scanned     integer NOT NULL default 0
+  objects_matched     integer NOT NULL default 0
+  exceptions_created  integer NOT NULL default 0
+  exceptions_reopened integer NOT NULL default 0
+  api_calls           integer NOT NULL default 0
+  retries             integer NOT NULL default 0
+  error               text NULL
+  dry_run             boolean NOT NULL default false
+
+  CHECK (window_end > window_start)
+  CHECK (status <> 'running' OR finished_at IS NULL)
+  UNIQUE (livemode) WHERE status = 'running'    -- single-flight, per mode
+```
+
+`finance.run_status` enum: `running`, `completed`, `failed`, `abandoned`.
+
+### The twenty operational rules
+
+| # | Rule |
+|---|---|
+| 1 | **Window.** A run covers `[window_start, window_end)` where `window_end = now() - 5 minutes` (settlement lag) and `window_start = previous completed run's window_end - 60 minutes` (overlap margin). Overlap is deliberate: re-examining an hour of already-reconciled objects is free, because matching is idempotent and exceptions dedup. |
+| 2 | **Initial lookback.** Run #1 uses `window_start = the earliest `occurred_at` in `finance.ledger_entries`, or 90 days before `now()` where the ledger is empty. Recorded on the run row, so the horizon is auditable rather than implied. |
+| 3 | **Cursor.** `cursor` holds, per object type, the last processed object id and Stripe page token. Written **after each page completes**, never mid-page. A resumed run restarts at the last committed page boundary. |
+| 4 | **Page and batch sizes.** Stripe list calls use `limit = 100` (the API maximum). Database writes batch at 500 rows per statement. Both are stated so a reviewer can check them, not left to the implementer. |
+| 5 | **Resume.** A `running` run whose `heartbeat_at` is older than **10 minutes** is `abandoned` by the next starter, which then resumes from its `cursor` under a new run id referencing the abandoned one. Deployments mid-run are therefore ordinary interruptions. |
+| 6 | **Single flight.** `UNIQUE (livemode) WHERE status = 'running'` makes a second concurrent run for the same mode impossible at the database level. A starter that loses the race exits cleanly rather than queueing. |
+| 7 | **Exhaustive pagination for every object type** — PaymentIntents, Charges, Refunds, and Checkout Sessions alike. A single unpaginated page is not a search. This was previously required only of Refunds and Sessions; the failure semantics are identical for all four. |
+| 8 | **429 handling.** Honour `Retry-After` when present; otherwise exponential backoff from 1s, doubling, jittered, capped at 60s. Maximum **8 attempts** per call. Rate-limit waits do not count against the run's time budget. |
+| 9 | **Timeouts and network failures** are classified as **transient** and follow the same backoff. A connection reset mid-page re-fetches that page from its committed cursor. |
+| 10 | **Error classes.** *Transient* (429, 5xx, timeout, reset) → retry. *Terminal* (4xx other than 429, malformed object) → raise an exception for that object and continue the run. *Ambiguous* (unknown state, contradictory provider response) → raise an exception and **do not** write to the ledger. One object's failure never aborts a run. |
+| 11 | **Retry budget and quarantine.** 8 attempts per call, **200 retries per run** in aggregate. Exceeding it ends the run `failed` with the cursor intact. An object that fails terminally three runs running is quarantined — it stops being retried and its exception is flagged for manual review. |
+| 12 | **Exception dedup** — see the lifecycle rules above. Growth is bounded by distinct mismatches. |
+| 13 | **Mode isolation.** A run reconciles exactly one `livemode`, using the API key for that mode. Test and live runs are separate rows, separate locks, separate exceptions. Neither can write an entry or exception in the other's mode. |
+| 14 | **No double processing.** The overlap in rule 1 means an object may legitimately be *examined* twice; it can never be *recorded* twice, because ledger writes are protected by L8/L8b and exceptions by `dedup_key`. Safety comes from write-side identity, not from perfect read-side partitioning — which is the only design that survives retries. |
+| 15 | **Observability.** Every counter above is on the run row: scanned, matched, exceptions created, exceptions reopened, api calls, retries, duration from `started_at`/`finished_at`. A founder can answer "did it work, and what did it find" from one row. |
+| 16 | **Alert thresholds.** During shadow (PRs 3–4), `provider_without_ledger` for legacy-tagged charges is the **expected** signal and is not alerted. Alert on: run `failed`; run `abandoned`; `exceptions_created` in a single run exceeding **3× the trailing 7-run median**; any `unattributable_payment` in live mode; any exception open longer than **14 days**. Volume alone is not an alarm — a *change* in volume is. |
+| 17 | **First run is a dry run.** `dry_run = true` enumerates, matches and counts, writing **no** ledger entries and **no** exceptions — only the run row. The founder compares its counters against expectation before a writing run is permitted. The first writing run is additionally limited to a single day's window as a canary. |
+| 18 | **Maximum work.** One run stops at whichever comes first: **50,000 objects scanned**, **20,000 API calls**, or **20 minutes** elapsed. It then ends `completed` with the cursor preserved, and the next run continues. A bounded run that finishes is worth more than an unbounded one that is killed. |
+| 19 | **Rerun safety.** A rerun after partial completion resumes from the cursor. A rerun of an already-complete window re-examines and re-matches, creating nothing new — proven by rules 12 and 14. Reruns are always safe; that is the property the whole design buys. |
+| 20 | **Reconciliation cannot change financial truth on its own** — see below. |
+
+### Matching
+
+"Reconciliation matching" was previously named as PR 3's sole basis for writing ledger entries without being defined — a ledger write path specified by a phrase. It is:
+
+1. **By provider object identity.** A Stripe Charge or Refund id matching `ledger_entries.provider_object_id` (same `livemode`) is matched. This is exact and is the only automatic match for an *existing* entry.
+2. **By PaymentIntent.** For a payment with no charge-object match, `provider_payment_intent_id` (same `livemode`) is matched under L8b.
+3. **By V2 metadata**, for provider objects with no ledger entry: `agreement_id` from Session or PaymentIntent metadata (§10) attributes the object, and a verified `succeeded` PaymentIntent is ingested as a `stripe_payment`.
+4. **No heuristic matching.** Amount, timestamp and email proximity are **never** used to match. A provider object that cannot be matched by identity or attributed by metadata raises `unattributable_payment` or `provider_without_ledger`. Guessing which member a payment belongs to is exactly the class of error this system exists to eliminate, and a near-match is not evidence.
+
+There is therefore no confidence score and no tie-break, because every rule is exact.
+
+### What reconciliation may and may not write
+
+The previous text said reconciliation "raises exceptions and never silently self-corrects" while also having it issue reversals for `refund_status_regression`. Both cannot be true. The boundary:
+
+| Reconciliation **may** | Reconciliation **may not** |
+|---|---|
+| Insert `stripe_payment` and `refund` entries for provider objects it has **verified** and **attributed** — this is ingestion, the same rule as the webhook path (§10), simply reached by polling instead of push | Insert any `reversal` |
+| Create and reopen exceptions | Resolve an exception |
+| Update its own run row | Amend a Contribution, or alter any existing entry in any way |
+
+**The asymmetry is the point.** Recording a payment Stripe confirms is not a judgement — the money moved, and whether we heard about it by webhook or by polling is an implementation detail. Reversing an entry *is* a judgement: it asserts a previously recorded fact was wrong. A job that can decide that unattended can silently unwind real money.
+
+So `refund_status_regression` raises an exception; a **founder** approves the reversal, which carries their `recorded_by`. The `reconciliation` system actor exists for entries the job legitimately creates by ingestion, never for corrections.
+
+This is the answer to point 20, and it is enforceable rather than aspirational: `service_role` has no `UPDATE` on the fact tables, and the append-only triggers hold regardless of role.
 
 ---
 
@@ -792,7 +940,7 @@ Everything below exists because a readiness review found PR 1 unwritable without
 
 ### Postgres baseline
 
-**PostgreSQL 15 or later is required** — `NULLS NOT DISTINCT` (§4) and `security_invoker` on views (§9) both need it. PR 1 asserts the server version before creating anything.
+**PostgreSQL 15 or later is required** — `NULLS NOT DISTINCT` (§4) and `security_invoker` on views (§9) both need it. The live database is **PostgreSQL 17.6**, confirmed read-only on 2026-07-29, so the baseline is satisfied. PR 1 asserts the version before creating anything, so a future environment cannot silently fall below it.
 
 ### Functions
 
@@ -808,7 +956,7 @@ Returns `members.id` for the row where `members.profile_id = auth.uid()`; `NULL`
 
 ### RLS policy matrix
 
-`ENABLE` and `FORCE ROW LEVEL SECURITY` on all eight tables. No policy grants `UPDATE` or `DELETE` on the three fact tables to any role.
+`ENABLE` and `FORCE ROW LEVEL SECURITY` on all nine tables. No policy grants `UPDATE` or `DELETE` on the three fact tables to any role.
 
 | Table | `authenticated` — member | `authenticated` — founder | `service_role` |
 |---|---|---|---|
@@ -819,7 +967,8 @@ Returns `members.id` for the row where `members.profile_id = auth.uid()`; `NULL`
 | `checkout_sessions` | `SELECT` via parent agreement owned by the member | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (status, stripe_session_id, completed_at)` |
 | `payment_links` | none — the raw token is the member's only handle; the row is never read by them | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (status, claimed_at, consumed_at, consumed_by_session_id, attempt_count)` |
 | `stripe_events` | none | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (processing_status, claimed_at, attempt_count, processed_at, processing_error, payload)` |
-| `reconciliation_exceptions` | none | `SELECT`, `UPDATE (resolution_status, resolved_at, resolved_by, resolution_note)` where `public.is_founder()` | `SELECT`, `INSERT` |
+| `reconciliation_exceptions` | none | `SELECT`, `UPDATE (resolution_status, resolved_at, resolved_by, resolution_note)` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (last_detected_at, occurrence_count, detail, last_run_id)` |
+| `reconciliation_runs` | none | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (status, cursor, counters, finished_at, error, heartbeat_at)` |
 
 Notes:
 
