@@ -644,7 +644,13 @@ finance.reconciliation_exceptions
   amount_cents        bigint NULL
   currency            text NULL CHECK (currency IS NULL OR currency = 'usd')
   detail              jsonb NOT NULL default '{}'::jsonb
-  dedup_key           text NOT NULL
+  dedup_key           text GENERATED ALWAYS AS (
+                        kind::text || ':' ||
+                        coalesce(provider_object_id, '')       || ':' ||
+                        coalesce(ledger_entry_id::text, '')    || ':' ||
+                        coalesce(agreement_id::text, '')       || ':' ||
+                        coalesce(legacy_donation_id::text, '')
+                      ) STORED
   first_detected_at   timestamptz NOT NULL default now()
   last_detected_at    timestamptz NOT NULL default now()
   occurrence_count    integer NOT NULL default 1 CHECK (occurrence_count >= 1)
@@ -666,6 +672,18 @@ finance.reconciliation_exceptions
   CHECK ((quarantined_at IS NULL) = (quarantine_reason IS NULL))
   CHECK ((released_at IS NULL) = (released_by IS NULL))
   CHECK (released_at IS NULL OR quarantined_at IS NOT NULL)   -- cannot release what was never quarantined
+  CHECK (released_at IS DISTINCT FROM quarantined_at)          -- monotonicity backstop (B-58)
+
+  -- provider_object_processing_failed shape (B-62)
+  CHECK (kind <> 'provider_object_processing_failed' OR (
+           provider_object_id IS NOT NULL
+       AND detail ? 'object_type'
+       AND detail ->> 'object_type' IN
+             ('payment_intent','charge','refund','checkout_session')
+       AND detail ? 'error_class'
+       AND detail ->> 'error_class' IN
+             ('malformed_object','object_not_found','object_scoped_bad_request')
+  ))
 
 CREATE UNIQUE INDEX ON finance.reconciliation_exceptions (dedup_key, livemode)
   WHERE resolution_status = 'open';
@@ -717,9 +735,9 @@ quarantined_at IS NOT NULL
 |---|---|
 | **What counts a streak?** | `consecutive_failure_runs`, incremented **only when `last_run_id` differs from the current run**, so repeated attempts within one run count once. |
 | **What breaks a streak?** | Any run in which the object is examined and does not fail terminally. The counter resets to 0. |
-| **When does quarantine engage?** | On the increment reaching **3**: `quarantined_at = now()`, `quarantine_reason` records the terminal error class. |
+| **When does quarantine engage?** | On the increment reaching **3**, through `finance.quarantine_object()`, which sets `quarantined_at` monotonically (see below) and records the terminal error class in `quarantine_reason`. Never by direct `UPDATE`, and never with `now()`. |
 | **What does it change?** | Actively quarantined objects are **skipped** — not fetched, not retried, not counted as failures. The exception stays `open` and visible. |
-| **Who releases it?** | A founder, through `finance.release_quarantine(p_exception_id uuid, p_note text)` — a `SECURITY DEFINER` function that raises unless `public.is_founder()`, sets `released_at = now()` and `released_by = auth.uid()`, resets `consecutive_failure_runs` to 0, and appends the note to `resolution_note`, **atomically**. `service_role` holds no `EXECUTE` on it and no `UPDATE` on those columns. |
+| **Who releases it?** | A founder, through `finance.release_quarantine(p_exception_id uuid, p_note text)` — see the monotonicity rule below. `service_role` holds no `EXECUTE` on it and no `UPDATE` on those columns. |
 | **What happens after release?** | `released_at > quarantined_at`, so the object is no longer actively quarantined and re-enters normal processing on the next run. |
 | **What if it fails again?** | Three further consecutive terminal failures set a **newer** `quarantined_at`, which is again greater than `released_at` — so the derived predicate makes it active once more. No column is cleared and no state is ambiguous. |
 | **What if it is resolved while quarantined?** | Resolution wins; the row leaves `open` and the partial unique index no longer covers it, so a genuine recurrence later starts a fresh row with a zero streak. |
@@ -727,6 +745,31 @@ quarantined_at IS NOT NULL
 **Honest limits of the history.** These columns record the **latest** quarantine and the **latest** release, not a complete audit trail of every cycle. That is deliberate — the ledger is the append-only record, and the exceptions queue is an operational work list. Where a full cycle history is later required, it belongs in its own append-only table and needs a decision entry; this document does not claim to provide one.
 
 Quarantine is deliberately **not** silent: it stops retrying, it does not stop reporting.
+
+#### Both transitions must be strictly monotonic
+
+The derived predicate compares `released_at` against `quarantined_at`, so **their order is the state**. `now()` is not safe to write either of them: PostgreSQL fixes `now()` at **transaction start**, so a transaction that began before the opposing transition committed will write a timestamp *earlier* than the value already stored. A release could then commit successfully and leave the object still actively quarantined — the function reports success and nothing changes. Equal timestamps are just as bad: `released_at = quarantined_at` fails `released_at < quarantined_at`, so the object stays quarantined.
+
+Both transitions therefore run through functions that lock the row, read the opposing timestamp, and write a value strictly greater than it:
+
+```sql
+-- inside finance.release_quarantine(), after SELECT … FOR UPDATE
+released_at := GREATEST(clock_timestamp(),
+                        quarantined_at + interval '1 microsecond');
+
+-- inside finance.quarantine_object(), after SELECT … FOR UPDATE
+quarantined_at := GREATEST(clock_timestamp(),
+                           COALESCE(released_at, '-infinity'::timestamptz)
+                             + interval '1 microsecond');
+```
+
+`clock_timestamp()` reads the wall clock **at statement execution**, not transaction start, so a long-running transaction cannot write a stale value. `GREATEST(…, opposing + 1µs)` guarantees strict ordering even when the clock is adjusted backwards, when two transactions overlap, or when both happen inside the same microsecond. The `FOR UPDATE` lock makes the read-then-write atomic, so two concurrent transitions serialise rather than racing.
+
+`finance.quarantine_object(p_exception_id uuid, p_reason text)` is the counterpart, executable by `service_role` only. **Neither role holds a direct `UPDATE`** on `quarantined_at`, `quarantine_reason`, `released_at` or `released_by` — the ordering guarantee is worthless if any caller can bypass it with a raw `UPDATE`.
+
+A `CHECK (released_at IS DISTINCT FROM quarantined_at)` rejects the equality case at the table level as a backstop.
+
+The consequence is that a release always lands on the released side and a re-quarantine always lands on the quarantined side, **regardless of transaction age, overlap, or clock adjustment**. Test 101 exercises this with two concurrent sessions.
 
 ---
 
@@ -843,11 +886,28 @@ An authorization grants exactly three things:
 
 1. **A mode** — the writing run's `livemode` must match.
 2. **An earliest horizon** — the writing run's `window_start` may be no earlier than the approved run's `window_start`. Reaching further back than what was rehearsed is not authorized.
-3. **An implementation version** — the writing run's `implementation_version` must equal the approved run's. **Material code change invalidates approval**, because the rehearsal exercised different behaviour.
+3. **An implementation version** — the writing run's `implementation_version` must equal the approved run's. **Material code change invalidates approval**, because the rehearsal exercised different behaviour. Its provenance is specified below; a caller-supplied label would make this check theatre.
 
 **The canary is contained.** The first writing run for a `(livemode, implementation_version)` pair — one with no prior `completed` writing run — must be **fully contained within the approved dry run's window** *and* span at most 24 hours. Only after that canary reaches `completed` may later writing runs extend beyond the rehearsed `window_end`.
 
 So containment applies exactly where it is meaningful — the first real write — and the horizon plus version bound everything after.
+
+#### Approval is a function, and approved evidence is frozen (B-60)
+
+Direct founder `UPDATE` on `approved_by`/`approved_at` is **withdrawn**. It allowed two things it should not have: a founder could write **another actor's id** into `approved_by`, and could set `approved_at` to any timestamp — so the audit trail recorded whatever the caller typed rather than what happened.
+
+Approval runs through **`finance.approve_dry_run(p_run_id uuid, p_note text)`**, `SECURITY DEFINER`, fixed `search_path`, `EXECUTE` to `authenticated` only:
+
+1. Raises unless `public.is_founder()`.
+2. Locks the run row `FOR UPDATE` and validates **every** precondition of the table above — `dry_run`, `status = 'completed'`, `window_exhausted`, `finished_at` present, `error IS NULL`, `report_completed_at` present.
+3. Sets `approved_by = auth.uid()` and `approved_at = clock_timestamp()` **internally**. Neither is a parameter, so neither can be supplied.
+4. Raises if `approved_at` is already set. **Re-approval and replacement approval are refused**; a superseding approval requires a new dry run, so an approval can never be quietly moved to different evidence.
+
+**The approved evidence is then frozen.** A trigger rejects any `UPDATE` that changes, on a row with `approved_at IS NOT NULL`, any of:
+
+`status`, `error`, `finished_at`, `window_exhausted`, `window_start`, `window_end`, `livemode`, `implementation_version`, `dry_run`, `would_create_count`, `would_reopen_count`, `prospective_by_kind`, `report_samples`, `report_version`, `report_completed_at`, `approved_by`, `approved_at`.
+
+The trigger fires **regardless of role**, so `service_role` cannot alter what a founder approved. Without the freeze the authorization is meaningless: the job could approve a narrow clean report and afterwards widen the window, swap the version, or rewrite the findings the founder actually read.
 
 ### The run state machine
 
@@ -874,19 +934,6 @@ So: **`completed` means every object type exhausted the entire window**, enforce
 - A resuming run copies `window_start`, `window_end` and `cursor` from its predecessor; a trigger enforces the window match, so a resume cannot quietly change scope.
 - Lineage is a chain, not a tree: at most one run may resume a given predecessor, enforced by `CREATE UNIQUE INDEX ON finance.reconciliation_runs (resumed_from_run_id) WHERE resumed_from_run_id IS NOT NULL`.
 
-### Dry-run approval is a stored fact
-
-Rule 17 previously said a founder "reviews the first dry run before a writing run is permitted" while nothing recorded the review and nothing stopped a caller starting `dry_run = false` immediately. Approval is now persisted.
-
-- A dry run is approved by setting `approved_by` and `approved_at` on **that run row**. Only a founder may set them.
-- **Every writing run cites an authorization**: `CHECK (dry_run OR authorized_by_run_id IS NOT NULL)`.
-- A trigger validates the cited run is `dry_run = true`, carries a non-null `approved_by`, shares the same `livemode`, and covers the window: the writing run's `window_start` may not be **earlier** than the approved run's `window_start`. Reaching further back than what was reviewed invalidates the approval.
-- **Material change invalidates.** A different `livemode`, or a `window_start` earlier than approved, is rejected rather than silently accepted.
-- **Canary.** The first writing run for a given `livemode` — one with no prior `completed` writing run — is limited to a window of at most **24 hours**, enforced by trigger.
-- Dry runs themselves carry no authorization: `CHECK (NOT dry_run OR authorized_by_run_id IS NULL)`.
-
-Subsequent writing runs cite the same approved dry run, so approval is granted once per reviewed scope rather than per run.
-
 ### The twenty operational rules
 
 | # | Rule |
@@ -907,7 +954,7 @@ Subsequent writing runs cite the same approved dry run, so approval is granted o
 | 14 | **No double processing.** The overlap in rule 1 means an object may legitimately be *examined* twice; it can never be *recorded* twice, because ledger writes are protected by L8/L8b and exceptions by `dedup_key`. Safety comes from write-side identity, not from perfect read-side partitioning — which is the only design that survives retries. |
 | 15 | **Observability.** Every counter above is on the run row: scanned, matched, exceptions created, exceptions reopened, api calls, retries, duration from `started_at`/`finished_at`. A founder can answer "did it work, and what did it find" from one row. |
 | 16 | **Alert thresholds.** During shadow (PRs 3–4), `provider_without_ledger` for legacy-tagged charges is the **expected** signal and is not alerted. Alert on: run `failed`; run `abandoned`; `exceptions_created` in a single run exceeding **3× the trailing 7-run median**; any `unattributable_payment` in live mode; any exception open longer than **14 days**. Volume alone is not an alarm — a *change* in volume is. |
-| 17 | **First run is a dry run, and approval is stored.** `dry_run = true` enumerates, matches and counts, writing **no** ledger entries and **no** exceptions — only the run row. A founder approves it by setting `approved_by`/`approved_at` on that row. Every writing run must cite an approved dry run via `authorized_by_run_id`, enforced by `CHECK` and trigger; the first writing run per mode is additionally capped at a 24-hour window. Approval is a persisted fact, not a convention. |
+| 17 | **First run is a dry run, and approval is a stored, validated fact.** `dry_run = true` enumerates, matches and counts, writing **no** ledger entries and **no** exceptions — only the run row and its report. A founder approves through `finance.approve_dry_run()`; every writing run cites an approved dry run via `authorized_by_run_id`. The complete and only normative specification is **Launch authorization** above — mode, earliest horizon, implementation version, and a contained 24-hour canary. |
 | 18 | **Maximum work.** One run stops at whichever comes first: **50,000 objects scanned**, **20,000 API calls**, or **20 minutes** elapsed. It then ends **`partial`** — never `completed` — with `window_exhausted = false` and the cursor preserved. Its successor inherits the same window and resumes. A bounded run that stops honestly is worth more than an unbounded one that is killed, and far more than one that claims completion it did not reach. |
 | 19 | **Rerun safety.** A rerun after partial completion resumes from the cursor. A rerun of an already-complete window re-examines and re-matches, creating nothing new — proven by rules 12 and 14. Reruns are always safe; that is the property the whole design buys. |
 | 20 | **Reconciliation cannot change financial truth on its own** — see below. |
@@ -933,8 +980,8 @@ The error table drives quarantine off object-terminal failures, but the closed `
 
 | Property | Rule |
 |---|---|
-| Required fields | `provider_object_id` NOT NULL; the Stripe object type (`payment_intent`, `charge`, `refund`, `checkout_session`) recorded in `detail.object_type` |
-| `dedup_key` | `'provider_object_processing_failed:' || provider_object_id || '::' || ''` — the standard construction of §10, in which only `kind` and `provider_object_id` are populated. One object with a persistent processing failure therefore maps to exactly one open row |
+| Required fields | Enforced by `CHECK`, not convention: `provider_object_id` NOT NULL; `detail.object_type` present and one of `payment_intent`, `charge`, `refund`, `checkout_session`; `detail.error_class` present and one of `malformed_object`, `object_not_found`, `object_scoped_bad_request` |
+| `dedup_key` | Produced by the generated column from `kind` and `provider_object_id`, the only populated identity fields. One object with a persistent processing failure therefore maps to exactly one open row. It cannot be supplied by the writer |
 | `detail` | Sanitized: `object_type`, `error_class` (`malformed_object`, `object_not_found`, `object_scoped_bad_request`), provider status code, and the run id. **No cardholder name, address, email or phone** |
 | Streak | Each run in which this object fails terminally increments `consecutive_failure_runs` once, via the standard upsert guard on `last_run_id` |
 | Recovery | A later run that examines the object successfully finds the open row **by the same `dedup_key`** and resets `consecutive_failure_runs` to 0. The row stays `open` for founder review — a successful examination is not a founder's judgement, so it does not resolve anything |
@@ -945,6 +992,21 @@ Only an *actively quarantined* object is skipped, so the recovery path is reacha
 ### Counter semantics
 
 `objects_scanned` and `objects_matched` count **examinations performed by this run**, not distinct objects across runs. Because rule 1 overlaps windows by an hour and rule 3 resumes at page boundaries, the same object is legitimately examined more than once — so a sum of `objects_scanned` across runs is not a count of distinct Stripe objects, and must not be read as one. `exceptions_created` counts inserts; `exceptions_reopened` counts upserts onto an already-open row. Uniqueness lives in the write path (L8/L8b, `dedup_key`), not in the counters.
+
+### `implementation_version` provenance (B-61)
+
+The version check is only as trustworthy as the value. A string the caller passes in can be set to whatever unlocks an existing approval, which would make the entire authorization model decorative — the one field distinguishing "the build we rehearsed" from "some other build" would be attacker- or accident-controlled.
+
+**The value is an immutable deployed-build identifier, read server-side.**
+
+- **Source:** a CI-injected build identifier — the deployment's **git commit SHA** or container **image digest** — exposed to the running process as an environment variable at build time (for example `VERCEL_GIT_COMMIT_SHA`, or the image digest for a container deployment).
+- **Read server-side, at run creation, from process configuration.** Never from a request body, query parameter, header, cookie, or any client-influenced input. There is no code path in which a browser can determine this value.
+- **Never defaulted.** If the identifier is absent from the environment, run creation **fails**. A placeholder such as `'dev'` or `'unknown'` would collapse every environment into one authorization scope, which is worse than refusing to start.
+- **Recorded on every run**, dry and writing alike, so an authorization always names the build that produced it.
+
+**What requires a new identifier.** Any redeploy produces a new commit SHA or digest, so in practice *every* change to the reconciliation build invalidates prior authorizations — including dependency and configuration changes that alter behaviour without touching reconciliation source. This is deliberately over-inclusive: the cost of an unnecessary re-approval is one dry run, while the cost of a missed one is a changed job running under a rehearsal it never performed.
+
+**How PR 3 proves it.** The authorization trigger compares the writing run's `implementation_version` to its authorizing run's and rejects any mismatch, so a changed build cannot reuse an old authorization even by accident. PR 3's tests deploy a second build identifier and assert that a writing run citing the earlier authorization is refused, and that supplying the version through any request-shaped input is impossible because the code reads only process configuration.
 
 ### Matching
 
@@ -1185,7 +1247,13 @@ Returns `members.id` for the row where `members.profile_id = auth.uid()`; `NULL`
 **Not created by V2 — reused.** See §2.
 
 **`finance.release_quarantine(p_exception_id uuid, p_note text) → void`**
-`VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Raises unless `public.is_founder()`. Sets `released_at = now()`, `released_by = auth.uid()`, resets `consecutive_failure_runs` to 0, and appends `p_note` to `resolution_note` — in one statement, so no intermediate state violates the quarantine `CHECK`s. Raises if the row is not actively quarantined. `EXECUTE` granted to `authenticated` only; the founder check is inside.
+`VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Raises unless `public.is_founder()`. Locks the row `FOR UPDATE`, then sets `released_at = GREATEST(clock_timestamp(), quarantined_at + interval '1 microsecond')`, `released_by = auth.uid()`, resets `consecutive_failure_runs` to 0, and appends `p_note` to `resolution_note` — in one statement, so no intermediate state violates a `CHECK`. Raises if the row is not actively quarantined. `EXECUTE` to `authenticated` only.
+
+**`finance.quarantine_object(p_exception_id uuid, p_reason text) → void`**
+`VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Locks the row, then sets `quarantined_at = GREATEST(clock_timestamp(), COALESCE(released_at, '-infinity') + interval '1 microsecond')` and `quarantine_reason`. `EXECUTE` to `service_role` only — this is the job's transition, not a founder's.
+
+**`finance.approve_dry_run(p_run_id uuid, p_note text) → void`**
+`VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Raises unless `public.is_founder()`. Locks the run, validates every precondition of §10a, then sets `approved_by = auth.uid()` and `approved_at = clock_timestamp()` **internally** — neither is a parameter. Raises if already approved. `EXECUTE` to `authenticated` only.
 
 **`finance.create_agreement(p_member_id uuid, p_journey_id uuid, p_purpose finance.agreement_purpose, p_reason text) → uuid`**
 `VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Raises unless `public.is_founder()`. Raises on blank `p_reason`. In one transaction: inserts the agreement, then its initial lifecycle event with `from_status = NULL`, `to_status = 'draft'`, `actor_id = auth.uid()` and `reason = p_reason`. Returns the new `agreements.id`. On unique violation of `(member_id, journey_id, purpose)` it raises rather than returning the existing row — silently returning would make a caller believe it created something it did not. `EXECUTE` granted to `authenticated` only; the founder check is inside.
@@ -1203,8 +1271,8 @@ Returns `members.id` for the row where `members.profile_id = auth.uid()`; `NULL`
 | `checkout_sessions` | `SELECT` via parent agreement owned by the member | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (status, stripe_session_id, completed_at)` |
 | `payment_links` | none — the raw token is the member's only handle; the row is never read by them | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (status, claimed_at, consumed_at, consumed_by_session_id, attempt_count)` |
 | `stripe_events` | none | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (processing_status, claimed_at, attempt_count, processed_at, processing_error, payload)` |
-| `reconciliation_exceptions` | none | `SELECT`, `UPDATE (resolution_status, resolved_at, resolved_by, resolution_note)` where `public.is_founder()`. **Release is not a direct `UPDATE`** — it goes through `finance.release_quarantine()` so the three affected columns change atomically | `SELECT`, `INSERT`, `UPDATE (last_detected_at, occurrence_count, detail, last_run_id, consecutive_failure_runs, quarantined_at, quarantine_reason)` |
-| `reconciliation_runs` | none | `SELECT`, `UPDATE (approved_by, approved_at)` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (status, cursor, window_exhausted, heartbeat_at, finished_at, error, objects_scanned, objects_matched, exceptions_created, exceptions_reopened, api_calls, retries, would_create_count, would_reopen_count, prospective_by_kind, report_samples, report_version, report_completed_at)` |
+| `reconciliation_exceptions` | none | `SELECT`, `UPDATE (resolution_status, resolved_at, resolved_by, resolution_note)` where `public.is_founder()`. **Release goes through `finance.release_quarantine()`** | `SELECT`, `INSERT`, `UPDATE (last_detected_at, occurrence_count, detail, last_run_id, consecutive_failure_runs)`. **Quarantine goes through `finance.quarantine_object()`** — no role holds a direct `UPDATE` on `quarantined_at`, `quarantine_reason`, `released_at` or `released_by` |
+| `reconciliation_runs` | none | `SELECT` where `public.is_founder()`. **Approval is not a direct `UPDATE`** — it goes through `finance.approve_dry_run()`, so the actor and timestamp cannot be supplied | `SELECT`, `INSERT`, `UPDATE (status, cursor, window_exhausted, heartbeat_at, finished_at, error, objects_scanned, objects_matched, exceptions_created, exceptions_reopened, api_calls, retries, would_create_count, would_reopen_count, prospective_by_kind, report_samples, report_version, report_completed_at)` — **all blocked once `approved_at` is set**, by the freeze trigger |
 
 Notes:
 
@@ -1212,7 +1280,9 @@ Notes:
 - **Lifecycle events are founder-only** — operational state is internal, and exposing it invites members to read intent that is not addressed to them.
 - **Founders have no direct `INSERT` on the fact tables in PR 1.** Writes arrive through approved functions; the founder amendment and external-payment functions ship in PR 5. PR 1's only approved write function is `create_agreement()`, and acceptance test 12 is scoped to it.
 - `service_role` `UPDATE` grants are **column-scoped** to the lists above, not table-wide. An earlier revision granted a column named `counters`, which does not exist — the six counter columns are enumerated individually above.
-- **Only a founder may approve a dry run** (`approved_by`, `approved_at`), and **only a founder may release a quarantine**, through `finance.release_quarantine()`. `service_role` holds neither the columns nor `EXECUTE` on the function, so the job cannot authorise itself or clear its own quarantine.
+- **No role holds a direct `UPDATE`** on the approval columns or the four quarantine columns. Every transition runs through a function that computes actor and timestamp internally, so attribution cannot be spoofed and ordering cannot be violated.
+- **Only a founder may approve** (`finance.approve_dry_run`) or **release** (`finance.release_quarantine`); only `service_role` may **quarantine** (`finance.quarantine_object`). The job cannot authorise itself or clear its own quarantine.
+- **Once `approved_at` is set, the reviewed evidence is frozen** by trigger, regardless of role.
 - `service_role` writes the dry-run report columns (it produces the report) but **cannot** write `approved_by`/`approved_at`, so producing a report never approves it.
 - The column-scoped grant test asserts **both directions**: every update the job legitimately performs succeeds, and every column outside its list is rejected. A grant that is merely restrictive is not proven correct.
 

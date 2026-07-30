@@ -8,7 +8,7 @@
 ## Current status
 
 **Phase:** PR 0 — architecture and project-control documents.
-**State:** **PR 0 is not approved.** Documents written and revised across ten review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), a first external review of PR #838 (7 findings, B-3 … B-9), a clean-context re-verification (1 blocker, 6 minors), a second external review (6 findings, B-10 … B-15), a third external review at the Stripe boundary (6 findings, B-16 … B-21), a PR 1 executability review (9 blockers, 8 minors — B-22 … B-30), an operational readiness review (7 blockers, 6 minors — **zero of twenty operational points defined**, B-31 … B-43), an independent review returning **BLOCK** on the reconciliation state machine (B-44 … B-51), and a second **BLOCK** on executability of that machine (B-52 … B-57). All resolved. Awaiting independent re-review.
+**State:** **PR 0 is not approved.** Documents written and revised across eleven review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), a first external review of PR #838 (7 findings, B-3 … B-9), a clean-context re-verification (1 blocker, 6 minors), a second external review (6 findings, B-10 … B-15), a third external review at the Stripe boundary (6 findings, B-16 … B-21), a PR 1 executability review (9 blockers, 8 minors — B-22 … B-30), an operational readiness review (7 blockers, 6 minors — **zero of twenty operational points defined**, B-31 … B-43), an independent review returning **BLOCK** on the reconciliation state machine (B-44 … B-51), a second **BLOCK** on executability of that machine (B-52 … B-57), and a third **BLOCK** on transition integrity and enforcement (B-58 … B-62). All resolved. Awaiting independent re-review.
 
 The clean-context pass caught a defect introduced by the B-7 fix itself: L12 originally defined "provider-originated" as `source='stripe' AND provider_object_id IS NOT NULL`, which contradicted L1 and D-020 — a Stripe payment imported without a charge-object id would have demanded a human actor that no document assigned. L12 now keys on `source` alone.
 
@@ -34,7 +34,17 @@ The two divergent rows validate D-015 against production: 12% of members would s
 ### B-2 — PR 0 review not yet complete (blocks PR 1)
 Per the working agreement, implementation waits on reviewer confirmation that the documents contain no unresolved contradiction in the financial model. **PR 0 is explicitly not approved.**
 
-### B-52 … B-57 — Second independent BLOCK: executability of the state machine (resolved, pending re-review)
+### B-58 … B-62 — Third independent BLOCK: transition integrity (resolved, pending re-review)
+
+| ID | Finding | Resolution |
+|---|---|---|
+| B-58 | `now()` is fixed at transaction start, so an overlapping transaction could write quarantine timestamps in the wrong order — a release could succeed and leave the object quarantined | Both transitions run through functions using `GREATEST(clock_timestamp(), opposing + 1µs)` under `FOR UPDATE`; no role holds a direct `UPDATE`; equality backstopped by `CHECK`; two-session test 101 (D-057) |
+| B-59 | The superseded D-050 approval section survived beside its replacement, specifying a contradictory model | Section **deleted**; §10a "Launch authorization" is the sole normative text; rule 17 points at it; D-050 marked history no normative text may cite (D-058) |
+| B-60 | Approval attribution was spoofable and approved evidence mutable — `service_role` could rewrite the report, window or version after approval | `finance.approve_dry_run()` sets actor and timestamp internally and refuses re-approval; a trigger freezes 17 evidence fields regardless of role (D-059) |
+| B-61 | `implementation_version` was an unverified caller label | CI-injected commit SHA or image digest, read server-side, never from request input, never defaulted (D-060) |
+| B-62 | `dedup_key` was writer-supplied and the exception shape was prose-only | `GENERATED ALWAYS AS … STORED`; `CHECK`-enforced object type and error class from closed lists (D-061) |
+
+### B-52 … B-57 — Second independent BLOCK: executability of the state machine (resolved)
 
 | ID | Finding | Resolution |
 |---|---|---|
@@ -58,7 +68,7 @@ The reconciliation state machine was reviewed as one system. Every finding was a
 | B-48 | Quarantine was unimplementable — nothing counted, held or identified failures across runs | State on the exception row keyed by `dedup_key`; streak rules, reset, founder-only release (D-047) |
 | B-49 | PR 3 test 3 contradicted rule 14 by demanding no object be examined twice | Test rewritten to page-boundary restart with no duplicate ledger entry or exception; counter meaning defined (D-049) |
 | B-50 | Run-fatal and object-terminal errors were conflated — a 401 would be skipped as one bad object | Four error classes; 401/403/invalid-list ends the run `failed` with cursor intact (D-048) |
-| B-51 | Dry-run approval was stated but unenforced | Persisted approval, cited authorization, window and mode validation, 24-hour canary, founder-only grant (D-050) |
+| B-51 | Dry-run approval was stated but unenforced | Persisted approval, cited authorization, window and mode validation, 24-hour canary, founder-only grant. *(D-050 — since fully superseded by D-052 and D-059.)* |
 
 ### B-31 … B-43 — Operational readiness review (resolved)
 
@@ -172,7 +182,7 @@ Noticed during audit or design, deliberately not folded into any current PR.
 
 ## Decisions carried forward
 
-D-001 … D-056 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**, whose recovery mechanism is in turn **corrected by D-028**. **D-026's system-actor mechanism is corrected by D-032.** **D-028 is refined by D-035**, **D-029 by D-034**, **D-013's founder-predicate clause is superseded by D-037**, **D-043's rules 10, 17 and 18 are corrected by D-048, D-050 and D-045**, **D-047's release mechanism by D-051**, **D-050 by D-052**, **D-045 tightened by D-055**, and **D-043's event list by D-056**. No decision is open. See [DECISIONS.md](DECISIONS.md).
+D-001 … D-061 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**, whose recovery mechanism is in turn **corrected by D-028**. **D-026's system-actor mechanism is corrected by D-032.** **D-028 is refined by D-035**, **D-029 by D-034**, **D-013's founder-predicate clause is superseded by D-037**, **D-043's rules 10, 17 and 18 are corrected by D-048, D-050 and D-045**, **D-047's release mechanism by D-051**, **D-050 by D-052**, **D-045 tightened by D-055**, **D-043's event list by D-056**, **D-051's timestamp mechanism by D-057**, **D-050 fully superseded by D-052 and D-059**, and **D-040/D-054 tightened by D-061**. No decision is open. See [DECISIONS.md](DECISIONS.md).
 
 ## Working agreement
 

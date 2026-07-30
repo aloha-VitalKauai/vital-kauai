@@ -538,7 +538,7 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 ---
 
 ## D-050 — Dry-run approval is a persisted, validated authorization
-**Date:** 2026-07-29 · **Status:** Approved · **Corrects rule 17 of D-043**
+**Date:** 2026-07-29 · **Status:** **Superseded by D-052 and D-059.** Retained as history only — its window model and its direct-`UPDATE` approval mechanism are both obsolete. No normative text may cite this entry.
 
 **Decision.** A founder approves a dry run by setting `approved_by`/`approved_at` on that run row. Every writing run cites one via `authorized_by_run_id`, enforced by `CHECK (dry_run OR authorized_by_run_id IS NOT NULL)` and a trigger validating that the cited run is a dry run, is approved, shares `livemode`, and has a `window_start` no later than the writing run's. The first writing run per mode is capped at a 24-hour window. Only a founder holds the grant on the approval columns.
 
@@ -548,7 +548,7 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 ---
 
 ## D-051 — Quarantine is derived from retained timestamps, released by a founder-only function
-**Date:** 2026-07-29 · **Status:** Approved · **Corrects the release mechanism of D-047**
+**Date:** 2026-07-29 · **Status:** Approved · **Corrects the release mechanism of D-047** · **Timestamp mechanism tightened by D-057**
 
 **Decision.** `quarantined_at` and `quarantine_reason` are never cleared. Active quarantine is derived: `quarantined_at IS NOT NULL AND (released_at IS NULL OR released_at < quarantined_at)`. Release happens through `finance.release_quarantine(p_exception_id, p_note)` — `SECURITY DEFINER`, founder-gated — which sets `released_at`/`released_by` and resets `consecutive_failure_runs` in one statement. A later re-quarantine writes a newer `quarantined_at` and becomes active again. `service_role` holds neither the columns nor `EXECUTE`.
 
@@ -600,3 +600,49 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 **Decision.** The partial unique index on `(event_type, object_id, livemode)` covers exactly `checkout.session.completed`, `checkout.session.expired`, `payment_intent.succeeded`, `payment_intent.canceled`. Removed: `payment_intent.payment_failed`, `checkout.session.async_payment_failed`, `checkout.session.async_payment_succeeded`. Adding any type requires a decision entry citing the Stripe semantics that make it at-most-once **per object**, not per attempt.
 
 **Rationale.** `payment_intent.payment_failed` is emitted **per failed attempt**. A failed PaymentIntent returns to `requires_payment_method` and can be retried, producing a second legitimate event with a new `event.id` but the same object id, type and `livemode` — which the index would have **silently discarded**. The two async Checkout types were removed because at-most-once is not provable from the object's semantics, and the index is asymmetric in cost: `event_id` already deduplicates redelivery and L8/L8b prevent ledger double-counting, so under-including costs nothing while over-including drops a real event. Uncertainty is a reason to exclude.
+
+
+---
+
+## D-057 — Quarantine transitions are strictly monotonic, via functions only
+**Date:** 2026-07-29 · **Status:** Approved · **Tightens D-051**
+
+**Decision.** Both transitions run through `SECURITY DEFINER` functions that lock the row and write a timestamp strictly greater than the opposing one: `finance.release_quarantine()` sets `released_at := GREATEST(clock_timestamp(), quarantined_at + interval '1 microsecond')`; `finance.quarantine_object()` sets `quarantined_at := GREATEST(clock_timestamp(), COALESCE(released_at,'-infinity') + interval '1 microsecond')`. `quarantine_object` is `service_role`-only, `release_quarantine` founder-only. **No role holds a direct `UPDATE`** on the four quarantine columns. A `CHECK (released_at IS DISTINCT FROM quarantined_at)` backstops equality.
+
+**Rationale.** D-051 specified `now()`, which PostgreSQL fixes at **transaction start**. A transaction that began before the opposing transition committed writes a timestamp *earlier* than the stored value, so `finance.release_quarantine()` could commit successfully and leave the object still actively quarantined — a release that reports success and changes nothing. Equality is equally wrong, since the derived predicate requires `released_at < quarantined_at` to mean quarantined. `clock_timestamp()` is evaluated at statement time rather than transaction start, and `GREATEST(…, opposing + 1µs)` holds under overlapping transactions and backward clock adjustment alike. Routing both transitions through functions is what makes the guarantee real: an ordering rule any caller can bypass with a raw `UPDATE` is not a guarantee.
+
+---
+
+## D-058 — Normative authorization text exists in exactly one place
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** The "Dry-run approval is a stored fact" section is **deleted**. "Launch authorization" in §10a is the sole normative specification, and operational rule 17 points at it rather than restating it. D-050 is marked superseded history that no normative text may cite.
+
+**Rationale.** The superseded D-050 model survived alongside its replacement, so the document specified two mutually inconsistent authorization schemes at once — the old one still saying approval is a direct column write, that only `window_start` is checked, and that the canary is keyed on `livemode` alone. An implementer reading top to bottom would have found the obsolete section first. Duplication is how a corrected model silently reverts.
+
+---
+
+## D-059 — Approval is a function; approved evidence is frozen
+**Date:** 2026-07-29 · **Status:** Approved · **Supersedes D-050's approval mechanism**
+
+**Decision.** Direct `UPDATE` on `approved_by`/`approved_at` is withdrawn from every role. `finance.approve_dry_run(p_run_id, p_note)` validates all preconditions, sets `approved_by = auth.uid()` and `approved_at = clock_timestamp()` internally — neither is a parameter — and raises on re-approval. A trigger then freezes `status`, `error`, `finished_at`, `window_exhausted`, `window_start`, `window_end`, `livemode`, `implementation_version`, `dry_run`, all six report columns and both approval columns, **regardless of role**.
+
+**Rationale.** A direct update let a founder write **another actor's id** into `approved_by` and any timestamp into `approved_at`, so the audit trail recorded what the caller typed rather than what happened. Worse, nothing froze the evidence: `service_role` retained `UPDATE` on the report columns, window and version, so the job could present a narrow clean report, obtain approval, and afterwards widen the window, swap the build, or rewrite the findings the founder actually read. An authorization whose subject can change after the fact authorizes nothing.
+
+---
+
+## D-060 — `implementation_version` is a deployed-build identifier read server-side
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** The value is a CI-injected immutable build identifier — git commit SHA or container image digest — read from process configuration at run creation. It is never accepted from a request body, parameter, header or cookie, and never defaulted: an absent identifier fails run creation rather than substituting a placeholder. Every run records it. PR 3 proves a changed build cannot reuse an earlier authorization.
+
+**Rationale.** The version equality check is only as trustworthy as the value's provenance. A caller-supplied label can be set to whatever unlocks an existing approval, which reduces the one field distinguishing "the build we rehearsed" from "some other build" to decoration. Defaulting to `'dev'` or `'unknown'` would collapse every environment into a single authorization scope. Redeploys are over-inclusive by design: an unnecessary re-approval costs one dry run, a missed one runs a changed job under a rehearsal it never performed.
+
+---
+
+## D-061 — `dedup_key` is generated; exception shape is enforced by `CHECK`
+**Date:** 2026-07-29 · **Status:** Approved · **Tightens D-040 and D-054**
+
+**Decision.** `reconciliation_exceptions.dedup_key` is a `GENERATED ALWAYS AS … STORED` column, so no writer can supply it. `provider_object_processing_failed` rows are constrained by `CHECK` to carry a non-null `provider_object_id`, a `detail.object_type` from the closed list `payment_intent | charge | refund | checkout_session`, and a `detail.error_class` from `malformed_object | object_not_found | object_scoped_bad_request`.
+
+**Rationale.** D-040 called the key "deterministic and computed at write time" while nothing stopped a writer supplying a different one — and a writer that can choose `dedup_key` **defeats deduplication entirely**, inserting thousands of fresh rows per run with every constraint still passing. D-054's required fields were likewise asserted in prose and enforced nowhere, so an incomplete exception would have been accepted and its quarantine identity silently wrong. `GENERATED ALWAYS` and `CHECK` move both from convention to impossibility.
