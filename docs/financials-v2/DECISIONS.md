@@ -493,7 +493,7 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 ---
 
 ## D-045 — `partial` is a distinct run status; only `completed` advances the watermark
-**Date:** 2026-07-29 · **Status:** Approved · **Corrects rule 18 of D-043** · **Constraint form tightened by D-055**
+**Date:** 2026-07-29 · **Status:** Approved · **Corrects rule 18 of D-043** · **Constraint form tightened by D-055** · **Enum inventory reconciled by D-072**
 
 **Decision.** `finance.run_status` gains `partial`. A run stopping at a work ceiling ends `partial` with `window_exhausted = false`; its successor inherits the identical window and cursor. `completed` requires every object type to have exhausted the whole window, enforced by ~~`CHECK (status <> 'completed' OR window_exhausted)`~~ **the biconditional `CHECK ((status = 'completed') = window_exhausted)` per D-055**. Only a `completed` run advances the next window's start.
 
@@ -760,3 +760,19 @@ The trigger is the load-bearing control and the grant is defence in depth, not t
 **Rationale.** D-069 claimed the two rows could be inserted "in either order". They cannot: the foreign key is non-deferrable and is therefore checked immediately, so a child-first insert fails before deferral is ever consulted, and the transition trigger separately locks and validates the parent row. What deferral actually buys is narrower and still necessary — it lets the *completeness* check wait until commit, so the agreement row is not rejected in the instant between its own insert and its event's insert. Without it the pair could not be created at all.
 
 **Consequence.** The foreign key is deliberately left non-deferrable and the transition trigger is not redesigned, because no caller needs child-first insertion and relaxing either would weaken a check to support an order nothing uses. Test 133b asserts child-first is rejected, so the distinction is enforced rather than merely described.
+
+
+---
+
+## D-072 — `finance.run_status` has five values; the §1 inventory row was stale
+**Date:** 2026-07-30 · **Status:** Approved · **Reconciles ARCHITECTURE §1 with D-045**
+
+**Decision.** `finance.run_status` is created with **five** values: `running`, `partial`, `completed`, `failed`, `abandoned`. `ARCHITECTURE.md` §1's enum inventory row is corrected to include `partial`, and `PR_PLAN.md` test 84 is corrected to state ten combinations — five valid, five rejected.
+
+**Rationale.** PR 1 could not begin because the approved specification named two different value sets for one enum. §1's inventory row listed four values while §10a's normative definition, the run-state table, D-045 and PR_PLAN test 84 all named five. The inventory row is a summary that was never updated when D-045 added `partial`; every independent normative source agrees on five.
+
+The choice was load-bearing rather than cosmetic. Without `partial`, a run stopping at a work ceiling must be recorded as `completed` — and since only a `completed` run advances the watermark (rule 1), the next window would start after everything the bounded run never reached. That is **exactly the B-46 defect**, reintroduced at the schema level by a stale documentation row.
+
+**Test 84's arithmetic was also wrong.** Five statuses across two flag states is ten combinations, not eight: valid are `completed`+`true` plus each of the other four with `false`; rejected are `completed`+`false` plus each of the other four with `true`. Eight matched neither five values (ten combinations) nor four (eight combinations, four rejected).
+
+**Consequence.** No behavioural change to the approved design — this records what D-045 already decided and removes the contradiction blocking implementation. The correction and its implementation ship atomically in PR 1.

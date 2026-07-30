@@ -250,7 +250,7 @@ All of the following must pass through automated database tests before PR 1 open
 81. The same `dedup_key` in different `livemode` yields two independent rows.
 82. `last_detected_at >= first_detected_at` is enforced.
 83. **`finished_at` consistency** — a `running` row with `finished_at` set is rejected, and any non-`running` row without it is rejected.
-84. **`window_exhausted` biconditional** — every one of the five statuses is tested in both flag states. Only `completed` may carry `true`, and `completed` may not carry `false`; all eight other combinations are rejected.
+84. **`window_exhausted` biconditional** — every one of the five statuses is tested in both flag states: **10 combinations, 5 valid and 5 rejected**. Valid are `completed`+`true` and each of `running`, `partial`, `failed`, `abandoned` with `false`; rejected are `completed`+`false` and each of the other four with `true`.
 85. **Resume lineage** — `resumed_from_run_id` may reference a `partial`, `failed` or `abandoned` run; referencing a `running` or `completed` run is rejected; self-reference is rejected; a second run resuming the same predecessor is rejected.
 86. **Approval constraints** — a `dry_run = false` row without `authorized_by_run_id` is rejected; a `dry_run = true` row *with* one is rejected; `approved_by` and `approved_at` must be set together.
 87. **Quarantine constraints** — `quarantined_at`/`quarantine_reason` set together; `released_at`/`released_by` set together; a release without a prior quarantine is rejected; `consecutive_failure_runs` may not go negative; **`quarantined_at` is never cleared by any permitted operation**.

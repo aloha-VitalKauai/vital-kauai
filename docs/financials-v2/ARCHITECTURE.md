@@ -66,7 +66,7 @@ PR 1 creates exactly thirteen enum types:
 | `finance.checkout_status` | `creating`, `open`, `completed`, `expired`, `canceled` | §11 |
 | `finance.link_status` | `active`, `creating`, `consumed`, `revoked` | §12 |
 | `finance.system_actor` | `reconciliation`, `legacy_import`, `checkout_sweeper` | §7 |
-| `finance.run_status` | `running`, `completed`, `failed`, `abandoned` | §10a |
+| `finance.run_status` | `running`, `partial`, `completed`, `failed`, `abandoned` | §10a |
 
 ### View inventory
 
