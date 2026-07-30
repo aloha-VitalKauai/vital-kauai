@@ -77,10 +77,15 @@ PR 1 creates exactly five views: `v_agreement_lifecycle` (§6), `v_agreement_bal
 | Reference | Target | Enforcement |
 |---|---|---|
 | Member identity | `public.members(id)` | FK, `ON DELETE RESTRICT` |
-| Journey identity | canonical journey record | FK, `ON DELETE RESTRICT` |
+| Journey identity | **`public.journeys(id)`** | FK, `ON DELETE RESTRICT` |
 | Actor / recorder | `auth.users(id)` | FK, `ON DELETE RESTRICT` |
+| Founder predicate | **`public.is_founder()`** — reused, not redefined | called in RLS policies |
 
-`ON DELETE RESTRICT` throughout: a financial fact must never be silently orphaned or cascaded away.
+`ON DELETE RESTRICT` throughout: a financial fact must never be silently orphaned or cascaded away. `public.journeys(id)` is confirmed as an existing FK target by `20260505000000_journey_email_templates.sql:30`.
+
+**V2 reuses the existing `public.is_founder()`** rather than defining `finance.is_founder()`. The function already exists and is used by current RLS — `20260621000000_internal_calendar.sql:34` documents it as "a `user_roles` lookup, `role = 'founder'`", and `20260621030000_protocol_template_days.sql:45` calls it in policy bodies. Defining a second founder predicate would create two places for the answer to drift, which is the defect class this project exists to remove. PR 1 confirms its definition against the live database and records it; if it proves unsuitable, a superseding decision is required before any alternative is written.
+
+*Note for implementers:* the application-layer `verifyFounder()` in `lib/auth/founder-check.ts:4-7` uses a hardcoded `FOUNDER_IDS` array. **V2 does not use that path.** Founder authority in V2 is the database predicate.
 
 ### Forbidden
 
@@ -207,8 +212,29 @@ finance.agreement_lifecycle_events
 - Current lifecycle = latest event by `occurred_at DESC, seq DESC` — total, for the same reason as §5. This lookup is expressed exactly once, in **`finance.v_agreement_lifecycle`** (one row per agreement, exposing the current status and the actor, reason and timestamp of the transition that set it). Nothing else re-derives it.
 - Every agreement has an initial event created atomically with it (§4), so current lifecycle is **never NULL**.
 - The transition trigger takes `SELECT … FOR UPDATE` **on the agreement row** before validating, serialising concurrent transitions. Without the lock, two concurrent transitions from `active` would both validate and both commit.
-- Invalid transitions are rejected. Terminal states (`canceled`, `waived`) accept no outbound transition.
 - No `lifecycle_status` column exists on `finance.agreements`.
+
+### The transition graph
+
+Stating only "terminal states accept no outbound transition" left the rest undefined and the trigger unwritable. The complete legal set:
+
+| From | Permitted `to_status` |
+|---|---|
+| *(initial event, `from_status IS NULL`)* | `draft` only |
+| `draft` | `active`, `canceled`, `waived` |
+| `active` | `fulfilled`, `canceled`, `waived` |
+| `fulfilled` | `active` |
+| `canceled` | — terminal |
+| `waived` | — terminal |
+
+Anything not in this table is rejected.
+
+Two choices worth stating plainly:
+
+- **Every agreement begins at `draft`**, so `create_agreement()` has one unambiguous initial event and tests have one expected value.
+- **`fulfilled → active` is permitted** because fulfilment is an operational judgement, not a financial fact. A founder who marks an agreement fulfilled and then agrees further contribution must be able to reopen it. `canceled` and `waived` stay terminal because reversing either is a different decision that deserves a new agreement rather than a quiet reopen.
+
+Lifecycle remains entirely separate from `payment_state`: an agreement can be `fulfilled` while `partial`, or `active` while `paid`. Neither constrains the other, and neither appears in the other's computation.
 
 ---
 
@@ -232,8 +258,11 @@ finance.ledger_entries
   recorded_by_system          finance.system_actor NULL                -- automated actor
   reason                      text NULL
   legacy_donation_id          uuid NULL      -- import traceability, no FK by design
+  origin_stripe_event_id      text NULL -> finance.stripe_events(event_id) (RESTRICT)
   livemode                    boolean NOT NULL
 ```
+
+`origin_stripe_event_id` records **which webhook event caused this entry**. Without it L11 was unenforceable — it required ledger `livemode` to match "the originating event or session," but no column connected a ledger row to either, so there was no join path and no way to write the trigger. The column is NULL for external payments, imported history, and founder-initiated reversals, all of which have no originating event.
 
 **No generic correction type.** A mistaken entry is fixed by an attributed `reversal` linked to it, then the correct replacement entry. The original is never updated or deleted.
 
@@ -280,7 +309,7 @@ A reversal of a **refund** is permitted — it is the correction path for a refu
 | L8b | `UNIQUE (provider_payment_intent_id, livemode)` where `entry_type = 'stripe_payment'` | partial unique index |
 | L9 | `UNIQUE (legacy_donation_id, entry_type)` where `legacy_donation_id IS NOT NULL` | partial unique index |
 | L10 | `currency` matches the agreement | structural under USD-only (§3) |
-| L11 | Where an originating event or session exists, ledger `livemode` must match it. External payments and imported historic money are `livemode = true`. | constraint trigger |
+| L11 | Where `origin_stripe_event_id` is present, ledger `livemode` must equal that event's `livemode`. External payments and imported historic money are `livemode = true` with `origin_stripe_event_id` NULL. | constraint trigger |
 | L12 | **`source = 'external'` OR `entry_type = 'reversal'` requires a non-blank `reason` and exactly one attribution — either `recorded_by` (a human) or `recorded_by_system` (an automated actor).** | table `CHECK` |
 | L13 | **Provenance fields may not contradict `source`.** `source='stripe'` requires `external_method IS NULL`. `source='external'` requires `provider_object_id IS NULL` **and** `provider_payment_intent_id IS NULL`. | table `CHECK` |
 
@@ -417,7 +446,7 @@ A custom schema is **not** exposed through PostgREST or reachable by any role un
 ### Row-level security
 - `ENABLE` **and** `FORCE ROW LEVEL SECURITY` on all eight tables.
 - Member `SELECT` policies resolve identity through `finance.current_member_id()` — never an email join.
-- Founder policies use a versioned `finance.is_founder()`. **No hardcoded founder UUIDs.**
+- Founder policies call the **existing `public.is_founder()`** (§2), not a new V2 predicate. **No hardcoded founder UUIDs.**
 - **No client `UPDATE` or `DELETE` policies on the three append-only fact tables.** Enforced by absent policy *and* by a trigger raising on `UPDATE`/`DELETE`, so it holds even for roles bypassing RLS.
 - Members have no `INSERT` policy on any financial fact.
 
@@ -459,12 +488,28 @@ finance.stripe_events
 | Threat | Defence |
 |---|---|
 | Same event ID delivered repeatedly | `event_id` primary key. On conflict, **branch on `processing_status`** — see below. |
-| Separate events for the same object | Partial unique index on `(event_type, object_id, livemode)` for terminal at-most-once types only (e.g. `checkout.session.completed`). Not applied to repeatable types such as `charge.refunded`, where two genuine partial refunds share one charge object. |
+| Separate events for the same object | Partial unique index on `(event_type, object_id, livemode)` restricted to the **enumerated** terminal at-most-once list below. Not applied to repeatable types such as `charge.refunded`, where two genuine partial refunds share one charge object. |
 | Repeatable events double-counting | Enforced at the ledger by **L8** on the refund object itself — independent of event deduplication. |
 | Concurrent processing | Claim via `UPDATE … SET processing_status='processing', claimed_at=now() WHERE processing_status IN ('received','failed') RETURNING`. Only the claiming worker proceeds. |
 | Failure then replay | On PK conflict: `processed`/`ignored` ⇒ acknowledge and stop; `received`/`failed` ⇒ re-claim and process; `processing` with `claimed_at` older than the staleness window ⇒ re-claim. A sweeper re-queues stale claims. **Unconditionally acknowledging on conflict would strand any event that crashed mid-processing**, since Stripe's redelivery would hit the PK and stop forever. |
 
 Ledger invariants make reprocessing safe in every branch.
+
+### Terminal at-most-once event types
+
+An `e.g.` cannot become an index predicate, so the list is closed and exhaustive. The partial unique index on `(event_type, object_id, livemode)` applies to exactly:
+
+```
+'checkout.session.completed'
+'checkout.session.async_payment_succeeded'
+'checkout.session.async_payment_failed'
+'checkout.session.expired'
+'payment_intent.succeeded'
+'payment_intent.payment_failed'
+'payment_intent.canceled'
+```
+
+Each occurs at most once for a given object. **`charge.refunded` is deliberately excluded** — it fires once per refund against the same charge, so a unique constraint would reject the second genuine partial refund. Refund double-counting is prevented at the ledger by L8 on the Refund object instead. Adding a type to this list requires a `DECISIONS.md` entry, because a wrong entry silently drops real events.
 
 ### Payment processing — what creates a `stripe_payment`
 
@@ -626,9 +671,23 @@ Other consequences:
 
 ```
 finance.payment_links
-  id, agreement_id, token_hash UNIQUE, status finance.link_status,
-  expires_at, claimed_at, consumed_at, consumed_by_session_id,
-  revoked_at, revoked_by, attempt_count, created_at, created_by
+  id                     uuid PK default gen_random_uuid()
+  agreement_id           uuid NOT NULL -> finance.agreements(id) (RESTRICT)
+  token_hash             text NOT NULL UNIQUE
+  status                 finance.link_status NOT NULL default 'active'
+  expires_at             timestamptz NOT NULL
+  claimed_at             timestamptz NULL
+  consumed_at            timestamptz NULL
+  consumed_by_session_id uuid NULL -> finance.checkout_sessions(id) (RESTRICT)
+  revoked_at             timestamptz NULL
+  revoked_by             uuid NULL -> auth.users(id) (RESTRICT)
+  attempt_count          integer NOT NULL default 0 CHECK (attempt_count >= 0)
+  created_at             timestamptz NOT NULL default now()
+  created_by             uuid NOT NULL -> auth.users(id) (RESTRICT)
+
+  CHECK (status <> 'creating' OR claimed_at IS NOT NULL)
+  CHECK (status <> 'consumed' OR (consumed_at IS NOT NULL AND consumed_by_session_id IS NOT NULL))
+  CHECK (status <> 'revoked'  OR (revoked_at  IS NOT NULL AND revoked_by IS NOT NULL))
 ```
 
 `finance.link_status` enum: `active`, `creating`, `consumed`, `revoked`.
@@ -727,7 +786,74 @@ The same payment is never written into both systems. One payment has exactly one
 
 ---
 
-## 15. Traceability to audit findings
+## 15. PR 1 implementation specification
+
+Everything below exists because a readiness review found PR 1 unwritable without it. Principles are not specifications.
+
+### Postgres baseline
+
+**PostgreSQL 15 or later is required** — `NULLS NOT DISTINCT` (§4) and `security_invoker` on views (§9) both need it. PR 1 asserts the server version before creating anything.
+
+### Functions
+
+**`finance.current_member_id() → uuid`**
+`STABLE`, `SECURITY DEFINER`, `SET search_path = pg_catalog, public, finance`.
+Returns `members.id` for the row where `members.profile_id = auth.uid()`; `NULL` when there is no session or no matching member. Never raises. `EXECUTE` granted to `authenticated` and `service_role` only. Single-valued resolution depends on B-1 (uniqueness of `members.profile_id`).
+
+**`public.is_founder() → boolean`**
+**Not created by V2 — reused.** See §2.
+
+**`finance.create_agreement(p_member_id uuid, p_journey_id uuid, p_purpose finance.agreement_purpose, p_reason text) → uuid`**
+`VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Raises unless `public.is_founder()`. Raises on blank `p_reason`. In one transaction: inserts the agreement, then its initial lifecycle event with `from_status = NULL`, `to_status = 'draft'`, `actor_id = auth.uid()` and `reason = p_reason`. Returns the new `agreements.id`. On unique violation of `(member_id, journey_id, purpose)` it raises rather than returning the existing row — silently returning would make a caller believe it created something it did not. `EXECUTE` granted to `authenticated` only; the founder check is inside.
+
+### RLS policy matrix
+
+`ENABLE` and `FORCE ROW LEVEL SECURITY` on all eight tables. No policy grants `UPDATE` or `DELETE` on the three fact tables to any role.
+
+| Table | `authenticated` — member | `authenticated` — founder | `service_role` |
+|---|---|---|---|
+| `agreements` | `SELECT` where `member_id = finance.current_member_id()` | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT` |
+| `agreement_amounts` | `SELECT` via parent agreement owned by the member | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT` |
+| `agreement_lifecycle_events` | none | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT` |
+| `ledger_entries` | `SELECT` via parent agreement owned by the member | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT` |
+| `checkout_sessions` | `SELECT` via parent agreement owned by the member | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (status, stripe_session_id, completed_at)` |
+| `payment_links` | none — the raw token is the member's only handle; the row is never read by them | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (status, claimed_at, consumed_at, consumed_by_session_id, attempt_count)` |
+| `stripe_events` | none | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (processing_status, claimed_at, attempt_count, processed_at, processing_error, payload)` |
+| `reconciliation_exceptions` | none | `SELECT`, `UPDATE (resolution_status, resolved_at, resolved_by, resolution_note)` where `public.is_founder()` | `SELECT`, `INSERT` |
+
+Notes:
+
+- **Members have no `INSERT`, `UPDATE` or `DELETE` policy on any table.** Every member-visible figure is a read.
+- **Lifecycle events are founder-only** — operational state is internal, and exposing it invites members to read intent that is not addressed to them.
+- **Founders have no direct `INSERT` on the fact tables in PR 1.** Writes arrive through approved functions; the founder amendment and external-payment functions ship in PR 5. PR 1's only approved write function is `create_agreement()`, and acceptance test 12 is scoped to it.
+- `service_role` `UPDATE` grants are **column-scoped** to the lists above, not table-wide.
+
+### View columns
+
+**`finance.v_agreement_lifecycle`** — `agreement_id`, `current_status`, `since` (`occurred_at` of the winning event), `actor_id`, `reason`.
+
+**`finance.v_agreement_balances`** — `agreement_id`, `member_id`, `journey_id`, `purpose`, `currency`, `contribution_applies`, plus the eight computed columns of §8.
+
+**`finance.v_member_financials`** — `member_id`, `agreement_count`, `contribution_cents`, `gross_received_cents`, `refunded_cents`, `net_received_cents`, `remaining_cents`, `payable_remaining_cents`. Received sums across **all** agreements; Remaining sums across `contribution_applies` agreements only.
+
+**`finance.v_journey_financials`** — `journey_id` plus the same aggregate columns, restricted to agreements with a non-null `journey_id`.
+
+**`finance.v_agreement_balances_test`** — identical column list to `v_agreement_balances`, filtered to `livemode = false`. Founder-only.
+
+### Implementation notes
+
+- **`is_reversed` cannot sit inside a `FILTER` clause** as written in §8 — a correlated subquery is not permitted there. Compute it in a `LATERAL` join or a pre-aggregated CTE over `ledger_entries` keyed by `parent_entry_id`, then filter on the resulting boolean. The semantics are as stated; only the shape differs.
+- **`payment_state` must be cast** — the `CASE` in §8 yields `text`; cast explicitly to `finance.payment_state`.
+- **Partial uniqueness is an index, not a constraint.** `UNIQUE (…) WHERE …` appears in the DDL blocks for readability; every such rule is created as `CREATE UNIQUE INDEX … WHERE …`. This applies to L8, L8b, L9, the one-initial-lifecycle-event rule (§6), and the one-live-session rule (§11).
+- **Append-only enforcement is a trigger, not only a policy** — `BEFORE UPDATE OR DELETE … FOR EACH ROW EXECUTE` raising unconditionally, so it holds for `service_role` and any future role.
+
+### Test framework
+
+Acceptance tests run under **pgTAP**, executed by `supabase test db` against a fresh database. PR 1 adds the `pgtap` extension and a `supabase/tests/` directory. Three items in the acceptance list are **review checks rather than pgTAP assertions** and are verified by the reviewer against the diff: "every object created from tracked migrations", "aggregate views contain no independent financial formula", and "`v_agreement_lifecycle` is the only expression of current lifecycle". They are labelled as such in `PR_PLAN.md`. Concurrency tests use two sessions via `dblink` or paired connections; if the harness cannot express true concurrency, the test is reported as **not run** rather than quietly passing.
+
+---
+
+## 16. Traceability to audit findings
 
 | Audit finding | V2 resolution |
 |---|---|
@@ -743,6 +869,6 @@ The same payment is never written into both systems. One payment has exactly one
 | Two disjoint payment-status vocabularies | One computed `payment_state`; lifecycle separate (§6, §8) |
 | Provenance in `metadata` only | First-class `entry_type`, `source`, `external_method` (§7) |
 | No RLS in repo for money tables | Full RLS, privileges and tests in PR 1 (§9) |
-| Hardcoded founder UUIDs | Versioned `finance.is_founder()` (§9) |
+| Hardcoded founder UUIDs | Reuses the existing `public.is_founder()` predicate; V2 never inlines UUIDs (§2, §9) |
 | Fragile email-based member join | `finance.current_member_id()`; email join forbidden (§2) |
 | `program_price` dollars vs cents drift | Integer cents everywhere; no float (§3) |

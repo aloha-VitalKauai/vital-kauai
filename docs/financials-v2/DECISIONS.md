@@ -143,7 +143,7 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 ## D-013 — Service-role access is not the authorization model for founder routes
 **Date:** 2026-07-29 · **Status:** Approved
 
-**Decision.** RLS is enabled and forced on all eight tables. Founder policies use a versioned `finance.is_founder()`; member policies use `finance.current_member_id()`. No hardcoded founder UUIDs. No client `UPDATE` or `DELETE` policies on append-only facts. Service-role access is confined to verified server infrastructure — webhook ingestion and reconciliation jobs.
+**Decision.** RLS is enabled and forced on all eight tables. Founder policies call the **existing `public.is_founder()`** — see D-037, which supersedes this clause; member policies use `finance.current_member_id()`. No hardcoded founder UUIDs. No client `UPDATE` or `DELETE` policies on append-only facts. Service-role access is confined to verified server infrastructure — webhook ingestion and reconciliation jobs.
 
 **Rationale.** The audit found no RLS in the repository for any money table, every `/api/payments/*` route using a service-role client, and the one in-repo money-adjacent policy set inlining founder UUIDs across three policies. Security lived entirely in application code and was invisible to schema review.
 
@@ -284,7 +284,7 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 ## D-026 — Corrections require an actor and a reason
 **Date:** 2026-07-29 · **Status:** Approved
 
-**Decision.** L12: an entry with `source = 'external'`, or of `entry_type = 'reversal'`, requires `recorded_by` NOT NULL and a non-blank `reason`. Reconciliation-initiated reversals carry a dedicated system reconciliation service account — a real `auth.users` row, created or confirmed in PR 1 and recorded here — with a reason naming the triggering exception.
+**Decision.** L12: an entry with `source = 'external'`, or of `entry_type = 'reversal'`, requires `recorded_by` NOT NULL and a non-blank `reason`. Reconciliation-initiated reversals carry the `reconciliation` system actor with a reason naming the triggering exception. *(D-032 supersedes the earlier Auth-account mechanism: PR 1 must not create an `auth.users` row.)*
 
 **Rationale.** Attribution was required only on `external_payment`, so a founder could post an external refund or a reversal — the entry types that exist specifically to correct human error — with no actor and no explanation. An unattributed correction is the legacy defect in new clothing.
 
@@ -317,7 +317,7 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 ## D-029 — At most one live Checkout Session per agreement
 **Date:** 2026-07-29 · **Status:** Approved
 
-**Decision.** A partial unique index on `finance.checkout_sessions (agreement_id) WHERE status IN ('creating','open')`. A request while a live Session exists returns that Session's URL rather than creating another. A sweeper expires Sessions past `expires_at`, and those Stripe reports expired or cancelled, freeing the slot. A `creating` row holds the slot until recovery resolves it.
+**Decision.** A partial unique index on `finance.checkout_sessions (agreement_id, livemode) WHERE status IN ('creating','open')` *(keyed on `livemode` per D-034; the original entry said `agreement_id` alone)*. A request while a live Session exists returns that Session's URL rather than creating another. A sweeper expires Sessions past `expires_at`, and those Stripe reports expired or cancelled, freeing the slot. A `creating` row holds the slot until recovery resolves it.
 
 **Rationale.** Nothing previously stopped two payment links — or a link and the portal — each opening a Session for the same Remaining. **Both would be payable.** The member pays twice, both payments are legitimate provider money, and the agreement lands `overpaid` with no defect to point at: every component behaved correctly. The constraint belongs in the database, before Stripe is contacted, not in application logic that each entry point must remember.
 
@@ -392,3 +392,15 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 **Rationale.** The invariants stated what each source *requires* and never what it *excludes*, so a `stripe_payment` could carry `external_method='cash'` and an `external_payment` could carry a `pi_…` identifier it has no claim to. Such a row asserts two incompatible origins at once; any report grouping by provenance would double-count or arbitrarily classify it. Provenance is only useful when a row has exactly one.
 
 **Also corrected here:** acceptance test 29 and the L3 commentary both demanded a "named human" on external entries, contradicting L12 and D-032 and making legacy-imported external payments and refunds unimportable. Both now require exactly one valid attribution, human **or** system.
+
+
+---
+
+## D-037 — V2 reuses `public.is_founder()`; PR 1 gaps closed
+**Date:** 2026-07-29 · **Status:** Approved · **Supersedes the founder-predicate clause of D-013**
+
+**Decision.** V2 does not define `finance.is_founder()`. Founder policies call the existing `public.is_founder()`. Alongside this, PR 1's previously unwritable specifications are now fixed in ARCHITECTURE §15: `payment_links` DDL, `public.journeys(id)` as the journey FK target, `create_agreement()`'s signature and initial `draft` event, the complete lifecycle transition graph, the enumerated terminal event-type list, the full RLS policy matrix, view column lists, the PostgreSQL 15 baseline, and pgTAP as the test framework. `finance.ledger_entries` gains `origin_stripe_event_id` so L11 has a join path.
+
+**Rationale.** A readiness review asked whether an engineer could write PR 1's migration from these documents alone, and the answer was no — nine blockers, six of them pure documentation gaps. Principles are not specifications: "versioned, no hardcoded UUIDs" is a prohibition, not a definition, and it left the founder predicate undefined while `public.is_founder()` already existed in the repository and was already used by live RLS. Defining a second predicate would have created exactly the drift this project exists to eliminate. L11 was separately unenforceable: it required ledger `livemode` to match "the originating event or session" while no column connected a ledger row to either.
+
+**Consequences.** PR 1 confirms `public.is_founder()`'s definition against the live database before relying on it. The application-layer `verifyFounder()` hardcoded-UUID path in `lib/auth/founder-check.ts` is not used by V2 and is recorded as a future item.

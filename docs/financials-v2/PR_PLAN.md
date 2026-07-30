@@ -26,7 +26,7 @@
 
 ### PR 1 — `finance` schema foundation
 **Outcome:** The complete V2 schema exists, is fully constrained, is protected by RLS, exposes the canonical views, and is proven by automated database tests.
-**Contains:** `CREATE SCHEMA finance`; the **twelve** enum types; the eight tables; all `CHECK` constraints and constraint triggers; append-only enforcement triggers; RLS policies, grants and default privileges **including `service_role`**; `finance.current_member_id()` and `finance.is_founder()`; `finance.create_agreement()`; the **five** views — `v_agreement_lifecycle`, `v_agreement_balances`, `v_agreement_balances_test`, `v_member_financials`, `v_journey_financials`; the full acceptance test suite.
+**Contains:** `CREATE SCHEMA finance`; the **twelve** enum types; the eight tables; all `CHECK` constraints and constraint triggers; append-only enforcement triggers; RLS policies, grants and default privileges **including `service_role`**; `finance.current_member_id()` and `finance.create_agreement()` (founder authority reuses the existing `public.is_founder()`); the **five** views — `v_agreement_lifecycle`, `v_agreement_balances`, `v_agreement_balances_test`, `v_member_financials`, `v_journey_financials`; the full acceptance test suite.
 **Excludes:** application code, data import, any UI.
 **Blocked on:** confirming `members.profile_id` uniqueness and the population of rows where `profile_id IS NULL` or `id <> profile_id`, against the live database, recorded in `DECISIONS.md` (D-015). The identity design itself is settled.
 **Done when:** every test in "PR 1 acceptance tests" below passes on a fresh database.
@@ -95,11 +95,11 @@
 
 ## PR 1 acceptance tests
 
-All of the following must pass through automated database tests before PR 1 opens. Each is a blocking requirement. Every test maps to an invariant in `ARCHITECTURE.md`; the list grew from 29 to 79 across six review passes, which added coverage for zero-row aggregates, live mode, the parent matrix, lifecycle initialisation, concurrency, invariants L1–L3, L3b and L11–L12, `service_role` privileges, the persisted checkout attempt, one-live-session enforcement per mode, validated session reuse, PaymentIntent metadata propagation, provenance mutual exclusion, system attribution, and reversed-refund accounting.
+All of the following must pass through automated database tests before PR 1 opens. Each is a blocking requirement. Every test maps to an invariant in `ARCHITECTURE.md`; the list grew from 29 to 82 across seven review passes, which added coverage for zero-row aggregates, live mode, the parent matrix, lifecycle initialisation, concurrency, invariants L1–L3, L3b and L11–L12, `service_role` privileges, the persisted checkout attempt, one-live-session enforcement per mode, validated session reuse, PaymentIntent metadata propagation, provenance mutual exclusion, system attribution, and reversed-refund accounting.
 
 ### Schema and reproducibility
 1. Migrations apply cleanly to a fresh database.
-2. Every `finance` object is created entirely from tracked migrations — nothing pre-existing is assumed.
+2. *(reviewer check, not pgTAP)* Every `finance` object is created entirely from tracked migrations — nothing pre-existing is assumed.
 3. A complete Supabase reset succeeds end to end.
 4. All twelve enum types exist with exactly the values listed in ARCHITECTURE §1, and all five views exist.
 
@@ -134,7 +134,7 @@ All of the following must pass through automated database tests before PR 1 open
 26. Future-dated amendments are rejected on insert with no tolerance window, and the view excludes any that reach the table.
 27. A blank or whitespace-only `reason` is rejected; a negative `amount_cents` is rejected.
 
-### Ledger invariants L1–L12
+### Ledger invariants L1–L13
 28. **L1** — a `stripe_payment` is rejected without `provider_payment_intent_id`, with `source <> 'stripe'`, with a non-positive amount, or with a parent.
 29. **L2** — an `external_payment` is rejected without `external_method`, with no attribution, with `source <> 'external'`, with a non-positive amount, or with a parent. It is **accepted with `recorded_by_system` alone**, so a legacy-imported external payment needs no human actor.
 30. **L3** — a `refund` is rejected without `parent_entry_id`, with a positive amount, with `source='stripe'` and a NULL `provider_object_id`, or with `source='external'` and no `external_method`.
@@ -189,8 +189,16 @@ All of the following must pass through automated database tests before PR 1 open
 66. A gift agreement returns `not_applicable` with NULL remaining, and its money still counts toward member and journey Received while contributing nothing to Remaining totals.
 67. `payment_state` returns exactly one deterministic value for every row of the reachable-state table in ARCHITECTURE §8.
 68. `livemode = false` entries are excluded from canonical balances and appear only in the founder-only test view.
-69. Aggregate views derive from `v_agreement_balances` and contain no independent financial formula.
-70. `v_agreement_lifecycle` is the only expression of current lifecycle, and lifecycle never affects a balance column.
+69. *(reviewer check, not pgTAP)* Aggregate views derive from `v_agreement_balances` and contain no independent financial formula.
+70. *(reviewer check for the first clause)* `v_agreement_lifecycle` is the only expression of current lifecycle; that lifecycle never affects a balance column **is** asserted in pgTAP.
+
+### Newly specified surfaces
+71. `finance.create_agreement()` raises for a non-founder, raises on blank reason, creates the agreement and its initial `draft` lifecycle event in one transaction, and raises rather than returning silently on a duplicate `(member_id, journey_id, purpose)`.
+72. Every transition in the ARCHITECTURE §6 graph is accepted and every transition outside it is rejected, including both terminal states.
+73. `payment_links` status CHECKs hold — `creating` without `claimed_at`, `consumed` without `consumed_by_session_id`, and `revoked` without `revoked_by` are each rejected.
+74. **L11** — a ledger entry whose `livemode` disagrees with its `origin_stripe_event_id` event is rejected; an entry with a NULL origin is accepted.
+75. Members have no `SELECT` on `agreement_lifecycle_events`, `payment_links`, `stripe_events` or `reconciliation_exceptions`.
+76. `service_role` `UPDATE` is column-scoped — an update to a column outside the granted list is rejected.
 
 ### Currency
-71. USD constraints hold — a non-USD agreement or ledger entry is rejected.
+77. USD constraints hold — a non-USD agreement or ledger entry is rejected.
