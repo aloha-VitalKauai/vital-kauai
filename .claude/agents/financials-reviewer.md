@@ -50,6 +50,8 @@ You come to this fresh. Read `docs/financials-v2/ARCHITECTURE.md`, `DECISIONS.md
 
 **An approval gate must be a stored fact with preconditions.** Check what the authorizing artefact is required to be — finished? error-free? complete? — not merely that it exists.
 
+**`INSERT` is a transition too.** Wherever a transition is guarded by a function or an `UPDATE` restriction, check that the row cannot simply be **created** already in the destination state. Revoking `UPDATE` on an attribution column protects nothing if the same role holds table-wide `INSERT`. The test: for each guarded transition, ask which role the guard is *against*, then check whether that role can `INSERT`.
+
 **Grants and columns must actually exist.** Read every column named in a `GRANT` against the DDL in the same PR. A grant naming a column that was never created is a migration that fails on apply, and a prose column list is not a column.
 
 **`SECURITY DEFINER` functions the PR depends on** — not only the ones it creates — must have a fixed `search_path`. Inheriting an unhardened boundary is the same exposure as writing one.

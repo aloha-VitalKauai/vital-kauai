@@ -64,6 +64,7 @@ Any step that violates one of these is wrong, however reasonable the request:
 - No derived financial value is stored. One definition per term, in `finance.v_agreement_balances`.
 - Stripe-confirmed and founder-recorded money stay distinguishable by column.
 - Integer cents. No floating point. No negative amount to a provider.
+- A guarded transition must be guarded at `INSERT` as well as `UPDATE`; otherwise the row is simply created in the destination state.
 - Any state a row enters must be exitable: walk the full cycle against the actual constraints and grants before accepting it.
 - Anything that runs unattended is re-entrant: safe to interrupt and rerun, single-flight, resumable from a durable cursor, bounded per run, and deduplicated by identity. Reconciliation may ingest verified provider money; it may never reverse an entry or resolve an exception.
 

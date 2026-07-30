@@ -81,4 +81,5 @@ Complete this block if the change adds or alters a job, sweeper, webhook handler
 - [ ] **Terminal states are honest** — a bounded or interrupted stop is a distinct, resumable state and does not report completion; any watermark advances only on genuine completion.
 - [ ] **Every column named in a `GRANT` exists** in the migration, and the grant test proves permitted updates succeed as well as forbidden ones failing.
 - [ ] **Every lifecycle is executable** — for each state a row can enter, the exit transition satisfies every `CHECK` and some role actually holds the columns or function needed to perform it. Tested by walking the full cycle, including re-entry.
+- [ ] **Guarded transitions are guarded at `INSERT` too** — a row cannot be created already in a state that a function or `UPDATE` restriction is meant to control, and the guard holds for `service_role`.
 - [ ] **Provider event cardinality is cited, not assumed** — any dedup index over provider events names the semantics making that event at-most-once per object rather than per attempt.

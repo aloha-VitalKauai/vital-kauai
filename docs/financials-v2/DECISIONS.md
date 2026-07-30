@@ -703,7 +703,7 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 ---
 
 ## D-067 — Exception resolution is a founder-only function; attribution is internal
-**Date:** 2026-07-29 · **Status:** Approved
+**Date:** 2026-07-29 · **Status:** Approved · **Completed at the `INSERT` boundary by D-068**
 
 **Decision.** Direct `UPDATE` on `resolution_status`, `resolved_at`, `resolved_by` and `resolution_note` is withdrawn from **every** role. `finance.resolve_exception(p_exception_id, p_resolution, p_note)` — `SECURITY DEFINER`, fixed `search_path`, founder-gated, `EXECUTE` to `authenticated` — locks the row, requires current status `open`, accepts only `resolved` or `dismissed`, requires a non-blank note, sets `resolved_by = auth.uid()` and `resolved_at = clock_timestamp()` internally, and writes status and note atomically. Repeat resolution raises. Resolution is permitted while actively quarantined.
 
@@ -712,3 +712,28 @@ Table constraints make the intermediate states unreachable independently: `(reso
 **Rationale.** This was the same attribution defect already fixed for dry-run approval in D-059, still present one table over. A founder-supplied request could name **another user** as the resolver, backdate the decision, reopen a closed exception, or edit a completed resolution — and resolution is a financial judgement about a discrepancy, so a false attribution is exactly as damaging here as on an approval. Making resolution terminal is deliberate: correcting a wrong resolution should be a visible, deliberate act, not an `UPDATE` that leaves no trace it happened.
 
 **Consequence.** `finance.release_quarantine()` now writes a new `release_note` column rather than appending to `resolution_note`, so the two judgements keep separate columns with separate owners. Founder access to `reconciliation_exceptions` is `SELECT` only; every mutation is a function call.
+
+
+---
+
+## D-068 — `INSERT` is a protected transition wherever `UPDATE` is
+**Date:** 2026-07-29 · **Status:** Approved · **Completes D-059, D-064 and D-067**
+
+**Decision.** `service_role` loses table-wide `INSERT` on `finance.reconciliation_exceptions` and `finance.reconciliation_runs`, replaced by column-scoped grants that exclude every protected lifecycle column. Two `BEFORE INSERT` triggers enforce the same rule independently of privileges: a new exception must have `resolution_status = 'open'` with all nine resolution, quarantine and release columns `NULL`; a new run must have `approved_by`, `approved_at` and `approval_note` all `NULL`. `authorized_by_run_id` remains insertable and is validated against a genuinely approved dry run. The resolution biconditional is completed with `(resolution_status = 'open') = (resolution_note IS NULL)`.
+
+**Rationale.** Revoking `UPDATE` protects a transition only if the row cannot be **created** already in the destination state. With table-wide `INSERT`, `service_role` could insert an exception already `resolved` with an arbitrary resolver and backdated timestamp, already quarantined without reaching the three-failure threshold, or already released — and could insert a run already carrying `approved_by`, `approved_at`, `approval_note` and a completed report, then cite it through `authorized_by_run_id`. **The reconciliation job could manufacture its own authorization**, with `finance.approve_dry_run()` never called and the freeze trigger — which fires on `UPDATE` and keys on `OLD.approved_at` — never involved. Every guarantee D-059, D-064 and D-067 established was reachable around, by the one role that runs unattended.
+
+The trigger is the load-bearing control and the grant is defence in depth, not the reverse: a grant can be widened by a later migration or bypassed by a table owner, and the guarantee has to survive that.
+
+**Consequence.** Ordinary creation, the deduplicating upsert, streak updates, and all four lifecycle functions are unaffected — `SECURITY DEFINER` functions act with the owner's rights, not the caller's grants.
+
+---
+
+## D-069 — Agreement creation requires its initial lifecycle event, enforced at commit
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** A `DEFERRABLE INITIALLY DEFERRED` constraint trigger requires every `finance.agreements` row to have exactly one `agreement_lifecycle_events` row with `from_status IS NULL`, checked at commit.
+
+**Rationale.** Found by the `INSERT`-bypass audit that B-69 and B-70 prompted. §4 claimed "no agreement can exist without a lifecycle" and §6 claimed current lifecycle "is never `NULL`", but both rested on everyone using `finance.create_agreement()` — while `service_role` holds `INSERT` and the PR 2 import legitimately creates agreements directly. A direct insert would leave `v_agreement_lifecycle` returning nothing for that agreement, quietly falsifying two stated invariants. Deferring to commit is what allows the agreement and its event to be inserted in either order within one transaction while still making the pair mandatory.
+
+**Audit result.** All nine tables were checked for this class. Three were genuinely bypassable — `agreements`, `reconciliation_exceptions`, `reconciliation_runs` — and all three are fixed. The remaining six are not, and the distinction is stated in ARCHITECTURE §15: a transition is bypassable at `INSERT` exactly when it is gated **against** a role that also holds `INSERT`. Where `service_role` legitimately owns every transition on a table, inserting a row in a later state grants it nothing it does not already hold.

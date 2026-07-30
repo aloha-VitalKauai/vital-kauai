@@ -185,7 +185,9 @@ The row is immutable after insert, carries no amount (§5) and no status (§6).
 
 **Uniqueness and grouping.** One agreement exists per `(member_id, journey_id, purpose)`. `NULLS NOT DISTINCT` ensures member-level agreements (`journey_id IS NULL`) collapse correctly rather than permitting unlimited duplicates. This is also the grouping rule the PR 2 import uses to assign every legacy donation to an agreement.
 
-**Creation.** Agreements are created by `finance.create_agreement()`, a `SECURITY DEFINER` function that inserts the agreement **and its initial lifecycle event** in one transaction (§6). No agreement can exist without a lifecycle.
+**Creation.** Agreements are created by `finance.create_agreement()`, a `SECURITY DEFINER` function that inserts the agreement **and its initial lifecycle event** in one transaction (§6).
+
+**That guarantee is enforced by the database, not by the function.** `service_role` legitimately inserts agreements during the PR 2 import, so a direct `INSERT` is a supported path — and a direct `INSERT` alone would leave an agreement with no lifecycle event, making `v_agreement_lifecycle` return nothing and contradicting §6's claim that current lifecycle is never `NULL`. A **`DEFERRABLE INITIALLY DEFERRED` constraint trigger** therefore checks **at commit** that every agreement has exactly one event with `from_status IS NULL`. Deferral is what lets the two inserts happen in either order within one transaction while still making the pair mandatory. No agreement can exist without a lifecycle, by any path.
 
 ### Contribution applicability
 
@@ -694,9 +696,9 @@ finance.reconciliation_exceptions
 
   CHECK ((resolved_at IS NULL) = (resolved_by IS NULL))            -- no partial attribution
   CHECK ((resolution_status = 'open') = (resolved_at IS NULL))      -- open iff unresolved
-  CHECK (resolution_status = 'open'
-         OR (resolution_note IS NOT NULL
-             AND length(btrim(resolution_note)) > 0))               -- resolution carries a reason
+  CHECK ((resolution_status = 'open') = (resolution_note IS NULL))  -- note iff closed
+  CHECK (resolution_note IS NULL
+         OR length(btrim(resolution_note)) > 0)                      -- and never blank
   CHECK (last_detected_at >= first_detected_at)
   CHECK ((quarantined_at IS NULL) = (quarantine_reason IS NULL))
   CHECK ((released_at IS NULL) = (released_by IS NULL))
@@ -794,6 +796,27 @@ Consequences:
 - **Resolution wins over quarantine.** An actively quarantined row may be resolved; the function does not check quarantine state. Resolving removes the row from `open`, so the partial unique index stops covering it and a genuine recurrence later starts a fresh row with a zero streak — exactly as the quarantine lifecycle describes.
 
 The table constraints make the intermediate states unreachable independently of the function: `(resolved_at IS NULL) = (resolved_by IS NULL)` forbids partial attribution, `(resolution_status = 'open') = (resolved_at IS NULL)` forbids an open row carrying resolution data or a closed row missing it, and a non-blank `resolution_note` is required once closed.
+
+### Creation is also a protected transition
+
+Revoking `UPDATE` protects a transition only if the row cannot be **created** already in the destination state. `service_role` previously held table-wide `INSERT`, so it could insert an exception already `resolved` with an arbitrary `resolved_by` and backdated `resolved_at`, already quarantined without ever reaching the three-failure threshold, or already released. Every guarantee `finance.resolve_exception()`, `finance.quarantine_object()` and `finance.release_quarantine()` provide was reachable around, by the one role that runs unattended.
+
+Two independent mechanisms close it.
+
+**1. The `INSERT` grant is column-scoped.** `service_role` may insert only the columns legitimate exception creation needs:
+
+```
+kind, agreement_id, ledger_entry_id, provider_object_id, legacy_donation_id,
+livemode, amount_cents, currency, detail,
+first_detected_at, last_detected_at, occurrence_count,
+first_run_id, last_run_id, consecutive_failure_runs
+```
+
+`id` and `resolution_status` take their defaults; `dedup_key` is generated. **The nine protected lifecycle columns are excluded** — `quarantined_at`, `quarantine_reason`, `released_at`, `released_by`, `release_note`, `resolution_status`, `resolved_at`, `resolved_by`, `resolution_note`.
+
+**2. A `BEFORE INSERT` trigger enforces the same thing independently of privileges.** It raises unless the new row has `resolution_status = 'open'` and all nine protected columns `NULL`. The trigger is the load-bearing control: a grant can be widened by a later migration, or bypassed by a superuser or table owner, and the guarantee has to survive that. The grant makes the mistake unlikely; the trigger makes it impossible.
+
+**What still works unchanged:** ordinary exception creation, the deduplicating `ON CONFLICT` upsert (which touches only `last_detected_at`, `occurrence_count`, `detail`, `last_run_id` and `consecutive_failure_runs`), streak updates, and all three lifecycle functions — which are `SECURITY DEFINER` and therefore act with the function owner's rights, not the caller's grants.
 
 ### Quarantine
 
@@ -1006,6 +1029,25 @@ Approval runs through **`finance.approve_dry_run(p_run_id uuid, p_note text)`**,
 **The approved evidence is then frozen.** A trigger rejects any `UPDATE` where **`OLD.approved_at IS NOT NULL`** that changes any of:
 
 `status`, `error`, `finished_at`, `window_exhausted`, `window_start`, `window_end`, `livemode`, `implementation_version`, `dry_run`, `would_create_count`, `would_reopen_count`, `prospective_by_kind`, `report_samples`, `report_version`, `report_completed_at`, `approved_by`, `approved_at`, `approval_note`.
+
+#### Creation is also a protected transition
+
+The freeze trigger fires on `UPDATE` and keys on `OLD.approved_at`, so it says nothing about `INSERT`. With table-wide `INSERT`, `service_role` could create a run **already** carrying `approved_by`, `approved_at`, `approval_note` and a completed report, then cite it through `authorized_by_run_id` — **the reconciliation job manufacturing its own authorization**, with `finance.approve_dry_run()` never called and the freeze trigger never fired. The entire approval gate was optional for the one role that needs gating.
+
+**1. Column-scoped `INSERT`.** `service_role` may insert only:
+
+```
+livemode, implementation_version, window_start, window_end, cursor,
+resumed_from_run_id, dry_run, authorized_by_run_id
+```
+
+`id`, `status`, `window_exhausted`, `started_at`, `heartbeat_at` and the counters take their defaults. **`approved_by`, `approved_at` and `approval_note` are excluded**, as are the report columns — a report is *produced* by an `UPDATE` during the run, not asserted at creation.
+
+**2. A `BEFORE INSERT` trigger** raises unless all three approval columns are `NULL` at creation, independently of grants.
+
+**`authorized_by_run_id` remains insertable**, because a writing run must cite its authorization at creation. It is validated by the existing trigger against a genuinely approved dry run, and that dry run can now only have been approved by `finance.approve_dry_run()` — which is what makes the citation meaningful rather than circular.
+
+**`finance.approve_dry_run()` is therefore the only `NULL →` approved transition**, at insert and at update alike.
 
 **The predicate is `OLD.approved_at`, not `NEW.approved_at`.** Freezing on the new value would freeze the approval transition itself — the one `UPDATE` that legitimately sets `approved_at` from `NULL` would see a non-null `NEW` and reject, making approval impossible in exactly the way B-52's quarantine release was impossible. Keying on `OLD` permits precisely one transition (`NULL →` internally computed) and rejects every mutation after it.
 
@@ -1376,8 +1418,8 @@ Returns `members.id` for the row where `members.profile_id = auth.uid()`; `NULL`
 | `checkout_sessions` | `SELECT` via parent agreement owned by the member | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (status, stripe_session_id, completed_at)` |
 | `payment_links` | none — the raw token is the member's only handle; the row is never read by them | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (status, claimed_at, consumed_at, consumed_by_session_id, attempt_count)` |
 | `stripe_events` | none | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (processing_status, claimed_at, attempt_count, processed_at, processing_error, payload)` |
-| `reconciliation_exceptions` | none | `SELECT` where `public.is_founder()`. **No direct `UPDATE` at all** — resolution goes through `finance.resolve_exception()` and release through `finance.release_quarantine()` | `SELECT`, `INSERT`, `UPDATE (last_detected_at, occurrence_count, detail, last_run_id, consecutive_failure_runs)`. **Quarantine goes through `finance.quarantine_object()`** |
-| `reconciliation_runs` | none | `SELECT` where `public.is_founder()`. **Approval is not a direct `UPDATE`** — it goes through `finance.approve_dry_run()`, so the actor and timestamp cannot be supplied | `SELECT`, `INSERT`, `UPDATE (status, cursor, window_exhausted, heartbeat_at, finished_at, error, objects_scanned, objects_matched, exceptions_created, exceptions_reopened, api_calls, retries, would_create_count, would_reopen_count, prospective_by_kind, report_samples, report_version, report_completed_at)` — **all blocked once `OLD.approved_at` is set**, by the freeze trigger |
+| `reconciliation_exceptions` | none | `SELECT` where `public.is_founder()`. **No direct `UPDATE` at all** — resolution goes through `finance.resolve_exception()` and release through `finance.release_quarantine()` | `SELECT`; **column-scoped `INSERT`** (§10, protected lifecycle columns excluded); `UPDATE (last_detected_at, occurrence_count, detail, last_run_id, consecutive_failure_runs)`. **Quarantine goes through `finance.quarantine_object()`** |
+| `reconciliation_runs` | none | `SELECT` where `public.is_founder()`. **Approval is not a direct `UPDATE`** — it goes through `finance.approve_dry_run()`, so the actor and timestamp cannot be supplied | `SELECT`; **column-scoped `INSERT`** (§10a, approval and report columns excluded); `UPDATE (status, cursor, window_exhausted, heartbeat_at, finished_at, error, objects_scanned, objects_matched, exceptions_created, exceptions_reopened, api_calls, retries, would_create_count, would_reopen_count, prospective_by_kind, report_samples, report_version, report_completed_at)` — **all blocked once `OLD.approved_at` is set**, by the freeze trigger |
 
 Notes:
 
@@ -1388,6 +1430,25 @@ Notes:
 - **No role holds a direct `UPDATE`** on the approval columns, the four quarantine columns, or the four resolution columns (`resolution_status`, `resolved_at`, `resolved_by`, `resolution_note`). Every transition runs through a function that computes actor and timestamp internally, so attribution cannot be spoofed and ordering cannot be violated.
 - **Only a founder may approve** (`finance.approve_dry_run`), **resolve** (`finance.resolve_exception`) or **release** (`finance.release_quarantine`); only `service_role` may **quarantine** (`finance.quarantine_object`). The job cannot authorise itself or clear its own quarantine.
 - **Once `approved_at` is set, the reviewed evidence is frozen** by trigger, regardless of role.
+- **`INSERT` is a protected transition too.** Revoking `UPDATE` on a column protects nothing if a row can be *created* already in the destination state. `reconciliation_exceptions` and `reconciliation_runs` therefore carry column-scoped `INSERT` grants **and** `BEFORE INSERT` triggers; `agreements` carries a deferred constraint trigger requiring its initial lifecycle event.
+
+### `INSERT`-bypass audit — all nine tables
+
+Prompted by B-69 and B-70, every table was checked for the same class: a transition guarded by a function or an `UPDATE` restriction, reachable instead by inserting a row already in the destination state.
+
+| # | Table | Function-protected transition? | Bypassable at `INSERT`? | Protection |
+|---|---|---|---|---|
+| 1 | `agreements` | Creation must produce an initial lifecycle event | **Yes — B-71.** A direct `INSERT` left an agreement with no lifecycle, contradicting §6 | Deferred constraint trigger checked at commit |
+| 2 | `agreement_amounts` | None. Append-only fact; `actor_id` is supplied by whichever authorized path writes it, including the import | No | `NOT NULL` and non-blank `CHECK`s fire on `INSERT` |
+| 3 | `agreement_lifecycle_events` | Transition validity | No — the validating trigger already fires **on `INSERT`**, which is the only way rows arrive | Existing transition trigger; one-initial-event index |
+| 4 | `ledger_entries` | None. Append-only fact | No — L1–L13 are `CHECK`s and constraint triggers, all evaluated at `INSERT` | Existing invariants |
+| 5 | `stripe_events` | None. `service_role` is the sole producer *and* processor | No — inserting a row already `processed` grants that role nothing it does not already hold | — |
+| 6 | `checkout_sessions` | None founder-gated. Status transitions belong to `service_role` | No — and a fabricated `completed` session creates no ledger entry, since only a verified PaymentIntent does (D-030) | Status/`stripe_session_id` `CHECK`; one-live-session index |
+| 7 | `payment_links` | None founder-gated. Claim and consumption belong to `service_role` | No — same reasoning as 6 | Status `CHECK`s |
+| 8 | `reconciliation_exceptions` | Resolution, quarantine, release — all founder- or function-gated | **Yes — B-69** | Column-scoped `INSERT` + `BEFORE INSERT` trigger |
+| 9 | `reconciliation_runs` | Approval | **Yes — B-70** | Column-scoped `INSERT` + `BEFORE INSERT` trigger |
+
+Three real bypasses, three fixed. The pattern separating them: a transition is bypassable at `INSERT` exactly when it is gated **for** a role that also holds `INSERT` — so tables 5–7, where `service_role` is the legitimate owner of every transition, are not vulnerable, while 1, 8 and 9, which gate transitions *against* `service_role` or reserve them for a founder, are.
 - `service_role` writes the dry-run report columns (it produces the report) but **cannot** write `approved_by`/`approved_at`, so producing a report never approves it.
 - The column-scoped grant test asserts **both directions**: every update the job legitimately performs succeeds, and every column outside its list is rejected. A grant that is merely restrictive is not proven correct.
 
