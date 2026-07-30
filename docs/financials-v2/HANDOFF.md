@@ -28,7 +28,11 @@ All schema objects exist and are verified from the database catalogs on a fresh 
 
 **143 pgTAP assertions pass, 0 fail**, after a complete `dropdb`/`createdb` reset. Two real defects were found by these tests and fixed before commit — see the PR description.
 
-**One blocking gap, disclosed rather than hidden:** the suite covers 143 assertions against the approved 140 numbered requirements, but the mapping is not one-to-one and **true multi-session concurrency tests are not yet implemented** (requirements 21, 35, 42, 48, 101). They are reported as *not run*, never as passing.
+**B-74 is closed.** True multi-session concurrency tests are implemented in `supabase/tests/concurrency.sh`, driving two persistent psql sessions through FIFOs so statements interleave deterministically. They demonstrate actual locking outcomes rather than inspecting for `FOR UPDATE`. **11 assertions, all passing**, covering requirements 21, 35, 37, 50 and 101.
+
+**A correction to the earlier B-74 wording:** it named requirements 21, 35, 42, 48, 101. Two of those were wrong — **42** is `anon` privileges, not concurrency, and **48** is sequential (its concurrent counterpart is **50**). The genuinely concurrent requirements are **21, 35, 37, 50, 101**, and those are what is now tested.
+
+**Remaining gap, disclosed rather than hidden:** a script (`supabase/tests/coverage_map.py`) maps all 140 numbered requirements to test tags. **93 have executable coverage; 47 do not.** Those 47 are listed by the script and must be closed before PR 1 merges — tracked as **B-75**.
 
 **Environment:** local PostgreSQL **17.10**; production is **17.6**. Same major version, different minor. Nothing was applied to production.
 
@@ -44,8 +48,14 @@ The two divergent rows validate D-015 against production: 12% of members would s
 ### B-2 — CLOSED
 Independent review returned APPROVE at `86a767a`; PR #838 merged as `aa32694`.
 
-### B-74 — Concurrency tests not yet implemented (blocks PR 1 approval)
-Requirements needing two simultaneous sessions — 21, 35, 42, 48 and 101 — are **not run**. The row-locking they exercise (`SELECT … FOR UPDATE` in the lifecycle, ledger and quarantine paths) is implemented, but implemented is not tested. They must be run before PR 1 merges.
+### B-74 — CLOSED
+True multi-session concurrency tests implemented and passing (11 assertions) for requirements 21, 35, 37, 50 and 101. The earlier list wrongly named 42 and 48; corrected above.
+
+### B-75 — 47 of 140 requirements have no executable coverage (blocks PR 1 approval)
+`supabase/tests/coverage_map.py` verifies the mapping by script and names every uncovered requirement. **93 covered, 47 not.** Several of the 47 are reviewer checks by design (2, 69, 70), but most are genuine gaps. PR 1 must not merge until they are closed or explicitly waived.
+
+### B-76 — Production-shape migration verification incomplete (blocks PR 1 approval)
+The migrations were verified against a local bootstrap that mirrors production's *relevant* shape, and earlier read-only queries in this session confirmed PostgreSQL 17.6, `public.journeys`, `public.user_roles`, `members.profile_id` and the unhardened `is_founder()`. What could **not** be re-confirmed is whether a `finance` schema or name collision already exists in production — the Supabase connector became unavailable mid-check. Re-run before merge.
 
 ### B-72 … B-73 — Seventh independent BLOCK: two unsatisfiable specifications (resolved, pending re-review)
 
