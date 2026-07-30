@@ -64,7 +64,16 @@
 
 ### PR 6 — V2 Checkout Sessions, Stripe idempotency and single-use links
 **Outcome:** V2 can create Checkout Sessions correctly, with the idempotency key transmitted to Stripe, amounts derived server-side, and payment links consumed atomically.
-**Contains:** the three-phase `finance.checkout_sessions` write path (claim → record intent → create) with the deterministic idempotency key transmitted to Stripe and an `attempt_id` in session metadata; `financial_version = 'v2'` session tagging; **one-live-session enforcement** including returning the existing Session URL rather than creating a second; hashed single-use link issue, atomic claim, consumption and revocation; **the stranded-checkout sweeper**, which replays only inside the Stripe idempotency window, otherwise resolves by metadata search, and **never auto-releases an ambiguous attempt** — raising `stranded_checkout_attempt` for founder resolution (D-028); the stale-session expiry job that frees the live-session slot.
+**Contains:**
+- The three-phase `finance.checkout_sessions` write path (claim → record intent → create), with the deterministic idempotency key transmitted to Stripe.
+- **Metadata written to both `metadata` and `payment_intent_data.metadata`** — `financial_version`, `agreement_id`, `attempt_id` — since Session metadata does not propagate to the PaymentIntent (D-033).
+- **One-live-Session enforcement per `(agreement_id, livemode)`**, with **validated reuse**: an existing Session is returned only when agreement, amount, currency, livemode and current `payable_remaining_cents` all still match; otherwise it is expired through Stripe, the expiration confirmed, and only then is the slot freed (D-034).
+- Hashed single-use link issue, atomic claim, consumption and revocation.
+- **The orphaned-claim sweeper** — restores a link claimed with no attempt row after a 15-minute TTL, safe because no Stripe call was made (D-035).
+- **The stranded-attempt sweeper** — replays only within a fixed 23-hour cutoff from the persisted attempt timestamp; beyond it, resolves by exhaustively paginated Session enumeration matched on `attempt_id`, and **never auto-replays or auto-releases an ambiguous attempt** (D-035).
+- The stale-session expiry job that frees the live-Session slot.
+
+**Required tests:** a PaymentIntent webhook processes correctly **without the Session webhook ever arriving**; a founder amendment between Session creation and reuse causes expiry-and-recreate rather than an obsolete charge; unconfirmed expiry blocks checkout and raises `stale_session_expiry_failed`.
 **Excludes:** routing members to the V2 flow. Sessions are exercised in a controlled test path only.
 
 ### PR 7 — Founder Financials reads V2 behind a feature flag
@@ -86,7 +95,7 @@
 
 ## PR 1 acceptance tests
 
-All of the following must pass through automated database tests before PR 1 opens. Each is a blocking requirement. Every test maps to an invariant in `ARCHITECTURE.md`; the list grew from 29 to 73 across five review passes, which added coverage for zero-row aggregates, live mode, the parent matrix, lifecycle initialisation, concurrency, invariants L1–L3, L3b and L11–L12, `service_role` privileges, the persisted checkout attempt, one-live-session enforcement, refund provenance, system attribution, and reversed-refund accounting.
+All of the following must pass through automated database tests before PR 1 opens. Each is a blocking requirement. Every test maps to an invariant in `ARCHITECTURE.md`; the list grew from 29 to 79 across six review passes, which added coverage for zero-row aggregates, live mode, the parent matrix, lifecycle initialisation, concurrency, invariants L1–L3, L3b and L11–L12, `service_role` privileges, the persisted checkout attempt, one-live-session enforcement per mode, validated session reuse, PaymentIntent metadata propagation, provenance mutual exclusion, system attribution, and reversed-refund accounting.
 
 ### Schema and reproducibility
 1. Migrations apply cleanly to a fresh database.
@@ -127,17 +136,20 @@ All of the following must pass through automated database tests before PR 1 open
 
 ### Ledger invariants L1–L12
 28. **L1** — a `stripe_payment` is rejected without `provider_payment_intent_id`, with `source <> 'stripe'`, with a non-positive amount, or with a parent.
-29. **L2** — an `external_payment` is rejected without `external_method` or `recorded_by`, with `source <> 'external'`, with a non-positive amount, or with a parent.
+29. **L2** — an `external_payment` is rejected without `external_method`, with no attribution, with `source <> 'external'`, with a non-positive amount, or with a parent. It is **accepted with `recorded_by_system` alone**, so a legacy-imported external payment needs no human actor.
 30. **L3** — a `refund` is rejected without `parent_entry_id`, with a positive amount, with `source='stripe'` and a NULL `provider_object_id`, or with `source='external'` and no `external_method`.
 30b. **L3b** — a `source='stripe'` refund is rejected when its parent is not a `stripe_payment`.
 31. **L11** — a ledger entry whose `livemode` disagrees with its originating event or session is rejected; external and imported entries are `livemode = true`.
 32. **L12** — an entry with `source = 'external'`, or of `entry_type = 'reversal'`, is rejected with a blank `reason` or with no attribution. It is **satisfied by either** `recorded_by` or `recorded_by_system`, and rejected when **both** are set. A `stripe_payment` is accepted without either, **including when `provider_object_id` is NULL**, so an imported Stripe payment never demands a human actor.
 32b. `recorded_by_system` requires no `auth.users` row — a fresh database with zero Auth users can insert a `legacy_import` entry.
+32c. **L13** — a `source='stripe'` entry carrying `external_method` is rejected.
+32d. **L13** — a `source='external'` entry carrying `provider_object_id` or `provider_payment_intent_id` is rejected.
+32e. `legacy_donation_id` is accepted on both Stripe and external entries — L13 does not touch import traceability.
 
 ### Protocol tables
 33. `checkout_sessions` enforces unique `stripe_session_id`, unique `idempotency_key`, and `amount_cents > 0`.
 34. A `checkout_sessions` row in any status other than `creating` is rejected without a `stripe_session_id`.
-35. **At most one live Session per agreement** — a second row with status `creating` or `open` for the same agreement is rejected.
+35. **At most one live Session per agreement per mode** — a second `creating`/`open` row for the same `(agreement_id, livemode)` is rejected, while a test-mode Session and a live-mode Session for the same agreement coexist.
 36. Expiring or completing a live Session frees the slot, and a new Session for the same agreement is then accepted.
 37. `payment_links` claim is atomic — two concurrent claims of one link yield exactly one winner, and the loser creates nothing.
 38. A link claim is rejected when the link is `creating`, `consumed`, `revoked`, or past `expires_at`.

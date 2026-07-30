@@ -282,6 +282,11 @@ A reversal of a **refund** is permitted — it is the correction path for a refu
 | L10 | `currency` matches the agreement | structural under USD-only (§3) |
 | L11 | Where an originating event or session exists, ledger `livemode` must match it. External payments and imported historic money are `livemode = true`. | constraint trigger |
 | L12 | **`source = 'external'` OR `entry_type = 'reversal'` requires a non-blank `reason` and exactly one attribution — either `recorded_by` (a human) or `recorded_by_system` (an automated actor).** | table `CHECK` |
+| L13 | **Provenance fields may not contradict `source`.** `source='stripe'` requires `external_method IS NULL`. `source='external'` requires `provider_object_id IS NULL` **and** `provider_payment_intent_id IS NULL`. | table `CHECK` |
+
+**L13 forbids self-contradicting rows.** The earlier invariants stated what each source *requires* but never what it *excludes*, so a `stripe_payment` could carry `external_method='cash'`, or an `external_payment` could carry a `pi_…` identifier it has no claim to. Either row asserts two incompatible origins at once, and any report grouping by provenance would then double-count it or classify it arbitrarily. Provenance is only useful if a row has exactly one.
+
+`legacy_donation_id` is deliberately outside this rule — it is import traceability, orthogonal to origin, and legitimately present on both Stripe and external imported rows.
 
 **L12 closes an attribution hole.** As originally written, `recorded_by` and `reason` were required only on `external_payment` (L2), so a founder could record an external refund or post a reversal — the entry types that *exist* to correct human error — with no actor and no explanation. A correction nobody is accountable for is the legacy defect wearing new clothes.
 
@@ -308,7 +313,7 @@ An earlier draft attributed automated reversals to a dedicated service account i
 
 **L6's "no unreversed children" rule** prevents the double-subtraction defect: reversing a payment that still carries a live refund would subtract the full original while the refund had already subtracted part of it, driving Received to `−3000` — money the ledger would claim left Vital Kauaʻi that never existed. The step table above shows the correct unwind: reverse the refunds first, then the payment.
 
-**L3 closes a duplicate-refund hole.** As originally written, L3 required only a parent, so a Stripe refund could be inserted with `provider_object_id` NULL — and L8's uniqueness index is partial, applying only where that column is present. Two rows for the same `re_…` refund would both be accepted, defeating D-025's deduplication guarantee. Requiring the Refund id on every Stripe refund makes L8 binding for the whole class rather than optional. External refunds carry the complementary requirement: a method and a named human.
+**L3 closes a duplicate-refund hole.** As originally written, L3 required only a parent, so a Stripe refund could be inserted with `provider_object_id` NULL — and L8's uniqueness index is partial, applying only where that column is present. Two rows for the same `re_…` refund would both be accepted, defeating D-025's deduplication guarantee. Requiring the Refund id on every Stripe refund makes L8 binding for the whole class rather than optional. External refunds carry the complementary requirement: a method, plus **exactly one attribution — human or system — under L12**. System attribution is as valid as a named person (D-032); requiring a human would make legacy-imported external refunds unimportable.
 
 **L1 requires only the payment-intent id.** Requiring a charge-object id too would make a class of legacy Stripe payments unimportable, and the workarounds are worse: relabelling as `external_payment` would falsely mark Stripe money as founder-recorded, and synthesising an object id would corrupt L8. Instead, a Stripe payment imported without a charge object is inserted with `provider_object_id` NULL, protected by L8b, and raises a `missing_provider_object` exception (§10) for PR 3 to backfill.
 
@@ -483,7 +488,11 @@ The document specified refunds in detail while leaving the far more common case 
 
 5. **Identity of the entry.** `provider_payment_intent_id` is the PaymentIntent (`pi_…`); `provider_object_id` is the settled Charge (`ch_…`) where available. L8b makes one PaymentIntent capable of producing exactly one payment entry regardless of how many events describe it.
 
-6. **Attribution to an agreement** comes from the Session's `agreement_id` metadata. A verified payment with no resolvable agreement raises `unattributable_payment` and stays out of the ledger (D-006).
+6. **Attribution requires metadata on the PaymentIntent, not only the Session.** Checkout Session metadata **does not propagate** to the PaymentIntent it creates. A `payment_intent.succeeded` event therefore carries *PaymentIntent* metadata — which is empty unless it was set deliberately — so an implementation reading only Session metadata would fail to attribute any payment whose PaymentIntent event arrived first, or arrived alone.
+
+   Every V2 Session is therefore created with `financial_version`, `agreement_id` and `attempt_id` written to **both** `metadata` **and** `payment_intent_data.metadata`. Ingestion resolves attribution from whichever object the event carries, and PR 6 tests that a PaymentIntent webhook processes correctly **without the Session webhook ever being received**.
+
+   A verified payment with no resolvable agreement raises `unattributable_payment` and stays out of the ledger (D-006).
 
 ### Refund processing
 
@@ -541,7 +550,7 @@ finance.reconciliation_exceptions
          OR (resolved_at IS NOT NULL AND resolved_by IS NOT NULL))
 ```
 
-`finance.exception_kind` values: `unattributable_payment`, `provider_without_ledger`, `ledger_without_provider`, `amount_mismatch`, `currency_violation`, `missing_provider_object`, `orphan_refund`, `refund_status_regression`, `stranded_checkout_attempt`.
+`finance.exception_kind` values: `unattributable_payment`, `provider_without_ledger`, `ledger_without_provider`, `amount_mismatch`, `currency_violation`, `missing_provider_object`, `orphan_refund`, `refund_status_regression`, `stranded_checkout_attempt`, `stale_session_expiry_failed`.
 
 ---
 
@@ -564,8 +573,10 @@ finance.checkout_sessions
 
   CHECK (status = 'creating' OR stripe_session_id IS NOT NULL)
 
-  UNIQUE (agreement_id) WHERE status IN ('creating','open')   -- at most one live session
+  UNIQUE (agreement_id, livemode) WHERE status IN ('creating','open')
 ```
+
+The index is keyed on **`(agreement_id, livemode)`**, not `agreement_id` alone. A test-mode Session would otherwise occupy the only slot and block live checkout for that member — a test artefact preventing a real payment. Test and live activity are independent by design; nothing about one should gate the other.
 
 `stripe_session_id` is nullable **only** in `creating`, because the intent row is committed before Stripe is called (§12). The `CHECK` makes any other status without a session id impossible.
 
@@ -573,18 +584,41 @@ finance.checkout_sessions
 
 Without the partial unique index, two payment links — or a link and the portal — could each open a Session for the same Remaining amount, and **both would be payable**. The member pays twice, the ledger records two legitimate provider payments, and the agreement lands `overpaid` with no defect anywhere to point at.
 
-The index makes a second live Session impossible at the database level, before Stripe is contacted. Consequences:
+The index makes a second live Session impossible at the database level, before Stripe is contacted.
 
-- **A request when a live Session already exists returns that Session's URL** rather than creating another. This is also the correct member experience: one outstanding payment request at a time.
-- **Stale sessions free the slot.** A sweeper transitions `open` Sessions past `expires_at` to `expired`, and Sessions Stripe reports as expired or cancelled to `expired`/`canceled`. Only then can a new Session be created.
-- **A `creating` row holds the slot** until recovery resolves it (§12). This is deliberate: an attempt whose Stripe state is unknown must block new attempts, because creating a second Session is exactly the risk in question.
+### Reuse requires the Session to still be correct
+
+**An existing `open` Session is never returned unconditionally.** Its amount was computed when it was created; a founder amending the Contribution, or any payment landing in between, changes Remaining and leaves that Session quoting an obsolete figure. Returning it would charge the member the wrong amount — with a valid Stripe Session and a correct-looking ledger entry to show for it.
+
+A Session may be reused **only when every one of these still holds**:
+
+| Must match | Against |
+|---|---|
+| `agreement_id` | the requesting agreement |
+| `amount_cents` | the agreement's **current** `payable_remaining_cents` |
+| `currency` | the agreement's currency |
+| `livemode` | the requesting context |
+| `status` | `open`, and not past `expires_at` |
+
+Where any check fails, the Session is **not** silently dropped — it is a live payable object at Stripe and must be retired there first:
+
+1. Expire it through the Stripe API.
+2. **Confirm the expiration** in Stripe's response.
+3. Only then mark the local row `expired`, freeing the slot, and create a new Session at the current amount.
+
+**If expiration cannot be confirmed, checkout is blocked** and a `stale_session_expiry_failed` exception is raised. The obsolete Session remains payable at Stripe until it is retired, so creating a replacement while it is still live would produce exactly the two-payable-Sessions state D-029 exists to prevent. Blocking is the safe outcome; guessing is not.
+
+Other consequences:
+
+- **Stale sessions free the slot.** A sweeper expires Sessions past `expires_at`, and marks Sessions Stripe reports as expired or cancelled accordingly.
+- **A `creating` row holds the slot** until recovery resolves it (§12) — an attempt whose Stripe state is unknown must block new attempts.
 - The slot is released on completion, so an agreement paid in instalments can open a new Session for the new Remaining.
 
 - **A checkout attempt is not a payment.** No ledger entry exists until Stripe confirms, eliminating the legacy orphan-pending-row problem.
 - **The idempotency key is sent to Stripe** on `checkout.sessions.create`, not merely recorded locally.
 - **The amount is recalculated server-side** from `payable_remaining_cents` immediately before creation. No client amount is trusted.
 - **Zero-amount guard.** When `payable_remaining_cents` is `0` or `NULL` (a paid, overpaid, or `not_applicable` agreement), session creation is **refused before any insert**, with a defined message — nothing is owed. The `CHECK (amount_cents > 0)` is the backstop, not the guard. Because nothing is created, no payment link is consumed (§12).
-- Session metadata carries `financial_version = 'v2'` and `agreement_id` (§13).
+- Session metadata carries `financial_version = 'v2'`, `agreement_id` and `attempt_id` — written to **both** `metadata` and `payment_intent_data.metadata`, because Session metadata does not propagate to the PaymentIntent (§10).
 
 ---
 
@@ -624,21 +658,37 @@ A crash between phases 2 and 3 leaves a `creating` link and a `creating` session
 Two properties of Stripe idempotency constrain what recovery may do:
 
 1. **There is no retrieve-by-idempotency-key operation.** A key deduplicates a *repeated request*; it cannot be used to ask "did this ever succeed?"
-2. **Keys are not retained indefinitely** — results age out after roughly 24 hours.
+2. **Keys are not retained indefinitely** — [results may be pruned after roughly 24 hours](https://docs.stripe.com/api/idempotent_requests).
 
-Replaying the same key **after that window has passed therefore creates a second payable Session**, which is precisely the failure the design exists to prevent. Recovery is bounded accordingly.
+Replaying the same key **after that window has passed therefore creates a second payable Session**, which is precisely the failure the design exists to prevent.
+
+#### Two distinct stranded states
+
+A crash can land in either of two places, and they are not equally dangerous.
+
+**(a) Link claimed, no attempt recorded** — the crash occurred between phase 1 and phase 2. **No Stripe call was ever made**, because the create call happens only in phase 3, after the session row is committed. There is therefore no possibility of a live Session, and the link is safe to restore.
+
+> Recovery: where a link is `creating`, has **no** `finance.checkout_sessions` row referencing it, and `claimed_at` is older than the orphaned-claim TTL (**15 minutes**), a sweeper atomically restores it to `active` —
+> `UPDATE finance.payment_links SET status='active', claimed_at=NULL WHERE id=$1 AND status='creating' AND claimed_at < now() - interval '15 minutes' AND NOT EXISTS (SELECT 1 FROM finance.checkout_sessions WHERE payment_link_id = $1)`.
+> `attempt_count` is left incremented so the next attempt derives a fresh key. Without this, any crash in that window strands a link permanently.
+
+**(b) Attempt recorded, outcome unknown** — the crash occurred during or after phase 3. Stripe may or may not hold a Session.
+
+#### The replay cutoff is a fixed interval, not a guess
+
+"Inside Stripe's idempotency window" is not something code can test — Stripe exposes no key-expiry lookup. The rule is therefore a **fixed safe cutoff of 23 hours**, measured from the attempt's persisted `checkout_sessions.created_at`, deliberately short of Stripe's ~24-hour pruning so that clock skew and job latency cannot push a replay past it.
 
 | Condition | Action |
 |---|---|
-| Attempt is **inside** the idempotency window | Replay the create call with the same key. Stripe returns the original Session if one exists, otherwise creates it. Finalise and consume the link. |
-| Attempt is **outside** the window | **Never replay. Never auto-release.** Determine ground truth by enumerating Stripe Checkout Sessions over the attempt's creation window and matching on the `attempt_id` carried in session metadata. |
+| Attempt age **< 23 hours** | Replay the create call with the same key. Stripe returns the original Session if one exists, otherwise creates it. Finalise and consume the link. |
+| Attempt age **≥ 23 hours** | **Never replay automatically.** Determine ground truth by enumerating Stripe Checkout Sessions over a bounded creation interval and matching the `attempt_id` in metadata. |
 | Ground truth: a Session exists | Finalise it; the link becomes `consumed`. |
-| Ground truth: exhaustive search finds no Session | Raise `stranded_checkout_attempt`. A founder releases the link explicitly. |
-| Search is inconclusive, or the link is past `expires_at` | Raise `stranded_checkout_attempt` and leave the link `creating`. Closed out, not released. |
+| Exhaustive search finds no Session | Raise `stranded_checkout_attempt`. A founder releases the link explicitly. |
+| Search inconclusive, or link past `expires_at` | Raise `stranded_checkout_attempt`, leave the link `creating`. Closed out, not released. |
 
-**A stranded attempt with ambiguous Stripe state is never automatically released or replayed.** The safe default is a visible exception a human resolves, not a guess. An automatic release that guesses wrong bills a member twice; a stranded link costs a founder one click to reissue.
+**The search must be exhaustive.** Stripe offers no server-side metadata filter on Checkout Sessions, so the specification requires [listing Sessions](https://docs.stripe.com/api/checkout/sessions/list) across the bounded creation interval **with full pagination to exhaustion**, inspecting `attempt_id` locally. A single unpaginated page is not a search, and treating one as conclusive would produce exactly the false "no Session exists" that leads to a double charge.
 
-Every V2 Session therefore carries an `attempt_id` in metadata alongside `financial_version` and `agreement_id`, because that is what makes the post-window search exact rather than heuristic.
+**An attempt with ambiguous Stripe state is never automatically released or replayed.** An automatic release that guesses wrong bills a member twice; a stranded link costs a founder one click to reissue.
 
 ### Retry behaviour
 
@@ -655,7 +705,7 @@ The same payment is never written into both systems. One payment has exactly one
 | Phase | Behaviour |
 |---|---|
 | Drain | Sessions created before cutover remain handled by the **legacy** webhook for a defined period. |
-| Tagging | Every V2 Checkout Session carries `financial_version = 'v2'` and `agreement_id` in Stripe metadata (from PR 6). |
+| Tagging | Every V2 Checkout Session carries `financial_version = 'v2'`, `agreement_id` and `attempt_id`, written to both Session metadata and `payment_intent_data.metadata` (from PR 6). |
 | Routing | The V2 webhook processes only V2-attributed sessions; the legacy webhook ignores them. Routing is by explicit tag, never inference. |
 | Shadow | **PR 2 owns the one-time historic import.** PR 3's reconciliation job owns ongoing provider-vs-ledger comparison. Neither writes to legacy. |
 | Cutover | All new sessions and payment writes go to V2 only. |

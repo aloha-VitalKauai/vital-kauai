@@ -8,7 +8,7 @@
 ## Current status
 
 **Phase:** PR 0 — architecture and project-control documents.
-**State:** **PR 0 is not approved.** Documents written and revised across five review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), a first external review of PR #838 (7 findings, B-3 … B-9), a clean-context re-verification (1 blocker, 6 minors), and a second external review (6 findings, B-10 … B-15). All resolved. Awaiting independent re-review.
+**State:** **PR 0 is not approved.** Documents written and revised across six review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), a first external review of PR #838 (7 findings, B-3 … B-9), a clean-context re-verification (1 blocker, 6 minors), a second external review (6 findings, B-10 … B-15), and a third external review at the Stripe boundary (6 findings, B-16 … B-21). All resolved. Awaiting a final clean-context review focused on executable PR 1 readiness.
 
 The clean-context pass caught a defect introduced by the B-7 fix itself: L12 originally defined "provider-originated" as `source='stripe' AND provider_object_id IS NOT NULL`, which contradicted L1 and D-020 — a Stripe payment imported without a charge-object id would have demanded a human actor that no document assigned. L12 now keys on `source` alone.
 
@@ -35,7 +35,18 @@ The identity **design** is settled: `finance.agreements.member_id` references `p
 ### B-2 — PR 0 review not yet complete (blocks PR 1)
 Per the working agreement, implementation waits on reviewer confirmation that the documents contain no unresolved contradiction in the financial model. **PR 0 is explicitly not approved.**
 
-### B-10 … B-15 — Second external review of PR #838 (resolved, pending re-review)
+### B-16 … B-21 — Third external review, Stripe boundary (resolved, pending re-review)
+
+| ID | Finding | Resolution |
+|---|---|---|
+| B-16 | A crash after link claim but before the attempt insert stranded the link permanently; "inside the idempotency window" is also not a testable condition | Orphaned-claim sweeper restores after a 15-minute TTL (safe — Stripe was never called); replay bounded by a **fixed 23-hour cutoff**; out-of-window search must paginate to exhaustion (D-035) |
+| B-17 | Reusing an `open` Session can charge an obsolete amount after an amendment or another payment | Reuse only when agreement, amount, currency, livemode and **current** payable Remaining all match; otherwise expire at Stripe, **confirm**, then free the slot. Unconfirmed expiry blocks checkout and raises `stale_session_expiry_failed` (D-034) |
+| B-18 | Session metadata does not propagate to the PaymentIntent, so `payment_intent.succeeded` could not be attributed | Metadata written to **both** `metadata` and `payment_intent_data.metadata`; PR 6 tests a PaymentIntent webhook arriving alone (D-033) |
+| B-19 | The one-live-Session index on `(agreement_id)` let a test Session block live checkout | Keyed on `(agreement_id, livemode)` (D-034) |
+| B-20 | Test 29 and the L3 commentary demanded a human `recorded_by`, contradicting L12/D-032 and blocking legacy import | Both now require exactly one attribution, human **or** system (D-036) |
+| B-21 | Nothing forbade contradictory provenance — a Stripe entry could carry `external_method`, an external entry a `pi_…` | **L13** mutual-exclusion checks; `legacy_donation_id` exempt as traceability (D-036) |
+
+### B-10 … B-15 — Second external review of PR #838 (resolved)
 
 | ID | Finding | Resolution |
 |---|---|---|
@@ -87,7 +98,7 @@ Noticed during audit or design, deliberately not folded into any current PR.
 
 ## Decisions carried forward
 
-D-001 … D-032 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**, whose recovery mechanism is in turn **corrected by D-028**. **D-026's system-actor mechanism is corrected by D-032.** No decision is open. See [DECISIONS.md](DECISIONS.md).
+D-001 … D-036 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**, whose recovery mechanism is in turn **corrected by D-028**. **D-026's system-actor mechanism is corrected by D-032.** **D-028 is refined by D-035**, and **D-029 by D-034**. No decision is open. See [DECISIONS.md](DECISIONS.md).
 
 ## Working agreement
 

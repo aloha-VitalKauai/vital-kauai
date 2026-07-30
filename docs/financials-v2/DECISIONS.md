@@ -351,3 +351,44 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 **Rationale.** D-026 attributed automated reversals to a dedicated `auth.users` service account. That would make a clean `supabase db reset` depend on an **environment-specific Auth user** — the migration applies on one environment and fails on another — and Supabase's guidance is that users are created through the [Auth Admin API](https://supabase.com/docs/reference/javascript/auth-admin-createuser), not inserted by migration. An enum keeps system attribution inside the `finance` schema, portable, and reproducible from migrations alone, while remaining exactly as legible in an audit as a named person.
 
 **Consequences.** Imports attribute to `legacy_import` where the original founder is unidentifiable, and to `recorded_by` where they are — human attribution being the better evidence.
+
+---
+
+## D-033 — Attribution metadata is written to the PaymentIntent, not only the Session
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** Every V2 Checkout Session sets `financial_version`, `agreement_id` and `attempt_id` on **both** `metadata` and `payment_intent_data.metadata`. Ingestion resolves attribution from whichever object an event carries. PR 6 tests that a PaymentIntent webhook processes correctly with the Session webhook never arriving.
+
+**Rationale.** Checkout Session metadata **does not propagate** to the PaymentIntent it creates. A `payment_intent.succeeded` event therefore carries PaymentIntent metadata, which is empty unless set deliberately. D-030 requires verifying the PaymentIntent before writing a payment, and events can arrive in any order or singly — so an implementation reading only Session metadata would fail to attribute any payment whose PaymentIntent event arrived first or alone, and the money would land in `unattributable_payment` despite being perfectly well identified at Stripe.
+
+---
+
+## D-034 — Session reuse is validated, and superseded Sessions are expired at Stripe first
+**Date:** 2026-07-29 · **Status:** Approved · **Refines D-029**
+
+**Decision.** An existing `open` Session is reused **only when** agreement, `amount_cents`, `currency`, `livemode` and the agreement's **current** `payable_remaining_cents` all still match, and it is not past `expires_at`. Otherwise it is expired through the Stripe API, the expiration **confirmed in Stripe's response**, and only then is the local row marked `expired` and the slot freed. Where expiration cannot be confirmed, **checkout is blocked** and `stale_session_expiry_failed` is raised. The one-live-Session index is keyed on `(agreement_id, livemode)`.
+
+**Rationale.** D-029 said a request while a live Session exists returns that Session's URL. But its amount was fixed at creation: a founder amending the Contribution, or any payment landing in between, leaves it quoting an obsolete figure — and the member is charged the wrong amount with a valid Stripe Session and a correct-looking ledger entry to show for it. Dropping the Session locally is not enough either: it remains payable at Stripe, so creating a replacement alongside it produces exactly the two-payable-Sessions state D-029 exists to prevent. Blocking on unconfirmed expiry is the safe outcome. Keying the index on `livemode` prevents a test-mode Session from occupying the only slot and blocking a real payment.
+
+---
+
+## D-035 — Two sweepers, two safety rules, one fixed replay cutoff
+**Date:** 2026-07-29 · **Status:** Approved · **Refines D-028**
+
+**Decision.**
+
+- **Orphaned claim** — a link `creating` with **no** `checkout_sessions` row and `claimed_at` older than a **15-minute TTL** is atomically restored to `active`. Safe unconditionally, because the Stripe call happens only after the session row is committed, so no Session can exist.
+- **Stranded attempt** — replay is permitted only within a **fixed 23-hour cutoff** measured from the persisted `checkout_sessions.created_at`. Beyond it, ground truth comes from **exhaustively paginated** Checkout Session enumeration over a bounded creation interval, matched locally on `attempt_id`. Ambiguous outcomes raise `stranded_checkout_attempt` and are never auto-replayed or auto-released.
+
+**Rationale.** D-028 left two gaps. First, a crash between claiming the link and inserting the attempt row stranded the link **permanently** — no attempt existed for any sweeper to act on, and the link could never return to `active`. That state is provably safe to recover, because Stripe was never contacted. Second, "inside Stripe's idempotency window" is not a testable condition: Stripe exposes no key-expiry lookup, so the rule has to be a fixed interval. 23 hours sits deliberately short of Stripe's ~24-hour pruning so clock skew and job latency cannot push a replay past it. Stripe also offers no server-side metadata filter on Sessions, so the out-of-window search must paginate to exhaustion — treating a single page as conclusive would produce the false "no Session exists" that causes a double charge.
+
+---
+
+## D-036 — Provenance fields may not contradict `source`
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** L13: `source='stripe'` requires `external_method IS NULL`; `source='external'` requires `provider_object_id IS NULL` and `provider_payment_intent_id IS NULL`. `legacy_donation_id` is exempt — it is import traceability, orthogonal to origin, and legitimately present on both.
+
+**Rationale.** The invariants stated what each source *requires* and never what it *excludes*, so a `stripe_payment` could carry `external_method='cash'` and an `external_payment` could carry a `pi_…` identifier it has no claim to. Such a row asserts two incompatible origins at once; any report grouping by provenance would double-count or arbitrarily classify it. Provenance is only useful when a row has exactly one.
+
+**Also corrected here:** acceptance test 29 and the L3 commentary both demanded a "named human" on external entries, contradicting L12 and D-032 and making legacy-imported external payments and refunds unimportable. Both now require exactly one valid attribution, human **or** system.
