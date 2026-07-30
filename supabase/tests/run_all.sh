@@ -27,5 +27,7 @@ for f in supabase/tests/finance/*.sql; do
   [ "$n" -gt 0 ] && printf '%s\n' "$out" | grep -A3 '^not ok'
   printf '%s' "$out" | grep -q 'Looks like you planned' && printf '%s\n' "$out" | grep 'Looks like you planned'
 done
-echo "== TOTAL passed=$total_ok failed=$total_fail =="
+echo "== static checks =="
+./supabase/tests/finance/06_static.sh || true
+echo "== TOTAL pgTAP passed=$total_ok failed=$total_fail =="
 [ "$total_fail" -eq 0 ]

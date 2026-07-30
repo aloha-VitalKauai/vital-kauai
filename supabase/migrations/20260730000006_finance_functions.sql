@@ -183,6 +183,12 @@ begin
   select * into e from finance.reconciliation_exceptions where id = p_exception_id for update;
   if not found then raise exception 'release_quarantine: exception % not found', p_exception_id; end if;
 
+  -- Nit 9: match quarantine_object()'s precondition. Without this a founder
+  -- could "release" an exception that had already been resolved, which changes
+  -- nothing anyone can observe and muddies the audit trail.
+  if e.resolution_status <> 'open' then
+    raise exception 'release_quarantine: exception % is %, not open', p_exception_id, e.resolution_status;
+  end if;
   if e.quarantined_at is null
      or (e.released_at is not null and e.released_at >= e.quarantined_at) then
     raise exception 'release_quarantine: exception % is not actively quarantined', p_exception_id;
@@ -198,3 +204,37 @@ end $$;
 
 revoke all on function finance.release_quarantine(uuid, text) from public;
 grant execute on function finance.release_quarantine(uuid, text) to authenticated;
+
+-- 7 ------------------------------------------ finance.revoke_payment_link()
+-- Finding 4: `link_status = 'revoked'` was in the enum, required by
+-- link_revoked_complete, and asserted by requirement 73 -- yet unreachable.
+-- service_role's column-scoped UPDATE excludes revoked_at/revoked_by, and
+-- authenticated holds no UPDATE at all, so no role could legally enter it.
+-- Revocation is a founder judgement, so it follows the same shape as every
+-- other guarded transition: a founder-gated function that computes the actor
+-- and timestamp internally.
+create function finance.revoke_payment_link(p_link_id uuid) returns void
+  language plpgsql volatile security definer set search_path = pg_catalog, public, finance as $$
+declare l finance.payment_links%rowtype;
+begin
+  if not public.is_founder() then
+    raise exception 'revoke_payment_link: founder role required';
+  end if;
+
+  select * into l from finance.payment_links where id = p_link_id for update;
+  if not found then raise exception 'revoke_payment_link: link % not found', p_link_id; end if;
+
+  if l.status = 'revoked' then
+    raise exception 'revoke_payment_link: link % is already revoked', p_link_id;
+  end if;
+  if l.status = 'consumed' then
+    raise exception 'revoke_payment_link: link % is consumed and cannot be revoked', p_link_id;
+  end if;
+
+  update finance.payment_links
+     set status = 'revoked', revoked_at = clock_timestamp(), revoked_by = auth.uid()
+   where id = p_link_id;
+end $$;
+
+revoke all on function finance.revoke_payment_link(uuid) from public;
+grant execute on function finance.revoke_payment_link(uuid) to authenticated;

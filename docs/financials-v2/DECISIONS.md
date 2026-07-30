@@ -776,3 +776,17 @@ The choice was load-bearing rather than cosmetic. Without `partial`, a run stopp
 **Test 84's arithmetic was also wrong.** Five statuses across two flag states is ten combinations, not eight: valid are `completed`+`true` plus each of the other four with `false`; rejected are `completed`+`false` plus each of the other four with `true`. Eight matched neither five values (ten combinations) nor four (eight combinations, four rejected).
 
 **Consequence.** No behavioural change to the approved design — this records what D-045 already decided and removes the contradiction blocking implementation. The correction and its implementation ship atomically in PR 1.
+
+
+---
+
+## D-073 — Financial actors cannot be deleted; audit history outranks account removal
+**Date:** 2026-07-30 · **Status:** Approved
+
+**Decision.** `finance.agreements.created_by`, `agreement_amounts.actor_id`, `agreement_lifecycle_events.actor_id`, `ledger_entries.recorded_by`, `payment_links.created_by`/`revoked_by`, `reconciliation_exceptions.resolved_by`/`released_by` and `reconciliation_runs.approved_by` all reference `auth.users(id)` **`ON DELETE RESTRICT`**. Once any financial fact attributes to a user, that `auth.users` row cannot be deleted.
+
+**Rationale.** An independent review flagged that this changes existing production behaviour: Supabase account deletion and GoTrue admin delete will begin failing for any user with financial history. That is the intended outcome, not an oversight. Every one of these columns exists to answer "who did this, and when" about money. `ON DELETE CASCADE` would erase the financial record along with the account; `SET NULL` would silently strip attribution from an append-only ledger that cannot be corrected by update. Both defeat the purpose of the column.
+
+**Intended operational behaviour.** Account *deactivation* is the supported path for a departing user — revoke roles and sessions, leave the `auth.users` row in place. Hard deletion is available only for users with no financial attribution, which is the common case for members who never transacted. Where a hard delete is genuinely required for a user with history, it is a deliberate, reviewed operation: reassign or anonymise at the application layer first, with a decision entry, rather than weakening the foreign keys.
+
+**Tested.** `05_guards.sql` asserts every finance → `auth.users` FK is `RESTRICT`, that deleting an actor with financial history is refused, and that a user with no attribution still deletes normally.

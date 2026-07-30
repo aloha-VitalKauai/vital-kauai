@@ -4,8 +4,21 @@
 revoke all on schema finance from public;
 grant usage on schema finance to authenticated, service_role;
 
+-- Finding 5. `ALTER DEFAULT PRIVILEGES ... REVOKE EXECUTE ON FUNCTIONS FROM
+-- PUBLIC` is a NO-OP here: verified on PostgreSQL 17.10 that a function created
+-- afterwards -- in the same session or a new one, with or without FOR ROLE --
+-- still carries `=X/owner`, i.e. PUBLIC retains EXECUTE. Revoke-only default
+-- privileges store no pg_default_acl row at all.
+--
+-- What actually works, and is used instead:
+--   1. this GRANT, which does store a default ACL row for service_role;
+--   2. an explicit REVOKE over existing functions at the end of this file;
+--   3. a catalog assertion in the test suite that FAILS if any finance function
+--      is PUBLIC-executable, so a future migration cannot reintroduce it
+--      silently.
+-- Every finance function additionally revokes from PUBLIC individually.
+alter default privileges in schema finance grant execute on functions to service_role;
 alter default privileges in schema finance revoke all on tables from public;
-alter default privileges in schema finance revoke all on functions from public;
 
 -- ENABLE and FORCE on all nine tables.
 alter table finance.agreements                enable row level security;
@@ -129,6 +142,8 @@ grant update (status, stripe_session_id, completed_at)
 
 grant update (status, claimed_at, consumed_at, consumed_by_session_id, attempt_count)
   on finance.payment_links to service_role;
+-- Revocation is a founder act performed through finance.revoke_payment_link();
+-- no role holds a direct UPDATE on revoked_at/revoked_by (finding 4).
 
 -- Column-scoped INSERT: the nine protected lifecycle columns are excluded, so
 -- resolution_status takes its 'open' default (D-068). The BEFORE INSERT trigger
@@ -159,3 +174,7 @@ grant update (status, cursor, window_exhausted, heartbeat_at, finished_at, error
 -- anon and PUBLIC hold nothing.
 revoke all on all tables in schema finance from anon;
 revoke all on all functions in schema finance from anon;
+
+-- Finding 5, part 2: strip PUBLIC EXECUTE from every function this PR created.
+-- This DOES work for existing objects; default privileges do not.
+revoke execute on all functions in schema finance from public;

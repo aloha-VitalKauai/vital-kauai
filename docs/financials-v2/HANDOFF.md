@@ -51,6 +51,11 @@ Independent review returned APPROVE at `86a767a`; PR #838 merged as `aa32694`.
 ### B-74 — CLOSED
 True multi-session concurrency tests implemented and passing (11 assertions) for requirements 21, 35, 37, 50 and 101. The earlier list wrongly named 42 and 48; corrected above.
 
+### B-77 — req 70 is genuinely violated (blocks PR 1 approval)
+`finance.tg_lifecycle_transition()` re-derives current lifecycle at `20260730000005_finance_triggers.sql:55`, so `v_agreement_lifecycle` is **not** the only expression of it. `06_static.sh` reports this as a **failing** check rather than being rewritten to pass.
+
+The trigger deliberately does not read the view: the view is created later in migration order, and it is `security_invoker`, so reading it inside a `SECURITY DEFINER` trigger would evaluate RLS as the calling member and could hide the rows the validation depends on — a worse defect than the duplication. This needs a reviewer decision (accept the trigger as an internal validation exempt from req 70, or restructure). **Not waived unilaterally.**
+
 ### B-75 — 47 of 140 requirements have no executable coverage (blocks PR 1 approval)
 `supabase/tests/coverage_map.py` verifies the mapping by script and names every uncovered requirement. **93 covered, 47 not.** Several of the 47 are reviewer checks by design (2, 69, 70), but most are genuine gaps. PR 1 must not merge until they are closed or explicitly waived.
 
@@ -244,7 +249,7 @@ Noticed during audit or design, deliberately not folded into any current PR.
 
 ## Decisions carried forward
 
-D-001 … D-072 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**, whose recovery mechanism is in turn **corrected by D-028**. **D-026's system-actor mechanism is corrected by D-032.** **D-028 is refined by D-035**, **D-029 by D-034**, **D-013's founder-predicate clause is superseded by D-037**, **D-043's rules 10, 17 and 18 are corrected by D-048, D-050 and D-045**, **D-047's release mechanism by D-051**, **D-050 by D-052**, **D-045 tightened by D-055**, **D-043's event list by D-056**, **D-051's timestamp mechanism by D-057**, **D-050 fully superseded by D-052 and D-059**, **D-040/D-054 tightened by D-061**, **D-057's backstop corrected by D-062 and preconditions added by D-064**, **D-061's expression corrected by D-063**, **D-059 completed by D-065**, **D-063 made structurally enforced by D-066**, **D-059/D-064/D-067 completed at the `INSERT` boundary by D-068**, **D-068's predicate corrected by D-070**, and **D-069's insertion order corrected by D-071**. No decision is open. See [DECISIONS.md](DECISIONS.md).
+D-001 … D-073 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**, whose recovery mechanism is in turn **corrected by D-028**. **D-026's system-actor mechanism is corrected by D-032.** **D-028 is refined by D-035**, **D-029 by D-034**, **D-013's founder-predicate clause is superseded by D-037**, **D-043's rules 10, 17 and 18 are corrected by D-048, D-050 and D-045**, **D-047's release mechanism by D-051**, **D-050 by D-052**, **D-045 tightened by D-055**, **D-043's event list by D-056**, **D-051's timestamp mechanism by D-057**, **D-050 fully superseded by D-052 and D-059**, **D-040/D-054 tightened by D-061**, **D-057's backstop corrected by D-062 and preconditions added by D-064**, **D-061's expression corrected by D-063**, **D-059 completed by D-065**, **D-063 made structurally enforced by D-066**, **D-059/D-064/D-067 completed at the `INSERT` boundary by D-068**, **D-068's predicate corrected by D-070**, and **D-069's insertion order corrected by D-071**. No decision is open. See [DECISIONS.md](DECISIONS.md).
 
 ## Working agreement
 
