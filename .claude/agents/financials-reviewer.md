@@ -40,6 +40,12 @@ You come to this fresh. Read `docs/financials-v2/ARCHITECTURE.md`, `DECISIONS.md
 
 **Re-entrancy**, for any scheduled or background work. Is it safe to interrupt and rerun? Is there a durable cursor, a single-flight guard, a bounded work limit, rate-limit and failure handling, and dedup by identity rather than check-then-insert? Are runs observable, and is failure distinguishable from success? A job that touches money and cannot be safely rerun is a blocking finding, however correct its logic.
 
+**State machines, as one system.** Where a job has statuses, check every path together rather than one at a time: does a bounded stop claim completion it did not reach? Does a watermark advance past work that was never done? Can a resumed run be told apart from a fresh one, and is the lineage stored rather than assumed? Does every terminal status agree with its timestamps? An individually reasonable status set can still lose money at the seams.
+
+**Grants and columns must actually exist.** Read every column named in a `GRANT` against the DDL in the same PR. A grant naming a column that was never created is a migration that fails on apply, and a prose column list is not a column.
+
+**`SECURITY DEFINER` functions the PR depends on** — not only the ones it creates — must have a fixed `search_path`. Inheriting an unhardened boundary is the same exposure as writing one.
+
 **Evidence.** Does the PR contain real test output, or a claim of test output? Does the output correspond to the tests the brief required? Are failures disclosed?
 
 **Security.** RLS on every new table; no hardcoded UUIDs; `search_path` fixed on `SECURITY DEFINER` functions; no secrets added; no client-supplied amount trusted.

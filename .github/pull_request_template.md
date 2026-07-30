@@ -78,3 +78,5 @@ Complete this block if the change adds or alters a job, sweeper, webhook handler
 - [ ] **Writes are deduplicated by identity**, not by "check then insert".
 - [ ] **Observable** — run id, counts and duration recorded; failure is distinguishable from a clean run.
 - [ ] **Alert thresholds stated**, distinguishing expected volume from operational failure.
+- [ ] **Terminal states are honest** — a bounded or interrupted stop is a distinct, resumable state and does not report completion; any watermark advances only on genuine completion.
+- [ ] **Every column named in a `GRANT` exists** in the migration, and the grant test proves permitted updates succeed as well as forbidden ones failing.

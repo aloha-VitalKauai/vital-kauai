@@ -474,6 +474,72 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 ## D-043 — Operational rules are part of the architecture, not implementation detail
 **Date:** 2026-07-29 · **Status:** Approved
 
-**Decision.** ARCHITECTURE §10a specifies all twenty operational properties of the reconciliation job — window and overlap, initial lookback, cursor, page and batch sizes, resume, single-flight, exhaustive pagination for all four object types, 429 and `Retry-After` handling with bounded backoff, failure classification, retry budget and quarantine, exception dedup, mode isolation, double-processing safety, run counters, alert thresholds, dry-run first, maximum-work limits, rerun safety, and the ingest/correct boundary. PR 3 carries 21 acceptance tests of its own.
+**Decision.** ARCHITECTURE §10a specifies all twenty operational properties of the reconciliation job — window and overlap, initial lookback, cursor, page and batch sizes, resume, single-flight, exhaustive pagination for all four object types, 429 and `Retry-After` handling with bounded backoff, failure classification, retry budget and quarantine, exception dedup, mode isolation, double-processing safety, run counters, alert thresholds, dry-run first, maximum-work limits, rerun safety, and the ingest/correct boundary. PR 3 carries acceptance tests of its own, listed with that PR in `PR_PLAN.md`.
 
 **Rationale.** An operational readiness review found **zero of twenty** defined. Every one was correct in principle and unbuildable in practice: against the stated scenario the job would have double-inserted thousands of exceptions per run and been unable to resume. A scheduled job that touches money is not implementation detail — its re-entrancy is an architectural property, and leaving it to the implementer means it is decided by whoever is least equipped to decide it.
+
+
+---
+
+## D-044 — PR 1 hardens `public.is_founder()`; the earlier risk explanation was wrong
+**Date:** 2026-07-29 · **Status:** Approved · **Supersedes risk R-5's framing**
+
+**Decision.** PR 1 executes `ALTER FUNCTION public.is_founder() SET search_path = pg_catalog, public;` and verifies the live signature before writing any policy that calls it. A reviewer check confirms `proconfig` is non-null afterwards.
+
+**Correction.** A previous revision claimed a caller could "resolve `public.user_roles` to an object they control." **That was false.** The function body schema-qualifies both `public.user_roles` and `auth.uid()`, so `search_path` cannot redirect either relation. The accurate concerns are narrower: unqualified **operator** resolution (the `=` comparisons) still goes through `search_path` inside a `SECURITY DEFINER` context; a future edit adding one unqualified reference would silently remove the protection with no test to catch it; and Supabase's `function_search_path_mutable` linter flags it.
+
+**Rationale for owning it.** §9 requires a fixed `search_path` on every `SECURITY DEFINER` function V2 relies on. Exempting the single function every founder policy calls would make that rule decorative, and recording it as "someone else's risk" while PR 1 builds an authorization boundary on top of it is precisely the ownerless-risk pattern this project exists to eliminate.
+
+---
+
+## D-045 — `partial` is a distinct run status; only `completed` advances the watermark
+**Date:** 2026-07-29 · **Status:** Approved · **Corrects rule 18 of D-043**
+
+**Decision.** `finance.run_status` gains `partial`. A run stopping at a work ceiling ends `partial` with `window_exhausted = false`; its successor inherits the identical window and cursor. `completed` requires every object type to have exhausted the whole window, enforced by `CHECK (status <> 'completed' OR window_exhausted)`. Only a `completed` run advances the next window's start.
+
+**Rationale.** Rule 18 marked a bounded run `completed` while rule 1 derived the next window from the last `completed` run's `window_end`. Together they **skip every object the bounded run never reached** — permanently, with no gap reported anywhere, because both rules behaved exactly as written. Money would go unreconciled and nothing would say so.
+
+---
+
+## D-046 — Resume lineage is a stored, constrained self-reference
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** `reconciliation_runs.resumed_from_run_id` references the run being continued. Resumable statuses are `partial`, `failed`, `abandoned`; a trigger rejects lineage onto a `running` or `completed` run. Self-reference is rejected by `CHECK`. A resumer inherits its predecessor's window, enforced by trigger. At most one run may resume a given predecessor. `finished_at` consistency is enforced for every status by `CHECK ((status = 'running') = (finished_at IS NULL))`.
+
+**Rationale.** §10a described resuming "under a new run id referencing the abandoned one" while the table had no such column — the lineage the recovery story depends on could not be recorded, so a resumed chain was unauditable. Restricting the target status matters too: resuming a `running` run would defeat single-flight, and resuming a `completed` one would redo finished work.
+
+---
+
+## D-047 — Quarantine state lives on the exception row
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** `reconciliation_exceptions` gains `consecutive_failure_runs`, `quarantined_at`, `quarantine_reason`, `released_at`, `released_by`. The streak increments only when `last_run_id` differs from the current run, so retries within one run count once; any run in which the object does not fail terminally resets it. Reaching 3 sets `quarantined_at`. Quarantined objects are skipped by later runs but remain `open` and visible. Only a founder may release, which clears quarantine and resets the streak.
+
+**Rationale.** Rule 11 promised quarantine after three consecutive failures while nothing counted failures, held quarantine state, or connected a failure in one run to the same object in the next. `dedup_key` is already the cross-run identity of the object-and-problem pair, so no second identity is introduced. Quarantine stops retrying; it deliberately does not stop reporting.
+
+---
+
+## D-048 — Four error classes; run-fatal failures end the run
+**Date:** 2026-07-29 · **Status:** Approved · **Corrects rule 10 of D-043**
+
+**Decision.** Transient (429, 5xx, timeout, reset) → retry. Object-terminal (404, malformed object, object-scoped 400) → exception for that object, run continues. **Run-fatal (401, 403, invalid list parameters, account configuration) → end the run `failed` with the cursor intact, raise one `reconciliation_run_failed`, alert.** Ambiguous → exception, no ledger write.
+
+**Rationale.** Rule 10 classed every non-429 4xx as object-terminal, so an invalid API key would have been treated as one bad charge — marching through the entire window raising thousands of meaningless exceptions while reconciling nothing, and reporting a run that "continued". Authentication and configuration failures are properties of the run, not of an object.
+
+---
+
+## D-049 — Counters measure examinations, not distinct objects
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** `objects_scanned` and `objects_matched` count examinations performed by a run. Overlapping windows and page-boundary resumes mean the same object is legitimately examined more than once, so these counters must not be summed across runs as a count of distinct Stripe objects. `exceptions_created` counts inserts; `exceptions_reopened` counts upserts onto an open row.
+
+**Rationale.** PR 3 test 3 asserted a restart "processes no object twice", contradicting rule 14, which correctly states an object may be examined repeatedly and that safety comes from idempotent writes. The test was demanding a property the design deliberately does not have — and could only have been satisfied by weakening the resume guarantee. Uniqueness belongs in the write path, not the counters.
+
+---
+
+## D-050 — Dry-run approval is a persisted, validated authorization
+**Date:** 2026-07-29 · **Status:** Approved · **Corrects rule 17 of D-043**
+
+**Decision.** A founder approves a dry run by setting `approved_by`/`approved_at` on that run row. Every writing run cites one via `authorized_by_run_id`, enforced by `CHECK (dry_run OR authorized_by_run_id IS NOT NULL)` and a trigger validating that the cited run is a dry run, is approved, shares `livemode`, and has a `window_start` no later than the writing run's. The first writing run per mode is capped at a 24-hour window. Only a founder holds the grant on the approval columns.
+
+**Rationale.** Rule 17 said a founder reviews the dry run "before a writing run is permitted" while nothing recorded the review and nothing prevented starting `dry_run = false` immediately. An approval gate that exists only in prose is not a gate. Reaching further back than the reviewed window invalidates the approval, because the founder approved a scope, not a job.

@@ -8,7 +8,7 @@
 ## Current status
 
 **Phase:** PR 0 — architecture and project-control documents.
-**State:** **PR 0 is not approved.** Documents written and revised across eight review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), a first external review of PR #838 (7 findings, B-3 … B-9), a clean-context re-verification (1 blocker, 6 minors), a second external review (6 findings, B-10 … B-15), a third external review at the Stripe boundary (6 findings, B-16 … B-21), a PR 1 executability review (9 blockers, 8 minors — B-22 … B-30), and an operational readiness review (7 blockers, 6 minors — **zero of twenty operational points defined**, B-31 … B-43). All resolved. Awaiting independent re-review.
+**State:** **PR 0 is not approved.** Documents written and revised across nine review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), a first external review of PR #838 (7 findings, B-3 … B-9), a clean-context re-verification (1 blocker, 6 minors), a second external review (6 findings, B-10 … B-15), a third external review at the Stripe boundary (6 findings, B-16 … B-21), a PR 1 executability review (9 blockers, 8 minors — B-22 … B-30), an operational readiness review (7 blockers, 6 minors — **zero of twenty operational points defined**, B-31 … B-43), and an independent review returning **BLOCK** on the reconciliation state machine (B-44 … B-51). All resolved. Awaiting independent re-review.
 
 The clean-context pass caught a defect introduced by the B-7 fix itself: L12 originally defined "provider-originated" as `source='stripe' AND provider_object_id IS NOT NULL`, which contradicted L1 and D-020 — a Stripe payment imported without a charge-object id would have demanded a human actor that no document assigned. L12 now keys on `source` alone.
 
@@ -34,7 +34,22 @@ The two divergent rows validate D-015 against production: 12% of members would s
 ### B-2 — PR 0 review not yet complete (blocks PR 1)
 Per the working agreement, implementation waits on reviewer confirmation that the documents contain no unresolved contradiction in the financial model. **PR 0 is explicitly not approved.**
 
-### B-31 … B-43 — Operational readiness review (resolved, pending re-review)
+### B-44 … B-51 — Independent review, verdict BLOCK (resolved, pending re-review)
+
+The reconciliation state machine was reviewed as one system. Every finding was a real gap between what the documents promised and what they could express.
+
+| ID | Finding | Resolution |
+|---|---|---|
+| B-44 | `is_founder()` hardening was ownerless — PR 1 would build founder RLS on an unhardened `SECURITY DEFINER` boundary | **Assigned to PR 1** (D-044). The earlier risk explanation was **wrong** and is corrected: the body is schema-qualified, so `search_path` cannot redirect `public.user_roles`; the real concern is operator resolution and future edits |
+| B-45 | Resume lineage was described but not representable | `resumed_from_run_id` with status, self-reference, window and one-resumer-per-predecessor constraints; `finished_at` consistency enforced for every status (D-046) |
+| B-46 | "Completed but unfinished" would **permanently skip** Stripe objects | New `partial` status; `completed` requires `window_exhausted`; only `completed` advances the watermark (D-045) |
+| B-47 | Grant named a nonexistent `counters` column | Six counter columns enumerated; approval and release columns added; both-directions grant test (D-043 amended) |
+| B-48 | Quarantine was unimplementable — nothing counted, held or identified failures across runs | State on the exception row keyed by `dedup_key`; streak rules, reset, founder-only release (D-047) |
+| B-49 | PR 3 test 3 contradicted rule 14 by demanding no object be examined twice | Test rewritten to page-boundary restart with no duplicate ledger entry or exception; counter meaning defined (D-049) |
+| B-50 | Run-fatal and object-terminal errors were conflated — a 401 would be skipped as one bad object | Four error classes; 401/403/invalid-list ends the run `failed` with cursor intact (D-048) |
+| B-51 | Dry-run approval was stated but unenforced | Persisted approval, cited authorization, window and mode validation, 24-hour canary, founder-only grant (D-050) |
+
+### B-31 … B-43 — Operational readiness review (resolved)
 
 An eighth review asked what happens when reconciliation first runs against real Stripe data, finds ~4,000 mismatches, is interrupted, overlaps a scheduled run, hits 429s and timeouts, and is rerun. **Zero of twenty operational points were defined.**
 
@@ -124,10 +139,10 @@ That branch carries 32 modified files, roughly 12 untracked files, and 7 unpushe
 ### R-3 — Legacy baseline schema is un-versioned
 The legacy money tables exist only in the live project. V2 is unaffected by design (D-001), but legacy behaviour cannot be fully reviewed from the repository. **Shadow comparison in PRs 3 and 4 therefore carries more evidentiary weight than code reading** — behaviour is settled by observed figures, not inference.
 
-### R-5 — `public.is_founder()` has no `SET search_path`
-Its live definition is `SECURITY DEFINER` without a pinned `search_path` — the shape ARCHITECTURE §9 forbids for every V2 function. A caller able to influence `search_path` may resolve `public.user_roles` to an object they control. V2 inherits this exposure because every founder policy calls it.
+### R-5 — CLOSED, reassigned to PR 1 (D-044)
+`public.is_founder()` is `SECURITY DEFINER` with no pinned `search_path` (`proconfig` NULL, confirmed live). **PR 1 now owns the fix** — `ALTER FUNCTION public.is_founder() SET search_path = pg_catalog, public;` — executed before any policy depends on it, with a test asserting `proconfig` afterwards.
 
-**Fix:** `ALTER FUNCTION public.is_founder() SET search_path = pg_catalog, public;` — a one-line change to an existing object, **outside PR 0's documentation-only scope**. Not owned by Financials V2, but V2 depends on it.
+**The original R-5 wording was inaccurate** and is corrected in D-044: the function body schema-qualifies `public.user_roles` and `auth.uid()`, so `search_path` cannot redirect those relations. The genuine concerns are unqualified operator resolution inside a `SECURITY DEFINER` context, and the absence of protection against a future edit introducing an unqualified reference.
 
 ### R-6 — Duplicate index on `members.profile_id`
 Both `idx_members_profile_id` and `uq_members_profile_id` exist with the same predicate; the non-unique one is redundant. Harmless, minor write cost. Not V2's to fix.
@@ -146,7 +161,7 @@ Noticed during audit or design, deliberately not folded into any current PR.
 
 ## Decisions carried forward
 
-D-001 … D-043 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**, whose recovery mechanism is in turn **corrected by D-028**. **D-026's system-actor mechanism is corrected by D-032.** **D-028 is refined by D-035**, **D-029 by D-034**, and **D-013's founder-predicate clause is superseded by D-037**. No decision is open. See [DECISIONS.md](DECISIONS.md).
+D-001 … D-050 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**, whose recovery mechanism is in turn **corrected by D-028**. **D-026's system-actor mechanism is corrected by D-032.** **D-028 is refined by D-035**, **D-029 by D-034**, **D-013's founder-predicate clause is superseded by D-037**, and **D-043's rules 10, 17 and 18 are corrected by D-048, D-050 and D-045**. No decision is open. See [DECISIONS.md](DECISIONS.md).
 
 ## Working agreement
 

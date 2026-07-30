@@ -26,7 +26,7 @@
 
 ### PR 1 — `finance` schema foundation
 **Outcome:** The complete V2 schema exists, is fully constrained, is protected by RLS, exposes the canonical views, and is proven by automated database tests.
-**Contains:** `CREATE SCHEMA finance`; the **thirteen** enum types; the **nine** tables; all `CHECK` constraints and constraint triggers; append-only enforcement triggers; RLS policies, grants and default privileges **including `service_role`**; `finance.current_member_id()` and `finance.create_agreement()` (founder authority reuses the existing `public.is_founder()`); the **five** views — `v_agreement_lifecycle`, `v_agreement_balances`, `v_agreement_balances_test`, `v_member_financials`, `v_journey_financials`; the full acceptance test suite.
+**Contains:** `ALTER FUNCTION public.is_founder() SET search_path = pg_catalog, public` (D-044, executed before any policy depends on it); `CREATE SCHEMA finance`; the **thirteen** enum types; the **nine** tables; the **eight** partial unique indexes of ARCHITECTURE §15; all `CHECK` constraints and constraint triggers; append-only enforcement triggers; RLS policies, grants and default privileges **including `service_role`**; `finance.current_member_id()` and `finance.create_agreement()` (founder authority reuses the existing `public.is_founder()`); the **five** views — `v_agreement_lifecycle`, `v_agreement_balances`, `v_agreement_balances_test`, `v_member_financials`, `v_journey_financials`; the full acceptance test suite.
 **Excludes:** application code, data import, any UI.
 **Not blocked.** Live verification is complete (D-038): `uq_members_profile_id` already exists, there are no duplicates and no NULL `profile_id`, and PostgreSQL is 17.6. **PR 1 adds no index for this.**
 **Done when:** every test in "PR 1 acceptance tests" below passes on a fresh database.
@@ -60,7 +60,7 @@ Integration tests against the Stripe test-mode API and a seeded database. Each i
 
 1. A run covers `[window_start, window_end)` with the stated settlement lag and 60-minute overlap; the window is recorded on the run row.
 2. Run #1 with an empty ledger uses the 90-day lookback; with a populated ledger it uses the earliest `occurred_at`.
-3. The cursor advances only at page boundaries; a run killed mid-page resumes from the last committed boundary and processes no object twice.
+3. **Restart semantics.** A run killed mid-page resumes at the last committed page boundary. Repeated *examination* of an object is permitted and expected; what must not occur is a duplicate **ledger entry** or a duplicate **exception**. Counters follow D-049 — they count examinations by this run, not distinct objects.
 4. A second concurrent run for the same `livemode` is refused; a test-mode and a live-mode run proceed together.
 5. A `running` run with a stale heartbeat is marked `abandoned` and its cursor is resumed under a new run id.
 6. Every object type paginates to exhaustion — a charge with more refunds than one page yields every refund.
@@ -75,7 +75,12 @@ Integration tests against the Stripe test-mode API and a seeded database. Each i
 15. Every counter on the run row matches the observed work.
 16. A shadow-phase `provider_without_ledger` volume does not alert; a 3× median spike, a `failed` run, a live `unattributable_payment`, and a 14-day-old open exception each do.
 17. `dry_run = true` writes no ledger entry and no exception, and still reports accurate counters.
-18. A run hitting the object, API-call or time ceiling ends `completed` with the cursor preserved.
+18. A run hitting the object, API-call or time ceiling ends **`partial`** with `window_exhausted = false` and the cursor preserved; it does **not** end `completed`.
+18b. The successor of a `partial` run inherits the identical `window_start`/`window_end` and cursor, and the watermark does not advance until a run reaches `completed`.
+18c. A `partial`, `failed` or `abandoned` run can be resumed and its `resumed_from_run_id` records the lineage; resuming a `running` or `completed` run is rejected, as is self-reference and a second resumer of the same predecessor.
+18d. **Run-fatal handling** — a simulated 401, a 403, and an invalid list request each end the run `failed` with the cursor intact and raise exactly one `reconciliation_run_failed`; none is treated as an object-level skip.
+18e. **Quarantine** — an object failing terminally in three consecutive runs is quarantined and skipped by the next run; a successful examination before the third resets the streak; only a founder can release, and release restores normal processing.
+18f. **Approval gate** — a writing run with no `authorized_by_run_id` is rejected; one citing an unapproved dry run, a different `livemode`, or an earlier `window_start` than approved is rejected; the first writing run per mode is capped at 24 hours.
 19. **Reconciliation never writes a `reversal`** — attempting one is rejected, and a `refund_status_regression` produces an exception only.
 20. A verified `succeeded` PaymentIntent with valid metadata is ingested; one without resolvable attribution raises `unattributable_payment` and is not ingested.
 21. No heuristic match occurs — an amount-and-timestamp coincidence with no identity or metadata match raises an exception rather than matching.
@@ -123,7 +128,7 @@ Integration tests against the Stripe test-mode API and a seeded database. Each i
 
 ## PR 1 acceptance tests
 
-All of the following must pass through automated database tests before PR 1 opens. Each is a blocking requirement. Every test maps to an invariant in `ARCHITECTURE.md`; the list grew from 29 to **87** across eight review passes, which added coverage for zero-row aggregates, live mode, the parent matrix, lifecycle initialisation, concurrency, invariants L1–L3, L3b and L11–L13, `service_role` privileges, the persisted checkout attempt, one-live-session enforcement per mode, validated session reuse, PaymentIntent metadata propagation, provenance mutual exclusion, system attribution, reversed-refund accounting, reconciliation run state, and exception dedup identity. **PR 3 carries its own 21 acceptance tests**, listed with that PR.
+All of the following must pass through automated database tests before PR 1 opens. Each is a blocking requirement. Every test maps to an invariant in `ARCHITECTURE.md`; the list grew from 29 to **96** across nine review passes, which added coverage for zero-row aggregates, live mode, the parent matrix, lifecycle initialisation, concurrency, invariants L1–L3, L3b and L11–L13, `service_role` privileges, the persisted checkout attempt, one-live-session enforcement per mode, validated session reuse, PaymentIntent metadata propagation, provenance mutual exclusion, system attribution, reversed-refund accounting, reconciliation run state, exception dedup identity, run-state lineage and approval, quarantine, and the partial-unique-index inventory. **PR 3 carries its own 26 acceptance tests**, listed with that PR.
 
 ### Schema and reproducibility
 1. Migrations apply cleanly to a fresh database.
@@ -237,3 +242,12 @@ All of the following must pass through automated database tests before PR 1 open
 80. A resolved exception does not block a new row for the same `dedup_key`; recurrence inserts a fresh row and the resolved row is preserved.
 81. The same `dedup_key` in different `livemode` yields two independent rows.
 82. `last_detected_at >= first_detected_at` is enforced.
+83. **`finished_at` consistency** — a `running` row with `finished_at` set is rejected, and any non-`running` row without it is rejected.
+84. **`completed` implies exhausted** — a `completed` row with `window_exhausted = false` is rejected; `partial` with `window_exhausted = false` is accepted.
+85. **Resume lineage** — `resumed_from_run_id` may reference a `partial`, `failed` or `abandoned` run; referencing a `running` or `completed` run is rejected; self-reference is rejected; a second run resuming the same predecessor is rejected.
+86. **Approval constraints** — a `dry_run = false` row without `authorized_by_run_id` is rejected; a `dry_run = true` row *with* one is rejected; `approved_by` and `approved_at` must be set together.
+87. **Quarantine constraints** — `quarantined_at` and `quarantine_reason` must be set together; `released_at` and `released_by` must be set together; a release without a prior quarantine is rejected; `consecutive_failure_runs` may not go negative.
+88. **Approval and release are founder-only** — `service_role` cannot write `approved_by`, `approved_at`, `released_at` or `released_by`; a founder can.
+89. **All eight partial unique indexes exist** with exactly the predicates listed in ARCHITECTURE §15, and each is an index rather than a table constraint.
+90. **`public.is_founder()` is hardened** — after PR 1's migration its `proconfig` includes `search_path`, and its signature is `is_founder() RETURNS boolean`, `SECURITY DEFINER`.
+91. **Column-scoped grants prove both directions** — every `UPDATE` the reconciliation job legitimately performs succeeds as `service_role`, and every column outside its granted list is rejected.

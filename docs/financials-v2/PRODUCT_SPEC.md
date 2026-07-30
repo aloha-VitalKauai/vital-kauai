@@ -72,7 +72,7 @@ Two further distinctions are first-class, not metadata conventions:
 | **Auditability** | Every financial fact carries who, when, and why. Every amendment and lifecycle transition is attributed. |
 | **Determinism** | Contribution and payment state resolve through total orderings — never ambiguous, never dependent on row insertion order alone. |
 | **Reproducibility** | The entire schema is created from tracked migrations. A fresh database reset produces a working system. |
-| **Re-entrancy** | Every scheduled job is safe to interrupt, resume and rerun. A rerun over an already-processed window creates nothing new. |
+| **Re-entrancy** | Every scheduled job is safe to interrupt, resume and rerun. A rerun over an already-processed window creates nothing new. A job reports completion only when its work is genuinely exhausted — a bounded stop is a distinct, resumable state. |
 | **Isolation** | Member A cannot read Member B's financial data. Proven by automated test, not assumed. |
 | **Precision** | Integer cents only. No floating-point arithmetic in any financial path. |
 
