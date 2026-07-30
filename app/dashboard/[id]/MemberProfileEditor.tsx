@@ -754,7 +754,7 @@ export default function MemberProfileEditor({
                 </select>
               </div>
               <div>
-                <label style={LABEL}>Assigned nurse</label>
+                <label style={LABEL}>Assigned doctor</label>
                 <select
                   style={SELECT}
                   value={assignedNurseId}
@@ -766,7 +766,7 @@ export default function MemberProfileEditor({
                   ))}
                 </select>
                 <p style={{ fontSize: 11, color: "#9E9E9A", margin: "4px 0 0" }}>
-                  Nurses come from the Team tab and see this member&rsquo;s medical profile only.
+                  Doctors come from the Team tab and see this member&rsquo;s medical profile only.
                 </p>
               </div>
               <div>
