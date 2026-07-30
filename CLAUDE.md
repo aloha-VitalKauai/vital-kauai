@@ -18,7 +18,8 @@ path. It does **not** cover:
 - Destructive git operations (force-push, `reset --hard`, branch deletion,
   history rewrite) — still confirm each time.
 - Edits to payment, auth, Supabase schema, or Stripe configuration — flag
-  the blast radius before shipping.
+  the blast radius before shipping. Money changes are additionally
+  governed by **Financial work** below.
 - Public-facing legal/medical copy where the words matter clinically
   (informed consent, contraindications, dosage claims) — draft, but pause
   for review before merging.
@@ -27,6 +28,51 @@ path. It does **not** cover:
 
 If a change is cosmetic, copy-level, internal-dashboard-only, or otherwise
 low-risk, proceed straight through merge + deploy.
+
+## Financial work
+
+**Any change touching money — contributions, payments, refunds, Stripe,
+ledger, balances, or the figures shown on financial screens — is governed
+by `docs/financials-v2/`. Read `PRODUCT_SPEC.md`, `ARCHITECTURE.md` and
+`HANDOFF.md` before making the change, not after.**
+
+The standing merge authorization above does **not** apply to financial
+work. Financial PRs are reviewed before merge, every time.
+
+Binding rules:
+
+- **One PR, one defined outcome.** If the work is not in
+  `docs/financials-v2/PR_PLAN.md`, stop and ask. Scope expansion needs a
+  `DECISIONS.md` entry and approval *before* the work is done.
+- **Database foundation precedes interface.**
+- **V2 lives in the `finance` schema.** No `finance` database object may
+  reference a legacy financial table — `donations`,
+  `financial_commitments`, `payment_allocations`, or `bookings` money
+  columns. No V2 code path may **write** one. Legacy **reads** are
+  permitted only in the named comparison surfaces listed in
+  `ARCHITECTURE.md` §0a. Legacy financial code is reference material
+  only; read it to understand history, never extend it.
+- **The three fact tables are append-only** — `ledger_entries`,
+  `agreement_amounts`, `agreement_lifecycle_events`. Never `UPDATE` or
+  `DELETE` them. A mistake is fixed by inserting an attributed reversal,
+  then the correct entry. (`stripe_events`, `checkout_sessions`,
+  `payment_links` and `reconciliation_exceptions` carry no financial
+  truth and take bounded updates by design.)
+- **Never store a derived financial value.** Contribution, Received,
+  Remaining, Payable Remaining and payment state have exactly one
+  definition each, and the calculations live in
+  `finance.v_agreement_balances`. Do not re-implement a formula in a
+  route, component, or second view.
+- **Stripe-confirmed and founder-recorded money stay distinguishable** —
+  via first-class columns, never a `metadata` convention.
+- **Amounts are integer cents.** No floating point in any financial path.
+  Never send a negative amount to a payment provider.
+- **Every architecture change is recorded in `DECISIONS.md`**, and
+  **every financial PR ends with an updated `HANDOFF.md`.**
+
+Every financial PR carries its own proof: tests with real output,
+screenshots, migration evidence, security review, rollout plan and
+rollback plan. See `.github/pull_request_template.md`.
 
 ## Branch conventions
 
