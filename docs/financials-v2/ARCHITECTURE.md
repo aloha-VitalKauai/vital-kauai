@@ -47,7 +47,7 @@ Tables 2–4 are the **append-only fact tables**; §0.4 applies to them and only
 
 ### Enum inventory
 
-PR 1 creates exactly eleven enum types:
+PR 1 creates exactly twelve enum types:
 
 | Enum | Values | Defined in |
 |---|---|---|
@@ -62,6 +62,7 @@ PR 1 creates exactly eleven enum types:
 | `finance.exception_resolution` | `open`, `resolved`, `dismissed` | §10 |
 | `finance.checkout_status` | `creating`, `open`, `completed`, `expired`, `canceled` | §11 |
 | `finance.link_status` | `active`, `creating`, `consumed`, `revoked` | §12 |
+| `finance.system_actor` | `reconciliation`, `legacy_import`, `checkout_sweeper` | §7 |
 
 ### View inventory
 
@@ -227,7 +228,8 @@ finance.ledger_entries
   parent_entry_id             uuid NULL -> finance.ledger_entries(id) (RESTRICT)
   occurred_at                 timestamptz NOT NULL
   recorded_at                 timestamptz NOT NULL default now()
-  recorded_by                 uuid NULL -> auth.users(id) (RESTRICT)
+  recorded_by                 uuid NULL -> auth.users(id) (RESTRICT)   -- human actor
+  recorded_by_system          finance.system_actor NULL                -- automated actor
   reason                      text NULL
   legacy_donation_id          uuid NULL      -- import traceability, no FK by design
   livemode                    boolean NOT NULL
@@ -267,8 +269,9 @@ A reversal of a **refund** is permitted — it is the correction path for a refu
 | # | Rule | Mechanism |
 |---|---|---|
 | L1 | `stripe_payment` → `amount_cents > 0`, `source = 'stripe'`, **`provider_payment_intent_id` NOT NULL**, `parent_entry_id` NULL | table `CHECK` |
-| L2 | `external_payment` → `amount_cents > 0`, `source = 'external'`, `external_method` NOT NULL, `recorded_by` NOT NULL, `parent_entry_id` NULL | table `CHECK` |
-| L3 | `refund` → `amount_cents < 0`, `parent_entry_id` NOT NULL | table `CHECK` |
+| L2 | `external_payment` → `amount_cents > 0`, `source = 'external'`, `external_method` NOT NULL, `parent_entry_id` NULL, and attribution per **L12** | table `CHECK` |
+| L3 | `refund` → `amount_cents < 0`, `parent_entry_id` NOT NULL, **and provenance complete for its source**: `source='stripe'` requires `provider_object_id` NOT NULL (the `re_…` Refund id); `source='external'` requires `external_method` NOT NULL and attribution under L12 | table `CHECK` |
+| L3b | A `source='stripe'` refund's parent must be a `stripe_payment`. A `source='external'` refund may target either payment type. | constraint trigger |
 | L4 | `reversal` → `parent_entry_id` NOT NULL and `amount_cents = -parent.amount_cents` | constraint trigger |
 | L5 | `parent_entry_id <> id` | table `CHECK` |
 | L6 | Parent must share the same `agreement_id`; parent `entry_type` must satisfy the legal parent matrix; **a reversal's parent must have no *unreversed* children**. Trigger takes `SELECT … FOR UPDATE` on the parent before checking. | constraint trigger |
@@ -278,7 +281,7 @@ A reversal of a **refund** is permitted — it is the correction path for a refu
 | L9 | `UNIQUE (legacy_donation_id, entry_type)` where `legacy_donation_id IS NOT NULL` | partial unique index |
 | L10 | `currency` matches the agreement | structural under USD-only (§3) |
 | L11 | Where an originating event or session exists, ledger `livemode` must match it. External payments and imported historic money are `livemode = true`. | constraint trigger |
-| L12 | **`source = 'external'` OR `entry_type = 'reversal'` requires `recorded_by` NOT NULL and a non-blank `reason`.** | table `CHECK` |
+| L12 | **`source = 'external'` OR `entry_type = 'reversal'` requires a non-blank `reason` and exactly one attribution — either `recorded_by` (a human) or `recorded_by_system` (an automated actor).** | table `CHECK` |
 
 **L12 closes an attribution hole.** As originally written, `recorded_by` and `reason` were required only on `external_payment` (L2), so a founder could record an external refund or post a reversal — the entry types that *exist* to correct human error — with no actor and no explanation. A correction nobody is accountable for is the legacy defect wearing new clothes.
 
@@ -290,9 +293,22 @@ Consequences of keying on `source`:
 - A refund **recorded outside Stripe** (a cheque returned, cash handed back) is `source = 'external'` and requires attribution.
 - **Every `reversal` requires attribution regardless of source**, because a reversal is never a provider event — it is always a human or system judgement that a record was wrong.
 
-**The system reconciliation actor.** Reconciliation-initiated reversals (§10, refund status regression) are attributed to a dedicated service account — a real `auth.users` row, since `recorded_by` carries a `RESTRICT` foreign key. PR 1 creates or confirms that account and records its identifier in `DECISIONS.md`. Its `reason` names the exception that triggered the correction, so an automated reversal is as traceable as a founder's.
+**System attribution requires no login.** Automated actors are recorded in `recorded_by_system` — an enum column, not a foreign key:
+
+```
+recorded_by         uuid NULL -> auth.users(id) (RESTRICT)   -- a human
+recorded_by_system  finance.system_actor NULL                -- an automated actor
+
+CHECK (num_nonnulls(recorded_by, recorded_by_system) <= 1)
+```
+
+`finance.system_actor` values: `reconciliation`, `legacy_import`, `checkout_sweeper`.
+
+An earlier draft attributed automated reversals to a dedicated service account in `auth.users`. That was wrong on two counts: it would make a clean `supabase db reset` depend on an **environment-specific Auth user**, so the migration would apply on one environment and fail on another; and Supabase's guidance is that users are created through the [Auth Admin API](https://supabase.com/docs/reference/javascript/auth-admin-createuser), not inserted directly by migration. An enum keeps system attribution fully within the `finance` schema, portable across environments, and reproducible from migrations alone — while remaining exactly as legible in an audit as a named person. The `reason` still names the exception that triggered the correction.
 
 **L6's "no unreversed children" rule** prevents the double-subtraction defect: reversing a payment that still carries a live refund would subtract the full original while the refund had already subtracted part of it, driving Received to `−3000` — money the ledger would claim left Vital Kauaʻi that never existed. The step table above shows the correct unwind: reverse the refunds first, then the payment.
+
+**L3 closes a duplicate-refund hole.** As originally written, L3 required only a parent, so a Stripe refund could be inserted with `provider_object_id` NULL — and L8's uniqueness index is partial, applying only where that column is present. Two rows for the same `re_…` refund would both be accepted, defeating D-025's deduplication guarantee. Requiring the Refund id on every Stripe refund makes L8 binding for the whole class rather than optional. External refunds carry the complementary requirement: a method and a named human.
 
 **L1 requires only the payment-intent id.** Requiring a charge-object id too would make a class of legacy Stripe payments unimportable, and the workarounds are worse: relabelling as `external_payment` would falsely mark Stripe money as founder-recorded, and synthesising an object id would corrupt L8. Instead, a Stripe payment imported without a charge object is inserted with `provider_object_id` NULL, protected by L8b, and raises a `missing_provider_object` exception (§10) for PR 3 to backfill.
 
@@ -305,7 +321,7 @@ Consequences of keying on `source`:
 - **Payments** — legacy rows evidencing money that moved: Stripe-confirmed with a provider reference (`stripe_payment`), and founder-recorded offline with attribution (`external_payment`).
 - **Refunds** — historic refunds **are imported**, in a second pass after their parents exist, since L3 requires `parent_entry_id`. A refund whose parent is not importable raises an `orphan_refund` exception rather than being silently dropped. Omitting refunds would overstate Received for every historically refunded member and contaminate the variance report with deltas indistinguishable from adjustment deltas.
 - **Not imported** — synthetic `adjust-collected` rows. They are accounting adjustments, not money.
-- Every imported row carries `legacy_donation_id`, `livemode = true`, and a `reason` naming the import batch.
+- Every imported row carries `legacy_donation_id`, `livemode = true`, `recorded_by_system = 'legacy_import'`, and a `reason` naming the import batch. Where the original founder who recorded an offline payment is identifiable, `recorded_by` is used instead — the human attribution is better evidence than the batch, and L12 permits exactly one of the two.
 
 ---
 
@@ -445,6 +461,30 @@ finance.stripe_events
 
 Ledger invariants make reprocessing safe in every branch.
 
+### Payment processing — what creates a `stripe_payment`
+
+The document specified refunds in detail while leaving the far more common case implicit. Stated explicitly:
+
+**A `stripe_payment` entry is created only from a PaymentIntent verified to be in status `succeeded`.**
+
+1. **`checkout.session.completed` alone is not sufficient.** That event means the customer finished the Checkout flow, not that money settled. For delayed-notification methods the Session completes with `payment_status` of `unpaid` while the PaymentIntent is still `processing`, and it may subsequently fail. Writing a ledger entry there would credit money that never arrived — the mirror of the refund defect in D-025.
+
+2. **Processing verifies, it does not infer.** On `checkout.session.completed`, ingestion retrieves the associated PaymentIntent and [checks its status](https://docs.stripe.com/payments/payment-intents/verifying-status):
+
+   | PaymentIntent status | Ledger effect |
+   |---|---|
+   | `succeeded` | One `stripe_payment` entry |
+   | `processing`, `requires_action`, `requires_payment_method`, `requires_capture` | **None.** Await the terminal event; reconciliation re-checks until resolved. |
+   | `canceled` | **None.** |
+
+3. **The terminal signal may arrive by a different event.** `checkout.session.async_payment_succeeded` and `payment_intent.succeeded` are handled the same way and reach the same verification. Whichever arrives first writes the entry; L8/L8b make the other a no-op.
+
+4. **`checkout.session.async_payment_failed` writes nothing** and marks the Session `expired`, releasing the one-live-session slot (§11).
+
+5. **Identity of the entry.** `provider_payment_intent_id` is the PaymentIntent (`pi_…`); `provider_object_id` is the settled Charge (`ch_…`) where available. L8b makes one PaymentIntent capable of producing exactly one payment entry regardless of how many events describe it.
+
+6. **Attribution to an agreement** comes from the Session's `agreement_id` metadata. A verified payment with no resolvable agreement raises `unattributable_payment` and stays out of the ledger (D-006).
+
 ### Refund processing
 
 Refunds are the hardest case in the system: one charge can carry several genuine partial refunds, Stripe emits charge-level events rather than refund-level ones, and the same event may arrive more than once. The rules are therefore explicit.
@@ -523,9 +563,22 @@ finance.checkout_sessions
   completed_at       timestamptz NULL
 
   CHECK (status = 'creating' OR stripe_session_id IS NOT NULL)
+
+  UNIQUE (agreement_id) WHERE status IN ('creating','open')   -- at most one live session
 ```
 
 `stripe_session_id` is nullable **only** in `creating`, because the intent row is committed before Stripe is called (§12). The `CHECK` makes any other status without a session id impossible.
+
+### At most one payable Session per agreement
+
+Without the partial unique index, two payment links — or a link and the portal — could each open a Session for the same Remaining amount, and **both would be payable**. The member pays twice, the ledger records two legitimate provider payments, and the agreement lands `overpaid` with no defect anywhere to point at.
+
+The index makes a second live Session impossible at the database level, before Stripe is contacted. Consequences:
+
+- **A request when a live Session already exists returns that Session's URL** rather than creating another. This is also the correct member experience: one outstanding payment request at a time.
+- **Stale sessions free the slot.** A sweeper transitions `open` Sessions past `expires_at` to `expired`, and Sessions Stripe reports as expired or cancelled to `expired`/`canceled`. Only then can a new Session be created.
+- **A `creating` row holds the slot** until recovery resolves it (§12). This is deliberate: an attempt whose Stripe state is unknown must block new attempts, because creating a second Session is exactly the risk in question.
+- The slot is released on completion, so an agreement paid in instalments can open a new Session for the new Remaining.
 
 - **A checkout attempt is not a payment.** No ledger entry exists until Stripe confirms, eliminating the legacy orphan-pending-row problem.
 - **The idempotency key is sent to Stripe** on `checkout.sessions.create`, not merely recorded locally.
@@ -564,15 +617,28 @@ Zero rows from phase 1 means another request won; that request creates nothing. 
 
 **The idempotency key is deterministic** — derived from `(payment_link_id, attempt_count)` — and is [sent to Stripe on the create call](https://docs.stripe.com/api/idempotent_requests). A retry of the same attempt therefore returns the *same* session rather than creating a second one. Recording a key locally without transmitting it prevents nothing.
 
-### Recovery
+### Recovery — and the limit of idempotency keys
 
-A crash between phases 2 and 3 leaves a `creating` link and a `creating` session. A sweeper reconciles them:
+A crash between phases 2 and 3 leaves a `creating` link and a `creating` session, with **Stripe's state unknown**.
 
-- **Replay the create call with the same idempotency key.** Stripe returns the original session if one was made, or makes it now. Either way the session is finalised and the link becomes `consumed`.
-- Only where Stripe confirms no session exists for that key does the sweeper return the link to `active`, leaving `attempt_count` incremented so the next attempt uses a fresh key.
-- A `creating` link past `expires_at` is closed out rather than released.
+Two properties of Stripe idempotency constrain what recovery may do:
 
-The link is never released on the assumption that Stripe did nothing. That assumption is what creates double-charge windows.
+1. **There is no retrieve-by-idempotency-key operation.** A key deduplicates a *repeated request*; it cannot be used to ask "did this ever succeed?"
+2. **Keys are not retained indefinitely** — results age out after roughly 24 hours.
+
+Replaying the same key **after that window has passed therefore creates a second payable Session**, which is precisely the failure the design exists to prevent. Recovery is bounded accordingly.
+
+| Condition | Action |
+|---|---|
+| Attempt is **inside** the idempotency window | Replay the create call with the same key. Stripe returns the original Session if one exists, otherwise creates it. Finalise and consume the link. |
+| Attempt is **outside** the window | **Never replay. Never auto-release.** Determine ground truth by enumerating Stripe Checkout Sessions over the attempt's creation window and matching on the `attempt_id` carried in session metadata. |
+| Ground truth: a Session exists | Finalise it; the link becomes `consumed`. |
+| Ground truth: exhaustive search finds no Session | Raise `stranded_checkout_attempt`. A founder releases the link explicitly. |
+| Search is inconclusive, or the link is past `expires_at` | Raise `stranded_checkout_attempt` and leave the link `creating`. Closed out, not released. |
+
+**A stranded attempt with ambiguous Stripe state is never automatically released or replayed.** The safe default is a visible exception a human resolves, not a guess. An automatic release that guesses wrong bills a member twice; a stranded link costs a founder one click to reissue.
+
+Every V2 Session therefore carries an `attempt_id` in metadata alongside `financial_version` and `agreement_id`, because that is what makes the post-window search exact rather than heuristic.
 
 ### Retry behaviour
 

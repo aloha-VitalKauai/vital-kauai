@@ -8,7 +8,7 @@
 ## Current status
 
 **Phase:** PR 0 — architecture and project-control documents.
-**State:** **PR 0 is not approved.** Documents written and revised across four review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), an external review of PR #838 (7 findings, B-3 … B-9), and a clean-context re-verification (1 blocker, 6 minors). All resolved. Awaiting independent re-review.
+**State:** **PR 0 is not approved.** Documents written and revised across five review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), a first external review of PR #838 (7 findings, B-3 … B-9), a clean-context re-verification (1 blocker, 6 minors), and a second external review (6 findings, B-10 … B-15). All resolved. Awaiting independent re-review.
 
 The clean-context pass caught a defect introduced by the B-7 fix itself: L12 originally defined "provider-originated" as `source='stripe' AND provider_object_id IS NOT NULL`, which contradicted L1 and D-020 — a Stripe payment imported without a charge-object id would have demanded a human actor that no document assigned. L12 now keys on `source` alone.
 
@@ -35,16 +35,27 @@ The identity **design** is settled: `finance.agreements.member_id` references `p
 ### B-2 — PR 0 review not yet complete (blocks PR 1)
 Per the working agreement, implementation waits on reviewer confirmation that the documents contain no unresolved contradiction in the financial model. **PR 0 is explicitly not approved.**
 
-### B-3 … B-9 — External review findings on PR #838 (resolved, pending re-review)
-All seven are resolved in the current revision and listed here for the re-reviewer to confirm.
+### B-10 … B-15 — Second external review of PR #838 (resolved, pending re-review)
 
 | ID | Finding | Resolution |
 |---|---|---|
-| B-3 | `PR_PLAN` said nine enums and omitted `v_agreement_lifecycle` from PR 1's contents | Eleven enums and five views stated in both documents; test 4 covers both |
-| B-4 | A reversed refund left the member marked `refunded` | `refunded_cents` counts **unreversed** refunds only; test 63 |
+| B-10 | Checkout recovery unsafe — Stripe has no retrieve-by-idempotency-key, and keys expire (~24h), so a later replay could create a second payable Session | Replay only inside the window; otherwise resolve by `attempt_id` metadata search. **Ambiguous state is never auto-released or auto-replayed** (D-028) |
+| B-11 | Two links, or a link plus the portal, could each open a payable Session for the same Remaining | Partial unique index: at most one `creating`/`open` Session per agreement; existing URL returned instead; stale-session expiry frees the slot (D-029) |
+| B-12 | What creates a `stripe_payment` was never stated; `checkout.session.completed` alone is insufficient | Only a **verified `succeeded` PaymentIntent** writes a payment entry (D-030) |
+| B-13 | L3 permitted a Stripe refund with no `re_…` id, and L8's index is partial — so duplicates were possible despite D-025 | L3 requires provenance complete for its source; L3b constrains the parent type (D-031) |
+| B-14 | PR description's lower sections were stale (ten enums, 62 tests, D-001–D-023, three passes) | Description fully rewritten, not banner-patched |
+| B-15 | A real `auth.users` account as system actor makes migrations depend on an environment-specific Auth user | `recorded_by_system` enum instead — no login required, portable across environments (D-032) |
+
+### B-3 … B-9 — First external review of PR #838 (resolved)
+All seven are resolved and listed here for the re-reviewer to confirm.
+
+| ID | Finding | Resolution |
+|---|---|---|
+| B-3 | `PR_PLAN` said nine enums and omitted `v_agreement_lifecycle` from PR 1's contents | Enum and view counts now stated consistently in both documents (twelve enums, five views after B-15); test 4 covers both |
+| B-4 | A reversed refund left the member marked `refunded` | `refunded_cents` counts **unreversed** refunds only; test 65 |
 | B-5 | Payment-link design assumed Stripe and Postgres share one transaction | Replaced by a persisted three-phase attempt with a deterministic Stripe idempotency key and a sweeper (D-024) |
 | B-6 | Refund statuses, failed refunds and list pagination unmodelled | Only `succeeded` refunds enter the ledger; regression raises an exception; enumeration is paginated (D-025) |
-| B-7 | Founder-recorded refunds and reversals could be saved without actor or reason | L12 requires both on every non-provider-originated entry (D-026) |
+| B-7 | Founder-recorded refunds and reversals could be saved without actor or reason | L12 requires reason plus exactly one attribution, on `source='external'` or any reversal (D-026, mechanism corrected by D-032) |
 | B-8 | Grants omitted `service_role`, which the webhook requires | Explicit grant table including `service_role`, with no fact-table `UPDATE`/`DELETE` (D-027) |
 | B-9 | D-016 named four legacy-read surfaces then said three | Corrected to four; a duplicated sentence in ARCHITECTURE §0a also removed |
 
@@ -76,7 +87,7 @@ Noticed during audit or design, deliberately not folded into any current PR.
 
 ## Decisions carried forward
 
-D-001 … D-027 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**; its atomic- and permanent-consumption behaviour stands. No decision is open. See [DECISIONS.md](DECISIONS.md).
+D-001 … D-032 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**, whose recovery mechanism is in turn **corrected by D-028**. **D-026's system-actor mechanism is corrected by D-032.** No decision is open. See [DECISIONS.md](DECISIONS.md).
 
 ## Working agreement
 

@@ -300,3 +300,54 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 **Decision.** PR 1 grants `service_role` `USAGE` on `finance` plus `SELECT`, `INSERT` and the bounded `UPDATE`s of §1, with matching `ALTER DEFAULT PRIVILEGES`. `service_role` receives no `UPDATE` or `DELETE` on the three append-only fact tables, and the append-only triggers raise regardless of role.
 
 **Rationale.** A custom schema is unreachable until granted. Webhook ingestion and the reconciliation job run as `service_role`; omitting the grant is a silent runtime failure at PR 3 rather than a build error. Granting it does not weaken the append-only guarantee, which is enforced by trigger rather than by privilege.
+
+---
+
+## D-028 — Stranded checkout attempts are never auto-replayed or auto-released past the idempotency window
+**Date:** 2026-07-29 · **Status:** Approved · **Corrects the recovery mechanism in D-024**
+
+**Decision.** Replay with the stored idempotency key is permitted **only inside Stripe's idempotency retention window**. Outside it, recovery determines ground truth by enumerating Stripe Checkout Sessions over the attempt's creation window and matching an `attempt_id` carried in Session metadata. A Session found is finalised; an exhaustive search finding none raises `stranded_checkout_attempt` for explicit founder release; an inconclusive search leaves the link `creating`. Ambiguous state is never resolved automatically.
+
+**Rationale.** D-024 assumed a replayed key could answer "did this succeed?" It cannot. Stripe offers **no retrieve-by-idempotency-key operation** — a key deduplicates a repeated request — and [results age out after roughly 24 hours](https://docs.stripe.com/api/idempotent_requests). Replaying after expiry therefore creates a **second payable Session**, the exact failure the three-phase design exists to prevent. An automatic release that guesses wrong bills a member twice; a stranded link costs a founder one click.
+
+**Consequences.** Every V2 Session carries `attempt_id` in metadata so the post-window search is exact. Some stranded attempts require human resolution — accepted deliberately over a silent double-charge.
+
+---
+
+## D-029 — At most one live Checkout Session per agreement
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** A partial unique index on `finance.checkout_sessions (agreement_id) WHERE status IN ('creating','open')`. A request while a live Session exists returns that Session's URL rather than creating another. A sweeper expires Sessions past `expires_at`, and those Stripe reports expired or cancelled, freeing the slot. A `creating` row holds the slot until recovery resolves it.
+
+**Rationale.** Nothing previously stopped two payment links — or a link and the portal — each opening a Session for the same Remaining. **Both would be payable.** The member pays twice, both payments are legitimate provider money, and the agreement lands `overpaid` with no defect to point at: every component behaved correctly. The constraint belongs in the database, before Stripe is contacted, not in application logic that each entry point must remember.
+
+**Consequences.** One outstanding payment request per agreement at a time — also the better member experience. The slot releases on completion, so instalments remain possible.
+
+---
+
+## D-030 — Only a verified `succeeded` PaymentIntent creates a `stripe_payment`
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** Ingestion retrieves and [verifies the PaymentIntent status](https://docs.stripe.com/payments/payment-intents/verifying-status) before writing. Only `succeeded` produces a ledger entry. `processing`, `requires_action`, `requires_payment_method` and `requires_capture` produce none and are re-checked by reconciliation; `canceled` produces none. `checkout.session.async_payment_succeeded` and `payment_intent.succeeded` reach the same verification; whichever arrives first writes, and L8/L8b make the rest no-ops.
+
+**Rationale.** The architecture specified refunds at length and left the commonest case implicit. `checkout.session.completed` means the customer finished the flow, not that money settled: for delayed-notification methods the Session completes with `payment_status: 'unpaid'` while the PaymentIntent is still `processing`, and it can subsequently fail. Writing on session completion would credit money that never arrived — the mirror of the refund defect D-025 exists to prevent.
+
+---
+
+## D-031 — Refund provenance is required and typed by source
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** L3 requires provenance complete for a refund's source: `source='stripe'` requires `provider_object_id` (the `re_…` Refund id); `source='external'` requires `external_method` and L12 attribution. L3b requires a Stripe refund's parent to be a `stripe_payment`; an external refund may target either payment type.
+
+**Rationale.** L3 previously required only a parent, so a Stripe refund could be written with `provider_object_id` NULL — and **L8's uniqueness index is partial**, applying only where that column is present. Two rows for the same `re_…` refund would both be accepted, defeating D-025's deduplication guarantee entirely. Requiring the Refund id makes L8 binding for the class rather than optional. External refunds carry the complementary requirement: a method and a named actor, since no provider vouches for them.
+
+---
+
+## D-032 — System attribution is an enum, not an Auth user
+**Date:** 2026-07-29 · **Status:** Approved · **Corrects the system-actor mechanism in D-026**
+
+**Decision.** `finance.ledger_entries` carries `recorded_by_system finance.system_actor NULL` beside `recorded_by`, with `CHECK (num_nonnulls(recorded_by, recorded_by_system) <= 1)`. L12 is satisfied by exactly one of them. Values: `reconciliation`, `legacy_import`, `checkout_sweeper`.
+
+**Rationale.** D-026 attributed automated reversals to a dedicated `auth.users` service account. That would make a clean `supabase db reset` depend on an **environment-specific Auth user** — the migration applies on one environment and fails on another — and Supabase's guidance is that users are created through the [Auth Admin API](https://supabase.com/docs/reference/javascript/auth-admin-createuser), not inserted by migration. An enum keeps system attribution inside the `finance` schema, portable, and reproducible from migrations alone, while remaining exactly as legible in an audit as a named person.
+
+**Consequences.** Imports attribute to `legacy_import` where the original founder is unidentifiable, and to `recorded_by` where they are — human attribution being the better evidence.
