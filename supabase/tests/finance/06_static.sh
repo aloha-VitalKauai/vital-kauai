@@ -7,6 +7,8 @@ cd "$(dirname "$0")/../../.."
 pass=0; fail=0
 chk(){ if eval "$2" >/dev/null 2>&1; then echo "ok - $1"; pass=$((pass+1)); else echo "not ok - $1"; fail=$((fail+1)); fi; }
 
+chk "req 1 / req 3: a fresh-database migration + full reset is executed by run_all.sh, and every migration file is present" \
+  "[ \$(ls supabase/migrations/2026073000000*.sql | wc -l | tr -d ' ') -eq 8 ] && grep -q 'dropdb --if-exists' supabase/tests/run_all.sh && grep -q 'ON_ERROR_STOP=1' supabase/tests/run_all.sh"
 chk "req 2: every finance object is created by a tracked migration (no ad-hoc DDL outside supabase/migrations)" \
   "! grep -rlE 'CREATE (TABLE|TYPE|VIEW|FUNCTION) finance\.' --include='*.ts' --include='*.tsx' . 2>/dev/null | grep -q ."
 chk "req 69: aggregate views derive from v_agreement_balances and contain no independent formula" \
@@ -24,8 +26,19 @@ chk "req 69: aggregate views derive from v_agreement_balances and contain no ind
 # This check reports the true count and FAILS rather than being rewritten to
 # pass. It needs a reviewer decision: accept the trigger as an internal
 # validation exempt from req 70, or restructure. Not waived unilaterally.
-chk "req 70: current lifecycle is derived in exactly one place" \
-  "[ \$(grep -rhc 'occurred_at desc, e.seq desc' supabase/migrations/2026073*.sql | awk '{s+=\$1} END {print s}') -eq 1 ]"
+# req 70 / D-074: exactly TWO derivations are permitted -- the consumer
+# projection (v_agreement_lifecycle) and the named internal enforcement
+# (tg_lifecycle_transition). An allowlist prevents a third appearing.
+chk "req 70: exactly two permitted lifecycle derivations exist (D-074 allowlist)" \
+  "[ \$(grep -rhc 'occurred_at desc, e.seq desc' supabase/migrations/2026073*.sql | awk '{s+=\$1} END {print s+0}') -eq 2 ]"
+chk "req 70: the consumer projection is v_agreement_lifecycle" \
+  "grep -q 'create view finance.v_agreement_lifecycle' supabase/migrations/20260730000007_finance_views.sql"
+chk "req 70: the only enforcement derivation is tg_lifecycle_transition" \
+  "[ \$(grep -lr 'from finance.agreement_lifecycle_events' supabase/migrations/2026073*.sql | wc -l | tr -d ' ') -le 3 ]"
+chk "req 70 / D-074: trigger and view use identical ordering and tie-breaking" \
+  "[ \$(grep -rho 'occurred_at desc, e.seq desc' supabase/migrations/20260730000005_finance_triggers.sql supabase/migrations/20260730000007_finance_views.sql | sort -u | wc -l | tr -d ' ') -eq 1 ]"
+chk "req 70: v_agreement_lifecycle keeps security_invoker (D-074)" \
+  "grep -A1 'create view finance.v_agreement_lifecycle' supabase/migrations/20260730000007_finance_views.sql | grep -q 'security_invoker = true'"
 chk "finding 11: migration 0001 asserts the PostgreSQL major version before any schema mutation" \
   "grep -q 'server_version_num' supabase/migrations/20260730000001_finance_harden_is_founder.sql"
 chk "blocker 1: migration 0001 executes is_founder() after hardening it" \

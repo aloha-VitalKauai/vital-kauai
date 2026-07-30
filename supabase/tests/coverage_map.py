@@ -20,7 +20,7 @@ for line in sec.split('\n'):
 
 tests = {}
 for f in sorted(glob.glob(os.path.join(root, 'supabase/tests/**/*.sql'), recursive=True)) + \
-         sorted(glob.glob(os.path.join(root, 'supabase/tests/*.sh'))):
+         sorted(glob.glob(os.path.join(root, 'supabase/tests/**/*.sh'), recursive=True)):
     if '_local_bootstrap' in f:
         continue
     body = open(f).read()

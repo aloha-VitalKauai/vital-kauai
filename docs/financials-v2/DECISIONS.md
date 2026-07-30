@@ -790,3 +790,19 @@ The choice was load-bearing rather than cosmetic. Without `partial`, a run stopp
 **Intended operational behaviour.** Account *deactivation* is the supported path for a departing user — revoke roles and sessions, leave the `auth.users` row in place. Hard deletion is available only for users with no financial attribution, which is the common case for members who never transacted. Where a hard delete is genuinely required for a user with history, it is a deliberate, reviewed operation: reassign or anonymise at the application layer first, with a decision entry, rather than weakening the foreign keys.
 
 **Tested.** `05_guards.sql` asserts every finance → `auth.users` FK is `RESTRICT`, that deleting an actor with financial history is refused, and that a user with no attribution still deletes normally.
+
+
+---
+
+## D-074 — Requirement 70 distinguishes consumer projection from internal enforcement
+**Date:** 2026-07-30 · **Status:** Approved · **Clarifies requirement 70**
+
+**Decision.** `finance.v_agreement_lifecycle` is the **single consumer projection** of current lifecycle: every read by application code, reporting surface, view or function resolves through it. Exactly one **internal enforcement** derivation is additionally permitted — `finance.tg_lifecycle_transition()`, named explicitly — which reads the immutable events table directly to validate `from_status`. No third implementation may exist.
+
+**Rationale.** The trigger cannot read the view. The view is `security_invoker`, so inside a `SECURITY DEFINER` trigger it would evaluate RLS as the calling member and could hide the very rows the validation depends on — a member could then drive an agreement through an illegal transition because the trigger could not see the current state. That is a strictly worse defect than the duplication, and `security_invoker` is preserved rather than weakened to accommodate it. The view is also created after the trigger in migration order.
+
+Requirement 70 as originally written ("the only expression of current lifecycle") did not distinguish these two roles, so a correct implementation could not satisfy it literally. The distinction is projection versus enforcement, not an exemption.
+
+**Constraints this places on both.** The trigger and the view **must use identical ordering and tie-breaking**: `occurred_at DESC, seq DESC`. If they diverge, enforcement and reporting disagree about the same agreement — the exact class of defect Financials V2 exists to remove. This is asserted by test, not by convention.
+
+**Enforced by allowlist.** A static check fails if any object other than `v_agreement_lifecycle` and `tg_lifecycle_transition` derives lifecycle state from `agreement_lifecycle_events`, so a third implementation cannot appear silently.

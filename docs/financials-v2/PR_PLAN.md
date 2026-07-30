@@ -230,7 +230,7 @@ All of the following must pass through automated database tests before PR 1 open
 67. `payment_state` returns exactly one deterministic value for every row of the reachable-state table in ARCHITECTURE §8.
 68. `livemode = false` entries are excluded from canonical balances and appear only in the founder-only test view.
 69. *(reviewer check, not pgTAP)* Aggregate views derive from `v_agreement_balances` and contain no independent financial formula.
-70. *(reviewer check for the first clause)* `v_agreement_lifecycle` is the only expression of current lifecycle; that lifecycle never affects a balance column **is** asserted in pgTAP.
+70. **`v_agreement_lifecycle` is the single consumer projection of current lifecycle** — every application, reporting, view and function read resolves through it. Exactly one internal enforcement derivation is permitted, `finance.tg_lifecycle_transition()`, which must use identical ordering and tie-breaking (`occurred_at DESC, seq DESC`); an allowlist check fails if any third object derives it (D-074). That lifecycle never affects a balance column is asserted in pgTAP.
 
 ### Newly specified surfaces
 71. `finance.create_agreement()` raises for a non-founder, raises on blank reason, creates the agreement and its initial `draft` lifecycle event in one transaction, and raises rather than returning silently on a duplicate `(member_id, journey_id, purpose)`.

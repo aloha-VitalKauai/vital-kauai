@@ -288,3 +288,64 @@ end $$;
 
 create trigger run_freeze_approved before update on finance.reconciliation_runs
   for each row execute function finance.tg_run_freeze_approved();
+
+-- ------------------------------------------- launch authorization (reqs 96/97)
+-- A writing run must cite a dry run that is genuinely completed, exhausted,
+-- finished, error-free, approved and reported, in the same mode and built from
+-- the same implementation_version. The CHECK constraints alone cannot express
+-- this: it depends on another row.
+create function finance.tg_run_authorization() returns trigger
+  language plpgsql security definer set search_path = pg_catalog, public, finance as $$
+declare a finance.reconciliation_runs%rowtype;
+begin
+  if new.dry_run then
+    return new;
+  end if;
+
+  select * into a from finance.reconciliation_runs where id = new.authorized_by_run_id;
+  if not found then
+    raise exception 'authorization run % does not exist', new.authorized_by_run_id;
+  end if;
+
+  if not a.dry_run then
+    raise exception 'authorization run % is not a dry run', a.id;
+  end if;
+  if a.status <> 'completed' then
+    raise exception 'authorization run % is %, not completed', a.id, a.status;
+  end if;
+  if not a.window_exhausted then
+    raise exception 'authorization run % did not exhaust its window', a.id;
+  end if;
+  if a.finished_at is null then
+    raise exception 'authorization run % has not finished', a.id;
+  end if;
+  if a.error is not null then
+    raise exception 'authorization run % ended with an error', a.id;
+  end if;
+  if a.approved_at is null then
+    raise exception 'authorization run % is not approved', a.id;
+  end if;
+  if a.report_completed_at is null then
+    raise exception 'authorization run % has no completed report', a.id;
+  end if;
+  if a.livemode is distinct from new.livemode then
+    raise exception 'authorization run % is livemode=%, writing run is livemode=%',
+      a.id, a.livemode, new.livemode;
+  end if;
+  -- Material code change invalidates approval: the rehearsal exercised a
+  -- different build.
+  if a.implementation_version is distinct from new.implementation_version then
+    raise exception 'authorization run % was version %, writing run is version %',
+      a.id, a.implementation_version, new.implementation_version;
+  end if;
+  -- Reaching further back than what was rehearsed is not authorized.
+  if new.window_start < a.window_start then
+    raise exception 'writing run window_start % precedes the approved horizon %',
+      new.window_start, a.window_start;
+  end if;
+
+  return new;
+end $$;
+
+create trigger run_authorization before insert on finance.reconciliation_runs
+  for each row execute function finance.tg_run_authorization();
