@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap;
-select plan(18);
+select plan(16);
 
 insert into auth.users (id,email) values
   ('11111111-1111-1111-1111-111111111111','f@t'),('22222222-2222-2222-2222-222222222222','m@t');
@@ -22,18 +22,15 @@ select is((select count(*)::int from pg_proc p join pg_namespace n on n.oid=p.pr
           'finding 5: no finance function ACL grants EXECUTE to PUBLIC');
 
 -- ===== finding 11: version assertion exists in migration 0001 =====
-select ok((select position('server_version_num' in pg_read_file('supabase/migrations/20260730000001_finance_harden_is_founder.sql')) > 0)
-          is not distinct from true, 'finding 11: version assertion present')
-  from (select 1) x
-  where false;  -- file read is not available to the test role; asserted by 06_static.sh instead
-select pass('finding 11: version assertion is checked by 06_static.sh');
+-- finding 11 is asserted by 06_static.sh against the migration source; there is
+-- no pgTAP placeholder standing in for it here.
 
 -- ===== finding 4: link_status='revoked' is reachable, and only by a founder =====
 insert into finance.payment_links(agreement_id,token_hash,expires_at,created_by)
   select id,'tok_r',now()+interval '7 days','11111111-1111-1111-1111-111111111111' from ag;
 create temp table lk as select id from finance.payment_links limit 1;
-select has_function_privilege('authenticated','finance.revoke_payment_link(uuid)','EXECUTE') as t,
-       pass('finding 4: revoke_payment_link is executable by authenticated (founder-gated inside)');
+select ok(has_function_privilege('authenticated','finance.revoke_payment_link(uuid)','EXECUTE'),
+          'finding 4: revoke_payment_link is executable by authenticated (founder-gated inside)');
 select ok(not has_function_privilege('service_role','finance.revoke_payment_link(uuid)','EXECUTE'),
           'finding 4: service_role cannot revoke a link');
 select lives_ok($$ select finance.revoke_payment_link((select id from lk)) $$,

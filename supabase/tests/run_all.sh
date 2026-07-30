@@ -2,6 +2,8 @@
 # Financials V2 PR 1 — full verification against a FRESH local database.
 # Never run against production.
 set -euo pipefail
+
+# No suite may be non-gating. `|| true` is forbidden here.
 export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
 export LC_ALL="en_US.UTF-8"
 DB="${1:-fin_v2}"
@@ -28,6 +30,8 @@ for f in supabase/tests/finance/*.sql; do
   printf '%s' "$out" | grep -q 'Looks like you planned' && printf '%s\n' "$out" | grep 'Looks like you planned'
 done
 echo "== static checks =="
-./supabase/tests/finance/06_static.sh || true
+if ! ./supabase/tests/finance/06_static.sh; then
+  echo "STATIC CHECKS FAILED"; total_fail=$((total_fail+1))
+fi
 echo "== TOTAL pgTAP passed=$total_ok failed=$total_fail =="
 [ "$total_fail" -eq 0 ]

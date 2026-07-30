@@ -3,6 +3,12 @@
 
 -- Finding 11 / ARCHITECTURE §15: assert the server version before the first
 -- schema mutation. The document claimed PR 1 does this; it did not.
+
+-- Explicitly transactional: a failure anywhere below leaves the database
+-- exactly as it was. Migration 0001 in particular MUST be atomic -- its
+-- verification block is worthless if the ALTER has already autocommitted.
+begin;
+
 do $$
 declare v int := current_setting('server_version_num')::int;
 begin
@@ -52,3 +58,5 @@ begin
       'public.is_founder() returned NULL after hardening; expected boolean. Migration rolled back.';
   end if;
 end $$;
+
+commit;

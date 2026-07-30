@@ -3,6 +3,12 @@
 -- public.journeys, auth.users. No finance object references a legacy financial table.
 
 -- 1. agreements ------------------------------------------------------------
+
+-- Explicitly transactional: a failure anywhere below leaves the database
+-- exactly as it was. Migration 0001 in particular MUST be atomic -- its
+-- verification block is worthless if the ALTER has already autocommitted.
+begin;
+
 create table finance.agreements (
   id          uuid primary key default gen_random_uuid(),
   member_id   uuid not null references public.members(id) on delete restrict,
@@ -310,3 +316,5 @@ create table finance.reconciliation_exceptions (
       and detail ? 'error_class'
       and detail ->> 'error_class' in ('malformed_object','object_not_found','object_scoped_bad_request')))
 );
+
+commit;

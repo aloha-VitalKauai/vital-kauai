@@ -4,6 +4,12 @@
 -- would fall through every CASE branch to 'partial' and feed NULL to checkout.
 
 -- 1 ------------------------------------------------ v_agreement_lifecycle
+
+-- Explicitly transactional: a failure anywhere below leaves the database
+-- exactly as it was. Migration 0001 in particular MUST be atomic -- its
+-- verification block is worthless if the ALTER has already autocommitted.
+begin;
+
 create view finance.v_agreement_lifecycle
   with (security_invoker = true, security_barrier = true) as
 select distinct on (e.agreement_id)
@@ -123,3 +129,5 @@ select b.journey_id,
 from finance.v_agreement_balances b
 where b.journey_id is not null
 group by b.journey_id;
+
+commit;

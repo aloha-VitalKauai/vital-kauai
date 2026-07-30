@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap;
-select plan(34);
+select plan(36);
 
 -- Schema and reproducibility (tests 1, 3, 4)
 select has_schema('finance', 'finance schema exists');
@@ -61,13 +61,20 @@ select is((select count(*)::int from pg_proc p join pg_namespace n on n.oid=p.pr
            where n.nspname='finance' and p.prosecdef and p.proconfig is null), 0,
           'no finance SECURITY DEFINER function lacks search_path');
 
--- test 90: public.is_founder() hardened by this PR
+-- req 90: public.is_founder() is hardened by this PR, and still has the shape
+-- V2 depends on. Asserted against the live catalog, not the migration source.
 select isnt((select proconfig from pg_proc p join pg_namespace n on n.oid=p.pronamespace
              where n.nspname='public' and p.proname='is_founder'), null,
-            'public.is_founder() has a pinned search_path');
+            'req 90: public.is_founder() proconfig includes a pinned search_path');
 select ok((select prosecdef from pg_proc p join pg_namespace n on n.oid=p.pronamespace
            where n.nspname='public' and p.proname='is_founder'),
-          'public.is_founder() is still SECURITY DEFINER');
+          'req 90: public.is_founder() is still SECURITY DEFINER');
+select is((select pg_get_function_result(p.oid) from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+           where n.nspname='public' and p.proname='is_founder'), 'boolean',
+          'req 90: public.is_founder() still returns boolean');
+select is((select array_to_string(p.proconfig,',') from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+           where n.nspname='public' and p.proname='is_founder'), 'search_path=pg_catalog, public',
+          'req 90: the pinned search_path is exactly pg_catalog, public');
 
 -- anon holds nothing
 select is((select count(*)::int from information_schema.role_table_grants

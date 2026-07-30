@@ -3,6 +3,12 @@
 -- is an index. Non-partial uniqueness stays a table constraint (see §15).
 
 -- 1. L8 — one ledger entry per Stripe object per mode
+
+-- Explicitly transactional: a failure anywhere below leaves the database
+-- exactly as it was. Migration 0001 in particular MUST be atomic -- its
+-- verification block is worthless if the ALTER has already autocommitted.
+begin;
+
 create unique index ledger_entries_provider_object_uq
   on finance.ledger_entries (provider_object_id, livemode)
   where provider_object_id is not null;
@@ -50,3 +56,5 @@ create index agreement_amounts_lookup_idx on finance.agreement_amounts (agreemen
 create index lifecycle_lookup_idx         on finance.agreement_lifecycle_events (agreement_id, occurred_at desc, seq desc);
 create index agreements_member_idx        on finance.agreements (member_id);
 create index agreements_journey_idx       on finance.agreements (journey_id) where journey_id is not null;
+
+commit;

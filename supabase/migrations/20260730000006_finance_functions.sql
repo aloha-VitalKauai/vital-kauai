@@ -4,6 +4,12 @@
 -- 1 ------------------------------------------------- finance.current_member_id()
 -- members.profile_id = auth.uid() is the true link. Never member_id = auth.uid()
 -- on a members(id) column, and never an email join (D-015).
+
+-- Explicitly transactional: a failure anywhere below leaves the database
+-- exactly as it was. Migration 0001 in particular MUST be atomic -- its
+-- verification block is worthless if the ALTER has already autocommitted.
+begin;
+
 create function finance.current_member_id() returns uuid
   language sql stable security definer set search_path = pg_catalog, public, finance as $$
   select m.id from public.members m where m.profile_id = auth.uid();
@@ -238,3 +244,5 @@ end $$;
 
 revoke all on function finance.revoke_payment_link(uuid) from public;
 grant execute on function finance.revoke_payment_link(uuid) to authenticated;
+
+commit;

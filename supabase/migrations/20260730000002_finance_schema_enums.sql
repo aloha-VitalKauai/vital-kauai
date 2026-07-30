@@ -1,5 +1,10 @@
 -- Financials V2 PR 1 — schema and the thirteen enum types (ARCHITECTURE §1).
 
+-- Explicitly transactional: a failure anywhere below leaves the database
+-- exactly as it was. Migration 0001 in particular MUST be atomic -- its
+-- verification block is worthless if the ALTER has already autocommitted.
+begin;
+
 create schema if not exists finance;
 
 comment on schema finance is
@@ -48,3 +53,5 @@ create type finance.system_actor as enum
 -- everything the bounded run never reached (the B-46 defect).
 create type finance.run_status as enum
   ('running', 'partial', 'completed', 'failed', 'abandoned');
+
+commit;

@@ -1,6 +1,11 @@
 -- Financials V2 PR 1 — RLS, grants and default privileges (ARCHITECTURE §9, §15).
 -- A custom schema is unreachable until granted explicitly, so every grant is stated.
 
+-- Explicitly transactional: a failure anywhere below leaves the database
+-- exactly as it was. Migration 0001 in particular MUST be atomic -- its
+-- verification block is worthless if the ALTER has already autocommitted.
+begin;
+
 revoke all on schema finance from public;
 grant usage on schema finance to authenticated, service_role;
 
@@ -129,9 +134,19 @@ grant select on all tables in schema finance to service_role;
 
 grant insert on finance.agreements, finance.agreement_amounts,
                 finance.agreement_lifecycle_events, finance.ledger_entries,
-                finance.stripe_events, finance.checkout_sessions,
-                finance.payment_links
+                finance.stripe_events
   to service_role;
+
+-- Column-scoped INSERT. payment_links and checkout_sessions carry
+-- founder-gated or terminal transitions, so creation is a protected transition
+-- on them too: the revocation and completion columns are excluded, and a
+-- BEFORE INSERT trigger enforces the same rule independently of privileges.
+grant insert (agreement_id, token_hash, expires_at, created_by)
+  on finance.payment_links to service_role;
+
+grant insert (agreement_id, idempotency_key, payment_link_id, amount_cents,
+              currency, livemode, expires_at)
+  on finance.checkout_sessions to service_role;
 
 grant update (processing_status, claimed_at, attempt_count, processed_at,
               processing_error, payload)
@@ -178,3 +193,5 @@ revoke all on all functions in schema finance from anon;
 -- Finding 5, part 2: strip PUBLIC EXECUTE from every function this PR created.
 -- This DOES work for existing objects; default privileges do not.
 revoke execute on all functions in schema finance from public;
+
+commit;

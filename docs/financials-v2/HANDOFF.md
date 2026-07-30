@@ -8,6 +8,28 @@
 ## Current status
 
 **Phase:** PR 1 — `finance` schema foundation.
+
+**Remediation round 2 (post-BLOCK at `eaab168`).** The prior review found the
+test system reported confidence it had not earned. Corrected:
+
+- **Migration atomicity.** Every migration is explicitly transactional. The
+  `ALTER FUNCTION` in 0001 previously autocommitted *before* its own
+  verification block, so the safety mechanism produced the outage it claimed to
+  prevent and then reported "Migration rolled back" falsely.
+  `atomicity_sim.sh` reproduces the exact production scenario and proves the
+  migration now fails with `proconfig` unchanged and `is_founder()` still working.
+- **Coverage rebuilt.** `coverage_map.py` (which counted a bare comment) is
+  deleted. `coverage_verify.py` parses **executed** TAP/static/concurrency
+  results against a manifest of named assertions. Self-tested: an empty results
+  file and a comments-only file both report **0/140**, and a failing assertion
+  is reported as failing, not covered.
+- **`payment_links` enforcement.** Column-scoped INSERT, a creation-time guard,
+  and revocation/consumption terminality. `service_role` could previously insert
+  a link already `revoked` with forged attribution, and un-revoke one.
+- **Mutation testing.** 13 safeguards; a safeguard is not covered unless removing
+  it breaks a test. First run had **5 survivors**; all now killed.
+- **Suites are gating.** `|| true` removed; `08_no_placeholders.sh` fails on
+  `pass()`, `WHERE false`, tautological checks or suppressed suites.
 **State:** **PR 0 is not approved.** Documents written and revised across fifteen review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), a first external review of PR #838 (7 findings, B-3 … B-9), a clean-context re-verification (1 blocker, 6 minors), a second external review (6 findings, B-10 … B-15), a third external review at the Stripe boundary (6 findings, B-16 … B-21), a PR 1 executability review (9 blockers, 8 minors — B-22 … B-30), an operational readiness review (7 blockers, 6 minors — **zero of twenty operational points defined**, B-31 … B-43), an independent review returning **BLOCK** on the reconciliation state machine (B-44 … B-51), a second **BLOCK** on executability of that machine (B-52 … B-57), a third **BLOCK** on transition integrity and enforcement (B-58 … B-62), a fourth **BLOCK** on constraint and platform executability (B-63 … B-66), a fifth **BLOCK** on structural enforcement and resolution attribution (B-67 … B-68), and a sixth **BLOCK** on `INSERT`-time bypass of function-guarded transitions (B-69 … B-70, plus B-71 found by the audit they prompted), and a seventh **BLOCK** on two unsatisfiable specifications (B-72 … B-73). All resolved. Awaiting independent re-review.
 
 The clean-context pass caught a defect introduced by the B-7 fix itself: L12 originally defined "provider-originated" as `source='stripe' AND provider_object_id IS NOT NULL`, which contradicted L1 and D-020 — a Stripe payment imported without a charge-object id would have demanded a human actor that no document assigned. L12 now keys on `source` alone.

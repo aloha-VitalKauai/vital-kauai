@@ -5,6 +5,12 @@
 
 -- ---------------------------------------------------------------- append-only
 -- Fires regardless of role, so it holds for service_role and any future role.
+
+-- Explicitly transactional: a failure anywhere below leaves the database
+-- exactly as it was. Migration 0001 in particular MUST be atomic -- its
+-- verification block is worthless if the ALTER has already autocommitted.
+begin;
+
 create function finance.tg_append_only() returns trigger
   language plpgsql security definer set search_path = pg_catalog, public, finance as $$
 begin
@@ -349,3 +355,59 @@ end $$;
 
 create trigger run_authorization before insert on finance.reconciliation_runs
   for each row execute function finance.tg_run_authorization();
+
+
+-- ------------------------------------- payment_links creation-time guard
+-- The nine-table audit classified payment_links as "no founder-gated
+-- transition", which stopped being true when finance.revoke_payment_link()
+-- was added. service_role held whole-table INSERT, so it could create a link
+-- already `revoked` WITH A FORGED revoked_by -- defeating the founder-gated
+-- function entirely. Same class as the reconciliation_exceptions and
+-- reconciliation_runs guards.
+create function finance.tg_link_insert_guard() returns trigger
+  language plpgsql security definer set search_path = pg_catalog, public, finance as $$
+begin
+  if new.status <> 'active' then
+    raise exception 'a new payment link must be created active, got %', new.status;
+  end if;
+  if new.claimed_at is not null or new.consumed_at is not null
+     or new.consumed_by_session_id is not null
+     or new.revoked_at is not null or new.revoked_by is not null then
+    raise exception
+      'a new payment link may not be created with claim, consumption or revocation state';
+  end if;
+  if new.attempt_count <> 0 then
+    raise exception 'a new payment link must start with attempt_count = 0';
+  end if;
+  return new;
+end $$;
+
+create trigger link_insert_guard before insert on finance.payment_links
+  for each row execute function finance.tg_link_insert_guard();
+
+-- --------------------------------------------- revocation is terminal
+-- Entering `revoked` by UPDATE is blocked by link_revoked_complete, but
+-- LEAVING it was not: service_role could flip a revoked link back to active
+-- while revoked_at stayed populated, so a one-shot link was not one-shot.
+-- Revocation attribution is likewise frozen once written.
+create function finance.tg_link_revocation_terminal() returns trigger
+  language plpgsql security definer set search_path = pg_catalog, public, finance as $$
+begin
+  if old.status = 'revoked' and new.status is distinct from 'revoked' then
+    raise exception 'payment link % is revoked; revocation is terminal', old.id;
+  end if;
+  if old.revoked_at is not null
+     and (new.revoked_at is distinct from old.revoked_at
+       or new.revoked_by is distinct from old.revoked_by) then
+    raise exception 'revocation attribution on link % is frozen', old.id;
+  end if;
+  if old.status = 'consumed' and new.status is distinct from 'consumed' then
+    raise exception 'payment link % is consumed; consumption is terminal', old.id;
+  end if;
+  return new;
+end $$;
+
+create trigger link_revocation_terminal before update on finance.payment_links
+  for each row execute function finance.tg_link_revocation_terminal();
+
+commit;

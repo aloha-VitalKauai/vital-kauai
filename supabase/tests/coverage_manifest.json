@@ -1,0 +1,529 @@
+{
+ "1": [
+  "req 1 / req 3: a fresh-database migration + full reset is executed by run_all.sh, and every migration file is present"
+ ],
+ "10": [
+  "test 10: founder sees all agreements",
+  "test 10: founder sees lifecycle events"
+ ],
+ "100": [
+  "req 100: a second payment_failed for the SAME object is retained",
+  "req 100: first payment_failed for an object",
+  "req 100: stripe_events has its primary key uniqueness only"
+ ],
+ "101": [
+  "req 101 cycle 1: released_at > quarantined_at despite S2 starting first",
+  "req 101 cycle 2: ordering holds across a second full cycle",
+  "req 101: no equality in either cycle"
+ ],
+ "102": [
+  "test 102: dedup_key cannot be supplied by the writer",
+  "test 102: dedup_key is the canonical construction"
+ ],
+ "103": [
+  "test 103: a second approval raises",
+  "test 103: approve_dry_run succeeds once",
+  "test 103: approved_by is auth.uid(), not supplied"
+ ],
+ "104": [
+  "test 104: approval without a completed report raises"
+ ],
+ "105": [
+  "test 105: implementation_version frozen after approval",
+  "test 105: report frozen after approval",
+  "test 105: window_end frozen after approval"
+ ],
+ "106": [
+  "test 106: service_role cannot UPDATE approved_at"
+ ],
+ "107": [
+  "test 107: implementation_version is required"
+ ],
+ "108": [
+  "req 108: dedup_key cannot be supplied"
+ ],
+ "109": [
+  "req 109: a fresh exception with both timestamps NULL inserts cleanly",
+  "req 109: untouched quarantine state is permitted"
+ ],
+ "11": [
+  "req 11: a member cannot insert a financial fact"
+ ],
+ "110": [
+  "req 110: a first failure cannot quarantine",
+  "req 110: an already-quarantined row cannot be re-quarantined",
+  "req 110: three consecutive failures may quarantine",
+  "req 110: wrong kind cannot be quarantined"
+ ],
+ "111": [
+  "req 111: quarantine_reason is derived from the row detail.error_class"
+ ],
+ "112": [
+  "req 112: re-quarantine requires three fresh failures",
+  "req 112: release resets the streak to 0"
+ ],
+ "113": [
+  "req 113: a second approval is rejected",
+  "req 113: approval succeeds exactly once"
+ ],
+ "114": [
+  "test 114: blank approval note raises"
+ ],
+ "115": [
+  "req 115: the report is frozen after approval",
+  "req 115: window_start is frozen after approval"
+ ],
+ "116": [
+  "req 116: dedup_key is NOT NULL",
+  "req 116: no row has a NULL dedup_key"
+ ],
+ "117": [
+  "req 117: an open row carrying resolved_at is rejected"
+ ],
+ "118": [
+  "test 118: resolve_exception succeeds for a founder",
+  "test 118: resolved_by is auth.uid(), not supplied"
+ ],
+ "119": [
+  "test 119: blank resolution note raises",
+  "test 119: repeat resolution raises",
+  "test 119: resolving to open raises"
+ ],
+ "12": [
+  "req 12: a founder can read through the approved path",
+  "req 12: a non-founder cannot call an approved function"
+ ],
+ "120": [
+  "test 120: a resolved exception does not block a fresh row for the same identity"
+ ],
+ "121": [
+  "req 121: a direct resolution UPDATE is rejected"
+ ],
+ "122": [
+  "req 122: release leaves resolution_note untouched",
+  "req 122: release writes release_note"
+ ],
+ "123": [
+  "test 123: ordinary exception creation succeeds",
+  "test 123: service_role may INSERT kind"
+ ],
+ "124": [
+  "test 124: cannot create an exception already quarantined",
+  "test 124: cannot create an exception already resolved",
+  "test 124: service_role cannot INSERT quarantined_at",
+  "test 124: service_role cannot INSERT released_by",
+  "test 124: service_role cannot INSERT resolution_status"
+ ],
+ "124b": [
+  "req 124b: an explicit open insert with permitted columns succeeds"
+ ],
+ "125": [
+  "test 125: service_role may UPDATE occurrence_count"
+ ],
+ "126": [
+  "req 126: resolution succeeds through the function"
+ ],
+ "127": [
+  "req 127: an open row carrying a note is rejected"
+ ],
+ "128": [
+  "test 128: service_role may INSERT implementation_version"
+ ],
+ "129": [
+  "test 129: a run cannot be created already approved",
+  "test 129: service_role cannot INSERT approval_note",
+  "test 129: service_role cannot INSERT approved_by"
+ ],
+ "13": [
+  "req 13: the view returns no row a direct query would deny"
+ ],
+ "130": [
+  "req 130: a fabricated approved run cannot be inserted"
+ ],
+ "131": [
+  "req 131: approval attribution is auth.uid()"
+ ],
+ "132": [
+  "req 132: authorized_by_run_id is insertable for a writing run"
+ ],
+ "133": [
+  "test 133: agreement with no initial event fails the deferred completeness check"
+ ],
+ "133b": [
+  "test 133b: child-first insert is rejected"
+ ],
+ "14": [
+  "req 14: anon has no schema USAGE",
+  "req 14: anon holds no table privilege"
+ ],
+ "15": [
+  "test 15: future-dated amendment rejected"
+ ],
+ "16": [
+  "req 16: EXECUTE is not granted to PUBLIC",
+  "req 16: every SECURITY DEFINER function pins search_path"
+ ],
+ "17": [
+  "test 17: duplicate (member,journey,purpose) raises"
+ ],
+ "18": [
+  "test 18: initial lifecycle event is draft"
+ ],
+ "19": [
+  "req 19: only one initial event per agreement"
+ ],
+ "2": [
+  "req 2: every finance object is created by a tracked migration (no ad-hoc DDL outside supabase/migrations)"
+ ],
+ "20": [
+  "req 20: draft->fulfilled is rejected"
+ ],
+ "21": [
+  "req 21: exactly one transition from draft committed",
+  "req 21: the second concurrent lifecycle transition BLOCKS on the agreement row lock",
+  "req 21: the winner is S1; S2 was rejected as stale"
+ ],
+ "22": [
+  "req 22: cancelling an agreement does not change any balance column"
+ ],
+ "23": [
+  "test 23/24: last-recorded amendment wins on an effective_at tie"
+ ],
+ "24": [
+  "req 24: same-transaction amendments resolve to the later seq"
+ ],
+ "25": [
+  "req 25: an agreement with no amendment yields Contribution 0"
+ ],
+ "26": [
+  "req 26: no future-dated amendment exists"
+ ],
+ "27": [
+  "req 27: a blank reason is rejected",
+  "req 27: a negative amount is rejected"
+ ],
+ "28": [
+  "test 28 (L1): stripe_payment without payment-intent id rejected"
+ ],
+ "29": [
+  "test 29 (L12): external_payment with no attribution rejected",
+  "test 29 (L2): external_payment without method rejected"
+ ],
+ "3": [
+  "req 1 / req 3: a fresh-database migration + full reset is executed by run_all.sh, and every migration file is present"
+ ],
+ "30": [
+  "req 30: refund with a positive amount rejected",
+  "req 30: refund without parent rejected",
+  "req 30: stripe refund without provider_object_id rejected"
+ ],
+ "30b": [
+  "req 30b: a stripe refund cannot target an external_payment"
+ ],
+ "31": [
+  "req 31: livemode disagreeing with the originating event is rejected",
+  "req 31: matching livemode is accepted"
+ ],
+ "32": [
+  "test 32 (L12): both human and system attribution rejected"
+ ],
+ "32b": [
+  "req 32b: recorded_by_system requires no auth.users row"
+ ],
+ "32c": [
+  "test 32c (L13): stripe entry carrying external_method rejected"
+ ],
+ "32d": [
+  "test 32d (L13): external entry carrying a payment-intent id rejected"
+ ],
+ "32e": [
+  "req 32e: legacy_donation_id accepted on an external entry"
+ ],
+ "33": [
+  "req 33: amount_cents must be > 0"
+ ],
+ "34": [
+  "req 34: non-creating status without stripe_session_id rejected"
+ ],
+ "35": [
+  "req 35: exactly one live session survived the concurrent insert",
+  "req 35: the second concurrent live-session insert BLOCKS"
+ ],
+ "36": [
+  "test 36 (L8): duplicate provider object rejected"
+ ],
+ "37": [
+  "req 37: exactly one claimant; the loser changed nothing",
+  "req 37: the second concurrent link claim BLOCKS",
+  "test 37 (L8b): duplicate payment intent rejected"
+ ],
+ "38": [
+  "test 38: refund reduces net Received"
+ ],
+ "39": [
+  "test 39: partial refund succeeds"
+ ],
+ "4": [
+  "req 4: agreement_lifecycle values exact",
+  "req 4: exception_kind has 12 values",
+  "req 4: payment_state values exact"
+ ],
+ "40": [
+  "test 40: service_role may INSERT ledger entries",
+  "test 40: service_role may SELECT ledger entries"
+ ],
+ "41": [
+  "test 41 (L7): refund exceeding settled amount rejected",
+  "test 41: service_role has no DELETE on ledger_entries",
+  "test 41: service_role has no UPDATE on agreement_amounts",
+  "test 41: service_role has no UPDATE on ledger_entries",
+  "test 41: service_role has no UPDATE on lifecycle events"
+ ],
+ "42": [
+  "test 42: anon has no SELECT on agreements",
+  "test 42: anon has no SELECT on ledger_entries"
+ ],
+ "43": [
+  "req 43: a payment increases net Received exactly once"
+ ],
+ "44": [
+  "req 44: duplicate provider object rejected"
+ ],
+ "45": [
+  "test 45 (L6): reversal rejected while parent has an unreversed child"
+ ],
+ "46": [
+  "test 46: full unwind returns net Received to 0",
+  "test 46: reversal of the payment now succeeds",
+  "test 46: reversal of the refund succeeds"
+ ],
+ "47": [
+  "test 47: an entry cannot be reversed twice"
+ ],
+ "48": [
+  "req 48: first partial refund",
+  "req 48: second partial refund accumulates",
+  "req 48: two partial refunds accumulate correctly"
+ ],
+ "49": [
+  "req 49: a refund exceeding the settled amount is rejected"
+ ],
+ "5": [
+  "req 5: ledger entries cannot be DELETEd",
+  "req 5: ledger entries cannot be UPDATEd"
+ ],
+ "50": [
+  "req 50: cumulative refunds never exceeded the settled amount",
+  "req 50: only one concurrent refund committed; L7 rejected the second",
+  "req 50: the second concurrent refund BLOCKS on the parent row lock (finding 6)"
+ ],
+ "51": [
+  "req 51: a refund may not target a refund"
+ ],
+ "52": [
+  "req 52: a reversal that does not negate its parent is rejected"
+ ],
+ "53": [
+  "req 53: reversal blocked by an unreversed child"
+ ],
+ "54": [
+  "req 54: the full unwind nets to 0"
+ ],
+ "55": [
+  "req 55: an entry cannot be reversed twice"
+ ],
+ "56": [
+  "req 56: reversal of a refund succeeds",
+  "req 56: reversing a refund restores the parent payment headroom"
+ ],
+ "57": [
+  "req 57: L5 self-parent CHECK exists",
+  "req 57: a parent in a different agreement is rejected"
+ ],
+ "58": [
+  "test 58: agreement with no entries is unpaid, not partial",
+  "test 58: agreement with no entries returns 0, not NULL"
+ ],
+ "59": [
+  "req 59: legacy import row accepted",
+  "req 59: re-running the import cannot duplicate"
+ ],
+ "6": [
+  "test 6: amounts cannot be DELETEd",
+  "test 6: amounts cannot be UPDATEd"
+ ],
+ "60": [
+  "req 60: no aggregate is ever NULL"
+ ],
+ "61": [
+  "req 61: overpaid state"
+ ],
+ "62": [
+  "req 62: overpayment yields negative remaining_cents",
+  "req 62: overpayment yields zero payable_remaining_cents"
+ ],
+ "63": [
+  "test 63: a reversed refund does not count toward refunded_cents",
+  "test 63: fully unwound agreement is unpaid, not refunded"
+ ],
+ "64": [
+  "test 64: gift agreement has NULL remaining",
+  "test 64: gift agreement is not_applicable"
+ ],
+ "65": [
+  "req 65: a reversed refund does not count",
+  "req 65: an unreversed refund counts",
+  "req 65: fully unwound is unpaid"
+ ],
+ "66": [
+  "req 66: gift has NULL remaining",
+  "req 66: gift money still counts toward member Received"
+ ],
+ "67": [
+  "req 67: multiple distinct payment_states are produced deterministically",
+  "req 67: payment_state is never NULL"
+ ],
+ "68": [
+  "req 68: livemode=false appears in the test view",
+  "req 68: livemode=false excluded from canonical balances"
+ ],
+ "69": [
+  "req 69: aggregate views derive from v_agreement_balances and contain no independent formula"
+ ],
+ "7": [
+  "test 7: lifecycle events cannot be DELETEd",
+  "test 7: lifecycle events cannot be UPDATEd"
+ ],
+ "70": [
+  "req 70 / D-074: trigger and view use identical ordering and tie-breaking",
+  "req 70: exactly two permitted lifecycle derivations exist (D-074 allowlist)",
+  "req 70: the consumer projection is v_agreement_lifecycle",
+  "req 70: the only enforcement derivation is tg_lifecycle_transition",
+  "req 70: v_agreement_lifecycle keeps security_invoker (D-074)"
+ ],
+ "71": [
+  "test 71: blank reason raises",
+  "test 71: create_agreement succeeds for a founder"
+ ],
+ "72": [
+  "test 72: active->canceled permitted",
+  "test 72: active->draft rejected",
+  "test 72: active->fulfilled permitted",
+  "test 72: canceled is terminal",
+  "test 72: draft->active permitted",
+  "test 72: fulfilled->active permitted",
+  "test 72: stale from_status rejected"
+ ],
+ "73": [
+  "req 73: consumed without session rejected",
+  "req 73: creating without claimed_at rejected"
+ ],
+ "74": [
+  "req 74: members read no lifecycle events",
+  "req 74: members read no runs"
+ ],
+ "75": [
+  "test 75: members see no exceptions",
+  "test 75: members see no lifecycle events",
+  "test 75: members see no payment links",
+  "test 75: members see no runs",
+  "test 75: members see no stripe events"
+ ],
+ "76": [
+  "test 76: service_role may UPDATE cursor"
+ ],
+ "77": [
+  "req 77: window_end <= window_start rejected"
+ ],
+ "78": [
+  "req 78: a second running run for the same livemode is rejected",
+  "req 78: a test-mode running run coexists with a live-mode one"
+ ],
+ "79": [
+  "test 79: a second open exception with the same identity is rejected"
+ ],
+ "8": [
+  "test 8: Member A cannot see Member B",
+  "test 8: Member A sees only their own agreement",
+  "test 8: Member B sees only their own"
+ ],
+ "80": [
+  "req 80: a resolved row does not block a fresh one",
+  "req 80: the resolved row is preserved"
+ ],
+ "81": [
+  "req 81: the same identity in test mode is an independent row"
+ ],
+ "82": [
+  "req 82: last_detected_at < first_detected_at rejected"
+ ],
+ "83": [
+  "test 83: running carrying finished_at rejected"
+ ],
+ "84": [
+  "test 84: completed with window_exhausted=false rejected",
+  "test 84: completed with window_exhausted=true accepted",
+  "test 84: partial with window_exhausted=true rejected",
+  "test 84: running with window_exhausted=true rejected"
+ ],
+ "85": [
+  "req 85: self-resume is rejected"
+ ],
+ "86": [
+  "req 86: a dry run may not cite an authorization",
+  "req 86: a writing run without authorization is rejected"
+ ],
+ "87": [
+  "req 87: quarantined_at without a reason is rejected",
+  "req 87: release without a prior quarantine is rejected"
+ ],
+ "88": [
+  "test 88: service_role cannot execute approve_dry_run",
+  "test 88: service_role cannot execute release_quarantine"
+ ],
+ "89": [
+  "req 89: all eight are indexes, not table constraints",
+  "req 89: exactly 8 partial unique indexes"
+ ],
+ "9": [
+  "test 9: a member cannot insert a ledger entry",
+  "test 9: a member cannot insert an agreement"
+ ],
+ "90": [
+  "req 90: public.is_founder() is still SECURITY DEFINER",
+  "req 90: public.is_founder() proconfig includes a pinned search_path",
+  "req 90: public.is_founder() still returns boolean",
+  "req 90: the pinned search_path is exactly pg_catalog, public"
+ ],
+ "91": [
+  "req 91: column grants prove both directions"
+ ],
+ "92": [
+  "req 92: release succeeds"
+ ],
+ "93": [
+  "test 93: a founder cannot execute quarantine_object",
+  "test 93: service_role may execute quarantine_object"
+ ],
+ "94": [
+  "req 94: a dry run with non-zero real writes is rejected"
+ ],
+ "95": [
+  "req 95: report_completed_at without the report columns is rejected"
+ ],
+ "96": [
+  "req 96: a writing run citing a different livemode is rejected",
+  "req 96: a writing run citing a partial dry run is rejected",
+  "req 96: a writing run reaching before the approved horizon is rejected"
+ ],
+ "97": [
+  "req 97: a writing run whose implementation_version differs is rejected"
+ ],
+ "98": [
+  "req 98: approval without a report is rejected"
+ ],
+ "99": [
+  "test 99: processing-failure without detail rejected",
+  "test 99: well-formed processing failure accepted"
+ ]
+}
