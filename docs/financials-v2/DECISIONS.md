@@ -605,7 +605,7 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 ---
 
 ## D-057 — Quarantine transitions are strictly monotonic, via functions only
-**Date:** 2026-07-29 · **Status:** Approved · **Tightens D-051**
+**Date:** 2026-07-29 · **Status:** Approved · **Tightens D-051** · **Backstop constraint corrected by D-062; preconditions added by D-064**
 
 **Decision.** Both transitions run through `SECURITY DEFINER` functions that lock the row and write a timestamp strictly greater than the opposing one: `finance.release_quarantine()` sets `released_at := GREATEST(clock_timestamp(), quarantined_at + interval '1 microsecond')`; `finance.quarantine_object()` sets `quarantined_at := GREATEST(clock_timestamp(), COALESCE(released_at,'-infinity') + interval '1 microsecond')`. `quarantine_object` is `service_role`-only, `release_quarantine` founder-only. **No role holds a direct `UPDATE`** on the four quarantine columns. A `CHECK (released_at IS DISTINCT FROM quarantined_at)` backstops equality.
 
@@ -641,8 +641,49 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 ---
 
 ## D-061 — `dedup_key` is generated; exception shape is enforced by `CHECK`
-**Date:** 2026-07-29 · **Status:** Approved · **Tightens D-040 and D-054**
+**Date:** 2026-07-29 · **Status:** Approved · **Tightens D-040 and D-054** · **Expression form corrected by D-063**
 
 **Decision.** `reconciliation_exceptions.dedup_key` is a `GENERATED ALWAYS AS … STORED` column, so no writer can supply it. `provider_object_processing_failed` rows are constrained by `CHECK` to carry a non-null `provider_object_id`, a `detail.object_type` from the closed list `payment_intent | charge | refund | checkout_session`, and a `detail.error_class` from `malformed_object | object_not_found | object_scoped_bad_request`.
 
 **Rationale.** D-040 called the key "deterministic and computed at write time" while nothing stopped a writer supplying a different one — and a writer that can choose `dedup_key` **defeats deduplication entirely**, inserting thousands of fresh rows per run with every constraint still passing. D-054's required fields were likewise asserted in prose and enforced nowhere, so an incomplete exception would have been accepted and its quarantine identity silently wrong. `GENERATED ALWAYS` and `CHECK` move both from convention to impossibility.
+
+
+---
+
+## D-062 — The monotonicity backstop must permit the untouched state
+**Date:** 2026-07-29 · **Status:** Approved · **Corrects D-057**
+
+**Decision.** The constraint is `CHECK (released_at IS NULL OR released_at <> quarantined_at)`. The separate rule that a non-null `released_at` requires a non-null `quarantined_at` is retained.
+
+**Rationale.** D-057 specified `CHECK (released_at IS DISTINCT FROM quarantined_at)`. `NULL IS DISTINCT FROM NULL` evaluates to **false**, and every exception is inserted with both timestamps `NULL` — so the constraint would have **rejected every ordinary exception insert**, breaking the exceptions queue entirely rather than only its quarantine path. Verified against PostgreSQL 17.6: the old form returns `false` for the both-null case; the new form returns `true` there, `true` when quarantined with no release, `false` on equal non-null values, and `true` for correctly ordered release and re-quarantine.
+
+**Consequence.** The backstop now constrains exactly what it was meant to — equality *after* a release — and is silent on states where one or both timestamps are absent.
+
+---
+
+## D-063 — The generated `dedup_key` expression enumerates every enum label
+**Date:** 2026-07-29 · **Status:** Approved · **Corrects D-061**
+
+**Decision.** The generated expression uses an explicit `CASE` mapping each of the twelve `exception_kind` values to a text literal, rather than `kind::text`. Adding an enum value requires adding its `CASE` branch in the same migration. Declaring a wrapper function `IMMUTABLE` over `kind::text` is forbidden.
+
+**Rationale.** D-061's expression **does not compile**. Generated columns require an `IMMUTABLE` expression, and enum-to-text is only `STABLE` because `ALTER TYPE … RENAME VALUE` can change the output for the same input. Confirmed on the live database (PostgreSQL 17.6): `enum_out(anyenum)` is `STABLE` in `pg_proc`, and a `CREATE TEMP TABLE … GENERATED ALWAYS AS (k::text) STORED` probe over an existing enum was rejected, while the `CASE` form was accepted, produced the canonical values, and rejected an `INSERT` supplying the column. A falsely-`IMMUTABLE` wrapper would satisfy the parser and then let a future label rename silently corrupt stored keys — every affected exception losing its identity and re-inserting as new.
+
+**Consequence.** An unmapped enum value yields `NULL` through `||` and silently disables deduplication for that kind, so acceptance test 108 asserts every value maps to a non-null canonical key.
+
+---
+
+## D-064 — `quarantine_object()` validates state, and derives its own reason
+**Date:** 2026-07-29 · **Status:** Approved · **Tightens D-057**
+
+**Decision.** After locking, the function raises unless: `resolution_status = 'open'`; `kind = 'provider_object_processing_failed'`; the row is not already actively quarantined; `consecutive_failure_runs >= 3`; and `provider_object_id` plus a valid `detail.error_class` are present. `quarantine_reason` is derived internally from `detail.error_class`, and the function takes **no reason parameter**.
+
+**Rationale.** D-057 guaranteed timestamp ordering and nothing about whether the row should be quarantined at all — a resolved exception, a wrong kind, an already-quarantined row, or an object on its *first* failure could all be quarantined, each silently stopping reconciliation of something that should still be examined. A caller-supplied reason could also contradict the row it describes, producing an audit trail worse than none. The threshold check is what makes release meaningful: a released row returns with a zero streak and cannot be re-quarantined until three fresh consecutive failures.
+
+---
+
+## D-065 — The freeze trigger keys on `OLD.approved_at`; `p_note` is stored
+**Date:** 2026-07-29 · **Status:** Approved · **Completes D-059**
+
+**Decision.** The freeze trigger rejects `UPDATE`s where **`OLD.approved_at IS NOT NULL`**, permitting exactly one `NULL →` internally-computed approval transition. `finance.approve_dry_run()` requires a non-blank `p_note` and stores it in a new `approval_note` column, which joins the frozen set.
+
+**Rationale.** D-059 said the trigger freezes "a row with `approved_at IS NOT NULL`" without saying which tuple. Keyed on `NEW`, the approval `UPDATE` itself would see a non-null value and reject — **approval would be impossible**, the same shape as B-52's unexecutable quarantine release. Separately, `p_note` was a parameter no column stored and no behaviour used, so a founder's stated reason for accepting the evidence was silently discarded; the alternative was to drop the parameter, but the reason is worth keeping precisely because it is the human judgement the whole gate exists to capture.

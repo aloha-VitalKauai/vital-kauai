@@ -645,7 +645,32 @@ finance.reconciliation_exceptions
   currency            text NULL CHECK (currency IS NULL OR currency = 'usd')
   detail              jsonb NOT NULL default '{}'::jsonb
   dedup_key           text GENERATED ALWAYS AS (
-                        kind::text || ':' ||
+                        (CASE kind
+                           WHEN 'unattributable_payment'::finance.exception_kind
+                             THEN 'unattributable_payment'
+                           WHEN 'provider_without_ledger'::finance.exception_kind
+                             THEN 'provider_without_ledger'
+                           WHEN 'ledger_without_provider'::finance.exception_kind
+                             THEN 'ledger_without_provider'
+                           WHEN 'amount_mismatch'::finance.exception_kind
+                             THEN 'amount_mismatch'
+                           WHEN 'currency_violation'::finance.exception_kind
+                             THEN 'currency_violation'
+                           WHEN 'missing_provider_object'::finance.exception_kind
+                             THEN 'missing_provider_object'
+                           WHEN 'orphan_refund'::finance.exception_kind
+                             THEN 'orphan_refund'
+                           WHEN 'refund_status_regression'::finance.exception_kind
+                             THEN 'refund_status_regression'
+                           WHEN 'stranded_checkout_attempt'::finance.exception_kind
+                             THEN 'stranded_checkout_attempt'
+                           WHEN 'stale_session_expiry_failed'::finance.exception_kind
+                             THEN 'stale_session_expiry_failed'
+                           WHEN 'reconciliation_run_failed'::finance.exception_kind
+                             THEN 'reconciliation_run_failed'
+                           WHEN 'provider_object_processing_failed'::finance.exception_kind
+                             THEN 'provider_object_processing_failed'
+                         END) || ':' ||
                         coalesce(provider_object_id, '')       || ':' ||
                         coalesce(ledger_entry_id::text, '')    || ':' ||
                         coalesce(agreement_id::text, '')       || ':' ||
@@ -672,7 +697,7 @@ finance.reconciliation_exceptions
   CHECK ((quarantined_at IS NULL) = (quarantine_reason IS NULL))
   CHECK ((released_at IS NULL) = (released_by IS NULL))
   CHECK (released_at IS NULL OR quarantined_at IS NOT NULL)   -- cannot release what was never quarantined
-  CHECK (released_at IS DISTINCT FROM quarantined_at)          -- monotonicity backstop (B-58)
+  CHECK (released_at IS NULL OR released_at <> quarantined_at) -- monotonicity backstop (B-58/B-63)
 
   -- provider_object_processing_failed shape (B-62)
   CHECK (kind <> 'provider_object_processing_failed' OR (
@@ -695,14 +720,28 @@ CREATE UNIQUE INDEX ON finance.reconciliation_exceptions (dedup_key, livemode)
 
 Without a dedup rule the first real run against ~4,000 mismatches inserts 4,000 rows, the next scheduled run inserts the same 4,000 again, and the founder's queue is unusable within days. `id` is a surrogate; **`dedup_key` is the identity of the mismatch itself.**
 
-It is deterministic and computed at write time from the fields identifying *which* mismatch this is — never from amounts or timestamps, which change while the mismatch stays the same:
+It is a **`GENERATED ALWAYS AS … STORED` column**, computed by the database from the fields identifying *which* mismatch this is — never from amounts or timestamps, which change while the mismatch stays the same. The full expression is in the DDL above.
 
-```
-kind || ':' || coalesce(provider_object_id, '')
-     || ':' || coalesce(ledger_entry_id::text, '')
-     || ':' || coalesce(agreement_id::text, '')
-     || ':' || coalesce(legacy_donation_id::text, '')
-```
+Making it generated rather than writer-supplied is the point: a writer able to supply `dedup_key` **defeats deduplication by supplying a different one**, inserting 4,000 fresh rows every run while every constraint still passes. `GENERATED ALWAYS` makes that a PostgreSQL error rather than a convention — no trigger, review or discipline is relied upon.
+
+#### Why the expression spells out every enum label
+
+An earlier draft wrote `kind::text`. **That does not compile.** Generated columns require an `IMMUTABLE` expression, and enum-to-text conversion is only `STABLE` — enum labels can be renamed by `ALTER TYPE`, so the same input could later produce different output.
+
+Verified against the live database (PostgreSQL 17.6), read-only apart from a `TEMP` table that touches no persistent schema:
+
+| Probe | Result |
+|---|---|
+| `pg_proc.provolatile` for `enum_out(anyenum)` | **STABLE** — not immutable |
+| `CREATE TEMP TABLE … GENERATED ALWAYS AS (k::text) STORED` over an existing enum | **Rejected** — table not created |
+| Same with the explicit `CASE` mapping | **Accepted**; produced canonical `paid:ch_123` and `refunded:` |
+| `INSERT` supplying the generated column | **Rejected** |
+
+The `CASE` maps each of the twelve closed `exception_kind` values to a text **literal**, which is immutable, so the whole expression is immutable and the DDL is accepted.
+
+Wrapping `kind::text` in a function falsely declared `IMMUTABLE` would satisfy the parser and is **forbidden**: it lies to the planner, and a later `ALTER TYPE … RENAME VALUE` would silently corrupt stored keys that no longer match what the expression now produces — every affected exception would lose its identity and re-insert as new.
+
+**Adding a value to `exception_kind` requires adding its `CASE` branch in the same migration.** An unmapped value makes the `CASE` yield `NULL`, which propagates through `||` and produces a `NULL` key, silently disabling deduplication for that kind. Acceptance test 108 asserts every enum value maps to a non-null canonical key, so a future omission fails the suite rather than shipping.
 
 | Situation | Behaviour |
 |---|---|
@@ -765,9 +804,27 @@ quarantined_at := GREATEST(clock_timestamp(),
 
 `clock_timestamp()` reads the wall clock **at statement execution**, not transaction start, so a long-running transaction cannot write a stale value. `GREATEST(…, opposing + 1µs)` guarantees strict ordering even when the clock is adjusted backwards, when two transactions overlap, or when both happen inside the same microsecond. The `FOR UPDATE` lock makes the read-then-write atomic, so two concurrent transitions serialise rather than racing.
 
-`finance.quarantine_object(p_exception_id uuid, p_reason text)` is the counterpart, executable by `service_role` only. **Neither role holds a direct `UPDATE`** on `quarantined_at`, `quarantine_reason`, `released_at` or `released_by` — the ordering guarantee is worthless if any caller can bypass it with a raw `UPDATE`.
+`finance.quarantine_object(p_exception_id uuid)` is the counterpart, executable by `service_role` only. **Neither role holds a direct `UPDATE`** on `quarantined_at`, `quarantine_reason`, `released_at` or `released_by` — the ordering guarantee is worthless if any caller can bypass it with a raw `UPDATE`.
 
-A `CHECK (released_at IS DISTINCT FROM quarantined_at)` rejects the equality case at the table level as a backstop.
+**It takes no reason parameter.** `quarantine_reason` is derived internally from the row's own validated `detail.error_class`, because a separately supplied reason can contradict the exception it describes — recording "malformed object" against a row whose `error_class` says `object_not_found` produces an audit trail that is worse than none.
+
+#### Quarantine preconditions
+
+Ordering was necessary but not sufficient: the function still had to refuse rows that should never be quarantined at all. After `SELECT … FOR UPDATE` it raises unless **every** one holds:
+
+| Precondition | Why |
+|---|---|
+| `resolution_status = 'open'` | A resolved or dismissed exception is closed business; quarantining it would resurrect it into the work list |
+| `kind = 'provider_object_processing_failed'` | Quarantine means "stop fetching this provider object". No other kind describes a repeatedly unprocessable object, and quarantining, say, an `amount_mismatch` would silently stop reconciling a real discrepancy |
+| Not already actively quarantined | Re-quarantining an active row would move `quarantined_at` forward and extend the skip indefinitely without a new failure justifying it |
+| `consecutive_failure_runs >= 3` | The documented threshold. Without this the first or second failure could quarantine, skipping an object that would have succeeded on the next run |
+| `provider_object_id` present and `detail.error_class` valid | The shape `CHECK` guarantees this for well-formed rows; the function asserts it again because it derives `quarantine_reason` from that field and must not write a reason built from a missing value |
+
+The threshold check is what makes release meaningful: a released row returns to processing with `consecutive_failure_runs = 0`, so it **cannot be quarantined again until three fresh consecutive failures accumulate**. Release is a real second chance rather than a formality the next run immediately undoes.
+
+A `CHECK (released_at IS NULL OR released_at <> quarantined_at)` rejects the equality case at the table level as a backstop.
+
+**The `NULL` branch is not optional.** An earlier draft wrote `CHECK (released_at IS DISTINCT FROM quarantined_at)`, and `NULL IS DISTINCT FROM NULL` evaluates to **false** — so with both timestamps absent, as every exception begins, the constraint would have rejected **every ordinary exception insert**, breaking the entire queue rather than only its quarantine path. Verified against PostgreSQL 17.6: the old form returns `false` for both-null; the corrected form returns `true` for both-null and for quarantined-with-no-release, `false` for equal non-null values, and `true` for correctly ordered release and re-quarantine.
 
 The consequence is that a release always lands on the released side and a re-quarantine always lands on the quarantined side, **regardless of transaction age, overlap, or clock adjustment**. Test 101 exercises this with two concurrent sessions.
 
@@ -811,6 +868,7 @@ finance.reconciliation_runs
   -- approval (B-53)
   approved_by               uuid NULL -> auth.users(id) (RESTRICT)
   approved_at               timestamptz NULL
+  approval_note             text NULL
   authorized_by_run_id      uuid NULL -> finance.reconciliation_runs(id) (RESTRICT)
 
   CHECK (window_end > window_start)
@@ -819,6 +877,8 @@ finance.reconciliation_runs
   CHECK (resumed_from_run_id IS DISTINCT FROM id)
   CHECK (authorized_by_run_id IS DISTINCT FROM id)
   CHECK ((approved_by IS NULL) = (approved_at IS NULL))
+  CHECK ((approved_at IS NULL) = (approval_note IS NULL))
+  CHECK (approval_note IS NULL OR length(btrim(approval_note)) > 0)
   CHECK (dry_run OR authorized_by_run_id IS NOT NULL)
   CHECK (NOT dry_run OR authorized_by_run_id IS NULL)
   CHECK (NOT dry_run OR (exceptions_created = 0 AND exceptions_reopened = 0))
@@ -901,11 +961,14 @@ Approval runs through **`finance.approve_dry_run(p_run_id uuid, p_note text)`**,
 1. Raises unless `public.is_founder()`.
 2. Locks the run row `FOR UPDATE` and validates **every** precondition of the table above — `dry_run`, `status = 'completed'`, `window_exhausted`, `finished_at` present, `error IS NULL`, `report_completed_at` present.
 3. Sets `approved_by = auth.uid()` and `approved_at = clock_timestamp()` **internally**. Neither is a parameter, so neither can be supplied.
-4. Raises if `approved_at` is already set. **Re-approval and replacement approval are refused**; a superseding approval requires a new dry run, so an approval can never be quietly moved to different evidence.
+4. Requires a non-blank `p_note` and stores it in **`approval_note`** — the founder's recorded reason for accepting this evidence. The note is frozen with everything else.
+5. Raises if `approved_at` is already set. **Re-approval and replacement approval are refused**; a superseding approval requires a new dry run, so an approval can never be quietly moved to different evidence.
 
-**The approved evidence is then frozen.** A trigger rejects any `UPDATE` that changes, on a row with `approved_at IS NOT NULL`, any of:
+**The approved evidence is then frozen.** A trigger rejects any `UPDATE` where **`OLD.approved_at IS NOT NULL`** that changes any of:
 
-`status`, `error`, `finished_at`, `window_exhausted`, `window_start`, `window_end`, `livemode`, `implementation_version`, `dry_run`, `would_create_count`, `would_reopen_count`, `prospective_by_kind`, `report_samples`, `report_version`, `report_completed_at`, `approved_by`, `approved_at`.
+`status`, `error`, `finished_at`, `window_exhausted`, `window_start`, `window_end`, `livemode`, `implementation_version`, `dry_run`, `would_create_count`, `would_reopen_count`, `prospective_by_kind`, `report_samples`, `report_version`, `report_completed_at`, `approved_by`, `approved_at`, `approval_note`.
+
+**The predicate is `OLD.approved_at`, not `NEW.approved_at`.** Freezing on the new value would freeze the approval transition itself — the one `UPDATE` that legitimately sets `approved_at` from `NULL` would see a non-null `NEW` and reject, making approval impossible in exactly the way B-52's quarantine release was impossible. Keying on `OLD` permits precisely one transition (`NULL →` internally computed) and rejects every mutation after it.
 
 The trigger fires **regardless of role**, so `service_role` cannot alter what a founder approved. Without the freeze the authorization is meaningless: the job could approve a narrow clean report and afterwards widen the window, swap the version, or rewrite the findings the founder actually read.
 
@@ -1249,11 +1312,11 @@ Returns `members.id` for the row where `members.profile_id = auth.uid()`; `NULL`
 **`finance.release_quarantine(p_exception_id uuid, p_note text) → void`**
 `VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Raises unless `public.is_founder()`. Locks the row `FOR UPDATE`, then sets `released_at = GREATEST(clock_timestamp(), quarantined_at + interval '1 microsecond')`, `released_by = auth.uid()`, resets `consecutive_failure_runs` to 0, and appends `p_note` to `resolution_note` — in one statement, so no intermediate state violates a `CHECK`. Raises if the row is not actively quarantined. `EXECUTE` to `authenticated` only.
 
-**`finance.quarantine_object(p_exception_id uuid, p_reason text) → void`**
-`VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Locks the row, then sets `quarantined_at = GREATEST(clock_timestamp(), COALESCE(released_at, '-infinity') + interval '1 microsecond')` and `quarantine_reason`. `EXECUTE` to `service_role` only — this is the job's transition, not a founder's.
+**`finance.quarantine_object(p_exception_id uuid) → void`**
+`VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Locks the row, validates all five preconditions of §10, derives `quarantine_reason` from the row's own `detail.error_class`, then sets `quarantined_at = GREATEST(clock_timestamp(), COALESCE(released_at, '-infinity') + interval '1 microsecond')`. Takes **no reason parameter**. `EXECUTE` to `service_role` only — this is the job's transition, not a founder's.
 
 **`finance.approve_dry_run(p_run_id uuid, p_note text) → void`**
-`VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Raises unless `public.is_founder()`. Locks the run, validates every precondition of §10a, then sets `approved_by = auth.uid()` and `approved_at = clock_timestamp()` **internally** — neither is a parameter. Raises if already approved. `EXECUTE` to `authenticated` only.
+`VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Raises unless `public.is_founder()`. Locks the run, validates every precondition of §10a, then sets `approved_by = auth.uid()` and `approved_at = clock_timestamp()` **internally** — neither is a parameter. Requires a non-blank `p_note`, stored in `approval_note`. Raises if already approved. `EXECUTE` to `authenticated` only.
 
 **`finance.create_agreement(p_member_id uuid, p_journey_id uuid, p_purpose finance.agreement_purpose, p_reason text) → uuid`**
 `VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Raises unless `public.is_founder()`. Raises on blank `p_reason`. In one transaction: inserts the agreement, then its initial lifecycle event with `from_status = NULL`, `to_status = 'draft'`, `actor_id = auth.uid()` and `reason = p_reason`. Returns the new `agreements.id`. On unique violation of `(member_id, journey_id, purpose)` it raises rather than returning the existing row — silently returning would make a caller believe it created something it did not. `EXECUTE` granted to `authenticated` only; the founder check is inside.
@@ -1272,7 +1335,7 @@ Returns `members.id` for the row where `members.profile_id = auth.uid()`; `NULL`
 | `payment_links` | none — the raw token is the member's only handle; the row is never read by them | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (status, claimed_at, consumed_at, consumed_by_session_id, attempt_count)` |
 | `stripe_events` | none | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (processing_status, claimed_at, attempt_count, processed_at, processing_error, payload)` |
 | `reconciliation_exceptions` | none | `SELECT`, `UPDATE (resolution_status, resolved_at, resolved_by, resolution_note)` where `public.is_founder()`. **Release goes through `finance.release_quarantine()`** | `SELECT`, `INSERT`, `UPDATE (last_detected_at, occurrence_count, detail, last_run_id, consecutive_failure_runs)`. **Quarantine goes through `finance.quarantine_object()`** — no role holds a direct `UPDATE` on `quarantined_at`, `quarantine_reason`, `released_at` or `released_by` |
-| `reconciliation_runs` | none | `SELECT` where `public.is_founder()`. **Approval is not a direct `UPDATE`** — it goes through `finance.approve_dry_run()`, so the actor and timestamp cannot be supplied | `SELECT`, `INSERT`, `UPDATE (status, cursor, window_exhausted, heartbeat_at, finished_at, error, objects_scanned, objects_matched, exceptions_created, exceptions_reopened, api_calls, retries, would_create_count, would_reopen_count, prospective_by_kind, report_samples, report_version, report_completed_at)` — **all blocked once `approved_at` is set**, by the freeze trigger |
+| `reconciliation_runs` | none | `SELECT` where `public.is_founder()`. **Approval is not a direct `UPDATE`** — it goes through `finance.approve_dry_run()`, so the actor and timestamp cannot be supplied | `SELECT`, `INSERT`, `UPDATE (status, cursor, window_exhausted, heartbeat_at, finished_at, error, objects_scanned, objects_matched, exceptions_created, exceptions_reopened, api_calls, retries, would_create_count, would_reopen_count, prospective_by_kind, report_samples, report_version, report_completed_at)` — **all blocked once `OLD.approved_at` is set**, by the freeze trigger |
 
 Notes:
 
