@@ -79,7 +79,7 @@ export default async function NurseMemberPage({
   // construction, so an unassigned member's URL is simply a 404.
   if (!member) notFound();
 
-  const nurseName = me?.full_name ?? "Nurse";
+  const nurseName = me?.full_name ?? "Doctor";
 
   return (
     <div style={{ fontFamily: "var(--font-body, sans-serif)" }}>

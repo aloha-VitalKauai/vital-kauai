@@ -407,7 +407,7 @@ export default function PractitionerDetailClient({
           {NURSE_ROLES.includes(practitioner.role) && (
             <div style={CARD}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                <p style={{ ...LABEL, marginBottom: 0 }}>Nurse portal access</p>
+                <p style={{ ...LABEL, marginBottom: 0 }}>Doctor portal access</p>
                 <span
                   style={{
                     background: practitioner.auth_user_id ? "#E1F5EE" : "#F1EFE8",
@@ -422,9 +422,9 @@ export default function PractitionerDetailClient({
                 </span>
               </div>
               <p style={{ fontSize: 13, color: "#6B6B67", margin: "0 0 12px", lineHeight: 1.5 }}>
-                A nurse login opens the care-team portal at /nurse: the medical profile,
+                A doctor login opens the care-team portal at /nurse: the medical profile,
                 intake form, labs, and notes log for members assigned to them — and
-                nothing else. Assign members from their profile&rsquo;s &ldquo;Assigned nurse&rdquo; field.
+                nothing else. Assign members from their profile&rsquo;s &ldquo;Assigned doctor&rdquo; field.
               </p>
               <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
                 <button
