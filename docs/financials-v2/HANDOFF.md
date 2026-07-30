@@ -8,7 +8,7 @@
 ## Current status
 
 **Phase:** PR 0 — architecture and project-control documents.
-**State:** **PR 0 is not approved.** Documents written and revised across twelve review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), a first external review of PR #838 (7 findings, B-3 … B-9), a clean-context re-verification (1 blocker, 6 minors), a second external review (6 findings, B-10 … B-15), a third external review at the Stripe boundary (6 findings, B-16 … B-21), a PR 1 executability review (9 blockers, 8 minors — B-22 … B-30), an operational readiness review (7 blockers, 6 minors — **zero of twenty operational points defined**, B-31 … B-43), an independent review returning **BLOCK** on the reconciliation state machine (B-44 … B-51), a second **BLOCK** on executability of that machine (B-52 … B-57), a third **BLOCK** on transition integrity and enforcement (B-58 … B-62), and a fourth **BLOCK** on constraint and platform executability (B-63 … B-66). All resolved. Awaiting independent re-review.
+**State:** **PR 0 is not approved.** Documents written and revised across thirteen review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), a first external review of PR #838 (7 findings, B-3 … B-9), a clean-context re-verification (1 blocker, 6 minors), a second external review (6 findings, B-10 … B-15), a third external review at the Stripe boundary (6 findings, B-16 … B-21), a PR 1 executability review (9 blockers, 8 minors — B-22 … B-30), an operational readiness review (7 blockers, 6 minors — **zero of twenty operational points defined**, B-31 … B-43), an independent review returning **BLOCK** on the reconciliation state machine (B-44 … B-51), a second **BLOCK** on executability of that machine (B-52 … B-57), a third **BLOCK** on transition integrity and enforcement (B-58 … B-62), a fourth **BLOCK** on constraint and platform executability (B-63 … B-66), and a fifth **BLOCK** on structural enforcement and resolution attribution (B-67 … B-68). All resolved. Awaiting independent re-review.
 
 The clean-context pass caught a defect introduced by the B-7 fix itself: L12 originally defined "provider-originated" as `source='stripe' AND provider_object_id IS NOT NULL`, which contradicted L1 and D-020 — a Stripe payment imported without a charge-object id would have demanded a human actor that no document assigned. L12 now keys on `source` alone.
 
@@ -34,7 +34,14 @@ The two divergent rows validate D-015 against production: 12% of members would s
 ### B-2 — PR 0 review not yet complete (blocks PR 1)
 Per the working agreement, implementation waits on reviewer confirmation that the documents contain no unresolved contradiction in the financial model. **PR 0 is explicitly not approved.**
 
-### B-63 … B-66 — Fourth independent BLOCK: constraint and platform executability (resolved, pending re-review)
+### B-67 … B-68 — Fifth independent BLOCK: structural enforcement and resolution attribution (resolved, pending re-review)
+
+| ID | Finding | Resolution |
+|---|---|---|
+| B-67 | The `CASE` omission was explained and test-detected, but the table still **permitted** a `NULL` `dedup_key` — a row with no dedup identity would insert and silently disable dedup for that kind | Column declared `NOT NULL GENERATED ALWAYS … STORED`. Verified live: definition accepted, mapped value canonical, **unmapped value rejected**, writer override rejected (D-066) |
+| B-68 | Founder held direct `UPDATE` on the four resolution columns — the same attribution defect fixed for approval in D-059, still present one table over. A request could name another resolver, backdate the decision, reopen a closed exception, or edit a completed resolution | `finance.resolve_exception()` — founder-only, locked, `open`-only, target restricted to `resolved`/`dismissed`, non-blank note, actor and timestamp internal, terminal. Direct `UPDATE` withdrawn from **every** role; biconditional constraints make partial states unreachable; `release_note` separated from `resolution_note` (D-067) |
+
+### B-63 … B-66 — Fourth independent BLOCK: constraint and platform executability (resolved)
 
 Every one of these would have failed at migration time or first insert. Two were verified empirically against the live PostgreSQL 17.6 rather than reasoned about.
 
@@ -193,7 +200,7 @@ Noticed during audit or design, deliberately not folded into any current PR.
 
 ## Decisions carried forward
 
-D-001 … D-065 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**, whose recovery mechanism is in turn **corrected by D-028**. **D-026's system-actor mechanism is corrected by D-032.** **D-028 is refined by D-035**, **D-029 by D-034**, **D-013's founder-predicate clause is superseded by D-037**, **D-043's rules 10, 17 and 18 are corrected by D-048, D-050 and D-045**, **D-047's release mechanism by D-051**, **D-050 by D-052**, **D-045 tightened by D-055**, **D-043's event list by D-056**, **D-051's timestamp mechanism by D-057**, **D-050 fully superseded by D-052 and D-059**, **D-040/D-054 tightened by D-061**, **D-057's backstop corrected by D-062 and preconditions added by D-064**, **D-061's expression corrected by D-063**, and **D-059 completed by D-065**. No decision is open. See [DECISIONS.md](DECISIONS.md).
+D-001 … D-067 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**, whose recovery mechanism is in turn **corrected by D-028**. **D-026's system-actor mechanism is corrected by D-032.** **D-028 is refined by D-035**, **D-029 by D-034**, **D-013's founder-predicate clause is superseded by D-037**, **D-043's rules 10, 17 and 18 are corrected by D-048, D-050 and D-045**, **D-047's release mechanism by D-051**, **D-050 by D-052**, **D-045 tightened by D-055**, **D-043's event list by D-056**, **D-051's timestamp mechanism by D-057**, **D-050 fully superseded by D-052 and D-059**, **D-040/D-054 tightened by D-061**, **D-057's backstop corrected by D-062 and preconditions added by D-064**, **D-061's expression corrected by D-063**, **D-059 completed by D-065**, and **D-063 made structurally enforced by D-066**. No decision is open. See [DECISIONS.md](DECISIONS.md).
 
 ## Working agreement
 

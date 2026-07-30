@@ -662,7 +662,7 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 ---
 
 ## D-063 — The generated `dedup_key` expression enumerates every enum label
-**Date:** 2026-07-29 · **Status:** Approved · **Corrects D-061**
+**Date:** 2026-07-29 · **Status:** Approved · **Corrects D-061** · **Made structurally enforced by D-066**
 
 **Decision.** The generated expression uses an explicit `CASE` mapping each of the twelve `exception_kind` values to a text literal, rather than `kind::text`. Adding an enum value requires adding its `CASE` branch in the same migration. Declaring a wrapper function `IMMUTABLE` over `kind::text` is forbidden.
 
@@ -687,3 +687,28 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 **Decision.** The freeze trigger rejects `UPDATE`s where **`OLD.approved_at IS NOT NULL`**, permitting exactly one `NULL →` internally-computed approval transition. `finance.approve_dry_run()` requires a non-blank `p_note` and stores it in a new `approval_note` column, which joins the frozen set.
 
 **Rationale.** D-059 said the trigger freezes "a row with `approved_at IS NOT NULL`" without saying which tuple. Keyed on `NEW`, the approval `UPDATE` itself would see a non-null value and reject — **approval would be impossible**, the same shape as B-52's unexecutable quarantine release. Separately, `p_note` was a parameter no column stored and no behaviour used, so a founder's stated reason for accepting the evidence was silently discarded; the alternative was to drop the parameter, but the reason is worth keeping precisely because it is the human judgement the whole gate exists to capture.
+
+
+---
+
+## D-066 — The generated `dedup_key` is `NOT NULL`
+**Date:** 2026-07-29 · **Status:** Approved · **Completes D-063**
+
+**Decision.** `reconciliation_exceptions.dedup_key` is declared `text NOT NULL GENERATED ALWAYS AS (…) STORED`.
+
+**Rationale.** D-063 explained that an `exception_kind` value omitted from the `CASE` yields `NULL` through `||`, and relied on acceptance test 108 to catch it. That leaves the invalid state **permitted by the table**: a row with no deduplication identity would insert successfully, silently disabling dedup for that entire kind — the failure D-040 exists to prevent, reachable by omitting one line in a future migration and skipping the suite. A test is defence in depth; the database must reject the state independently.
+
+**Verified** against PostgreSQL 17.6 with a `TEMP` table and one label deliberately unmapped: the `NOT NULL GENERATED ALWAYS … STORED` definition was **accepted**; a mapped value inserted with a canonical key; the **unmapped value was rejected**; and an `INSERT` supplying the column was rejected.
+
+---
+
+## D-067 — Exception resolution is a founder-only function; attribution is internal
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** Direct `UPDATE` on `resolution_status`, `resolved_at`, `resolved_by` and `resolution_note` is withdrawn from **every** role. `finance.resolve_exception(p_exception_id, p_resolution, p_note)` — `SECURITY DEFINER`, fixed `search_path`, founder-gated, `EXECUTE` to `authenticated` — locks the row, requires current status `open`, accepts only `resolved` or `dismissed`, requires a non-blank note, sets `resolved_by = auth.uid()` and `resolved_at = clock_timestamp()` internally, and writes status and note atomically. Repeat resolution raises. Resolution is permitted while actively quarantined.
+
+Table constraints make the intermediate states unreachable independently: `(resolved_at IS NULL) = (resolved_by IS NULL)`, `(resolution_status = 'open') = (resolved_at IS NULL)`, and a non-blank `resolution_note` once closed.
+
+**Rationale.** This was the same attribution defect already fixed for dry-run approval in D-059, still present one table over. A founder-supplied request could name **another user** as the resolver, backdate the decision, reopen a closed exception, or edit a completed resolution — and resolution is a financial judgement about a discrepancy, so a false attribution is exactly as damaging here as on an approval. Making resolution terminal is deliberate: correcting a wrong resolution should be a visible, deliberate act, not an `UPDATE` that leaves no trace it happened.
+
+**Consequence.** `finance.release_quarantine()` now writes a new `release_note` column rather than appending to `resolution_note`, so the two judgements keep separate columns with separate owners. Founder access to `reconciliation_exceptions` is `SELECT` only; every mutation is a function call.

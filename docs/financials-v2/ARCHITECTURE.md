@@ -644,7 +644,7 @@ finance.reconciliation_exceptions
   amount_cents        bigint NULL
   currency            text NULL CHECK (currency IS NULL OR currency = 'usd')
   detail              jsonb NOT NULL default '{}'::jsonb
-  dedup_key           text GENERATED ALWAYS AS (
+  dedup_key           text NOT NULL GENERATED ALWAYS AS (
                         (CASE kind
                            WHEN 'unattributable_payment'::finance.exception_kind
                              THEN 'unattributable_payment'
@@ -686,13 +686,17 @@ finance.reconciliation_exceptions
   quarantine_reason   text NULL
   released_at         timestamptz NULL
   released_by         uuid NULL -> auth.users(id) (RESTRICT)
+  release_note        text NULL
   resolution_status   finance.exception_resolution NOT NULL default 'open'
   resolved_at         timestamptz NULL
   resolved_by         uuid NULL -> auth.users(id) (RESTRICT)
   resolution_note     text NULL
 
+  CHECK ((resolved_at IS NULL) = (resolved_by IS NULL))            -- no partial attribution
+  CHECK ((resolution_status = 'open') = (resolved_at IS NULL))      -- open iff unresolved
   CHECK (resolution_status = 'open'
-         OR (resolved_at IS NOT NULL AND resolved_by IS NOT NULL))
+         OR (resolution_note IS NOT NULL
+             AND length(btrim(resolution_note)) > 0))               -- resolution carries a reason
   CHECK (last_detected_at >= first_detected_at)
   CHECK ((quarantined_at IS NULL) = (quarantine_reason IS NULL))
   CHECK ((released_at IS NULL) = (released_by IS NULL))
@@ -741,7 +745,20 @@ The `CASE` maps each of the twelve closed `exception_kind` values to a text **li
 
 Wrapping `kind::text` in a function falsely declared `IMMUTABLE` would satisfy the parser and is **forbidden**: it lies to the planner, and a later `ALTER TYPE … RENAME VALUE` would silently corrupt stored keys that no longer match what the expression now produces — every affected exception would lose its identity and re-insert as new.
 
-**Adding a value to `exception_kind` requires adding its `CASE` branch in the same migration.** An unmapped value makes the `CASE` yield `NULL`, which propagates through `||` and produces a `NULL` key, silently disabling deduplication for that kind. Acceptance test 108 asserts every enum value maps to a non-null canonical key, so a future omission fails the suite rather than shipping.
+**Adding a value to `exception_kind` requires adding its `CASE` branch in the same migration** — and the column is **`NOT NULL`**, so an omission is rejected by the database rather than merely caught in review.
+
+An unmapped value makes the `CASE` yield `NULL`, which propagates through `||` and produces a `NULL` key. Without `NOT NULL` that row would insert successfully with no deduplication identity, silently disabling dedup for that entire kind — the exact failure D-040 exists to prevent, reachable by omitting one line in a future migration.
+
+**The test suite is defence in depth, not the enforcement.** Acceptance test 108 asserts every enum value maps to a non-null canonical key, but the database rejects the invalid state independently of whether anyone runs the suite.
+
+Verified against PostgreSQL 17.6 with a `TEMP` table and one label deliberately left unmapped:
+
+| Probe | Result |
+|---|---|
+| `text NOT NULL GENERATED ALWAYS AS (…) STORED` accepted | **Yes** |
+| Row with a **mapped** value | Inserted; key canonical (`paid:ch_1`) |
+| Row with the **unmapped** value | **Rejected** — zero rows present |
+| `INSERT` supplying `dedup_key` | **Rejected** |
 
 | Situation | Behaviour |
 |---|---|
@@ -755,6 +772,28 @@ Wrapping `kind::text` in a function falsely declared `IMMUTABLE` would satisfy t
 **`detected_at` is deliberately gone.** It was ambiguous — first detection or latest? — and the two questions have different answers and different uses. `first_detected_at` says how long this has been wrong; `last_detected_at` says whether it still is.
 
 **Bounded growth follows.** Rows scale with distinct unresolved mismatches, not with runs × mismatches. A permanently broken record accrues `occurrence_count`, not rows.
+
+### Resolution
+
+Resolution is a founder judgement about a financial discrepancy, so it carries the same attribution requirements as dry-run approval — and previously had none of them. Direct `UPDATE` on `resolution_status`, `resolved_at`, `resolved_by` and `resolution_note` is **withdrawn from every role**.
+
+**`finance.resolve_exception(p_exception_id uuid, p_resolution finance.exception_resolution, p_note text)`** is the only path. `SECURITY DEFINER`, fixed `search_path`, `EXECUTE` to `authenticated` only:
+
+1. Raises unless `public.is_founder()`.
+2. Locks the row `FOR UPDATE`.
+3. Requires the current `resolution_status` to be **`open`**.
+4. Accepts only **`resolved`** or **`dismissed`** as a target — `open` is rejected, so the function cannot reopen anything.
+5. Requires a non-blank `p_note`.
+6. Sets `resolved_by = auth.uid()` and `resolved_at = clock_timestamp()` **internally**; neither is a parameter.
+7. Sets status and note **atomically**, so no intermediate state violates the resolution `CHECK`s.
+
+Consequences:
+
+- **Attribution cannot be spoofed.** A founder cannot record another user as the resolver, nor backdate the decision, because neither value is supplied.
+- **Resolution is terminal.** A second call raises, so `resolved` cannot become `dismissed`, a completed resolution cannot be edited, and an old exception cannot be quietly reopened. Correcting a wrong resolution is a deliberate act requiring a new decision entry, not an `UPDATE`.
+- **Resolution wins over quarantine.** An actively quarantined row may be resolved; the function does not check quarantine state. Resolving removes the row from `open`, so the partial unique index stops covering it and a genuine recurrence later starts a fresh row with a zero streak — exactly as the quarantine lifecycle describes.
+
+The table constraints make the intermediate states unreachable independently of the function: `(resolved_at IS NULL) = (resolved_by IS NULL)` forbids partial attribution, `(resolution_status = 'open') = (resolved_at IS NULL)` forbids an open row carrying resolution data or a closed row missing it, and a non-blank `resolution_note` is required once closed.
 
 ### Quarantine
 
@@ -1310,7 +1349,10 @@ Returns `members.id` for the row where `members.profile_id = auth.uid()`; `NULL`
 **Not created by V2 — reused.** See §2.
 
 **`finance.release_quarantine(p_exception_id uuid, p_note text) → void`**
-`VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Raises unless `public.is_founder()`. Locks the row `FOR UPDATE`, then sets `released_at = GREATEST(clock_timestamp(), quarantined_at + interval '1 microsecond')`, `released_by = auth.uid()`, resets `consecutive_failure_runs` to 0, and appends `p_note` to `resolution_note` — in one statement, so no intermediate state violates a `CHECK`. Raises if the row is not actively quarantined. `EXECUTE` to `authenticated` only.
+`VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Raises unless `public.is_founder()`. Locks the row `FOR UPDATE`, then sets `released_at = GREATEST(clock_timestamp(), quarantined_at + interval '1 microsecond')`, `released_by = auth.uid()`, resets `consecutive_failure_runs` to 0, and writes `p_note` to **`release_note`** — in one statement, so no intermediate state violates a `CHECK`. It writes `release_note` rather than `resolution_note` because those are different judgements by different rules: `resolution_note` belongs exclusively to `finance.resolve_exception()`. Raises if the row is not actively quarantined. `EXECUTE` to `authenticated` only.
+
+**`finance.resolve_exception(p_exception_id uuid, p_resolution finance.exception_resolution, p_note text) → void`**
+`VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Raises unless `public.is_founder()`. Locks the row, requires current status `open`, accepts only `resolved` or `dismissed`, requires a non-blank `p_note`, and sets `resolved_by = auth.uid()` and `resolved_at = clock_timestamp()` internally — neither is a parameter. Raises on repeat resolution. Permitted while actively quarantined. `EXECUTE` to `authenticated` only.
 
 **`finance.quarantine_object(p_exception_id uuid) → void`**
 `VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Locks the row, validates all five preconditions of §10, derives `quarantine_reason` from the row's own `detail.error_class`, then sets `quarantined_at = GREATEST(clock_timestamp(), COALESCE(released_at, '-infinity') + interval '1 microsecond')`. Takes **no reason parameter**. `EXECUTE` to `service_role` only — this is the job's transition, not a founder's.
@@ -1334,7 +1376,7 @@ Returns `members.id` for the row where `members.profile_id = auth.uid()`; `NULL`
 | `checkout_sessions` | `SELECT` via parent agreement owned by the member | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (status, stripe_session_id, completed_at)` |
 | `payment_links` | none — the raw token is the member's only handle; the row is never read by them | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (status, claimed_at, consumed_at, consumed_by_session_id, attempt_count)` |
 | `stripe_events` | none | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (processing_status, claimed_at, attempt_count, processed_at, processing_error, payload)` |
-| `reconciliation_exceptions` | none | `SELECT`, `UPDATE (resolution_status, resolved_at, resolved_by, resolution_note)` where `public.is_founder()`. **Release goes through `finance.release_quarantine()`** | `SELECT`, `INSERT`, `UPDATE (last_detected_at, occurrence_count, detail, last_run_id, consecutive_failure_runs)`. **Quarantine goes through `finance.quarantine_object()`** — no role holds a direct `UPDATE` on `quarantined_at`, `quarantine_reason`, `released_at` or `released_by` |
+| `reconciliation_exceptions` | none | `SELECT` where `public.is_founder()`. **No direct `UPDATE` at all** — resolution goes through `finance.resolve_exception()` and release through `finance.release_quarantine()` | `SELECT`, `INSERT`, `UPDATE (last_detected_at, occurrence_count, detail, last_run_id, consecutive_failure_runs)`. **Quarantine goes through `finance.quarantine_object()`** |
 | `reconciliation_runs` | none | `SELECT` where `public.is_founder()`. **Approval is not a direct `UPDATE`** — it goes through `finance.approve_dry_run()`, so the actor and timestamp cannot be supplied | `SELECT`, `INSERT`, `UPDATE (status, cursor, window_exhausted, heartbeat_at, finished_at, error, objects_scanned, objects_matched, exceptions_created, exceptions_reopened, api_calls, retries, would_create_count, would_reopen_count, prospective_by_kind, report_samples, report_version, report_completed_at)` — **all blocked once `OLD.approved_at` is set**, by the freeze trigger |
 
 Notes:
@@ -1343,8 +1385,8 @@ Notes:
 - **Lifecycle events are founder-only** — operational state is internal, and exposing it invites members to read intent that is not addressed to them.
 - **Founders have no direct `INSERT` on the fact tables in PR 1.** Writes arrive through approved functions; the founder amendment and external-payment functions ship in PR 5. PR 1's only approved write function is `create_agreement()`, and acceptance test 12 is scoped to it.
 - `service_role` `UPDATE` grants are **column-scoped** to the lists above, not table-wide. An earlier revision granted a column named `counters`, which does not exist — the six counter columns are enumerated individually above.
-- **No role holds a direct `UPDATE`** on the approval columns or the four quarantine columns. Every transition runs through a function that computes actor and timestamp internally, so attribution cannot be spoofed and ordering cannot be violated.
-- **Only a founder may approve** (`finance.approve_dry_run`) or **release** (`finance.release_quarantine`); only `service_role` may **quarantine** (`finance.quarantine_object`). The job cannot authorise itself or clear its own quarantine.
+- **No role holds a direct `UPDATE`** on the approval columns, the four quarantine columns, or the four resolution columns (`resolution_status`, `resolved_at`, `resolved_by`, `resolution_note`). Every transition runs through a function that computes actor and timestamp internally, so attribution cannot be spoofed and ordering cannot be violated.
+- **Only a founder may approve** (`finance.approve_dry_run`), **resolve** (`finance.resolve_exception`) or **release** (`finance.release_quarantine`); only `service_role` may **quarantine** (`finance.quarantine_object`). The job cannot authorise itself or clear its own quarantine.
 - **Once `approved_at` is set, the reviewed evidence is frozen** by trigger, regardless of role.
 - `service_role` writes the dry-run report columns (it produces the report) but **cannot** write `approved_by`/`approved_at`, so producing a report never approves it.
 - The column-scoped grant test asserts **both directions**: every update the job legitimately performs succeeds, and every column outside its list is rejected. A grant that is merely restrictive is not proven correct.

@@ -49,7 +49,7 @@ Two further distinctions are first-class, not metadata conventions:
 - Correct a mistaken entry by issuing an attributed reversal, then recording the correct entry. Nothing is ever edited or deleted.
 - Issue, email, and revoke single-use payment links.
 - View per-member and per-journey financial positions, all derived from one definition.
-- Review and resolve reconciliation exceptions.
+- Review and resolve reconciliation exceptions. Resolution and quarantine release happen through approved functions that record the acting founder and the time internally, so attribution cannot be supplied or backdated.
 
 ### Member
 
