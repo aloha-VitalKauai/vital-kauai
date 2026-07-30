@@ -493,9 +493,9 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 ---
 
 ## D-045 — `partial` is a distinct run status; only `completed` advances the watermark
-**Date:** 2026-07-29 · **Status:** Approved · **Corrects rule 18 of D-043**
+**Date:** 2026-07-29 · **Status:** Approved · **Corrects rule 18 of D-043** · **Constraint form tightened by D-055**
 
-**Decision.** `finance.run_status` gains `partial`. A run stopping at a work ceiling ends `partial` with `window_exhausted = false`; its successor inherits the identical window and cursor. `completed` requires every object type to have exhausted the whole window, enforced by `CHECK (status <> 'completed' OR window_exhausted)`. Only a `completed` run advances the next window's start.
+**Decision.** `finance.run_status` gains `partial`. A run stopping at a work ceiling ends `partial` with `window_exhausted = false`; its successor inherits the identical window and cursor. `completed` requires every object type to have exhausted the whole window, enforced by ~~`CHECK (status <> 'completed' OR window_exhausted)`~~ **the biconditional `CHECK ((status = 'completed') = window_exhausted)` per D-055**. Only a `completed` run advances the next window's start.
 
 **Rationale.** Rule 18 marked a bounded run `completed` while rule 1 derived the next window from the last `completed` run's `window_end`. Together they **skip every object the bounded run never reached** — permanently, with no gap reported anywhere, because both rules behaved exactly as written. Money would go unreconciled and nothing would say so.
 
@@ -511,7 +511,7 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 ---
 
 ## D-047 — Quarantine state lives on the exception row
-**Date:** 2026-07-29 · **Status:** Approved
+**Date:** 2026-07-29 · **Status:** **Mechanism corrected by D-051** — the location and streak rules stand; "release clears `quarantined_at`" does not.
 
 **Decision.** `reconciliation_exceptions` gains `consecutive_failure_runs`, `quarantined_at`, `quarantine_reason`, `released_at`, `released_by`. The streak increments only when `last_run_id` differs from the current run, so retries within one run count once; any run in which the object does not fail terminally resets it. Reaching 3 sets `quarantined_at`. Quarantined objects are skipped by later runs but remain `open` and visible. Only a founder may release, which clears quarantine and resets the streak.
 
@@ -543,3 +543,60 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 **Decision.** A founder approves a dry run by setting `approved_by`/`approved_at` on that run row. Every writing run cites one via `authorized_by_run_id`, enforced by `CHECK (dry_run OR authorized_by_run_id IS NOT NULL)` and a trigger validating that the cited run is a dry run, is approved, shares `livemode`, and has a `window_start` no later than the writing run's. The first writing run per mode is capped at a 24-hour window. Only a founder holds the grant on the approval columns.
 
 **Rationale.** Rule 17 said a founder reviews the dry run "before a writing run is permitted" while nothing recorded the review and nothing prevented starting `dry_run = false` immediately. An approval gate that exists only in prose is not a gate. Reaching further back than the reviewed window invalidates the approval, because the founder approved a scope, not a job.
+
+
+---
+
+## D-051 — Quarantine is derived from retained timestamps, released by a founder-only function
+**Date:** 2026-07-29 · **Status:** Approved · **Corrects the release mechanism of D-047**
+
+**Decision.** `quarantined_at` and `quarantine_reason` are never cleared. Active quarantine is derived: `quarantined_at IS NOT NULL AND (released_at IS NULL OR released_at < quarantined_at)`. Release happens through `finance.release_quarantine(p_exception_id, p_note)` — `SECURITY DEFINER`, founder-gated — which sets `released_at`/`released_by` and resets `consecutive_failure_runs` in one statement. A later re-quarantine writes a newer `quarantined_at` and becomes active again. `service_role` holds neither the columns nor `EXECUTE`.
+
+**Rationale.** D-047 said release "clears `quarantined_at`" while a `CHECK` required `released_at IS NULL OR quarantined_at IS NOT NULL`. Clearing the timestamp with a release recorded violates that constraint, so **release was literally impossible**. The grants compounded it: a founder could write only `released_at`/`released_by` and so could not have cleared the timestamp or reset the streak even had the constraint allowed it, while `service_role` is deliberately forbidden from releasing at all. Deriving the state from two retained timestamps removes the contradiction, survives repeated cycles without ambiguity, and keeps the reset atomic.
+
+**Honest limit.** These columns record the **latest** quarantine and the **latest** release, not every cycle. A full cycle history would need its own append-only table and a decision entry; this design does not claim to provide one.
+
+---
+
+## D-052 — Launch authorization, not window coverage
+**Date:** 2026-07-29 · **Status:** Approved · **Corrects D-050**
+
+**Decision.** An authorizing dry run must be `dry_run = true`, `status = 'completed'`, `window_exhausted = true`, `finished_at` non-null, `error IS NULL`, approved, and carry a completed report. Approval is itself rejected unless the run is completed, error-free and reported. An authorization grants three things: **mode**, **earliest horizon** (`window_start` no earlier than the approved run's), and **implementation version** (equality required). The first writing run per `(livemode, implementation_version)` must be **contained within the approved dry run's window** and span at most 24 hours; only after that canary reaches `completed` may later runs extend beyond the rehearsed `window_end`.
+
+**Rationale.** D-050's trigger validated neither completion nor absence of error, so a **running, partial or failed** dry run could authorize money-writing reconciliation — a rehearsal that never finished, licensing the real thing. Separately, calling it "covers the window" while constraining only `window_start` was inaccurate: the writing run could end arbitrarily later. Containment alone is not viable either, since reconciliation advances forward indefinitely and would demand re-approval every run. Naming it launch authorization and bounding it by horizon plus version is what the model actually is, with containment applied exactly where it is meaningful — the first real write.
+
+---
+
+## D-053 — Dry runs produce a bounded, sanitized, reviewable report
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** `reconciliation_runs` gains `would_create_count`, `would_reopen_count`, `prospective_by_kind`, `report_samples`, `report_version`, `report_completed_at`, populated only by dry runs. Samples are deterministic, capped at 20 per kind and 200 total, ordered by `dedup_key`, and sanitized to the same rule as `stripe_events.payload`. `exceptions_created` and `exceptions_reopened` keep their D-049 meaning — **real writes only** — and are constrained to `0` in a dry run. Approval is impossible without `report_completed_at`.
+
+**Rationale.** Rule 17 asked a founder to review a dry run before approving, while rule 17 also forbids the dry run from writing exceptions and D-049 defines those counters as actual inserts. The founder was therefore being asked to approve on the evidence of two zeros, with 4,000 prospective findings recorded nowhere. Overloading the real counters with "would write" semantics was the tempting shortcut and would have made every historical run's numbers ambiguous about whether they describe writes or intentions.
+
+---
+
+## D-054 — Object-terminal failures have their own exception kind
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** Adds `provider_object_processing_failed`, requiring `provider_object_id` and an `object_type` in sanitized `detail`, with `dedup_key` built from kind plus provider object id. It increments `consecutive_failure_runs` once per run via the standard `last_run_id` guard, and a later successful examination finds the open row by `dedup_key` and resets the streak without resolving it. `livemode` isolates as usual.
+
+**Rationale.** The error-class table drove quarantine off object-terminal failures while the closed enum had no value to represent one. The only available substitute, `reconciliation_run_failed`, is explicitly run-scoped; reusing it would have made a broken run indistinguishable from a bad object and let a single run failure inflate an object's quarantine streak.
+
+---
+
+## D-055 — `window_exhausted` is a biconditional
+**Date:** 2026-07-29 · **Status:** Approved · **Tightens D-045**
+
+**Decision.** `CHECK ((status = 'completed') = window_exhausted)`. Only `completed` may carry `true`; `completed` may not carry `false`. Every status is tested in both flag states.
+
+**Rationale.** `status <> 'completed' OR window_exhausted` proves only *completed ⇒ exhausted*. It permitted `partial`, `failed`, `abandoned` and `running` rows flagged exhausted, contradicting the state table and making the flag useless as evidence — a `true` value proved nothing on its own, which defeats the purpose of having recorded it.
+
+---
+
+## D-056 — The at-most-once event list is restricted to four object-terminal states
+**Date:** 2026-07-29 · **Status:** Approved · **Corrects D-043's event list**
+
+**Decision.** The partial unique index on `(event_type, object_id, livemode)` covers exactly `checkout.session.completed`, `checkout.session.expired`, `payment_intent.succeeded`, `payment_intent.canceled`. Removed: `payment_intent.payment_failed`, `checkout.session.async_payment_failed`, `checkout.session.async_payment_succeeded`. Adding any type requires a decision entry citing the Stripe semantics that make it at-most-once **per object**, not per attempt.
+
+**Rationale.** `payment_intent.payment_failed` is emitted **per failed attempt**. A failed PaymentIntent returns to `requires_payment_method` and can be retried, producing a second legitimate event with a new `event.id` but the same object id, type and `livemode` — which the index would have **silently discarded**. The two async Checkout types were removed because at-most-once is not provable from the object's semantics, and the index is asymmetric in cost: `event_id` already deduplicates redelivery and L8/L8b prevent ledger double-counting, so under-including costs nothing while over-including drops a real event. Uncertainty is a reason to exclude.

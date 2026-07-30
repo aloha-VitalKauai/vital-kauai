@@ -549,15 +549,26 @@ An `e.g.` cannot become an index predicate, so the list is closed and exhaustive
 
 ```
 'checkout.session.completed'
-'checkout.session.async_payment_succeeded'
-'checkout.session.async_payment_failed'
 'checkout.session.expired'
 'payment_intent.succeeded'
-'payment_intent.payment_failed'
 'payment_intent.canceled'
 ```
 
-Each occurs at most once for a given object. **`charge.refunded` is deliberately excluded** — it fires once per refund against the same charge, so a unique constraint would reject the second genuine partial refund. Refund double-counting is prevented at the ledger by L8 on the Refund object instead. Adding a type to this list requires a `DECISIONS.md` entry, because a wrong entry silently drops real events.
+Each of these four is a **terminal state of the object itself**, which the object cannot re-enter: a Checkout Session completes or expires once; a PaymentIntent succeeds or is cancelled once.
+
+**Three types were removed after re-audit**, because "terminal-sounding" is not the same as at-most-once:
+
+| Removed | Why |
+|---|---|
+| `payment_intent.payment_failed` | Stripe emits this **per failed payment attempt**. A failed PaymentIntent returns to `requires_payment_method` and can be retried, producing another legitimate event with a **new `event.id`** but the **same object id, type and `livemode`**. The index would have discarded the retry's failure event. |
+| `checkout.session.async_payment_failed` | Not provably at-most-once from the object's semantics. Excluded on that basis alone. |
+| `checkout.session.async_payment_succeeded` | Same — removed for symmetry and for the same reason. |
+
+**The asymmetry of this index justifies the caution.** It is defence-in-depth only: `stripe_events.event_id` is the primary key and already deduplicates redelivery of the *same* event, and L8/L8b prevent double-counting at the ledger regardless. So under-including a type costs nothing, while over-including one **silently discards a real event**. Uncertainty is therefore a reason to exclude, not to include.
+
+**`charge.refunded` remains excluded** — it fires once per refund against the same charge, so a constraint would reject the second genuine partial refund. Refund double-counting is prevented at the ledger by L8 on the Refund object.
+
+Adding a type to this list requires a `DECISIONS.md` entry citing the Stripe semantics that make it at-most-once **per object**, not per attempt.
 
 ### Payment processing — what creates a `stripe_payment`
 
@@ -660,7 +671,7 @@ CREATE UNIQUE INDEX ON finance.reconciliation_exceptions (dedup_key, livemode)
   WHERE resolution_status = 'open';
 ```
 
-`finance.exception_kind` values: `unattributable_payment`, `provider_without_ledger`, `ledger_without_provider`, `amount_mismatch`, `currency_violation`, `missing_provider_object`, `orphan_refund`, `refund_status_regression`, `stranded_checkout_attempt`, `stale_session_expiry_failed`, **`reconciliation_run_failed`**.
+`finance.exception_kind` values: `unattributable_payment`, `provider_without_ledger`, `ledger_without_provider`, `amount_mismatch`, `currency_violation`, `missing_provider_object`, `orphan_refund`, `refund_status_regression`, `stranded_checkout_attempt`, `stale_session_expiry_failed`, **`reconciliation_run_failed`**, **`provider_object_processing_failed`**.
 
 ### Exception identity and lifecycle
 
@@ -690,17 +701,30 @@ kind || ':' || coalesce(provider_object_id, '')
 
 ### Quarantine
 
-Rule 11 says an object failing terminally in three consecutive runs is quarantined. That was unimplementable: nothing counted failures, nothing held quarantine state, and nothing connected a failure in run N to the same object in run N+1. The state lives **on the exception row**, because `dedup_key` already is the cross-run identity of the object-and-problem pair — no second identity is needed or wanted.
+Rule 11 says an object failing terminally in three consecutive runs is quarantined. The state lives **on the exception row**, because `dedup_key` already is the cross-run identity of the object-and-problem pair.
+
+**Quarantine history is never erased.** An earlier draft said release "clears `quarantined_at`" while a `CHECK` required `released_at IS NULL OR quarantined_at IS NOT NULL` — clearing the timestamp with a release recorded would have violated that constraint, so release was literally impossible. The grants compounded it: a founder could write only `released_at`/`released_by`, and so could not have cleared `quarantined_at` or reset the streak even if the constraint had allowed it, while `service_role` is deliberately forbidden from releasing at all.
+
+Both timestamps are therefore **retained**, and quarantine is a **derived** state:
+
+```sql
+-- actively quarantined
+quarantined_at IS NOT NULL
+  AND (released_at IS NULL OR released_at < quarantined_at)
+```
 
 | Question | Answer |
 |---|---|
-| **What counts a streak?** | `consecutive_failure_runs`. On a terminal failure the upsert increments it **only when `last_run_id` differs from the current run**, so repeated attempts *within* one run count once. |
-| **What breaks a streak?** | Any run in which the object is examined and does **not** fail terminally — matched, ingested, or found clean. The counter resets to 0 and `quarantined_at` is cleared. |
-| **When does quarantine engage?** | On the increment that reaches **3**: `quarantined_at = now()` and `quarantine_reason` records the terminal error class. |
-| **What does it change?** | Quarantined objects are **skipped** by subsequent runs — not fetched, not retried, not counted as failures. The exception stays `open` and visible, flagged for manual review. |
-| **Who releases it?** | A founder only, setting `released_at` and `released_by`. Release clears `quarantined_at` and resets `consecutive_failure_runs` to 0, so the object re-enters normal processing on the next run. `service_role` cannot release. |
-| **What if it recurs after release?** | Ordinary processing resumes. Three further consecutive terminal failures quarantine it again, with a fresh `quarantined_at`. The prior `released_at`/`released_by` remain as the record that a human once judged it. |
-| **What if it is resolved while quarantined?** | Resolution wins. The row leaves `open`, so the partial unique index no longer covers it, and a genuine recurrence later creates a fresh row starting from a zero streak. |
+| **What counts a streak?** | `consecutive_failure_runs`, incremented **only when `last_run_id` differs from the current run**, so repeated attempts within one run count once. |
+| **What breaks a streak?** | Any run in which the object is examined and does not fail terminally. The counter resets to 0. |
+| **When does quarantine engage?** | On the increment reaching **3**: `quarantined_at = now()`, `quarantine_reason` records the terminal error class. |
+| **What does it change?** | Actively quarantined objects are **skipped** — not fetched, not retried, not counted as failures. The exception stays `open` and visible. |
+| **Who releases it?** | A founder, through `finance.release_quarantine(p_exception_id uuid, p_note text)` — a `SECURITY DEFINER` function that raises unless `public.is_founder()`, sets `released_at = now()` and `released_by = auth.uid()`, resets `consecutive_failure_runs` to 0, and appends the note to `resolution_note`, **atomically**. `service_role` holds no `EXECUTE` on it and no `UPDATE` on those columns. |
+| **What happens after release?** | `released_at > quarantined_at`, so the object is no longer actively quarantined and re-enters normal processing on the next run. |
+| **What if it fails again?** | Three further consecutive terminal failures set a **newer** `quarantined_at`, which is again greater than `released_at` — so the derived predicate makes it active once more. No column is cleared and no state is ambiguous. |
+| **What if it is resolved while quarantined?** | Resolution wins; the row leaves `open` and the partial unique index no longer covers it, so a genuine recurrence later starts a fresh row with a zero streak. |
+
+**Honest limits of the history.** These columns record the **latest** quarantine and the **latest** release, not a complete audit trail of every cycle. That is deliberate — the ledger is the append-only record, and the exceptions queue is an operational work list. Where a full cycle history is later required, it belongs in its own append-only table and needs a decision entry; this document does not claim to provide one.
 
 Quarantine is deliberately **not** silent: it stops retrying, it does not stop reporting.
 
@@ -714,42 +738,116 @@ The scenario this section answers: the job runs for the first time against real 
 
 ```
 finance.reconciliation_runs
-  id                    uuid PK default gen_random_uuid()
-  livemode              boolean NOT NULL
-  window_start          timestamptz NOT NULL
-  window_end            timestamptz NOT NULL
-  window_exhausted      boolean NOT NULL default false
-  cursor                jsonb NOT NULL default '{}'::jsonb  -- per object type: last id + page token
-  status                finance.run_status NOT NULL default 'running'
-  resumed_from_run_id   uuid NULL -> finance.reconciliation_runs(id) (RESTRICT)
-  started_at            timestamptz NOT NULL default now()
-  heartbeat_at          timestamptz NOT NULL default now()
-  finished_at           timestamptz NULL
-  objects_scanned       integer NOT NULL default 0
-  objects_matched       integer NOT NULL default 0
-  exceptions_created    integer NOT NULL default 0
-  exceptions_reopened   integer NOT NULL default 0
-  api_calls             integer NOT NULL default 0
-  retries               integer NOT NULL default 0
-  error                 text NULL
-  dry_run               boolean NOT NULL default false
-  approved_by           uuid NULL -> auth.users(id) (RESTRICT)
-  approved_at           timestamptz NULL
-  authorized_by_run_id  uuid NULL -> finance.reconciliation_runs(id) (RESTRICT)
+  id                        uuid PK default gen_random_uuid()
+  livemode                  boolean NOT NULL
+  implementation_version    text NOT NULL
+  window_start              timestamptz NOT NULL
+  window_end                timestamptz NOT NULL
+  window_exhausted          boolean NOT NULL default false
+  cursor                    jsonb NOT NULL default '{}'::jsonb
+  status                    finance.run_status NOT NULL default 'running'
+  resumed_from_run_id       uuid NULL -> finance.reconciliation_runs(id) (RESTRICT)
+  started_at                timestamptz NOT NULL default now()
+  heartbeat_at              timestamptz NOT NULL default now()
+  finished_at               timestamptz NULL
+  objects_scanned           integer NOT NULL default 0
+  objects_matched           integer NOT NULL default 0
+  exceptions_created        integer NOT NULL default 0   -- real inserts only
+  exceptions_reopened       integer NOT NULL default 0   -- real upserts only
+  api_calls                 integer NOT NULL default 0
+  retries                   integer NOT NULL default 0
+  error                     text NULL
+  dry_run                   boolean NOT NULL default false
+  -- dry-run report (B-54)
+  would_create_count        integer NULL CHECK (would_create_count >= 0)
+  would_reopen_count        integer NULL CHECK (would_reopen_count >= 0)
+  prospective_by_kind       jsonb NULL
+  report_samples            jsonb NULL
+  report_version            text NULL
+  report_completed_at       timestamptz NULL
+  -- approval (B-53)
+  approved_by               uuid NULL -> auth.users(id) (RESTRICT)
+  approved_at               timestamptz NULL
+  authorized_by_run_id      uuid NULL -> finance.reconciliation_runs(id) (RESTRICT)
 
   CHECK (window_end > window_start)
-  CHECK ((status = 'running') = (finished_at IS NULL))     -- finished_at consistency
-  CHECK (status <> 'completed' OR window_exhausted)        -- completed means exhausted
-  CHECK (resumed_from_run_id IS DISTINCT FROM id)          -- no self lineage
+  CHECK ((status = 'running') = (finished_at IS NULL))
+  CHECK ((status = 'completed') = window_exhausted)          -- biconditional (B-56)
+  CHECK (resumed_from_run_id IS DISTINCT FROM id)
   CHECK (authorized_by_run_id IS DISTINCT FROM id)
   CHECK ((approved_by IS NULL) = (approved_at IS NULL))
-  CHECK (dry_run OR authorized_by_run_id IS NOT NULL)      -- writing runs must cite authorization
+  CHECK (dry_run OR authorized_by_run_id IS NOT NULL)
   CHECK (NOT dry_run OR authorized_by_run_id IS NULL)
+  CHECK (NOT dry_run OR (exceptions_created = 0 AND exceptions_reopened = 0))
+  CHECK (dry_run OR (would_create_count IS NULL AND would_reopen_count IS NULL
+                     AND prospective_by_kind IS NULL AND report_samples IS NULL
+                     AND report_version IS NULL AND report_completed_at IS NULL))
+  CHECK (report_completed_at IS NULL
+         OR (would_create_count IS NOT NULL AND would_reopen_count IS NOT NULL
+             AND prospective_by_kind IS NOT NULL AND report_version IS NOT NULL))
+  CHECK (approved_at IS NULL OR report_completed_at IS NOT NULL)   -- no approval without a report
+```
 
+```sql
 CREATE UNIQUE INDEX ON finance.reconciliation_runs (livemode) WHERE status = 'running';
+CREATE UNIQUE INDEX ON finance.reconciliation_runs (resumed_from_run_id)
+  WHERE resumed_from_run_id IS NOT NULL;
 ```
 
 `finance.run_status` enum: `running`, `partial`, `completed`, `failed`, `abandoned`.
+
+### `window_exhausted` is a biconditional
+
+The earlier constraint was `status <> 'completed' OR window_exhausted`, which proves *completed ⇒ exhausted* and nothing else. It still permitted `partial`, `failed`, `abandoned` and even `running` rows carrying `window_exhausted = true` — contradicting the state table and making the flag unusable as evidence, since a `true` value proved nothing on its own.
+
+The constraint is now `CHECK ((status = 'completed') = window_exhausted)`: **only `completed` may carry `true`, and `completed` may not carry `false`.** Every status is tested in both flag states.
+
+### The dry-run report
+
+Rule 17 said a founder reviews the dry run before approving, and D-049 defines `exceptions_created`/`exceptions_reopened` as **real writes**. Both hold — which means those counters are necessarily `0` in a dry run, enforced by `CHECK`. A founder was therefore being asked to approve on the basis of two zeros.
+
+The report columns carry what is actually reviewable, and are populated **only** by dry runs:
+
+| Column | Contents |
+|---|---|
+| `would_create_count` | Prospective inserts had this been a writing run |
+| `would_reopen_count` | Prospective upserts onto already-open exceptions |
+| `prospective_by_kind` | Counts keyed by `exception_kind`, so a founder sees *what* is wrong, not only how much |
+| `report_samples` | A **bounded, deterministic** sample per kind — capped at 20 per kind and 200 total, ordered by `dedup_key` so two dry runs over identical data produce identical samples. Contains `dedup_key`, provider object id, amount, currency and error class. **No cardholder name, address, email or phone** — the same sanitization rule as `stripe_events.payload` |
+| `report_version` | Schema version of the report structure, so a stale-format report is detectable rather than silently misread |
+| `report_completed_at` | Set when the report is complete; **approval is impossible without it**, enforced by `CHECK` |
+
+"Would create" and "did create" are kept in separate columns deliberately. Overloading the real counters with prospective semantics would make every historical run's numbers ambiguous about whether they describe writes or intentions.
+
+### Launch authorization — the precise model (B-53)
+
+The earlier trigger validated only `dry_run = true`, an approval, matching `livemode`, and `window_start` not earlier. It would therefore accept authorization from a **running, partial, failed or abandoned** dry run — a job that never finished could authorize money-writing reconciliation. And describing it as the approved run "covering the window" was inaccurate, because nothing constrained `window_end`.
+
+**This is launch authorization, not window coverage.** Naming it accurately matters: reconciliation advances forward indefinitely, so a containment model would demand re-approval on every run and would be abandoned in practice. What a founder approves is a *launch*, scoped to three things.
+
+An authorizing dry run must satisfy **all** of:
+
+| Requirement | Why |
+|---|---|
+| `dry_run = true` | Only a rehearsal may authorize |
+| `status = 'completed'` | A partial or failed rehearsal proves nothing |
+| `window_exhausted = true` | Implied by the biconditional, asserted explicitly |
+| `finished_at IS NOT NULL` | It must have ended |
+| `error IS NULL` | A run that errored is not evidence |
+| `approved_by`, `approved_at` non-null | A human said yes |
+| `report_completed_at IS NOT NULL` | They had something to say yes *to* |
+
+**Approval itself is rejected** unless the run is `completed`, `error IS NULL`, and its report is finished. A `running`, `partial`, `failed` or `abandoned` dry run cannot be approved at all.
+
+An authorization grants exactly three things:
+
+1. **A mode** — the writing run's `livemode` must match.
+2. **An earliest horizon** — the writing run's `window_start` may be no earlier than the approved run's `window_start`. Reaching further back than what was rehearsed is not authorized.
+3. **An implementation version** — the writing run's `implementation_version` must equal the approved run's. **Material code change invalidates approval**, because the rehearsal exercised different behaviour.
+
+**The canary is contained.** The first writing run for a `(livemode, implementation_version)` pair — one with no prior `completed` writing run — must be **fully contained within the approved dry run's window** *and* span at most 24 hours. Only after that canary reaches `completed` may later writing runs extend beyond the rehearsed `window_end`.
+
+So containment applies exactly where it is meaningful — the first real write — and the horizon plus version bound everything after.
 
 ### The run state machine
 
@@ -765,7 +863,7 @@ Five statuses, and the distinction between two of them is load-bearing.
 
 **`partial` exists because "completed but unfinished" would silently skip money.** A run that stops at the object, API-call or time ceiling has not finished its window. Marking it `completed` and then deriving the next window from `previous completed run's window_end` — as rule 1 does — would advance past everything the bounded run never reached. Those Stripe objects would never be examined by any run, and nothing would report a gap.
 
-So: **`completed` means every object type exhausted the entire window**, enforced by `CHECK (status <> 'completed' OR window_exhausted)`. Only a `completed` run advances the watermark. A `partial` run's successor inherits **the same `window_start` and `window_end`** and resumes from its `cursor`.
+So: **`completed` means every object type exhausted the entire window**, enforced by the biconditional `CHECK ((status = 'completed') = window_exhausted)`. Only a `completed` run advances the watermark. A `partial` run's successor inherits **the same `window_start` and `window_end`** and resumes from its `cursor`.
 
 ### Resume lineage
 
@@ -826,6 +924,23 @@ Treating every non-429 4xx as an object-level problem was wrong. A `401` is not 
 | **Ambiguous provider state** | Contradictory responses, unknown status values | Raise an exception and **write nothing to the ledger**. |
 
 A run-fatal failure leaves `window_exhausted = false`, so the window is not advanced and the next run resumes exactly where this one stopped. Nothing is lost and nothing is silently skipped.
+
+#### Object-terminal failures have their own kind
+
+The error table drives quarantine off object-terminal failures, but the closed `exception_kind` enum had no value representing one. `reconciliation_run_failed` is explicitly run-scoped and **must not** be reused — doing so would make a broken run indistinguishable from a bad object, and would let one run's failure inflate an object's quarantine streak.
+
+**`provider_object_processing_failed`** is that value.
+
+| Property | Rule |
+|---|---|
+| Required fields | `provider_object_id` NOT NULL; the Stripe object type (`payment_intent`, `charge`, `refund`, `checkout_session`) recorded in `detail.object_type` |
+| `dedup_key` | `'provider_object_processing_failed:' || provider_object_id || '::' || ''` — the standard construction of §10, in which only `kind` and `provider_object_id` are populated. One object with a persistent processing failure therefore maps to exactly one open row |
+| `detail` | Sanitized: `object_type`, `error_class` (`malformed_object`, `object_not_found`, `object_scoped_bad_request`), provider status code, and the run id. **No cardholder name, address, email or phone** |
+| Streak | Each run in which this object fails terminally increments `consecutive_failure_runs` once, via the standard upsert guard on `last_run_id` |
+| Recovery | A later run that examines the object successfully finds the open row **by the same `dedup_key`** and resets `consecutive_failure_runs` to 0. The row stays `open` for founder review — a successful examination is not a founder's judgement, so it does not resolve anything |
+| Live mode | `livemode` is part of the uniqueness key, so a test-mode processing failure never merges with a live one |
+
+Only an *actively quarantined* object is skipped, so the recovery path is reachable: the streak resets whenever the object is examined and does not fail, and once quarantined only a founder release returns it to processing.
 
 ### Counter semantics
 
@@ -1069,6 +1184,9 @@ Returns `members.id` for the row where `members.profile_id = auth.uid()`; `NULL`
 **`public.is_founder() → boolean`**
 **Not created by V2 — reused.** See §2.
 
+**`finance.release_quarantine(p_exception_id uuid, p_note text) → void`**
+`VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Raises unless `public.is_founder()`. Sets `released_at = now()`, `released_by = auth.uid()`, resets `consecutive_failure_runs` to 0, and appends `p_note` to `resolution_note` — in one statement, so no intermediate state violates the quarantine `CHECK`s. Raises if the row is not actively quarantined. `EXECUTE` granted to `authenticated` only; the founder check is inside.
+
 **`finance.create_agreement(p_member_id uuid, p_journey_id uuid, p_purpose finance.agreement_purpose, p_reason text) → uuid`**
 `VOLATILE`, `SECURITY DEFINER`, fixed `search_path`. Raises unless `public.is_founder()`. Raises on blank `p_reason`. In one transaction: inserts the agreement, then its initial lifecycle event with `from_status = NULL`, `to_status = 'draft'`, `actor_id = auth.uid()` and `reason = p_reason`. Returns the new `agreements.id`. On unique violation of `(member_id, journey_id, purpose)` it raises rather than returning the existing row — silently returning would make a caller believe it created something it did not. `EXECUTE` granted to `authenticated` only; the founder check is inside.
 
@@ -1085,8 +1203,8 @@ Returns `members.id` for the row where `members.profile_id = auth.uid()`; `NULL`
 | `checkout_sessions` | `SELECT` via parent agreement owned by the member | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (status, stripe_session_id, completed_at)` |
 | `payment_links` | none — the raw token is the member's only handle; the row is never read by them | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (status, claimed_at, consumed_at, consumed_by_session_id, attempt_count)` |
 | `stripe_events` | none | `SELECT` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (processing_status, claimed_at, attempt_count, processed_at, processing_error, payload)` |
-| `reconciliation_exceptions` | none | `SELECT`, `UPDATE (resolution_status, resolved_at, resolved_by, resolution_note, released_at, released_by)` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (last_detected_at, occurrence_count, detail, last_run_id, consecutive_failure_runs, quarantined_at, quarantine_reason)` |
-| `reconciliation_runs` | none | `SELECT`, `UPDATE (approved_by, approved_at)` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (status, cursor, window_exhausted, heartbeat_at, finished_at, error, objects_scanned, objects_matched, exceptions_created, exceptions_reopened, api_calls, retries)` |
+| `reconciliation_exceptions` | none | `SELECT`, `UPDATE (resolution_status, resolved_at, resolved_by, resolution_note)` where `public.is_founder()`. **Release is not a direct `UPDATE`** — it goes through `finance.release_quarantine()` so the three affected columns change atomically | `SELECT`, `INSERT`, `UPDATE (last_detected_at, occurrence_count, detail, last_run_id, consecutive_failure_runs, quarantined_at, quarantine_reason)` |
+| `reconciliation_runs` | none | `SELECT`, `UPDATE (approved_by, approved_at)` where `public.is_founder()` | `SELECT`, `INSERT`, `UPDATE (status, cursor, window_exhausted, heartbeat_at, finished_at, error, objects_scanned, objects_matched, exceptions_created, exceptions_reopened, api_calls, retries, would_create_count, would_reopen_count, prospective_by_kind, report_samples, report_version, report_completed_at)` |
 
 Notes:
 
@@ -1094,7 +1212,8 @@ Notes:
 - **Lifecycle events are founder-only** — operational state is internal, and exposing it invites members to read intent that is not addressed to them.
 - **Founders have no direct `INSERT` on the fact tables in PR 1.** Writes arrive through approved functions; the founder amendment and external-payment functions ship in PR 5. PR 1's only approved write function is `create_agreement()`, and acceptance test 12 is scoped to it.
 - `service_role` `UPDATE` grants are **column-scoped** to the lists above, not table-wide. An earlier revision granted a column named `counters`, which does not exist — the six counter columns are enumerated individually above.
-- **Only a founder may approve a dry run** (`approved_by`, `approved_at`) and **only a founder may release a quarantine** (`released_at`, `released_by`). `service_role` holds neither, so the job cannot authorise itself or clear its own quarantine.
+- **Only a founder may approve a dry run** (`approved_by`, `approved_at`), and **only a founder may release a quarantine**, through `finance.release_quarantine()`. `service_role` holds neither the columns nor `EXECUTE` on the function, so the job cannot authorise itself or clear its own quarantine.
+- `service_role` writes the dry-run report columns (it produces the report) but **cannot** write `approved_by`/`approved_at`, so producing a report never approves it.
 - The column-scoped grant test asserts **both directions**: every update the job legitimately performs succeeds, and every column outside its list is rejected. A grant that is merely restrictive is not proven correct.
 
 ### View columns

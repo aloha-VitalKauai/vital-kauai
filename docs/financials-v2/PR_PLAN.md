@@ -66,21 +66,26 @@ Integration tests against the Stripe test-mode API and a seeded database. Each i
 6. Every object type paginates to exhaustion — a charge with more refunds than one page yields every refund.
 7. A 429 with `Retry-After` honours it; without it, backoff doubles with jitter and caps; the call succeeds within 8 attempts.
 8. A timeout and a connection reset are both retried as transient.
-9. A terminal 4xx on one object raises an exception and the run continues.
+9. An **object-terminal** 4xx on one object raises a `provider_object_processing_failed` exception and the run continues; a **run-fatal** 401/403 does not (see 18d).
 10. An ambiguous provider response raises an exception and writes **nothing** to the ledger.
 11. Exceeding the per-run retry budget ends the run `failed` with the cursor intact, and the next run resumes.
-12. An object failing terminally in three consecutive runs is quarantined and flagged for manual review.
+12. An object failing terminally in three consecutive runs becomes actively quarantined and is skipped by the next run; a founder release through `finance.release_quarantine()` returns it to processing.
 13. Running twice over the same window creates no second exception and no second ledger entry.
 14. A live-mode run creates no test-mode row, and the reverse.
 15. Every counter on the run row matches the observed work.
 16. A shadow-phase `provider_without_ledger` volume does not alert; a 3× median spike, a `failed` run, a live `unattributable_payment`, and a 14-day-old open exception each do.
-17. `dry_run = true` writes no ledger entry and no exception, and still reports accurate counters.
+17. `dry_run = true` writes no ledger entry and no exception; its real write counters stay `0` and its **prospective** report columns carry the findings (see 18i).
 18. A run hitting the object, API-call or time ceiling ends **`partial`** with `window_exhausted = false` and the cursor preserved; it does **not** end `completed`.
 18b. The successor of a `partial` run inherits the identical `window_start`/`window_end` and cursor, and the watermark does not advance until a run reaches `completed`.
 18c. A `partial`, `failed` or `abandoned` run can be resumed and its `resumed_from_run_id` records the lineage; resuming a `running` or `completed` run is rejected, as is self-reference and a second resumer of the same predecessor.
 18d. **Run-fatal handling** — a simulated 401, a 403, and an invalid list request each end the run `failed` with the cursor intact and raise exactly one `reconciliation_run_failed`; none is treated as an object-level skip.
 18e. **Quarantine** — an object failing terminally in three consecutive runs is quarantined and skipped by the next run; a successful examination before the third resets the streak; only a founder can release, and release restores normal processing.
-18f. **Approval gate** — a writing run with no `authorized_by_run_id` is rejected; one citing an unapproved dry run, a different `livemode`, or an earlier `window_start` than approved is rejected; the first writing run per mode is capped at 24 hours.
+18f. **Approval gate** — a writing run with no `authorized_by_run_id` is rejected; one citing an unapproved, incomplete, errored or unreported dry run is rejected; one citing a different `livemode`, an earlier `window_start`, or a different `implementation_version` is rejected.
+18g. **Canary containment** — the first writing run for a `(livemode, implementation_version)` pair must be contained within the approved dry run's window and span at most 24 hours; a later `window_end` is rejected until a canary reaches `completed`.
+18h. **Canary failure blocks advancement** — a canary ending `partial` or `failed` does not permit a later run to extend beyond the rehearsed `window_end`.
+18i. **Dry-run report** — a dry run creates no exception rows and no ledger entries; `exceptions_created` and `exceptions_reopened` remain `0`; `would_create_count`, `would_reopen_count` and `prospective_by_kind` match the mismatches actually present; samples are capped, deterministic across two identical runs, and contain no cardholder name, address, email or phone.
+18j. **Object-terminal failures** raise `provider_object_processing_failed`, not `reconciliation_run_failed`, and increment `consecutive_failure_runs` once per run; a later successful examination finds the open row by `dedup_key` and resets the streak without resolving it.
+18k. **Two distinct `payment_intent.payment_failed` events** for the same PaymentIntent and `livemode` are both retained; neither creates a ledger entry.
 19. **Reconciliation never writes a `reversal`** — attempting one is rejected, and a `refund_status_regression` produces an exception only.
 20. A verified `succeeded` PaymentIntent with valid metadata is ingested; one without resolvable attribution raises `unattributable_payment` and is not ingested.
 21. No heuristic match occurs — an amount-and-timestamp coincidence with no identity or metadata match raises an exception rather than matching.
@@ -128,7 +133,7 @@ Integration tests against the Stripe test-mode API and a seeded database. Each i
 
 ## PR 1 acceptance tests
 
-All of the following must pass through automated database tests before PR 1 opens. Each is a blocking requirement. Every test maps to an invariant in `ARCHITECTURE.md`; the list grew from 29 to **96** across nine review passes, which added coverage for zero-row aggregates, live mode, the parent matrix, lifecycle initialisation, concurrency, invariants L1–L3, L3b and L11–L13, `service_role` privileges, the persisted checkout attempt, one-live-session enforcement per mode, validated session reuse, PaymentIntent metadata propagation, provenance mutual exclusion, system attribution, reversed-refund accounting, reconciliation run state, exception dedup identity, run-state lineage and approval, quarantine, and the partial-unique-index inventory. **PR 3 carries its own 26 acceptance tests**, listed with that PR.
+All of the following must pass through automated database tests before PR 1 opens. Each is a blocking requirement. Every test maps to an invariant in `ARCHITECTURE.md`; the list grew from 29 to **105** across ten review passes, which added coverage for zero-row aggregates, live mode, the parent matrix, lifecycle initialisation, concurrency, invariants L1–L3, L3b and L11–L13, `service_role` privileges, the persisted checkout attempt, one-live-session enforcement per mode, validated session reuse, PaymentIntent metadata propagation, provenance mutual exclusion, system attribution, reversed-refund accounting, reconciliation run state, exception dedup identity, run-state lineage and launch authorization, the derived quarantine model, the dry-run report, object-terminal failure identity, and the at-most-once event audit. **PR 3 carries its own 31 acceptance tests**, listed with that PR.
 
 ### Schema and reproducibility
 1. Migrations apply cleanly to a fresh database.
@@ -243,11 +248,20 @@ All of the following must pass through automated database tests before PR 1 open
 81. The same `dedup_key` in different `livemode` yields two independent rows.
 82. `last_detected_at >= first_detected_at` is enforced.
 83. **`finished_at` consistency** — a `running` row with `finished_at` set is rejected, and any non-`running` row without it is rejected.
-84. **`completed` implies exhausted** — a `completed` row with `window_exhausted = false` is rejected; `partial` with `window_exhausted = false` is accepted.
+84. **`window_exhausted` biconditional** — every one of the five statuses is tested in both flag states. Only `completed` may carry `true`, and `completed` may not carry `false`; all eight other combinations are rejected.
 85. **Resume lineage** — `resumed_from_run_id` may reference a `partial`, `failed` or `abandoned` run; referencing a `running` or `completed` run is rejected; self-reference is rejected; a second run resuming the same predecessor is rejected.
 86. **Approval constraints** — a `dry_run = false` row without `authorized_by_run_id` is rejected; a `dry_run = true` row *with* one is rejected; `approved_by` and `approved_at` must be set together.
-87. **Quarantine constraints** — `quarantined_at` and `quarantine_reason` must be set together; `released_at` and `released_by` must be set together; a release without a prior quarantine is rejected; `consecutive_failure_runs` may not go negative.
-88. **Approval and release are founder-only** — `service_role` cannot write `approved_by`, `approved_at`, `released_at` or `released_by`; a founder can.
+87. **Quarantine constraints** — `quarantined_at`/`quarantine_reason` set together; `released_at`/`released_by` set together; a release without a prior quarantine is rejected; `consecutive_failure_runs` may not go negative; **`quarantined_at` is never cleared by any permitted operation**.
+88. **Approval and release are founder-only** — `service_role` cannot write `approved_by`/`approved_at` and holds no `EXECUTE` on `finance.release_quarantine()`; a founder can approve and can release through the function.
 89. **All eight partial unique indexes exist** with exactly the predicates listed in ARCHITECTURE §15, and each is an index rather than a table constraint.
 90. **`public.is_founder()` is hardened** — after PR 1's migration its `proconfig` includes `search_path`, and its signature is `is_founder() RETURNS boolean`, `SECURITY DEFINER`.
 91. **Column-scoped grants prove both directions** — every `UPDATE` the reconciliation job legitimately performs succeeds as `service_role`, and every column outside its granted list is rejected.
+92. **Quarantine cycle is executable** — quarantine, release via `finance.release_quarantine()`, normal processing, a second quarantine and a second release all succeed in sequence. After each release `released_at > quarantined_at`; after each re-quarantine `quarantined_at > released_at`. No step violates a `CHECK`.
+93. `finance.release_quarantine()` raises for a non-founder, raises when the row is not actively quarantined, and in one statement sets `released_at`/`released_by` and resets `consecutive_failure_runs` to 0.
+94. **Dry-run write constraints** — a `dry_run = true` row with non-zero `exceptions_created` or `exceptions_reopened` is rejected; a `dry_run = false` row carrying any report column is rejected.
+95. **Report completeness** — `report_completed_at` without `would_create_count`, `would_reopen_count`, `prospective_by_kind` or `report_version` is rejected; `approved_at` without `report_completed_at` is rejected.
+96. **Authorization source constraints** — a writing run citing a dry run that is `running`, `partial`, `failed`, `abandoned`, unapproved, error-bearing, or lacking a completed report is rejected; one citing a `completed`, error-free, approved, reported dry run of the same `livemode` and `implementation_version` is accepted.
+97. **Implementation version binds** — a writing run whose `implementation_version` differs from its authorizing run's is rejected.
+98. **Approval preconditions** — approving a `running`, `partial`, `failed` or `abandoned` dry run is rejected, as is approving one with `error` set.
+99. **`provider_object_processing_failed`** exists in the enum; a row of that kind without `provider_object_id` is rejected; its `dedup_key` is built from kind plus provider object id; two rows for the same object in different `livemode` coexist.
+100. **At-most-once index scope** — the partial unique index covers exactly the four types of ARCHITECTURE §10; inserting two `payment_intent.payment_failed` events with distinct `event_id` but the same object id and `livemode` succeeds, and neither creates a ledger entry.

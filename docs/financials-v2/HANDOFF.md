@@ -8,7 +8,7 @@
 ## Current status
 
 **Phase:** PR 0 — architecture and project-control documents.
-**State:** **PR 0 is not approved.** Documents written and revised across nine review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), a first external review of PR #838 (7 findings, B-3 … B-9), a clean-context re-verification (1 blocker, 6 minors), a second external review (6 findings, B-10 … B-15), a third external review at the Stripe boundary (6 findings, B-16 … B-21), a PR 1 executability review (9 blockers, 8 minors — B-22 … B-30), an operational readiness review (7 blockers, 6 minors — **zero of twenty operational points defined**, B-31 … B-43), and an independent review returning **BLOCK** on the reconciliation state machine (B-44 … B-51). All resolved. Awaiting independent re-review.
+**State:** **PR 0 is not approved.** Documents written and revised across ten review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), a first external review of PR #838 (7 findings, B-3 … B-9), a clean-context re-verification (1 blocker, 6 minors), a second external review (6 findings, B-10 … B-15), a third external review at the Stripe boundary (6 findings, B-16 … B-21), a PR 1 executability review (9 blockers, 8 minors — B-22 … B-30), an operational readiness review (7 blockers, 6 minors — **zero of twenty operational points defined**, B-31 … B-43), an independent review returning **BLOCK** on the reconciliation state machine (B-44 … B-51), and a second **BLOCK** on executability of that machine (B-52 … B-57). All resolved. Awaiting independent re-review.
 
 The clean-context pass caught a defect introduced by the B-7 fix itself: L12 originally defined "provider-originated" as `source='stripe' AND provider_object_id IS NOT NULL`, which contradicted L1 and D-020 — a Stripe payment imported without a charge-object id would have demanded a human actor that no document assigned. L12 now keys on `source` alone.
 
@@ -34,7 +34,18 @@ The two divergent rows validate D-015 against production: 12% of members would s
 ### B-2 — PR 0 review not yet complete (blocks PR 1)
 Per the working agreement, implementation waits on reviewer confirmation that the documents contain no unresolved contradiction in the financial model. **PR 0 is explicitly not approved.**
 
-### B-44 … B-51 — Independent review, verdict BLOCK (resolved, pending re-review)
+### B-52 … B-57 — Second independent BLOCK: executability of the state machine (resolved, pending re-review)
+
+| ID | Finding | Resolution |
+|---|---|---|
+| B-52 | **Quarantine release was impossible** — clearing `quarantined_at` violated its own `CHECK`, and the grants gave the founder neither the columns nor a path | Quarantine history retained; active state **derived** from `quarantined_at` vs `released_at`; founder-only `finance.release_quarantine()` releases and resets atomically (D-051) |
+| B-53 | A **running, partial or failed** dry run could authorize money-writing reconciliation; "covers the window" constrained only `window_start` | Authorizing run must be completed, exhausted, finished, error-free, approved and reported. Renamed **launch authorization**: mode + earliest horizon + implementation version, with a contained 24-hour canary (D-052) |
+| B-54 | Dry-run output was unreviewable — real-write counters are `0` by definition, so approval rested on two zeros | Bounded, sanitized, deterministic report columns; approval impossible without `report_completed_at`; real counters keep their D-049 meaning (D-053) |
+| B-55 | Object-terminal failures had no `exception_kind`, and `reconciliation_run_failed` is run-scoped | `provider_object_processing_failed` with dedup, detail, streak and recovery rules (D-054) |
+| B-56 | `window_exhausted` was constrained in one direction only | `CHECK ((status = 'completed') = window_exhausted)`; all five statuses tested in both flag states (D-055) |
+| B-57 | `payment_intent.payment_failed` is emitted **per attempt**, so the index would discard a legitimate retry failure | List cut from seven to **four** object-terminal states; two unprovable async types also removed (D-056) |
+
+### B-44 … B-51 — Independent review, verdict BLOCK (resolved)
 
 The reconciliation state machine was reviewed as one system. Every finding was a real gap between what the documents promised and what they could express.
 
@@ -161,7 +172,7 @@ Noticed during audit or design, deliberately not folded into any current PR.
 
 ## Decisions carried forward
 
-D-001 … D-050 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**, whose recovery mechanism is in turn **corrected by D-028**. **D-026's system-actor mechanism is corrected by D-032.** **D-028 is refined by D-035**, **D-029 by D-034**, **D-013's founder-predicate clause is superseded by D-037**, and **D-043's rules 10, 17 and 18 are corrected by D-048, D-050 and D-045**. No decision is open. See [DECISIONS.md](DECISIONS.md).
+D-001 … D-056 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**, whose recovery mechanism is in turn **corrected by D-028**. **D-026's system-actor mechanism is corrected by D-032.** **D-028 is refined by D-035**, **D-029 by D-034**, **D-013's founder-predicate clause is superseded by D-037**, **D-043's rules 10, 17 and 18 are corrected by D-048, D-050 and D-045**, **D-047's release mechanism by D-051**, **D-050 by D-052**, **D-045 tightened by D-055**, and **D-043's event list by D-056**. No decision is open. See [DECISIONS.md](DECISIONS.md).
 
 ## Working agreement
 

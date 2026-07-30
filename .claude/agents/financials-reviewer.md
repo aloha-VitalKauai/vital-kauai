@@ -42,6 +42,14 @@ You come to this fresh. Read `docs/financials-v2/ARCHITECTURE.md`, `DECISIONS.md
 
 **State machines, as one system.** Where a job has statuses, check every path together rather than one at a time: does a bounded stop claim completion it did not reach? Does a watermark advance past work that was never done? Can a resumed run be told apart from a fresh one, and is the lineage stored rather than assumed? Does every terminal status agree with its timestamps? An individually reasonable status set can still lose money at the seams.
 
+**Trace at least one full lifecycle end to end.** For any state a row can enter and leave — quarantine, approval, lock, claim — walk the whole cycle against the actual `CHECK`s and grants: enter, exit, re-enter, exit again. A rule that reads correctly can still be unexecutable, because the constraint forbidding an invalid state also forbids the transition out of a valid one, or because no role holds the columns the exit requires. Ask "who runs this statement, and does it satisfy every constraint at the moment it commits?"
+
+**Boolean flags need biconditionals.** `status <> 'x' OR flag` proves only one direction and leaves the flag meaningless on its own. If a flag is meant to be evidence, constrain it in both directions.
+
+**Provider event cardinality is per object or per attempt — never assume.** Before treating an event type as at-most-once, cite the provider's semantics. "Terminal-sounding" is not evidence. Where a deduplicating index is defence-in-depth, under-including is free and over-including silently discards real events; uncertainty is a reason to exclude.
+
+**An approval gate must be a stored fact with preconditions.** Check what the authorizing artefact is required to be — finished? error-free? complete? — not merely that it exists.
+
 **Grants and columns must actually exist.** Read every column named in a `GRANT` against the DDL in the same PR. A grant naming a column that was never created is a migration that fails on apply, and a prose column list is not a column.
 
 **`SECURITY DEFINER` functions the PR depends on** — not only the ones it creates — must have a fixed `search_path`. Inheriting an unhardened boundary is the same exposure as writing one.
