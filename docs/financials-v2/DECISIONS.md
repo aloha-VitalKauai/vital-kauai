@@ -119,7 +119,7 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 ---
 
 ## D-011 — Payment links are consumed atomically at session creation
-**Date:** 2026-07-29 · **Status:** Approved
+**Date:** 2026-07-29 · **Status:** **Mechanism superseded by D-024** — atomic consumption and permanent-consumption behaviour stand; the single-transaction mechanism does not.
 
 **Decision.** A payment link is consumed in the same transaction that successfully creates its Checkout Session, by a single conditional update guarded on `consumed_at IS NULL`. Consumption is permanent. The member's retry path is the Stripe Checkout Session URL, resumable until it expires; after expiry the founder issues a new link.
 
@@ -190,7 +190,7 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 
 **Rationale.** As originally written, "V2 never reads or writes legacy financial tables" made PRs 2, 4 and 7 unimplementable — every shadow comparison must read `public.donations`. An absolute rule that the plan requires breaking is worse than a precise one, because it trains everyone to treat the rule as advisory.
 
-**Consequences.** Any legacy read outside the three named surfaces is a defect. The reviewer checks the named list, not a general prohibition.
+**Consequences.** Any legacy read outside the four named surfaces is a defect. The reviewer checks the named list, not a general prohibition.
 
 ---
 
@@ -258,3 +258,45 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 **Decision.** On a primary-key conflict in `finance.stripe_events`: `processed`/`ignored` acknowledges and stops; `received`/`failed` re-claims and processes; `processing` with a stale `claimed_at` re-claims. A sweeper re-queues stale claims.
 
 **Rationale.** Unconditionally acknowledging on conflict strands any event that inserted its row and then crashed mid-processing — Stripe's redelivery hits the primary key and stops forever, and the money silently never lands. Ledger invariants make reprocessing safe in every branch.
+
+---
+
+## D-024 — Checkout uses a persisted three-phase attempt, not a cross-system transaction
+**Date:** 2026-07-29 · **Status:** Approved · **Supersedes the single-transaction claim in D-011**
+
+**Decision.** Payment-link consumption proceeds through three phases, each committed before the next: **claim** the link atomically (`status='active' → 'creating'`), **record intent** by inserting a `creating` checkout session with a deterministic idempotency key, then **create and finalise** by calling Stripe with that key. A sweeper replays stranded attempts using the same key and releases a link only where Stripe confirms no session exists. `finance.link_status` and a `creating` checkout status are added; `checkout_sessions.stripe_session_id` is nullable only while `creating`.
+
+**Rationale.** D-011 stated that session creation and link consumption "occur in one transaction" and that "if Stripe fails, the transaction rolls back." Postgres and Stripe are separate systems with no shared transaction, so this is not implementable. Holding a transaction open across the network call does not help: a crash after Stripe creates the session but before the commit leaves Stripe with a live payable session and the database with no record — the orphan problem inverted, and worse, because the member can still pay it. Committing each phase means every failure mode leaves a recoverable, inspectable state. The deterministic key makes replay return the *same* session rather than a second one.
+
+**Consequences.** One extra committed row per attempt, and a sweeper to own stranded attempts (`stranded_checkout_attempt`). Concurrency is resolved at phase 1, before Stripe is contacted.
+
+---
+
+## D-025 — Only `succeeded` Stripe refunds enter the ledger, enumerated with pagination
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** A Refund object produces a ledger entry only at `status = 'succeeded'`. `pending` and `requires_action` produce none and are re-checked by reconciliation until terminal; `failed` and `canceled` produce none ever. A refund regressing from `succeeded` raises `refund_status_regression` and is corrected by an attributed reversal. Refunds are enumerated through the paginated Refunds list API, never the embedded `charge.refunds.data` array.
+
+**Rationale.** Writing an entry on `pending` overstates refunds for every refund that later fails, and the correction would be indistinguishable from a genuine reversal. The embedded refund array on a Charge is a truncated page (default 10, with `has_more`), so a charge with more refunds than one page would silently lose the remainder — a class of undercount that produces no error anywhere.
+
+---
+
+## D-026 — Corrections require an actor and a reason
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** L12: an entry with `source = 'external'`, or of `entry_type = 'reversal'`, requires `recorded_by` NOT NULL and a non-blank `reason`. Reconciliation-initiated reversals carry a dedicated system reconciliation service account — a real `auth.users` row, created or confirmed in PR 1 and recorded here — with a reason naming the triggering exception.
+
+**Rationale.** Attribution was required only on `external_payment`, so a founder could post an external refund or a reversal — the entry types that exist specifically to correct human error — with no actor and no explanation. An unattributed correction is the legacy defect in new clothing.
+
+**Why the rule keys on `source` rather than on a provider object id.** An earlier formulation defined "provider-originated" as `source = 'stripe' AND provider_object_id IS NOT NULL`. That contradicts L1 and D-020, which deliberately permit a Stripe payment imported with a NULL charge-object id: unambiguously provider money that the rule would nonetheless have demanded a human actor for, with no document saying who. `source = 'stripe'` suffices on its own, since L1 already requires a payment-intent id on every Stripe payment.
+
+**Consequences.** A refund executed through Stripe is exempt — the provider records who did it — whether a founder or a customer initiated it. A refund recorded outside Stripe requires attribution. Every reversal requires attribution regardless of source, because a reversal is never a provider event.
+
+---
+
+## D-027 — `service_role` privileges are granted explicitly
+**Date:** 2026-07-29 · **Status:** Approved
+
+**Decision.** PR 1 grants `service_role` `USAGE` on `finance` plus `SELECT`, `INSERT` and the bounded `UPDATE`s of §1, with matching `ALTER DEFAULT PRIVILEGES`. `service_role` receives no `UPDATE` or `DELETE` on the three append-only fact tables, and the append-only triggers raise regardless of role.
+
+**Rationale.** A custom schema is unreachable until granted. Webhook ingestion and the reconciliation job run as `service_role`; omitting the grant is a silent runtime failure at PR 3 rather than a build error. Granting it does not weaken the append-only guarantee, which is enforced by trigger rather than by privilege.

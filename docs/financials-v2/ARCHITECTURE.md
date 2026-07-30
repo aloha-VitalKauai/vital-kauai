@@ -26,7 +26,7 @@ Shadow verification requires putting V2 and legacy figures side by side, which i
 | **Write paths** | No V2 code path may write a legacy table. Absolute, no exception. |
 | **Read paths** | Legacy reads are permitted **only** in these named surfaces: the PR 2 import and variance report, the PR 4 founder shadow/diff page, the PR 7 founder flag-off read path, and the PR 8 member flag-off read path. |
 
-All four are read-only and temporary, and every one is removed or retired at PR 9. The first three are founder-scoped. The fourth is not: PR 8's member surface must render *something* when its flag is off, and that something is the existing legacy figure. This is the pre-existing legacy display continuing to work behind a flag, not a new legacy dependency — consistent with the rule that legacy routes remain until the new path is proven. Any legacy read outside these four is a defect. Any other legacy read is a defect. `finance.ledger_entries.legacy_donation_id` remains an **unconstrained** `uuid` carrying no foreign key, so V2 retains no structural dependency and legacy rows may be frozen or archived without affecting V2 integrity.
+All four are read-only and temporary, and every one is removed or retired at PR 9. The first three are founder-scoped. The fourth is not: PR 8's member surface must render *something* when its flag is off, and that something is the existing legacy figure. This is the pre-existing legacy display continuing to work behind a flag, not a new legacy dependency — consistent with the rule that legacy routes remain until the new path is proven. Any legacy read outside these four is a defect. `finance.ledger_entries.legacy_donation_id` remains an **unconstrained** `uuid` carrying no foreign key, so V2 retains no structural dependency and legacy rows may be frozen or archived without affecting V2 integrity.
 
 ---
 
@@ -40,14 +40,14 @@ All four are read-only and temporary, and every one is removed or retired at PR 
 | 4 | `finance.ledger_entries` | Canonical record of money movements and their attributed corrections. Sole source of Received. | **Append-only fact** |
 | 5 | `finance.stripe_events` | Webhook ingestion, idempotency, processing state. | Insert + processing-state update + retention nulling |
 | 6 | `finance.checkout_sessions` | Checkout attempts. An attempt is not a payment. | Insert + status update |
-| 7 | `finance.payment_links` | Hashed, expiring, revocable, single-use pay links. | Insert + one-shot consumption/revocation |
+| 7 | `finance.payment_links` | Hashed, expiring, revocable, single-use pay links. | Insert + claim / consume / release / revoke transitions (§12) |
 | 8 | `finance.reconciliation_exceptions` | Money that cannot be attributed, and provider/ledger mismatches. | Insert + resolution update |
 
 Tables 2–4 are the **append-only fact tables**; §0.4 applies to them and only them. Tables 5–8 are protocol and operational machinery carrying no financial truth, and they require bounded updates by design.
 
 ### Enum inventory
 
-PR 1 creates exactly ten enum types:
+PR 1 creates exactly eleven enum types:
 
 | Enum | Values | Defined in |
 |---|---|---|
@@ -60,7 +60,8 @@ PR 1 creates exactly ten enum types:
 | `finance.event_processing_status` | `received`, `processing`, `processed`, `failed`, `ignored` | §10 |
 | `finance.exception_kind` | see §10 | §10 |
 | `finance.exception_resolution` | `open`, `resolved`, `dismissed` | §10 |
-| `finance.checkout_status` | `open`, `completed`, `expired`, `canceled` | §11 |
+| `finance.checkout_status` | `creating`, `open`, `completed`, `expired`, `canceled` | §11 |
+| `finance.link_status` | `active`, `creating`, `consumed`, `revoked` | §12 |
 
 ### View inventory
 
@@ -277,6 +278,19 @@ A reversal of a **refund** is permitted — it is the correction path for a refu
 | L9 | `UNIQUE (legacy_donation_id, entry_type)` where `legacy_donation_id IS NOT NULL` | partial unique index |
 | L10 | `currency` matches the agreement | structural under USD-only (§3) |
 | L11 | Where an originating event or session exists, ledger `livemode` must match it. External payments and imported historic money are `livemode = true`. | constraint trigger |
+| L12 | **`source = 'external'` OR `entry_type = 'reversal'` requires `recorded_by` NOT NULL and a non-blank `reason`.** | table `CHECK` |
+
+**L12 closes an attribution hole.** As originally written, `recorded_by` and `reason` were required only on `external_payment` (L2), so a founder could record an external refund or post a reversal — the entry types that *exist* to correct human error — with no actor and no explanation. A correction nobody is accountable for is the legacy defect wearing new clothes.
+
+**The rule keys on `source`, not on the presence of a provider object id.** Defining "provider-originated" as `source = 'stripe' AND provider_object_id IS NOT NULL` would contradict L1 and D-020, which deliberately permit a Stripe payment imported with a NULL charge-object id — such a row is unambiguously provider money, yet that definition would demand a human actor for it. `source = 'stripe'` is sufficient on its own, because L1 already requires a payment-intent id on every Stripe payment.
+
+Consequences of keying on `source`:
+
+- A refund **executed through Stripe** arrives with `source = 'stripe'` and its own `re_…` id, so it is exempt — the provider is the record of who did it. This holds whether a founder or a customer initiated it.
+- A refund **recorded outside Stripe** (a cheque returned, cash handed back) is `source = 'external'` and requires attribution.
+- **Every `reversal` requires attribution regardless of source**, because a reversal is never a provider event — it is always a human or system judgement that a record was wrong.
+
+**The system reconciliation actor.** Reconciliation-initiated reversals (§10, refund status regression) are attributed to a dedicated service account — a real `auth.users` row, since `recorded_by` carries a `RESTRICT` foreign key. PR 1 creates or confirms that account and records its identifier in `DECISIONS.md`. Its `reason` names the exception that triggered the correction, so an automated reversal is as traceable as a founder's.
 
 **L6's "no unreversed children" rule** prevents the double-subtraction defect: reversing a payment that still carries a live refund would subtract the full original while the refund had already subtracted part of it, driving Received to `−3000` — money the ledger would claim left Vital Kauaʻi that never existed. The step table above shows the correct unwind: reverse the refunds first, then the payment.
 
@@ -307,7 +321,7 @@ One row per agreement. **The only place financial formulas exist.**
 |---|---|
 | `contribution_cents` | `COALESCE(latest effective amendment, 0)` |
 | `gross_received_cents` | `COALESCE(SUM(amount_cents) FILTER (WHERE entry_type IN ('stripe_payment','external_payment')), 0)` |
-| `refunded_cents` | `COALESCE(ABS(SUM(amount_cents) FILTER (WHERE entry_type = 'refund')), 0)` |
+| `refunded_cents` | `COALESCE(ABS(SUM(amount_cents) FILTER (WHERE entry_type = 'refund' AND NOT is_reversed)), 0)` — **unreversed refunds only** |
 | `reversed_cents` | `COALESCE(SUM(amount_cents) FILTER (WHERE entry_type = 'reversal'), 0)` — signed; positive when a refund was reversed |
 | `net_received_cents` | `COALESCE(SUM(amount_cents), 0)` across all entries |
 | `contribution_applies` | `purpose IN ('journey_contribution','membership')` |
@@ -337,6 +351,8 @@ Evaluated in order; deterministic and total.
 
 - **`not_applicable`** — gifts and other unowed money, where Remaining has no meaning (§4). Without this branch a $500 gift against a zero Contribution reports `overpaid` with `−$500` remaining, which then drags down member and journey totals.
 - **The two `unpaid` branches** are the distinction the legacy model could not express. Money received then fully **refunded** is `refunded`; money recorded in error then **reversed** is `unpaid`, because no money ever moved. Keying `refunded` on `refunded_cents > 0` rather than on `net <= 0` alone is what prevents a reversed founder mistake from telling a member their money was refunded.
+
+- **`refunded_cents` counts only unreversed refunds**, where `is_reversed` means a `reversal` entry targets that row. Counting reversed refunds would leave a member permanently labelled `refunded` after a refund recorded in error had been fully undone: payment `+10000`, refund `−10000`, reversal-of-refund `+10000`, reversal-of-payment `−10000` nets to `0` with nothing having happened, and a naive `refunded_cents` of `10000` would report `refunded` instead of `unpaid`. The same filter keeps the member-facing "Refunded" figure honest — a refund that was undone is not a refund.
 - **`paid`** is `=`, not `>=` — the `overpaid` branch above already claims everything greater, and writing `=` keeps the intent legible.
 
 ### Reachable-state table
@@ -362,10 +378,20 @@ Evaluated in order; deterministic and total.
 PR 1 ships all of the following.
 
 ### Schema and privileges
-- `CREATE SCHEMA finance`; explicit `GRANT USAGE` to `authenticated` only.
-- `REVOKE ALL ON SCHEMA finance FROM PUBLIC, anon`.
-- Explicit `ALTER DEFAULT PRIVILEGES` so future objects are not silently readable.
+
+A custom schema is **not** exposed through PostgREST or reachable by any role until it is granted explicitly, so PR 1 states every grant ([Supabase custom schemas](https://supabase.com/docs/guides/api/using-custom-schemas)).
+
+| Role | Schema | Tables | Rationale |
+|---|---|---|---|
+| `authenticated` | `USAGE` | `SELECT` per RLS policy | Members and founders read through RLS |
+| **`service_role`** | **`USAGE`** | **`SELECT`, `INSERT`, and the bounded `UPDATE`s of §1** | **Webhook ingestion and reconciliation jobs run as `service_role` and cannot function without this.** Omitting it is a silent runtime failure at PR 3, not a compile error. |
+| `anon` | none | none | `REVOKE ALL` |
+| `PUBLIC` | none | none | `REVOKE ALL` |
+
+- `service_role` receives **no** `UPDATE` or `DELETE` on the three append-only fact tables. Its elevated access does not exempt it — the append-only triggers raise regardless of role.
+- Explicit `ALTER DEFAULT PRIVILEGES` for both `authenticated` and `service_role`, so future objects are neither silently readable nor silently unreachable.
 - Explicit per-role table grants. No blanket `GRANT ALL`.
+- Sequence usage granted where `service_role` inserts.
 
 ### Row-level security
 - `ENABLE` **and** `FORCE ROW LEVEL SECURITY` on all eight tables.
@@ -429,11 +455,23 @@ Refunds are the hardest case in the system: one charge can carry several genuine
 
 3. **A charge-level event never becomes a refund ledger entry itself.** `charge.refunded` describes a charge, not a refund. Writing a ledger entry keyed on the charge id would collide with the payment entry and would double-count on the second partial refund. Charge-level events are **containers**; only Refund objects become `refund` entries.
 
-4. **Handling `charge.refunded` means enumerating the underlying Refund objects.** Processing reads `charge.refunds.data`, and for each Refund object inserts one `refund` entry keyed on that refund's own id, with `parent_entry_id` resolved to the ledger entry carrying the charge's PaymentIntent (L8b). Refunds already present are skipped by L8 rather than by an application-level check.
+4. **Handling `charge.refunded` means enumerating the underlying Refund objects — with pagination.** Processing must **not** read the embedded `charge.refunds.data` array, which is a truncated list page (default 10, with `has_more`). A charge with more refunds than one page would silently lose the remainder. Processing enumerates via the Refunds list API filtered by charge, following pagination to exhaustion, and inserts one `refund` entry per qualifying Refund object keyed on that refund's own id, with `parent_entry_id` resolved to the ledger entry carrying the charge's PaymentIntent (L8b). Refunds already present are skipped by L8, not by an application-level check.
 
-5. **Partial refunds accumulate and cannot exceed the settled payment.** Each Refund object is its own entry; **L7** caps cumulative unreversed refunds at the parent's original `amount_cents`, serialised by `SELECT … FOR UPDATE` on the parent so concurrent refund events cannot jointly overshoot.
+5. **Only `succeeded` refunds enter the ledger.** A [Stripe Refund](https://docs.stripe.com/api/refunds/object) carries a `status` of `pending`, `requires_action`, `succeeded`, `failed`, or `canceled`. A refund is money leaving only when it succeeds.
 
-6. **Reconciliation trusts objects, not delivery.** The PR 3 job enumerates Stripe **PaymentIntent, Charge and Refund objects** over a window and diffs them against the ledger. It never assumes an event arrived. A refund present at Stripe with no corresponding ledger entry raises `provider_without_ledger`; a ledger entry with no provider object raises `ledger_without_provider`. Reconciliation raises exceptions and never silently self-corrects.
+   | Refund status | Ledger effect |
+   |---|---|
+   | `succeeded` | One `refund` entry |
+   | `pending`, `requires_action` | **No entry.** The event is recorded and the reconciliation job re-checks the object until it reaches a terminal status. |
+   | `failed`, `canceled` | **No entry.** The money never left. |
+
+   Writing an entry on `pending` would overstate refunds for every refund that later fails, and the correction would be indistinguishable from a genuine reversal.
+
+6. **A refund that regresses from `succeeded` is corrected, never edited.** Some payment methods can fail a refund after it reported success. Because the ledger is append-only, reconciliation raises a `refund_status_regression` exception and the correction is an attributed `reversal` of the refund entry — the money is restored to Received with a visible, attributed record of why.
+
+7. **Partial refunds accumulate and cannot exceed the settled payment.** Each Refund object is its own entry; **L7** caps cumulative unreversed refunds at the parent's original `amount_cents`, serialised by `SELECT … FOR UPDATE` on the parent so concurrent refund events cannot jointly overshoot.
+
+8. **Reconciliation trusts objects, not delivery.** The PR 3 job enumerates Stripe **PaymentIntent, Charge and Refund objects** over a window and diffs them against the ledger. It never assumes an event arrived. A refund present at Stripe with no corresponding ledger entry raises `provider_without_ledger`; a ledger entry with no provider object raises `ledger_without_provider`. Reconciliation raises exceptions and never silently self-corrects.
 
 ### Payload handling
 
@@ -463,7 +501,7 @@ finance.reconciliation_exceptions
          OR (resolved_at IS NOT NULL AND resolved_by IS NOT NULL))
 ```
 
-`finance.exception_kind` values: `unattributable_payment`, `provider_without_ledger`, `ledger_without_provider`, `amount_mismatch`, `currency_violation`, `missing_provider_object`, `orphan_refund`.
+`finance.exception_kind` values: `unattributable_payment`, `provider_without_ledger`, `ledger_without_provider`, `amount_mismatch`, `currency_violation`, `missing_provider_object`, `orphan_refund`, `refund_status_regression`, `stranded_checkout_attempt`.
 
 ---
 
@@ -473,16 +511,21 @@ finance.reconciliation_exceptions
 finance.checkout_sessions
   id                 uuid PK default gen_random_uuid()
   agreement_id       uuid NOT NULL -> finance.agreements(id) (RESTRICT)
-  stripe_session_id  text NOT NULL UNIQUE
-  idempotency_key    text NOT NULL UNIQUE
+  stripe_session_id  text NULL UNIQUE     -- NULL while status = 'creating'
+  idempotency_key    text NOT NULL UNIQUE -- deterministic; sent to Stripe
+  payment_link_id    uuid NULL -> finance.payment_links(id) (RESTRICT)
   amount_cents       bigint NOT NULL CHECK (amount_cents > 0)
   currency           text NOT NULL default 'usd' CHECK (currency = 'usd')
   livemode           boolean NOT NULL
-  status             finance.checkout_status NOT NULL default 'open'
+  status             finance.checkout_status NOT NULL default 'creating'
   expires_at         timestamptz NOT NULL
   created_at         timestamptz NOT NULL default now()
   completed_at       timestamptz NULL
+
+  CHECK (status = 'creating' OR stripe_session_id IS NOT NULL)
 ```
+
+`stripe_session_id` is nullable **only** in `creating`, because the intent row is committed before Stripe is called (§12). The `CHECK` makes any other status without a session id impossible.
 
 - **A checkout attempt is not a payment.** No ledger entry exists until Stripe confirms, eliminating the legacy orphan-pending-row problem.
 - **The idempotency key is sent to Stripe** on `checkout.sessions.create`, not merely recorded locally.
@@ -496,17 +539,46 @@ finance.checkout_sessions
 
 ```
 finance.payment_links
-  id, agreement_id, token_hash UNIQUE, expires_at,
-  consumed_at, consumed_by_session_id, revoked_at, revoked_by,
-  created_at, created_by
+  id, agreement_id, token_hash UNIQUE, status finance.link_status,
+  expires_at, claimed_at, consumed_at, consumed_by_session_id,
+  revoked_at, revoked_by, attempt_count, created_at, created_by
 ```
 
-- Only the **hash** is stored; the raw token exists solely in the emailed URL.
-- **Consumption is atomic and occurs when the link successfully creates its Checkout Session** — not on webhook arrival. Legacy stamped `consumed_at` only on webhook success, so one token could open unlimited sessions.
-- Concurrency: `UPDATE finance.payment_links SET consumed_at = now(), consumed_by_session_id = $1 WHERE id = $2 AND consumed_at IS NULL AND revoked_at IS NULL RETURNING id`. Zero rows means another request won, and that request creates no session.
-- Session creation and consumption occur in **one transaction**. If Stripe fails, or the zero-amount guard refuses, the transaction rolls back and the link remains usable.
+`finance.link_status` enum: `active`, `creating`, `consumed`, `revoked`.
 
-**Retry behaviour.** Consumption is permanent. The member's retry path is the Stripe Checkout Session URL, resumable until `expires_at`. Once the session expires unpaid, the founder issues a new link. A token that reactivates on abandonment cannot be reasoned about concurrently, and reissue is cheap.
+Only the **hash** is stored; the raw token exists solely in the emailed URL.
+
+### A database transaction cannot span Stripe
+
+The earlier design said session creation and link consumption "occur in one transaction, and if Stripe fails the transaction rolls back." **That is not implementable.** Postgres and Stripe are separate systems with no shared transaction. Holding a Postgres transaction open across a network call to Stripe still leaves the fatal window: if the process dies after Stripe creates the session but before the commit, Stripe has a live payable session and the database has no record of it — the exact orphan the design exists to prevent, inverted.
+
+The link is therefore consumed through a **persisted three-phase attempt**, where every phase boundary is a committed database state.
+
+| Phase | Action | Committed before the next phase |
+|---|---|---|
+| **1. Claim** | `UPDATE finance.payment_links SET status='creating', claimed_at=now(), attempt_count=attempt_count+1 WHERE id=$1 AND status='active' AND expires_at > now() RETURNING id` | Yes — this is the concurrency guard |
+| **2. Record intent** | Insert `finance.checkout_sessions` with `status='creating'`, the agreement, the server-computed amount, and a deterministic `idempotency_key` | Yes — the intent survives a crash |
+| **3. Create and finalise** | Call Stripe **passing that idempotency key**; on success update the session to `open` with its `stripe_session_id`, and the link to `consumed` | — |
+
+Zero rows from phase 1 means another request won; that request creates nothing. Concurrency is resolved before Stripe is ever contacted.
+
+**The idempotency key is deterministic** — derived from `(payment_link_id, attempt_count)` — and is [sent to Stripe on the create call](https://docs.stripe.com/api/idempotent_requests). A retry of the same attempt therefore returns the *same* session rather than creating a second one. Recording a key locally without transmitting it prevents nothing.
+
+### Recovery
+
+A crash between phases 2 and 3 leaves a `creating` link and a `creating` session. A sweeper reconciles them:
+
+- **Replay the create call with the same idempotency key.** Stripe returns the original session if one was made, or makes it now. Either way the session is finalised and the link becomes `consumed`.
+- Only where Stripe confirms no session exists for that key does the sweeper return the link to `active`, leaving `attempt_count` incremented so the next attempt uses a fresh key.
+- A `creating` link past `expires_at` is closed out rather than released.
+
+The link is never released on the assumption that Stripe did nothing. That assumption is what creates double-charge windows.
+
+### Retry behaviour
+
+Consumption is permanent once phase 3 succeeds. The member's retry path is the Stripe Checkout Session URL, resumable until `expires_at`. Once the session expires unpaid, the founder issues a new link. A token that reactivates on abandonment cannot be reasoned about concurrently, and reissue is cheap.
+
+The **zero-amount guard** (§11) runs before phase 1, so an agreement owing nothing never claims a link at all.
 
 ---
 
@@ -547,7 +619,7 @@ The same payment is never written into both systems. One payment has exactly one
 | No Stripe `event.id` idempotency | `stripe_events.event_id` PK + ledger L8/L8b |
 | Webhook sole writer of terminal state | Reconciliation job + exceptions queue (PR 3) |
 | Orphan pending donation rows | `checkout_sessions` separate from ledger (§11) |
-| Multi-use payment tokens | Atomic consumption at session creation (§12) |
+| Multi-use payment tokens | Atomic claim before Stripe is contacted, consumption on session creation (§12) |
 | Allocation race / over-allocation | L6/L7 with row locking (§7) |
 | Three routes rewrite `expected_amount_cents` | Append-only `agreement_amounts` (§5) |
 | "Collected" defined two ways | Single `net_received_cents` definition (§8) |

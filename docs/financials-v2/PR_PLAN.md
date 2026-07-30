@@ -26,7 +26,7 @@
 
 ### PR 1 — `finance` schema foundation
 **Outcome:** The complete V2 schema exists, is fully constrained, is protected by RLS, exposes the canonical views, and is proven by automated database tests.
-**Contains:** `CREATE SCHEMA finance`; the nine enum types; the eight tables; all `CHECK` constraints and constraint triggers; append-only enforcement triggers; RLS policies, grants and default privileges; `finance.current_member_id()` and `finance.is_founder()`; `finance.create_agreement()`; `v_agreement_balances`, `v_agreement_balances_test`, `v_member_financials`, `v_journey_financials`; the full acceptance test suite.
+**Contains:** `CREATE SCHEMA finance`; the **eleven** enum types; the eight tables; all `CHECK` constraints and constraint triggers; append-only enforcement triggers; RLS policies, grants and default privileges **including `service_role`**; `finance.current_member_id()` and `finance.is_founder()`; `finance.create_agreement()`; the **five** views — `v_agreement_lifecycle`, `v_agreement_balances`, `v_agreement_balances_test`, `v_member_financials`, `v_journey_financials`; the full acceptance test suite.
 **Excludes:** application code, data import, any UI.
 **Blocked on:** confirming `members.profile_id` uniqueness and the population of rows where `profile_id IS NULL` or `id <> profile_id`, against the live database, recorded in `DECISIONS.md` (D-015). The identity design itself is settled.
 **Done when:** every test in "PR 1 acceptance tests" below passes on a fresh database.
@@ -64,7 +64,7 @@
 
 ### PR 6 — V2 Checkout Sessions, Stripe idempotency and single-use links
 **Outcome:** V2 can create Checkout Sessions correctly, with the idempotency key transmitted to Stripe, amounts derived server-side, and payment links consumed atomically.
-**Contains:** `finance.checkout_sessions` write path; `financial_version = 'v2'` session tagging; hashed single-use link issue, atomic consumption and revocation.
+**Contains:** the three-phase `finance.checkout_sessions` write path (claim → record intent → create) with the deterministic idempotency key transmitted to Stripe; `financial_version = 'v2'` session tagging; hashed single-use link issue, atomic claim, consumption and revocation; **the stranded-checkout sweeper** that replays or releases `creating` attempts and raises `stranded_checkout_attempt`.
 **Excludes:** routing members to the V2 flow. Sessions are exercised in a controlled test path only.
 
 ### PR 7 — Founder Financials reads V2 behind a feature flag
@@ -86,13 +86,13 @@
 
 ## PR 1 acceptance tests
 
-All of the following must pass through automated database tests before PR 1 opens. Each is a blocking requirement. Every test maps to an invariant in `ARCHITECTURE.md`; the list grew from 29 to 62 across two adversarial review passes, which added coverage for zero-row aggregates, live mode, the parent matrix, lifecycle initialisation, concurrency, invariants L1–L3 and L11, and the three protocol tables.
+All of the following must pass through automated database tests before PR 1 opens. Each is a blocking requirement. Every test maps to an invariant in `ARCHITECTURE.md`; the list grew from 29 to 69 across four review passes, which added coverage for zero-row aggregates, live mode, the parent matrix, lifecycle initialisation, concurrency, invariants L1–L3 and L11–L12, `service_role` privileges, the persisted checkout attempt, and reversed-refund accounting.
 
 ### Schema and reproducibility
 1. Migrations apply cleanly to a fresh database.
 2. Every `finance` object is created entirely from tracked migrations — nothing pre-existing is assumed.
 3. A complete Supabase reset succeeds end to end.
-4. All nine enum types exist with exactly the values listed in ARCHITECTURE §1.
+4. All eleven enum types exist with exactly the values listed in ARCHITECTURE §1, and all five views exist.
 
 ### Append-only enforcement
 5. Ledger entries cannot be updated through normal roles.
@@ -125,47 +125,56 @@ All of the following must pass through automated database tests before PR 1 open
 26. Future-dated amendments are rejected on insert with no tolerance window, and the view excludes any that reach the table.
 27. A blank or whitespace-only `reason` is rejected; a negative `amount_cents` is rejected.
 
-### Ledger invariants L1–L11
+### Ledger invariants L1–L12
 28. **L1** — a `stripe_payment` is rejected without `provider_payment_intent_id`, with `source <> 'stripe'`, with a non-positive amount, or with a parent.
 29. **L2** — an `external_payment` is rejected without `external_method` or `recorded_by`, with `source <> 'external'`, with a non-positive amount, or with a parent.
 30. **L3** — a `refund` is rejected without `parent_entry_id` or with a positive amount.
 31. **L11** — a ledger entry whose `livemode` disagrees with its originating event or session is rejected; external and imported entries are `livemode = true`.
+32. **L12** — an entry with `source = 'external'`, or of `entry_type = 'reversal'`, is rejected without `recorded_by` or with a blank `reason`. A `stripe_payment` is accepted without them **including when `provider_object_id` is NULL**, so an imported Stripe payment never demands a human actor.
 
 ### Protocol tables
-32. `checkout_sessions` enforces unique `stripe_session_id`, unique `idempotency_key`, and `amount_cents > 0`.
-33. `payment_links` consumption is atomic — two concurrent consumptions of one link yield exactly one winner.
-34. `reconciliation_exceptions` rejects a non-`open` row lacking `resolved_at` or `resolved_by`.
+33. `checkout_sessions` enforces unique `stripe_session_id`, unique `idempotency_key`, and `amount_cents > 0`.
+34. A `checkout_sessions` row in any status other than `creating` is rejected without a `stripe_session_id`.
+35. `payment_links` claim is atomic — two concurrent claims of one link yield exactly one winner, and the loser creates nothing.
+36. A link claim is rejected when the link is `creating`, `consumed`, `revoked`, or past `expires_at`.
+37. `reconciliation_exceptions` rejects a non-`open` row lacking `resolved_at` or `resolved_by`.
+
+### Role privileges
+38. `service_role` can `SELECT` and `INSERT` on the tables the webhook and reconciliation jobs require.
+39. `service_role` cannot `UPDATE` or `DELETE` a row in any of the three append-only fact tables — the trigger raises despite the elevated role.
+40. `anon` and `PUBLIC` have no privilege on any `finance` object, including after `ALTER DEFAULT PRIVILEGES` is applied.
 
 ### Ledger correctness
-35. A payment increases net Received exactly once.
-36. A duplicate provider object cannot double-count — a second entry with the same `(provider_object_id, livemode)` is rejected (L8).
-37. A duplicate payment intent on a `stripe_payment` is rejected (L8b).
-38. A refund reduces net Received.
-39. A partial refund works and leaves the correct balance.
-40. Two partial refunds against one charge both succeed and accumulate.
-41. A refund exceeding the parent's settled amount is rejected.
-42. Cumulative refunds exceeding the parent's settled amount are rejected, including under concurrent insertion.
-43. A refund may not target a refund or a reversal.
-44. A reversal requires a valid parent and must exactly negate it.
-45. A reversal is rejected when the parent has an **unreversed** child — the partial-refund-then-reverse double-subtraction case.
-46. **The full unwind executes:** payment, then refund, then reversal-of-refund, then reversal-of-payment succeeds and net Received returns to `0`. A no-children rule would make this impossible.
-47. An entry cannot be reversed twice.
-48. Reversing a refund restores the **parent payment's** refund headroom under L7.
-49. An entry cannot reference itself as parent; parent and child must share an agreement.
-50. A ledger entry cannot be inserted without an agreement.
-51. `(legacy_donation_id, entry_type)` is unique, so a re-run import cannot duplicate — while still permitting one legacy row to yield both a payment and its refund.
+41. A payment increases net Received exactly once.
+42. A duplicate provider object cannot double-count — a second entry with the same `(provider_object_id, livemode)` is rejected (L8).
+43. A duplicate payment intent on a `stripe_payment` is rejected (L8b).
+44. A refund reduces net Received.
+45. A partial refund works and leaves the correct balance.
+46. Two partial refunds against one charge both succeed and accumulate.
+47. A refund exceeding the parent's settled amount is rejected.
+48. Cumulative refunds exceeding the parent's settled amount are rejected, including under concurrent insertion.
+49. A refund may not target a refund or a reversal.
+50. A reversal requires a valid parent and must exactly negate it.
+51. A reversal is rejected when the parent has an **unreversed** child — the partial-refund-then-reverse double-subtraction case.
+52. **The full unwind executes:** payment, then refund, then reversal-of-refund, then reversal-of-payment succeeds and net Received returns to `0`. A no-children rule would make this impossible.
+53. An entry cannot be reversed twice.
+54. Reversing a refund restores the **parent payment's** refund headroom under L7.
+55. An entry cannot reference itself as parent; parent and child must share an agreement.
+56. A ledger entry cannot be inserted without an agreement.
+57. `(legacy_donation_id, entry_type)` is unique, so a re-run import cannot duplicate — while still permitting one legacy row to yield both a payment and its refund.
 
 ### Calculations
-52. An agreement with **no ledger entries** returns `0` for every aggregate and `unpaid` — not `NULL`, and not `partial`. Every aggregate is `COALESCE`d.
-53. `remaining_cents` and `payable_remaining_cents` calculate correctly across the full range of states, and both are `NULL` when `contribution_applies` is false.
-54. Overpayment produces a negative `remaining_cents` and a zero `payable_remaining_cents`.
-55. A refunded-to-zero agreement is distinguishable from one that never received payment — `refunded` versus `unpaid`.
-56. A payment recorded in error and then reversed returns `unpaid`, not `refunded`.
-57. A gift agreement returns `not_applicable` with NULL remaining, and its money still counts toward member and journey Received while contributing nothing to Remaining totals.
-58. `payment_state` returns exactly one deterministic value for every row of the reachable-state table in ARCHITECTURE §8.
-59. `livemode = false` entries are excluded from canonical balances and appear only in the founder-only test view.
-60. Aggregate views derive from `v_agreement_balances` and contain no independent financial formula.
-61. `v_agreement_lifecycle` is the only expression of current lifecycle, and lifecycle never affects a balance column.
+58. An agreement with **no ledger entries** returns `0` for every aggregate and `unpaid` — not `NULL`, and not `partial`. Every aggregate is `COALESCE`d.
+59. `remaining_cents` and `payable_remaining_cents` calculate correctly across the full range of states, and both are `NULL` when `contribution_applies` is false.
+60. Overpayment produces a negative `remaining_cents` and a zero `payable_remaining_cents`.
+61. A refunded-to-zero agreement is distinguishable from one that never received payment — `refunded` versus `unpaid`.
+62. A payment recorded in error and then reversed returns `unpaid`, not `refunded`.
+63. **A refund that is itself reversed does not count toward `refunded_cents`**, and a fully unwound agreement (payment, refund, reversal-of-refund, reversal-of-payment) returns `unpaid` — not `refunded`.
+64. A gift agreement returns `not_applicable` with NULL remaining, and its money still counts toward member and journey Received while contributing nothing to Remaining totals.
+65. `payment_state` returns exactly one deterministic value for every row of the reachable-state table in ARCHITECTURE §8.
+66. `livemode = false` entries are excluded from canonical balances and appear only in the founder-only test view.
+67. Aggregate views derive from `v_agreement_balances` and contain no independent financial formula.
+68. `v_agreement_lifecycle` is the only expression of current lifecycle, and lifecycle never affects a balance column.
 
 ### Currency
-62. USD constraints hold — a non-USD agreement or ledger entry is rejected.
+69. USD constraints hold — a non-USD agreement or ledger entry is rejected.

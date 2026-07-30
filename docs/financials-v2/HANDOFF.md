@@ -8,7 +8,9 @@
 ## Current status
 
 **Phase:** PR 0 — architecture and project-control documents.
-**State:** Documents written. Three review passes run: an adversarial model review (29 findings, 9 blockers) and an internal-consistency check (9 defects, 3 blockers). All resolved. Awaiting independent review.
+**State:** **PR 0 is not approved.** Documents written and revised across four review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), an external review of PR #838 (7 findings, B-3 … B-9), and a clean-context re-verification (1 blocker, 6 minors). All resolved. Awaiting independent re-review.
+
+The clean-context pass caught a defect introduced by the B-7 fix itself: L12 originally defined "provider-originated" as `source='stripe' AND provider_object_id IS NOT NULL`, which contradicted L1 and D-020 — a Stripe payment imported without a charge-object id would have demanded a human actor that no document assigned. L12 now keys on `source` alone.
 
 | PR | Outcome | State |
 |---|---|---|
@@ -31,7 +33,20 @@ The identity **design** is settled: `finance.agreements.member_id` references `p
 **Resolution:** PR 1 confirms both, adds a unique index after verifying no duplicates if none exists, and records the answer as a superseding `DECISIONS.md` entry.
 
 ### B-2 — PR 0 review not yet complete (blocks PR 1)
-Per the working agreement, implementation waits on reviewer confirmation that the documents contain no unresolved contradiction in the financial model.
+Per the working agreement, implementation waits on reviewer confirmation that the documents contain no unresolved contradiction in the financial model. **PR 0 is explicitly not approved.**
+
+### B-3 … B-9 — External review findings on PR #838 (resolved, pending re-review)
+All seven are resolved in the current revision and listed here for the re-reviewer to confirm.
+
+| ID | Finding | Resolution |
+|---|---|---|
+| B-3 | `PR_PLAN` said nine enums and omitted `v_agreement_lifecycle` from PR 1's contents | Eleven enums and five views stated in both documents; test 4 covers both |
+| B-4 | A reversed refund left the member marked `refunded` | `refunded_cents` counts **unreversed** refunds only; test 63 |
+| B-5 | Payment-link design assumed Stripe and Postgres share one transaction | Replaced by a persisted three-phase attempt with a deterministic Stripe idempotency key and a sweeper (D-024) |
+| B-6 | Refund statuses, failed refunds and list pagination unmodelled | Only `succeeded` refunds enter the ledger; regression raises an exception; enumeration is paginated (D-025) |
+| B-7 | Founder-recorded refunds and reversals could be saved without actor or reason | L12 requires both on every non-provider-originated entry (D-026) |
+| B-8 | Grants omitted `service_role`, which the webhook requires | Explicit grant table including `service_role`, with no fact-table `UPDATE`/`DELETE` (D-027) |
+| B-9 | D-016 named four legacy-read surfaces then said three | Corrected to four; a duplicated sentence in ARCHITECTURE §0a also removed |
 
 ## Open risks
 
@@ -61,7 +76,7 @@ Noticed during audit or design, deliberately not folded into any current PR.
 
 ## Decisions carried forward
 
-D-001 … D-023 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. No decision is open. See [DECISIONS.md](DECISIONS.md).
+D-001 … D-027 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**; its atomic- and permanent-consumption behaviour stands. No decision is open. See [DECISIONS.md](DECISIONS.md).
 
 ## Working agreement
 

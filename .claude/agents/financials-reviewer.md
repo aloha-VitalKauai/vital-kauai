@@ -36,7 +36,7 @@ You come to this fresh. Read `docs/financials-v2/ARCHITECTURE.md`, `DECISIONS.md
 - Every aggregate is `COALESCE`d. `SUM` over zero rows returns `NULL`.
 - Stripe-confirmed and founder-recorded money remain distinguishable by column, not convention.
 - Integer cents throughout; no floating point; no negative or `NULL` amount can reach a payment provider.
-- Ledger invariants L1–L11 **and L8b** match the migration's actual constraints — not the comments claiming them.
+- Ledger invariants L1–L12 **and L8b** match the migration's actual constraints — not the comments claiming them.
 
 **Evidence.** Does the PR contain real test output, or a claim of test output? Does the output correspond to the tests the brief required? Are failures disclosed?
 
