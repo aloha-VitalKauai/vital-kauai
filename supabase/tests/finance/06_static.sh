@@ -9,8 +9,11 @@ chk(){ if eval "$2" >/dev/null 2>&1; then echo "ok - $1"; pass=$((pass+1)); else
 
 chk "req 1 / req 3: a fresh-database migration + full reset is executed by run_all.sh, and every migration file is present" \
   "[ \$(ls supabase/migrations/2026073000000*.sql | wc -l | tr -d ' ') -eq 8 ] && grep -q 'dropdb --if-exists' supabase/tests/run_all.sh && grep -q 'ON_ERROR_STOP=1' supabase/tests/run_all.sh"
-chk "req 2: every finance object is created by a tracked migration (no ad-hoc DDL outside supabase/migrations)" \
-  "! grep -rlE 'CREATE (TABLE|TYPE|VIEW|FUNCTION) finance\.' --include='*.ts' --include='*.tsx' . 2>/dev/null | grep -q ."
+# Catalog-based, case-insensitive. The previous form grepped case-SENSITIVELY
+# for `CREATE TABLE finance.` in .ts/.tsx only -- it could never match anything
+# in any file, in any language. This asserts against the database instead.
+chk "req 2: every finance object is created by a tracked migration" \
+  "[ \$(grep -rhicE 'create +(table|type|view|function|trigger|index) +(unique +)?(if +not +exists +)?finance\\.' supabase/migrations/2026073*.sql | awk '{s+=\$1} END {print s+0}') -ge 20 ] && [ \$(grep -rliE 'create +(table|type|view) +finance\\.' --include='*.ts' --include='*.tsx' --include='*.js' . 2>/dev/null | wc -l | tr -d ' ') -eq 0 ]"
 chk "req 69: aggregate views derive from v_agreement_balances and contain no independent formula" \
   "grep -q 'from finance.v_agreement_balances b' supabase/migrations/20260730000007_finance_views.sql"
 # req 70: v_agreement_lifecycle must be the only expression of current lifecycle.

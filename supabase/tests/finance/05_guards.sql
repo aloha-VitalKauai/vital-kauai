@@ -1,6 +1,7 @@
 begin;
 create extension if not exists pgtap;
-select plan(16);
+\i supabase/tests/_test_helpers.sql
+select plan(17);
 
 insert into auth.users (id,email) values
   ('11111111-1111-1111-1111-111111111111','f@t'),('22222222-2222-2222-2222-222222222222','m@t');
@@ -40,8 +41,7 @@ select is((select status::text from finance.payment_links where id=(select id fr
 select ok((select revoked_at is not null and revoked_by='11111111-1111-1111-1111-111111111111'::uuid
            from finance.payment_links where id=(select id from lk)),
           'finding 4: revocation carries actor attribution computed internally');
-select throws_ok($$ select finance.revoke_payment_link((select id from lk)) $$,null,null,
-                 'finding 4: a second revoke raises');
+select throws_real($$ select finance.revoke_payment_link((select id from lk)) $$, 'finding 4: a second revoke raises');
 -- Scoped to the application roles. The table owner implicitly holds every
 -- privilege; that is inherent to ownership, not a grant this PR made.
 select is((select count(*)::int from information_schema.column_privileges
@@ -56,8 +56,7 @@ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,d
 create temp table e9 as select id from finance.reconciliation_exceptions limit 1;
 select lives_ok($$ select finance.quarantine_object((select id from e9)) $$,'nit 9: quarantine succeeds');
 select lives_ok($$ select finance.resolve_exception((select id from e9),'resolved','done') $$,'nit 9: resolution wins over quarantine');
-select throws_ok($$ select finance.release_quarantine((select id from e9),'late') $$,null,null,
-                 'nit 9: release_quarantine rejects a non-open row, matching quarantine_object');
+select throws_real($$ select finance.release_quarantine((select id from e9),'late') $$, 'nit 9: release_quarantine rejects a non-open row, matching quarantine_object');
 
 -- ===== finding 10: f_balances must stay security invoker =====
 select is((select p.prosecdef::text from pg_proc p join pg_namespace n on n.oid=p.pronamespace
@@ -75,8 +74,7 @@ select is((select count(*)::int from pg_constraint c
            where nh.nspname='finance' and np.nspname='auth' and pt.relname='users'
              and c.confdeltype <> 'r'), 0,
           'finding 3: every finance -> auth.users FK is ON DELETE RESTRICT');
-select throws_ok($$ delete from auth.users where id='11111111-1111-1111-1111-111111111111' $$,null,null,
-  'finding 3: deleting an actor with financial history is REFUSED, not cascaded (D-073)');
+select throws_real($$ delete from auth.users where id='11111111-1111-1111-1111-111111111111' $$, 'finding 3: deleting an actor with financial history is REFUSED, not cascaded (D-073)');
 select lives_ok($$ delete from auth.users where id='22222222-2222-2222-2222-222222222222' $$,
   'finding 3: an auth user with no financial attribution still deletes normally');
 

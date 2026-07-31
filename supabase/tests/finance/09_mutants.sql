@@ -1,5 +1,6 @@
 begin;
 create extension if not exists pgtap;
+\i supabase/tests/_test_helpers.sql
 select plan(13);
 -- Each assertion here exists to KILL a mutant that survived mutation.sh.
 -- They are written so the safeguard, not a CHECK constraint or a grant, is the
@@ -15,37 +16,31 @@ create temp table ag as select id from finance.agreements limit 1;
 
 -- ===== mutant: payment_links insert guard =====
 -- Every CHECK is satisfied here, so ONLY the trigger can reject it.
-select throws_ok($$ insert into finance.payment_links(agreement_id,token_hash,status,expires_at,created_by,revoked_at,revoked_by)
-  select id,'tok_forge','revoked',now()+interval '1 day','11111111-1111-1111-1111-111111111111',now(),'11111111-1111-1111-1111-111111111111' from ag $$,
-  null,null,'mutant kill: a link cannot be INSERTed already revoked with forged attribution');
-select throws_ok($$ insert into finance.payment_links(agreement_id,token_hash,status,expires_at,created_by,claimed_at)
-  select id,'tok_claim','creating',now()+interval '1 day','11111111-1111-1111-1111-111111111111',now() from ag $$,
-  null,null,'mutant kill: a link cannot be INSERTed already claimed');
-select throws_ok($$ insert into finance.payment_links(agreement_id,token_hash,expires_at,created_by,attempt_count)
-  select id,'tok_att',now()+interval '1 day','11111111-1111-1111-1111-111111111111',5 from ag $$,
-  null,null,'mutant kill: a link cannot be INSERTed with a non-zero attempt_count');
+select throws_real($$ insert into finance.payment_links(agreement_id,token_hash,status,expires_at,created_by,revoked_at,revoked_by)
+  select id,'tok_forge','revoked',now()+interval '1 day','11111111-1111-1111-1111-111111111111',now(),'11111111-1111-1111-1111-111111111111' from ag $$, 'mutant kill: a link cannot be INSERTed already revoked with forged attribution');
+select throws_real($$ insert into finance.payment_links(agreement_id,token_hash,status,expires_at,created_by,claimed_at)
+  select id,'tok_claim','creating',now()+interval '1 day','11111111-1111-1111-1111-111111111111',now() from ag $$, 'mutant kill: a link cannot be INSERTed already claimed');
+select throws_real($$ insert into finance.payment_links(agreement_id,token_hash,expires_at,created_by,attempt_count)
+  select id,'tok_att',now()+interval '1 day','11111111-1111-1111-1111-111111111111',5 from ag $$, 'mutant kill: a link cannot be INSERTed with a non-zero attempt_count');
 
 -- ===== mutant: payment_links revocation terminality =====
 insert into finance.payment_links(agreement_id,token_hash,expires_at,created_by)
   select id,'tok_ok',now()+interval '1 day','11111111-1111-1111-1111-111111111111' from ag;
 create temp table lk as select id from finance.payment_links limit 1;
 select lives_ok($$ select finance.revoke_payment_link((select id from lk)) $$,'a founder revokes the link');
-select throws_ok($$ update finance.payment_links set status='active' where id=(select id from lk) $$,
-  null,null,'mutant kill: a revoked link cannot be reactivated');
-select throws_ok($$ update finance.payment_links set revoked_by='11111111-1111-1111-1111-111111111111', revoked_at=now()-interval '1 day' where id=(select id from lk) $$,
-  null,null,'mutant kill: revocation attribution is frozen');
+select throws_real($$ update finance.payment_links set status='active' where id=(select id from lk) $$, 'mutant kill: a revoked link cannot be reactivated');
+select throws_real($$ update finance.payment_links set revoked_by='11111111-1111-1111-1111-111111111111', revoked_at=now()-interval '1 day' where id=(select id from lk) $$, 'mutant kill: revocation attribution is frozen');
 
 -- ===== mutant: run insert guard =====
 -- Report columns are supplied so run_no_approval_without_report is satisfied
 -- and every CHECK passes; only the trigger can reject this.
-select throws_ok($$ insert into finance.reconciliation_runs
+select throws_real($$ insert into finance.reconciliation_runs
   (livemode,implementation_version,window_start,window_end,dry_run,status,window_exhausted,finished_at,
    would_create_count,would_reopen_count,prospective_by_kind,report_version,report_completed_at,
    approved_by,approved_at,approval_note)
   values (true,'v1',now()-interval '1 day',now(),true,'completed',true,now(),
           0,0,'{}'::jsonb,'r',now(),
-          '11111111-1111-1111-1111-111111111111',now(),'forged') $$,
-  null,null,'mutant kill: a run cannot be INSERTed already approved even with a complete report');
+          '11111111-1111-1111-1111-111111111111',now(),'forged') $$, 'mutant kill: a run cannot be INSERTed already approved even with a complete report');
 
 -- ===== mutant: agreement completeness (deferred constraint) =====
 -- Exercised at statement level, not inside a DO block, so the deferred
@@ -62,8 +57,7 @@ select is((select count(*)::int from pg_trigger t join pg_class c on c.oid=t.tgr
 savepoint sp_defer;
 insert into finance.agreements(member_id,journey_id,purpose,created_by)
   values ('aaaaaaaa-0000-0000-0000-00000000000a',null,'other','11111111-1111-1111-1111-111111111111');
-select throws_ok($$ set constraints finance.agreement_has_lifecycle immediate $$,
-  null,null,'an agreement with no initial lifecycle event fails the deferred check');
+select throws_real($$ set constraints finance.agreement_has_lifecycle immediate $$, 'an agreement with no initial lifecycle event fails the deferred check');
 rollback to savepoint sp_defer;
 
 -- ===== mutant: lifecycle view ordering drift =====
@@ -83,9 +77,8 @@ select lives_ok($$ insert into finance.agreement_lifecycle_events(agreement_id,f
   'D-074: enforcement accepts a transition from the state the view reports');
 -- ...and one matching the EARLIER state is rejected, proving both derivations
 -- resolve to the same event.
-select throws_ok($$ insert into finance.agreement_lifecycle_events(agreement_id,from_status,to_status,reason,actor_id)
-  select id,'draft','canceled','stale','11111111-1111-1111-1111-111111111111' from ag $$,
-  null,null,'D-074: enforcement rejects a transition from the superseded state');
+select throws_real($$ insert into finance.agreement_lifecycle_events(agreement_id,from_status,to_status,reason,actor_id)
+  select id,'draft','canceled','stale','11111111-1111-1111-1111-111111111111' from ag $$, 'D-074: enforcement rejects a transition from the superseded state');
 
 select * from finish();
 rollback;

@@ -1,0 +1,20 @@
+[
+ "supabase/tests/atomicity_sim.sh",
+ "supabase/tests/concurrency.sh",
+ "supabase/tests/finance/01_structure.sql",
+ "supabase/tests/finance/02_behaviour.sql",
+ "supabase/tests/finance/03_access.sql",
+ "supabase/tests/finance/04_coverage.sql",
+ "supabase/tests/finance/05_guards.sql",
+ "supabase/tests/finance/06_static.sh",
+ "supabase/tests/finance/07_completion.sql",
+ "supabase/tests/finance/08_no_placeholders.sh",
+ "supabase/tests/finance/09_mutants.sql",
+ "supabase/tests/finance/10_inventory.sh",
+ "supabase/tests/finance/11_member_reads.sql",
+ "supabase/tests/harness_gate.sh",
+ "supabase/tests/mutation.sh",
+ "supabase/tests/run_all.sh",
+ "supabase/tests/runsql.sh",
+ "supabase/tests/sabotage.sh"
+]

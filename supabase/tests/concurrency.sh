@@ -165,7 +165,8 @@ exec 5>&-; exec 6>&-
 sleep 1
 
 # --------------------------------------------------------------- assertions
-psql -X -q -tA -d "$DB" <<'SQL'
+TAPOUT=$(mktemp)
+psql -X -q -tA -d "$DB" > "$TAPOUT" 2>&1 <<'SQL'
 create extension if not exists pgtap;
 select plan(14);
 select is((select detail from conc_result where name='r21_s2_blocked'),'yes',
@@ -198,3 +199,13 @@ select is((select count(*)::int from conc_result where name like 'child_died%'),
   'no child psql session exited early during any test (finding 7)');
 select * from finish();
 SQL
+
+cat "$TAPOUT"
+if grep -q '^not ok' "$TAPOUT"; then
+  echo "CONCURRENCY FAILURES:"; grep '^not ok' "$TAPOUT"; rm -f "$TAPOUT"; exit 1
+fi
+if ! grep -q '^ok 14' "$TAPOUT"; then
+  echo "not ok - concurrency suite did not run all 14 assertions"; rm -f "$TAPOUT"; exit 1
+fi
+rm -f "$TAPOUT"
+exit 0

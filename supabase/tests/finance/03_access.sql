@@ -1,5 +1,6 @@
 begin;
 create extension if not exists pgtap;
+\i supabase/tests/_test_helpers.sql
 select plan(39);
 
 insert into auth.users (id,email) values
@@ -41,12 +42,10 @@ select is((select count(*)::int from finance.reconciliation_exceptions), 0, 'tes
 select is((select count(*)::int from finance.reconciliation_runs), 0, 'test 75: members see no runs');
 
 -- test 9: a member cannot insert a financial fact
-select throws_ok($$ insert into finance.agreements (member_id,purpose,created_by)
-  values ('bbbbbbbb-0000-0000-0000-00000000000b','other','33333333-3333-3333-3333-333333333333') $$,
-  null,null,'test 9: a member cannot insert an agreement');
-select throws_ok($$ insert into finance.ledger_entries (agreement_id,entry_type,amount_cents,source,provider_payment_intent_id,occurred_at,livemode)
-  select id,'stripe_payment',1,'stripe','pi_z',now(),true from finance.agreements limit 1 $$,
-  null,null,'test 9: a member cannot insert a ledger entry');
+select throws_real($$ insert into finance.agreements (member_id,purpose,created_by)
+  values ('bbbbbbbb-0000-0000-0000-00000000000b','other','33333333-3333-3333-3333-333333333333') $$, 'test 9: a member cannot insert an agreement');
+select throws_real($$ insert into finance.ledger_entries (agreement_id,entry_type,amount_cents,source,provider_payment_intent_id,occurred_at,livemode)
+  select id,'stripe_payment',1,'stripe','pi_z',now(),true from finance.agreements limit 1 $$, 'test 9: a member cannot insert a ledger entry');
 reset role;
 
 -- founder sees everything (test 10)

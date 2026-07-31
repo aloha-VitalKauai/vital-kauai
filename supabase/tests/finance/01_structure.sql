@@ -10,30 +10,30 @@ select is((select count(*)::int from pg_tables where schemaname='finance'), 9, '
 select is((select count(*)::int from pg_views where schemaname='finance'), 5, 'exactly 5 views');
 
 -- All 9 tables by name
-select has_table('finance','agreements','agreements'),
-       has_table('finance','agreement_amounts','agreement_amounts'),
-       has_table('finance','agreement_lifecycle_events','agreement_lifecycle_events'),
-       has_table('finance','ledger_entries','ledger_entries'),
-       has_table('finance','stripe_events','stripe_events'),
-       has_table('finance','checkout_sessions','checkout_sessions'),
-       has_table('finance','payment_links','payment_links'),
-       has_table('finance','reconciliation_exceptions','reconciliation_exceptions'),
-       has_table('finance','reconciliation_runs','reconciliation_runs');
+select has_table('finance','agreements','table agreements exists');
+select has_table('finance','agreement_amounts','table agreement_amounts exists');
+select has_table('finance','agreement_lifecycle_events','table agreement_lifecycle_events exists');
+select has_table('finance','ledger_entries','table ledger_entries exists');
+select has_table('finance','stripe_events','table stripe_events exists');
+select has_table('finance','checkout_sessions','table checkout_sessions exists');
+select has_table('finance','payment_links','table payment_links exists');
+select has_table('finance','reconciliation_exceptions','table reconciliation_exceptions exists');
+select has_table('finance','reconciliation_runs','table reconciliation_runs exists');
 
 -- All 5 views by name
-select has_view('finance','v_agreement_lifecycle','v_agreement_lifecycle'),
-       has_view('finance','v_agreement_balances','v_agreement_balances'),
-       has_view('finance','v_agreement_balances_test','v_agreement_balances_test'),
-       has_view('finance','v_member_financials','v_member_financials'),
-       has_view('finance','v_journey_financials','v_journey_financials');
+select has_view('finance','v_agreement_lifecycle','view v_agreement_lifecycle exists');
+select has_view('finance','v_agreement_balances','view v_agreement_balances exists');
+select has_view('finance','v_agreement_balances_test','view v_agreement_balances_test exists');
+select has_view('finance','v_member_financials','view v_member_financials exists');
+select has_view('finance','v_journey_financials','view v_journey_financials exists');
 
 -- All 6 functions
-select has_function('finance','current_member_id','current_member_id()'),
-       has_function('finance','create_agreement','create_agreement()'),
-       has_function('finance','approve_dry_run','approve_dry_run()'),
-       has_function('finance','resolve_exception','resolve_exception()'),
-       has_function('finance','release_quarantine','release_quarantine()'),
-       has_function('finance','quarantine_object','quarantine_object()');
+select has_function('finance','current_member_id','function current_member_id exists');
+select has_function('finance','create_agreement','function create_agreement exists');
+select has_function('finance','approve_dry_run','function approve_dry_run exists');
+select has_function('finance','resolve_exception','function resolve_exception exists');
+select has_function('finance','release_quarantine','function release_quarantine exists');
+select has_function('finance','quarantine_object','function quarantine_object exists');
 
 -- run_status has five values (D-045/D-072)
 select is((select count(*)::int from pg_enum e join pg_type t on t.oid=e.enumtypid
