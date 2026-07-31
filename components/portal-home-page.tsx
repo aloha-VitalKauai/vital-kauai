@@ -619,36 +619,30 @@ export function PortalHomePage({
               ) : null}
             </div>
 
-            {/* WIDER CIRCLE — non-personalized; signals the broader team */}
+            {/* FUNCTIONAL MEDICINE — Dr. Matt Montee */}
             <div className={styles.teamCard}>
-              <div className={styles.circlePhotos}>
-                <Image
-                  src="/images/about/josh-perdue.jpg"
-                  alt="Josh"
-                  width={56}
-                  height={56}
-                  className={styles.circlePhoto}
-                />
-                <Image
-                  src="/images/about/rachel-nelson.jpg"
-                  alt="Rachel"
-                  width={56}
-                  height={56}
-                  className={styles.circlePhoto}
-                />
-                <Image
-                  src="/images/judithjohnson.jpeg"
-                  alt="Judith Johnson"
-                  width={56}
-                  height={56}
-                  className={styles.circlePhoto}
-                />
-              </div>
-              <p className={styles.teamRole}>The Wider Circle</p>
-              <p className={styles.teamName}>A Whole Team</p>
+              <Image
+                src="/images/mattmontee.jpeg"
+                alt="Dr. Matt Montee"
+                width={92}
+                height={92}
+                className={styles.teamPhoto}
+              />
+              <p className={styles.teamRole}>Founder &middot; Intelligent Medicines</p>
+              <p className={styles.teamName}>Dr. Matt Montee</p>
               <p className={styles.teamBio}>
-                Behind every ceremony is a circle of practitioners, somatic specialists, and
-                integration guides, holding you in concert with Rachel and Josh.
+                Matt Montee is a Certified Functional Medicine Practitioner whose clinical
+                foundation was built in orthopedics and sports medicine at Cornell University and
+                the Hospital for Special Surgery. Through advanced training with the Kresser
+                Institute, he developed specialized expertise in stem cells, peptides, ozone, and
+                prolozone therapies&mdash;placing him at the intersection of clinical medicine and
+                next-generation therapeutics.
+              </p>
+              <p className={styles.teamBio}>
+                As founder of Intelligent Medicines, Montee has built a modern care model centered
+                on precision medicine, root-cause treatment, and human performance optimization. He
+                pairs data-driven protocols with advanced biologics to address chronic conditions,
+                accelerate recovery, and extend healthspan.
               </p>
             </div>
           </div>
