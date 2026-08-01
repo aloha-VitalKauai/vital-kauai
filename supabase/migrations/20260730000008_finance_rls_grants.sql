@@ -65,8 +65,10 @@ create policy founder_reads_amounts on finance.agreement_amounts
 create policy founder_reads_lifecycle on finance.agreement_lifecycle_events
   for select to authenticated using (public.is_founder());
 
+-- livemode = true is part of the member predicate: test-mode money must be
+-- invisible on every member path, not merely filtered by the canonical view.
 create policy member_reads_own_ledger on finance.ledger_entries
-  for select to authenticated using (exists (
+  for select to authenticated using (livemode = true and exists (
     select 1 from finance.agreements a
     where a.id = agreement_id and a.member_id = finance.current_member_id()));
 create policy founder_reads_ledger on finance.ledger_entries
@@ -76,7 +78,7 @@ create policy founder_reads_stripe_events on finance.stripe_events
   for select to authenticated using (public.is_founder());
 
 create policy member_reads_own_sessions on finance.checkout_sessions
-  for select to authenticated using (exists (
+  for select to authenticated using (livemode = true and exists (
     select 1 from finance.agreements a
     where a.id = agreement_id and a.member_id = finance.current_member_id()));
 create policy founder_reads_sessions on finance.checkout_sessions

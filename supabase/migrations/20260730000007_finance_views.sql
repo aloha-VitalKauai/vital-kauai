@@ -96,9 +96,15 @@ create view finance.v_agreement_balances
   select * from finance.f_balances(true);
 
 -- 3 -------------------------------------------- v_agreement_balances_test
+-- FOUNDER-ONLY, enforced in the view body (ARCHITECTURE §8: test-mode money
+-- "never appears in a member or founder figure ... founder-only"). Granting
+-- SELECT to `authenticated` and leaning on base-table RLS did NOT deliver that:
+-- no member policy was conditioned on livemode, so a non-founder member saw
+-- their own test-mode rows here. The predicate lives in the body so a direct
+-- read cannot bypass it.
 create view finance.v_agreement_balances_test
   with (security_invoker = true, security_barrier = true) as
-  select * from finance.f_balances(false);
+  select * from finance.f_balances(false) where public.is_founder();
 
 -- 4 -------------------------------------------------- v_member_financials
 -- Aggregates FROM v_agreement_balances and never recomputes a formula.
