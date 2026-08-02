@@ -4,7 +4,7 @@
 # The migration MUST fail AND leave proconfig unchanged.
 set -euo pipefail
 export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"; export LC_ALL="en_US.UTF-8"
-DB=atom_sim
+DB="${PGTAP_DB:-fin_v2}_atom"
 dropdb --if-exists "$DB"; createdb "$DB"
 psql -q -d "$DB" -v ON_ERROR_STOP=1 -f supabase/tests/_local_bootstrap.sql
 

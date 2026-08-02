@@ -806,3 +806,52 @@ Requirement 70 as originally written ("the only expression of current lifecycle"
 **Constraints this places on both.** The trigger and the view **must use identical ordering and tie-breaking**: `occurred_at DESC, seq DESC`. If they diverge, enforcement and reporting disagree about the same agreement — the exact class of defect Financials V2 exists to remove. This is asserted by test, not by convention.
 
 **Enforced by allowlist.** A static check fails if any object other than `v_agreement_lifecycle` and `tg_lifecycle_transition` derives lifecycle state from `agreement_lifecycle_events`, so a third implementation cannot appear silently.
+
+## D-075 — The resolution boundary is execution identity, not a session variable
+
+**Decision.** `finance.reconciliation_exceptions.resolution_status`, `resolved_at`,
+`resolved_by` and `resolution_note` are writable only through
+`finance.resolve_exception()`. Enforcement is layered:
+
+1. no application role holds `UPDATE` on those columns, so a direct write fails
+   the privilege check (42501) before any trigger runs;
+2. `finance.tg_exception_resolution_guard()` rejects any remaining direct write
+   whose `current_user` is not the owner of `finance.resolve_exception()`. The
+   trigger function is **`SECURITY INVOKER`, deliberately**: as `SECURITY
+   DEFINER` its `current_user` would be the trusted owner for *every* caller and
+   the check would admit everyone — the first implementation had exactly that
+   bug, undetected because probes died at the privilege layer before reaching
+   the trigger. The trusted owner is resolved through the exact schema-qualified
+   signature (`to_regprocedure('finance.resolve_exception(uuid,
+   finance.exception_resolution, text)')`), so an overload or similarly named
+   function cannot change which owner is trusted;
+3. `finance.resolve_exception()` is `SECURITY DEFINER`, founder-gated, owned by
+   the migration owner, with `search_path` pinned to `pg_catalog, public, finance`.
+
+**Rejected alternative.** An earlier implementation gated the trigger on a
+transaction-local GUC that `resolve_exception()` set. It was removed before
+merge: any caller could set that GUC and write directly, so it was a documented
+bypass rather than a boundary. No GUC gates any finance guard.
+
+**Trusted administrative boundary.** Requirement 121 originally read "every
+role". PostgreSQL cannot exclude a table's owner or a superuser from that table,
+and `SECURITY DEFINER` presupposes a trusted owner. The requirement is therefore
+scoped to application roles, and the owner is named as the administrative
+boundary. Application roles must never be granted that identity, and no
+application code path runs as it.
+
+**Privileges are additive.** The column REVOKEs pin today's ACL; PostgreSQL has
+no negative ACL, so a later table-wide `GRANT UPDATE` would re-confer the four
+columns despite them. The durable protections are the identity trigger and the
+gate: the behavioural suite widens the grant to `service_role` inside a
+rolled-back transaction and proves the write then *reaches the trigger* and is
+rejected by identity — so removing the trigger, or flipping it to
+`SECURITY DEFINER`, fails the build even in a future where the ACL has drifted.
+
+**How this is proven.** `07_completion.sql` asserts: founder succeeds through the
+function; a non-founder is denied through the function; a founder's direct
+`UPDATE` is denied; `service_role`'s direct `UPDATE` is denied; setting the name
+of the removed GUC confers nothing; state is unchanged after every denied write;
+and the trigger admits only the owner identity. `sabotage.sh` flips the trigger function to `SECURITY DEFINER` and the gate must fail. `sabotage.sh` additionally
+removes the trigger and widens the grant, and the gate must fail in both cases.
+

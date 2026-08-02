@@ -1,4 +1,5 @@
 [
+ "supabase/tests/14_helper_selftest.sh",
  "supabase/tests/atomicity_sim.sh",
  "supabase/tests/concurrency.sh",
  "supabase/tests/finance/01_structure.sql",
@@ -15,7 +16,10 @@
  "supabase/tests/finance/12_isolation_posture.sql",
  "supabase/tests/harness_gate.sh",
  "supabase/tests/mutation.sh",
+ "supabase/tests/object_census.sql",
+ "supabase/tests/rebaseline_census.sh",
  "supabase/tests/run_all.sh",
  "supabase/tests/runsql.sh",
- "supabase/tests/sabotage.sh"
+ "supabase/tests/sabotage.sh",
+ "supabase/tests/strip_sql_comments.py"
 ]

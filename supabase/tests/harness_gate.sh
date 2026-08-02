@@ -22,6 +22,7 @@ echo "== inventory =="        ; ./supabase/tests/finance/10_inventory.sh
 echo "== no placeholders ==" ; ./supabase/tests/finance/08_no_placeholders.sh
 echo "== pgTAP (prove: plans enforced, TAP parsed) =="
 prove --exec "bash $PWD/supabase/tests/runsql.sh" supabase/tests/finance/*.sql
+echo "== helper selftest ==" ; ./supabase/tests/14_helper_selftest.sh
 echo "== static =="          ; ./supabase/tests/finance/06_static.sh
 echo "== concurrency =="     ; ./supabase/tests/concurrency.sh >/dev/null
 echo "== atomicity =="       ; ./supabase/tests/atomicity_sim.sh >/dev/null

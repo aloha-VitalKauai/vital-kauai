@@ -241,6 +241,63 @@ begin
   return new;
 end $$;
 
+-- req 121: the four resolution columns are writable ONLY through
+-- finance.resolve_exception(). The boundary is EXECUTION IDENTITY, not a
+-- session variable: there is deliberately nothing a caller can set to obtain
+-- the capability.
+--
+-- SECURITY INVOKER is LOAD-BEARING here. The first implementation was
+-- SECURITY DEFINER, which made current_user the function owner for every
+-- caller -- the identity check compared the owner with itself and admitted
+-- everyone. The guard was a no-op, undetected because every probe died at the
+-- privilege layer and never reached the trigger. As INVOKER, current_user is
+-- the role actually performing the UPDATE; under finance.resolve_exception()
+-- (SECURITY DEFINER) that is the trusted owner, and for any direct caller it
+-- is the caller itself.
+--
+-- The trusted owner is resolved through the EXACT schema-qualified signature
+-- via to_regprocedure, so an overload or similarly named function cannot
+-- change which owner is trusted.
+--
+-- A direct connection AS the migration owner is permitted: that is the
+-- explicit trusted administrative boundary (D-075). Application roles never
+-- reach that identity.
+create function finance.tg_exception_resolution_guard()
+returns trigger
+language plpgsql
+security invoker
+set search_path = pg_catalog, public, finance
+as $fn$
+declare trusted_owner oid;
+begin
+  if (new.resolution_status, new.resolved_at, new.resolved_by, new.resolution_note)
+       is distinct from
+     (old.resolution_status, old.resolved_at, old.resolved_by, old.resolution_note)
+  then
+    select p.proowner into trusted_owner
+      from pg_proc p
+     where p.oid = to_regprocedure(
+       'finance.resolve_exception(uuid, finance.exception_resolution, text)');
+
+    if trusted_owner is null then
+      raise exception
+        'req 121: finance.resolve_exception(uuid, finance.exception_resolution, text) is missing; the resolution boundary cannot be established';
+    end if;
+
+    if current_user::regrole::oid <> trusted_owner then
+      raise exception
+        'req 121: resolution columns are writable only through finance.resolve_exception(); direct UPDATE by % rejected',
+        current_user;
+    end if;
+  end if;
+  return new;
+end
+$fn$;
+
+create trigger exception_resolution_guard
+  before update on finance.reconciliation_exceptions
+  for each row execute function finance.tg_exception_resolution_guard();
+
 create trigger exception_insert_guard before insert on finance.reconciliation_exceptions
   for each row execute function finance.tg_exception_insert_guard();
 

@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap;
 \i supabase/tests/_test_helpers.sql
-select plan(65);
+select plan(80);
 
 insert into auth.users (id,email) values
  ('11111111-1111-1111-1111-111111111111','f@t'),('22222222-2222-2222-2222-222222222222','a@t'),('33333333-3333-3333-3333-333333333333','b@t');
@@ -62,7 +62,7 @@ select is((select refunded_cents from finance.v_agreement_balances where agreeme
 insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,parent_entry_id,occurred_at,livemode,reason,recorded_by) select a.id,'reversal',-500,'stripe',p.id,now(),true,'u','11111111-1111-1111-1111-111111111111' from ag a,pay p;
 select is((select payment_state::text from finance.v_agreement_balances where agreement_id=(select id from ag)),'unpaid','req 65: fully unwound is unpaid');
 select is((select net_received_cents from finance.v_agreement_balances where agreement_id=(select id from ag)),0::bigint,'req 54: the full unwind nets to 0');
-select throws_real($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,parent_entry_id,occurred_at,livemode,reason,recorded_by) select a.id,'reversal',-500,'stripe',p.id,now(),true,'x','11111111-1111-1111-1111-111111111111' from ag a,pay p $$, 'req 55: an entry cannot be reversed twice');
+select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,parent_entry_id,occurred_at,livemode,reason,recorded_by) select a.id,'reversal',-500,'stripe',p.id,now(),true,'x','11111111-1111-1111-1111-111111111111' from ag a,pay p $$, 'P0001', 'L6: parent 1815e4d6-ed3d-455a-b45e-ec5669a7bcca has 1 unreversed', 'req 55: an entry cannot be reversed twice');
 
 -- req 53: reversal blocked while parent has an unreversed child
 select finance.create_agreement('aaaaaaaa-0000-0000-0000-00000000000a',null,'membership','m2');
@@ -70,16 +70,16 @@ create temp table ag2 as select id from finance.agreements where purpose='member
 insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode) select id,'stripe_payment',1000,'stripe','ch_x','pi_x',now(),true from ag2;
 create temp table p2 as select id from finance.ledger_entries where provider_object_id='ch_x';
 insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,parent_entry_id,occurred_at,livemode) select a.id,'refund',-400,'stripe','re_x',p.id,now(),true from ag2 a,p2 p;
-select throws_real($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,parent_entry_id,occurred_at,livemode,reason,recorded_by) select a.id,'reversal',-1000,'stripe',p.id,now(),true,'x','11111111-1111-1111-1111-111111111111' from ag2 a,p2 p $$, 'req 53: reversal blocked by an unreversed child');
+select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,parent_entry_id,occurred_at,livemode,reason,recorded_by) select a.id,'reversal',-1000,'stripe',p.id,now(),true,'x','11111111-1111-1111-1111-111111111111' from ag2 a,p2 p $$, 'P0001', 'L6: parent 15271575-1fe8-4c28-8699-33b031950523 has 1 unreversed', 'req 53: reversal blocked by an unreversed child');
 
 -- req 30b: stripe refund must target a stripe_payment
 insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,external_method,occurred_at,livemode,reason,recorded_by) select id,'external_payment',900,'external','cash',now(),true,'r','11111111-1111-1111-1111-111111111111' from ag2;
 create temp table ep as select id from finance.ledger_entries where entry_type='external_payment' limit 1;
-select throws_real($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,parent_entry_id,occurred_at,livemode) select a.id,'refund',-100,'stripe','re_bad',e.id,now(),true from ag2 a,ep e $$, 'req 30b: a stripe refund cannot target an external_payment');
+select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,parent_entry_id,occurred_at,livemode) select a.id,'refund',-100,'stripe','re_bad',e.id,now(),true from ag2 a,ep e $$, 'P0001', 'L3b: a stripe refund must target a stripe_payment, parent is', 'req 30b: a stripe refund cannot target an external_payment');
 
 -- req 31: L11 livemode must match originating event
 insert into finance.stripe_events(event_id,event_type,object_id,livemode) values ('evt_live','x','o',true);
-select throws_real($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode,origin_stripe_event_id) select id,'stripe_payment',10,'stripe','ch_l','pi_l',now(),false,'evt_live' from ag2 $$, 'req 31: livemode disagreeing with the originating event is rejected');
+select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode,origin_stripe_event_id) select id,'stripe_payment',10,'stripe','ch_l','pi_l',now(),false,'evt_live' from ag2 $$, 'P0001', 'L11: livemode f disagrees with originating event evt_live (livemode t)', 'req 31: livemode disagreeing with the originating event is rejected');
 select lives_ok($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode,origin_stripe_event_id) select id,'stripe_payment',10,'stripe','ch_l2','pi_l2',now(),true,'evt_live' from ag2 $$,'req 31: matching livemode is accepted');
 
 -- req 66/68: gift + livemode filter
@@ -99,29 +99,159 @@ select is((select count(*)::int from finance.v_agreement_balances where payment_
 -- req 80/87/117/127: exception lifecycle
 insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id) values ('amount_mismatch',true,'ch_r');
 create temp table ex as select id from finance.reconciliation_exceptions limit 1;
-select throws_real($$ update finance.reconciliation_exceptions set resolution_status='resolved' where id=(select id from ex) $$, 'req 121: a direct resolution UPDATE is rejected');
+-- ===== req 121 / D-075: resolution columns are FUNCTION-ONLY =====
+-- Every direct-write probe below is well-formed: all four columns are set
+-- consistently, so no earlier CHECK (exc_open_iff_unresolved, exc_note_iff_closed,
+-- exc_note_nonblank) can fire first and mask the boundary under test.
+
+-- The boundary is execution identity. Prove the posture it depends on.
+select is((select p.prosecdef from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+           where n.nspname='finance' and p.proname='resolve_exception'), true,
+  'req 121: resolve_exception is SECURITY DEFINER');
+select is((select p.proowner from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+           where n.nspname='finance' and p.proname='resolve_exception'),
+          (select c.relowner from pg_class c join pg_namespace n on n.oid=c.relnamespace
+           where n.nspname='finance' and c.relname='reconciliation_exceptions'),
+  'req 121: resolve_exception is owned by the trusted migration owner, not a lesser role');
+select is((select array_to_string(p.proconfig,',') from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+           where n.nspname='finance' and p.proname='resolve_exception'),
+  'search_path=pg_catalog, public, finance',
+  'req 121: resolve_exception pins an exact search_path');
+select is((select count(*)::int from information_schema.column_privileges
+           where table_schema='finance' and table_name='reconciliation_exceptions'
+             and privilege_type='UPDATE' and grantee in ('anon','authenticated','service_role')
+             and column_name in ('resolution_status','resolved_at','resolved_by','resolution_note')), 0,
+  'req 121: no application role holds UPDATE on any resolution column');
+select is((select p.prosecdef from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+           where n.nspname='finance' and p.proname='tg_exception_resolution_guard'), false,
+  'req 121: the resolution guard is SECURITY INVOKER -- as DEFINER its identity check would admit every caller');
+
+-- 1. FOUNDER SUCCEEDS through the function.
+insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id) values ('amount_mismatch',true,'ch_r3');
+create temp table ex3 as select id from finance.reconciliation_exceptions where provider_object_id='ch_r3';
+select lives_ok($$ select finance.resolve_exception((select id from ex3), 'resolved'::finance.exception_resolution, 'resolved via the sanctioned path') $$,
+  'req 121: founder resolves successfully through resolve_exception()');
+select is((select resolution_status::text from finance.reconciliation_exceptions where id=(select id from ex3)),
+  'resolved', 'req 121: the sanctioned path actually applied the resolution');
+
+-- Reopen a second exception for the negative probes, so they run against open state.
+insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id) values ('amount_mismatch',true,'ch_r2');
+create temp table ex2 as select id from finance.reconciliation_exceptions where provider_object_id='ch_r2';
+
+-- 2. NON-FOUNDER is denied THROUGH the function.
+do $do$ begin perform set_config('request.jwt.claim.sub','22222222-2222-2222-2222-222222222222', true); end $do$;
+select denied($$ select finance.resolve_exception((select id from ex2), 'resolved'::finance.exception_resolution, 'attempt by a non-founder') $$,
+  'P0001', 'resolve_exception',
+  'req 121: a non-founder is denied through resolve_exception()');
+do $do$ begin perform set_config('request.jwt.claim.sub','11111111-1111-1111-1111-111111111111', true); end $do$;
+
+-- 3. FOUNDER DIRECT UPDATE is denied by execution identity, not by privilege.
+set local role authenticated;
+select denied($$ update finance.reconciliation_exceptions
+                   set resolution_status='resolved',
+                       resolved_at=now(),
+                       resolved_by='11111111-1111-1111-1111-111111111111'::uuid,
+                       resolution_note='direct write attempt'
+                 where id=(select id from ex2) $$,
+  '42501', 'permission denied for table reconciliation_exceptions',
+  'req 121: a founder acting as authenticated is denied a direct UPDATE');
+reset role;
+
+-- 4. service_role DIRECT UPDATE is denied.
+set local role service_role;
+select denied($$ update finance.reconciliation_exceptions
+                   set resolution_status='resolved',
+                       resolved_at=now(),
+                       resolved_by='11111111-1111-1111-1111-111111111111'::uuid,
+                       resolution_note='direct write attempt'
+                 where id=(select id from ex2) $$,
+  '42501', 'permission denied for table reconciliation_exceptions',
+  'req 121: service_role is denied a direct UPDATE');
+reset role;
+
+-- 4b. THE GRANT IS NOT THE FENCE. Privileges are additive: a later table-wide
+-- GRANT would re-confer these columns despite the REVOKE in migration 0008.
+-- Simulate exactly that widening (rolled back with this transaction) and prove
+-- the write then REACHES the trigger and is rejected by execution identity.
+-- This is also the probe that catches a SECURITY DEFINER regression in the
+-- guard: as DEFINER the trigger would admit this write and the test fails.
+grant update (resolution_status, resolved_at, resolved_by, resolution_note)
+  on finance.reconciliation_exceptions to service_role;
+-- the fixture temp table is owned by the test session; without this the probe
+-- dies reading ex2 (42501) and never reaches the finance table at all
+grant select on ex2 to service_role;
+set local role service_role;
+select denied($$ update finance.reconciliation_exceptions
+                   set resolution_status='resolved',
+                       resolved_at=now(),
+                       resolved_by='11111111-1111-1111-1111-111111111111'::uuid,
+                       resolution_note='direct write attempt'
+                 where id=(select id from ex2) $$,
+  'P0001',
+  'req 121: resolution columns are writable only through finance.resolve_exception()',
+  'req 121: with the grant widened, the write reaches the trigger and is rejected by IDENTITY, not privilege');
+reset role;
+revoke update (resolution_status, resolved_at, resolved_by, resolution_note)
+  on finance.reconciliation_exceptions from service_role;
+select is((select count(*)::int from information_schema.column_privileges
+           where table_schema='finance' and table_name='reconciliation_exceptions'
+             and privilege_type='UPDATE' and grantee='service_role'
+             and column_name in ('resolution_status','resolved_at','resolved_by','resolution_note')), 0,
+  'req 121: the temporary widening is fully revoked before any later test runs');
+
+-- 5. THE REMOVED GUC CONFERS NOTHING. The previous design gated the trigger on a
+-- transaction-local setting, which any caller could set. Setting that exact name
+-- must now be inert -- this test exists specifically to prove the bypass is gone.
+do $do$ begin perform set_config('finance.resolution_write','on', true); end $do$;
+set local role authenticated;
+select denied($$ update finance.reconciliation_exceptions
+                   set resolution_status='resolved',
+                       resolved_at=now(),
+                       resolved_by='11111111-1111-1111-1111-111111111111'::uuid,
+                       resolution_note='direct write attempt'
+                 where id=(select id from ex2) $$,
+  '42501', 'permission denied for table reconciliation_exceptions',
+  'req 121: setting the former GUC name confers no capability on an application role');
+reset role;
+-- The migration owner is the explicit trusted administrative boundary (D-075):
+-- it is ALLOWED, and no application role can reach that identity. Assert the
+-- boundary sits exactly where it is documented, rather than pretending the
+-- owner is fenced out.
+select is((select p.proowner::regrole::text from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+           where n.nspname='finance' and p.proname='tg_exception_resolution_guard'),
+          current_user::text,
+  'req 121 / D-075: the trusted identity is the migration owner, and it is the only identity the trigger admits');
+do $do$ begin perform set_config('finance.resolution_write','off', true); end $do$;
+
+-- 6. STATE UNCHANGED. denied() digests every finance table before and after each
+-- probe, so the assertions below are a second, explicit statement of the same fact.
+select is((select resolution_status::text from finance.reconciliation_exceptions where id=(select id from ex2)),
+  'open', 'req 121: the probed exception is still open after every denied write');
+select is((select resolved_at is null and resolved_by is null and resolution_note is null
+           from finance.reconciliation_exceptions where id=(select id from ex2)), true,
+  'req 121: its other three resolution columns remain null after every denied write');
 select lives_ok($$ select finance.resolve_exception((select id from ex),'resolved','ok') $$,'req 126: resolution succeeds through the function');
 select lives_ok($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id) values ('amount_mismatch',true,'ch_r') $$,'req 80: a resolved row does not block a fresh one');
 select is((select count(*)::int from finance.reconciliation_exceptions where provider_object_id='ch_r'),2,'req 80: the resolved row is preserved');
-select throws_real($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,resolution_note) values ('amount_mismatch',true,'ch_s','note') $$, 'req 127: an open row carrying a note is rejected');
-select throws_real($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,resolved_at) values ('amount_mismatch',true,'ch_t2',now()) $$, 'req 117: an open row carrying resolved_at is rejected');
-select throws_real($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,released_at,released_by) values ('amount_mismatch',true,'ch_u',now(),'11111111-1111-1111-1111-111111111111') $$, 'req 87: release without a prior quarantine is rejected');
-select throws_real($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,quarantined_at) values ('amount_mismatch',true,'ch_v',now()) $$, 'req 87: quarantined_at without a reason is rejected');
+select denied($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,resolution_note) values ('amount_mismatch',true,'ch_s','note') $$, 'P0001', 'a new exception may not be created with resolution, quarantine or', 'req 127: an open row carrying a note is rejected');
+select denied($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,resolved_at) values ('amount_mismatch',true,'ch_t2',now()) $$, 'P0001', 'a new exception may not be created with resolution, quarantine or', 'req 117: an open row carrying resolved_at is rejected');
+select denied($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,released_at,released_by) values ('amount_mismatch',true,'ch_u',now(),'11111111-1111-1111-1111-111111111111') $$, 'P0001', 'a new exception may not be created with resolution, quarantine or', 'req 87: release without a prior quarantine is rejected');
+select denied($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,quarantined_at) values ('amount_mismatch',true,'ch_v',now()) $$, 'P0001', 'a new exception may not be created with resolution, quarantine or', 'req 87: quarantined_at without a reason is rejected');
 select lives_ok($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id) values ('amount_mismatch',false,'ch_r') $$,'req 124b: an explicit open insert with permitted columns succeeds');
 
 -- req 85/96/97/98/113/115/130/131/132: runs
 insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,status,window_exhausted,finished_at)
  values (true,'v1',now()-interval '2 days',now()-interval '1 day',true,'completed',true,now());
 create temp table dr as select id from finance.reconciliation_runs limit 1;
-select throws_real($$ update finance.reconciliation_runs set resumed_from_run_id=(select id from dr) where id=(select id from dr) $$, 'req 85: self-resume is rejected');
-select throws_real($$ select finance.approve_dry_run((select id from dr),'x') $$, 'req 98: approval without a report is rejected');
+select denied($$ update finance.reconciliation_runs set resumed_from_run_id=(select id from dr) where id=(select id from dr) $$, '23514', 'reconciliation_runs', 'req 85: self-resume is rejected');
+select denied($$ select finance.approve_dry_run((select id from dr),'x') $$, 'P0001', 'approve_dry_run: run 2445ac94-e727-4c88-9f73-5e5e87d374b1 has no', 'req 98: approval without a report is rejected');
 update finance.reconciliation_runs set would_create_count=1,would_reopen_count=0,prospective_by_kind='{}'::jsonb,report_version='r',report_completed_at=now() where id=(select id from dr);
 select lives_ok($$ select finance.approve_dry_run((select id from dr),'ok') $$,'req 113: approval succeeds exactly once');
-select throws_real($$ select finance.approve_dry_run((select id from dr),'again') $$, 'req 113: a second approval is rejected');
-select throws_real($$ update finance.reconciliation_runs set window_start=now() where id=(select id from dr) $$, 'req 115: window_start is frozen after approval');
-select throws_real($$ update finance.reconciliation_runs set prospective_by_kind='{"a":1}'::jsonb where id=(select id from dr) $$, 'req 115: the report is frozen after approval');
+select denied($$ select finance.approve_dry_run((select id from dr),'again') $$, 'P0001', 'approve_dry_run: run 2445ac94-e727-4c88-9f73-5e5e87d374b1 is already', 'req 113: a second approval is rejected');
+select denied($$ update finance.reconciliation_runs set window_start=now() where id=(select id from dr) $$, 'P0001', 'approved evidence is frozen: run 2445ac94-e727-4c88-9f73-5e5e87d374b1', 'req 115: window_start is frozen after approval');
+select denied($$ update finance.reconciliation_runs set prospective_by_kind='{"a":1}'::jsonb where id=(select id from dr) $$, 'P0001', 'approved evidence is frozen: run 2445ac94-e727-4c88-9f73-5e5e87d374b1', 'req 115: the report is frozen after approval');
 select lives_ok($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id) values (true,'v1',now()-interval '1 day',now(),false,(select id from dr)) $$,'req 132: authorized_by_run_id is insertable for a writing run');
-select throws_real($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,approved_by,approved_at,approval_note) values (false,'v9',now()-interval '1 day',now(),true,'11111111-1111-1111-1111-111111111111',now(),'x') $$, 'req 130: a fabricated approved run cannot be inserted');
+select denied($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,approved_by,approved_at,approval_note) values (false,'v9',now()-interval '1 day',now(),true,'11111111-1111-1111-1111-111111111111',now(),'x') $$, 'P0001', 'a new run may not be created already approved: approval is', 'req 130: a fabricated approved run cannot be inserted');
 select is((select approved_by from finance.reconciliation_runs where id=(select id from dr)),'11111111-1111-1111-1111-111111111111'::uuid,'req 131: approval attribution is auth.uid()');
 
 -- req 100: at-most-once event scope
@@ -130,7 +260,7 @@ select lives_ok($$ insert into finance.stripe_events(event_id,event_type,object_
 select lives_ok($$ insert into finance.stripe_events(event_id,event_type,object_id,livemode) values ('evt_f2','payment_intent.payment_failed','pi_same',true) $$,'req 100: a second payment_failed for the SAME object is retained');
 
 -- req 108/116: generated dedup_key
-select throws_real($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,dedup_key) values ('amount_mismatch',true,'ch_w','X') $$, 'req 108: dedup_key cannot be supplied');
+select denied($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,dedup_key) values ('amount_mismatch',true,'ch_w','X') $$, '428C9', 'dedup_key', 'req 108: dedup_key cannot be supplied');
 select is((select count(*)::int from information_schema.columns where table_schema='finance' and table_name='reconciliation_exceptions' and column_name='dedup_key' and is_nullable='NO'),1,'req 116: dedup_key is NOT NULL');
 select is((select count(*)::int from finance.reconciliation_exceptions where dedup_key is null),0,'req 116: no row has a NULL dedup_key');
 
@@ -140,11 +270,11 @@ select ok(has_column_privilege('service_role','finance.reconciliation_runs','cur
 -- req 11/12/13/74: member access
 select set_config('request.jwt.claim.sub','33333333-3333-3333-3333-333333333333', true);
 set local role authenticated;
-select throws_real($$ insert into finance.agreement_amounts(agreement_id,amount_cents,effective_at,reason,actor_id) values ((select id from ag),1,now(),'x','33333333-3333-3333-3333-333333333333') $$, 'req 11: a member cannot insert a financial fact');
+select denied($$ insert into finance.agreement_amounts(agreement_id,amount_cents,effective_at,reason,actor_id) values ((select id from ag),1,now(),'x','33333333-3333-3333-3333-333333333333') $$, '42501', 'permission denied for table agreement_amounts', 'req 11: a member cannot insert a financial fact');
 select is((select count(*)::int from finance.v_agreement_balances where member_id='aaaaaaaa-0000-0000-0000-00000000000a'),0,'req 13: the view returns no row a direct query would deny');
 select is((select count(*)::int from finance.agreement_lifecycle_events),0,'req 74: members read no lifecycle events');
 select is((select count(*)::int from finance.reconciliation_runs),0,'req 74: members read no runs');
-select throws_real($$ select finance.approve_dry_run((select id from dr),'x') $$, 'req 12: a non-founder cannot call an approved function');
+select denied($$ select finance.approve_dry_run((select id from dr),'x') $$, '42501', 'permission denied for table dr', 'req 12: a non-founder cannot call an approved function');
 reset role;
 select set_config('request.jwt.claim.sub','11111111-1111-1111-1111-111111111111', true);
 set local role authenticated;
@@ -155,15 +285,15 @@ reset role;
 -- req 96: the cited run must be completed, approved, reported and error-free
 insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,status,window_exhausted,finished_at)
   values (false,'v1',now()-interval '2 days',now()-interval '1 day',true,'partial',false,now());
-select throws_real($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id)
-  values (false,'v1',now()-interval '1 day',now(),false,(select id from finance.reconciliation_runs where status='partial')) $$, 'req 96: a writing run citing a partial dry run is rejected');
-select throws_real($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id)
-  values (false,'v1',now()-interval '1 day',now(),false,(select id from dr)) $$, 'req 96: a writing run citing a different livemode is rejected');
+select denied($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id)
+  values (false,'v1',now()-interval '1 day',now(),false,(select id from finance.reconciliation_runs where status='partial')) $$, 'P0001', 'authorization run 649884fe-3309-4b5f-910d-790bfebb9c36 is partial,', 'req 96: a writing run citing a partial dry run is rejected');
+select denied($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id)
+  values (false,'v1',now()-interval '1 day',now(),false,(select id from dr)) $$, 'P0001', 'authorization run 2445ac94-e727-4c88-9f73-5e5e87d374b1 is livemode=t,', 'req 96: a writing run citing a different livemode is rejected');
 -- req 97: implementation_version must match the authorizing run
-select throws_real($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id)
-  values (true,'vX',now()-interval '1 day',now(),false,(select id from dr)) $$, 'req 97: a writing run whose implementation_version differs is rejected');
-select throws_real($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id)
-  values (true,'v1',now()-interval '10 days',now(),false,(select id from dr)) $$, 'req 96: a writing run reaching before the approved horizon is rejected');
+select denied($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id)
+  values (true,'vX',now()-interval '1 day',now(),false,(select id from dr)) $$, 'P0001', 'authorization run 2445ac94-e727-4c88-9f73-5e5e87d374b1 was version', 'req 97: a writing run whose implementation_version differs is rejected');
+select denied($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id)
+  values (true,'v1',now()-interval '10 days',now(),false,(select id from dr)) $$, 'P0001', 'writing run window_start 2026-07-22 15:11:07.679126-10 precedes the', 'req 96: a writing run reaching before the approved horizon is rejected');
 
 select * from finish();
 rollback;

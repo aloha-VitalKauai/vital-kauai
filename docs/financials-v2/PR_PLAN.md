@@ -291,7 +291,9 @@ All of the following must pass through automated database tests before PR 1 open
 118. **`resolve_exception()` attribution cannot be spoofed** — the function takes no actor or timestamp parameter; the stored `resolved_by` equals `auth.uid()` and `resolved_at` is the call time; a non-founder call raises.
 119. **`resolve_exception()` preconditions** — a blank or whitespace-only note raises; a target of `open` raises; a second call on an already-resolved or dismissed row raises; changing `resolved` to `dismissed` raises.
 120. **Resolution wins over quarantine** — an actively quarantined row resolves successfully, leaves `open`, and is no longer covered by the open-row unique index, so a later recurrence inserts a fresh row with `consecutive_failure_runs = 0`.
-121. **No direct resolution write** — `UPDATE` on `resolution_status`, `resolved_at`, `resolved_by` or `resolution_note` is rejected for **every** role, founder and `service_role` alike.
+121. **No direct resolution write** — `UPDATE` on `resolution_status`, `resolved_at`, `resolved_by` or `resolution_note` is rejected for **every application role**: `anon`, `authenticated` (founder included) and `service_role` alike. The sole path is `finance.resolve_exception()`.
+
+    The migration owner (`postgres` in production) is an explicit **trusted administrative boundary**, not a hole: PostgreSQL cannot fence an object's owner or a superuser out of its own table, and `SECURITY DEFINER` requires a trusted owner to exist. The requirement is therefore stated against application roles, and the boundary is enforced by execution identity — never by a caller-settable session variable. No application role can reach the owner identity. See D-075.
 122. **`release_note` is separate from `resolution_note`** — `finance.release_quarantine()` writes `release_note` and leaves `resolution_note` untouched.
 
 ### `INSERT`-time protection of guarded transitions

@@ -197,3 +197,22 @@ revoke all on all functions in schema finance from anon;
 revoke execute on all functions in schema finance from public;
 
 commit;
+
+-- req 121 / D-075: the resolution columns are function-only.
+-- Defence in depth, outermost layer first:
+--   1. no application role holds UPDATE on these columns (below), so a direct
+--      write fails at the privilege check with 42501 before any trigger runs;
+--   2. finance.tg_exception_resolution_guard() rejects any remaining direct
+--      write whose execution identity is not the trusted function owner;
+--   3. finance.resolve_exception() is SECURITY DEFINER, founder-gated and
+--      carries a pinned search_path, so it is the only application path.
+-- These REVOKEs pin and document TODAY'S ACL; they are not a durable fence.
+-- PostgreSQL privileges are ADDITIVE -- there is no negative ACL -- so a later
+-- table-wide GRANT UPDATE would confer these columns again despite this
+-- REVOKE. The protections that survive such widening are the identity trigger
+-- (tg_exception_resolution_guard) and the gate: a widened-grant mutant and a
+-- grant-then-write behavioural test both fail the build.
+-- Scoped to the four columns ONLY: service_role legitimately updates
+-- occurrence_count and the cursor on this table (reqs 125, 76).
+revoke update (resolution_status, resolved_at, resolved_by, resolution_note)
+  on finance.reconciliation_exceptions from anon, authenticated, service_role;

@@ -18,7 +18,10 @@ SRC=$(cd "$(dirname "$0")/../.." && pwd)
 WORK=$(mktemp -d /tmp/fin_sabotage.XXXXXX)
 DB="sab_$$"
 cleanup(){ rm -rf "$WORK"; dropdb --if-exists "$DB" >/dev/null 2>&1; }
-trap cleanup EXIT INT TERM
+# A signal must END the run, not just clean up: without the exit, a SIGTERM
+# mid-case deleted the workspace and every later case failed vacuously.
+trap 'cleanup; trap - EXIT; echo "== sabotage: INTERRUPTED -- results above are valid, run is INCOMPLETE =="; exit 143' INT TERM
+trap cleanup EXIT
 
 # Guard: refuse to run if WORK is not a temp dir, or resolves into the repo.
 case "$WORK" in /tmp/fin_sabotage.*) ;; *) echo "FATAL: unsafe WORK=$WORK"; exit 2;; esac
@@ -30,16 +33,33 @@ cd "$WORK"
 
 export PGTAP_DB="$DB"
 gate(){ ( cd "$WORK" && ./supabase/tests/harness_gate.sh ) >/dev/null 2>&1; }
-restore(){ rm -rf "$WORK/supabase"; cp -R "$PRISTINE" "$WORK/supabase"; }
-hash_tree(){ find "$WORK/supabase" -type f \( -name '*.sql' -o -name '*.sh' -o -name '*.json' \) \
+restore(){
+  [ -d "$PRISTINE" ] || { echo "FATAL: pristine snapshot missing -- aborting instead of producing vacuous results"; exit 3; }
+  rm -rf "$WORK/supabase"; cp -R "$PRISTINE" "$WORK/supabase"; }
+hash_tree(){ find "$WORK/supabase" -type f \( -name '*.sql' -o -name '*.sh' -o -name '*.json' -o -name '*.py' \) \
              -exec shasum {} \; | sed "s|$WORK||" | sort | shasum | cut -d' ' -f1; }
 
 pass=0; fail=0
+LAST_GREEN=""   # tree-hash most recently PROVEN green by an executed gate run
 case_run(){ # name, command, expect_kill(1|0)
   local name="$1" cmd="$2" expect="${3:-1}"
+  # SABOTAGE_ONLY="12 13 22b": run a subset so long protocols can be executed in
+  # resumable chunks. Every selected case still executes all five conditions.
+  if [ -n "${SABOTAGE_ONLY:-}" ]; then
+    local id="${name%%.*}"
+    case " $SABOTAGE_ONLY " in *" $id "*) ;; *) return;; esac
+  fi
   restore
-  if ! gate; then echo "not ok - $name (PRISTINE GATE RED -- proof would be vacuous)"; fail=$((fail+1)); return; fi
   local before; before=$(hash_tree)
+  # Condition 1 (pristine green). If this exact tree-hash was proven green by the
+  # immediately preceding executed gate run (condition 5 of the prior case), the
+  # result carries over -- same bytes, same build, same result. Otherwise execute.
+  if [ "$before" = "$LAST_GREEN" ]; then
+    echo "# $name: pristine green carried over (tree-hash identical to last executed green gate)"
+  else
+    if ! gate; then echo "not ok - $name (PRISTINE GATE RED -- proof would be vacuous)"; fail=$((fail+1)); return; fi
+    LAST_GREEN="$before"
+  fi
   ( cd "$WORK" && eval "$cmd" ) >/dev/null 2>&1 || true
   local after; after=$(hash_tree)
   if [ "$expect" -eq 1 ] && [ "$before" = "$after" ]; then
@@ -49,6 +69,7 @@ case_run(){ # name, command, expect_kill(1|0)
   restore
   if [ "$(hash_tree)" != "$before" ]; then echo "not ok - $name (RESTORE FAILED)"; fail=$((fail+1)); return; fi
   if ! gate; then echo "not ok - $name (GATE STILL RED AFTER RESTORE)"; fail=$((fail+1)); return; fi
+  LAST_GREEN="$before"
   if [ "$expect" -eq 1 ]; then
     [ "$red" -eq 1 ] && { echo "ok - $name"; pass=$((pass+1)); } || { echo "not ok - $name (GATE STAYED GREEN)"; fail=$((fail+1)); }
   else
@@ -73,6 +94,63 @@ case_run "12. SECURITY DEFINER -> INVOKER"       "perl -0pi -e 's/(create functi
 case_run "13. drop a required foreign key"       "perl -0pi -e 's/references public.members\(id\) on delete restrict//' supabase/migrations/20260730000003_finance_tables.sql"
 case_run "14. founder predicate off the test view" "perl -0pi -e 's/ where public.is_founder\(\);/;/' supabase/migrations/20260730000007_finance_views.sql"
 case_run "15. livemode filter off a member policy" "perl -0pi -e 's/using \(livemode = true and exists \(/using (exists (/' supabase/migrations/20260730000008_finance_rls_grants.sql"
+
+
+# ---- COMMENT-DISGUISE CASES ----------------------------------------------
+# Each removes the real mechanism but leaves the words a naive grep looked for
+# inside an SQL comment. A text-matching check passes; the gate must still fail.
+case_run "16. version assert removed, words left in a comment" \
+  "python3 -c \"
+import re,io
+p='supabase/migrations/20260730000001_finance_harden_is_founder.sql'; s=open(p).read()
+s=re.sub(r'(?m)^.*server_version_num.*\$', '-- server_version_num assertion (text only, mechanism deleted)', s)
+open(p,'w').write(s)\""
+case_run "17. is_founder() execution removed, words left in a comment" \
+  "python3 -c \"
+import re
+p='supabase/migrations/20260730000001_finance_harden_is_founder.sql'; s=open(p).read()
+s=re.sub(r'(?m)^.*select public\.is_founder\(\) into.*\$', '-- select public.is_founder() into ok (text only, mechanism deleted)', s)
+open(p,'w').write(s)\""
+case_run "18. rollback search_path reset removed, words left in a comment" \
+  "python3 -c \"
+import re
+p='supabase/migrations/ROLLBACK_pr1.sql'; s=open(p).read()
+s=re.sub(r'(?mi)^.*reset search_path.*\$', '-- reset search_path (text only, mechanism deleted)', s)
+open(p,'w').write(s)\""
+case_run "19. security_invoker stripped from v_agreement_lifecycle, word left in a comment" \
+  "python3 -c \"
+p='supabase/migrations/20260730000007_finance_views.sql'; s=open(p).read()
+i=s.index('create view finance.v_agreement_lifecycle')
+j=s.index(' as', i)
+s=s[:i]+'-- security_invoker = true (text only, option deleted)\n'+'create view finance.v_agreement_lifecycle'+s[j:]
+open(p,'w').write(s)\""
+case_run "20. legacy-table reference added inside a routine, denial left in a comment" \
+  "python3 -c \"
+p='supabase/migrations/20260730000006_finance_functions.sql'; s=open(p).read()
+s=s.replace('create function finance.current_member_id()',
+  '-- no finance object references a legacy financial table\ncreate function finance.current_member_id()',1)
+s=s.replace('from public.members m', 'from public.members m left join public.donations d on false',1)
+open(p,'w').write(s)\""
+case_run "21. an untracked object added to the finance schema" \
+  "printf '\ncreate table finance.smuggled_in (id uuid primary key);\n' >> supabase/migrations/20260730000003_finance_tables.sql"
+
+case_run "22. req 121 resolution guard removed" \
+  "perl -0pi -e 's/create trigger exception_resolution_guard\n  before update on finance.reconciliation_exceptions\n  for each row execute function finance.tg_exception_resolution_guard\(\);//' supabase/migrations/20260730000005_finance_triggers.sql"
+case_run "22b. resolution-column grant widened to authenticated" \
+  "printf '\ngrant update (resolution_status, resolved_at, resolved_by, resolution_note) on finance.reconciliation_exceptions to authenticated;\n' >> supabase/migrations/20260730000008_finance_rls_grants.sql"
+case_run "22c. resolution guard weakened to trust a caller-settable setting" \
+  "perl -0pi -e \"s/if current_user::regrole::oid <> trusted_owner then/if coalesce(current_setting('finance.resolution_write', true), '') <> 'on' and false then/\" supabase/migrations/20260730000005_finance_triggers.sql"
+case_run "23. denied() weakened to accept any SQLSTATE" \
+  "perl -0pi -e 's/if state <> p_state then/if false then/' supabase/tests/_test_helpers.sql"
+# Case 24 is a DOCUMENTED EQUIVALENT MUTANT, expected green: the digest
+# comparison is unreachable because subtransaction rollback restores state
+# before the handler runs (see _test_helpers.sql). The case remains so the
+# equivalence CLAIM is executed, not asserted: if a refactor ever makes the
+# check reachable, this case starts killing and must be flipped to expect=1.
+case_run "24. denied() state-digest disabled (documented equivalent -- PostgreSQL already guarantees restore)" \
+  "perl -0pi -e 's/if after_d <> before_d then/if false then/' supabase/tests/_test_helpers.sql" 0
+case_run "25. resolution guard flipped to SECURITY DEFINER (identity check would self-compare)" \
+  "perl -0pi -e 's/security invoker/security definer/' supabase/migrations/20260730000005_finance_triggers.sql"
 
 echo "== sabotage: killed=$pass failed=$fail =="
 [ "$fail" -eq 0 ]

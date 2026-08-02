@@ -8,7 +8,7 @@
 set -uo pipefail
 export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
 export LC_ALL="en_US.UTF-8"
-DB="${1:-fin_conc}"
+DB="${1:-${PGTAP_DB:-fin_v2}_conc}"
 D=$(mktemp -d)
 trap 'rm -rf "$D"; kill %1 %2 2>/dev/null' EXIT
 

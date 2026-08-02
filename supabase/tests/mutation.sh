@@ -5,7 +5,7 @@
 set -uo pipefail
 export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"; export LC_ALL="en_US.UTF-8"
 cd "$(dirname "$0")/../.."
-DB=mut_test
+DB="${PGTAP_DB:-fin_v2}_mut"
 pass=0; fail=0
 
 build(){
