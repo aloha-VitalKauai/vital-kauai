@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap;
 \i supabase/tests/_test_helpers.sql
-select plan(39);
+select plan(40);
 
 insert into auth.users (id,email) values
   ('11111111-1111-1111-1111-111111111111','founder@test'),
@@ -22,6 +22,13 @@ select finance.create_agreement('bbbbbbbb-0000-0000-0000-00000000000b',null,'mem
 select set_config('request.jwt.claim.sub','22222222-2222-2222-2222-222222222222', true);
 select is(finance.current_member_id(), 'aaaaaaaa-0000-0000-0000-00000000000a'::uuid,
           'current_member_id resolves via members.profile_id (D-015) [A3-001]');
+-- R15 second clause: a member row whose profile_id is NULL is unreachable.
+insert into auth.users values ('44444444-4444-4444-4444-444444444444','nullprof@t');
+insert into public.members(id,profile_id,email) values ('dddddddd-0000-0000-0000-00000000000d',null,'nullprof@t');
+do $$ begin perform set_config('request.jwt.claim.sub','44444444-4444-4444-4444-444444444444', true); end $$;
+select is(finance.current_member_id(), null,
+          'req 15: a NULL profile_id member is not resolved -- current_member_id returns NULL [A3-040]');
+do $$ begin perform set_config('request.jwt.claim.sub','22222222-2222-2222-2222-222222222222', true); end $$;
 
 -- ===== member isolation (test 8) =====
 set local role authenticated;

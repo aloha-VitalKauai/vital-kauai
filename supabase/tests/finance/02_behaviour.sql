@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap;
 \i supabase/tests/_test_helpers.sql
-select plan(70);
+select plan(71);
 
 -- fixtures
 insert into auth.users (id, email) values
@@ -25,6 +25,13 @@ select lives_ok($$ select finance.create_agreement('aaaaaaaa-0000-0000-0000-0000
   'test 71: create_agreement succeeds for a founder [A2-050]');
 select denied($$ select finance.create_agreement('aaaaaaaa-0000-0000-0000-00000000000a',null,'membership','  ') $$, 'P0001', 'create_agreement: a non-blank reason is required', 'test 71: blank reason raises [A2-001]');
 select denied($$ select finance.create_agreement('aaaaaaaa-0000-0000-0000-00000000000a','cccccccc-0000-0000-0000-00000000000c','journey_contribution','dup') $$, '23505', 'agreements_member_journey_purpose_key', 'test 17: duplicate (member,journey,purpose) raises [A2-002]');
+-- R17 second clause: the index is NULLS NOT DISTINCT, so two MEMBER-LEVEL
+-- agreements (journey_id NULL) with the same purpose are duplicates too.
+-- Savepoint-scoped: the rest of this file assumes exactly one agreement.
+savepoint r17;
+select finance.create_agreement('aaaaaaaa-0000-0000-0000-00000000000a',null,'membership','member-level fixture');
+select denied($$ select finance.create_agreement('aaaaaaaa-0000-0000-0000-00000000000a',null,'membership','dup member-level') $$, '23505', 'agreements_member_journey_purpose_key', 'req 17: NULLS NOT DISTINCT -- a duplicate member-level (NULL journey) agreement raises [A2-071]');
+rollback to savepoint r17;
 
 create temp table ag as select id from finance.agreements limit 1;
 
