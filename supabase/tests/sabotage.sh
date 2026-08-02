@@ -82,7 +82,7 @@ case_run "0. NULL CONTROL (no defect)" "true" 0
 case_run "1. delete a required test file"        "rm supabase/tests/finance/05_guards.sql"
 case_run "2. too FEW assertions for the plan"    "perl -0pi -e 's/select plan\((\d+)\);/\"select plan(\".(\$1+1).\");\"/e' supabase/tests/finance/11_member_reads.sql"
 case_run "3. too MANY assertions for the plan"   "perl -0pi -e 's/select plan\((\d+)\);/\"select plan(\".(\$1-1).\");\"/e' supabase/tests/finance/11_member_reads.sql"
-case_run "4. concatenated hidden not-ok"         "perl -0pi -e \"s/select has_table\\('finance','agreements','table agreements exists'\\);/select has_table('finance','agreements','t'), has_table('finance','nope','hidden');/\" supabase/tests/finance/01_structure.sql"
+case_run "4. concatenated hidden not-ok"         "perl -0pi -e \"s/select has_table\\('finance','agreements','table agreements exists( \\[A1-\\d+\\])?'\\);/select has_table('finance','agreements','t'), has_table('finance','nope','hidden');/\" supabase/tests/finance/01_structure.sql"
 case_run "5. real assertion -> ok(true)"         "perl -0pi -e \"s/select is\\(\\(select count\\(\\*\\)::int from finance.ledger_entries\\), 1,/select ok(true,/\" supabase/tests/finance/11_member_reads.sql"
 case_run "6. unrelated SQL error in a throws"    "perl -0pi -e \"s/from finance.ledger_entries where entry_type='refund'/from finance.ledger_entries where bogus_col='refund'/\" supabase/tests/finance/04_coverage.sql"
 case_run "7. break a concurrency assertion"      "perl -0pi -e \"s/,1,\\s*\\n  'req 21: exactly one transition from draft committed'/,999,\\n  'req 21: exactly one transition from draft committed'/\" supabase/tests/concurrency.sh"

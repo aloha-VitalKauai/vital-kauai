@@ -23,41 +23,41 @@ select set_config('request.jwt.claim.sub','22222222-2222-2222-2222-222222222222'
 set local role authenticated;
 
 select is((select count(*)::int from finance.agreements), 1,
-  'a member can read their OWN agreement');
+  'a member can read their OWN agreement [A11-001]');
 select is((select count(*)::int from finance.ledger_entries), 1,
-  'a member can read their OWN ledger entries (kills the member_reads_own_ledger mutant)');
+  'a member can read their OWN ledger entries (kills the member_reads_own_ledger mutant) [A11-002]');
 select is((select amount_cents from finance.ledger_entries), 20000::bigint,
-  'a member sees the correct amount on their own ledger entry');
+  'a member sees the correct amount on their own ledger entry [A11-003]');
 select is((select count(*)::int from finance.agreement_amounts), 1,
-  'a member can read their OWN contribution amendments');
+  'a member can read their OWN contribution amendments [A11-004]');
 select is((select count(*)::int from finance.v_agreement_balances), 1,
-  'a member can read their OWN balance row');
+  'a member can read their OWN balance row [A11-005]');
 select is((select net_received_cents from finance.v_agreement_balances), 20000::bigint,
-  'a member sees the correct Received figure');
+  'a member sees the correct Received figure [A11-006]');
 select is((select contribution_cents from finance.v_agreement_balances), 50000::bigint,
-  'a member sees the correct Contribution');
+  'a member sees the correct Contribution [A11-007]');
 select is((select count(*)::int from finance.checkout_sessions), 0,
-  'a member reads no checkout session they do not own');
+  'a member reads no checkout session they do not own [A11-008]');
 select is((select count(*)::int from finance.payment_links), 0,
-  'a member reads no payment_links row (RLS, not grant, is the control)');
+  'a member reads no payment_links row (RLS, not grant, is the control) [A11-009]');
 reset role;
 
 -- ===== grant-surface assertions (kills the "widen a grant" mutant) =====
 select ok(not has_table_privilege('authenticated','finance.agreements','UPDATE'),
-  'authenticated holds no UPDATE on agreements');
+  'authenticated holds no UPDATE on agreements [A11-014]');
 select ok(not has_table_privilege('authenticated','finance.agreements','INSERT'),
-  'authenticated holds no INSERT on agreements');
+  'authenticated holds no INSERT on agreements [A11-010]');
 select ok(not has_table_privilege('authenticated','finance.agreements','DELETE'),
-  'authenticated holds no DELETE on agreements');
+  'authenticated holds no DELETE on agreements [A11-011]');
 select is((select count(*)::int from pg_policies
            where schemaname='finance' and tablename='payment_links'
              and roles::text like '%authenticated%'
              and qual ilike '%is_founder%'), 1,
-  'payment_links is founder-only for authenticated, enforced by RLS not by grant');
+  'payment_links is founder-only for authenticated, enforced by RLS not by grant [A11-012]');
 select is((select count(*)::int from information_schema.role_table_grants
            where table_schema='finance' and grantee='authenticated'
              and privilege_type in ('INSERT','UPDATE','DELETE','TRUNCATE')), 0,
-  'authenticated holds NO write privilege on any finance table');
+  'authenticated holds NO write privilege on any finance table [A11-013]');
 
 select * from finish();
 rollback;

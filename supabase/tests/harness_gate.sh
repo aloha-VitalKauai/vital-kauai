@@ -30,6 +30,17 @@ echo "== pgTAP (prove: plans enforced, TAP parsed) =="
 # containing spaces (the main repo path does) broke it. The gate cd's to the
 # repo root above, so a relative exec string is stable and space-free.
 prove --exec "bash supabase/tests/runsql.sh" supabase/tests/finance/*.sql
+# Checkpoint B: stable assertion IDs. Every pgTAP ok-line must carry a unique
+# [A*-NNN] tag -- the requirement map references these IDs, so an untagged or
+# duplicated assertion would silently detach evidence from the map.
+echo "== assertion-ID integrity =="
+TAP=$(for f in supabase/tests/finance/*.sql; do bash supabase/tests/runsql.sh "$f"; done)
+UNTAGGED=$(printf '%s\n' "$TAP" | grep -E '^ok [0-9]+ - ' | grep -cv '\[A' || true)
+DUPES=$(printf '%s\n' "$TAP" | grep -oE '\[A[0-9]+-[0-9]+\]' | sort | uniq -d | wc -l | tr -d ' ')
+[ "$UNTAGGED" -eq 0 ] || { echo "GATE FAILED: $UNTAGGED assertion(s) lack a stable ID tag"; exit 1; }
+[ "$DUPES" -eq 0 ] || { echo "GATE FAILED: duplicated assertion IDs: $(printf '%s\n' "$TAP" | grep -oE '\[A[0-9]+-[0-9]+\]' | sort | uniq -d | tr '\n' ' ')"; exit 1; }
+echo "   $(printf '%s\n' "$TAP" | grep -cE '^ok [0-9]+ - ') assertions, all tagged, all unique"
+
 echo "== helper selftest ==" ; ./supabase/tests/14_helper_selftest.sh
 echo "== static =="          ; ./supabase/tests/finance/06_static.sh
 echo "== concurrency =="     ; ./supabase/tests/concurrency.sh >/dev/null
