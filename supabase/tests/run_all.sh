@@ -26,7 +26,7 @@ done <<< "$MIGS"
 # database this script just built, never a stale default.
 export PGTAP_DB="$DB"
 echo "== pgTAP suite (prove) =="
-prove --exec "bash $PWD/supabase/tests/runsql.sh" supabase/tests/finance/*.sql
+prove --exec "bash supabase/tests/runsql.sh" supabase/tests/finance/*.sql
 echo "== static checks =="
 ./supabase/tests/finance/06_static.sh
 echo "== run_all: all suites passed =="

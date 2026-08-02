@@ -26,7 +26,7 @@ build(){
   done <<< "$mig"
 }
 suite_green(){  # exit 0 iff prove passes every file with its plan intact
-  PGTAP_DB="$DB" prove --exec "bash $PWD/supabase/tests/runsql.sh" supabase/tests/finance/*.sql >/dev/null 2>&1
+  PGTAP_DB="$DB" prove --exec "bash supabase/tests/runsql.sh" supabase/tests/finance/*.sql >/dev/null 2>&1
 }
 mutant(){ # name, sql-to-apply
   build || { echo "not ok - $1 (build failed)"; fail=$((fail+1)); return; }

@@ -34,9 +34,16 @@ done < "$MANIFEST"
 # sort before the series start, which a real deploy would happily apply.
 FROZEN=supabase/tests/migrations_preseries_frozen.txt
 [ -s "$FROZEN" ] || { echo "FROZEN PRE-SERIES LEDGER MISSING: $FROZEN" >&2; exit 2; }
+# LOW-1 (post-approval): ROLLBACK_* files are INVENTORIED, not exempt. The old
+# `continue` meant any file named ROLLBACK_*.sql escaped every ledger.
+RB_MANIFEST=supabase/tests/rollback_manifest.txt
+[ -s "$RB_MANIFEST" ] || { echo "ROLLBACK MANIFEST MISSING: $RB_MANIFEST" >&2; exit 2; }
 for f in supabase/migrations/*.sql; do
   b=$(basename "$f")
-  case "$b" in ROLLBACK_*) continue;; esac
+  case "$b" in ROLLBACK_*)
+    grep -qxF "$b" "$RB_MANIFEST" || { echo "UNLISTED ROLLBACK FILE ON DISK: $b" >&2; fail=2; }
+    continue;;
+  esac
   # lexicographic compare works because the names are zero-padded timestamps
   if [ "$b" \< "$series_start" ]; then
     grep -qxF "$b" "$FROZEN" || { echo "UNKNOWN PRE-SERIES MIGRATION ON DISK (not in the frozen ledger): $b" >&2; fail=2; }

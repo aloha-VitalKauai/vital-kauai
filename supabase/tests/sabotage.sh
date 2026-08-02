@@ -36,7 +36,7 @@ gate(){ ( cd "$WORK" && ./supabase/tests/harness_gate.sh ) >/dev/null 2>&1; }
 restore(){
   [ -d "$PRISTINE" ] || { echo "FATAL: pristine snapshot missing -- aborting instead of producing vacuous results"; exit 3; }
   rm -rf "$WORK/supabase"; cp -R "$PRISTINE" "$WORK/supabase"; }
-hash_tree(){ find "$WORK/supabase" -type f \( -name '*.sql' -o -name '*.sh' -o -name '*.json' -o -name '*.py' \) \
+hash_tree(){ find "$WORK/supabase" -type f \( -name '*.sql' -o -name '*.sh' -o -name '*.json' -o -name '*.py' -o -name '*.txt' \) \
              -exec shasum {} \; | sed "s|$WORK||" | sort | shasum | cut -d' ' -f1; }
 
 pass=0; fail=0

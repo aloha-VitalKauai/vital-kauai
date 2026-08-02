@@ -45,7 +45,7 @@ chk "req 1: all 8 migrations exist and the finance schema they build is present 
 # as a comment, and the old fallback grep was satisfiable from a comment).
 # shell_expects.py lexes each line with shlex, so only EXECUTED tokens count.
 chk "req 3: run_all.sh executes 'dropdb --if-exists' and ON_ERROR_STOP=1 as real tokens (bash-aware lex, comments can never satisfy)" \
-  "python3 supabase/tests/shell_expects.py supabase/tests/run_all.sh 'dropdb,--if-exists' 'ON_ERROR_STOP=1'"
+  "python3 supabase/tests/shell_expects.py supabase/tests/run_all.sh 'dropdb:--if-exists' 'psql:ON_ERROR_STOP=1'"
 
 # 3. req 69: aggregate views must DERIVE from v_agreement_balances. Proven from
 # pg_depend -- the actual dependency graph the planner recorded, not text.

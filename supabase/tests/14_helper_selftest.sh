@@ -33,6 +33,8 @@ SQL
 )
 NULLSTATE=$(psql -tAq -d "$DB" -c "select denied('select 1', null, 'x', 'null state must raise')" 2>&1 || true)
 NULLIDENT=$(psql -tAq -d "$DB" -c "select denied('select 1', 'P0001', '', 'empty ident must raise')" 2>&1 || true)
+NUMIDENT=$(psql -tAq -d "$DB" -c "select denied('select 1', 'P0001', '12345', 'numeric ident must raise')" 2>&1 || true)
+UUIDIDENT=$(psql -tAq -d "$DB" -c "select denied('select 1', 'P0001', 'a3f1c2d4-0000-4b6e-9a10-abcdefabcdef', 'uuid ident must raise')" 2>&1 || true)
 
 chk "a correct expectation passes (control: the primitive is not simply broken)" \
   "printf '%s' \"\$OUT\" | grep -q '^R1|ok'"
@@ -48,6 +50,10 @@ chk "a null expected-SQLSTATE raises -- no site can leave the state unspecified"
   "printf '%s' \"\$NULLSTATE\" | grep -q 'p_state is required'"
 chk "an empty guard identifier raises -- no site can leave the guard unspecified" \
   "printf '%s' \"\$NULLIDENT\" | grep -q 'p_ident is required'"
+chk "LOW-4: a purely NUMERIC ident raises -- it would normalize to '#' and match nearly anything" \
+  "printf '%s' \"\$NUMIDENT\" | grep -q 'normalizes to nothing'"
+chk "LOW-4: a bare UUID ident raises for the same reason" \
+  "printf '%s' \"\$UUIDIDENT\" | grep -q 'normalizes to nothing'"
 
 echo "# helper selftest: passed=$pass failed=$fail"
 [ "$fail" -eq 0 ]

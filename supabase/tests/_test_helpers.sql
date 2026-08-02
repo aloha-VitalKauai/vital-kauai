@@ -47,6 +47,12 @@ begin
   if p_ident is null or btrim(p_ident) = '' then
     raise exception 'denied(): p_ident is required -- an unidentified guard is not a test (%)', p_desc;
   end if;
+  -- LOW-4 (post-approval): normalization masks digits/uuids/dates to '#', so a
+  -- purely numeric or uuid ident would normalize to '#' and match nearly any
+  -- message. An ident must keep alphabetic substance after normalization.
+  if finance_norm_msg(p_ident) !~ '[a-z]' then
+    raise exception 'denied(): p_ident % normalizes to nothing -- it would match nearly any error (%)', quote_literal(p_ident), p_desc;
+  end if;
   before_d := finance_state_digest();
   begin
     execute p_sql;
