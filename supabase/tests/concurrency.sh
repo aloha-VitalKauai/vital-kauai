@@ -12,11 +12,14 @@ DB="${1:-${PGTAP_DB:-fin_v2}_conc}"
 D=$(mktemp -d)
 trap 'rm -rf "$D"; kill %1 %2 2>/dev/null' EXIT
 
-dropdb --if-exists "$DB"; createdb "$DB"
-psql -q -d "$DB" -v ON_ERROR_STOP=1 -f supabase/tests/_local_bootstrap.sql
+# F5 (2nd review): every build step rc-checked; a half-built database must
+# abort here, not surface later as a mysterious assertion failure.
+dropdb --if-exists "$DB" || exit 2
+createdb "$DB" || exit 2
+psql -q -d "$DB" -v ON_ERROR_STOP=1 -f supabase/tests/_local_bootstrap.sql || exit 2
 MIGS=$(./supabase/tests/list_migrations.sh) || { echo "ENUMERATOR FAILED"; exit 2; }
 while IFS= read -r f; do
-  psql -q -d "$DB" -v ON_ERROR_STOP=1 -f "$f"
+  psql -q -d "$DB" -v ON_ERROR_STOP=1 -f "$f" || { echo "MIGRATION FAILED: $f"; exit 2; }
 done <<< "$MIGS"
 
 psql -q -d "$DB" <<'SQL'

@@ -19,20 +19,14 @@ while IFS= read -r f; do
   psql -q -d "$DB" -v ON_ERROR_STOP=1 -f "$f" && echo OK
 done <<< "$MIGS"
 
-echo "== pgTAP suite =="
-total_ok=0; total_fail=0
-for f in supabase/tests/finance/*.sql; do
-  out=$(psql -X -q -tA -d "$DB" -f "$f" 2>&1)
-  o=$(printf '%s' "$out" | grep -c '^ok [0-9]' || true)
-  n=$(printf '%s' "$out" | grep -c '^not ok' || true)
-  total_ok=$((total_ok+o)); total_fail=$((total_fail+n))
-  printf '  %-24s passed=%-4s failed=%s\n' "$(basename "$f")" "$o" "$n"
-  [ "$n" -gt 0 ] && printf '%s\n' "$out" | grep -A3 '^not ok'
-  printf '%s' "$out" | grep -q 'Looks like you planned' && printf '%s\n' "$out" | grep 'Looks like you planned'
-done
+# F2 (2nd review): the verdict is prove's -- the same parser and plan
+# enforcement as the gate. The old grep-count loop scored a wholesale-erroring
+# file as passed=0 failed=0 (green) and printed plan mismatches without
+# counting them. F6: PGTAP_DB is exported so runsql and 06_static examine THE
+# database this script just built, never a stale default.
+export PGTAP_DB="$DB"
+echo "== pgTAP suite (prove) =="
+prove --exec "bash $PWD/supabase/tests/runsql.sh" supabase/tests/finance/*.sql
 echo "== static checks =="
-if ! ./supabase/tests/finance/06_static.sh; then
-  echo "STATIC CHECKS FAILED"; total_fail=$((total_fail+1))
-fi
-echo "== TOTAL pgTAP passed=$total_ok failed=$total_fail =="
-[ "$total_fail" -eq 0 ]
+./supabase/tests/finance/06_static.sh
+echo "== run_all: all suites passed =="

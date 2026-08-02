@@ -160,5 +160,13 @@ case_run "26. run_all.sh gutted, commands left in comments (B-78)" \
 # glob would have skipped; the enumerator must refuse the unlisted file.
 case_run "27. future-shaped in-series migration on disk but unlisted (B-79)" \
   "printf 'begin;\ncreate table finance.smuggled_by_glob(id int);\ncommit;\n' > supabase/migrations/20260730090000_future_glob_skip.sql"
+# F1 2nd-review attack, permanent: a SQL error AFTER the final rollback leaves
+# the plan intact; the dead bail once let prove stay green. runsql must bail.
+case_run "28. trailing SQL error after a test file's final rollback (F1)" \
+  "printf 'select no_such_function_xyz();\n' >> supabase/tests/finance/02_behaviour.sql"
+# F3 2nd-review attack, permanent: a NEW migration crafted to sort BEFORE the
+# series start; the frozen pre-series ledger must refuse it.
+case_run "29. new migration crafted to sort before the series start (F3)" \
+  "printf 'begin;\ncreate table finance.pre_series_smuggle(id int);\ncommit;\n' > supabase/migrations/20260729999999_evil.sql"
 echo "== sabotage: killed=$pass failed=$fail =="
 [ "$fail" -eq 0 ]

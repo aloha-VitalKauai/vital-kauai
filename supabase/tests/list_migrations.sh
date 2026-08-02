@@ -28,11 +28,20 @@ while IFS= read -r m; do
   [ -n "$m" ] || continue
   [ -f "supabase/migrations/$m" ] || { echo "LISTED MIGRATION MISSING FROM DISK: $m" >&2; fail=2; }
 done < "$MANIFEST"
+# F3 (2nd review): pre-series files are NOT exempt. The frozen ledger pins the
+# exact set of pre-existing application migrations; anything on disk that is
+# neither frozen nor in the manifest fails -- including a NEW file crafted to
+# sort before the series start, which a real deploy would happily apply.
+FROZEN=supabase/tests/migrations_preseries_frozen.txt
+[ -s "$FROZEN" ] || { echo "FROZEN PRE-SERIES LEDGER MISSING: $FROZEN" >&2; exit 2; }
 for f in supabase/migrations/*.sql; do
   b=$(basename "$f")
   case "$b" in ROLLBACK_*) continue;; esac
   # lexicographic compare works because the names are zero-padded timestamps
-  [ "$b" \< "$series_start" ] && continue
+  if [ "$b" \< "$series_start" ]; then
+    grep -qxF "$b" "$FROZEN" || { echo "UNKNOWN PRE-SERIES MIGRATION ON DISK (not in the frozen ledger): $b" >&2; fail=2; }
+    continue
+  fi
   grep -qxF "$b" "$MANIFEST" || { echo "UNLISTED IN-SERIES MIGRATION ON DISK: $b" >&2; fail=2; }
 done
 [ "$fail" -eq 0 ] || exit "$fail"

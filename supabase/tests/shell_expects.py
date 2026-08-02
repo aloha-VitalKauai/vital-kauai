@@ -21,10 +21,14 @@ def tokens(path):
             try:
                 out.extend(shlex.split(line, comments=True, posix=True))
             except ValueError:
-                # unterminated quote spanning lines (heredoc etc.) -- keep the
-                # raw words so a required token inside is still findable, but
-                # never silently drop the line
-                out.extend(line.split())
+                # Unterminated quote (heredoc etc.). F4 (2nd review): the raw
+                # fallback once kept comment text, so `# dropdb --if-exists "x`
+                # satisfied the check from a comment -- the exact attack class
+                # this tool exists to close. Strip from the first
+                # start-of-word `#` BEFORE splitting; a token hidden behind an
+                # unterminated quote then stays findable, a comment never.
+                import re as _re
+                out.extend(_re.sub(r'(^|\s)#.*$', '', line).split())
     return out
 
 def has_seq(toks, seq):
