@@ -26,6 +26,8 @@ select 'R2|' || denied($$ do $x$ begin raise exception 'synthetic guard fired' u
 select 'R3|' || denied($$ do $x$ begin raise exception 'synthetic guard fired' using errcode='P0001'; end $x$ $$,
                        'P0001', 'an entirely different guard', 'wrong identifier expected');
 select 'R4|' || denied($$ select 1 $$, 'P0001', 'anything', 'no exception raised');
+select 'R7|' || denied($$ do $x$ begin raise exception 'resolve_exception: exception 42 not found' using errcode='P0001'; end $x$ $$,
+                       'P0001', 'founder role required', 'B-84: same function, wrong internal raise');
 rollback;
 SQL
 )
@@ -40,6 +42,8 @@ chk "a WRONG guard identifier is rejected -- an unrelated error with the right s
   "printf '%s' \"\$OUT\" | grep -q '^R3|not ok'"
 chk "a write that is ALLOWED is reported as a failure, never a pass" \
   "printf '%s' \"\$OUT\" | grep -q '^R4|not ok'"
+chk "B-84: a DIFFERENT internal raise of the same function is rejected -- 'not found' cannot satisfy 'founder role required'" \
+  "printf '%s' \"\$OUT\" | grep -q '^R7|not ok'"
 chk "a null expected-SQLSTATE raises -- no site can leave the state unspecified" \
   "printf '%s' \"\$NULLSTATE\" | grep -q 'p_state is required'"
 chk "an empty guard identifier raises -- no site can leave the guard unspecified" \

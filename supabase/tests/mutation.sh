@@ -2,6 +2,14 @@
 # Mutation testing. A safeguard is NOT considered covered unless removing or
 # altering it makes the suite fail. Each mutant disables one safeguard on a
 # throwaway database, re-runs the suites, and REQUIRES failures.
+#
+# B-80: the verdict authority is `prove` over runsql.sh -- the SAME TAP parser
+# and plan enforcement as the main gate. The previous version counted `^not ok`
+# lines itself with psql exit codes ignored, so a test file that ERRORed on its
+# first statement contributed a silent zero and the baseline passed with entire
+# files unexecuted. Now: a SQL error anywhere bails the file, prove sees the
+# bail, and the baseline is not green.
+# B-79: the database is built from the canonical enumerator, never a glob.
 set -uo pipefail
 export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"; export LC_ALL="en_US.UTF-8"
 cd "$(dirname "$0")/../.."
@@ -9,27 +17,25 @@ DB="${PGTAP_DB:-fin_v2}_mut"
 pass=0; fail=0
 
 build(){
-  dropdb --if-exists "$DB" >/dev/null 2>&1; createdb "$DB"
-  psql -q -d "$DB" -v ON_ERROR_STOP=1 -f supabase/tests/_local_bootstrap.sql >/dev/null
-  for f in supabase/migrations/2026073000000*.sql; do
+  local mig
+  mig=$(./supabase/tests/list_migrations.sh) || { echo "ENUMERATOR FAILED" >&2; return 1; }
+  dropdb --if-exists "$DB" >/dev/null 2>&1; createdb "$DB" || return 1
+  psql -q -d "$DB" -v ON_ERROR_STOP=1 -f supabase/tests/_local_bootstrap.sql >/dev/null || return 1
+  while IFS= read -r f; do
     psql -q -d "$DB" -v ON_ERROR_STOP=1 -f "$f" >/dev/null || return 1
-  done
+  done <<< "$mig"
 }
-suite_failures(){
-  local n=0
-  for t in supabase/tests/finance/*.sql; do
-    n=$((n + $(psql -X -q -tA -d "$DB" -f "$t" 2>&1 | grep -c '^not ok')))
-  done
-  echo "$n"
+suite_green(){  # exit 0 iff prove passes every file with its plan intact
+  PGTAP_DB="$DB" prove --exec "bash $PWD/supabase/tests/runsql.sh" supabase/tests/finance/*.sql >/dev/null 2>&1
 }
 mutant(){ # name, sql-to-apply
   build || { echo "not ok - $1 (build failed)"; fail=$((fail+1)); return; }
-  local base; base=$(suite_failures)
-  if [ "$base" -ne 0 ]; then echo "not ok - $1 (baseline not green: $base)"; fail=$((fail+1)); return; fi
-  psql -q -d "$DB" -c "$2" >/dev/null 2>&1
-  local after; after=$(suite_failures)
-  if [ "$after" -gt 0 ]; then
-    echo "ok - $1 (removing the safeguard caused $after failure(s))"; pass=$((pass+1))
+  if ! suite_green; then echo "not ok - $1 (BASELINE NOT GREEN under prove -- unexecuted or failing files)"; fail=$((fail+1)); return; fi
+  if ! psql -q -d "$DB" -v ON_ERROR_STOP=1 -c "$2" >/dev/null 2>&1; then
+    echo "not ok - $1 (MUTATION FAILED TO APPLY -- nothing was tested)"; fail=$((fail+1)); return
+  fi
+  if ! suite_green; then
+    echo "ok - $1 (removing the safeguard fails the suite under prove)"; pass=$((pass+1))
   else
     echo "not ok - $1 (SAFEGUARD REMOVED AND EVERY TEST STILL PASSED)"; fail=$((fail+1))
   fi

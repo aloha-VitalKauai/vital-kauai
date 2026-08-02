@@ -141,7 +141,7 @@ create temp table ex2 as select id from finance.reconciliation_exceptions where 
 -- 2. NON-FOUNDER is denied THROUGH the function.
 do $do$ begin perform set_config('request.jwt.claim.sub','22222222-2222-2222-2222-222222222222', true); end $do$;
 select denied($$ select finance.resolve_exception((select id from ex2), 'resolved'::finance.exception_resolution, 'attempt by a non-founder') $$,
-  'P0001', 'resolve_exception',
+  'P0001', 'founder role required',
   'req 121: a non-founder is denied through resolve_exception()');
 do $do$ begin perform set_config('request.jwt.claim.sub','11111111-1111-1111-1111-111111111111', true); end $do$;
 

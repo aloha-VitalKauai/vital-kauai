@@ -13,10 +13,11 @@ dropdb --if-exists "$DB"; createdb "$DB"
 psql -q -d "$DB" -v ON_ERROR_STOP=1 -f supabase/tests/_local_bootstrap.sql
 
 echo "== applying finance migrations =="
-for f in supabase/migrations/2026073000000*.sql; do
+MIGS=$(./supabase/tests/list_migrations.sh)   # canonical; failure aborts under set -e
+while IFS= read -r f; do
   printf '  %-56s' "$(basename "$f")"
   psql -q -d "$DB" -v ON_ERROR_STOP=1 -f "$f" && echo OK
-done
+done <<< "$MIGS"
 
 echo "== pgTAP suite =="
 total_ok=0; total_fail=0

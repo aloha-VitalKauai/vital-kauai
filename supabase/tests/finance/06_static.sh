@@ -23,14 +23,16 @@ STRIP="python3 supabase/tests/strip_sql_comments.py"
 # re-bodied changes it. This is the primary structural proof (req 2).
 chk "req 2: the catalog fingerprint of the finance schema matches expected_objects.txt exactly" \
   "psql -tAq -d $DB -f supabase/tests/object_census.sql > /tmp/census_actual.\$\$ && diff -u supabase/tests/expected_objects.txt /tmp/census_actual.\$\$"
-# The fingerprint is a DRIFT DETECTOR, not semantic proof: it says the schema is
-# what a human last reviewed, not that the schema is correct. Semantic claims live
-# in the pgTAP suites. Its value collapses if anything can rebaseline it silently,
-# so the gate asserts that only the explicit, token-gated script may write it.
-chk "the census baseline can only be rewritten by the explicit rebaseline script" \
-  "[ \$(grep -rl 'expected_objects.txt' supabase/tests --include='*.sh' | grep -v 'rebaseline_census.sh' | xargs grep -l '> *supabase/tests/expected_objects.txt\|expected_objects.txt\"* *<' 2>/dev/null | wc -l | tr -d ' ') -eq 0 ]"
-chk "the rebaseline script refuses to run without an explicit reviewed-the-diff token" \
+# The fingerprint is a DRIFT DETECTOR, not semantic proof. rebaseline_census.sh
+# is the APPROVED writer (token-gated, diff-first, never run by the gate); that
+# is policy, and no source grep can prove exclusivity -- a cp/tee/python rewrite
+# is invisible to grep (B-81). The enforced protection is in harness_gate.sh:
+# the baseline file is hashed before the suites run and re-hashed after, and
+# ANY change -- by any writer -- fails the gate.
+chk "the rebaseline script is token-gated and the gate never invokes it" \
   "grep -q 'I-REVIEWED-THE-DIFF' supabase/tests/rebaseline_census.sh && ! grep -q 'rebaseline_census' supabase/tests/harness_gate.sh"
+chk "the gate hashes the baseline before and after every run (see harness_gate.sh)" \
+  "grep -q 'BASELINE_HASH_BEFORE' supabase/tests/harness_gate.sh"
 chk "req 2: the census is substantive, not an empty or truncated file" \
   "[ \$(wc -l < supabase/tests/expected_objects.txt) -ge 1400 ]"
 
@@ -38,9 +40,12 @@ chk "req 2: the census is substantive, not an empty or truncated file" \
 # the bootstrap plus every migration before these checks run, so the database
 # existing in the expected shape IS the evidence the migrations apply cleanly.
 chk "req 1: all 8 migrations exist and the finance schema they build is present in this database" \
-  "[ \$(ls supabase/migrations/2026073000000*.sql | wc -l | tr -d ' ') -eq 8 ] && [ \$(q \"select count(*) from pg_namespace where nspname='finance'\") -eq 1 ]"
-chk "req 3: run_all.sh performs a destructive reset and aborts on first error (comments stripped)" \
-  "\$STRIP supabase/tests/run_all.sh 2>/dev/null | grep -q 'dropdb --if-exists' || { grep -q 'dropdb --if-exists' supabase/tests/run_all.sh && grep -q 'ON_ERROR_STOP=1' supabase/tests/run_all.sh; }"
+  "[ \$(./supabase/tests/list_migrations.sh | wc -l | tr -d ' ') -eq 8 ] && [ \$(q \"select count(*) from pg_namespace where nspname='finance'\") -eq 1 ]"
+# B-78: shell scripts are NEVER fed to the SQL stripper (it ate `--if-exists`
+# as a comment, and the old fallback grep was satisfiable from a comment).
+# shell_expects.py lexes each line with shlex, so only EXECUTED tokens count.
+chk "req 3: run_all.sh executes 'dropdb --if-exists' and ON_ERROR_STOP=1 as real tokens (bash-aware lex, comments can never satisfy)" \
+  "python3 supabase/tests/shell_expects.py supabase/tests/run_all.sh 'dropdb,--if-exists' 'ON_ERROR_STOP=1'"
 
 # 3. req 69: aggregate views must DERIVE from v_agreement_balances. Proven from
 # pg_depend -- the actual dependency graph the planner recorded, not text.
@@ -95,8 +100,16 @@ chk "no finance object has a foreign key into a legacy financial table" \
       join pg_namespace n on n.oid=c.relnamespace join pg_class t on t.oid=con.confrelid
       where n.nspname='finance' and con.contype='f'
         and t.relname in ('donations','financial_commitments','payment_allocations','bookings')\") -eq 0 ]"
-chk "no migration writes a legacy financial table (comments stripped)" \
-  "! \$STRIP supabase/migrations/2026073*.sql | grep -niE '(insert into|update|delete from)[[:space:]]+(public\.)?(donations|financial_commitments|payment_allocations|bookings)' | grep -q ."
+# B-81: producer rc handled explicitly -- a stripper crash mid-scan must fail
+# the check, not leave the unscanned remainder vacuously clean.
+legacy_write_scan(){
+  local files out
+  files=$(./supabase/tests/list_migrations.sh) || return 1
+  out=$(python3 supabase/tests/strip_sql_comments.py $files) || return 1
+  ! printf '%s' "$out" | grep -qiE '(insert into|update|delete from)[[:space:]]+(public\.)?(donations|financial_commitments|payment_allocations|bookings)'
+}
+chk "no migration writes a legacy financial table (stripper rc checked; scan covers the full canonical list)" \
+  "legacy_write_scan"
 chk "no finance routine body references a legacy financial table (catalog)" \
   "[ \$(q \"select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace
       where n.nspname='finance'

@@ -26,7 +26,9 @@ BEFORE=$(psql -tA -d "$DB" -c "select coalesce(array_to_string(proconfig,','),'N
 echo "BEFORE proconfig : $BEFORE"
 
 set +e
-psql -q -d "$DB" -v ON_ERROR_STOP=1 -f supabase/migrations/20260730000001_finance_harden_is_founder.sql >/tmp/atom.log 2>&1
+FIRST_MIG=$(./supabase/tests/list_migrations.sh | head -1)
+[ -n "$FIRST_MIG" ] || { echo "ENUMERATOR FAILED"; exit 2; }
+psql -q -d "$DB" -v ON_ERROR_STOP=1 -f "$FIRST_MIG" >/tmp/atom.log 2>&1
 RC=$?
 set -e
 AFTER=$(psql -tA -d "$DB" -c "select coalesce(array_to_string(proconfig,','),'NOT_SET') from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname='is_founder'")

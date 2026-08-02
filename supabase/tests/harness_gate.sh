@@ -12,11 +12,16 @@ echo "== build $DB from migrations =="
 dropdb --if-exists "$DB"
 createdb "$DB"
 psql -v ON_ERROR_STOP=1 -q -d "$DB" -f supabase/tests/_local_bootstrap.sql
-for m in supabase/migrations/20260730*.sql; do
+MIGS=$(./supabase/tests/list_migrations.sh)   # canonical; enumerator failure aborts under set -e
+while IFS= read -r m; do
   psql -v ON_ERROR_STOP=1 -q -d "$DB" -f "$m"
-done
+done <<< "$MIGS"
 psql -v ON_ERROR_STOP=1 -q -d "$DB" -f supabase/tests/_test_helpers.sql
-echo "   applied $(ls supabase/migrations/20260730*.sql | wc -l | tr -d ' ') migrations"
+echo "   applied $(printf '%s\n' "$MIGS" | wc -l | tr -d ' ') migrations (canonical manifest)"
+
+# B-81: expected_objects.txt must not change during a gate run, no matter what
+# writes it. This is the enforced exclusivity of the rebaseline script.
+BASELINE_HASH_BEFORE=$(shasum supabase/tests/expected_objects.txt | cut -d" " -f1)
 
 echo "== inventory =="        ; ./supabase/tests/finance/10_inventory.sh
 echo "== no placeholders ==" ; ./supabase/tests/finance/08_no_placeholders.sh
@@ -27,4 +32,8 @@ echo "== static =="          ; ./supabase/tests/finance/06_static.sh
 echo "== concurrency =="     ; ./supabase/tests/concurrency.sh >/dev/null
 echo "== atomicity =="       ; ./supabase/tests/atomicity_sim.sh >/dev/null
 echo "== mutation =="        ; ./supabase/tests/mutation.sh >/dev/null
+BASELINE_HASH_AFTER=$(shasum supabase/tests/expected_objects.txt | cut -d" " -f1)
+if [ "$BASELINE_HASH_BEFORE" != "$BASELINE_HASH_AFTER" ]; then
+  echo "GATE FAILED: the census baseline changed during the run"; exit 1
+fi
 echo "ALL SUITES PASSED"

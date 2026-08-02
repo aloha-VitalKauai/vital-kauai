@@ -15,11 +15,13 @@
  "supabase/tests/finance/11_member_reads.sql",
  "supabase/tests/finance/12_isolation_posture.sql",
  "supabase/tests/harness_gate.sh",
+ "supabase/tests/list_migrations.sh",
  "supabase/tests/mutation.sh",
  "supabase/tests/object_census.sql",
  "supabase/tests/rebaseline_census.sh",
  "supabase/tests/run_all.sh",
  "supabase/tests/runsql.sh",
  "supabase/tests/sabotage.sh",
+ "supabase/tests/shell_expects.py",
  "supabase/tests/strip_sql_comments.py"
 ]

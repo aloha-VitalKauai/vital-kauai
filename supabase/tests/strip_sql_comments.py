@@ -40,4 +40,9 @@ def strip(s):
     return ''.join(out)
 
 if __name__ == '__main__':
+    # B-78: this stripper understands SQL comments ONLY. Fed a bash script it
+    # once ate `--if-exists` as a comment and silently gutted a check. Refuse.
+    bad = [f for f in sys.argv[1:] if not f.endswith('.sql')]
+    if bad:
+        sys.exit('strip_sql_comments.py: refusing non-SQL input: %s' % ', '.join(bad))
     sys.stdout.write(''.join(strip(open(f).read()) for f in sys.argv[1:]))

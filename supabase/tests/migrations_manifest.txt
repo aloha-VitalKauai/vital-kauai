@@ -1,0 +1,8 @@
+20260730000001_finance_harden_is_founder.sql
+20260730000002_finance_schema_enums.sql
+20260730000003_finance_tables.sql
+20260730000004_finance_indexes.sql
+20260730000005_finance_triggers.sql
+20260730000006_finance_functions.sql
+20260730000007_finance_views.sql
+20260730000008_finance_rls_grants.sql

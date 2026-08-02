@@ -152,5 +152,13 @@ case_run "24. denied() state-digest disabled (documented equivalent -- PostgreSQ
 case_run "25. resolution guard flipped to SECURITY DEFINER (identity check would self-compare)" \
   "perl -0pi -e 's/security invoker/security definer/' supabase/migrations/20260730000005_finance_triggers.sql"
 
+# B-78 reviewer attack, made permanent: the reset commands survive only in
+# comments; the bash-aware lexer must see no executed tokens and fail the gate.
+case_run "26. run_all.sh gutted, commands left in comments (B-78)" \
+  "printf '#!/usr/bin/env bash\n# dropdb --if-exists kept in a comment\n# psql -v ON_ERROR_STOP=1 also only a comment\necho no-op\n' > supabase/tests/run_all.sh"
+# B-79 reviewer attack, made permanent: an in-series migration the OLD narrow
+# glob would have skipped; the enumerator must refuse the unlisted file.
+case_run "27. future-shaped in-series migration on disk but unlisted (B-79)" \
+  "printf 'begin;\ncreate table finance.smuggled_by_glob(id int);\ncommit;\n' > supabase/migrations/20260730090000_future_glob_skip.sql"
 echo "== sabotage: killed=$pass failed=$fail =="
 [ "$fail" -eq 0 ]

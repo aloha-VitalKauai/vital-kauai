@@ -14,9 +14,10 @@ trap 'rm -rf "$D"; kill %1 %2 2>/dev/null' EXIT
 
 dropdb --if-exists "$DB"; createdb "$DB"
 psql -q -d "$DB" -v ON_ERROR_STOP=1 -f supabase/tests/_local_bootstrap.sql
-for f in supabase/migrations/2026073000000*.sql; do
+MIGS=$(./supabase/tests/list_migrations.sh) || { echo "ENUMERATOR FAILED"; exit 2; }
+while IFS= read -r f; do
   psql -q -d "$DB" -v ON_ERROR_STOP=1 -f "$f"
-done
+done <<< "$MIGS"
 
 psql -q -d "$DB" <<'SQL'
 create table conc_result(name text primary key, detail text);
@@ -34,10 +35,21 @@ SQL
 AG=$(psql -tA -d "$DB" -c "select id from finance.agreements limit 1")
 
 mkfifo "$D/f1" "$D/f2"
-psql -q -X -d "$DB" -v ON_ERROR_STOP=0 < "$D/f1" > "$D/o1" 2>&1 &
-psql -q -X -d "$DB" -v ON_ERROR_STOP=0 < "$D/f2" > "$D/o2" 2>&1 &
+# B-82: each session carries a unique application_name so every blocking claim
+# can name the exact backend it is about, never "some backend somewhere".
+APP1="conc_s1_$$"; APP2="conc_s2_$$"
+PGAPPNAME="$APP1" psql -q -X -d "$DB" -v ON_ERROR_STOP=0 < "$D/f1" > "$D/o1" 2>&1 &
+PGAPPNAME="$APP2" psql -q -X -d "$DB" -v ON_ERROR_STOP=0 < "$D/f2" > "$D/o2" 2>&1 &
 exec 3> "$D/f1"; exec 4> "$D/f2"
 P1=$(jobs -p | head -1); P2=$(jobs -p | tail -1)
+backend_pid(){ psql -tA -d "$DB" -c "select pid from pg_stat_activity where datname=current_database() and application_name='$1'"; }
+BPID1=""; BPID2=""
+for i in $(seq 1 50); do
+  BPID1=$(backend_pid "$APP1"); BPID2=$(backend_pid "$APP2")
+  [ -n "$BPID1" ] && [ -n "$BPID2" ] && break
+  sleep 0.2
+done
+[ -n "$BPID1" ] && [ -n "$BPID2" ] || { echo "FATAL: could not resolve session backend pids"; exit 1; }
 s1(){ echo "$1" >&3; }; s2(){ echo "$1" >&4; }
 # ---------------------------------------------------------------- helpers
 # Finding 7: prove blocking DETERMINISTICALLY. Marker-absence is also produced
@@ -53,21 +65,42 @@ require_alive(){
   fi
 }
 
-# wait_blocked <label> -> writes yes/no into conc_result
+# wait_blocked <label> <backend_pid> -> writes yes/no into conc_result.
+# B-82: inspects EXACTLY the named backend. The old form accepted ANY backend
+# waiting on a lock, so a straggler from a previous scenario could satisfy a
+# later scenario's claim without that scenario's statement ever blocking.
 wait_blocked(){
-  local label="$1" i out=no
+  local label="$1" want_pid="$2" i out=no
+  [ -n "$want_pid" ] || { echo "FATAL: wait_blocked called without a pid ($label)"; exit 1; }
   for i in $(seq 1 50); do
     out=$(psql -tA -d "$DB" -c "
       select count(*) from pg_stat_activity
       where datname = current_database()
-        and wait_event_type = 'Lock'
-        and pid <> pg_backend_pid()")
+        and pid = $want_pid
+        and wait_event_type = 'Lock'")
     [ "${out:-0}" -ge 1 ] && { out=yes; break; }
     sleep 0.2
   done
   [ "$out" = yes ] || out=no
   require_alive "$label"
   psql -q -d "$DB" -c "insert into conc_result values ('${label}','${out}') on conflict (name) do update set detail=excluded.detail"
+}
+
+# scenario_drain <label>: no scenario may start while a session backend is still
+# in a transaction or waiting. Replaces blind sleeps with observed quiescence.
+scenario_drain(){
+  local label="$1" i n=1
+  for i in $(seq 1 100); do
+    n=$(psql -tA -d "$DB" -c "
+      select count(*) from pg_stat_activity
+      where pid in ($BPID1,$BPID2)
+        and (state <> 'idle' or wait_event_type = 'Lock')")
+    [ "${n:-1}" -eq 0 ] && break
+    sleep 0.2
+  done
+  if [ "${n:-1}" -ne 0 ]; then
+    echo "FATAL: a session backend survived scenario '$label' still busy/blocked"; exit 1
+  fi
 }
 
 
@@ -80,11 +113,11 @@ s1 "insert into finance.agreement_lifecycle_events(agreement_id,from_status,to_s
 sleep 1
 # S2 attempts the SAME transition; must block on the agreement row lock held by S1.
 s2 "insert into finance.agreement_lifecycle_events(agreement_id,from_status,to_status,reason,actor_id) values ('$AG','draft','canceled','s2',$UID1);"
-wait_blocked r21_s2_blocked
+wait_blocked r21_s2_blocked "$BPID2"
 s1 "commit;"
 sleep 2
 s2 "commit;"
-sleep 1
+scenario_drain r21
 
 
 # --------------------------------------------------- req 37: link claim race
@@ -94,11 +127,11 @@ s2 "begin;"
 s1 "update finance.payment_links set status='creating', claimed_at=now() where token_hash='tok1' and status='active';"
 sleep 1
 s2 "update finance.payment_links set status='creating', claimed_at=now() where token_hash='tok1' and status='active';"
-wait_blocked r37_s2_blocked
+wait_blocked r37_s2_blocked "$BPID2"
 s1 "commit;"
 sleep 2
 s2 "commit;"
-sleep 1
+scenario_drain r37
 
 
 # ------------------------------------------- req 50: concurrent refunds (L7)
@@ -109,11 +142,11 @@ s2 "begin;"
 s1 "insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,parent_entry_id,occurred_at,livemode) values ('$AG','refund',-60000,'stripe','re_a','$PAY',now(),true);"
 sleep 1
 s2 "insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,parent_entry_id,occurred_at,livemode) values ('$AG','refund',-60000,'stripe','re_b','$PAY',now(),true);"
-wait_blocked r50_s2_blocked
+wait_blocked r50_s2_blocked "$BPID2"
 s1 "commit;"
 sleep 2
 s2 "commit;"
-sleep 2
+scenario_drain r50
 
 # ------------------------------------- req 35: one live session per agreement
 s1 "begin;"
@@ -121,11 +154,11 @@ s2 "begin;"
 s1 "insert into finance.checkout_sessions(agreement_id,idempotency_key,amount_cents,livemode,expires_at) values ('$AG','k1',5000,true,now()+interval '1 hour');"
 sleep 1
 s2 "insert into finance.checkout_sessions(agreement_id,idempotency_key,amount_cents,livemode,expires_at) values ('$AG','k2',5000,true,now()+interval '1 hour');"
-wait_blocked r35_s2_blocked
+wait_blocked r35_s2_blocked "$BPID2"
 s1 "commit;"
 sleep 2
 s2 "commit;"
-sleep 2
+scenario_drain r35
 
 
 exec 3>&-; exec 4>&-
