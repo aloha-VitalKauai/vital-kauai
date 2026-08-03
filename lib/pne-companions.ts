@@ -76,6 +76,7 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     status: "live",
     videoSummary:
       "The five primary emotions, the secondary patterns layered on top, and how to let what has been long held finally move through.",
+    videoUrl: "https://www.youtube.com/embed/1M1n3v71ryM?rel=0",
   },
   {
     phase: "pre",
