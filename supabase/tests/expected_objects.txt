@@ -35,6 +35,7 @@ constraint:ledger_entries:ledger_l13_provenance:c:CHECK ((((source <> 'stripe'::
 constraint:ledger_entries:ledger_l1_stripe_payment:c:CHECK (((entry_type <> 'stripe_payment'::finance.ledger_entry_type) OR ((amount_cents > 0) AND (source = 'stripe'::finance.ledger_source) AND (provider_payment_intent_id IS NOT NULL) AND (parent_entry_id IS NULL))))
 constraint:ledger_entries:ledger_l2_external_payment:c:CHECK (((entry_type <> 'external_payment'::finance.ledger_entry_type) OR ((amount_cents > 0) AND (source = 'external'::finance.ledger_source) AND (external_method IS NOT NULL) AND (parent_entry_id IS NULL))))
 constraint:ledger_entries:ledger_l3_refund:c:CHECK (((entry_type <> 'refund'::finance.ledger_entry_type) OR ((amount_cents < 0) AND (parent_entry_id IS NOT NULL) AND ((source <> 'stripe'::finance.ledger_source) OR (provider_object_id IS NOT NULL)) AND ((source <> 'external'::finance.ledger_source) OR (external_method IS NOT NULL)))))
+constraint:ledger_entries:ledger_l4_reversal:c:CHECK (((entry_type <> 'reversal'::finance.ledger_entry_type) OR (parent_entry_id IS NOT NULL)))
 constraint:ledger_entries:ledger_l5_not_self_parent:c:CHECK ((parent_entry_id IS DISTINCT FROM id))
 constraint:ledger_entries:ledger_single_attribution:c:CHECK ((num_nonnulls(recorded_by, recorded_by_system) <= 1))
 constraint:payment_links:link_consumed_complete:c:CHECK (((status <> 'consumed'::finance.link_status) OR ((consumed_at IS NOT NULL) AND (consumed_by_session_id IS NOT NULL))))

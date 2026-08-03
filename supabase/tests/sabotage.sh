@@ -170,5 +170,7 @@ case_run "29. new migration crafted to sort before the series start (F3)" \
   "printf 'begin;\ncreate table finance.pre_series_smuggle(id int);\ncommit;\n' > supabase/migrations/20260729999999_evil.sql"
 case_run "30. link claim guard removed (R38 mechanism)" \
   "perl -0pi -e 's/create trigger link_claim_guard\n  before update on finance.payment_links\n  for each row execute function finance.tg_link_claim_guard\(\);//' supabase/migrations/20260730000005_finance_triggers.sql"
+case_run "31. L4 reversal shape CHECK relaxed (R52 mechanism)" \
+  "perl -0pi -e 's/check \(entry_type <> .reversal. or parent_entry_id is not null\)/check (true)/' supabase/migrations/20260730000003_finance_tables.sql"
 echo "== sabotage: killed=$pass failed=$fail =="
 [ "$fail" -eq 0 ]

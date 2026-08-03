@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap;
 \i supabase/tests/_test_helpers.sql
-select plan(75);
+select plan(82);
 
 insert into auth.users (id,email) values
   ('11111111-1111-1111-1111-111111111111','f@t'),('22222222-2222-2222-2222-222222222222','m@t');
@@ -218,6 +218,26 @@ set local role service_role;
 select lives_ok($$ insert into finance.stripe_events(event_id,event_type,object_id,livemode,payload) values ('evt_b2','charge.succeeded','ch_b2evt',true,'{}'::jsonb) $$, 'req 40: service_role can INSERT a stripe event [A4-072]');
 select is((select count(*)::int from finance.stripe_events where event_id='evt_b2'), 1, 'req 40: service_role can SELECT what it wrote [A4-073]');
 reset role;
+
+-- ===== Checkpoint B batch 3: clause-completion probes =====
+-- R41: the append-only TRIGGER raises for service_role even when the grant
+-- layer is widened -- the same simulate-the-drifted-ACL pattern as req 121.
+grant update, delete on finance.ledger_entries to service_role;
+grant select on ag to service_role;
+set local role service_role;
+select denied($$ update finance.ledger_entries set amount_cents=1 where agreement_id=(select id from ag) $$, 'P0001', 'append-only', 'req 41: with the grant widened, service_role UPDATE still dies in the append-only trigger [A4-076]');
+select denied($$ delete from finance.ledger_entries where agreement_id=(select id from ag) $$, 'P0001', 'append-only', 'req 41: with the grant widened, service_role DELETE still dies in the append-only trigger [A4-077]');
+reset role;
+revoke update, delete on finance.ledger_entries from service_role;
+-- R51: a refund may not target a REVERSAL either
+select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,parent_entry_id,occurred_at,livemode) select a.id,'refund',-10,'stripe','re_rv',r.id,now(),true from ag a, (select id from finance.ledger_entries where entry_type='reversal' limit 1) r $$, 'P0001', 'a refund may only target a payment', 'req 51: a refund may not target a reversal [A4-078]');
+-- R52: a reversal REQUIRES a parent
+select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,occurred_at,livemode,reason,recorded_by) select id,'reversal',-10,'stripe',now(),true,'r','11111111-1111-1111-1111-111111111111' from ag $$, '23514', 'ledger_l4_reversal', 'req 52: a reversal without a parent is rejected by the L4 shape CHECK [A4-079]');
+-- R57: self-parent rejected BEHAVIOURALLY (the CHECK exists structurally at A4-005)
+select denied($$ update finance.ledger_entries set parent_entry_id=id where id=(select id from finance.ledger_entries limit 1) $$, 'P0001', 'append-only', 'req 57: no path can even attempt self-parenting -- the fact table is append-only [A4-080]');
+select is((select count(*)::int from pg_constraint where conrelid='finance.ledger_entries'::regclass and pg_get_constraintdef(oid) ilike '%parent_entry_id IS DISTINCT FROM id%'), 1, 'req 57: the L5 self-parent CHECK is present for the INSERT path [A4-081]');
+-- R58: a ledger entry cannot exist without an agreement
+select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode) values ('00000000-0000-0000-0000-000000000000','stripe_payment',10,'stripe','ch_na','pi_na',now(),true) $$, '23503', 'ledger_entries_agreement_id_fkey', 'req 58: a ledger entry with no agreement violates the FK [A4-082]');
 
 select * from finish();
 rollback;

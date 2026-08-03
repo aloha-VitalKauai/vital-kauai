@@ -114,6 +114,12 @@ create table finance.ledger_entries (
       and (source <> 'external' or external_method is not null))),
 
   -- L12: external money and every reversal require a reason and one attribution
+  -- R52 (found during Checkpoint B mapping): reversals had no shape CHECK at
+  -- all -- a parentless reversal was accepted and the L4 exact-negation trigger
+  -- never fired because it keys off the parent. Sign is deliberately NOT
+  -- constrained here: a reversal of a refund is positive.
+  constraint ledger_l4_reversal
+    check (entry_type <> 'reversal' or parent_entry_id is not null),
   constraint ledger_l12_attribution check (
     (source <> 'external' and entry_type <> 'reversal')
     or (reason is not null and length(btrim(reason)) > 0

@@ -399,3 +399,10 @@ A4-072 | 04_coverage.sql | req 40: service_role can INSERT a stripe event
 A4-073 | 04_coverage.sql | req 40: service_role can SELECT what it wrote
 A4-074 | 04_coverage.sql | req 32e: legacy_donation_id accepted on a stripe entry
 A4-075 | 04_coverage.sql | req 36: expiring the live session frees the slot as well
+A4-076 | 04_coverage.sql | req 41: with the grant widened, service_role UPDATE still dies in the append-only trigger
+A4-077 | 04_coverage.sql | req 41: with the grant widened, service_role DELETE still dies in the append-only trigger
+A4-078 | 04_coverage.sql | req 51: a refund may not target a reversal
+A4-079 | 04_coverage.sql | req 52: a reversal without a parent is rejected by the L4 shape CHECK
+A4-080 | 04_coverage.sql | req 57: no path can even attempt self-parenting -- the fact table is append-only
+A4-081 | 04_coverage.sql | req 57: the L5 self-parent CHECK is present for the INSERT path
+A4-082 | 04_coverage.sql | req 58: a ledger entry with no agreement violates the FK

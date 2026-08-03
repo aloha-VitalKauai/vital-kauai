@@ -146,3 +146,63 @@ Expired: [A4-068]. Already-claimed (creating): [A4-069]. Consumed: [A4-070]. Rev
 
 ### R40: service_role can SELECT and INSERT where the jobs require
 Ledger: [A3-024] [A3-038]. Exceptions: [A3-025] (INSERT kind) [A3-026] (occurrence_count update). Runs: [A3-028]. Events cursor: [A3-027]. stripe_events INSERT+SELECT: [A4-072] [A4-073].
+
+### R41: append-only trigger raises for service_role despite elevation
+Grant layer: [A3-015] [A3-016]. Trigger layer with the grant deliberately widened (simulated ACL drift): [A4-076] [A4-077] — the P0001 comes from the append-only trigger, not privilege. [SUITE:mutation_protocol] kills the dropped-trigger mutants.
+
+### R42: anon/PUBLIC nothing, including after ALTER DEFAULT PRIVILEGES
+[ST-020] [A7-004] [A7-070] [A1-035]; function ACLs post-ADP: [A5-013] [A5-014] executed against the built database where the migration's ADP statements ran (the ADP-is-a-no-op-for-REVOKE finding is why explicit REVOKEs exist; census pins the resulting ACLs).
+
+### R43: a payment increases net Received exactly once
+[A4-038].
+
+### R44: L8 — duplicate (provider_object_id, livemode) rejected
+[A2-020] [A4-003]; index pinned structurally by [SUITE:census] (ledger_entries_provider_object_uq).
+
+### R45: L8b — duplicate payment intent rejected
+[A2-021].
+
+### R46: a refund reduces net Received
+[A2-023].
+
+### R47: partial refund works, correct balance
+[A2-022] [A4-040].
+
+### R48: two partial refunds accumulate
+[A4-040] [A4-008] [A4-009].
+
+### R49: refund exceeding settled amount rejected
+[A4-010] (L7).
+
+### R50: cumulative refunds exceeding settled rejected, incl. concurrent
+Sequential: [A4-010] [A4-009]. Concurrent insertion: [SUITE:concurrency_r50].
+
+### R51: a refund may not target a refund or a reversal
+Refund target: [A4-041]. Reversal target: [A4-078].
+
+### R52: a reversal requires a valid parent and exactly negates it
+Parent required: [A4-079] — the new ledger_l4_reversal CHECK (mechanism added in this batch: a parentless reversal was previously ACCEPTED because the negation trigger keys off the parent; sabotage case 31 is its kill-path). Exact negation: [A4-042].
+
+### R53: reversal rejected while parent has an unreversed child
+[A2-057] [A7-016] (L6, the double-subtraction case).
+
+### R54: the full unwind executes and nets to 0
+[A2-058] [A2-024] [A2-025] [A7-014].
+
+### R55: an entry cannot be reversed twice
+[A2-060] [A7-015].
+
+### R56: reversing a refund restores the parent's refund headroom
+[A4-043] [A4-011].
+
+### R57: no self-parent; parent and child share an agreement
+Self-parent: [A4-081] (L5 CHECK present for the INSERT path) + [A4-080] (no UPDATE path can even attempt it — append-only). Cross-agreement: [A4-004].
+
+### R58: a ledger entry cannot exist without an agreement
+[A4-082] (FK, 23503).
+
+### R59: (legacy_donation_id, entry_type) unique — re-run import cannot duplicate
+[A4-044] [A4-012]; the payment+refund pair from one legacy row is permitted by the entry_type dimension ([SUITE:census] pins ledger_entries_legacy_donation_uq).
+
+### R60: no entries → all aggregates 0 and unpaid, never NULL/partial
+[A2-027] [A2-028] [A7-010].
