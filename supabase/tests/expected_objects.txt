@@ -1425,6 +1425,7 @@ routine:tg_exception_insert_guard():f:true
 routine:tg_exception_resolution_guard():f:false
 routine:tg_ledger_invariants():f:true
 routine:tg_lifecycle_transition():f:true
+routine:tg_link_claim_guard():f:true
 routine:tg_link_insert_guard():f:true
 routine:tg_link_revocation_terminal():f:true
 routine:tg_run_authorization():f:true
@@ -1445,6 +1446,7 @@ routinedef:tg_exception_insert_guard():176d32c46fd8cd095a29671f9dca5305:v:search
 routinedef:tg_exception_resolution_guard():c580f1d062576b7c55a565a2cb5a558c:v:search_path=pg_catalog, public, finance
 routinedef:tg_ledger_invariants():1a1c13e2ebfa17b546738679aca28a50:v:search_path=pg_catalog, public, finance
 routinedef:tg_lifecycle_transition():1e91f24d3c79effecb49f12b71ad3095:v:search_path=pg_catalog, public, finance
+routinedef:tg_link_claim_guard():f77b3cbf02476871ac056e12e2514794:v:search_path=pg_catalog, public, finance
 routinedef:tg_link_insert_guard():192c3e53d5a3f7a0e11d5d6f98d68a64:v:search_path=pg_catalog, public, finance
 routinedef:tg_link_revocation_terminal():6f196747d827a7d842ef35547a56c82f:v:search_path=pg_catalog, public, finance
 routinedef:tg_run_authorization():cbf7f5c3a40606ce870964af3c265803:v:search_path=pg_catalog, public, finance
@@ -1458,6 +1460,7 @@ trigger:agreements:agreement_has_lifecycle
 trigger:agreements:agreements_insert_only
 trigger:ledger_entries:append_only
 trigger:ledger_entries:ledger_invariants
+trigger:payment_links:link_claim_guard
 trigger:payment_links:link_insert_guard
 trigger:payment_links:link_revocation_terminal
 trigger:reconciliation_exceptions:exception_insert_guard

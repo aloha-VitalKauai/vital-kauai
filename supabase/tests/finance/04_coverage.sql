@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap;
 \i supabase/tests/_test_helpers.sql
-select plan(54);
+select plan(73);
 
 insert into auth.users (id,email) values
   ('11111111-1111-1111-1111-111111111111','f@t'),('22222222-2222-2222-2222-222222222222','m@t');
@@ -172,6 +172,47 @@ select is((select count(*)::int from pg_constraint c join pg_class r on r.oid=c.
            where n.nspname='finance' and r.relname='ledger_entries'
              and pg_get_constraintdef(c.oid) ilike '%amount_cents <> 0%'), 1,
   'the amount_cents <> 0 CHECK exists on ledger_entries [A4-037]');
+
+-- ===== Checkpoint B batch 2: clause-completion probes =====
+-- End-of-file block: the file's final rollback is the cleanup; a savepoint here
+-- would roll back pgTAP's counter and break the plan.
+-- R28 L1 remaining clauses
+select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,external_method,occurred_at,livemode,reason,recorded_by) select id,'stripe_payment',100,'external','cash',now(),true,'r','11111111-1111-1111-1111-111111111111' from ag $$, '23514', 'ledger_entries', 'req 28 (L1): a stripe_payment with source external is rejected [A4-055]');
+select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode) select id,'stripe_payment',-100,'stripe','ch_n','pi_n',now(),true from ag $$, '23514', 'ledger_entries', 'req 28 (L1): a non-positive stripe_payment is rejected [A4-056]');
+select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,parent_entry_id,occurred_at,livemode) select a.id,'stripe_payment',100,'stripe','ch_p','pi_p',p.id,now(),true from ag a, (select id from finance.ledger_entries where entry_type='stripe_payment' limit 1) p $$, '23514', 'ledger_entries', 'req 28 (L1): a stripe_payment carrying a parent is rejected [A4-057]');
+-- R29 L2 remaining clauses
+select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode,reason,recorded_by) select id,'external_payment',100,'stripe','ch_e','pi_e',now(),true,'r','11111111-1111-1111-1111-111111111111' from ag $$, '23514', 'ledger_entries', 'req 29 (L2): an external_payment with source stripe is rejected [A4-058]');
+select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,external_method,occurred_at,livemode,reason,recorded_by) select id,'external_payment',-100,'external','cash',now(),true,'r','11111111-1111-1111-1111-111111111111' from ag $$, '23514', 'ledger_entries', 'req 29 (L2): a non-positive external_payment is rejected [A4-059]');
+select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,external_method,parent_entry_id,occurred_at,livemode,reason,recorded_by) select a.id,'external_payment',100,'external','cash',p.id,now(),true,'r','11111111-1111-1111-1111-111111111111' from ag a, (select id from finance.ledger_entries where entry_type='stripe_payment' limit 1) p $$, '23514', 'ledger_entries', 'req 29 (L2): an external_payment carrying a parent is rejected [A4-060]');
+-- R30 L3 remaining clause
+select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,parent_entry_id,occurred_at,livemode,reason,recorded_by) select a.id,'refund',-50,'external',p.id,now(),true,'r','11111111-1111-1111-1111-111111111111' from ag a, (select id from finance.ledger_entries where entry_type='stripe_payment' limit 1) p $$, '23514', 'ledger_entries', 'req 30 (L3): an external refund without external_method is rejected [A4-061]');
+-- R31: NULL origin_stripe_event_id is accepted
+select lives_ok($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode,origin_stripe_event_id) select id,'stripe_payment',77,'stripe','ch_no','pi_no',now(),true,null from ag $$, 'req 31 (L11): a NULL origin_stripe_event_id is accepted [A4-062]');
+-- R33 uniqueness
+insert into finance.checkout_sessions(agreement_id,idempotency_key,amount_cents,livemode,expires_at,status,stripe_session_id) select id,'k_b2',100,true,now()+interval '1 hour','open','cs_b2' from ag;
+select denied($$ insert into finance.checkout_sessions(agreement_id,idempotency_key,amount_cents,livemode,expires_at,status,stripe_session_id) select id,'k_b2x',100,true,now()+interval '1 hour','open','cs_b2' from ag $$, '23505', 'checkout_sessions_stripe_session_id_key', 'req 33: duplicate stripe_session_id is rejected [A4-063]');
+select denied($$ insert into finance.checkout_sessions(agreement_id,idempotency_key,amount_cents,livemode,expires_at) select id,'k_b2',100,true,now()+interval '1 hour' from ag $$, '23505', 'checkout_sessions_idempotency_key_key', 'req 33: duplicate idempotency_key is rejected [A4-064]');
+-- R35 one live session per (agreement, mode); modes coexist
+select denied($$ insert into finance.checkout_sessions(agreement_id,idempotency_key,amount_cents,livemode,expires_at) select id,'k_b2y',100,true,now()+interval '1 hour' from ag $$, '23505', 'checkout_sessions_live_uq', 'req 35: a second live session for the same agreement+mode is rejected [A4-065]');
+select lives_ok($$ insert into finance.checkout_sessions(agreement_id,idempotency_key,amount_cents,livemode,expires_at) select id,'k_b2t',100,false,now()+interval '1 hour' from ag $$, 'req 35: a test-mode session coexists with the live one [A4-066]');
+-- R36 completing frees the slot
+update finance.checkout_sessions set status='completed' where idempotency_key='k_b2';
+select lives_ok($$ insert into finance.checkout_sessions(agreement_id,idempotency_key,amount_cents,livemode,expires_at) select id,'k_b2z',100,true,now()+interval '1 hour' from ag $$, 'req 36: completing the live session frees the slot for a new one [A4-067]');
+-- R38 claim guard (mechanism added in this commit)
+insert into finance.payment_links(agreement_id,token_hash,expires_at,created_by) select id,'tok_exp',now() - interval '1 hour','11111111-1111-1111-1111-111111111111' from ag;
+select denied($$ update finance.payment_links set status='creating', claimed_at=now() where token_hash='tok_exp' $$, 'P0001', 'link claim rejected: link expired at', 'req 38: claiming an EXPIRED link is rejected [A4-068]');
+insert into finance.payment_links(agreement_id,token_hash,expires_at,created_by) select id,'tok_live',now() + interval '1 day','11111111-1111-1111-1111-111111111111' from ag;
+update finance.payment_links set status='creating', claimed_at=now() where token_hash='tok_live' and status='active';
+select denied($$ update finance.payment_links set status='creating', claimed_at=now() where token_hash='tok_exp' $$, 'P0001', 'link claim rejected', 'req 38: a non-active link cannot be claimed [A4-069]');
+update finance.payment_links set status='consumed', consumed_at=now(), consumed_by_session_id=(select id from finance.checkout_sessions where idempotency_key='k_b2z') where token_hash='tok_live';
+select denied($$ update finance.payment_links set status='creating', claimed_at=now() where token_hash='tok_live' $$, 'P0001', 'only an active link can be claimed, status is consumed', 'req 38: claiming a CONSUMED link is rejected [A4-070]');
+-- R39 exception shape
+select denied($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,resolution_status) values ('amount_mismatch',true,'ch_b2','resolved') $$, 'P0001', 'a new exception must be created open', 'req 39: a non-open exception row is rejected at INSERT by the guard above the exc_open_iff_unresolved CHECK [A4-071]');
+-- R40 service_role INSERT on stripe_events
+set local role service_role;
+select lives_ok($$ insert into finance.stripe_events(event_id,event_type,object_id,livemode,payload) values ('evt_b2','charge.succeeded','ch_b2evt',true,'{}'::jsonb) $$, 'req 40: service_role can INSERT a stripe event [A4-072]');
+select is((select count(*)::int from finance.stripe_events where event_id='evt_b2'), 1, 'req 40: service_role can SELECT what it wrote [A4-073]');
+reset role;
 
 select * from finish();
 rollback;

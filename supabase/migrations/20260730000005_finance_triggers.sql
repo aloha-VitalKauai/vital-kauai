@@ -442,6 +442,28 @@ end $$;
 create trigger link_insert_guard before insert on finance.payment_links
   for each row execute function finance.tg_link_insert_guard();
 
+-- R38 (found during Checkpoint B mapping): claiming was unguarded -- an
+-- EXPIRED link could be claimed, and a consumed link could be re-claimed by a
+-- direct UPDATE that skipped the status='active' predicate. A claim is the
+-- transition INTO 'creating'; it is valid only from 'active' and only before
+-- expiry. Revocation terminality is enforced separately below.
+create function finance.tg_link_claim_guard() returns trigger
+  language plpgsql security definer set search_path = pg_catalog, public, finance as $$
+begin
+  if new.status = 'creating' and old.status is distinct from 'creating' then
+    if old.status <> 'active' then
+      raise exception 'link claim rejected: only an active link can be claimed, status is %', old.status;
+    end if;
+    if old.expires_at <= clock_timestamp() then
+      raise exception 'link claim rejected: link expired at %', old.expires_at;
+    end if;
+  end if;
+  return new;
+end $$;
+create trigger link_claim_guard
+  before update on finance.payment_links
+  for each row execute function finance.tg_link_claim_guard();
+
 -- --------------------------------------------- revocation is terminal
 -- Entering `revoked` by UPDATE is blocked by link_revoked_complete, but
 -- LEAVING it was not: service_role could flip a revoked link back to active

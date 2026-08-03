@@ -27,11 +27,10 @@ select denied($$ select finance.create_agreement('aaaaaaaa-0000-0000-0000-000000
 select denied($$ select finance.create_agreement('aaaaaaaa-0000-0000-0000-00000000000a','cccccccc-0000-0000-0000-00000000000c','journey_contribution','dup') $$, '23505', 'agreements_member_journey_purpose_key', 'test 17: duplicate (member,journey,purpose) raises [A2-002]');
 -- R17 second clause: the index is NULLS NOT DISTINCT, so two MEMBER-LEVEL
 -- agreements (journey_id NULL) with the same purpose are duplicates too.
--- Savepoint-scoped: the rest of this file assumes exactly one agreement.
-savepoint r17;
-select finance.create_agreement('aaaaaaaa-0000-0000-0000-00000000000a',null,'membership','member-level fixture');
-select denied($$ select finance.create_agreement('aaaaaaaa-0000-0000-0000-00000000000a',null,'membership','dup member-level') $$, '23505', 'agreements_member_journey_purpose_key', 'req 17: NULLS NOT DISTINCT -- a duplicate member-level (NULL journey) agreement raises [A2-071]');
-rollback to savepoint r17;
+-- Both creates run INSIDE one probe: denied()'s subtransaction rolls the pair
+-- back, so the rest of this file still sees exactly one agreement. (A savepoint
+-- here silently rolled back pgTAP's assertion counter -- prove caught it.)
+select denied($$ select finance.create_agreement('aaaaaaaa-0000-0000-0000-00000000000a',null,'membership','member-level fixture'); select finance.create_agreement('aaaaaaaa-0000-0000-0000-00000000000a',null,'membership','dup member-level') $$, '23505', 'agreements_member_journey_purpose_key', 'req 17: NULLS NOT DISTINCT -- a duplicate member-level (NULL journey) agreement raises [A2-071]');
 
 create temp table ag as select id from finance.agreements limit 1;
 

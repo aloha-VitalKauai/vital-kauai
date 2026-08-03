@@ -378,3 +378,22 @@ ST-019 | 06_static.sh | no finance routine body references a legacy financial ta
 ST-020 | 06_static.sh | anon holds no privilege anywhere in the finance schema
 A2-071 | 02_behaviour.sql | req 17: NULLS NOT DISTINCT -- a duplicate member-level (NULL journey) agreement raises
 A3-040 | 03_access.sql | req 15: a NULL profile_id member is not resolved -- current_member_id returns NULL
+A4-055 | 04_coverage.sql | req 28 (L1): a stripe_payment with source external is rejected
+A4-056 | 04_coverage.sql | req 28 (L1): a non-positive stripe_payment is rejected
+A4-057 | 04_coverage.sql | req 28 (L1): a stripe_payment carrying a parent is rejected
+A4-058 | 04_coverage.sql | req 29 (L2): an external_payment with source stripe is rejected
+A4-059 | 04_coverage.sql | req 29 (L2): a non-positive external_payment is rejected
+A4-060 | 04_coverage.sql | req 29 (L2): an external_payment carrying a parent is rejected
+A4-061 | 04_coverage.sql | req 30 (L3): an external refund without external_method is rejected
+A4-062 | 04_coverage.sql | req 31 (L11): a NULL origin_stripe_event_id is accepted
+A4-063 | 04_coverage.sql | req 33: duplicate stripe_session_id is rejected
+A4-064 | 04_coverage.sql | req 33: duplicate idempotency_key is rejected
+A4-065 | 04_coverage.sql | req 35: a second live session for the same agreement+mode is rejected
+A4-066 | 04_coverage.sql | req 35: a test-mode session coexists with the live one
+A4-067 | 04_coverage.sql | req 36: completing the live session frees the slot for a new one
+A4-068 | 04_coverage.sql | req 38: claiming an EXPIRED link is rejected
+A4-069 | 04_coverage.sql | req 38: a non-active link cannot be claimed
+A4-070 | 04_coverage.sql | req 38: claiming a CONSUMED link is rejected
+A4-071 | 04_coverage.sql | req 39: a non-open exception row is rejected at INSERT by the guard above the exc_open_iff_unresolved CHECK
+A4-072 | 04_coverage.sql | req 40: service_role can INSERT a stripe event
+A4-073 | 04_coverage.sql | req 40: service_role can SELECT what it wrote
