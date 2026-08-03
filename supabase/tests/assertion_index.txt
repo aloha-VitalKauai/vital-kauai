@@ -512,3 +512,20 @@ A15-043 | 15_identity_freeze.sql | req 119: re-resolving a DISMISSED row raises
 A15-044 | 15_identity_freeze.sql | req 120: an actively quarantined row resolves through the function
 A15-045 | 15_identity_freeze.sql | req 120: resolution does not erase quarantine history and release does not masquerade as resolution
 A15-046 | 15_identity_freeze.sql | req 120: the resolved row leaves the open-slot free for recurrence
+A15-047 | 15_identity_freeze.sql | req 124: resolution_status<>open rejected by the trigger despite the widened grant
+A15-048 | 15_identity_freeze.sql | req 124: resolved_at rejected individually
+A15-049 | 15_identity_freeze.sql | req 124: resolved_by rejected individually
+A15-050 | 15_identity_freeze.sql | req 124: resolution_note rejected individually
+A15-051 | 15_identity_freeze.sql | req 124: quarantined_at rejected individually
+A15-052 | 15_identity_freeze.sql | req 124: quarantine_reason rejected individually
+A15-053 | 15_identity_freeze.sql | req 124: released_at rejected individually
+A15-054 | 15_identity_freeze.sql | req 124: released_by rejected individually
+A15-055 | 15_identity_freeze.sql | req 124: release_note rejected individually
+A15-056 | 15_identity_freeze.sql | req 125: the ON CONFLICT dedup upsert executes as service_role
+A15-057 | 15_identity_freeze.sql | req 125: the upsert updated the existing row, not a duplicate
+A15-058 | 15_identity_freeze.sql | req 124: the temporary widening is fully revoked
+A15-059 | 15_identity_freeze.sql | req 129: approved_at at INSERT dies in the trigger despite a widened grant
+A15-060 | 15_identity_freeze.sql | req 121: no application role holds CREATE in finance -- a caller-made overload cannot change the trusted identity
+A15-061 | 15_identity_freeze.sql | req 38/121-family: the claim guard compares expiry to clock_timestamp, so a long transaction cannot admit an expired claim
+A15-062 | 15_identity_freeze.sql | req 133: parent first, then its initial draft event, satisfies the deferred check in one transaction
+A15-063 | 15_identity_freeze.sql | req 133: a direct-import parent without its event fails at the constraint boundary

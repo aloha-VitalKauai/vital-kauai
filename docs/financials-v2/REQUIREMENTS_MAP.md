@@ -387,3 +387,48 @@ Blank note [A2-046]; open target [A2-045]; repeat on resolved [A2-049]; repeat o
 
 ### R120: resolution wins over quarantine
 Quarantined row resolves [A15-044]; quarantine history preserved, release distinct [A15-045]; open slot freed for recurrence [A15-046] [A2-070].
+
+### R121: no direct resolution write for any application role
+Posture: [A7-074] [A7-025] [A7-026] [A7-028] (SECURITY INVOKER, exact regprocedure owner). Denials: founder-as-authenticated [A7-032], service_role [A7-033], widened grant still dies by identity [A7-034], former GUC inert [A7-036], anon holds nothing [ST-020] [A12-015]. Function paths: [A7-029] [A7-030] [A7-031]. Owner boundary exact: [A7-075]. State preserved: [A7-076] [A7-037]. No competing overload possible: [A15-060]. Terminality: [A2-049] [A15-043]. Kill-paths: sabotage cases 22, 22b, 22c, 25.
+
+### R122: release_note separate from resolution_note
+[A4-035] [A4-036]; distinguishability after resolution-over-quarantine: [A15-045].
+
+### R123: ordinary exception creation as service_role lands open
+[A2-066] [A3-025]; default proven by [A4-025].
+
+### R124: all nine protected columns rejected individually at INSERT, trigger load-bearing
+With the grant deliberately widened: resolution_status [A15-047], resolved_at [A15-048], resolved_by [A15-049], resolution_note [A15-050], quarantined_at [A15-051], quarantine_reason [A15-052], released_at [A15-053], released_by [A15-054], release_note [A15-055]; ACL restored [A15-058]. Grant-layer denials: [A3-037] [A3-019] [A3-020]. Owner-path born-terminal: [A2-041] [A2-042].
+
+### R124b: the trigger predicate is satisfiable
+[A7-045] (explicit open insert accepted).
+
+### R125: the deduplicating upsert still executes
+[A15-056] (real ON CONFLICT on (dedup_key, livemode) where open, as service_role, touching the streak) [A15-057] (updated in place); column grants [A3-026].
+
+### R126: functions still succeed after the INSERT restrictions
+[A7-038] (resolution), [A15-015] [A15-017] (quarantine and release in the same suite that exercises the restrictions).
+
+### R127: open ⇄ note biconditional
+[A7-041] (open + note rejected); closed-without-note rejected by exc_note_iff_closed, exercised as the wrong-reason finding of the original req-121 probe and pinned by [SUITE:census]; both function paths write consistent pairs [A7-030].
+
+### R128: a normal unapproved run inserts as service_role
+[A3-028]; full-shape insert [A2-063]-adjacent lives paths in [A13-001].
+
+### R129: service_role cannot insert any approval field
+approved_by [A3-021], approval_note [A3-022], approved_at with the grant widened dies in the trigger [A15-059]; owner-path [A2-063] [A7-053].
+
+### R130: a fabricated approved run cannot authorize
+[A7-053] (cannot exist); citing a nonexistent run [A13-043]; citing an unapproved one [A13-041].
+
+### R131: founder approval still succeeds; freeze holds afterwards
+[A7-048] [A2-035]; the full per-field freeze matrix [A15-025]–[A15-042].
+
+### R132: authorized_by_run_id insertable for a genuine writing run
+[A7-052] [A13-044].
+
+### R133: agreement creation requires its initial event
+Commit-boundary failure without the event: [A2-051] [A9-006], direct-import parent-only [A15-063]. Parent-then-child in one transaction succeeds: [A15-062] (direct SQL, the PR 2 import path) and [A2-050] (create_agreement). Duplicate initial event: [A4-047].
+
+### R133b: child-first insertion rejected on the non-deferrable FK
+[A2-052].

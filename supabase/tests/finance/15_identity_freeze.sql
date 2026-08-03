@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap;
 \i supabase/tests/_test_helpers.sql
-select plan(46);
+select plan(63);
 
 insert into auth.users values ('11111111-1111-1111-1111-111111111111','f@t');
 insert into public.user_roles values ('11111111-1111-1111-1111-111111111111','founder');
@@ -143,5 +143,57 @@ select ok((select quarantined_at is not null and released_at is null and resolut
   'req 120: resolution does not erase quarantine history and release does not masquerade as resolution [A15-045]');
 select lives_ok($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,detail) values ('provider_object_processing_failed',true,'obj_q3','{"object_type":"refund","error_class":"malformed_object"}'::jsonb) $$,
   'req 120: the resolved row leaves the open-slot free for recurrence [A15-046]');
+-- ===== Batch 7: creation-time guards, upsert, claim-guard posture =====
+-- R124: all NINE protected columns individually, WITH the grant widened, so the
+-- BEFORE INSERT trigger -- not the grant -- is proven load-bearing.
+grant insert (kind,livemode,provider_object_id,detail,resolution_status,resolved_at,resolved_by,resolution_note,quarantined_at,quarantine_reason,released_at,released_by,release_note)
+  on finance.reconciliation_exceptions to service_role;
+set local role service_role;
+select denied($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,resolution_status) values ('amount_mismatch',true,'r124a','resolved') $$, 'P0001', 'must be created open', 'req 124: resolution_status<>open rejected by the trigger despite the widened grant [A15-047]');
+select denied($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,resolved_at) values ('amount_mismatch',true,'r124b',now()) $$, 'P0001', 'may not be created', 'req 124: resolved_at rejected individually [A15-048]');
+select denied($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,resolved_by) values ('amount_mismatch',true,'r124c','11111111-1111-1111-1111-111111111111') $$, 'P0001', 'may not be created', 'req 124: resolved_by rejected individually [A15-049]');
+select denied($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,resolution_note) values ('amount_mismatch',true,'r124d','n') $$, 'P0001', 'may not be created', 'req 124: resolution_note rejected individually [A15-050]');
+select denied($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,quarantined_at) values ('amount_mismatch',true,'r124e',now()) $$, 'P0001', 'may not be created', 'req 124: quarantined_at rejected individually [A15-051]');
+select denied($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,quarantine_reason) values ('amount_mismatch',true,'r124f','q') $$, 'P0001', 'may not be created', 'req 124: quarantine_reason rejected individually [A15-052]');
+select denied($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,released_at) values ('amount_mismatch',true,'r124g',now()) $$, 'P0001', 'may not be created', 'req 124: released_at rejected individually [A15-053]');
+select denied($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,released_by) values ('amount_mismatch',true,'r124h','11111111-1111-1111-1111-111111111111') $$, 'P0001', 'may not be created', 'req 124: released_by rejected individually [A15-054]');
+select denied($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,release_note) values ('amount_mismatch',true,'r124i','n') $$, 'P0001', 'may not be created', 'req 124: release_note rejected individually [A15-055]');
+-- R125: the deduplicating upsert executes with the streak path intact
+select lives_ok($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id) values ('ledger_without_provider',true,'obj_ledger_without_provider')
+  on conflict (dedup_key, livemode) where resolution_status='open'
+  do update set occurrence_count = finance.reconciliation_exceptions.occurrence_count + 1,
+                last_detected_at = clock_timestamp(),
+                detail = excluded.detail,
+                consecutive_failure_runs = finance.reconciliation_exceptions.consecutive_failure_runs + 1 $$,
+  'req 125: the ON CONFLICT dedup upsert executes as service_role [A15-056]');
+select is((select occurrence_count from finance.reconciliation_exceptions where provider_object_id='obj_ledger_without_provider' and livemode), 2,
+  'req 125: the upsert updated the existing row, not a duplicate [A15-057]');
+reset role;
+revoke insert (resolution_status,resolved_at,resolved_by,resolution_note,quarantined_at,quarantine_reason,released_at,released_by,release_note)
+  on finance.reconciliation_exceptions from service_role;
+select is((select count(*)::int from information_schema.column_privileges where table_schema='finance' and table_name='reconciliation_exceptions' and grantee='service_role' and privilege_type='INSERT' and column_name in ('resolution_status','resolved_at','resolved_by','resolution_note','quarantined_at','quarantine_reason','released_at','released_by','release_note')), 0,
+  'req 124: the temporary widening is fully revoked [A15-058]');
+-- R129: approved_at individually + trigger under a widened grant
+grant insert (livemode,implementation_version,window_start,window_end,dry_run,approved_at) on finance.reconciliation_runs to service_role;
+set local role service_role;
+select denied($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,approved_at) values (false,'v1',now()-interval '2 day',now()-interval '1 day',true,now()) $$, 'P0001', 'may not be created already approved', 'req 129: approved_at at INSERT dies in the trigger despite a widened grant [A15-059]');
+reset role;
+revoke insert (livemode,implementation_version,window_start,window_end,dry_run,approved_at) on finance.reconciliation_runs from service_role;
+-- R121 extras: no application role can create a competing overload
+select is((select count(*)::int from (values ('anon'),('authenticated'),('service_role')) r(n) where has_schema_privilege(r.n, 'finance', 'CREATE')), 0,
+  'req 121: no application role holds CREATE in finance -- a caller-made overload cannot change the trusted identity [A15-060]');
+-- claim guard: expiry compared against clock_timestamp, not transaction start
+select ok((select p.prosrc ilike '%clock_timestamp%' from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='finance' and p.proname='tg_link_claim_guard'),
+  'req 38/121-family: the claim guard compares expiry to clock_timestamp, so a long transaction cannot admit an expired claim [A15-061]');
+-- R133: parent-then-child in ONE transaction satisfies the deferred check
+select lives_ok($$ do $x$ declare aid uuid; begin
+  insert into finance.agreements(member_id,purpose,created_by) values ('aaaaaaaa-0000-0000-0000-00000000000a','other','11111111-1111-1111-1111-111111111111') returning id into aid;
+  insert into finance.agreement_lifecycle_events(agreement_id,from_status,to_status,reason,actor_id) values (aid,null,'draft','direct import','11111111-1111-1111-1111-111111111111');
+  set constraints all immediate;
+end $x$ $$, 'req 133: parent first, then its initial draft event, satisfies the deferred check in one transaction [A15-062]');
+select denied($$ do $x$ begin
+  insert into finance.agreements(member_id,purpose,created_by) values ('aaaaaaaa-0000-0000-0000-00000000000a','journey_contribution','11111111-1111-1111-1111-111111111111');
+  set constraints all immediate;
+end $x$ $$, 'P0001', 'must have exactly one initial lifecycle event', 'req 133: a direct-import parent without its event fails at the constraint boundary [A15-063]');
 select * from finish();
 rollback;
