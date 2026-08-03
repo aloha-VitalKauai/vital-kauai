@@ -406,3 +406,16 @@ A4-079 | 04_coverage.sql | req 52: a reversal without a parent is rejected by th
 A4-080 | 04_coverage.sql | req 57: no path can even attempt self-parenting -- the fact table is append-only
 A4-081 | 04_coverage.sql | req 57: the L5 self-parent CHECK is present for the INSERT path
 A4-082 | 04_coverage.sql | req 58: a ledger entry with no agreement violates the FK
+A4-083 | 04_coverage.sql | req 61: remaining_cents = contribution - net received in a mid-range state
+A4-093 | 04_coverage.sql | req 61: payable_remaining_cents matches in the mid-range state
+A4-084 | 04_coverage.sql | req 63: refunded-to-zero reports refunded, distinct from unpaid
+A4-094 | 04_coverage.sql | req 64: a reversed-in-error payment returns unpaid, not refunded
+A4-085 | 04_coverage.sql | req 66: gift money counts toward journey Received
+A4-095 | 04_coverage.sql | req 72: draft->active on a fresh agreement
+A4-086 | 04_coverage.sql | req 72: active->waived permitted
+A4-087 | 04_coverage.sql | req 72: waived is terminal
+A4-088 | 04_coverage.sql | req 73: a link cannot be born revoked; the link_revoked_complete CHECK backstops UPDATE paths
+A4-089 | 04_coverage.sql | req 75: service_role UPDATE outside the granted column list is rejected
+A4-090 | 04_coverage.sql | req 76: a non-USD ledger entry is rejected
+A4-091 | 04_coverage.sql | req 76: a non-USD agreement is rejected at INSERT; UPDATE cannot reach the CHECK (append-only)
+A4-092 | 04_coverage.sql | req 77: a running run carrying finished_at is rejected

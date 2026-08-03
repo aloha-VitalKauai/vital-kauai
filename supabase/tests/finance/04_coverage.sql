@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap;
 \i supabase/tests/_test_helpers.sql
-select plan(82);
+select plan(95);
 
 insert into auth.users (id,email) values
   ('11111111-1111-1111-1111-111111111111','f@t'),('22222222-2222-2222-2222-222222222222','m@t');
@@ -239,5 +239,55 @@ select is((select count(*)::int from pg_constraint where conrelid='finance.ledge
 -- R58: a ledger entry cannot exist without an agreement
 select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode) values ('00000000-0000-0000-0000-000000000000','stripe_payment',10,'stripe','ch_na','pi_na',now(),true) $$, '23503', 'ledger_entries_agreement_id_fkey', 'req 58: a ledger entry with no agreement violates the FK [A4-082]');
 
+-- ===== Checkpoint B batch 4: clause-completion probes =====
+-- Fresh fixtures: the file's main agreement is canceled and refund-saturated
+-- by this point. EOF block; file rollback cleans up.
+insert into auth.users values ('55555555-5555-5555-5555-555555555555','r64@t');
+insert into public.member_profiles values ('55555555-5555-5555-5555-555555555555','r64@t');
+insert into public.members(id,profile_id,email) values ('eeeeeeee-0000-0000-0000-00000000000e','55555555-5555-5555-5555-555555555555','r64@t');
+select finance.create_agreement('eeeeeeee-0000-0000-0000-00000000000e','cccccccc-0000-0000-0000-00000000000c','journey_contribution','b4 fixture');
+create temp table ag4 as select id from finance.agreements where member_id='eeeeeeee-0000-0000-0000-00000000000e' and purpose='journey_contribution';
+insert into finance.agreement_amounts(agreement_id,amount_cents,effective_at,reason,actor_id) select id,100000,now(),'b4','11111111-1111-1111-1111-111111111111' from ag4;
+insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode) select id,'stripe_payment',40000,'stripe','ch_b4','pi_b4',now(),true from ag4;
+-- R61: remaining under a partial payment (mid-range state)
+select is((select remaining_cents::bigint from finance.v_agreement_balances where agreement_id=(select id from ag4)), 60000::bigint,
+  'req 61: remaining_cents = contribution - net received in a mid-range state [A4-083]');
+select is((select payable_remaining_cents::bigint from finance.v_agreement_balances where agreement_id=(select id from ag4)), 60000::bigint,
+  'req 61: payable_remaining_cents matches in the mid-range state [A4-093]');
+-- R63: refunded-to-zero reports refunded, distinct from unpaid
+insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,parent_entry_id,occurred_at,livemode)
+  select a.id,'refund',-40000,'stripe','re_b4',(select id from finance.ledger_entries where agreement_id=a.id and entry_type='stripe_payment'),now(),true from ag4 a;
+select is((select payment_state::text from finance.v_agreement_balances where agreement_id=(select id from ag4)), 'refunded',
+  'req 63: refunded-to-zero reports refunded, distinct from unpaid [A4-084]');
+-- R64: payment recorded in error then REVERSED returns unpaid, not refunded
+insert into public.journeys(id,name) values ('dddddddd-1111-0000-0000-00000000000d','J2');
+select finance.create_agreement('eeeeeeee-0000-0000-0000-00000000000e','dddddddd-1111-0000-0000-00000000000d','journey_contribution','b4r64');
+create temp table ag5 as select id from finance.agreements where journey_id='dddddddd-1111-0000-0000-00000000000d';
+insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode) select id,'stripe_payment',5000,'stripe','ch_b5','pi_b5',now(),true from ag5;
+insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,parent_entry_id,occurred_at,livemode,reason,recorded_by)
+  select a.id,'reversal',-5000,'stripe',(select id from finance.ledger_entries where agreement_id=a.id),now(),true,'error','11111111-1111-1111-1111-111111111111' from ag5 a;
+select is((select payment_state::text from finance.v_agreement_balances where agreement_id=(select id from ag5)), 'unpaid',
+  'req 64: a reversed-in-error payment returns unpaid, not refunded [A4-094]');
+-- R66: gift money counts toward JOURNEY Received
+select finance.create_agreement('eeeeeeee-0000-0000-0000-00000000000e','cccccccc-0000-0000-0000-00000000000c','additional_gift','b4gift');
+create temp table ag6 as select id from finance.agreements where member_id='eeeeeeee-0000-0000-0000-00000000000e' and purpose='additional_gift';
+insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode) select id,'stripe_payment',700,'stripe','ch_b6','pi_b6',now(),true from ag6;
+select ok((select gross_received_cents >= 700 from finance.v_journey_financials where journey_id='cccccccc-0000-0000-0000-00000000000c'),
+  'req 66: gift money counts toward journey Received [A4-085]');
+-- R72: remaining graph directions on the fresh agreement (ag4 is draft)
+select lives_ok($$ insert into finance.agreement_lifecycle_events(agreement_id,from_status,to_status,reason,actor_id) select id,'draft','active','a','11111111-1111-1111-1111-111111111111' from ag4 $$, 'req 72: draft->active on a fresh agreement [A4-095]');
+select lives_ok($$ insert into finance.agreement_lifecycle_events(agreement_id,from_status,to_status,reason,actor_id) select id,'active','waived','w','11111111-1111-1111-1111-111111111111' from ag4 $$, 'req 72: active->waived permitted [A4-086]');
+select denied($$ insert into finance.agreement_lifecycle_events(agreement_id,from_status,to_status,reason,actor_id) select id,'waived','active','back','11111111-1111-1111-1111-111111111111' from ag4 $$, 'P0001', 'illegal lifecycle transition waived', 'req 72: waived is terminal [A4-087]');
+-- R73: a link cannot be born revoked (INSERT guard above the CHECK)
+select denied($$ insert into finance.payment_links(agreement_id,token_hash,expires_at,created_by,status,revoked_at) select id,'tok_r73',now()+interval '1 day','11111111-1111-1111-1111-111111111111','revoked',now() from ag4 $$, 'P0001', 'a new payment link must be created active', 'req 73: a link cannot be born revoked; the link_revoked_complete CHECK backstops UPDATE paths [A4-088]');
+-- R75: column-scoped service_role UPDATE
+set local role service_role;
+select denied($$ update finance.reconciliation_exceptions set kind='amount_mismatch' where provider_object_id='no-such-object' $$, '42501', 'permission denied', 'req 75: service_role UPDATE outside the granted column list is rejected [A4-089]');
+reset role;
+-- R76: USD constraints at INSERT (agreements are append-only, so UPDATE cannot even reach the CHECK)
+select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,currency,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode) select id,'stripe_payment',10,'EUR','stripe','ch_eur','pi_eur',now(),true from ag4 $$, '23514', 'ledger_entries_currency_check', 'req 76: a non-USD ledger entry is rejected [A4-090]');
+select denied($$ insert into finance.agreements(member_id,purpose,currency,created_by) values ('eeeeeeee-0000-0000-0000-00000000000e','journey_contribution','EUR','11111111-1111-1111-1111-111111111111') $$, '23514', 'agreements_currency_check', 'req 76: a non-USD agreement is rejected at INSERT; UPDATE cannot reach the CHECK (append-only) [A4-091]');
+-- R77: a running run carrying finished_at is rejected
+select denied($$ insert into finance.reconciliation_runs(livemode,window_start,window_end,status,finished_at,implementation_version) values (true,now()-interval '2 hour',now()-interval '1 hour','running',now(),'v1') $$, 'P0001', 'run', 'req 77: a running run carrying finished_at is rejected [A4-092]');
 select * from finish();
 rollback;

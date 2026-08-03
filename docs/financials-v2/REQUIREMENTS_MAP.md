@@ -206,3 +206,63 @@ Self-parent: [A4-081] (L5 CHECK present for the INSERT path) + [A4-080] (no UPDA
 
 ### R60: no entries → all aggregates 0 and unpaid, never NULL/partial
 [A2-027] [A2-028] [A7-010].
+
+### R61: remaining/payable across the state range; NULL when contribution does not apply
+Mid-range: [A4-083] [A4-093]. Overpaid: [A7-009]. Not-applicable → NULL: [A7-020] [A2-030].
+
+### R62: overpayment — negative remaining, zero payable
+[A7-007] [A7-008].
+
+### R63: refunded-to-zero is refunded, not unpaid
+[A4-084] (fresh agreement, full refund → 'refunded').
+
+### R64: payment reversed in error returns unpaid, not refunded
+[A4-094] (payment + reversal only, distinct fixture from R63's refund path).
+
+### R65: reversed refund does not count toward refunded_cents; unwound is unpaid
+[A7-011] [A7-012] [A7-013] [A2-059] [A2-026].
+
+### R66: gift is not_applicable/NULL yet counts toward member and journey Received
+[A2-029] [A2-030] [A7-020] [A7-021] (member); [A4-085] (journey).
+
+### R67: payment_state deterministic, one value per reachable state
+[A7-073] [A7-024]; individual states across the suite: unpaid ([A2-028]), partial/paid fixtures throughout, overpaid ([A7-009]), refunded ([A4-084]), not_applicable ([A2-029]).
+
+### R68: livemode=false excluded from canonical, present in founder test view
+[A7-022] [A7-023]; member-level leak-proofs: [A12-007] [A12-008].
+
+### R69: aggregate views derive from v_agreement_balances (reviewer check)
+[ST-007] (pg_depend) [ST-008] (no independent formula).
+
+### R70: v_agreement_lifecycle is the single consumer projection
+[ST-009] [ST-010] [ST-011] [ST-012]; behavioural: [A9-012] [A9-013] (enforcement agrees with the view, D-074).
+
+### R71: create_agreement — non-founder raises, blank reason raises, atomic creation
+Non-founder: [A7-063]. Blank reason: [A2-001]. Creates agreement + initial draft event in one transaction: [A2-050] [A2-003].
+
+### R72: the full §6 transition graph, both terminal states
+Permitted: [A2-053] (draft→active), [A2-006] (active→fulfilled), [A2-007] (fulfilled→active), [A2-008] (active→canceled), [A4-095] (fresh draft→active), [A4-086] (active→waived). Rejected: [A2-004] (active→draft), [A4-016] (draft→fulfilled), [A2-005] (stale from_status). Terminals: [A2-009] (canceled), [A4-087] (waived).
+
+### R73: payment_links status CHECKs
+creating without claimed_at: [A4-049]. consumed without session: [A4-019]. revoked shape: [A4-088] (born-revoked rejected by the insert guard; the link_revoked_complete CHECK is pinned by [SUITE:census]).
+
+### R74: members have no SELECT on the four founder tables
+[A3-005] [A3-006] [A3-007] [A3-008] [A7-061] [A7-062]; RLS-not-grant nuance: [A11-009] [A11-012].
+
+### R75: service_role UPDATE is column-scoped
+Permitted columns: [A3-026] [A3-027]. Outside the list: [A4-089] (42501).
+
+### R76: USD constraints
+Ledger: [A4-090]. Agreement: [A4-091] (at INSERT; UPDATE cannot reach the CHECK because agreements are append-only).
+
+### R77: run window ordering; running excludes finished_at
+[A4-050]; [A4-092].
+
+### R78: single flight per livemode; modes coexist
+[A4-020] [A4-021]; concurrent: [SUITE:census] pins reconciliation_runs_single_flight_uq.
+
+### R79: exception dedup — open conflict; upsert raises occurrence_count
+Conflict: [A2-068]. Upsert-side counters are service_role-updatable: [A3-026]; last_detected_at advance is PR 3 job behaviour — the PR 1 surface is the unique index + column grants, both present.
+
+### R80: resolved does not block recurrence; resolved row preserved
+[A2-070] [A7-039] [A7-040].
