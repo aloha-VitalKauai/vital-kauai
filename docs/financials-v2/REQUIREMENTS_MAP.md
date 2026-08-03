@@ -109,7 +109,7 @@ No parent: [A4-039]. Positive amount: [A4-006]. Stripe refund with NULL provider
 Disagreement rejected: [A7-018]. Agreement accepted: [A7-019]. NULL origin accepted: [A4-062]. External/import entries livemode=true with NULL origin: [A4-046] (import lives_ok) and the L11 trigger only fires on a non-null origin ([A7-018] body).
 
 ### R32: L12 — external/reversal require reason + exactly one attribution
-No attribution: [A2-016]. Both attributions: [A2-019]. Blank reason: [A4-015]. Either form satisfies: human [A2-015]-adjacent external fixtures throughout; system alone [A4-045].
+No attribution: [A2-016]. Both attributions: [A2-019]. Blank reason: [A4-015]. Either form satisfies: human [A2-058] (a reversal with reason + recorded_by is accepted); system alone [A4-045].
 
 ### R32b: recorded_by_system needs no auth.users row
 [A4-045] — legacy_import inserted with zero-dependency system attribution.
@@ -226,7 +226,7 @@ Mid-range: [A4-083] [A4-093]. Overpaid: [A7-009]. Not-applicable → NULL: [A7-0
 [A2-029] [A2-030] [A7-020] [A7-021] (member); [A4-085] (journey).
 
 ### R67: payment_state deterministic, one value per reachable state
-[A7-073] [A7-024]; individual states across the suite: unpaid ([A2-028]), partial/paid fixtures throughout, overpaid ([A7-009]), refunded ([A4-084]), not_applicable ([A2-029]).
+[A7-073] [A7-024]; individual states: unpaid [A2-028], partial [A4-083] (mid-range remaining), overpaid [A7-009], refunded [A4-084], not_applicable [A2-029].
 
 ### R68: livemode=false excluded from canonical, present in founder test view
 [A7-022] [A7-023]; member-level leak-proofs: [A12-007] [A12-008].
@@ -301,10 +301,10 @@ Resumable predecessors: partial [A13-015], failed [A13-016], abandoned [A13-017]
 [A7-079]; permitted: [A3-026] [A3-027]; denied: [A4-089] [A3-023].
 
 ### R92: the quarantine cycle is executable with monotonic timestamps
-[A4-032] (release), [A4-033] (streak reset), full cycle incl. re-quarantine: [A7-048]-series in 07 (quarantine→release→re-quarantine) and [A2-070] recurrence; ordering across sessions: [SUITE:concurrency_r101].
+Full double cycle executed on one row: quarantine [A15-015], release [A15-017], streak reset [A15-018], released_at > quarantined_at [A15-019], re-quarantine [A15-020], quarantined_at > released_at [A15-021], second release [A15-022]. Two-session ordering: [SUITE:concurrency_r101].
 
 ### R93: release_quarantine and quarantine_object contracts
-Non-founder release: [A13-028]. Not-quarantined release: [A13-027]. One-statement set+reset: [A4-032] [A4-033]. quarantine_object exec by service_role not founder: [A3-032] [A3-033]. No reason parameter: [A13-026]. No direct column UPDATE: [A5-015]-adjacent grants proven at [A7-027]-style census; quarantine columns specifically: [SUITE:census] grant lines.
+Non-founder release: [A13-028]. Not-quarantined release: [A13-027]. One-statement set+reset: [A4-032] [A4-033]. quarantine_object exec by service_role not founder: [A3-032] [A3-033]. No reason parameter: [A13-026]. No direct column UPDATE on the quarantine columns: no grant exists ([SUITE:census] grant lines enumerate every column privilege; the four quarantine columns appear in none), and the R115 widened-grant pattern [A15-041] proves trigger-layer defence for the run analogue.
 
 ### R94: dry-run write constraints
 [A4-051]; the writing-run report exclusion (run_report_only_on_dry_run) pinned by [SUITE:census].
@@ -313,7 +313,7 @@ Non-founder release: [A13-028]. Not-quarantined release: [A13-027]. One-statemen
 [A4-024]; approval without report: [A7-047] [A2-064].
 
 ### R96: authorization source constraints — full ineligible matrix + accepted case
-Partial: [A7-065]. Livemode mismatch: [A7-066]. Version mismatch: [A7-080]. Accepted eligible case: [A7-052]. Running/failed/abandoned/unapproved/error-bearing predecessors are rejected by the same tg_run_authorization body those probes exercise; status-matrix enumeration is carried by R98's probes [A13-021]–[A13-025] against approve_dry_run, and the authorization path re-checks approval ([A4-023]).
+DIRECT, at the writing-run insert, each pinned to tg_run_authorization's own message: running [A13-037], partial [A13-038] (also [A7-065]), failed [A13-039], abandoned [A13-040], unapproved [A13-041], error-bearing [A13-042] (checked before approval, so an approved-yet-error-bearing source is unreachable by construction), nonexistent [A13-043], not-a-dry-run [A13-046]. Livemode mismatch [A7-066]; version mismatch [A7-080]; horizon [A13-045]. Accepted case through the function-approved source: [A13-044] (also [A7-052]). No-completed-report is unreachable at this boundary — approval itself requires the report ([A2-064] [A7-047]); the trigger's branch is defence in depth. A mutated predecessor cannot self-legitimise: [A13-047].
 
 ### R97: implementation version binds
 [A7-080].
@@ -326,3 +326,64 @@ NULL object [A13-029], absent type [A13-030], out-of-set type [A13-031], absent 
 
 ### R100: at-most-once index scope
 Exact indexdef: [A13-035]. Repeated payment_failed events retained: [A7-055] [A7-056] with pkey-only uniqueness [A7-077]; no ledger entries result: [A13-036].
+
+
+### R101: quarantine ordering under concurrency
+[SUITE:concurrency_r101] — two sessions, the second beginning before the first's opposing transition commits; pid-pinned blocking, one winner, and release_seq/timestamps observed after both commit. Monotonicity single-session: [A15-019] [A15-021].
+
+### R102: dedup_key cannot be supplied
+[A2-067] [A7-078] [A15-011] (428C9 at INSERT); stored value canonical: [A2-043] [A15-007].
+
+### R103: approval attribution cannot be spoofed
+[A2-036] (approved_by = auth.uid(), not a parameter); the function signature has no actor/timestamp parameters ([SUITE:census] routinedef); [A7-053] (a forged born-approved run is rejected).
+
+### R104: approval preconditions inside the function
+Status matrix [A13-021]–[A13-024]; error-bearing [A13-025]; no-report [A2-064] [A7-047]; not-exhausted/unfinished are unreachable as completed rows ([SUITE:census] run_completed_iff_exhausted + run_finished_at_consistent make such a source row uninsertable — [A13-006] [A13-011] prove those rejections).
+
+### R105: approved evidence is frozen
+Per-field matrix under R115: [A15-025]–[A15-040]; earlier spot checks [A2-065] [A2-039] [A2-040] [A7-050] [A7-051].
+
+### R106: no direct approval write
+[A3-023] (service_role); [A15-040] (owner-direct via freeze); grant absence for authenticated: [SUITE:census].
+
+### R107: implementation_version required, never defaulted
+[A2-062]; no default in the catalog: [SUITE:census] (column definition).
+
+### R108: generated dedup_key compiles and is canonical for every kind
+Catalog-enumerated one-row-per-label [A15-001], all keys non-NULL [A15-002], spec count pinned [A15-003], one WHEN per label [A15-004], ELSE NULL fail-closed [A15-005], identical identity → same key [A15-007], different identity → different key [A15-008], livemode in the unique identity [A15-009] [A15-010].
+
+### R109: untouched and partial quarantine states insert cleanly
+[A4-025] [A4-026].
+
+### R110: quarantine_object preconditions
+Streak 0 [A15-012], first failure [A15-013], SECOND failure [A15-014], threshold engages at 3 [A15-015], already-active [A15-016] [A4-031], dismissed row [A15-023], wrong kind [A4-027]. The streak counts distinct runs by job contract (PR 3); the PR 1 surface is the counter + threshold + service_role-only increment ([A3-026]).
+
+### R111: derived quarantine reason
+[A4-030]; quarantine_object takes no reason parameter [A13-026].
+
+### R112: release then re-quarantine requires three fresh failures
+[A4-033] [A15-018] (reset), [A4-034] (raises until three), [A15-020] (succeeds at three).
+
+### R113: approval permitted exactly once
+[A7-048] [A7-049] [A2-035] [A2-037]; direct-write path blocked [A3-023] [A15-040].
+
+### R114: approval_note required and frozen
+[A2-038] (blank raises); stored equals supplied ([A2-035] body asserts the note); frozen [A15-040].
+
+### R115: post-approval mutation rejected per field, incl. service_role; non-frozen field mutable
+Trigger freezes exactly 18 fields, list-compared [A15-024]. Individually: [A15-025]–[A15-040]. service_role with a deliberately widened grant still dies in the trigger [A15-041]. Non-frozen heartbeat_at stays mutable [A15-042].
+
+### R116: dedup_key structurally non-null, all kinds
+[A15-006] (attnotnull) [A7-057] [A7-058]; per-kind non-NULL [A15-002] with the catalog-derived set [A15-001].
+
+### R117: resolution column pairings
+[A7-042] (open + resolved_at rejected); resolved/dismissed missing attribution rejected by exc_open_iff_unresolved + exc_note_iff_closed ([SUITE:census]); born-open default proven by every plain insert ([A4-025]).
+
+### R118: resolve_exception attribution cannot be spoofed
+[A2-047] [A2-048] (resolved_by = auth.uid()); no actor/timestamp parameters ([A13-026]-style signature pinned by [SUITE:census] routinedef); direct writes: R121 family.
+
+### R119: resolve_exception preconditions
+Blank note [A2-046]; open target [A2-045]; repeat on resolved [A2-049]; repeat on DISMISSED [A15-043].
+
+### R120: resolution wins over quarantine
+Quarantined row resolves [A15-044]; quarantine history preserved, release distinct [A15-045]; open slot freed for recurrence [A15-046] [A2-070].

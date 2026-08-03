@@ -174,5 +174,22 @@ case_run "31. L4 reversal shape CHECK relaxed (R52 mechanism)" \
   "perl -0pi -e 's/check \(entry_type <> .reversal. or parent_entry_id is not null\)/check (true)/' supabase/migrations/20260730000003_finance_tables.sql"
 case_run "32. run resume-lineage validation removed (B-85)" \
   "perl -0pi -e \"s/if pred_status not in \\('partial','failed','abandoned'\\) then/if false then/\" supabase/migrations/20260730000005_finance_triggers.sql"
+# ---- Batch-6 focused mutants: mechanism-level, not broad trigger deletion ----
+case_run "33. one exception-kind CASE branch removed" \
+  "perl -0pi -e \"s/\\s*when 'amount_mismatch'::finance.exception_kind then 'amount_mismatch'\\n//\" supabase/migrations/20260730000003_finance_tables.sql"
+case_run "34. dedup CASE given a weak generic ELSE (source has none; PG normalizes to ELSE NULL)" \
+  "perl -0pi -e \"s/     end\\) \\|\\| ':' \\|\\|/     else 'weak' end) || ':' ||/\" supabase/migrations/20260730000003_finance_tables.sql"
+case_run "35. NOT NULL dropped from dedup_key" \
+  "perl -0pi -e 's/dedup_key text not null generated always/dedup_key text generated always/' supabase/migrations/20260730000003_finance_tables.sql"
+case_run "36. report_version removed from the freeze matrix" \
+  "perl -0pi -e 's/  or new.report_version      is distinct from old.report_version\\n//' supabase/migrations/20260730000005_finance_triggers.sql"
+case_run "37. freeze trigger blocks EVERY update (pre-approval too)" \
+  "perl -0pi -e 's/if old.approved_at is null then\\n    return new;\\n  end if;/if false then return new; end if;/' supabase/migrations/20260730000005_finance_triggers.sql"
+case_run "38. resolution note made optional" \
+  "perl -0pi -e \"s/if p_note is null or length\\(btrim\\(p_note\\)\\) = 0 then\\n    raise exception 'resolve_exception/if false then\\n    raise exception 'resolve_exception/\" supabase/migrations/20260730000006_finance_functions.sql"
+case_run "39. quarantine threshold lowered to zero" \
+  "perl -0pi -e 's/if e.consecutive_failure_runs < 3 then/if e.consecutive_failure_runs < 0 then/' supabase/migrations/20260730000006_finance_functions.sql"
+case_run "40. re-resolution permitted" \
+  "perl -0pi -e \"s/raise exception 'resolve_exception: exception % is already %', p_exception_id, e.resolution_status;/null;/\" supabase/migrations/20260730000006_finance_functions.sql"
 echo "== sabotage: killed=$pass failed=$fail =="
 [ "$fail" -eq 0 ]

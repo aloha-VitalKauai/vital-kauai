@@ -4,7 +4,7 @@
 begin;
 create extension if not exists pgtap;
 \i supabase/tests/_test_helpers.sql
-select plan(36);
+select plan(47);
 
 insert into auth.users values ('11111111-1111-1111-1111-111111111111','f@t');
 insert into public.user_roles values ('11111111-1111-1111-1111-111111111111','founder');
@@ -69,5 +69,32 @@ insert into finance.stripe_events(event_id,event_type,object_id,livemode,payload
   ('evt_pf2','payment_intent.payment_failed','pi_pf',true,'{}'::jsonb);
 select is((select count(*)::int from finance.ledger_entries where provider_object_id='pi_pf' or provider_payment_intent_id='pi_pf'), 0,
   'req 100: repeated payment_failed events for one object create no ledger entries [A13-036]');
+-- ===== R96 DIRECT: the authorization boundary, table-driven =====
+-- Every predecessor status probed AT THE WRITING-RUN INSERT, each pinned to
+-- tg_run_authorization's own message. R98's approve-side matrix is supporting
+-- evidence only; nothing here is carried by inference.
+select denied($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id) values (true,'v1',now()-interval '1 day',now(),false,(select id from finance.reconciliation_runs where status='running' and livemode limit 1)) $$, 'P0001', 'is running, not completed', 'req 96: citing a RUNNING dry run is rejected [A13-037]');
+select denied($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id) values (true,'v1',now()-interval '1 day',now(),false,(select id from rp where status='partial')) $$, 'P0001', 'is partial, not completed', 'req 96: citing a PARTIAL dry run is rejected [A13-038]');
+select denied($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id) values (true,'v1',now()-interval '1 day',now(),false,(select id from rp where status='failed')) $$, 'P0001', 'is failed, not completed', 'req 96: citing a FAILED dry run is rejected [A13-039]');
+select denied($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id) values (true,'v1',now()-interval '1 day',now(),false,(select id from rp where status='abandoned')) $$, 'P0001', 'is abandoned, not completed', 'req 96: citing an ABANDONED dry run is rejected [A13-040]');
+select denied($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id) values (true,'v1',now()-interval '1 day',now(),false,(select id from finance.reconciliation_runs where status='completed' and approved_at is null limit 1)) $$, 'P0001', 'is not approved', 'req 96: citing an UNAPPROVED completed dry run is rejected [A13-041]');
+insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,status,window_exhausted,finished_at,error,report_completed_at,would_create_count,would_reopen_count,prospective_by_kind,report_version)
+  values (true,'v1',now()-interval '30 day',now()-interval '29 day',true,'completed',true,now(),'late failure',now(),0,0,'{}'::jsonb,1);
+select denied($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id) values (true,'v1',now()-interval '1 day',now(),false,(select id from finance.reconciliation_runs where error='late failure')) $$, 'P0001', 'ended with an error', 'req 96: citing an ERROR-BEARING run is rejected (checked before approval, so unreachable-after-approval by construction) [A13-042]');
+select denied($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id) values (true,'v1',now()-interval '1 day',now(),false,'00000000-0000-0000-0000-00000000dead'::uuid) $$, 'P0001', 'does not exist', 'req 96: citing a NONEXISTENT run is rejected [A13-043]');
+-- the accepted case, through the approved function path
+insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,status,window_exhausted,finished_at,report_completed_at,would_create_count,would_reopen_count,prospective_by_kind,report_version)
+  values (true,'v1',now()-interval '28 day',now()-interval '27 day',true,'completed',true,now(),now(),0,0,'{}'::jsonb,1);
+create temp table elig as select id from finance.reconciliation_runs where status='completed' and error is null and report_completed_at is not null and approved_at is null and livemode order by window_start desc limit 1;
+select finance.approve_dry_run((select id from elig), 'r96 approval');
+-- free the single-flight slot: the running fixture would collide with the new writing run
+update finance.reconciliation_runs set status='abandoned', finished_at=now() where status='running' and livemode;
+select lives_ok($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id) values (true,'v1',now()-interval '27 day',now()-interval '26 day',false,(select id from elig)) $$, 'req 96: the eligible approved reported same-mode same-version run IS accepted [A13-044]');
+select denied($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id) values (true,'v1',now()-interval '40 day',now()-interval '26 day',false,(select id from elig)) $$, 'P0001', 'precedes the approved horizon', 'req 96: a writing window reaching before the approved horizon is rejected [A13-045]');
+select denied($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id) values (true,'v1',now()-interval '1 day',now(),false,(select id from finance.reconciliation_runs where dry_run=false limit 1)) $$, 'P0001', 'is not a dry run', 'req 96: citing a WRITING run is rejected [A13-046]');
+-- a later source-row mutation cannot legitimise: promote the partial run's
+-- status legally, but without function approval it still cannot authorize
+update finance.reconciliation_runs set status='completed', window_exhausted=true where id=(select id from rp where status='partial');
+select denied($$ insert into finance.reconciliation_runs(livemode,implementation_version,window_start,window_end,dry_run,authorized_by_run_id) values (true,'v1',now()-interval '1 day',now(),false,(select id from rp where status='partial')) $$, 'P0001', 'is not approved', 'req 96: a mutated predecessor still cannot authorize without function approval [A13-047]');
 select * from finish();
 rollback;

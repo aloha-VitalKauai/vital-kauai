@@ -455,3 +455,60 @@ A13-033 | 13_run_matrix.sql | req 99: out-of-set error_class rejected
 A13-034 | 13_run_matrix.sql | req 99: same object in the other livemode coexists
 A13-035 | 13_run_matrix.sql | req 100: the at-most-once ledger index has exactly its documented scope
 A13-036 | 13_run_matrix.sql | req 100: repeated payment_failed events for one object create no ledger entries
+A13-037 | 13_run_matrix.sql | req 96: citing a RUNNING dry run is rejected
+A13-038 | 13_run_matrix.sql | req 96: citing a PARTIAL dry run is rejected
+A13-039 | 13_run_matrix.sql | req 96: citing a FAILED dry run is rejected
+A13-040 | 13_run_matrix.sql | req 96: citing an ABANDONED dry run is rejected
+A13-041 | 13_run_matrix.sql | req 96: citing an UNAPPROVED completed dry run is rejected
+A13-042 | 13_run_matrix.sql | req 96: citing an ERROR-BEARING run is rejected (checked before approval, so unreachable-after-approval by construction)
+A13-043 | 13_run_matrix.sql | req 96: citing a NONEXISTENT run is rejected
+A13-044 | 13_run_matrix.sql | req 96: the eligible approved reported same-mode same-version run IS accepted
+A13-045 | 13_run_matrix.sql | req 96: a writing window reaching before the approved horizon is rejected
+A13-046 | 13_run_matrix.sql | req 96: citing a WRITING run is rejected
+A13-047 | 13_run_matrix.sql | req 96: a mutated predecessor still cannot authorize without function approval
+A15-001 | 15_identity_freeze.sql | req 108/116: one row inserted per LIVE enum label -- the set is catalog-derived, not hard-coded
+A15-002 | 15_identity_freeze.sql | req 108/116: every live kind generates a non-NULL dedup_key
+A15-003 | 15_identity_freeze.sql | req 108: the spec count of twelve still matches the catalog (changing the enum must be a conscious act)
+A15-004 | 15_identity_freeze.sql | req 108: the generated CASE has exactly one WHEN branch per catalog label
+A15-005 | 15_identity_freeze.sql | req 108: the kind CASE falls to ELSE NULL, so an unmapped future label nulls the key and dies on NOT NULL
+A15-006 | 15_identity_freeze.sql | req 116: dedup_key is structurally NOT NULL
+A15-007 | 15_identity_freeze.sql | req 108: two logically identical exceptions share one identity
+A15-008 | 15_identity_freeze.sql | req 108: differing load-bearing identity fields produce different identities
+A15-009 | 15_identity_freeze.sql | req 108: livemode participates in identity through the open-row unique index (dedup_key, livemode)
+A15-010 | 15_identity_freeze.sql | req 108: one canonical key, two livemodes, two independent open rows -- mode isolation lives in the index
+A15-011 | 15_identity_freeze.sql | req 102: a writer cannot supply the generated column
+A15-012 | 15_identity_freeze.sql | req 110: streak 0 cannot quarantine
+A15-013 | 15_identity_freeze.sql | req 110: a FIRST failure cannot quarantine
+A15-014 | 15_identity_freeze.sql | req 110: a SECOND failure cannot quarantine
+A15-015 | 15_identity_freeze.sql | req 110: the threshold (3) quarantines
+A15-016 | 15_identity_freeze.sql | req 110: an active quarantine cannot be entered again
+A15-017 | 15_identity_freeze.sql | req 92: founder release succeeds
+A15-018 | 15_identity_freeze.sql | req 112: release resets the streak
+A15-019 | 15_identity_freeze.sql | req 92: released_at strictly after quarantined_at
+A15-020 | 15_identity_freeze.sql | req 112: re-quarantine after three fresh failures succeeds
+A15-021 | 15_identity_freeze.sql | req 92: re-quarantine timestamp strictly after release
+A15-022 | 15_identity_freeze.sql | req 92: a second release completes the double cycle
+A15-023 | 15_identity_freeze.sql | req 110: a dismissed row cannot be quarantined
+A15-024 | 15_identity_freeze.sql | req 115: the trigger freezes exactly 18 fields -- adding one must consciously extend this matrix
+A15-025 | 15_identity_freeze.sql | req 115: status frozen
+A15-026 | 15_identity_freeze.sql | req 115: error frozen
+A15-027 | 15_identity_freeze.sql | req 115: finished_at frozen
+A15-028 | 15_identity_freeze.sql | req 115: window_exhausted frozen
+A15-029 | 15_identity_freeze.sql | req 115: window_start frozen
+A15-030 | 15_identity_freeze.sql | req 115: window_end frozen
+A15-031 | 15_identity_freeze.sql | req 115: livemode frozen
+A15-032 | 15_identity_freeze.sql | req 115: implementation_version frozen
+A15-033 | 15_identity_freeze.sql | req 115: dry_run frozen
+A15-034 | 15_identity_freeze.sql | req 115: would_create_count frozen
+A15-035 | 15_identity_freeze.sql | req 115: would_reopen_count frozen
+A15-036 | 15_identity_freeze.sql | req 115: prospective_by_kind frozen
+A15-037 | 15_identity_freeze.sql | req 115: report_samples frozen
+A15-038 | 15_identity_freeze.sql | req 115: report_version frozen
+A15-039 | 15_identity_freeze.sql | req 115: report_completed_at frozen
+A15-040 | 15_identity_freeze.sql | req 115: approval identity, timestamp and note frozen
+A15-041 | 15_identity_freeze.sql | req 115: service_role with a widened grant still dies in the freeze trigger
+A15-042 | 15_identity_freeze.sql | req 115: a non-frozen operational field stays mutable -- the trigger does not simply block everything
+A15-043 | 15_identity_freeze.sql | req 119: re-resolving a DISMISSED row raises
+A15-044 | 15_identity_freeze.sql | req 120: an actively quarantined row resolves through the function
+A15-045 | 15_identity_freeze.sql | req 120: resolution does not erase quarantine history and release does not masquerade as resolution
+A15-046 | 15_identity_freeze.sql | req 120: the resolved row leaves the open-slot free for recurrence
