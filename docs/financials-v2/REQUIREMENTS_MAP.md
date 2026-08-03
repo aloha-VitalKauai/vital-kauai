@@ -266,3 +266,63 @@ Conflict: [A2-068]. Upsert-side counters are service_role-updatable: [A3-026]; l
 
 ### R80: resolved does not block recurrence; resolved row preserved
 [A2-070] [A7-039] [A7-040].
+
+### R81: same dedup_key, different livemode → independent rows
+[A4-053] [A13-034].
+
+### R82: last_detected_at >= first_detected_at enforced
+[A4-052].
+
+### R83: finished_at consistency in both directions, every status
+running+finished_at: [A2-034]. Non-running without finished_at, per status: completed [A13-011], partial [A13-012], failed [A13-013], abandoned [A13-014].
+
+### R84: window_exhausted biconditional — all 10 combinations
+Valid five: [A13-001] [A13-002] [A13-003] [A13-004] [A13-005]. Rejected five: [A13-006] [A13-007] [A13-008] [A13-009] [A13-010] (all pinned to run_completed_iff_exhausted). Older spot checks retained: [A2-061] [A2-031] [A2-032] [A2-033].
+
+### R85: resume lineage
+Resumable predecessors: partial [A13-015], failed [A13-016], abandoned [A13-017]. Rejected: running [A13-018], completed [A13-019] — ENFORCED BY THE B-85 FIX in tg_run_insert_guard (lineage was previously unvalidated; sabotage case 32 is the kill-path). Self-reference: [A7-046]. Second successor: [A13-020] (reconciliation_runs_resume_uq).
+
+### R86: dry/writing authorization column constraints
+[A4-022] [A4-023]; approved_by/approved_at pairing pinned by [SUITE:census] (run_approval_pair, run_approval_note_pair) and behaviourally by [A2-036].
+
+### R87: quarantine column pairings
+[A7-043] [A7-044]; release/quarantine pair CHECKs pinned by [SUITE:census] (exc_quarantine_pair, exc_release_pair, exc_release_requires_quarantine).
+
+### R88: approval and release are founder-only
+[A3-023] (service_role cannot write approved_at), [A3-030] [A3-031] (no EXECUTE on either function), [A2-035] (founder approves), [A4-032] (founder releases).
+
+### R89: exactly eight partial unique indexes, as indexes
+[A7-071] [A7-005]; exact predicates pinned by [SUITE:census] (indexdef hashes).
+
+### R90: is_founder() hardened
+[A1-034] [A1-023] [A1-024] [A1-025]; [ST-015].
+
+### R91: column grants prove both directions
+[A7-079]; permitted: [A3-026] [A3-027]; denied: [A4-089] [A3-023].
+
+### R92: the quarantine cycle is executable with monotonic timestamps
+[A4-032] (release), [A4-033] (streak reset), full cycle incl. re-quarantine: [A7-048]-series in 07 (quarantine→release→re-quarantine) and [A2-070] recurrence; ordering across sessions: [SUITE:concurrency_r101].
+
+### R93: release_quarantine and quarantine_object contracts
+Non-founder release: [A13-028]. Not-quarantined release: [A13-027]. One-statement set+reset: [A4-032] [A4-033]. quarantine_object exec by service_role not founder: [A3-032] [A3-033]. No reason parameter: [A13-026]. No direct column UPDATE: [A5-015]-adjacent grants proven at [A7-027]-style census; quarantine columns specifically: [SUITE:census] grant lines.
+
+### R94: dry-run write constraints
+[A4-051]; the writing-run report exclusion (run_report_only_on_dry_run) pinned by [SUITE:census].
+
+### R95: report completeness both directions
+[A4-024]; approval without report: [A7-047] [A2-064].
+
+### R96: authorization source constraints — full ineligible matrix + accepted case
+Partial: [A7-065]. Livemode mismatch: [A7-066]. Version mismatch: [A7-080]. Accepted eligible case: [A7-052]. Running/failed/abandoned/unapproved/error-bearing predecessors are rejected by the same tg_run_authorization body those probes exercise; status-matrix enumeration is carried by R98's probes [A13-021]–[A13-025] against approve_dry_run, and the authorization path re-checks approval ([A4-023]).
+
+### R97: implementation version binds
+[A7-080].
+
+### R98: approval preconditions — every ineligible status + error
+running [A13-021], partial [A13-022], failed [A13-023], abandoned [A13-024], error-bearing [A13-025]; no-report [A2-064] [A7-047].
+
+### R99: processing-failure shape — every direction
+NULL object [A13-029], absent type [A13-030], out-of-set type [A13-031], absent class [A13-032], out-of-set class [A13-033]; well-formed accepted [A2-044]; cross-livemode coexistence [A13-034]; malformed-detail rejection [A2-069].
+
+### R100: at-most-once index scope
+Exact indexdef: [A13-035]. Repeated payment_failed events retained: [A7-055] [A7-056] with pkey-only uniqueness [A7-077]; no ledger entries result: [A13-036].

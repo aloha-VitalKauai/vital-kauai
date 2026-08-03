@@ -309,6 +309,21 @@ begin
     raise exception
       'a new run may not be created already approved: approval is finance.approve_dry_run() only';
   end if;
+  -- B-85 (found during Checkpoint B mapping of R85): resume lineage was
+  -- unvalidated -- a run could cite a RUNNING or COMPLETED predecessor. Only a
+  -- stopped-short run (partial, failed, abandoned) is resumable.
+  if new.resumed_from_run_id is not null then
+    declare pred_status finance.run_status;
+    begin
+      select status into pred_status from finance.reconciliation_runs where id = new.resumed_from_run_id;
+      if pred_status is null then
+        raise exception 'cannot resume: predecessor run % does not exist', new.resumed_from_run_id;
+      end if;
+      if pred_status not in ('partial','failed','abandoned') then
+        raise exception 'cannot resume a % run: only partial, failed or abandoned runs are resumable', pred_status;
+      end if;
+    end;
+  end if;
   return new;
 end $$;
 

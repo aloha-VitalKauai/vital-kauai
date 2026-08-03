@@ -419,3 +419,39 @@ A4-089 | 04_coverage.sql | req 75: service_role UPDATE outside the granted colum
 A4-090 | 04_coverage.sql | req 76: a non-USD ledger entry is rejected
 A4-091 | 04_coverage.sql | req 76: a non-USD agreement is rejected at INSERT; UPDATE cannot reach the CHECK (append-only)
 A4-092 | 04_coverage.sql | req 77: a running run carrying finished_at is rejected
+A13-001 | 13_run_matrix.sql | req 84: running+false accepted
+A13-002 | 13_run_matrix.sql | req 84: partial+false accepted
+A13-003 | 13_run_matrix.sql | req 84: failed+false accepted
+A13-004 | 13_run_matrix.sql | req 84: abandoned+false accepted
+A13-005 | 13_run_matrix.sql | req 84: completed+true accepted
+A13-006 | 13_run_matrix.sql | req 84: completed+false rejected
+A13-007 | 13_run_matrix.sql | req 84: running+true rejected
+A13-008 | 13_run_matrix.sql | req 84: partial+true rejected
+A13-009 | 13_run_matrix.sql | req 84: failed+true rejected
+A13-010 | 13_run_matrix.sql | req 84: abandoned+true rejected
+A13-011 | 13_run_matrix.sql | req 83: completed without finished_at rejected
+A13-012 | 13_run_matrix.sql | req 83: partial without finished_at rejected
+A13-013 | 13_run_matrix.sql | req 83: failed without finished_at rejected
+A13-014 | 13_run_matrix.sql | req 83: abandoned without finished_at rejected
+A13-015 | 13_run_matrix.sql | req 85: resuming a partial run accepted
+A13-016 | 13_run_matrix.sql | req 85: resuming a failed run accepted
+A13-017 | 13_run_matrix.sql | req 85: resuming an abandoned run accepted
+A13-018 | 13_run_matrix.sql | req 85: resuming a RUNNING run rejected
+A13-019 | 13_run_matrix.sql | req 85: resuming a COMPLETED run rejected
+A13-020 | 13_run_matrix.sql | req 85: a SECOND run resuming the same predecessor rejected
+A13-021 | 13_run_matrix.sql | req 98: approving a running run rejected
+A13-022 | 13_run_matrix.sql | req 98: approving a partial run rejected
+A13-023 | 13_run_matrix.sql | req 98: approving a failed run rejected
+A13-024 | 13_run_matrix.sql | req 98: approving an abandoned run rejected
+A13-025 | 13_run_matrix.sql | req 98: approving an error-bearing run rejected
+A13-026 | 13_run_matrix.sql | req 93: quarantine_object takes no reason parameter
+A13-027 | 13_run_matrix.sql | req 93: releasing a non-quarantined row raises
+A13-028 | 13_run_matrix.sql | req 93: a non-founder cannot release
+A13-029 | 13_run_matrix.sql | req 99: NULL provider_object_id rejected
+A13-030 | 13_run_matrix.sql | req 99: absent object_type rejected
+A13-031 | 13_run_matrix.sql | req 99: out-of-set object_type rejected
+A13-032 | 13_run_matrix.sql | req 99: absent error_class rejected
+A13-033 | 13_run_matrix.sql | req 99: out-of-set error_class rejected
+A13-034 | 13_run_matrix.sql | req 99: same object in the other livemode coexists
+A13-035 | 13_run_matrix.sql | req 100: the at-most-once ledger index has exactly its documented scope
+A13-036 | 13_run_matrix.sql | req 100: repeated payment_failed events for one object create no ledger entries

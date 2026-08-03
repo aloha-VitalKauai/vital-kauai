@@ -1452,7 +1452,7 @@ routinedef:tg_link_insert_guard():192c3e53d5a3f7a0e11d5d6f98d68a64:v:search_path
 routinedef:tg_link_revocation_terminal():6f196747d827a7d842ef35547a56c82f:v:search_path=pg_catalog, public, finance
 routinedef:tg_run_authorization():cbf7f5c3a40606ce870964af3c265803:v:search_path=pg_catalog, public, finance
 routinedef:tg_run_freeze_approved():7798219b221a89a80e42d449b6a98b3e:v:search_path=pg_catalog, public, finance
-routinedef:tg_run_insert_guard():ff3b74f0fde9004493677c781a36594e:v:search_path=pg_catalog, public, finance
+routinedef:tg_run_insert_guard():101546f6836cdf5a5bc538ca39551855:v:search_path=pg_catalog, public, finance
 trigger:agreement_amounts:amount_not_future
 trigger:agreement_amounts:append_only
 trigger:agreement_lifecycle_events:append_only
