@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap;
 \i supabase/tests/_test_helpers.sql
-select plan(73);
+select plan(75);
 
 insert into auth.users (id,email) values
   ('11111111-1111-1111-1111-111111111111','f@t'),('22222222-2222-2222-2222-222222222222','m@t');
@@ -198,6 +198,11 @@ select lives_ok($$ insert into finance.checkout_sessions(agreement_id,idempotenc
 -- R36 completing frees the slot
 update finance.checkout_sessions set status='completed' where idempotency_key='k_b2';
 select lives_ok($$ insert into finance.checkout_sessions(agreement_id,idempotency_key,amount_cents,livemode,expires_at) select id,'k_b2z',100,true,now()+interval '1 hour' from ag $$, 'req 36: completing the live session frees the slot for a new one [A4-067]');
+-- R32e stripe side: legacy_donation_id is import traceability, not provenance
+select lives_ok($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode,legacy_donation_id) select id,'stripe_payment',88,'stripe','ch_ld','pi_ld',now(),true,'aaaaaaaa-bbbb-4ccc-8ddd-000000000001'::uuid from ag $$, 'req 32e: legacy_donation_id accepted on a stripe entry [A4-074]');
+-- R36 expiring frees the slot too
+update finance.checkout_sessions set status='expired', stripe_session_id='cs_b2z' where idempotency_key='k_b2z';
+select lives_ok($$ insert into finance.checkout_sessions(agreement_id,idempotency_key,amount_cents,livemode,expires_at) select id,'k_b2w',100,true,now()+interval '1 hour' from ag $$, 'req 36: expiring the live session frees the slot as well [A4-075]');
 -- R38 claim guard (mechanism added in this commit)
 insert into finance.payment_links(agreement_id,token_hash,expires_at,created_by) select id,'tok_exp',now() - interval '1 hour','11111111-1111-1111-1111-111111111111' from ag;
 select denied($$ update finance.payment_links set status='creating', claimed_at=now() where token_hash='tok_exp' $$, 'P0001', 'link claim rejected: link expired at', 'req 38: claiming an EXPIRED link is rejected [A4-068]');

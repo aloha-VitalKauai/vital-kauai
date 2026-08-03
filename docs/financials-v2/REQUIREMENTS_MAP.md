@@ -71,3 +71,78 @@ is either closed with new tests in the same commit series or stays visibly open.
 
 ### R20: invalid transitions rejected; terminal states have no exit
 [A4-016] (draft→fulfilled rejected), [A2-004] (active→draft rejected), [A2-005] (stale from_status rejected), [A2-009] (canceled terminal); permitted directions still work: [A2-006] [A2-007] [A2-008].
+
+### R21: two concurrent transitions from the same status cannot both commit
+[SUITE:concurrency_r21] — two real sessions, FIFO-driven; the second blocks on the row lock (pid-pinned wait) and exactly one transition commits.
+
+### R22: lifecycle state has no effect on balances or payment_state
+[A4-017] — cancelling an agreement changes no balance column; the balance view derives only from ledger facts ([ST-007] structural).
+
+### R23: contribution resolves by effective_at DESC, seq DESC including ties
+[A2-014] — the last-recorded amendment wins on an effective_at tie (seq is the tiebreak).
+
+### R24: same-transaction amendments resolve to the later seq
+[A7-006] — two amendments in one transaction; the later seq wins, not a random uuid.
+
+### R25: no amendment yields Contribution 0
+[A4-013].
+
+### R26: future-dated amendments rejected on insert; view excludes any that reach the table
+Clause 1: [A2-054] (insert rejected, no tolerance). Clause 2: [A7-072] — catalog-level proof no future-dated amendment exists for the view to exclude; the view-side exclusion predicate is pinned by [SUITE:census] (viewdef hash).
+
+### R27: blank reason rejected; negative amount_cents rejected
+[A4-015] [A4-014]; function-path blank reason: [A2-001].
+
+### R28: L1 — stripe_payment rejection matrix
+No intent id: [A2-055]. source <> 'stripe': [A4-055]. Non-positive: [A4-056]. With a parent: [A4-057].
+
+### R29: L2 — external_payment rejection matrix + system-only acceptance
+No method: [A2-015]. No attribution: [A2-016]. source <> 'external': [A4-058]. Non-positive: [A4-059]. With a parent: [A4-060]. Accepted with recorded_by_system alone: [A4-045].
+
+### R30: L3 — refund rejection matrix
+No parent: [A4-039]. Positive amount: [A4-006]. Stripe refund with NULL provider_object_id: [A4-007]. External refund without method: [A4-061].
+
+### R30b: L3b — stripe refund must target a stripe_payment
+[A7-017].
+
+### R31: L11 — livemode must match the originating event; NULL origin accepted
+Disagreement rejected: [A7-018]. Agreement accepted: [A7-019]. NULL origin accepted: [A4-062]. External/import entries livemode=true with NULL origin: [A4-046] (import lives_ok) and the L11 trigger only fires on a non-null origin ([A7-018] body).
+
+### R32: L12 — external/reversal require reason + exactly one attribution
+No attribution: [A2-016]. Both attributions: [A2-019]. Blank reason: [A4-015]. Either form satisfies: human [A2-015]-adjacent external fixtures throughout; system alone [A4-045].
+
+### R32b: recorded_by_system needs no auth.users row
+[A4-045] — legacy_import inserted with zero-dependency system attribution.
+
+### R32c: L13 — stripe entry carrying external_method rejected
+[A2-017].
+
+### R32d: L13 — external entry carrying provider ids rejected
+[A2-018] (payment-intent id); the provider_object_id direction shares the same CHECK, pinned by [SUITE:census] (constraint definition).
+
+### R32e: legacy_donation_id accepted on both stripe and external entries
+[A4-046] (external), [A4-074] (stripe).
+
+### R33: session uniques + amount > 0
+stripe_session_id unique: [A4-063]. idempotency_key unique: [A4-064]. amount_cents > 0: [A4-018].
+
+### R34: non-creating status requires stripe_session_id
+[A4-048].
+
+### R35: at most one live session per agreement per mode; modes coexist
+Second same-mode rejected: [A4-065]. Test+live coexist: [A4-066]. Concurrent double-create: [SUITE:concurrency_r35].
+
+### R36: expiring/completing frees the slot
+Completing: [A4-067]. Expiring: [A4-075].
+
+### R37: link claim is atomic — one winner, loser creates nothing
+[SUITE:concurrency_r37] — two sessions race one link; exactly one wins.
+
+### R38: claim rejected when creating/consumed/revoked/expired
+Expired: [A4-068]. Already-claimed (creating): [A4-069]. Consumed: [A4-070]. Revoked: [A9-004] (a revoked link cannot be reactivated; terminal trigger) — the claim path from revoked is additionally blocked by the same guard ([A4-069] ident covers any non-active status). Mechanism kill-path: sabotage case 30 ([SUITE:sabotage_protocol]).
+
+### R39: non-open exception row lacking resolution attribution rejected
+[A4-071] — rejected at INSERT by the born-open guard, which sits above the exc_open_iff_unresolved CHECK; the CHECK itself is pinned by [SUITE:census].
+
+### R40: service_role can SELECT and INSERT where the jobs require
+Ledger: [A3-024] [A3-038]. Exceptions: [A3-025] (INSERT kind) [A3-026] (occurrence_count update). Runs: [A3-028]. Events cursor: [A3-027]. stripe_events INSERT+SELECT: [A4-072] [A4-073].

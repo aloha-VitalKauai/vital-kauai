@@ -397,3 +397,5 @@ A4-070 | 04_coverage.sql | req 38: claiming a CONSUMED link is rejected
 A4-071 | 04_coverage.sql | req 39: a non-open exception row is rejected at INSERT by the guard above the exc_open_iff_unresolved CHECK
 A4-072 | 04_coverage.sql | req 40: service_role can INSERT a stripe event
 A4-073 | 04_coverage.sql | req 40: service_role can SELECT what it wrote
+A4-074 | 04_coverage.sql | req 32e: legacy_donation_id accepted on a stripe entry
+A4-075 | 04_coverage.sql | req 36: expiring the live session frees the slot as well
