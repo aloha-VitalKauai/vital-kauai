@@ -76,10 +76,10 @@ is either closed with new tests in the same commit series or stays visibly open.
 [SUITE:concurrency_r21] — two real sessions, FIFO-driven; the second blocks on the row lock (pid-pinned wait) and exactly one transition commits.
 
 ### R22: lifecycle state has no effect on balances or payment_state
-[A4-017] — cancelling an agreement changes no balance column; the balance view derives only from ledger facts ([ST-007] structural).
+[A4-017] (no balance column changes on cancel); **payment_state unchanged after cancel** [A16-009]; derivation structural [ST-007].
 
 ### R23: contribution resolves by effective_at DESC, seq DESC including ties
-[A2-014] — the last-recorded amendment wins on an effective_at tie (seq is the tiebreak).
+Tie broken by seq: [A2-014]. **effective_at DESC dominates seq**: an earlier effective_at recorded with the highest seq still loses [A2-072] (an ASC flip would fail this where the tie test survives it).
 
 ### R24: same-transaction amendments resolve to the later seq
 [A7-006] — two amendments in one transaction; the later seq wins, not a random uuid.
@@ -105,11 +105,11 @@ No parent: [A4-039]. Positive amount: [A4-006]. Stripe refund with NULL provider
 ### R30b: L3b — stripe refund must target a stripe_payment
 [A7-017].
 
-### R31: L11 — livemode must match the originating event; NULL origin accepted
-Disagreement rejected: [A7-018]. Agreement accepted: [A7-019]. NULL origin accepted: [A4-062]. External/import entries livemode=true with NULL origin: [A4-046] (import lives_ok) and the L11 trigger only fires on a non-null origin ([A7-018] body).
+### R31: L11 — livemode must match the originating event; NULL origin accepted; external/imported ⇒ livemode=true
+Disagreement rejected: [A7-018]. Agreement accepted: [A7-019]. NULL origin accepted: [A4-062]. **External/imported ⇒ livemode=true is now ENFORCED** by `ledger_l11_offline_livemode` (R31 defect fix): external livemode=false rejected [A4-096], imported (legacy_donation_id) livemode=false rejected [A4-097], genuine stripe test-mode still allowed [A4-098]. Kill-path: sabotage case 41.
 
 ### R32: L12 — external/reversal require reason + exactly one attribution
-No attribution: [A2-016]. Both attributions: [A2-019]. Blank reason: [A4-015]. Either form satisfies: human [A2-058] (a reversal with reason + recorded_by is accepted); system alone [A4-045].
+No attribution: [A2-016]. Both attributions: [A2-019]. Blank reason on a LEDGER external entry: [A2-073] (ledger_l12_attribution, distinct from the agreement_amounts probe). stripe_payment accepted with provider_object_id NULL: [A2-074]. Either form satisfies: human [A2-058]; system alone [A4-045].
 
 ### R32b: recorded_by_system needs no auth.users row
 [A4-045] — legacy_import inserted with zero-dependency system attribution.
@@ -139,7 +139,7 @@ Completing: [A4-067]. Expiring: [A4-075].
 [SUITE:concurrency_r37] — two sessions race one link; exactly one wins.
 
 ### R38: claim rejected when creating/consumed/revoked/expired
-Expired: [A4-068]. Already-claimed (creating): [A4-069]. Consumed: [A4-070]. Revoked: [A9-004] (a revoked link cannot be reactivated; terminal trigger) — the claim path from revoked is additionally blocked by the same guard ([A4-069] ident covers any non-active status). Mechanism kill-path: sabotage case 30 ([SUITE:sabotage_protocol]).
+Expired [A4-068], consumed [A4-070], non-active generally [A4-069]. **Creating**: the claim path (`WHERE status='active'`) matches zero rows once a link is creating [A16-006] — the real one-shot control; the guard is defence-in-depth. Revoked: [A9-004] (terminal, cannot reactivate). Mechanism kill-path: sabotage case 30.
 
 ### R39: non-open exception row lacking resolution attribution rejected
 [A4-071] — rejected at INSERT by the born-open guard, which sits above the exc_open_iff_unresolved CHECK; the CHECK itself is pinned by [SUITE:census].
@@ -208,7 +208,7 @@ Self-parent: [A4-081] (L5 CHECK present for the INSERT path) + [A4-080] (no UPDA
 [A2-027] [A2-028] [A7-010].
 
 ### R61: remaining/payable across the state range; NULL when contribution does not apply
-Mid-range: [A4-083] [A4-093]. Overpaid: [A7-009]. Not-applicable → NULL: [A7-020] [A2-030].
+Mid-range: [A4-083] [A4-093]. Overpaid: [A7-009]. Not-applicable → remaining_cents NULL [A7-020] [A2-030] and **payable_remaining_cents NULL** [A16-010].
 
 ### R62: overpayment — negative remaining, zero payable
 [A7-007] [A7-008].
@@ -226,7 +226,7 @@ Mid-range: [A4-083] [A4-093]. Overpaid: [A7-009]. Not-applicable → NULL: [A7-0
 [A2-029] [A2-030] [A7-020] [A7-021] (member); [A4-085] (journey).
 
 ### R67: payment_state deterministic, one value per reachable state
-[A7-073] [A7-024]; individual states: unpaid [A2-028], partial [A4-083] (mid-range remaining), overpaid [A7-009], refunded [A4-084], not_applicable [A2-029].
+[A7-073] (multiple distinct, deterministic) [A7-024] (never NULL); each reachable §8 state produced: unpaid [A2-028], **partial [A16-008]**, **paid [A16-007]**, overpaid [A7-009], refunded [A4-084], not_applicable [A2-029].
 
 ### R68: livemode=false excluded from canonical, present in founder test view
 [A7-022] [A7-023]; member-level leak-proofs: [A12-007] [A12-008].
@@ -262,7 +262,7 @@ Ledger: [A4-090]. Agreement: [A4-091] (at INSERT; UPDATE cannot reach the CHECK 
 [A4-020] [A4-021]; concurrent: [SUITE:census] pins reconciliation_runs_single_flight_uq.
 
 ### R79: exception dedup — open conflict; upsert raises occurrence_count
-Conflict: [A2-068]. Upsert-side counters are service_role-updatable: [A3-026]; last_detected_at advance is PR 3 job behaviour — the PR 1 surface is the unique index + column grants, both present.
+Conflict: [A2-068]. **Upsert raises occurrence_count** [A16-012] [A15-057] and **leaves first_detected_at unchanged** [A16-011]; the real ON CONFLICT executes [A15-056].
 
 ### R80: resolved does not block recurrence; resolved row preserved
 [A2-070] [A7-039] [A7-040].
@@ -307,10 +307,10 @@ Full double cycle executed on one row: quarantine [A15-015], release [A15-017], 
 Non-founder release: [A13-028]. Not-quarantined release: [A13-027]. One-statement set+reset: [A4-032] [A4-033]. quarantine_object exec by service_role not founder: [A3-032] [A3-033]. No reason parameter: [A13-026]. No direct column UPDATE on the quarantine columns: no grant exists ([SUITE:census] grant lines enumerate every column privilege; the four quarantine columns appear in none), and the R115 widened-grant pattern [A15-041] proves trigger-layer defence for the run analogue.
 
 ### R94: dry-run write constraints
-[A4-051]; the writing-run report exclusion (run_report_only_on_dry_run) pinned by [SUITE:census].
+exceptions_created direction [A4-051]; **exceptions_reopened direction** [A16-013] (run_dry_writes_nothing); writing-run report exclusion pinned by [SUITE:census].
 
 ### R95: report completeness both directions
-[A4-024]; approval without report: [A7-047] [A2-064].
+All-absent [A4-024]; **each of the four report columns individually required** [A16-015] [A16-016] [A16-017] [A16-018] and report_completed_at without them [A16-014]; approval without report: [A7-047] [A2-064].
 
 ### R96: authorization source constraints — full ineligible matrix + accepted case
 DIRECT, at the writing-run insert, each pinned to tg_run_authorization's own message: running [A13-037], partial [A13-038] (also [A7-065]), failed [A13-039], abandoned [A13-040], unapproved [A13-041], error-bearing [A13-042] (checked before approval, so an approved-yet-error-bearing source is unreachable by construction), nonexistent [A13-043], not-a-dry-run [A13-046]. Livemode mismatch [A7-066]; version mismatch [A7-080]; horizon [A13-045]. Accepted case through the function-approved source: [A13-044] (also [A7-052]). No-completed-report is unreachable at this boundary — approval itself requires the report ([A2-064] [A7-047]); the trigger's branch is defence in depth. A mutated predecessor cannot self-legitimise: [A13-047].
@@ -324,8 +324,8 @@ running [A13-021], partial [A13-022], failed [A13-023], abandoned [A13-024], err
 ### R99: processing-failure shape — every direction
 NULL object [A13-029], absent type [A13-030], out-of-set type [A13-031], absent class [A13-032], out-of-set class [A13-033]; well-formed accepted [A2-044]; cross-livemode coexistence [A13-034]; malformed-detail rejection [A2-069].
 
-### R100: at-most-once index scope
-Exact indexdef: [A13-035]. Repeated payment_failed events retained: [A7-055] [A7-056] with pkey-only uniqueness [A7-077]; no ledger entries result: [A13-036].
+### R100: at-most-once index scope (§10, created per D-076)
+The §10 partial unique index exists with exactly its four terminal types: [A7-081] (exact indexdef) [A7-077] (stripe_events carries PK + this index). Behavioural: a second terminal event for one object+livemode is rejected [A7-082], the other livemode coexists [A7-083]. Repeatable types (payment_failed) are excluded and retained [A7-055] [A7-056], creating no ledger entries [A13-036]. The ledger L8 index [A13-035] is the separate ledger-side at-most-once. Kill-path: sabotage case 42.
 
 
 ### R101: quarantine ordering under concurrency
@@ -350,13 +350,13 @@ Per-field matrix under R115: [A15-025]–[A15-040]; earlier spot checks [A2-065]
 [A2-062]; no default in the catalog: [SUITE:census] (column definition).
 
 ### R108: generated dedup_key compiles and is canonical for every kind
-Catalog-enumerated one-row-per-label [A15-001], all keys non-NULL [A15-002], spec count pinned [A15-003], one WHEN per label [A15-004], ELSE NULL fail-closed [A15-005], identical identity → same key [A15-007], different identity → different key [A15-008], livemode in the unique identity [A15-009] [A15-010].
+Catalog-enumerated one-row-per-label [A15-001], all keys non-NULL [A15-002], spec count pinned [A15-003], one WHEN per label [A15-004], ELSE NULL fail-closed [A15-005], identical identity → same key [A15-007], different identity → different key [A15-008], livemode in the unique identity [A15-009] [A15-010]. **UPDATE override rejected by the server** [A16-002] (428C9).
 
-### R109: untouched and partial quarantine states insert cleanly
-[A4-025] [A4-026].
+### R109: untouched and partial quarantine states insert cleanly; equal timestamps rejected
+Untouched/partial: [A4-025] [A4-026]. **Equal non-null quarantine/release timestamps rejected** by exc_monotonic_backstop [A16-003]. Correctly ordered release/re-quarantine: [A15-019] [A15-021].
 
 ### R110: quarantine_object preconditions
-Streak 0 [A15-012], first failure [A15-013], SECOND failure [A15-014], threshold engages at 3 [A15-015], already-active [A15-016] [A4-031], dismissed row [A15-023], wrong kind [A4-027]. The streak counts distinct runs by job contract (PR 3); the PR 1 surface is the counter + threshold + service_role-only increment ([A3-026]).
+Streak 0 [A15-012], first failure [A15-013], SECOND failure [A15-014], threshold engages at 3 [A15-015], already-active [A15-016] [A4-031], dismissed row [A15-023], **resolved row [A16-019]**, wrong kind [A4-027]. The streak counts distinct runs by job contract (PR 3); the PR 1 surface is the counter + threshold + service_role-only increment ([A3-026]).
 
 ### R111: derived quarantine reason
 [A4-030]; quarantine_object takes no reason parameter [A13-026].
@@ -368,7 +368,7 @@ Streak 0 [A15-012], first failure [A15-013], SECOND failure [A15-014], threshold
 [A7-048] [A7-049] [A2-035] [A2-037]; direct-write path blocked [A3-023] [A15-040].
 
 ### R114: approval_note required and frozen
-[A2-038] (blank raises); stored equals supplied ([A2-035] body asserts the note); frozen [A15-040].
+[A2-038] (blank raises); **stored equals supplied** [A16-004]; frozen [A15-040].
 
 ### R115: post-approval mutation rejected per field, incl. service_role; non-frozen field mutable
 Trigger freezes exactly 18 fields, list-compared [A15-024]. Individually: [A15-025]–[A15-040]. service_role with a deliberately widened grant still dies in the trigger [A15-041]. Non-frozen heartbeat_at stays mutable [A15-042].
@@ -413,10 +413,10 @@ With the grant deliberately widened: resolution_status [A15-047], resolved_at [A
 [A7-041] (open + note rejected); closed-without-note rejected by exc_note_iff_closed, exercised as the wrong-reason finding of the original req-121 probe and pinned by [SUITE:census]; both function paths write consistent pairs [A7-030].
 
 ### R128: a normal unapproved run inserts as service_role
-[A3-028]; full-shape insert [A2-063]-adjacent lives paths in [A13-001].
+**Executed as service_role using only granted columns** [A16-005] (status/window_exhausted default; using ungranted columns is the 42501 of [A15-059]); grant [A3-028].
 
 ### R129: service_role cannot insert any approval field
-approved_by [A3-021], approval_note [A3-022], approved_at with the grant widened dies in the trigger [A15-059]; owner-path [A2-063] [A7-053].
+approved_by grant-layer [A3-021] and **individually at INSERT [A16-020]**, approval_note [A3-022], approved_at with the grant widened dies in the trigger [A15-059]; owner-path [A2-063] [A7-053].
 
 ### R130: a fabricated approved run cannot authorize
 [A7-053] (cannot exist); citing a nonexistent run [A13-043]; citing an unapproved one [A13-041].
@@ -430,5 +430,5 @@ approved_by [A3-021], approval_note [A3-022], approved_at with the grant widened
 ### R133: agreement creation requires its initial event
 Commit-boundary failure without the event: [A2-051] [A9-006], direct-import parent-only [A15-063]. Parent-then-child in one transaction succeeds: [A15-062] (direct SQL, the PR 2 import path) and [A2-050] (create_agreement). Duplicate initial event: [A4-047].
 
-### R133b: child-first insertion rejected on the non-deferrable FK
-[A2-052].
+### R133b: child-first insertion rejected; the FK is non-deferrable
+Behavioural rejection [A2-052] (a P0001 from the transition trigger reading the absent parent). **The FK is non-deferrable** [A16-001] (catalog) — the requirement's actual mechanism, so the deferred completeness trigger is not a licence to reorder.

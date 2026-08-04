@@ -1,4 +1,4 @@
--- Financials V2 PR 1 — the eight partial unique indexes (ARCHITECTURE §15).
+-- Financials V2 PR 1 — the nine partial unique indexes (ARCHITECTURE §15).
 -- PostgreSQL has no `UNIQUE ... WHERE` table constraint, so every partial rule
 -- is an index. Non-partial uniqueness stays a table constraint (see §15).
 
@@ -56,5 +56,16 @@ create index agreement_amounts_lookup_idx on finance.agreement_amounts (agreemen
 create index lifecycle_lookup_idx         on finance.agreement_lifecycle_events (agreement_id, occurred_at desc, seq desc);
 create index agreements_member_idx        on finance.agreements (member_id);
 create index agreements_journey_idx       on finance.agreements (journey_id) where journey_id is not null;
+
+-- R100 / ARCHITECTURE §10: at-most-once for the four TERMINAL Stripe event
+-- types -- a checkout session completes/expires once, a PaymentIntent
+-- succeeds/cancels once. Repeatable types (charge.refunded, payment_failed)
+-- are deliberately excluded. Added in Checkpoint B after the semantic review
+-- flagged the §10/§15 contradiction; the user chose to create the index (D-076).
+create unique index stripe_events_terminal_at_most_once_uq
+  on finance.stripe_events (event_type, object_id, livemode)
+  where event_type in (
+    'checkout.session.completed','checkout.session.expired',
+    'payment_intent.succeeded','payment_intent.canceled');
 
 commit;

@@ -298,6 +298,36 @@ create trigger exception_resolution_guard
   before update on finance.reconciliation_exceptions
   for each row execute function finance.tg_exception_resolution_guard();
 
+-- R124/D-075 symmetry (Checkpoint B review): the quarantine/release columns are
+-- writable only through finance.quarantine_object()/release_quarantine(). Same
+-- execution-identity boundary as the resolution guard -- SECURITY INVOKER, owner
+-- resolved by exact regprocedure -- so a future table-wide GRANT cannot let an
+-- application role forge a below-threshold quarantine directly.
+create function finance.tg_exception_quarantine_guard()
+returns trigger language plpgsql security invoker
+set search_path = pg_catalog, public, finance as $fn$
+declare trusted_owner oid;
+begin
+  if (new.quarantined_at, new.quarantine_reason, new.released_at, new.released_by, new.release_note)
+       is distinct from
+     (old.quarantined_at, old.quarantine_reason, old.released_at, old.released_by, old.release_note)
+  then
+    select p.proowner into trusted_owner from pg_proc p
+      where p.oid = to_regprocedure('finance.quarantine_object(uuid)');
+    if trusted_owner is null then
+      raise exception 'req 124: finance.quarantine_object(uuid) is missing; the quarantine boundary cannot be established';
+    end if;
+    if current_user::regrole::oid <> trusted_owner then
+      raise exception 'req 124: quarantine columns are writable only through finance.quarantine_object()/release_quarantine(); direct UPDATE by % rejected', current_user;
+    end if;
+  end if;
+  return new;
+end $fn$;
+
+create trigger exception_quarantine_guard
+  before update on finance.reconciliation_exceptions
+  for each row execute function finance.tg_exception_quarantine_guard();
+
 create trigger exception_insert_guard before insert on finance.reconciliation_exceptions
   for each row execute function finance.tg_exception_insert_guard();
 
@@ -463,7 +493,9 @@ create trigger link_insert_guard before insert on finance.payment_links
 -- transition INTO 'creating'; it is valid only from 'active' and only before
 -- expiry. Revocation terminality is enforced separately below.
 create function finance.tg_link_claim_guard() returns trigger
-  language plpgsql security definer set search_path = pg_catalog, public, finance as $$
+  -- SECURITY INVOKER: this guard makes no identity comparison and reads no other
+  -- table, so DEFINER would be pointless privilege (Checkpoint B review finding).
+  language plpgsql security invoker set search_path = pg_catalog, public, finance as $$
 begin
   if new.status = 'creating' and old.status is distinct from 'creating' then
     if old.status <> 'active' then

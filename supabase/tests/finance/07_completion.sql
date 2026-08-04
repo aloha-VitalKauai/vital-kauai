@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap;
 \i supabase/tests/_test_helpers.sql
-select plan(80);
+select plan(83);
 
 insert into auth.users (id,email) values
  ('11111111-1111-1111-1111-111111111111','f@t'),('22222222-2222-2222-2222-222222222222','a@t'),('33333333-3333-3333-3333-333333333333','b@t');
@@ -29,8 +29,8 @@ select is((select count(*)::int from information_schema.role_table_grants where 
 select ok(not has_schema_privilege('anon','finance','USAGE'),'req 14: anon has no schema USAGE [A7-004]');
 
 -- req 89: the eight partial unique indexes, by predicate
-select is((select count(*)::int from pg_indexes where schemaname='finance' and indexdef like '%UNIQUE%' and indexdef like '%WHERE%'),8,'req 89: exactly 8 partial unique indexes [A7-071]');
-select is((select count(*)::int from pg_index i join pg_class c on c.oid=i.indexrelid join pg_namespace n on n.oid=c.relnamespace where n.nspname='finance' and i.indisunique and i.indpred is not null),8,'req 89: all eight are indexes, not table constraints [A7-005]');
+select is((select count(*)::int from pg_indexes where schemaname='finance' and indexdef like '%UNIQUE%' and indexdef like '%WHERE%'),9,'req 89: exactly 9 partial unique indexes (8 of ARCHITECTURE section-15 + the section-10 stripe_events at-most-once index, D-076) [A7-071]');
+select is((select count(*)::int from pg_index i join pg_class c on c.oid=i.indexrelid join pg_namespace n on n.oid=c.relnamespace where n.nspname='finance' and i.indisunique and i.indpred is not null),9,'req 89: all nine are indexes, not table constraints [A7-005]');
 
 select finance.create_agreement('aaaaaaaa-0000-0000-0000-00000000000a','cccccccc-0000-0000-0000-00000000000c','journey_contribution','i');
 create temp table ag as select id from finance.agreements limit 1;
@@ -255,9 +255,16 @@ select denied($$ insert into finance.reconciliation_runs(livemode,implementation
 select is((select approved_by from finance.reconciliation_runs where id=(select id from dr)),'11111111-1111-1111-1111-111111111111'::uuid,'req 131: approval attribution is auth.uid() [A7-054]');
 
 -- req 100: at-most-once event scope
-select is((select count(*)::int from pg_indexes where schemaname='finance' and tablename='stripe_events' and indexdef like '%UNIQUE%'),1,'req 100: stripe_events has its primary key uniqueness only [A7-077]');
+select is((select count(*)::int from pg_indexes where schemaname='finance' and tablename='stripe_events' and indexdef like '%UNIQUE%'),2,'req 100: stripe_events carries its PK plus the section-10 terminal at-most-once index [A7-077]');
+select is((select indexdef from pg_indexes where indexname='stripe_events_terminal_at_most_once_uq'),
+  'CREATE UNIQUE INDEX stripe_events_terminal_at_most_once_uq ON finance.stripe_events USING btree (event_type, object_id, livemode) WHERE (event_type = ANY (ARRAY[''checkout.session.completed''::text, ''checkout.session.expired''::text, ''payment_intent.succeeded''::text, ''payment_intent.canceled''::text]))',
+  'req 100: the section-10 at-most-once index covers exactly the four terminal types [A7-081]');
 select lives_ok($$ insert into finance.stripe_events(event_id,event_type,object_id,livemode) values ('evt_f1','payment_intent.payment_failed','pi_same',true) $$,'req 100: first payment_failed for an object [A7-055]');
 select lives_ok($$ insert into finance.stripe_events(event_id,event_type,object_id,livemode) values ('evt_f2','payment_intent.payment_failed','pi_same',true) $$,'req 100: a second payment_failed for the SAME object is retained [A7-056]');
+-- R100 behavioural: a TERMINAL type is at-most-once per (object, livemode)
+insert into finance.stripe_events(event_id,event_type,object_id,livemode) values ('evt_t1','payment_intent.succeeded','pi_term',true);
+select denied($$ insert into finance.stripe_events(event_id,event_type,object_id,livemode) values ('evt_t2','payment_intent.succeeded','pi_term',true) $$, '23505', 'stripe_events_terminal_at_most_once_uq', 'req 100: a second terminal event for the same object+livemode is rejected [A7-082]');
+select lives_ok($$ insert into finance.stripe_events(event_id,event_type,object_id,livemode) values ('evt_t3','payment_intent.succeeded','pi_term',false) $$, 'req 100: the same terminal object in the other livemode coexists [A7-083]');
 
 -- req 108/116: generated dedup_key
 select denied($$ insert into finance.reconciliation_exceptions(kind,livemode,provider_object_id,dedup_key) values ('amount_mismatch',true,'ch_w','X') $$, '428C9', 'dedup_key', 'req 108: dedup_key cannot be supplied [A7-078]');

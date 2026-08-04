@@ -30,6 +30,7 @@ constraint:ledger_entries:ledger_entries_parent_entry_id_fkey:f:FOREIGN KEY (par
 constraint:ledger_entries:ledger_entries_pkey:p:PRIMARY KEY (id)
 constraint:ledger_entries:ledger_entries_recorded_by_fkey:f:FOREIGN KEY (recorded_by) REFERENCES auth.users(id) ON DELETE RESTRICT
 constraint:ledger_entries:ledger_invariants:t:TRIGGER
+constraint:ledger_entries:ledger_l11_offline_livemode:c:CHECK (((livemode = true) OR ((source <> 'external'::finance.ledger_source) AND (legacy_donation_id IS NULL))))
 constraint:ledger_entries:ledger_l12_attribution:c:CHECK ((((source <> 'external'::finance.ledger_source) AND (entry_type <> 'reversal'::finance.ledger_entry_type)) OR ((reason IS NOT NULL) AND (length(btrim(reason)) > 0) AND (num_nonnulls(recorded_by, recorded_by_system) = 1))))
 constraint:ledger_entries:ledger_l13_provenance:c:CHECK ((((source <> 'stripe'::finance.ledger_source) OR (external_method IS NULL)) AND ((source <> 'external'::finance.ledger_source) OR ((provider_object_id IS NULL) AND (provider_payment_intent_id IS NULL)))))
 constraint:ledger_entries:ledger_l1_stripe_payment:c:CHECK (((entry_type <> 'stripe_payment'::finance.ledger_entry_type) OR ((amount_cents > 0) AND (source = 'stripe'::finance.ledger_source) AND (provider_payment_intent_id IS NOT NULL) AND (parent_entry_id IS NULL))))
@@ -1339,6 +1340,7 @@ indexdef:reconciliation_runs_pkey:bf71957ac252de9611ec6e5a5d6c4eec
 indexdef:reconciliation_runs_resume_uq:80dfa163139a3b68f582c59e51f574af
 indexdef:reconciliation_runs_single_flight_uq:7c34eb2db1891363bb7dd4f609c47ffe
 indexdef:stripe_events_pkey:8f92ff5bdd58d8c413b77c337576fa08
+indexdef:stripe_events_terminal_at_most_once_uq:d318fbed4916ea0558108070601fb534
 policy:agreement_amounts:founder_reads_amounts:SELECT:is_founder()/-::authenticated
 policy:agreement_amounts:member_reads_own_amounts:SELECT:(EXISTS ( SELECT 1 FROM finance.agreements a WHERE ((a.id = agreement_amounts.agreement_id) AND (a.member_id = finance.current_member_id()))))/-::authenticated
 policy:agreement_amounts:service_all_amounts:ALL:true/true::service_role
@@ -1388,6 +1390,7 @@ relation:i:reconciliation_runs_pkey
 relation:i:reconciliation_runs_resume_uq
 relation:i:reconciliation_runs_single_flight_uq
 relation:i:stripe_events_pkey
+relation:i:stripe_events_terminal_at_most_once_uq
 relation:r:agreement_amounts
 relation:r:agreement_lifecycle_events
 relation:r:agreements
@@ -1423,10 +1426,11 @@ routine:tg_agreement_has_lifecycle():f:true
 routine:tg_amount_not_future():f:true
 routine:tg_append_only():f:true
 routine:tg_exception_insert_guard():f:true
+routine:tg_exception_quarantine_guard():f:false
 routine:tg_exception_resolution_guard():f:false
 routine:tg_ledger_invariants():f:true
 routine:tg_lifecycle_transition():f:true
-routine:tg_link_claim_guard():f:true
+routine:tg_link_claim_guard():f:false
 routine:tg_link_insert_guard():f:true
 routine:tg_link_revocation_terminal():f:true
 routine:tg_run_authorization():f:true
@@ -1444,6 +1448,7 @@ routinedef:tg_agreement_has_lifecycle():e4e78c6e16e81200feb957f1e8add976:v:searc
 routinedef:tg_amount_not_future():fff4f2ec49e777c722fb782ce89c9f17:v:search_path=pg_catalog, public, finance
 routinedef:tg_append_only():6e4d3623fe8151f8c1075e282e2ac32f:v:search_path=pg_catalog, public, finance
 routinedef:tg_exception_insert_guard():176d32c46fd8cd095a29671f9dca5305:v:search_path=pg_catalog, public, finance
+routinedef:tg_exception_quarantine_guard():8616cf7f0c0b44872ce59f21bb26ee78:v:search_path=pg_catalog, public, finance
 routinedef:tg_exception_resolution_guard():c580f1d062576b7c55a565a2cb5a558c:v:search_path=pg_catalog, public, finance
 routinedef:tg_ledger_invariants():1a1c13e2ebfa17b546738679aca28a50:v:search_path=pg_catalog, public, finance
 routinedef:tg_lifecycle_transition():1e91f24d3c79effecb49f12b71ad3095:v:search_path=pg_catalog, public, finance
@@ -1465,6 +1470,7 @@ trigger:payment_links:link_claim_guard
 trigger:payment_links:link_insert_guard
 trigger:payment_links:link_revocation_terminal
 trigger:reconciliation_exceptions:exception_insert_guard
+trigger:reconciliation_exceptions:exception_quarantine_guard
 trigger:reconciliation_exceptions:exception_resolution_guard
 trigger:reconciliation_runs:run_authorization
 trigger:reconciliation_runs:run_freeze_approved

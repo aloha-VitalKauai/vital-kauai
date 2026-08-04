@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap;
 \i supabase/tests/_test_helpers.sql
-select plan(71);
+select plan(74);
 
 -- fixtures
 insert into auth.users (id, email) values
@@ -93,6 +93,9 @@ select denied($$ insert into finance.ledger_entries (agreement_id,entry_type,amo
   select id,'stripe_payment',5000,'stripe',null,now(),true from ag $$, '23514', 'ledger_entries', 'test 28 (L1): stripe_payment without payment-intent id rejected [A2-055]');
 select denied($$ insert into finance.ledger_entries (agreement_id,entry_type,amount_cents,source,external_method,occurred_at,livemode,reason,recorded_by)
   select id,'external_payment',5000,'external',null,now(),true,'r','11111111-1111-1111-1111-111111111111' from ag $$, '23514', 'ledger_entries', 'test 29 (L2): external_payment without method rejected [A2-015]');
+-- R32: L12 blank reason on an EXTERNAL entry is rejected (ledger, not agreement_amounts)
+select denied($$ insert into finance.ledger_entries (agreement_id,entry_type,amount_cents,source,external_method,occurred_at,livemode,reason,recorded_by)
+  select id,'external_payment',5000,'external','cash',now(),true,'   ','11111111-1111-1111-1111-111111111111' from ag $$, '23514', 'ledger_l12_attribution', 'req 32: L12 rejects an external entry with a blank reason [A2-073]');
 select denied($$ insert into finance.ledger_entries (agreement_id,entry_type,amount_cents,source,external_method,occurred_at,livemode)
   select id,'external_payment',5000,'external','cash',now(),true from ag $$, '23514', 'ledger_entries', 'test 29 (L12): external_payment with no attribution rejected [A2-016]');
 select denied($$ insert into finance.ledger_entries (agreement_id,entry_type,amount_cents,source,provider_payment_intent_id,external_method,occurred_at,livemode)
@@ -249,5 +252,21 @@ select lives_ok($$ insert into finance.reconciliation_exceptions (kind,livemode,
   values ('amount_mismatch',true,'ch_9') $$,
   'test 120: a resolved exception does not block a fresh row for the same identity [A2-070]');
 
+-- ===== Checkpoint B review remediation: isolated fixtures (R23, R32 accept) =====
+insert into auth.users values ('66666666-6666-6666-6666-666666666666','rev@t');
+insert into public.member_profiles values ('66666666-6666-6666-6666-666666666666','rev@t');
+insert into public.members(id,profile_id,email) values ('ffffffff-0000-0000-0000-00000000000f','66666666-6666-6666-6666-666666666666','rev@t');
+insert into public.journeys(id,name) values ('eeeeeeee-2222-0000-0000-00000000000e','JR');
+select finance.create_agreement('ffffffff-0000-0000-0000-00000000000f','eeeeeeee-2222-0000-0000-00000000000e','journey_contribution','rev fixture');
+create temp table agr as select id from finance.agreements where member_id='ffffffff-0000-0000-0000-00000000000f';
+insert into finance.agreement_amounts(agreement_id,amount_cents,effective_at,reason,actor_id) select id,100000,now()-interval '2 hour','base','11111111-1111-1111-1111-111111111111' from agr;
+insert into finance.agreement_amounts(agreement_id,amount_cents,effective_at,reason,actor_id) select id,250000,now()-interval '1 hour','mid','11111111-1111-1111-1111-111111111111' from agr;
+-- R23: an EARLIER effective_at recorded with the HIGHEST seq must still LOSE.
+insert into finance.agreement_amounts(agreement_id,amount_cents,effective_at,reason,actor_id) select id,999000,now()-interval '3 hour','earlier date latest seq','11111111-1111-1111-1111-111111111111' from agr;
+select is((select contribution_cents from finance.v_agreement_balances where agreement_id=(select id from agr)), 250000::bigint,
+  'req 23: an earlier effective_at recorded with the highest seq still loses -- effective_at DESC dominates seq [A2-072]');
+-- R32: a stripe_payment is accepted with provider_object_id NULL (only the intent id is required).
+select lives_ok($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode) select id,'stripe_payment',4000,'stripe',null,'pi_noobj',now(),true from agr $$,
+  'req 32: a stripe_payment with a NULL provider_object_id is accepted [A2-074]');
 select * from finish();
 rollback;

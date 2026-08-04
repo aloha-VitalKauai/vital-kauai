@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap;
 \i supabase/tests/_test_helpers.sql
-select plan(95);
+select plan(98);
 
 insert into auth.users (id,email) values
   ('11111111-1111-1111-1111-111111111111','f@t'),('22222222-2222-2222-2222-222222222222','m@t');
@@ -188,6 +188,10 @@ select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amou
 select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,parent_entry_id,occurred_at,livemode,reason,recorded_by) select a.id,'refund',-50,'external',p.id,now(),true,'r','11111111-1111-1111-1111-111111111111' from ag a, (select id from finance.ledger_entries where entry_type='stripe_payment' limit 1) p $$, '23514', 'ledger_entries', 'req 30 (L3): an external refund without external_method is rejected [A4-061]');
 -- R31: NULL origin_stripe_event_id is accepted
 select lives_ok($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode,origin_stripe_event_id) select id,'stripe_payment',77,'stripe','ch_no','pi_no',now(),true,null from ag $$, 'req 31 (L11): a NULL origin_stripe_event_id is accepted [A4-062]');
+-- R31 fix: external and imported money must be livemode=true (ledger_l11_offline_livemode)
+select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,external_method,occurred_at,livemode,reason,recorded_by) select id,'external_payment',5000,'external','cash',now(),false,'test-mode external?','11111111-1111-1111-1111-111111111111' from ag $$, '23514', 'ledger_l11_offline_livemode', 'req 31: an external payment cannot be livemode=false -- real money would drop from canonical balances [A4-096]');
+select denied($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode,legacy_donation_id) select id,'stripe_payment',5000,'stripe','ch_imp','pi_imp',now(),false,'aaaaaaaa-bbbb-4ccc-8ddd-000000000009'::uuid from ag $$, '23514', 'ledger_l11_offline_livemode', 'req 31: imported historic money (legacy_donation_id) cannot be livemode=false [A4-097]');
+select lives_ok($$ insert into finance.ledger_entries(agreement_id,entry_type,amount_cents,source,provider_object_id,provider_payment_intent_id,occurred_at,livemode) select id,'stripe_payment',12,'stripe','ch_tm','pi_tm',now(),false from ag $$, 'req 31: a genuine Stripe test-mode entry is still allowed at livemode=false [A4-098]');
 -- R33 uniqueness
 insert into finance.checkout_sessions(agreement_id,idempotency_key,amount_cents,livemode,expires_at,status,stripe_session_id) select id,'k_b2',100,true,now()+interval '1 hour','open','cs_b2' from ag;
 select denied($$ insert into finance.checkout_sessions(agreement_id,idempotency_key,amount_cents,livemode,expires_at,status,stripe_session_id) select id,'k_b2x',100,true,now()+interval '1 hour','open','cs_b2' from ag $$, '23505', 'checkout_sessions_stripe_session_id_key', 'req 33: duplicate stripe_session_id is rejected [A4-063]');

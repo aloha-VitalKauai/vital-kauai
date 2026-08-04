@@ -529,3 +529,32 @@ A15-060 | 15_identity_freeze.sql | req 121: no application role holds CREATE in 
 A15-061 | 15_identity_freeze.sql | req 38/121-family: the claim guard compares expiry to clock_timestamp, so a long transaction cannot admit an expired claim
 A15-062 | 15_identity_freeze.sql | req 133: parent first, then its initial draft event, satisfies the deferred check in one transaction
 A15-063 | 15_identity_freeze.sql | req 133: a direct-import parent without its event fails at the constraint boundary
+A7-081 | 07_completion.sql | req 100: the section-10 at-most-once index covers exactly the four terminal types
+A2-073 | 02_behaviour.sql | req 32: L12 rejects an external entry with a blank reason
+A2-072 | 02_behaviour.sql | req 23: an earlier effective_at recorded with the highest seq still loses -- effective_at DESC dominates seq
+A2-074 | 02_behaviour.sql | req 32: a stripe_payment with a NULL provider_object_id is accepted
+A4-096 | 04_coverage.sql | req 31: an external payment cannot be livemode=false -- real money would drop from canonical balances
+A4-097 | 04_coverage.sql | req 31: imported historic money (legacy_donation_id) cannot be livemode=false
+A4-098 | 04_coverage.sql | req 31: a genuine Stripe test-mode entry is still allowed at livemode=false
+A7-082 | 07_completion.sql | req 100: a second terminal event for the same object+livemode is rejected
+A7-083 | 07_completion.sql | req 100: the same terminal object in the other livemode coexists
+A16-001 | 16_review_remediation.sql | req 133b: the lifecycle->agreement FK is non-deferrable
+A16-002 | 16_review_remediation.sql | req 108: a direct UPDATE cannot override the generated dedup_key
+A16-003 | 16_review_remediation.sql | req 109: equal non-null quarantine and release timestamps are rejected
+A16-004 | 16_review_remediation.sql | req 114: the stored approval_note equals the supplied text
+A16-005 | 16_review_remediation.sql | req 128: service_role inserts a normal unapproved run using only its granted columns (status/window_exhausted default)
+A16-006 | 16_review_remediation.sql | req 38: the claim path (WHERE status=active) matches zero rows for an already-creating link
+A16-007 | 16_review_remediation.sql | req 67: the paid state is produced
+A16-008 | 16_review_remediation.sql | req 67: the partial state is produced
+A16-009 | 16_review_remediation.sql | req 22: cancelling the agreement leaves payment_state unchanged
+A16-010 | 16_review_remediation.sql | req 61: payable_remaining_cents is NULL when contribution_applies is false
+A16-011 | 16_review_remediation.sql | req 79: the dedup upsert leaves first_detected_at unchanged
+A16-012 | 16_review_remediation.sql | req 79: the upsert raises occurrence_count
+A16-013 | 16_review_remediation.sql | req 94: a dry run with non-zero exceptions_reopened is rejected
+A16-014 | 16_review_remediation.sql | req 95: report_completed_at without the four report columns is rejected
+A16-015 | 16_review_remediation.sql | req 95: missing would_create_count alone is rejected
+A16-016 | 16_review_remediation.sql | req 95: missing would_reopen_count alone is rejected
+A16-017 | 16_review_remediation.sql | req 95: missing prospective_by_kind alone is rejected
+A16-018 | 16_review_remediation.sql | req 95: missing report_version alone is rejected
+A16-019 | 16_review_remediation.sql | req 110: a RESOLVED row cannot be quarantined
+A16-020 | 16_review_remediation.sql | req 129: approved_by alone at INSERT is rejected

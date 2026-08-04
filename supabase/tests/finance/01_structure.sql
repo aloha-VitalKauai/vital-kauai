@@ -47,8 +47,8 @@ select ok((select bool_and(l = any(array['running','partial','completed','failed
 
 -- 8 partial unique indexes
 select is((select count(*)::int from pg_indexes where schemaname='finance'
-           and indexdef like '%UNIQUE%' and indexdef like '%WHERE%'), 8,
-          'exactly 8 partial unique indexes [A1-031]');
+           and indexdef like '%UNIQUE%' and indexdef like '%WHERE%'), 9,
+          'exactly 9 partial unique indexes (8 of section-15 + the section-10 stripe_events at-most-once index, D-076) [A1-031]');
 
 -- RLS enabled AND forced on all nine
 select is((select count(*)::int from pg_class c join pg_namespace n on n.oid=c.relnamespace

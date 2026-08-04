@@ -16,6 +16,7 @@
  "supabase/tests/finance/12_isolation_posture.sql",
  "supabase/tests/finance/13_run_matrix.sql",
  "supabase/tests/finance/15_identity_freeze.sql",
+ "supabase/tests/finance/16_review_remediation.sql",
  "supabase/tests/harness_gate.sh",
  "supabase/tests/list_migrations.sh",
  "supabase/tests/map_verify.sh",

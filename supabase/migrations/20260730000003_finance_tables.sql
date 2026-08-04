@@ -118,6 +118,12 @@ create table finance.ledger_entries (
   -- all -- a parentless reversal was accepted and the L4 exact-negation trigger
   -- never fired because it keys off the parent. Sign is deliberately NOT
   -- constrained here: a reversal of a refund is positive.
+  -- L11 (R31 fix, found in Checkpoint B semantic review): external payments and
+  -- imported historic money are livemode=true; only genuine Stripe test-mode
+  -- entries may be livemode=false. Without this, founder-recorded real money
+  -- inserted as livemode=false silently drops out of every canonical balance.
+  constraint ledger_l11_offline_livemode
+    check (livemode = true or (source <> 'external' and legacy_donation_id is null)),
   constraint ledger_l4_reversal
     check (entry_type <> 'reversal' or parent_entry_id is not null),
   constraint ledger_l12_attribution check (

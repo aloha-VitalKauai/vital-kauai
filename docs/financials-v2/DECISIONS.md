@@ -855,3 +855,31 @@ of the removed GUC confers nothing; state is unchanged after every denied write;
 and the trigger admits only the owner identity. `sabotage.sh` flips the trigger function to `SECURITY DEFINER` and the gate must fail. `sabotage.sh` additionally
 removes the trigger and widens the grant, and the gate must fail in both cases.
 
+
+## D-076 — The ARCHITECTURE §10 at-most-once index is created (9th partial unique index)
+
+**Decision.** ARCHITECTURE §10 mandates a partial unique index on
+`finance.stripe_events (event_type, object_id, livemode)` restricted to the four
+terminal event types (`checkout.session.completed/expired`,
+`payment_intent.succeeded/canceled`), but §15's inventory listed exactly eight
+indexes (none on `stripe_events`) and requirement 89 asserted "all eight" — an
+internal contradiction the Checkpoint B semantic review surfaced. Resolved by
+**creating the index** (migration 0004). Requirement 89 now reads "nine",
+requirement 100 cites the real index, and the prior assertion that
+`stripe_events` carries PK-only ([A7-077]) is rewritten to expect PK + this
+index. Enforces at-most-once for terminal Stripe events at the database layer
+before PR 3 ingestion, rather than relying solely on application dedup.
+
+**Also recorded here (Checkpoint B review remediations):**
+- **R31 / L11 defect** — `ledger_l11_offline_livemode` CHECK added: external
+  payments and imported money (`legacy_donation_id` present) must be
+  `livemode = true`; only genuine Stripe test-mode entries may be
+  `livemode = false`. Without it, founder-recorded real money entered as
+  `livemode = false` silently dropped out of every canonical balance.
+- **Quarantine/release identity guard** — `tg_exception_quarantine_guard`
+  (SECURITY INVOKER, owner via exact `regprocedure`) added so the
+  quarantine/release columns have the same D-075 execution-identity boundary as
+  the resolution columns; a future table-wide GRANT can no longer let an
+  application role forge a below-threshold quarantine directly.
+- **`tg_link_claim_guard` → SECURITY INVOKER** — it makes no identity comparison
+  and reads no other table, so DEFINER was pointless privilege.

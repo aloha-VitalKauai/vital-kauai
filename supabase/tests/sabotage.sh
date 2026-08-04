@@ -191,5 +191,11 @@ case_run "39. quarantine threshold lowered to zero" \
   "perl -0pi -e 's/if e.consecutive_failure_runs < 3 then/if e.consecutive_failure_runs < 0 then/' supabase/migrations/20260730000006_finance_functions.sql"
 case_run "40. re-resolution permitted" \
   "perl -0pi -e \"s/raise exception 'resolve_exception: exception % is already %', p_exception_id, e.resolution_status;/null;/\" supabase/migrations/20260730000006_finance_functions.sql"
+case_run "41. R31 offline-livemode CHECK relaxed" \
+  "perl -0pi -e 's/check \\(livemode = true or \\(source <> .external. and legacy_donation_id is null\\)\\)/check (true)/' supabase/migrations/20260730000003_finance_tables.sql"
+case_run "42. R100 stripe_events at-most-once index removed" \
+  "perl -0pi -e 's/create unique index stripe_events_terminal_at_most_once_uq[^;]*;//s' supabase/migrations/20260730000004_finance_indexes.sql"
+case_run "43. quarantine identity guard removed" \
+  "perl -0pi -e 's/create trigger exception_quarantine_guard\n  before update on finance.reconciliation_exceptions\n  for each row execute function finance.tg_exception_quarantine_guard\(\);//' supabase/migrations/20260730000005_finance_triggers.sql"
 echo "== sabotage: killed=$pass failed=$fail =="
 [ "$fail" -eq 0 ]
