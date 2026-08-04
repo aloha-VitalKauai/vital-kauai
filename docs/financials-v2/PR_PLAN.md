@@ -230,7 +230,7 @@ All of the following must pass through automated database tests before PR 1 open
 67. `payment_state` returns exactly one deterministic value for every row of the reachable-state table in ARCHITECTURE §8.
 68. `livemode = false` entries are excluded from canonical balances and appear only in the founder-only test view.
 69. *(reviewer check, not pgTAP)* Aggregate views derive from `v_agreement_balances` and contain no independent financial formula.
-70. *(reviewer check for the first clause)* `v_agreement_lifecycle` is the only expression of current lifecycle; that lifecycle never affects a balance column **is** asserted in pgTAP.
+70. **`v_agreement_lifecycle` is the single consumer projection of current lifecycle** — every application, reporting, view and function read resolves through it. Exactly one internal enforcement derivation is permitted, `finance.tg_lifecycle_transition()`, which must use identical ordering and tie-breaking (`occurred_at DESC, seq DESC`); an allowlist check fails if any third object derives it (D-074). That lifecycle never affects a balance column is asserted in pgTAP.
 
 ### Newly specified surfaces
 71. `finance.create_agreement()` raises for a non-founder, raises on blank reason, creates the agreement and its initial `draft` lifecycle event in one transaction, and raises rather than returning silently on a duplicate `(member_id, journey_id, purpose)`.
@@ -250,12 +250,12 @@ All of the following must pass through automated database tests before PR 1 open
 81. The same `dedup_key` in different `livemode` yields two independent rows.
 82. `last_detected_at >= first_detected_at` is enforced.
 83. **`finished_at` consistency** — a `running` row with `finished_at` set is rejected, and any non-`running` row without it is rejected.
-84. **`window_exhausted` biconditional** — every one of the five statuses is tested in both flag states. Only `completed` may carry `true`, and `completed` may not carry `false`; all eight other combinations are rejected.
+84. **`window_exhausted` biconditional** — every one of the five statuses is tested in both flag states: **10 combinations, 5 valid and 5 rejected**. Valid are `completed`+`true` and each of `running`, `partial`, `failed`, `abandoned` with `false`; rejected are `completed`+`false` and each of the other four with `true`.
 85. **Resume lineage** — `resumed_from_run_id` may reference a `partial`, `failed` or `abandoned` run; referencing a `running` or `completed` run is rejected; self-reference is rejected; a second run resuming the same predecessor is rejected.
 86. **Approval constraints** — a `dry_run = false` row without `authorized_by_run_id` is rejected; a `dry_run = true` row *with* one is rejected; `approved_by` and `approved_at` must be set together.
 87. **Quarantine constraints** — `quarantined_at`/`quarantine_reason` set together; `released_at`/`released_by` set together; a release without a prior quarantine is rejected; `consecutive_failure_runs` may not go negative; **`quarantined_at` is never cleared by any permitted operation**.
 88. **Approval and release are founder-only** — `service_role` cannot write `approved_by`/`approved_at` and holds no `EXECUTE` on `finance.release_quarantine()`; a founder can approve and can release through the function.
-89. **All eight partial unique indexes exist** with exactly the predicates listed in ARCHITECTURE §15, and each is an index rather than a table constraint.
+89. **All nine partial unique indexes exist** (the eight of ARCHITECTURE section-15 plus the section-10 stripe_events terminal at-most-once index; see D-076) with exactly the predicates listed in ARCHITECTURE §15, and each is an index rather than a table constraint.
 90. **`public.is_founder()` is hardened** — after PR 1's migration its `proconfig` includes `search_path`, and its signature is `is_founder() RETURNS boolean`, `SECURITY DEFINER`.
 91. **Column-scoped grants prove both directions** — every `UPDATE` the reconciliation job legitimately performs succeeds as `service_role`, and every column outside its granted list is rejected.
 92. **Quarantine cycle is executable** — quarantine, release via `finance.release_quarantine()`, normal processing, a second quarantine and a second release all succeed in sequence. After each release `released_at > quarantined_at`; after each re-quarantine `quarantined_at > released_at`. No step violates a `CHECK`.
@@ -291,7 +291,9 @@ All of the following must pass through automated database tests before PR 1 open
 118. **`resolve_exception()` attribution cannot be spoofed** — the function takes no actor or timestamp parameter; the stored `resolved_by` equals `auth.uid()` and `resolved_at` is the call time; a non-founder call raises.
 119. **`resolve_exception()` preconditions** — a blank or whitespace-only note raises; a target of `open` raises; a second call on an already-resolved or dismissed row raises; changing `resolved` to `dismissed` raises.
 120. **Resolution wins over quarantine** — an actively quarantined row resolves successfully, leaves `open`, and is no longer covered by the open-row unique index, so a later recurrence inserts a fresh row with `consecutive_failure_runs = 0`.
-121. **No direct resolution write** — `UPDATE` on `resolution_status`, `resolved_at`, `resolved_by` or `resolution_note` is rejected for **every** role, founder and `service_role` alike.
+121. **No direct resolution write** — `UPDATE` on `resolution_status`, `resolved_at`, `resolved_by` or `resolution_note` is rejected for **every application role**: `anon`, `authenticated` (founder included) and `service_role` alike. The sole path is `finance.resolve_exception()`.
+
+    The migration owner (`postgres` in production) is an explicit **trusted administrative boundary**, not a hole: PostgreSQL cannot fence an object's owner or a superuser out of its own table, and `SECURITY DEFINER` requires a trusted owner to exist. The requirement is therefore stated against application roles, and the boundary is enforced by execution identity — never by a caller-settable session variable. No application role can reach the owner identity. See D-075.
 122. **`release_note` is separate from `resolution_note`** — `finance.release_quarantine()` writes `release_note` and leaves `resolution_note` untouched.
 
 ### `INSERT`-time protection of guarded transitions

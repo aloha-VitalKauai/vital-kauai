@@ -493,7 +493,7 @@ Append-only, like the ledger it governs. Decisions are superseded by new entries
 ---
 
 ## D-045 — `partial` is a distinct run status; only `completed` advances the watermark
-**Date:** 2026-07-29 · **Status:** Approved · **Corrects rule 18 of D-043** · **Constraint form tightened by D-055**
+**Date:** 2026-07-29 · **Status:** Approved · **Corrects rule 18 of D-043** · **Constraint form tightened by D-055** · **Enum inventory reconciled by D-072**
 
 **Decision.** `finance.run_status` gains `partial`. A run stopping at a work ceiling ends `partial` with `window_exhausted = false`; its successor inherits the identical window and cursor. `completed` requires every object type to have exhausted the whole window, enforced by ~~`CHECK (status <> 'completed' OR window_exhausted)`~~ **the biconditional `CHECK ((status = 'completed') = window_exhausted)` per D-055**. Only a `completed` run advances the next window's start.
 
@@ -760,3 +760,126 @@ The trigger is the load-bearing control and the grant is defence in depth, not t
 **Rationale.** D-069 claimed the two rows could be inserted "in either order". They cannot: the foreign key is non-deferrable and is therefore checked immediately, so a child-first insert fails before deferral is ever consulted, and the transition trigger separately locks and validates the parent row. What deferral actually buys is narrower and still necessary — it lets the *completeness* check wait until commit, so the agreement row is not rejected in the instant between its own insert and its event's insert. Without it the pair could not be created at all.
 
 **Consequence.** The foreign key is deliberately left non-deferrable and the transition trigger is not redesigned, because no caller needs child-first insertion and relaxing either would weaken a check to support an order nothing uses. Test 133b asserts child-first is rejected, so the distinction is enforced rather than merely described.
+
+
+---
+
+## D-072 — `finance.run_status` has five values; the §1 inventory row was stale
+**Date:** 2026-07-30 · **Status:** Approved · **Reconciles ARCHITECTURE §1 with D-045**
+
+**Decision.** `finance.run_status` is created with **five** values: `running`, `partial`, `completed`, `failed`, `abandoned`. `ARCHITECTURE.md` §1's enum inventory row is corrected to include `partial`, and `PR_PLAN.md` test 84 is corrected to state ten combinations — five valid, five rejected.
+
+**Rationale.** PR 1 could not begin because the approved specification named two different value sets for one enum. §1's inventory row listed four values while §10a's normative definition, the run-state table, D-045 and PR_PLAN test 84 all named five. The inventory row is a summary that was never updated when D-045 added `partial`; every independent normative source agrees on five.
+
+The choice was load-bearing rather than cosmetic. Without `partial`, a run stopping at a work ceiling must be recorded as `completed` — and since only a `completed` run advances the watermark (rule 1), the next window would start after everything the bounded run never reached. That is **exactly the B-46 defect**, reintroduced at the schema level by a stale documentation row.
+
+**Test 84's arithmetic was also wrong.** Five statuses across two flag states is ten combinations, not eight: valid are `completed`+`true` plus each of the other four with `false`; rejected are `completed`+`false` plus each of the other four with `true`. Eight matched neither five values (ten combinations) nor four (eight combinations, four rejected).
+
+**Consequence.** No behavioural change to the approved design — this records what D-045 already decided and removes the contradiction blocking implementation. The correction and its implementation ship atomically in PR 1.
+
+
+---
+
+## D-073 — Financial actors cannot be deleted; audit history outranks account removal
+**Date:** 2026-07-30 · **Status:** Approved
+
+**Decision.** `finance.agreements.created_by`, `agreement_amounts.actor_id`, `agreement_lifecycle_events.actor_id`, `ledger_entries.recorded_by`, `payment_links.created_by`/`revoked_by`, `reconciliation_exceptions.resolved_by`/`released_by` and `reconciliation_runs.approved_by` all reference `auth.users(id)` **`ON DELETE RESTRICT`**. Once any financial fact attributes to a user, that `auth.users` row cannot be deleted.
+
+**Rationale.** An independent review flagged that this changes existing production behaviour: Supabase account deletion and GoTrue admin delete will begin failing for any user with financial history. That is the intended outcome, not an oversight. Every one of these columns exists to answer "who did this, and when" about money. `ON DELETE CASCADE` would erase the financial record along with the account; `SET NULL` would silently strip attribution from an append-only ledger that cannot be corrected by update. Both defeat the purpose of the column.
+
+**Intended operational behaviour.** Account *deactivation* is the supported path for a departing user — revoke roles and sessions, leave the `auth.users` row in place. Hard deletion is available only for users with no financial attribution, which is the common case for members who never transacted. Where a hard delete is genuinely required for a user with history, it is a deliberate, reviewed operation: reassign or anonymise at the application layer first, with a decision entry, rather than weakening the foreign keys.
+
+**Tested.** `05_guards.sql` asserts every finance → `auth.users` FK is `RESTRICT`, that deleting an actor with financial history is refused, and that a user with no attribution still deletes normally.
+
+
+---
+
+## D-074 — Requirement 70 distinguishes consumer projection from internal enforcement
+**Date:** 2026-07-30 · **Status:** Approved · **Clarifies requirement 70**
+
+**Decision.** `finance.v_agreement_lifecycle` is the **single consumer projection** of current lifecycle: every read by application code, reporting surface, view or function resolves through it. Exactly one **internal enforcement** derivation is additionally permitted — `finance.tg_lifecycle_transition()`, named explicitly — which reads the immutable events table directly to validate `from_status`. No third implementation may exist.
+
+**Rationale.** The trigger cannot read the view. The view is `security_invoker`, so inside a `SECURITY DEFINER` trigger it would evaluate RLS as the calling member and could hide the very rows the validation depends on — a member could then drive an agreement through an illegal transition because the trigger could not see the current state. That is a strictly worse defect than the duplication, and `security_invoker` is preserved rather than weakened to accommodate it. The view is also created after the trigger in migration order.
+
+Requirement 70 as originally written ("the only expression of current lifecycle") did not distinguish these two roles, so a correct implementation could not satisfy it literally. The distinction is projection versus enforcement, not an exemption.
+
+**Constraints this places on both.** The trigger and the view **must use identical ordering and tie-breaking**: `occurred_at DESC, seq DESC`. If they diverge, enforcement and reporting disagree about the same agreement — the exact class of defect Financials V2 exists to remove. This is asserted by test, not by convention.
+
+**Enforced by allowlist.** A static check fails if any object other than `v_agreement_lifecycle` and `tg_lifecycle_transition` derives lifecycle state from `agreement_lifecycle_events`, so a third implementation cannot appear silently.
+
+## D-075 — The resolution boundary is execution identity, not a session variable
+
+**Decision.** `finance.reconciliation_exceptions.resolution_status`, `resolved_at`,
+`resolved_by` and `resolution_note` are writable only through
+`finance.resolve_exception()`. Enforcement is layered:
+
+1. no application role holds `UPDATE` on those columns, so a direct write fails
+   the privilege check (42501) before any trigger runs;
+2. `finance.tg_exception_resolution_guard()` rejects any remaining direct write
+   whose `current_user` is not the owner of `finance.resolve_exception()`. The
+   trigger function is **`SECURITY INVOKER`, deliberately**: as `SECURITY
+   DEFINER` its `current_user` would be the trusted owner for *every* caller and
+   the check would admit everyone — the first implementation had exactly that
+   bug, undetected because probes died at the privilege layer before reaching
+   the trigger. The trusted owner is resolved through the exact schema-qualified
+   signature (`to_regprocedure('finance.resolve_exception(uuid,
+   finance.exception_resolution, text)')`), so an overload or similarly named
+   function cannot change which owner is trusted;
+3. `finance.resolve_exception()` is `SECURITY DEFINER`, founder-gated, owned by
+   the migration owner, with `search_path` pinned to `pg_catalog, public, finance`.
+
+**Rejected alternative.** An earlier implementation gated the trigger on a
+transaction-local GUC that `resolve_exception()` set. It was removed before
+merge: any caller could set that GUC and write directly, so it was a documented
+bypass rather than a boundary. No GUC gates any finance guard.
+
+**Trusted administrative boundary.** Requirement 121 originally read "every
+role". PostgreSQL cannot exclude a table's owner or a superuser from that table,
+and `SECURITY DEFINER` presupposes a trusted owner. The requirement is therefore
+scoped to application roles, and the owner is named as the administrative
+boundary. Application roles must never be granted that identity, and no
+application code path runs as it.
+
+**Privileges are additive.** The column REVOKEs pin today's ACL; PostgreSQL has
+no negative ACL, so a later table-wide `GRANT UPDATE` would re-confer the four
+columns despite them. The durable protections are the identity trigger and the
+gate: the behavioural suite widens the grant to `service_role` inside a
+rolled-back transaction and proves the write then *reaches the trigger* and is
+rejected by identity — so removing the trigger, or flipping it to
+`SECURITY DEFINER`, fails the build even in a future where the ACL has drifted.
+
+**How this is proven.** `07_completion.sql` asserts: founder succeeds through the
+function; a non-founder is denied through the function; a founder's direct
+`UPDATE` is denied; `service_role`'s direct `UPDATE` is denied; setting the name
+of the removed GUC confers nothing; state is unchanged after every denied write;
+and the trigger admits only the owner identity. `sabotage.sh` flips the trigger function to `SECURITY DEFINER` and the gate must fail. `sabotage.sh` additionally
+removes the trigger and widens the grant, and the gate must fail in both cases.
+
+
+## D-076 — The ARCHITECTURE §10 at-most-once index is created (9th partial unique index)
+
+**Decision.** ARCHITECTURE §10 mandates a partial unique index on
+`finance.stripe_events (event_type, object_id, livemode)` restricted to the four
+terminal event types (`checkout.session.completed/expired`,
+`payment_intent.succeeded/canceled`), but §15's inventory listed exactly eight
+indexes (none on `stripe_events`) and requirement 89 asserted "all eight" — an
+internal contradiction the Checkpoint B semantic review surfaced. Resolved by
+**creating the index** (migration 0004). Requirement 89 now reads "nine",
+requirement 100 cites the real index, and the prior assertion that
+`stripe_events` carries PK-only ([A7-077]) is rewritten to expect PK + this
+index. Enforces at-most-once for terminal Stripe events at the database layer
+before PR 3 ingestion, rather than relying solely on application dedup.
+
+**Also recorded here (Checkpoint B review remediations):**
+- **R31 / L11 defect** — `ledger_l11_offline_livemode` CHECK added: external
+  payments and imported money (`legacy_donation_id` present) must be
+  `livemode = true`; only genuine Stripe test-mode entries may be
+  `livemode = false`. Without it, founder-recorded real money entered as
+  `livemode = false` silently dropped out of every canonical balance.
+- **Quarantine/release identity guard** — `tg_exception_quarantine_guard`
+  (SECURITY INVOKER, owner via exact `regprocedure`) added so the
+  quarantine/release columns have the same D-075 execution-identity boundary as
+  the resolution columns; a future table-wide GRANT can no longer let an
+  application role forge a below-threshold quarantine directly.
+- **`tg_link_claim_guard` → SECURITY INVOKER** — it makes no identity comparison
+  and reads no other table, so DEFINER was pointless privilege.

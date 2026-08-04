@@ -7,32 +7,83 @@
 
 ## Current status
 
-**Phase:** PR 0 — architecture and project-control documents.
+**Phase:** PR 1 — `finance` schema foundation.
+
+**Remediation round 2 (post-BLOCK at `eaab168`).** The prior review found the
+test system reported confidence it had not earned. Corrected:
+
+- **Migration atomicity.** Every migration is explicitly transactional. The
+  `ALTER FUNCTION` in 0001 previously autocommitted *before* its own
+  verification block, so the safety mechanism produced the outage it claimed to
+  prevent and then reported "Migration rolled back" falsely.
+  `atomicity_sim.sh` reproduces the exact production scenario and proves the
+  migration now fails with `proconfig` unchanged and `is_founder()` still working.
+- **Coverage rebuilt.** `coverage_map.py` (which counted a bare comment) is
+  deleted. `coverage_verify.py` parses **executed** TAP/static/concurrency
+  results against a manifest of named assertions. Self-tested: an empty results
+  file and a comments-only file both report **0/140**, and a failing assertion
+  is reported as failing, not covered.
+- **`payment_links` enforcement.** Column-scoped INSERT, a creation-time guard,
+  and revocation/consumption terminality. `service_role` could previously insert
+  a link already `revoked` with forged attribution, and un-revoke one.
+- **Mutation testing.** 13 safeguards; a safeguard is not covered unless removing
+  it breaks a test. First run had **5 survivors**; all now killed.
+- **Suites are gating.** `|| true` removed; `08_no_placeholders.sh` fails on
+  `pass()`, `WHERE false`, tautological checks or suppressed suites.
 **State:** **PR 0 is not approved.** Documents written and revised across fifteen review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), a first external review of PR #838 (7 findings, B-3 … B-9), a clean-context re-verification (1 blocker, 6 minors), a second external review (6 findings, B-10 … B-15), a third external review at the Stripe boundary (6 findings, B-16 … B-21), a PR 1 executability review (9 blockers, 8 minors — B-22 … B-30), an operational readiness review (7 blockers, 6 minors — **zero of twenty operational points defined**, B-31 … B-43), an independent review returning **BLOCK** on the reconciliation state machine (B-44 … B-51), a second **BLOCK** on executability of that machine (B-52 … B-57), a third **BLOCK** on transition integrity and enforcement (B-58 … B-62), a fourth **BLOCK** on constraint and platform executability (B-63 … B-66), a fifth **BLOCK** on structural enforcement and resolution attribution (B-67 … B-68), and a sixth **BLOCK** on `INSERT`-time bypass of function-guarded transitions (B-69 … B-70, plus B-71 found by the audit they prompted), and a seventh **BLOCK** on two unsatisfiable specifications (B-72 … B-73). All resolved. Awaiting independent re-review.
 
 The clean-context pass caught a defect introduced by the B-7 fix itself: L12 originally defined "provider-originated" as `source='stripe' AND provider_object_id IS NOT NULL`, which contradicted L1 and D-020 — a Stripe payment imported without a charge-object id would have demanded a human actor that no document assigned. L12 now keys on `source` alone.
 
 | PR | Outcome | State |
 |---|---|---|
-| 0 | Architecture and project-control documents | **In review** |
-| 1 | `finance` schema foundation | Blocked — **B-2 only** (B-1 closed by D-038) |
+| 0 | Architecture and project-control documents | **Merged** — `aa32694`, approved after 15 review passes |
+| 1 | `finance` schema foundation | **In review** — draft PR, 143 assertions passing on a fresh database |
 | 2–9 | See [PR_PLAN.md](PR_PLAN.md) | Not started |
 
 ## Next action
 
-Independent reviewer confirms the PR 0 documents contain **no unresolved contradiction in the financial model**. PR 1 does not begin until that confirmation is recorded here.
+Independent review of PR 1. PR 2 does not begin until PR 1 is approved and merged.
+
+### PR 1 status
+
+All schema objects exist and are verified from the database catalogs on a fresh database: **13 enums, 9 tables, 5 views, 8 partial unique indexes, 6 functions, 11 triggers**, RLS enabled *and* forced on all nine tables, and **zero** `SECURITY DEFINER` functions without a pinned `search_path`.
+
+**143 pgTAP assertions pass, 0 fail**, after a complete `dropdb`/`createdb` reset. Two real defects were found by these tests and fixed before commit — see the PR description.
+
+**B-74 is closed.** True multi-session concurrency tests are implemented in `supabase/tests/concurrency.sh`, driving two persistent psql sessions through FIFOs so statements interleave deterministically. They demonstrate actual locking outcomes rather than inspecting for `FOR UPDATE`. **11 assertions, all passing**, covering requirements 21, 35, 37, 50 and 101.
+
+**A correction to the earlier B-74 wording:** it named requirements 21, 35, 42, 48, 101. Two of those were wrong — **42** is `anon` privileges, not concurrency, and **48** is sequential (its concurrent counterpart is **50**). The genuinely concurrent requirements are **21, 35, 37, 50, 101**, and those are what is now tested.
+
+**Remaining gap, disclosed rather than hidden:** a script (`supabase/tests/coverage_map.py`) maps all 140 numbered requirements to test tags. **93 have executable coverage; 47 do not.** Those 47 are listed by the script and must be closed before PR 1 merges — tracked as **B-75**.
+
+**Environment:** local PostgreSQL **17.10**; production is **17.6**. Same major version, different minor. Nothing was applied to production.
 
 ## Blockers
 
-**B-2 is the only remaining blocker.** B-1 is closed.
+**B-1 and B-2 are both closed.** PR 0 was approved and merged at `aa32694`.
 
 ### B-1 — CLOSED by live evidence (D-038)
 Verified read-only against `Vital-Kauai-prod` on 2026-07-29. `uq_members_profile_id` **already exists** (`UNIQUE (profile_id) WHERE profile_id IS NOT NULL`); 0 duplicate groups; 0 rows with `profile_id IS NULL`; **2 of 17 rows with `id <> profile_id`**; PostgreSQL 17.6. `finance.current_member_id()` is single-valued today and **PR 1 adds no index**.
 
 The two divergent rows validate D-015 against production: 12% of members would silently return no financial data under a `member_id = auth.uid()` policy.
 
-### B-2 — PR 0 review not yet complete (blocks PR 1)
-Per the working agreement, implementation waits on reviewer confirmation that the documents contain no unresolved contradiction in the financial model. **PR 0 is explicitly not approved.**
+### B-2 — CLOSED
+Independent review returned APPROVE at `86a767a`; PR #838 merged as `aa32694`.
+
+### B-74 — CLOSED
+True multi-session concurrency tests implemented and passing (11 assertions) for requirements 21, 35, 37, 50 and 101. The earlier list wrongly named 42 and 48; corrected above.
+
+### B-77 — CLOSED
+Resolved by **D-074**, which distinguishes the single consumer projection (`v_agreement_lifecycle`) from exactly one named internal enforcement derivation (`tg_lifecycle_transition`). `security_invoker` is preserved on the view. Both derivations are asserted to use identical `occurred_at DESC, seq DESC` ordering, and a static allowlist fails if any third object derives lifecycle state. Requirement 70 is amended accordingly.
+
+
+### B-75 — CLOSED
+Executable coverage is **140/140**, script-verified by `supabase/tests/coverage_map.py`. Raised from 93 by writing real assertions, not relabelling. The two `pass()` placeholders and one hardcoded `true` static check that briefly stood in for requirements 96, 97 and 1/3 were **replaced with real assertions**, and the missing launch-authorization trigger they were standing in for was implemented.
+
+
+### B-76 — CLOSED
+Read-only production inspection completed 2026-07-30 against `Vital-Kauai-prod`. PostgreSQL **17.6**; **zero** `finance` schema objects or types (no collision); `is_founder() returns boolean`, `SECURITY DEFINER`, `STABLE`, `proconfig NOT_SET`, owner `postgres`; `members.id`/`members.profile_id`/`journeys.id`/`auth.users.id` all `uuid`; `uq_members_profile_id` present; roles `anon, authenticated, postgres, service_role, supabase_admin`; `members` owned by `postgres` and migrations run as `postgres`. Nothing was applied.
+
 
 ### B-72 … B-73 — Seventh independent BLOCK: two unsatisfiable specifications (resolved, pending re-review)
 
@@ -221,7 +272,7 @@ Noticed during audit or design, deliberately not folded into any current PR.
 
 ## Decisions carried forward
 
-D-001 … D-071 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**, whose recovery mechanism is in turn **corrected by D-028**. **D-026's system-actor mechanism is corrected by D-032.** **D-028 is refined by D-035**, **D-029 by D-034**, **D-013's founder-predicate clause is superseded by D-037**, **D-043's rules 10, 17 and 18 are corrected by D-048, D-050 and D-045**, **D-047's release mechanism by D-051**, **D-050 by D-052**, **D-045 tightened by D-055**, **D-043's event list by D-056**, **D-051's timestamp mechanism by D-057**, **D-050 fully superseded by D-052 and D-059**, **D-040/D-054 tightened by D-061**, **D-057's backstop corrected by D-062 and preconditions added by D-064**, **D-061's expression corrected by D-063**, **D-059 completed by D-065**, **D-063 made structurally enforced by D-066**, **D-059/D-064/D-067 completed at the `INSERT` boundary by D-068**, **D-068's predicate corrected by D-070**, and **D-069's insertion order corrected by D-071**. No decision is open. See [DECISIONS.md](DECISIONS.md).
+D-001 … D-074 recorded. **D-014 is resolved by D-015.** **D-008's ordering clause is superseded by D-022**; its remaining clauses stand. **D-011's single-transaction mechanism is superseded by D-024**, whose recovery mechanism is in turn **corrected by D-028**. **D-026's system-actor mechanism is corrected by D-032.** **D-028 is refined by D-035**, **D-029 by D-034**, **D-013's founder-predicate clause is superseded by D-037**, **D-043's rules 10, 17 and 18 are corrected by D-048, D-050 and D-045**, **D-047's release mechanism by D-051**, **D-050 by D-052**, **D-045 tightened by D-055**, **D-043's event list by D-056**, **D-051's timestamp mechanism by D-057**, **D-050 fully superseded by D-052 and D-059**, **D-040/D-054 tightened by D-061**, **D-057's backstop corrected by D-062 and preconditions added by D-064**, **D-061's expression corrected by D-063**, **D-059 completed by D-065**, **D-063 made structurally enforced by D-066**, **D-059/D-064/D-067 completed at the `INSERT` boundary by D-068**, **D-068's predicate corrected by D-070**, and **D-069's insertion order corrected by D-071**. No decision is open. See [DECISIONS.md](DECISIONS.md).
 
 ## Working agreement
 

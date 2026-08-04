@@ -1,0 +1,539 @@
+-- Financials V2 PR 1 — triggers.
+-- Append-only enforcement, lifecycle transitions, ledger invariants L3b/L4/L6/L7/L11,
+-- amendment dating, INSERT-time protection of guarded transitions, and the
+-- deferred agreement-completeness check.
+
+-- ---------------------------------------------------------------- append-only
+-- Fires regardless of role, so it holds for service_role and any future role.
+
+-- Explicitly transactional: a failure anywhere below leaves the database
+-- exactly as it was. Migration 0001 in particular MUST be atomic -- its
+-- verification block is worthless if the ALTER has already autocommitted.
+begin;
+
+create function finance.tg_append_only() returns trigger
+  language plpgsql security definer set search_path = pg_catalog, public, finance as $$
+begin
+  raise exception '% on % is forbidden: % is an append-only fact table',
+    tg_op, tg_table_name, tg_table_name;
+end $$;
+
+create trigger append_only before update or delete on finance.ledger_entries
+  for each row execute function finance.tg_append_only();
+create trigger append_only before update or delete on finance.agreement_amounts
+  for each row execute function finance.tg_append_only();
+create trigger append_only before update or delete on finance.agreement_lifecycle_events
+  for each row execute function finance.tg_append_only();
+
+-- Agreements are insert-only (§1).
+create trigger agreements_insert_only before update or delete on finance.agreements
+  for each row execute function finance.tg_append_only();
+
+-- ------------------------------------------------- amendments are not future-dated
+create function finance.tg_amount_not_future() returns trigger
+  language plpgsql security definer set search_path = pg_catalog, public, finance as $$
+begin
+  if new.effective_at > now() then
+    raise exception 'future-dated amendment rejected: effective_at % is after now()',
+      new.effective_at;
+  end if;
+  return new;
+end $$;
+
+create trigger amount_not_future before insert on finance.agreement_amounts
+  for each row execute function finance.tg_amount_not_future();
+
+-- ------------------------------------------------------- lifecycle transitions
+create function finance.tg_lifecycle_transition() returns trigger
+  language plpgsql security definer set search_path = pg_catalog, public, finance as $$
+declare
+  v_current finance.agreement_lifecycle;
+begin
+  -- Lock the parent agreement so two concurrent transitions serialise.
+  perform 1 from finance.agreements where id = new.agreement_id for update;
+  if not found then
+    raise exception 'agreement % does not exist', new.agreement_id;
+  end if;
+
+  select e.to_status into v_current
+  from finance.agreement_lifecycle_events e
+  where e.agreement_id = new.agreement_id
+  order by e.occurred_at desc, e.seq desc
+  limit 1;
+
+  if new.from_status is null then
+    if v_current is not null then
+      raise exception 'agreement % already has an initial lifecycle event', new.agreement_id;
+    end if;
+    if new.to_status <> 'draft' then
+      raise exception 'initial lifecycle event must be draft, got %', new.to_status;
+    end if;
+    return new;
+  end if;
+
+  if v_current is null then
+    raise exception 'agreement % has no lifecycle: first event must be the initial draft event',
+      new.agreement_id;
+  end if;
+  if new.from_status <> v_current then
+    raise exception 'stale transition: from_status % but current status is %',
+      new.from_status, v_current;
+  end if;
+
+  -- The complete legal set (ARCHITECTURE §6). Anything absent is rejected.
+  if not (
+       (new.from_status = 'draft'     and new.to_status in ('active','canceled','waived'))
+    or (new.from_status = 'active'    and new.to_status in ('fulfilled','canceled','waived'))
+    or (new.from_status = 'fulfilled' and new.to_status = 'active')
+  ) then
+    raise exception 'illegal lifecycle transition % -> %', new.from_status, new.to_status;
+  end if;
+
+  return new;
+end $$;
+
+create trigger lifecycle_transition before insert on finance.agreement_lifecycle_events
+  for each row execute function finance.tg_lifecycle_transition();
+
+-- ------------------------------- every agreement has exactly one initial event
+-- DEFERRABLE INITIALLY DEFERRED: checked at COMMIT so the agreement row is not
+-- rejected in the instant between its own insert and its event's insert.
+-- Deferral does NOT permit child-first insertion: the child's FK is
+-- non-deferrable and the transition trigger locks the parent (§4).
+create function finance.tg_agreement_has_lifecycle() returns trigger
+  language plpgsql security definer set search_path = pg_catalog, public, finance as $$
+declare
+  n integer;
+begin
+  select count(*) into n
+  from finance.agreement_lifecycle_events
+  where agreement_id = new.id and from_status is null;
+
+  if n <> 1 then
+    raise exception
+      'agreement % must have exactly one initial lifecycle event at commit, found %',
+      new.id, n;
+  end if;
+  return null;
+end $$;
+
+create constraint trigger agreement_has_lifecycle
+  after insert on finance.agreements
+  deferrable initially deferred
+  for each row execute function finance.tg_agreement_has_lifecycle();
+
+-- ------------------------------------------------- ledger invariants L3b/L4/L6/L7/L11
+create function finance.tg_ledger_invariants() returns trigger
+  language plpgsql security definer set search_path = pg_catalog, public, finance as $$
+declare
+  p              finance.ledger_entries%rowtype;
+  unreversed_kids integer;
+  refunded        bigint;
+  ev_livemode     boolean;
+begin
+  -- L11: livemode must match the originating event, where one exists.
+  if new.origin_stripe_event_id is not null then
+    select livemode into ev_livemode
+    from finance.stripe_events where event_id = new.origin_stripe_event_id;
+    if ev_livemode is distinct from new.livemode then
+      raise exception 'L11: livemode % disagrees with originating event % (livemode %)',
+        new.livemode, new.origin_stripe_event_id, ev_livemode;
+    end if;
+  end if;
+
+  if new.parent_entry_id is null then
+    return new;
+  end if;
+
+  -- Lock the parent: L6 and L7 both read-then-write against it.
+  select * into p from finance.ledger_entries
+  where id = new.parent_entry_id for update;
+  if not found then
+    raise exception 'parent entry % does not exist', new.parent_entry_id;
+  end if;
+
+  -- L6: same agreement
+  if p.agreement_id <> new.agreement_id then
+    raise exception 'L6: parent belongs to agreement %, child to %',
+      p.agreement_id, new.agreement_id;
+  end if;
+
+  -- L6 / legal parent matrix
+  if new.entry_type = 'refund' then
+    if p.entry_type not in ('stripe_payment','external_payment') then
+      raise exception 'L6: a refund may only target a payment, parent is %', p.entry_type;
+    end if;
+    -- L3b: a Stripe refund's parent must be a stripe_payment
+    if new.source = 'stripe' and p.entry_type <> 'stripe_payment' then
+      raise exception 'L3b: a stripe refund must target a stripe_payment, parent is %',
+        p.entry_type;
+    end if;
+    -- L7: cumulative UNREVERSED refunds may not exceed the parent's settled amount
+    -- This is an AFTER INSERT trigger, so NEW is already visible to the sum.
+    -- Adding abs(new.amount_cents) again would double-count it and reject
+    -- legitimate refunds at half the real limit.
+    select coalesce(abs(sum(r.amount_cents)), 0) into refunded
+    from finance.ledger_entries r
+    where r.parent_entry_id = p.id
+      and r.entry_type = 'refund'
+      and not exists (select 1 from finance.ledger_entries v
+                      where v.parent_entry_id = r.id and v.entry_type = 'reversal');
+    if refunded > p.amount_cents then
+      raise exception 'L7: cumulative refunds % exceed settled amount % on entry %',
+        refunded, p.amount_cents, p.id;
+    end if;
+
+  elsif new.entry_type = 'reversal' then
+    if p.entry_type not in ('stripe_payment','external_payment','refund') then
+      raise exception 'L6: a reversal may not target %', p.entry_type;
+    end if;
+    -- L4: a reversal exactly negates its parent
+    if new.amount_cents <> -p.amount_cents then
+      raise exception 'L4: reversal amount % does not negate parent amount %',
+        new.amount_cents, p.amount_cents;
+    end if;
+    -- L6: the parent must have no UNREVERSED children. Not "no children at all":
+    -- the ledger is append-only, so reversing a refund does not remove it, and a
+    -- no-children rule would make the documented unwind impossible.
+    -- AFTER INSERT: exclude NEW, which is itself a child of p. Counting it
+    -- would make every reversal report its own parent as having an
+    -- unreversed child and reject the documented unwind entirely.
+    select count(*) into unreversed_kids
+    from finance.ledger_entries c
+    where c.parent_entry_id = p.id
+      and c.id <> new.id
+      and not exists (select 1 from finance.ledger_entries v
+                      where v.parent_entry_id = c.id and v.entry_type = 'reversal');
+    if unreversed_kids > 0 then
+      raise exception 'L6: parent % has % unreversed child(ren); reverse them first',
+        p.id, unreversed_kids;
+    end if;
+
+  else
+    raise exception 'L1/L2: % may not carry a parent', new.entry_type;
+  end if;
+
+  return new;
+end $$;
+
+create constraint trigger ledger_invariants
+  after insert on finance.ledger_entries
+  for each row execute function finance.tg_ledger_invariants();
+
+-- ------------------------------ INSERT-time protection of guarded transitions
+-- Revoking UPDATE protects a transition only if the row cannot be CREATED
+-- already in the destination state. The trigger is load-bearing; the
+-- column-scoped grant is defence in depth (D-068).
+create function finance.tg_exception_insert_guard() returns trigger
+  language plpgsql security definer set search_path = pg_catalog, public, finance as $$
+begin
+  if new.resolution_status <> 'open' then
+    raise exception 'a new exception must be created open, got %', new.resolution_status;
+  end if;
+  if new.resolved_at is not null or new.resolved_by is not null
+     or new.resolution_note is not null
+     or new.quarantined_at is not null or new.quarantine_reason is not null
+     or new.released_at is not null or new.released_by is not null
+     or new.release_note is not null then
+    raise exception
+      'a new exception may not be created with resolution, quarantine or release state';
+  end if;
+  return new;
+end $$;
+
+-- req 121: the four resolution columns are writable ONLY through
+-- finance.resolve_exception(). The boundary is EXECUTION IDENTITY, not a
+-- session variable: there is deliberately nothing a caller can set to obtain
+-- the capability.
+--
+-- SECURITY INVOKER is LOAD-BEARING here. The first implementation was
+-- SECURITY DEFINER, which made current_user the function owner for every
+-- caller -- the identity check compared the owner with itself and admitted
+-- everyone. The guard was a no-op, undetected because every probe died at the
+-- privilege layer and never reached the trigger. As INVOKER, current_user is
+-- the role actually performing the UPDATE; under finance.resolve_exception()
+-- (SECURITY DEFINER) that is the trusted owner, and for any direct caller it
+-- is the caller itself.
+--
+-- The trusted owner is resolved through the EXACT schema-qualified signature
+-- via to_regprocedure, so an overload or similarly named function cannot
+-- change which owner is trusted.
+--
+-- A direct connection AS the migration owner is permitted: that is the
+-- explicit trusted administrative boundary (D-075). Application roles never
+-- reach that identity.
+create function finance.tg_exception_resolution_guard()
+returns trigger
+language plpgsql
+security invoker
+set search_path = pg_catalog, public, finance
+as $fn$
+declare trusted_owner oid;
+begin
+  if (new.resolution_status, new.resolved_at, new.resolved_by, new.resolution_note)
+       is distinct from
+     (old.resolution_status, old.resolved_at, old.resolved_by, old.resolution_note)
+  then
+    select p.proowner into trusted_owner
+      from pg_proc p
+     where p.oid = to_regprocedure(
+       'finance.resolve_exception(uuid, finance.exception_resolution, text)');
+
+    if trusted_owner is null then
+      raise exception
+        'req 121: finance.resolve_exception(uuid, finance.exception_resolution, text) is missing; the resolution boundary cannot be established';
+    end if;
+
+    if current_user::regrole::oid <> trusted_owner then
+      raise exception
+        'req 121: resolution columns are writable only through finance.resolve_exception(); direct UPDATE by % rejected',
+        current_user;
+    end if;
+  end if;
+  return new;
+end
+$fn$;
+
+create trigger exception_resolution_guard
+  before update on finance.reconciliation_exceptions
+  for each row execute function finance.tg_exception_resolution_guard();
+
+-- R124/D-075 symmetry (Checkpoint B review): the quarantine/release columns are
+-- writable only through finance.quarantine_object()/release_quarantine(). Same
+-- execution-identity boundary as the resolution guard -- SECURITY INVOKER, owner
+-- resolved by exact regprocedure -- so a future table-wide GRANT cannot let an
+-- application role forge a below-threshold quarantine directly.
+create function finance.tg_exception_quarantine_guard()
+returns trigger language plpgsql security invoker
+set search_path = pg_catalog, public, finance as $fn$
+declare trusted_owner oid;
+begin
+  if (new.quarantined_at, new.quarantine_reason, new.released_at, new.released_by, new.release_note)
+       is distinct from
+     (old.quarantined_at, old.quarantine_reason, old.released_at, old.released_by, old.release_note)
+  then
+    select p.proowner into trusted_owner from pg_proc p
+      where p.oid = to_regprocedure('finance.quarantine_object(uuid)');
+    if trusted_owner is null then
+      raise exception 'req 124: finance.quarantine_object(uuid) is missing; the quarantine boundary cannot be established';
+    end if;
+    if current_user::regrole::oid <> trusted_owner then
+      raise exception 'req 124: quarantine columns are writable only through finance.quarantine_object()/release_quarantine(); direct UPDATE by % rejected', current_user;
+    end if;
+  end if;
+  return new;
+end $fn$;
+
+create trigger exception_quarantine_guard
+  before update on finance.reconciliation_exceptions
+  for each row execute function finance.tg_exception_quarantine_guard();
+
+create trigger exception_insert_guard before insert on finance.reconciliation_exceptions
+  for each row execute function finance.tg_exception_insert_guard();
+
+create function finance.tg_run_insert_guard() returns trigger
+  language plpgsql security definer set search_path = pg_catalog, public, finance as $$
+begin
+  if new.approved_by is not null or new.approved_at is not null
+     or new.approval_note is not null then
+    raise exception
+      'a new run may not be created already approved: approval is finance.approve_dry_run() only';
+  end if;
+  -- B-85 (found during Checkpoint B mapping of R85): resume lineage was
+  -- unvalidated -- a run could cite a RUNNING or COMPLETED predecessor. Only a
+  -- stopped-short run (partial, failed, abandoned) is resumable.
+  if new.resumed_from_run_id is not null then
+    declare pred_status finance.run_status;
+    begin
+      select status into pred_status from finance.reconciliation_runs where id = new.resumed_from_run_id;
+      if pred_status is null then
+        raise exception 'cannot resume: predecessor run % does not exist', new.resumed_from_run_id;
+      end if;
+      if pred_status not in ('partial','failed','abandoned') then
+        raise exception 'cannot resume a % run: only partial, failed or abandoned runs are resumable', pred_status;
+      end if;
+    end;
+  end if;
+  return new;
+end $$;
+
+create trigger run_insert_guard before insert on finance.reconciliation_runs
+  for each row execute function finance.tg_run_insert_guard();
+
+-- --------------------------------------------- approved evidence is frozen
+-- Keys on OLD.approved_at, not NEW: keyed on NEW the approval UPDATE itself
+-- would see a non-null value and reject, making approval impossible (D-065).
+create function finance.tg_run_freeze_approved() returns trigger
+  language plpgsql security definer set search_path = pg_catalog, public, finance as $$
+begin
+  if old.approved_at is null then
+    return new;
+  end if;
+  if new.status              is distinct from old.status
+  or new.error               is distinct from old.error
+  or new.finished_at         is distinct from old.finished_at
+  or new.window_exhausted    is distinct from old.window_exhausted
+  or new.window_start        is distinct from old.window_start
+  or new.window_end          is distinct from old.window_end
+  or new.livemode            is distinct from old.livemode
+  or new.implementation_version is distinct from old.implementation_version
+  or new.dry_run             is distinct from old.dry_run
+  or new.would_create_count  is distinct from old.would_create_count
+  or new.would_reopen_count  is distinct from old.would_reopen_count
+  or new.prospective_by_kind is distinct from old.prospective_by_kind
+  or new.report_samples      is distinct from old.report_samples
+  or new.report_version      is distinct from old.report_version
+  or new.report_completed_at is distinct from old.report_completed_at
+  or new.approved_by         is distinct from old.approved_by
+  or new.approved_at         is distinct from old.approved_at
+  or new.approval_note       is distinct from old.approval_note
+  then
+    raise exception 'approved evidence is frozen: run % was approved at %',
+      old.id, old.approved_at;
+  end if;
+  return new;
+end $$;
+
+create trigger run_freeze_approved before update on finance.reconciliation_runs
+  for each row execute function finance.tg_run_freeze_approved();
+
+-- ------------------------------------------- launch authorization (reqs 96/97)
+-- A writing run must cite a dry run that is genuinely completed, exhausted,
+-- finished, error-free, approved and reported, in the same mode and built from
+-- the same implementation_version. The CHECK constraints alone cannot express
+-- this: it depends on another row.
+create function finance.tg_run_authorization() returns trigger
+  language plpgsql security definer set search_path = pg_catalog, public, finance as $$
+declare a finance.reconciliation_runs%rowtype;
+begin
+  if new.dry_run then
+    return new;
+  end if;
+
+  select * into a from finance.reconciliation_runs where id = new.authorized_by_run_id;
+  if not found then
+    raise exception 'authorization run % does not exist', new.authorized_by_run_id;
+  end if;
+
+  if not a.dry_run then
+    raise exception 'authorization run % is not a dry run', a.id;
+  end if;
+  if a.status <> 'completed' then
+    raise exception 'authorization run % is %, not completed', a.id, a.status;
+  end if;
+  if not a.window_exhausted then
+    raise exception 'authorization run % did not exhaust its window', a.id;
+  end if;
+  if a.finished_at is null then
+    raise exception 'authorization run % has not finished', a.id;
+  end if;
+  if a.error is not null then
+    raise exception 'authorization run % ended with an error', a.id;
+  end if;
+  if a.approved_at is null then
+    raise exception 'authorization run % is not approved', a.id;
+  end if;
+  if a.report_completed_at is null then
+    raise exception 'authorization run % has no completed report', a.id;
+  end if;
+  if a.livemode is distinct from new.livemode then
+    raise exception 'authorization run % is livemode=%, writing run is livemode=%',
+      a.id, a.livemode, new.livemode;
+  end if;
+  -- Material code change invalidates approval: the rehearsal exercised a
+  -- different build.
+  if a.implementation_version is distinct from new.implementation_version then
+    raise exception 'authorization run % was version %, writing run is version %',
+      a.id, a.implementation_version, new.implementation_version;
+  end if;
+  -- Reaching further back than what was rehearsed is not authorized.
+  if new.window_start < a.window_start then
+    raise exception 'writing run window_start % precedes the approved horizon %',
+      new.window_start, a.window_start;
+  end if;
+
+  return new;
+end $$;
+
+create trigger run_authorization before insert on finance.reconciliation_runs
+  for each row execute function finance.tg_run_authorization();
+
+
+-- ------------------------------------- payment_links creation-time guard
+-- The nine-table audit classified payment_links as "no founder-gated
+-- transition", which stopped being true when finance.revoke_payment_link()
+-- was added. service_role held whole-table INSERT, so it could create a link
+-- already `revoked` WITH A FORGED revoked_by -- defeating the founder-gated
+-- function entirely. Same class as the reconciliation_exceptions and
+-- reconciliation_runs guards.
+create function finance.tg_link_insert_guard() returns trigger
+  language plpgsql security definer set search_path = pg_catalog, public, finance as $$
+begin
+  if new.status <> 'active' then
+    raise exception 'a new payment link must be created active, got %', new.status;
+  end if;
+  if new.claimed_at is not null or new.consumed_at is not null
+     or new.consumed_by_session_id is not null
+     or new.revoked_at is not null or new.revoked_by is not null then
+    raise exception
+      'a new payment link may not be created with claim, consumption or revocation state';
+  end if;
+  if new.attempt_count <> 0 then
+    raise exception 'a new payment link must start with attempt_count = 0';
+  end if;
+  return new;
+end $$;
+
+create trigger link_insert_guard before insert on finance.payment_links
+  for each row execute function finance.tg_link_insert_guard();
+
+-- R38 (found during Checkpoint B mapping): claiming was unguarded -- an
+-- EXPIRED link could be claimed, and a consumed link could be re-claimed by a
+-- direct UPDATE that skipped the status='active' predicate. A claim is the
+-- transition INTO 'creating'; it is valid only from 'active' and only before
+-- expiry. Revocation terminality is enforced separately below.
+create function finance.tg_link_claim_guard() returns trigger
+  -- SECURITY INVOKER: this guard makes no identity comparison and reads no other
+  -- table, so DEFINER would be pointless privilege (Checkpoint B review finding).
+  language plpgsql security invoker set search_path = pg_catalog, public, finance as $$
+begin
+  if new.status = 'creating' and old.status is distinct from 'creating' then
+    if old.status <> 'active' then
+      raise exception 'link claim rejected: only an active link can be claimed, status is %', old.status;
+    end if;
+    if old.expires_at <= clock_timestamp() then
+      raise exception 'link claim rejected: link expired at %', old.expires_at;
+    end if;
+  end if;
+  return new;
+end $$;
+create trigger link_claim_guard
+  before update on finance.payment_links
+  for each row execute function finance.tg_link_claim_guard();
+
+-- --------------------------------------------- revocation is terminal
+-- Entering `revoked` by UPDATE is blocked by link_revoked_complete, but
+-- LEAVING it was not: service_role could flip a revoked link back to active
+-- while revoked_at stayed populated, so a one-shot link was not one-shot.
+-- Revocation attribution is likewise frozen once written.
+create function finance.tg_link_revocation_terminal() returns trigger
+  language plpgsql security definer set search_path = pg_catalog, public, finance as $$
+begin
+  if old.status = 'revoked' and new.status is distinct from 'revoked' then
+    raise exception 'payment link % is revoked; revocation is terminal', old.id;
+  end if;
+  if old.revoked_at is not null
+     and (new.revoked_at is distinct from old.revoked_at
+       or new.revoked_by is distinct from old.revoked_by) then
+    raise exception 'revocation attribution on link % is frozen', old.id;
+  end if;
+  if old.status = 'consumed' and new.status is distinct from 'consumed' then
+    raise exception 'payment link % is consumed; consumption is terminal', old.id;
+  end if;
+  return new;
+end $$;
+
+create trigger link_revocation_terminal before update on finance.payment_links
+  for each row execute function finance.tg_link_revocation_terminal();
+
+commit;

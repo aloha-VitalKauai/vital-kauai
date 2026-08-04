@@ -1,0 +1,560 @@
+# Stable assertion IDs -> file | description. Generated from live TAP;
+# regenerate only when assertions change; the gate enforces tag integrity.
+A1-026 | 01_structure.sql | finance schema exists
+A1-001 | 01_structure.sql | exactly 13 enum types
+A1-002 | 01_structure.sql | exactly 9 tables
+A1-003 | 01_structure.sql | exactly 5 views
+A1-027 | 01_structure.sql | table agreements exists
+A1-004 | 01_structure.sql | table agreement_amounts exists
+A1-005 | 01_structure.sql | table agreement_lifecycle_events exists
+A1-006 | 01_structure.sql | table ledger_entries exists
+A1-007 | 01_structure.sql | table stripe_events exists
+A1-008 | 01_structure.sql | table checkout_sessions exists
+A1-009 | 01_structure.sql | table payment_links exists
+A1-010 | 01_structure.sql | table reconciliation_exceptions exists
+A1-011 | 01_structure.sql | table reconciliation_runs exists
+A1-028 | 01_structure.sql | view v_agreement_lifecycle exists
+A1-012 | 01_structure.sql | view v_agreement_balances exists
+A1-013 | 01_structure.sql | view v_agreement_balances_test exists
+A1-014 | 01_structure.sql | view v_member_financials exists
+A1-015 | 01_structure.sql | view v_journey_financials exists
+A1-029 | 01_structure.sql | function current_member_id exists
+A1-016 | 01_structure.sql | function create_agreement exists
+A1-017 | 01_structure.sql | function approve_dry_run exists
+A1-018 | 01_structure.sql | function resolve_exception exists
+A1-019 | 01_structure.sql | function release_quarantine exists
+A1-020 | 01_structure.sql | function quarantine_object exists
+A1-030 | 01_structure.sql | run_status has 5 values
+A1-021 | 01_structure.sql | run_status values are exactly the five specified
+A1-031 | 01_structure.sql | exactly 8 partial unique indexes
+A1-032 | 01_structure.sql | RLS enabled on 9 tables
+A1-022 | 01_structure.sql | RLS forced on 9 tables
+A1-033 | 01_structure.sql | no finance SECURITY DEFINER function lacks search_path
+A1-034 | 01_structure.sql | req 90: public.is_founder() proconfig includes a pinned search_path
+A1-023 | 01_structure.sql | req 90: public.is_founder() is still SECURITY DEFINER
+A1-024 | 01_structure.sql | req 90: public.is_founder() still returns boolean
+A1-025 | 01_structure.sql | req 90: the pinned search_path is exactly pg_catalog, public
+A1-035 | 01_structure.sql | anon has no table privilege in finance
+A1-036 | 01_structure.sql | no finance FK references a legacy financial table
+A2-050 | 02_behaviour.sql | test 71: create_agreement succeeds for a founder
+A2-001 | 02_behaviour.sql | test 71: blank reason raises
+A2-002 | 02_behaviour.sql | test 17: duplicate (member,journey,purpose) raises
+A2-003 | 02_behaviour.sql | test 18: initial lifecycle event is draft
+A2-051 | 02_behaviour.sql | test 133: agreement with no initial event fails the deferred completeness check
+A2-052 | 02_behaviour.sql | test 133b: child-first insert is rejected
+A2-053 | 02_behaviour.sql | test 72: draft->active permitted
+A2-004 | 02_behaviour.sql | test 72: active->draft rejected
+A2-005 | 02_behaviour.sql | test 72: stale from_status rejected
+A2-006 | 02_behaviour.sql | test 72: active->fulfilled permitted
+A2-007 | 02_behaviour.sql | test 72: fulfilled->active permitted
+A2-008 | 02_behaviour.sql | test 72: active->canceled permitted
+A2-009 | 02_behaviour.sql | test 72: canceled is terminal
+A2-010 | 02_behaviour.sql | test 6: amounts cannot be UPDATEd
+A2-011 | 02_behaviour.sql | test 6: amounts cannot be DELETEd
+A2-012 | 02_behaviour.sql | test 7: lifecycle events cannot be UPDATEd
+A2-013 | 02_behaviour.sql | test 7: lifecycle events cannot be DELETEd
+A2-054 | 02_behaviour.sql | test 15: future-dated amendment rejected
+A2-014 | 02_behaviour.sql | test 23/24: last-recorded amendment wins on an effective_at tie
+A2-055 | 02_behaviour.sql | test 28 (L1): stripe_payment without payment-intent id rejected
+A2-015 | 02_behaviour.sql | test 29 (L2): external_payment without method rejected
+A2-016 | 02_behaviour.sql | test 29 (L12): external_payment with no attribution rejected
+A2-017 | 02_behaviour.sql | test 32c (L13): stripe entry carrying external_method rejected
+A2-018 | 02_behaviour.sql | test 32d (L13): external entry carrying a payment-intent id rejected
+A2-019 | 02_behaviour.sql | test 32 (L12): both human and system attribution rejected
+A2-020 | 02_behaviour.sql | test 36 (L8): duplicate provider object rejected
+A2-021 | 02_behaviour.sql | test 37 (L8b): duplicate payment intent rejected
+A2-056 | 02_behaviour.sql | test 41 (L7): refund exceeding settled amount rejected
+A2-022 | 02_behaviour.sql | test 39: partial refund succeeds
+A2-023 | 02_behaviour.sql | test 38: refund reduces net Received
+A2-057 | 02_behaviour.sql | test 45 (L6): reversal rejected while parent has an unreversed child
+A2-058 | 02_behaviour.sql | test 46: reversal of the refund succeeds
+A2-024 | 02_behaviour.sql | test 46: reversal of the payment now succeeds
+A2-025 | 02_behaviour.sql | test 46: full unwind returns net Received to 0
+A2-059 | 02_behaviour.sql | test 63: a reversed refund does not count toward refunded_cents
+A2-026 | 02_behaviour.sql | test 63: fully unwound agreement is unpaid, not refunded
+A2-060 | 02_behaviour.sql | test 47: an entry cannot be reversed twice
+A2-027 | 02_behaviour.sql | test 58: agreement with no entries returns 0, not NULL
+A2-028 | 02_behaviour.sql | test 58: agreement with no entries is unpaid, not partial
+A2-029 | 02_behaviour.sql | test 64: gift agreement is not_applicable
+A2-030 | 02_behaviour.sql | test 64: gift agreement has NULL remaining
+A2-061 | 02_behaviour.sql | test 84: completed with window_exhausted=false rejected
+A2-031 | 02_behaviour.sql | test 84: partial with window_exhausted=true rejected
+A2-032 | 02_behaviour.sql | test 84: running with window_exhausted=true rejected
+A2-033 | 02_behaviour.sql | test 84: completed with window_exhausted=true accepted
+A2-034 | 02_behaviour.sql | test 83: running carrying finished_at rejected
+A2-062 | 02_behaviour.sql | test 107: implementation_version is required
+A2-063 | 02_behaviour.sql | test 129: a run cannot be created already approved
+A2-064 | 02_behaviour.sql | test 104: approval without a completed report raises
+A2-035 | 02_behaviour.sql | test 103: approve_dry_run succeeds once
+A2-036 | 02_behaviour.sql | test 103: approved_by is auth.uid(), not supplied
+A2-037 | 02_behaviour.sql | test 103: a second approval raises
+A2-038 | 02_behaviour.sql | test 114: blank approval note raises
+A2-065 | 02_behaviour.sql | test 105: window_end frozen after approval
+A2-039 | 02_behaviour.sql | test 105: report frozen after approval
+A2-040 | 02_behaviour.sql | test 105: implementation_version frozen after approval
+A2-066 | 02_behaviour.sql | test 123: ordinary exception creation succeeds
+A2-041 | 02_behaviour.sql | test 124: cannot create an exception already resolved
+A2-042 | 02_behaviour.sql | test 124: cannot create an exception already quarantined
+A2-067 | 02_behaviour.sql | test 102: dedup_key cannot be supplied by the writer
+A2-043 | 02_behaviour.sql | test 102: dedup_key is the canonical construction
+A2-068 | 02_behaviour.sql | test 79: a second open exception with the same identity is rejected
+A2-069 | 02_behaviour.sql | test 99: processing-failure without detail rejected
+A2-044 | 02_behaviour.sql | test 99: well-formed processing failure accepted
+A2-045 | 02_behaviour.sql | test 119: resolving to open raises
+A2-046 | 02_behaviour.sql | test 119: blank resolution note raises
+A2-047 | 02_behaviour.sql | test 118: resolve_exception succeeds for a founder
+A2-048 | 02_behaviour.sql | test 118: resolved_by is auth.uid(), not supplied
+A2-049 | 02_behaviour.sql | test 119: repeat resolution raises
+A2-070 | 02_behaviour.sql | test 120: a resolved exception does not block a fresh row for the same identity
+A3-001 | 03_access.sql | current_member_id resolves via members.profile_id (D-015)
+A3-002 | 03_access.sql | test 8: Member A sees only their own agreement
+A3-003 | 03_access.sql | test 8: Member A cannot see Member B
+A3-004 | 03_access.sql | test 8: Member B sees only their own
+A3-034 | 03_access.sql | test 75: members see no lifecycle events
+A3-005 | 03_access.sql | test 75: members see no payment links
+A3-006 | 03_access.sql | test 75: members see no stripe events
+A3-007 | 03_access.sql | test 75: members see no exceptions
+A3-008 | 03_access.sql | test 75: members see no runs
+A3-035 | 03_access.sql | test 9: a member cannot insert an agreement
+A3-009 | 03_access.sql | test 9: a member cannot insert a ledger entry
+A3-010 | 03_access.sql | test 10: founder sees all agreements
+A3-011 | 03_access.sql | test 10: founder sees lifecycle events
+A3-036 | 03_access.sql | test 42: anon has no SELECT on agreements
+A3-012 | 03_access.sql | test 42: anon has no SELECT on ledger_entries
+A3-013 | 03_access.sql | authenticated has no INSERT
+A3-014 | 03_access.sql | authenticated has no UPDATE
+A3-015 | 03_access.sql | test 41: service_role has no UPDATE on ledger_entries
+A3-016 | 03_access.sql | test 41: service_role has no DELETE on ledger_entries
+A3-017 | 03_access.sql | test 41: service_role has no UPDATE on agreement_amounts
+A3-018 | 03_access.sql | test 41: service_role has no UPDATE on lifecycle events
+A3-037 | 03_access.sql | test 124: service_role cannot INSERT resolution_status
+A3-019 | 03_access.sql | test 124: service_role cannot INSERT quarantined_at
+A3-020 | 03_access.sql | test 124: service_role cannot INSERT released_by
+A3-021 | 03_access.sql | test 129: service_role cannot INSERT approved_by
+A3-022 | 03_access.sql | test 129: service_role cannot INSERT approval_note
+A3-023 | 03_access.sql | test 106: service_role cannot UPDATE approved_at
+A3-038 | 03_access.sql | test 40: service_role may INSERT ledger entries
+A3-024 | 03_access.sql | test 40: service_role may SELECT ledger entries
+A3-025 | 03_access.sql | test 123: service_role may INSERT kind
+A3-026 | 03_access.sql | test 125: service_role may UPDATE occurrence_count
+A3-027 | 03_access.sql | test 76: service_role may UPDATE cursor
+A3-028 | 03_access.sql | test 128: service_role may INSERT implementation_version
+A3-029 | 03_access.sql | authenticated may read the balance view
+A3-039 | 03_access.sql | authenticated may execute approve_dry_run
+A3-030 | 03_access.sql | test 88: service_role cannot execute approve_dry_run
+A3-031 | 03_access.sql | test 88: service_role cannot execute release_quarantine
+A3-032 | 03_access.sql | test 93: service_role may execute quarantine_object
+A3-033 | 03_access.sql | test 93: a founder cannot execute quarantine_object
+A4-001 | 04_coverage.sql | req 5: ledger entries cannot be UPDATEd
+A4-002 | 04_coverage.sql | req 5: ledger entries cannot be DELETEd
+A4-038 | 04_coverage.sql | req 43: a payment increases net Received exactly once
+A4-003 | 04_coverage.sql | req 44: duplicate provider object rejected
+A4-004 | 04_coverage.sql | req 57: a parent in a different agreement is rejected
+A4-005 | 04_coverage.sql | req 57: L5 self-parent CHECK exists
+A4-039 | 04_coverage.sql | req 30: refund without parent rejected
+A4-006 | 04_coverage.sql | req 30: refund with a positive amount rejected
+A4-007 | 04_coverage.sql | req 30: stripe refund without provider_object_id rejected
+A4-040 | 04_coverage.sql | req 48: first partial refund
+A4-008 | 04_coverage.sql | req 48: second partial refund accumulates
+A4-009 | 04_coverage.sql | req 48: two partial refunds accumulate correctly
+A4-010 | 04_coverage.sql | req 49: a refund exceeding the settled amount is rejected
+A4-041 | 04_coverage.sql | req 51: a refund may not target a refund
+A4-042 | 04_coverage.sql | req 52: a reversal that does not negate its parent is rejected
+A4-043 | 04_coverage.sql | req 56: reversal of a refund succeeds
+A4-011 | 04_coverage.sql | req 56: reversing a refund restores the parent payment headroom
+A4-044 | 04_coverage.sql | req 59: legacy import row accepted
+A4-012 | 04_coverage.sql | req 59: re-running the import cannot duplicate
+A4-045 | 04_coverage.sql | req 32b: recorded_by_system requires no auth.users row
+A4-046 | 04_coverage.sql | req 32e: legacy_donation_id accepted on an external entry
+A4-013 | 04_coverage.sql | req 25: an agreement with no amendment yields Contribution 0
+A4-014 | 04_coverage.sql | req 27: a negative amount is rejected
+A4-015 | 04_coverage.sql | req 27: a blank reason is rejected
+A4-047 | 04_coverage.sql | req 19: only one initial event per agreement
+A4-016 | 04_coverage.sql | req 20: draft->fulfilled is rejected
+A4-017 | 04_coverage.sql | req 22: cancelling an agreement does not change any balance column
+A4-048 | 04_coverage.sql | req 34: non-creating status without stripe_session_id rejected
+A4-018 | 04_coverage.sql | req 33: amount_cents must be > 0
+A4-049 | 04_coverage.sql | req 73: creating without claimed_at rejected
+A4-019 | 04_coverage.sql | req 73: consumed without session rejected
+A4-050 | 04_coverage.sql | req 77: window_end <= window_start rejected
+A4-020 | 04_coverage.sql | req 78: a second running run for the same livemode is rejected
+A4-021 | 04_coverage.sql | req 78: a test-mode running run coexists with a live-mode one
+A4-022 | 04_coverage.sql | req 86: a dry run may not cite an authorization
+A4-023 | 04_coverage.sql | req 86: a writing run without authorization is rejected
+A4-051 | 04_coverage.sql | req 94: a dry run with non-zero real writes is rejected
+A4-024 | 04_coverage.sql | req 95: report_completed_at without the report columns is rejected
+A4-052 | 04_coverage.sql | req 82: last_detected_at < first_detected_at rejected
+A4-025 | 04_coverage.sql | req 109: a fresh exception with both timestamps NULL inserts cleanly
+A4-026 | 04_coverage.sql | req 109: untouched quarantine state is permitted
+A4-053 | 04_coverage.sql | req 81: the same identity in test mode is an independent row
+A4-027 | 04_coverage.sql | req 110: wrong kind cannot be quarantined
+A4-028 | 04_coverage.sql | req 110: a first failure cannot quarantine
+A4-029 | 04_coverage.sql | req 110: three consecutive failures may quarantine
+A4-030 | 04_coverage.sql | req 111: quarantine_reason is derived from the row detail.error_class
+A4-031 | 04_coverage.sql | req 110: an already-quarantined row cannot be re-quarantined
+A4-032 | 04_coverage.sql | req 92: release succeeds
+A4-033 | 04_coverage.sql | req 112: release resets the streak to 0
+A4-034 | 04_coverage.sql | req 112: re-quarantine requires three fresh failures
+A4-035 | 04_coverage.sql | req 122: release writes release_note
+A4-036 | 04_coverage.sql | req 122: release leaves resolution_note untouched
+A4-054 | 04_coverage.sql | a zero-amount ledger entry is rejected (amount_cents <> 0)
+A4-037 | 04_coverage.sql | the amount_cents <> 0 CHECK exists on ledger_entries
+A5-013 | 05_guards.sql | finding 5: no finance function is executable by PUBLIC
+A5-014 | 05_guards.sql | finding 5: no finance function ACL grants EXECUTE to PUBLIC
+A5-001 | 05_guards.sql | finding 4: revoke_payment_link is executable by authenticated (founder-gated inside)
+A5-002 | 05_guards.sql | finding 4: service_role cannot revoke a link
+A5-003 | 05_guards.sql | finding 4: a founder can revoke a link
+A5-004 | 05_guards.sql | finding 4: link_status=revoked is now reachable
+A5-005 | 05_guards.sql | finding 4: revocation carries actor attribution computed internally
+A5-006 | 05_guards.sql | finding 4: a second revoke raises
+A5-015 | 05_guards.sql | finding 4: no application role holds a direct UPDATE on revoked_at/revoked_by
+A5-007 | 05_guards.sql | nit 9: quarantine succeeds
+A5-008 | 05_guards.sql | nit 9: resolution wins over quarantine
+A5-009 | 05_guards.sql | nit 9: release_quarantine rejects a non-open row, matching quarantine_object
+A5-016 | 05_guards.sql | finding 10: f_balances is SECURITY INVOKER; a DEFINER here would leak every balance
+A5-010 | 05_guards.sql | finding 10: every finance view sets security_invoker=true
+A5-017 | 05_guards.sql | finding 3: every finance -> auth.users FK is ON DELETE RESTRICT
+A5-011 | 05_guards.sql | finding 3: deleting an actor with financial history is REFUSED, not cascaded (D-073)
+A5-012 | 05_guards.sql | finding 3: an auth user with no financial attribution still deletes normally
+A7-068 | 07_completion.sql | req 4: agreement_lifecycle values exact
+A7-001 | 07_completion.sql | req 4: payment_state values exact
+A7-002 | 07_completion.sql | req 4: exception_kind has 12 values
+A7-069 | 07_completion.sql | req 16: every SECURITY DEFINER function pins search_path
+A7-003 | 07_completion.sql | req 16: EXECUTE is not granted to PUBLIC
+A7-070 | 07_completion.sql | req 14: anon holds no table privilege
+A7-004 | 07_completion.sql | req 14: anon has no schema USAGE
+A7-071 | 07_completion.sql | req 89: exactly 8 partial unique indexes
+A7-005 | 07_completion.sql | req 89: all eight are indexes, not table constraints
+A7-006 | 07_completion.sql | req 24: same-transaction amendments resolve to the later seq
+A7-072 | 07_completion.sql | req 26: no future-dated amendment exists
+A7-007 | 07_completion.sql | req 62: overpayment yields negative remaining_cents
+A7-008 | 07_completion.sql | req 62: overpayment yields zero payable_remaining_cents
+A7-009 | 07_completion.sql | req 61: overpaid state
+A7-010 | 07_completion.sql | req 60: no aggregate is ever NULL
+A7-011 | 07_completion.sql | req 65: an unreversed refund counts
+A7-012 | 07_completion.sql | req 65: a reversed refund does not count
+A7-013 | 07_completion.sql | req 65: fully unwound is unpaid
+A7-014 | 07_completion.sql | req 54: the full unwind nets to 0
+A7-015 | 07_completion.sql | req 55: an entry cannot be reversed twice
+A7-016 | 07_completion.sql | req 53: reversal blocked by an unreversed child
+A7-017 | 07_completion.sql | req 30b: a stripe refund cannot target an external_payment
+A7-018 | 07_completion.sql | req 31: livemode disagreeing with the originating event is rejected
+A7-019 | 07_completion.sql | req 31: matching livemode is accepted
+A7-020 | 07_completion.sql | req 66: gift has NULL remaining
+A7-021 | 07_completion.sql | req 66: gift money still counts toward member Received
+A7-022 | 07_completion.sql | req 68: livemode=false excluded from canonical balances
+A7-023 | 07_completion.sql | req 68: livemode=false appears in the test view
+A7-073 | 07_completion.sql | req 67: multiple distinct payment_states are produced deterministically
+A7-024 | 07_completion.sql | req 67: payment_state is never NULL
+A7-074 | 07_completion.sql | req 121: resolve_exception is SECURITY DEFINER
+A7-025 | 07_completion.sql | req 121: resolve_exception is owned by the trusted migration owner, not a lesser role
+A7-026 | 07_completion.sql | req 121: resolve_exception pins an exact search_path
+A7-027 | 07_completion.sql | req 121: no application role holds UPDATE on any resolution column
+A7-028 | 07_completion.sql | req 121: the resolution guard is SECURITY INVOKER -- as DEFINER its identity check would admit every caller
+A7-029 | 07_completion.sql | req 121: founder resolves successfully through resolve_exception()
+A7-030 | 07_completion.sql | req 121: the sanctioned path actually applied the resolution
+A7-031 | 07_completion.sql | req 121: a non-founder is denied through resolve_exception()
+A7-032 | 07_completion.sql | req 121: a founder acting as authenticated is denied a direct UPDATE
+A7-033 | 07_completion.sql | req 121: service_role is denied a direct UPDATE
+A7-034 | 07_completion.sql | req 121: with the grant widened, the write reaches the trigger and is rejected by IDENTITY, not privilege
+A7-035 | 07_completion.sql | req 121: the temporary widening is fully revoked before any later test runs
+A7-036 | 07_completion.sql | req 121: setting the former GUC name confers no capability on an application role
+A7-075 | 07_completion.sql | req 121 / D-075: the trusted identity is the migration owner, and it is the only identity the trigger admits
+A7-076 | 07_completion.sql | req 121: the probed exception is still open after every denied write
+A7-037 | 07_completion.sql | req 121: its other three resolution columns remain null after every denied write
+A7-038 | 07_completion.sql | req 126: resolution succeeds through the function
+A7-039 | 07_completion.sql | req 80: a resolved row does not block a fresh one
+A7-040 | 07_completion.sql | req 80: the resolved row is preserved
+A7-041 | 07_completion.sql | req 127: an open row carrying a note is rejected
+A7-042 | 07_completion.sql | req 117: an open row carrying resolved_at is rejected
+A7-043 | 07_completion.sql | req 87: release without a prior quarantine is rejected
+A7-044 | 07_completion.sql | req 87: quarantined_at without a reason is rejected
+A7-045 | 07_completion.sql | req 124b: an explicit open insert with permitted columns succeeds
+A7-046 | 07_completion.sql | req 85: self-resume is rejected
+A7-047 | 07_completion.sql | req 98: approval without a report is rejected
+A7-048 | 07_completion.sql | req 113: approval succeeds exactly once
+A7-049 | 07_completion.sql | req 113: a second approval is rejected
+A7-050 | 07_completion.sql | req 115: window_start is frozen after approval
+A7-051 | 07_completion.sql | req 115: the report is frozen after approval
+A7-052 | 07_completion.sql | req 132: authorized_by_run_id is insertable for a writing run
+A7-053 | 07_completion.sql | req 130: a fabricated approved run cannot be inserted
+A7-054 | 07_completion.sql | req 131: approval attribution is auth.uid()
+A7-077 | 07_completion.sql | req 100: stripe_events has its primary key uniqueness only
+A7-055 | 07_completion.sql | req 100: first payment_failed for an object
+A7-056 | 07_completion.sql | req 100: a second payment_failed for the SAME object is retained
+A7-078 | 07_completion.sql | req 108: dedup_key cannot be supplied
+A7-057 | 07_completion.sql | req 116: dedup_key is NOT NULL
+A7-058 | 07_completion.sql | req 116: no row has a NULL dedup_key
+A7-079 | 07_completion.sql | req 91: column grants prove both directions
+A7-059 | 07_completion.sql | req 11: a member cannot insert a financial fact
+A7-060 | 07_completion.sql | req 13: the view returns no row a direct query would deny
+A7-061 | 07_completion.sql | req 74: members read no lifecycle events
+A7-062 | 07_completion.sql | req 74: members read no runs
+A7-063 | 07_completion.sql | req 12: a non-founder cannot call an approved function
+A7-064 | 07_completion.sql | req 12: a founder can read through the approved path
+A7-065 | 07_completion.sql | req 96: a writing run citing a partial dry run is rejected
+A7-066 | 07_completion.sql | req 96: a writing run citing a different livemode is rejected
+A7-080 | 07_completion.sql | req 97: a writing run whose implementation_version differs is rejected
+A7-067 | 07_completion.sql | req 96: a writing run reaching before the approved horizon is rejected
+A9-009 | 09_mutants.sql | mutant kill: a link cannot be INSERTed already revoked with forged attribution
+A9-001 | 09_mutants.sql | mutant kill: a link cannot be INSERTed already claimed
+A9-002 | 09_mutants.sql | mutant kill: a link cannot be INSERTed with a non-zero attempt_count
+A9-003 | 09_mutants.sql | a founder revokes the link
+A9-004 | 09_mutants.sql | mutant kill: a revoked link cannot be reactivated
+A9-005 | 09_mutants.sql | mutant kill: revocation attribution is frozen
+A9-010 | 09_mutants.sql | mutant kill: a run cannot be INSERTed already approved even with a complete report
+A9-011 | 09_mutants.sql | mutant kill: the deferred agreement-completeness constraint exists and is DEFERRABLE
+A9-006 | 09_mutants.sql | an agreement with no initial lifecycle event fails the deferred check
+A9-007 | 09_mutants.sql | mutant kill: the view reports the LATEST event, not the earliest
+A9-008 | 09_mutants.sql | mutant kill: the view's `since` is the latest occurred_at
+A9-012 | 09_mutants.sql | D-074: enforcement accepts a transition from the state the view reports
+A9-013 | 09_mutants.sql | D-074: enforcement rejects a transition from the superseded state
+A11-001 | 11_member_reads.sql | a member can read their OWN agreement
+A11-002 | 11_member_reads.sql | a member can read their OWN ledger entries (kills the member_reads_own_ledger mutant)
+A11-003 | 11_member_reads.sql | a member sees the correct amount on their own ledger entry
+A11-004 | 11_member_reads.sql | a member can read their OWN contribution amendments
+A11-005 | 11_member_reads.sql | a member can read their OWN balance row
+A11-006 | 11_member_reads.sql | a member sees the correct Received figure
+A11-007 | 11_member_reads.sql | a member sees the correct Contribution
+A11-008 | 11_member_reads.sql | a member reads no checkout session they do not own
+A11-009 | 11_member_reads.sql | a member reads no payment_links row (RLS, not grant, is the control)
+A11-014 | 11_member_reads.sql | authenticated holds no UPDATE on agreements
+A11-010 | 11_member_reads.sql | authenticated holds no INSERT on agreements
+A11-011 | 11_member_reads.sql | authenticated holds no DELETE on agreements
+A11-012 | 11_member_reads.sql | payment_links is founder-only for authenticated, enforced by RLS not by grant
+A11-013 | 11_member_reads.sql | authenticated holds NO write privilege on any finance table
+A12-001 | 12_isolation_posture.sql | FOUNDER sees the test-mode balance view
+A12-002 | 12_isolation_posture.sql | FOUNDER sees the correct test-mode figure
+A12-003 | 12_isolation_posture.sql | FOUNDER can read test-mode ledger entries directly
+A12-004 | 12_isolation_posture.sql | NON-FOUNDER member is denied the test-mode balance view
+A12-005 | 12_isolation_posture.sql | NON-FOUNDER cannot read a test-mode ledger entry directly
+A12-006 | 12_isolation_posture.sql | NON-FOUNDER cannot read a test-mode checkout session directly
+A12-007 | 12_isolation_posture.sql | NON-FOUNDER canonical balance excludes test-mode money
+A12-008 | 12_isolation_posture.sql | test-mode money does not leak into the member aggregate
+A12-029 | 12_isolation_posture.sql | LIVE: member still reads their own live ledger entry
+A12-009 | 12_isolation_posture.sql | LIVE: the amount is correct
+A12-010 | 12_isolation_posture.sql | LIVE: member still reads their own agreement
+A12-011 | 12_isolation_posture.sql | LIVE: canonical balance still reports live money
+A12-012 | 12_isolation_posture.sql | an unrelated member reads no ledger entries
+A12-013 | 12_isolation_posture.sql | an unrelated non-founder is denied the test-mode view
+A12-030 | 12_isolation_posture.sql | anon cannot reach the finance schema
+A12-014 | 12_isolation_posture.sql | anon holds no SELECT on the test view
+A12-015 | 12_isolation_posture.sql | anon holds no SELECT on ledger_entries
+A12-031 | 12_isolation_posture.sql | the founder predicate is inside the view body
+A12-016 | 12_isolation_posture.sql | the test view pins livemode = false as a literal, not a caller parameter
+A12-017 | 12_isolation_posture.sql | every member policy on a livemode-bearing table filters livemode
+A12-032 | 12_isolation_posture.sql | current_member_id returns uuid
+A12-018 | 12_isolation_posture.sql | current_member_id takes no arguments
+A12-019 | 12_isolation_posture.sql | current_member_id is SECURITY DEFINER (kills the INVOKER mutant)
+A12-020 | 12_isolation_posture.sql | current_member_id is STABLE
+A12-021 | 12_isolation_posture.sql | current_member_id pins the exact search_path
+A12-022 | 12_isolation_posture.sql | authenticated may execute current_member_id
+A12-023 | 12_isolation_posture.sql | anon may not execute current_member_id
+A12-024 | 12_isolation_posture.sql | current_member_id resolves via members.profile_id, not members.id
+A12-033 | 12_isolation_posture.sql | FK matrix: every finance FK is ON DELETE RESTRICT
+A12-025 | 12_isolation_posture.sql | FK matrix: exactly one FK targets public.members (kills the dropped-FK mutant)
+A12-026 | 12_isolation_posture.sql | FK matrix: exactly one FK targets public.journeys
+A12-027 | 12_isolation_posture.sql | FK matrix: agreements carries 3 foreign keys
+A12-028 | 12_isolation_posture.sql | FK matrix: ledger_entries carries 4 foreign keys
+ST-001 | 06_static.sh | req 2: the catalog fingerprint of the finance schema matches expected_objects.txt exactly
+ST-002 | 06_static.sh | the rebaseline script is token-gated and the gate never invokes it
+ST-003 | 06_static.sh | the gate hashes the baseline before and after every run (see harness_gate.sh)
+ST-004 | 06_static.sh | req 2: the census is substantive, not an empty or truncated file
+ST-005 | 06_static.sh | req 1: all 8 migrations exist and the finance schema they build is present in this database
+ST-006 | 06_static.sh | req 3: run_all.sh executes 'dropdb --if-exists' and ON_ERROR_STOP=1 as real tokens (bash-aware lex, comments can never satisfy)
+ST-007 | 06_static.sh | req 69: every aggregate view depends on v_agreement_balances in pg_depend
+ST-008 | 06_static.sh | req 69: no aggregate view re-implements the balance formula independently
+ST-009 | 06_static.sh | req 70 / D-074: exactly two lifecycle derivations exist (1 view + 1 routine)
+ST-010 | 06_static.sh | req 70: the consumer projection v_agreement_lifecycle exists as a view
+ST-011 | 06_static.sh | req 70: the only enforcement derivation is tg_lifecycle_transition
+ST-012 | 06_static.sh | req 70: v_agreement_lifecycle carries security_invoker in its catalog reloptions
+ST-013 | 06_static.sh | finding 11: migration 0001 asserts the PostgreSQL major version (comments stripped)
+ST-014 | 06_static.sh | blocker 1: migration 0001 executes is_founder() after hardening it (comments stripped)
+ST-015 | 06_static.sh | blocker 1 (catalog): is_founder carries the pinned search_path the migration set
+ST-016 | 06_static.sh | blocker 2: rollback resets the is_founder search_path (comments stripped)
+ST-017 | 06_static.sh | no finance object has a foreign key into a legacy financial table
+ST-018 | 06_static.sh | no migration writes a legacy financial table (stripper rc checked; scan covers the full canonical list)
+ST-019 | 06_static.sh | no finance routine body references a legacy financial table (catalog)
+ST-020 | 06_static.sh | anon holds no privilege anywhere in the finance schema
+A2-071 | 02_behaviour.sql | req 17: NULLS NOT DISTINCT -- a duplicate member-level (NULL journey) agreement raises
+A3-040 | 03_access.sql | req 15: a NULL profile_id member is not resolved -- current_member_id returns NULL
+A4-055 | 04_coverage.sql | req 28 (L1): a stripe_payment with source external is rejected
+A4-056 | 04_coverage.sql | req 28 (L1): a non-positive stripe_payment is rejected
+A4-057 | 04_coverage.sql | req 28 (L1): a stripe_payment carrying a parent is rejected
+A4-058 | 04_coverage.sql | req 29 (L2): an external_payment with source stripe is rejected
+A4-059 | 04_coverage.sql | req 29 (L2): a non-positive external_payment is rejected
+A4-060 | 04_coverage.sql | req 29 (L2): an external_payment carrying a parent is rejected
+A4-061 | 04_coverage.sql | req 30 (L3): an external refund without external_method is rejected
+A4-062 | 04_coverage.sql | req 31 (L11): a NULL origin_stripe_event_id is accepted
+A4-063 | 04_coverage.sql | req 33: duplicate stripe_session_id is rejected
+A4-064 | 04_coverage.sql | req 33: duplicate idempotency_key is rejected
+A4-065 | 04_coverage.sql | req 35: a second live session for the same agreement+mode is rejected
+A4-066 | 04_coverage.sql | req 35: a test-mode session coexists with the live one
+A4-067 | 04_coverage.sql | req 36: completing the live session frees the slot for a new one
+A4-068 | 04_coverage.sql | req 38: claiming an EXPIRED link is rejected
+A4-069 | 04_coverage.sql | req 38: a non-active link cannot be claimed
+A4-070 | 04_coverage.sql | req 38: claiming a CONSUMED link is rejected
+A4-071 | 04_coverage.sql | req 39: a non-open exception row is rejected at INSERT by the guard above the exc_open_iff_unresolved CHECK
+A4-072 | 04_coverage.sql | req 40: service_role can INSERT a stripe event
+A4-073 | 04_coverage.sql | req 40: service_role can SELECT what it wrote
+A4-074 | 04_coverage.sql | req 32e: legacy_donation_id accepted on a stripe entry
+A4-075 | 04_coverage.sql | req 36: expiring the live session frees the slot as well
+A4-076 | 04_coverage.sql | req 41: with the grant widened, service_role UPDATE still dies in the append-only trigger
+A4-077 | 04_coverage.sql | req 41: with the grant widened, service_role DELETE still dies in the append-only trigger
+A4-078 | 04_coverage.sql | req 51: a refund may not target a reversal
+A4-079 | 04_coverage.sql | req 52: a reversal without a parent is rejected by the L4 shape CHECK
+A4-080 | 04_coverage.sql | req 57: no path can even attempt self-parenting -- the fact table is append-only
+A4-081 | 04_coverage.sql | req 57: the L5 self-parent CHECK is present for the INSERT path
+A4-082 | 04_coverage.sql | req 58: a ledger entry with no agreement violates the FK
+A4-083 | 04_coverage.sql | req 61: remaining_cents = contribution - net received in a mid-range state
+A4-093 | 04_coverage.sql | req 61: payable_remaining_cents matches in the mid-range state
+A4-084 | 04_coverage.sql | req 63: refunded-to-zero reports refunded, distinct from unpaid
+A4-094 | 04_coverage.sql | req 64: a reversed-in-error payment returns unpaid, not refunded
+A4-085 | 04_coverage.sql | req 66: gift money counts toward journey Received
+A4-095 | 04_coverage.sql | req 72: draft->active on a fresh agreement
+A4-086 | 04_coverage.sql | req 72: active->waived permitted
+A4-087 | 04_coverage.sql | req 72: waived is terminal
+A4-088 | 04_coverage.sql | req 73: a link cannot be born revoked; the link_revoked_complete CHECK backstops UPDATE paths
+A4-089 | 04_coverage.sql | req 75: service_role UPDATE outside the granted column list is rejected
+A4-090 | 04_coverage.sql | req 76: a non-USD ledger entry is rejected
+A4-091 | 04_coverage.sql | req 76: a non-USD agreement is rejected at INSERT; UPDATE cannot reach the CHECK (append-only)
+A4-092 | 04_coverage.sql | req 77: a running run carrying finished_at is rejected
+A13-001 | 13_run_matrix.sql | req 84: running+false accepted
+A13-002 | 13_run_matrix.sql | req 84: partial+false accepted
+A13-003 | 13_run_matrix.sql | req 84: failed+false accepted
+A13-004 | 13_run_matrix.sql | req 84: abandoned+false accepted
+A13-005 | 13_run_matrix.sql | req 84: completed+true accepted
+A13-006 | 13_run_matrix.sql | req 84: completed+false rejected
+A13-007 | 13_run_matrix.sql | req 84: running+true rejected
+A13-008 | 13_run_matrix.sql | req 84: partial+true rejected
+A13-009 | 13_run_matrix.sql | req 84: failed+true rejected
+A13-010 | 13_run_matrix.sql | req 84: abandoned+true rejected
+A13-011 | 13_run_matrix.sql | req 83: completed without finished_at rejected
+A13-012 | 13_run_matrix.sql | req 83: partial without finished_at rejected
+A13-013 | 13_run_matrix.sql | req 83: failed without finished_at rejected
+A13-014 | 13_run_matrix.sql | req 83: abandoned without finished_at rejected
+A13-015 | 13_run_matrix.sql | req 85: resuming a partial run accepted
+A13-016 | 13_run_matrix.sql | req 85: resuming a failed run accepted
+A13-017 | 13_run_matrix.sql | req 85: resuming an abandoned run accepted
+A13-018 | 13_run_matrix.sql | req 85: resuming a RUNNING run rejected
+A13-019 | 13_run_matrix.sql | req 85: resuming a COMPLETED run rejected
+A13-020 | 13_run_matrix.sql | req 85: a SECOND run resuming the same predecessor rejected
+A13-021 | 13_run_matrix.sql | req 98: approving a running run rejected
+A13-022 | 13_run_matrix.sql | req 98: approving a partial run rejected
+A13-023 | 13_run_matrix.sql | req 98: approving a failed run rejected
+A13-024 | 13_run_matrix.sql | req 98: approving an abandoned run rejected
+A13-025 | 13_run_matrix.sql | req 98: approving an error-bearing run rejected
+A13-026 | 13_run_matrix.sql | req 93: quarantine_object takes no reason parameter
+A13-027 | 13_run_matrix.sql | req 93: releasing a non-quarantined row raises
+A13-028 | 13_run_matrix.sql | req 93: a non-founder cannot release
+A13-029 | 13_run_matrix.sql | req 99: NULL provider_object_id rejected
+A13-030 | 13_run_matrix.sql | req 99: absent object_type rejected
+A13-031 | 13_run_matrix.sql | req 99: out-of-set object_type rejected
+A13-032 | 13_run_matrix.sql | req 99: absent error_class rejected
+A13-033 | 13_run_matrix.sql | req 99: out-of-set error_class rejected
+A13-034 | 13_run_matrix.sql | req 99: same object in the other livemode coexists
+A13-035 | 13_run_matrix.sql | req 100: the at-most-once ledger index has exactly its documented scope
+A13-036 | 13_run_matrix.sql | req 100: repeated payment_failed events for one object create no ledger entries
+A13-037 | 13_run_matrix.sql | req 96: citing a RUNNING dry run is rejected
+A13-038 | 13_run_matrix.sql | req 96: citing a PARTIAL dry run is rejected
+A13-039 | 13_run_matrix.sql | req 96: citing a FAILED dry run is rejected
+A13-040 | 13_run_matrix.sql | req 96: citing an ABANDONED dry run is rejected
+A13-041 | 13_run_matrix.sql | req 96: citing an UNAPPROVED completed dry run is rejected
+A13-042 | 13_run_matrix.sql | req 96: citing an ERROR-BEARING run is rejected (checked before approval, so unreachable-after-approval by construction)
+A13-043 | 13_run_matrix.sql | req 96: citing a NONEXISTENT run is rejected
+A13-044 | 13_run_matrix.sql | req 96: the eligible approved reported same-mode same-version run IS accepted
+A13-045 | 13_run_matrix.sql | req 96: a writing window reaching before the approved horizon is rejected
+A13-046 | 13_run_matrix.sql | req 96: citing a WRITING run is rejected
+A13-047 | 13_run_matrix.sql | req 96: a mutated predecessor still cannot authorize without function approval
+A15-001 | 15_identity_freeze.sql | req 108/116: one row inserted per LIVE enum label -- the set is catalog-derived, not hard-coded
+A15-002 | 15_identity_freeze.sql | req 108/116: every live kind generates a non-NULL dedup_key
+A15-003 | 15_identity_freeze.sql | req 108: the spec count of twelve still matches the catalog (changing the enum must be a conscious act)
+A15-004 | 15_identity_freeze.sql | req 108: the generated CASE has exactly one WHEN branch per catalog label
+A15-005 | 15_identity_freeze.sql | req 108: the kind CASE falls to ELSE NULL, so an unmapped future label nulls the key and dies on NOT NULL
+A15-006 | 15_identity_freeze.sql | req 116: dedup_key is structurally NOT NULL
+A15-007 | 15_identity_freeze.sql | req 108: two logically identical exceptions share one identity
+A15-008 | 15_identity_freeze.sql | req 108: differing load-bearing identity fields produce different identities
+A15-009 | 15_identity_freeze.sql | req 108: livemode participates in identity through the open-row unique index (dedup_key, livemode)
+A15-010 | 15_identity_freeze.sql | req 108: one canonical key, two livemodes, two independent open rows -- mode isolation lives in the index
+A15-011 | 15_identity_freeze.sql | req 102: a writer cannot supply the generated column
+A15-012 | 15_identity_freeze.sql | req 110: streak 0 cannot quarantine
+A15-013 | 15_identity_freeze.sql | req 110: a FIRST failure cannot quarantine
+A15-014 | 15_identity_freeze.sql | req 110: a SECOND failure cannot quarantine
+A15-015 | 15_identity_freeze.sql | req 110: the threshold (3) quarantines
+A15-016 | 15_identity_freeze.sql | req 110: an active quarantine cannot be entered again
+A15-017 | 15_identity_freeze.sql | req 92: founder release succeeds
+A15-018 | 15_identity_freeze.sql | req 112: release resets the streak
+A15-019 | 15_identity_freeze.sql | req 92: released_at strictly after quarantined_at
+A15-020 | 15_identity_freeze.sql | req 112: re-quarantine after three fresh failures succeeds
+A15-021 | 15_identity_freeze.sql | req 92: re-quarantine timestamp strictly after release
+A15-022 | 15_identity_freeze.sql | req 92: a second release completes the double cycle
+A15-023 | 15_identity_freeze.sql | req 110: a dismissed row cannot be quarantined
+A15-024 | 15_identity_freeze.sql | req 115: the trigger freezes exactly 18 fields -- adding one must consciously extend this matrix
+A15-025 | 15_identity_freeze.sql | req 115: status frozen
+A15-026 | 15_identity_freeze.sql | req 115: error frozen
+A15-027 | 15_identity_freeze.sql | req 115: finished_at frozen
+A15-028 | 15_identity_freeze.sql | req 115: window_exhausted frozen
+A15-029 | 15_identity_freeze.sql | req 115: window_start frozen
+A15-030 | 15_identity_freeze.sql | req 115: window_end frozen
+A15-031 | 15_identity_freeze.sql | req 115: livemode frozen
+A15-032 | 15_identity_freeze.sql | req 115: implementation_version frozen
+A15-033 | 15_identity_freeze.sql | req 115: dry_run frozen
+A15-034 | 15_identity_freeze.sql | req 115: would_create_count frozen
+A15-035 | 15_identity_freeze.sql | req 115: would_reopen_count frozen
+A15-036 | 15_identity_freeze.sql | req 115: prospective_by_kind frozen
+A15-037 | 15_identity_freeze.sql | req 115: report_samples frozen
+A15-038 | 15_identity_freeze.sql | req 115: report_version frozen
+A15-039 | 15_identity_freeze.sql | req 115: report_completed_at frozen
+A15-040 | 15_identity_freeze.sql | req 115: approval identity, timestamp and note frozen
+A15-041 | 15_identity_freeze.sql | req 115: service_role with a widened grant still dies in the freeze trigger
+A15-042 | 15_identity_freeze.sql | req 115: a non-frozen operational field stays mutable -- the trigger does not simply block everything
+A15-043 | 15_identity_freeze.sql | req 119: re-resolving a DISMISSED row raises
+A15-044 | 15_identity_freeze.sql | req 120: an actively quarantined row resolves through the function
+A15-045 | 15_identity_freeze.sql | req 120: resolution does not erase quarantine history and release does not masquerade as resolution
+A15-046 | 15_identity_freeze.sql | req 120: the resolved row leaves the open-slot free for recurrence
+A15-047 | 15_identity_freeze.sql | req 124: resolution_status<>open rejected by the trigger despite the widened grant
+A15-048 | 15_identity_freeze.sql | req 124: resolved_at rejected individually
+A15-049 | 15_identity_freeze.sql | req 124: resolved_by rejected individually
+A15-050 | 15_identity_freeze.sql | req 124: resolution_note rejected individually
+A15-051 | 15_identity_freeze.sql | req 124: quarantined_at rejected individually
+A15-052 | 15_identity_freeze.sql | req 124: quarantine_reason rejected individually
+A15-053 | 15_identity_freeze.sql | req 124: released_at rejected individually
+A15-054 | 15_identity_freeze.sql | req 124: released_by rejected individually
+A15-055 | 15_identity_freeze.sql | req 124: release_note rejected individually
+A15-056 | 15_identity_freeze.sql | req 125: the ON CONFLICT dedup upsert executes as service_role
+A15-057 | 15_identity_freeze.sql | req 125: the upsert updated the existing row, not a duplicate
+A15-058 | 15_identity_freeze.sql | req 124: the temporary widening is fully revoked
+A15-059 | 15_identity_freeze.sql | req 129: approved_at at INSERT dies in the trigger despite a widened grant
+A15-060 | 15_identity_freeze.sql | req 121: no application role holds CREATE in finance -- a caller-made overload cannot change the trusted identity
+A15-061 | 15_identity_freeze.sql | req 38/121-family: the claim guard compares expiry to clock_timestamp, so a long transaction cannot admit an expired claim
+A15-062 | 15_identity_freeze.sql | req 133: parent first, then its initial draft event, satisfies the deferred check in one transaction
+A15-063 | 15_identity_freeze.sql | req 133: a direct-import parent without its event fails at the constraint boundary
+A7-081 | 07_completion.sql | req 100: the section-10 at-most-once index covers exactly the four terminal types
+A2-073 | 02_behaviour.sql | req 32: L12 rejects an external entry with a blank reason
+A2-072 | 02_behaviour.sql | req 23: an earlier effective_at recorded with the highest seq still loses -- effective_at DESC dominates seq
+A2-074 | 02_behaviour.sql | req 32: a stripe_payment with a NULL provider_object_id is accepted
+A4-096 | 04_coverage.sql | req 31: an external payment cannot be livemode=false -- real money would drop from canonical balances
+A4-097 | 04_coverage.sql | req 31: imported historic money (legacy_donation_id) cannot be livemode=false
+A4-098 | 04_coverage.sql | req 31: a genuine Stripe test-mode entry is still allowed at livemode=false
+A7-082 | 07_completion.sql | req 100: a second terminal event for the same object+livemode is rejected
+A7-083 | 07_completion.sql | req 100: the same terminal object in the other livemode coexists
+A16-001 | 16_review_remediation.sql | req 133b: the lifecycle->agreement FK is non-deferrable
+A16-002 | 16_review_remediation.sql | req 108: a direct UPDATE cannot override the generated dedup_key
+A16-003 | 16_review_remediation.sql | req 109: equal non-null quarantine and release timestamps are rejected
+A16-004 | 16_review_remediation.sql | req 114: the stored approval_note equals the supplied text
+A16-005 | 16_review_remediation.sql | req 128: service_role inserts a normal unapproved run using only its granted columns (status/window_exhausted default)
+A16-006 | 16_review_remediation.sql | req 38: the claim path (WHERE status=active) matches zero rows for an already-creating link
+A16-007 | 16_review_remediation.sql | req 67: the paid state is produced
+A16-008 | 16_review_remediation.sql | req 67: the partial state is produced
+A16-009 | 16_review_remediation.sql | req 22: cancelling the agreement leaves payment_state unchanged
+A16-010 | 16_review_remediation.sql | req 61: payable_remaining_cents is NULL when contribution_applies is false
+A16-011 | 16_review_remediation.sql | req 79: the dedup upsert leaves first_detected_at unchanged
+A16-012 | 16_review_remediation.sql | req 79: the upsert raises occurrence_count
+A16-013 | 16_review_remediation.sql | req 94: a dry run with non-zero exceptions_reopened is rejected
+A16-014 | 16_review_remediation.sql | req 95: report_completed_at without the four report columns is rejected
+A16-015 | 16_review_remediation.sql | req 95: missing would_create_count alone is rejected
+A16-016 | 16_review_remediation.sql | req 95: missing would_reopen_count alone is rejected
+A16-017 | 16_review_remediation.sql | req 95: missing prospective_by_kind alone is rejected
+A16-018 | 16_review_remediation.sql | req 95: missing report_version alone is rejected
+A16-019 | 16_review_remediation.sql | req 110: a RESOLVED row cannot be quarantined
+A16-020 | 16_review_remediation.sql | req 129: approved_by alone at INSERT is rejected
