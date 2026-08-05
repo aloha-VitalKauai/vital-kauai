@@ -88,6 +88,7 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     status: "live",
     videoSummary:
       "Beliefs as embodied patterns, the survival truths that hold suffering in place, and how a trauma imprint softens when the body feels safe enough to know something new.",
+    videoUrl: "https://www.youtube.com/embed/b58yH36PWG0?rel=0",
   },
   {
     phase: "pre",
