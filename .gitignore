@@ -16,7 +16,9 @@ coverage
 
 # Claude Code workspace artifacts
 .agents/
-.claude/skills/
+.claude/skills/*
+# ...except project skills that are shared deliberately.
+!.claude/skills/financials-v2/
 .claude/worktrees/
 skills-lock.json
 supabase/.temp/

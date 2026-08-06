@@ -76,6 +76,7 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     status: "live",
     videoSummary:
       "The five primary emotions, the secondary patterns layered on top, and how to let what has been long held finally move through.",
+    videoUrl: "https://www.youtube.com/embed/1M1n3v71ryM?rel=0",
   },
   {
     phase: "pre",
@@ -87,6 +88,7 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     status: "live",
     videoSummary:
       "Beliefs as embodied patterns, the survival truths that hold suffering in place, and how a trauma imprint softens when the body feels safe enough to know something new.",
+    videoUrl: "https://www.youtube.com/embed/b58yH36PWG0?rel=0",
   },
   {
     phase: "pre",
@@ -98,6 +100,7 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     status: "live",
     videoSummary:
       "Iboga as spiritual encounter, the life review that arises in ceremony, your own relationship to Higher Power, the PNE lens of ancestral healing, discerning the voice of the Divine, prayers to carry, and integration as ongoing spiritual practice.",
+    videoUrl: "https://www.youtube.com/embed/3HdO5UQdKRM?rel=0",
   },
 
   // ── Post-ceremony ────────────────────────────────────────────
