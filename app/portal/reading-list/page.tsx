@@ -132,11 +132,6 @@ const READING_LIST: Category[] = [
         isbn: "9780553380996",
         note: "A beloved guide to meeting your life, and yourself, with mindful and compassionate presence, weaving Buddhist practice together with years of psychotherapy into a path toward wholeness.",
       },
-      {
-        title: "The Tibetan Book of the Dead",
-        isbn: "9780143104940",
-        note: "More than a text about dying, it is a manual for the living: a teaching on releasing the ego and meeting uncertainty and impermanence with a clear, fearless mind.",
-      },
     ],
   },
   {
@@ -148,6 +143,11 @@ const READING_LIST: Category[] = [
         author: "Paul Kalanithi",
         isbn: "9780812988406",
         note: "A neurosurgeon's luminous, honest reckoning with his own mortality, and one of the most moving and readable meditations on death written in recent years.",
+      },
+      {
+        title: "The Tibetan Book of the Dead",
+        isbn: "9780143104940",
+        note: "More than a text about dying, it is a manual for the living: a teaching on releasing the ego and meeting uncertainty and impermanence with a clear, fearless mind.",
       },
       {
         title: "The Tao of Physics",
