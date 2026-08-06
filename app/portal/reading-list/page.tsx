@@ -54,6 +54,12 @@ const READING_LIST: Category[] = [
         isbn: "9780874779646",
         note: "An anthropologist explores whether ancient indigenous plant knowledge and modern molecular biology point to the same hidden source. A favorite in plant-medicine circles and a fascinating bridge between the sacred and the scientific.",
       },
+      {
+        title: "How to Change Your Mind",
+        author: "Michael Pollan",
+        isbn: "9781594204227",
+        note: "A rigorous, beautifully written survey of psychedelic science and the mystical experience, respected across both scientific and spiritual audiences.",
+      },
     ],
   },
   {
@@ -148,12 +154,6 @@ const READING_LIST: Category[] = [
         author: "Fritjof Capra",
         isbn: "9781590308356",
         note: "The acclaimed classic drawing parallels between quantum physics and Eastern mysticism: highly readable, and a perfect bridge between the scientific and the spiritual.",
-      },
-      {
-        title: "How to Change Your Mind",
-        author: "Michael Pollan",
-        isbn: "9781594204227",
-        note: "A rigorous, beautifully written survey of psychedelic science and the mystical experience, respected across both scientific and spiritual audiences.",
       },
       {
         title: "Biocentrism",
