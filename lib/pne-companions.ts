@@ -100,6 +100,7 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     status: "live",
     videoSummary:
       "Iboga as spiritual encounter, the life review that arises in ceremony, your own relationship to Higher Power, the PNE lens of ancestral healing, discerning the voice of the Divine, prayers to carry, and integration as ongoing spiritual practice.",
+    videoUrl: "https://www.youtube.com/embed/3HdO5UQdKRM?rel=0",
   },
 
   // ── Post-ceremony ────────────────────────────────────────────
