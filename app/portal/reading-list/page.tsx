@@ -115,10 +115,10 @@ const READING_LIST: Category[] = [
         note: "A modern classic on presence, teaching how to step out of compulsive thinking and meet each moment, and each uncertainty, directly.",
       },
       {
-        title: "The Untethered Soul",
+        title: "The Surrender Experiment",
         author: "Michael Singer",
-        isbn: "9781572245372",
-        note: "A widely loved, deeply accessible book on releasing the inner voice and living from awareness: an easy on-ramp for anyone newer to this material.",
+        isbn: "9781101982921",
+        note: "Singer's own story of loosening the grip of personal preference and following where life's flow actually led: a vivid, humbling account of surrender as a lived practice rather than an idea.",
       },
       {
         title: "Radical Acceptance",
