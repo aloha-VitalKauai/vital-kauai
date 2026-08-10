@@ -72,7 +72,7 @@ export const SOPS: Sop[] = [
     owner: 'Rachel · Josh · Dr. Liz',
     updated: '2026-07-26',
     status: 'active',
-    summary: 'Arrival · Ceremony One · Silence · Integration · Ceremony Two · Silence · Embodiment · Departure. Eight days in Hanalei for up to six members per cohort.',
+    summary: 'Arrival · Ceremony One · Silence · Integration · Ceremony Two · Silence · Embodiment · Departure. Eight days in Hanalei for up to three members per cohort.',
     sections: [],
     href: '/dashboard/sops/reference-itinerary',
   },

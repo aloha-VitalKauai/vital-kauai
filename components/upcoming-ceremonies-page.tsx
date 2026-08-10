@@ -131,7 +131,7 @@ export function UpcomingCeremoniesPage() {
             Upcoming <em>Ceremonies</em>
           </h1>
           <p className={styles.heroSubtitle}>
-            Small, held gatherings on the north shore of Kaua&#699;i. Up to six members, eight days,
+            Small, held gatherings on the north shore of Kaua&#699;i. Up to three members, eight days,
             woven into months of preparation and integration.
           </p>
         </div>
