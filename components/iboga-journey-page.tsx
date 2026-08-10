@@ -394,7 +394,7 @@ export function IbogaJourneyPage() {
                 const dateText = formatCohortRange(c.start_at, c.end_at).replace(`, ${year}`, "");
                 const titleIsGeneric = /^[A-Za-z]+\s+\d+.*Ceremony$/.test(c.title);
                 const spots = spotsLeftLabel(c);
-                const statusText = spots ?? (isNext ? "Filling Now" : "Open");
+                const statusText = spots ?? "Open";
                 const isFull = !isNext && /full/i.test(statusText);
                 const statusColor = isNext || spots
                   ? "var(--gold, #C8A96E)"

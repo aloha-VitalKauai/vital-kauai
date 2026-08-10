@@ -94,15 +94,18 @@ function utcDateKey(iso: string): string {
   return `${y}-${m}-${day}`
 }
 
-/** Returns a short 'X spots left' phrase when only 3 or fewer remain, else null. */
+/**
+ * Public status label. Returns 'Full' when a ceremony is sold out (or forced
+ * full), otherwise null so the card shows 'Open'. We don't broadcast remaining
+ * spot counts publicly.
+ */
 export function spotsLeftLabel(cohort: PublicCohort): string | null {
   if (FORCED_FULL_START_DATES.has(utcDateKey(cohort.start_at))) return 'Full'
   if (cohort.capacity == null) return null
   const assigned = cohort.assigned_count ?? 0
   const left = cohort.capacity - assigned
   if (left <= 0) return 'Full'
-  if (left > 3) return null
-  return left === 1 ? '1 spot left' : `${left} spots left`
+  return null
 }
 
 /** True if the cohort is publicly displayed as Full (forced or sold out). */

@@ -54,7 +54,7 @@ export function StayPage() {
           ? `${year} · Hanalei, Kauaʻi`
           : `${dateText}, ${year} · Hanalei, Kauaʻi`;
         const spots = spotsLeftLabel(c);
-        const statusText = spots ?? (isNext ? "Filling Now" : "Open");
+        const statusText = spots ?? "Open";
         const statusColor = isNext || spots ? "var(--terra-light)" : "rgba(245,240,232,0.55)";
         el.innerHTML = [
           `<p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:${isNext ? "var(--terra)" : "rgba(200,169,110,0.85)"};margin-bottom:10px;">${isNext ? "Next Ceremony" : "Upcoming"}</p>`,
