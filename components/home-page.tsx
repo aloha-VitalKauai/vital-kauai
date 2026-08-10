@@ -688,7 +688,7 @@ export function HomePage() {
                 const dateText = formatCohortRange(c.start_at, c.end_at).replace(`, ${year}`, "");
                 const titleIsGeneric = /^[A-Za-z]+\s+\d+.*Ceremony$/.test(c.title);
                 const spots = spotsLeftLabel(c);
-                const statusText = spots ?? (isNext ? "Filling Now" : "Open");
+                const statusText = spots ?? "Open";
                 return (
                   <div key={c.id} className={isNext ? styles.ceremonyCardActive : styles.ceremonyCard}>
                     <p className={styles.ceremonyLabel} style={isNext ? { color: "var(--terra)" } : undefined}>
