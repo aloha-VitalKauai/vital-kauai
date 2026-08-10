@@ -38,9 +38,9 @@ export function StayPage() {
         if (!c) {
           el.innerHTML = [
             '<p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.35);margin-bottom:10px;">Upcoming</p>',
-            '<p style="font-family:\'Cormorant Garamond\',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.35);margin-bottom:4px;">TBA</p>',
+            '<p style="font-family:\'Cormorant Garamond\',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.35);margin-bottom:4px;">TBD</p>',
             '<p style="font-size:11px;color:rgba(245,240,232,0.2);letter-spacing:0.08em;">Hanalei, Kauaʻi</p>',
-            '<p style="font-size:10px;color:rgba(245,240,232,0.2);margin-top:12px;">Dates Coming</p>',
+            '<p style="font-size:10px;color:rgba(245,240,232,0.2);margin-top:12px;">To Be Determined</p>',
           ].join("");
           el.style.background = "rgba(28,43,30,0.5)";
           continue;
@@ -1381,8 +1381,8 @@ const BODY_CONTENT = `
   </div>
 </section>
 
-<!-- UPCOMING DATES — temporarily hidden -->
-<section style="display:none;background:var(--forest-dark);padding:80px 60px;text-align:center;">
+<!-- UPCOMING DATES -->
+<section style="background:var(--forest-dark);padding:80px 60px;text-align:center;">
   <div style="max-width:860px;margin:0 auto;">
     <span class="section-label reveal" style="color:var(--terra);">Come As You Are</span>
     <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,52px);font-weight:300;color:var(--cream);line-height:1.1;margin-bottom:16px;" class="reveal">Upcoming<br><em style="font-style:italic;color:var(--terra-pale);">Ceremonies</em></h2>
@@ -1390,21 +1390,21 @@ const BODY_CONTENT = `
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-bottom:44px;" class="reveal">
       <div id="upcoming-ceremony-card-0" style="background:rgba(28,43,30,0.5);padding:28px 20px;">
         <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.75);margin-bottom:10px;">Upcoming</p>
-        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.6);margin-bottom:4px;">TBA</p>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.6);margin-bottom:4px;">TBD</p>
         <p style="font-size:11px;color:rgba(245,240,232,0.55);letter-spacing:0.08em;">Hanalei, Kauaʻi</p>
-        <p style="font-size:10px;color:rgba(245,240,232,0.55);margin-top:12px;">Dates Coming</p>
+        <p style="font-size:10px;color:rgba(245,240,232,0.55);margin-top:12px;">To Be Determined</p>
       </div>
       <div id="upcoming-ceremony-card-1" style="background:rgba(28,43,30,0.5);padding:28px 20px;">
         <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.75);margin-bottom:10px;">Upcoming</p>
-        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.6);margin-bottom:4px;">TBA</p>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.6);margin-bottom:4px;">TBD</p>
         <p style="font-size:11px;color:rgba(245,240,232,0.55);letter-spacing:0.08em;">Hanalei, Kauaʻi</p>
-        <p style="font-size:10px;color:rgba(245,240,232,0.55);margin-top:12px;">Dates Coming</p>
+        <p style="font-size:10px;color:rgba(245,240,232,0.55);margin-top:12px;">To Be Determined</p>
       </div>
       <div id="upcoming-ceremony-card-2" style="background:rgba(28,43,30,0.5);padding:28px 20px;">
         <p style="font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,169,110,0.75);margin-bottom:10px;">Upcoming</p>
-        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.6);margin-bottom:4px;">TBA</p>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:rgba(245,240,232,0.6);margin-bottom:4px;">TBD</p>
         <p style="font-size:11px;color:rgba(245,240,232,0.55);letter-spacing:0.08em;">Hanalei, Kauaʻi</p>
-        <p style="font-size:10px;color:rgba(245,240,232,0.55);margin-top:12px;">Dates Coming</p>
+        <p style="font-size:10px;color:rgba(245,240,232,0.55);margin-top:12px;">To Be Determined</p>
       </div>
     </div>
     <a href="/begin-your-journey" target="_blank" style="display:inline-block;font-size:10px;font-weight:400;letter-spacing:0.3em;text-transform:uppercase;color:var(--forest);background:var(--gold);padding:18px 44px;text-decoration:none;">Book a Discovery Call</a>

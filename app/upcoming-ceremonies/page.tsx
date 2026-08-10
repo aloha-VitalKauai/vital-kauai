@@ -1,7 +1,7 @@
-import { redirect } from "next/navigation";
+import { UpcomingCeremoniesPage } from "@/components/upcoming-ceremonies-page";
 
-// Upcoming Ceremonies page temporarily hidden — redirect any visitors home.
-// The page component remains in the repo to restore later.
-export default function UpcomingCeremoniesRoute(): never {
-  redirect("/");
+export const metadata = { title: "Upcoming Ceremonies — Vital Kauaʻi" };
+
+export default function UpcomingCeremoniesRoute() {
+  return <UpcomingCeremoniesPage />;
 }

@@ -7,7 +7,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
  * keeps its plain "Hanalei, Kauaʻi" line. The member portal scheduling form
  * reads cohorts directly and stays live. Flip to true to show dates again.
  */
-export const PUBLIC_CEREMONY_DATES_VISIBLE = false
+export const PUBLIC_CEREMONY_DATES_VISIBLE = true
 
 export type PublicCohort = {
   id: string
@@ -82,8 +82,8 @@ export function groupCohortsByDate(cohorts: PublicCohort[]): PublicCohort[] {
  * new bookings but names haven't been entered in the backend yet.
  */
 const FORCED_FULL_START_DATES = new Set<string>([
-  '2026-06-21', // Jun 21–27, 2026 · Hanalei
-  '2026-07-05', // Jul 5–11, 2026 · Hanalei
+  // Add a cohort's UTC start date (YYYY-MM-DD) here to display it as Full
+  // publicly before names are entered in the backend.
 ])
 
 function utcDateKey(iso: string): string {

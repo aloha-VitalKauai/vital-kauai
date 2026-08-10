@@ -651,8 +651,8 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Upcoming Ceremonies — temporarily hidden */}
-      <section className={styles.ceremonies} style={{ display: "none" }}>
+      {/* Upcoming Ceremonies */}
+      <section className={styles.ceremonies}>
         <div className={styles.ceremoniesInner}>
           <p className={`${styles.sectionLabel} ${styles.reveal}`} style={{ color: "var(--terra)" }}>Come As You Are</p>
           <h2 className={`${styles.sectionTitle} ${styles.reveal}`}>
@@ -677,9 +677,9 @@ export function HomePage() {
                   return (
                     <div key={`tba-${i}`} className={styles.ceremonyCard}>
                       <p className={styles.ceremonyLabel}>Upcoming</p>
-                      <p className={styles.ceremonyDateMuted}>TBA</p>
+                      <p className={styles.ceremonyDateMuted}>TBD</p>
                       <p className={styles.ceremonySub}>Hanalei, Kauaʻi</p>
-                      <p className={styles.ceremonyStatusMuted}>Dates Coming</p>
+                      <p className={styles.ceremonyStatusMuted}>To Be Determined</p>
                     </div>
                   );
                 }
