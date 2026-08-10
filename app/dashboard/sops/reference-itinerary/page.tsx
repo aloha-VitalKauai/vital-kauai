@@ -97,7 +97,7 @@ export default function ReferenceItineraryPage() {
             <p className="lede">Eight days in Hanalei: arrival, two ceremonies held with rest and integration between, embodiment, and a closing departure.</p>
             <div className="meta-row">
               <span>Hanalei · Kauaʻi</span>
-              <span>Up to 6 Members</span>
+              <span>Up to 3 Members</span>
               <span>Two Ceremonies</span>
             </div>
           </header>

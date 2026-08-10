@@ -65,7 +65,7 @@ const faqs = [
   {
     question: "Are accommodations included?",
     answer:
-      "We hold ceremony in a private home in Hanalei, where members share the space with a small group of up to five other members. Your stay includes meals, movement, breathwork, bodywork, sound healing, and a full schedule of preparation and integration practices. Private journeys are also available as a separate container.",
+      "We hold ceremony in a private home in Hanalei, where members share the space with a small group of up to two other members. Your stay includes meals, movement, breathwork, bodywork, sound healing, and a full schedule of preparation and integration practices. Private journeys are also available as a separate container.",
   },
   {
     question: "What is the contribution?",
@@ -661,7 +661,7 @@ export function HomePage() {
             <em style={{ color: "var(--terra-pale)" }}>Ceremonies</em>
           </h2>
           <p className={`${styles.sectionSub} ${styles.reveal}`} style={{ maxWidth: 600, margin: "0 auto 48px" }}>
-            Each ceremony is a small, held gathering of up to six members. Book a discovery
+            Each ceremony is a small, held gathering of up to three members. Book a discovery
             call to learn about the next available date.
           </p>
           <div className={`${styles.ceremoniesGrid} ${styles.reveal}`}>
