@@ -348,8 +348,8 @@ export function IbogaJourneyPage() {
         </div>
       </section>
 
-      {/* ── Upcoming Ceremonies — temporarily hidden ── */}
-      <section style={{ display: "none", padding: "112px 32px", background: "var(--cream, #F5F0E8)", textAlign: "center" }}>
+      {/* ── Upcoming Ceremonies ── */}
+      <section style={{ padding: "112px 32px", background: "var(--cream, #F5F0E8)", textAlign: "center" }}>
         <div style={{ maxWidth: 1080, margin: "0 auto" }}>
           {/* Decorative gold rule above the eyebrow */}
           <div style={{ width: 36, height: 1, background: "var(--gold, #C8A96E)", margin: "0 auto 20px", opacity: 0.6 }} />
@@ -383,10 +383,10 @@ export function IbogaJourneyPage() {
                   return (
                     <div key={`tba-${i}`} style={{ ...cardBase, opacity: 0.55, borderStyle: "dashed", boxShadow: "none" }}>
                       <p style={{ fontSize: 9, letterSpacing: "0.32em", textTransform: "uppercase", color: "rgba(0,0,0,0.4)", marginBottom: 18 }}>Upcoming</p>
-                      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "clamp(28px, 3.4vw, 36px)", fontWeight: 300, color: "rgba(0,0,0,0.42)", lineHeight: 1.1, marginBottom: 10 }}>TBA</p>
+                      <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", fontSize: "clamp(28px, 3.4vw, 36px)", fontWeight: 300, color: "rgba(0,0,0,0.42)", lineHeight: 1.1, marginBottom: 10 }}>TBD</p>
                       <p style={{ fontSize: 11, color: "rgba(0,0,0,0.4)", letterSpacing: "0.08em", marginBottom: 18 }}>Hanalei, Kauaʻi</p>
                       <div style={{ width: 28, height: 1, background: "rgba(0,0,0,0.18)", margin: "0 auto 14px" }} />
-                      <p style={{ fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.38)" }}>Dates Coming</p>
+                      <p style={{ fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(0,0,0,0.38)" }}>To Be Determined</p>
                     </div>
                   );
                 }
