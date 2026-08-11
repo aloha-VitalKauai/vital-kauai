@@ -670,6 +670,11 @@ export default async function SomaticCompanionWeek3Page() {
                   <li>Tremble</li>
                   <li>Energized</li>
                   <li>Electric</li>
+                  <li>Open</li>
+                  <li>Expansive</li>
+                  <li>Spacious</li>
+                  <li>Warm</li>
+                  <li>Glowing</li>
                 </ul>
                 <ul>
                   <li>Blocked</li>
@@ -682,6 +687,11 @@ export default async function SomaticCompanionWeek3Page() {
                   <li>Shivery</li>
                   <li>Tight</li>
                   <li>Flushed</li>
+                  <li>Soft</li>
+                  <li>Melting</li>
+                  <li>Flowing</li>
+                  <li>Grounded</li>
+                  <li>Settled</li>
                 </ul>
                 <ul>
                   <li>Throbbing</li>
@@ -694,6 +704,11 @@ export default async function SomaticCompanionWeek3Page() {
                   <li>Tense</li>
                   <li>Wobbly</li>
                   <li>Tingly</li>
+                  <li>Steady</li>
+                  <li>Calm</li>
+                  <li>Buoyant</li>
+                  <li>Tender</li>
+                  <li>Bright</li>
                 </ul>
                 <ul>
                   <li>Faint</li>
@@ -706,6 +721,11 @@ export default async function SomaticCompanionWeek3Page() {
                   <li>Chills</li>
                   <li>Wavy</li>
                   <li>Spinning</li>
+                  <li>Alive</li>
+                  <li>Peaceful</li>
+                  <li>Joyful</li>
+                  <li>Grateful</li>
+                  <li>Content</li>
                 </ul>
               </div>
             </div>
