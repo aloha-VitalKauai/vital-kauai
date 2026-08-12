@@ -27,6 +27,12 @@ const teamMembers = [
     bio: "Josh's path took him from Stanford Design School into conscious business, somatic healing, and relational transformation. He brings humility, humor, and steady, devoted presence to the operations of Vital Kauaʻi.",
     image: "/images/about/josh-perdue.jpg",
   },
+  {
+    name: "Dr. Matt Montee",
+    role: "Functional Medicine · Founder, Intelligent Medicines",
+    bio: "Dr. Matt Montee is a Certified Functional Medicine Practitioner whose foundation was built in orthopedics and sports medicine at Cornell and the Hospital for Special Surgery. Founder of Intelligent Medicines, he pairs precision, root-cause care with advanced biologics to accelerate healing and extend healthspan.",
+    image: "/images/mattmontee.jpeg",
+  },
   // Temporarily hidden from the homepage feature row.
   // {
   //   name: "Dr. Liz Esalen",
