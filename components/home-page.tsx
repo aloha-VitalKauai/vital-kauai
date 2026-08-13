@@ -535,16 +535,13 @@ export function HomePage() {
               <p>We offer support at every level.</p>
               <h3 className={styles.supportHeader}>Preparation &amp; Integration</h3>
               <p>
-                Full preparation and integration support across months: 16 total calls; six weeks
-                of preparation before ceremony and six weeks of integration after. Optional 1:1
-                support continues
-                for as long as it serves, and your place in the Vital Kauaʻi Church community is
-                for life.
+                Full preparation and integration support across months. Medical review and
+                physician presence.
               </p>
               <h3 className={styles.supportHeader}>Coaching &amp; Psychoneuroenergetics (PNE)</h3>
               <p>
-                1:1 coaching and PNE support to help you build the capacity to feel safe, track the
-                nervous system, self-resource, and integrate what the root reveals.
+                1:1 coaching and PNE integration guide to help you build the capacity to feel safe,
+                track the nervous system, self-resource, and integrate what the root reveals.
               </p>
               <h3 className={styles.supportHeader}>Somatic Practices</h3>
               <p>Yoga, breathwork, movement, bodywork, sound baths, and more.</p>
