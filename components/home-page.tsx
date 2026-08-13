@@ -495,7 +495,7 @@ export function HomePage() {
           </p>
         </div>
         <div className={`${styles.medicinePills} ${styles.reveal}`} style={{ maxWidth: 920, margin: "32px auto 0", padding: "0 32px" }}>
-          {["Whole-Plant Protocol", "Titrated Dosing", "Integration Support", "Responsibility, Reciprocity, and Service"].map(
+          {["Whole-Plant Protocol", "Titrated Dosing", "Full Medical Intake, Preparation, and Support", "Integration Support", "Responsibility, Reciprocity, and Service"].map(
             (pill) => (
               <span key={pill} className={styles.pill}>
                 {pill}
