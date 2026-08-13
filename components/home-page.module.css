@@ -871,7 +871,10 @@
 }
 .rivers .pill {
   color: var(--forest);
-  border-color: rgb(122 158 126 / 0.6);
+  font-weight: 600;
+  background: rgb(200 169 110 / 0.18);
+  border: 1px solid rgb(200 169 110 / 0.9);
+  box-shadow: 0 2px 10px rgb(200 169 110 / 0.18);
 }
 
 .riverFeature {
