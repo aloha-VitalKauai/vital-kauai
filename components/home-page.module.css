@@ -403,7 +403,7 @@
 }
 
 .leadCapture {
-  background: var(--forest-dark);
+  background: var(--forest);
   padding: 120px 100px;
 }
 
@@ -716,8 +716,7 @@
   transform: scale(1.3);
 }
 
-.whyIboga,
-.rivers {
+.whyIboga {
   background: var(--forest-dark);
 }
 
@@ -862,6 +861,17 @@
    Nature's Most Ancient Medicine feature so they read as one piece. */
 .rivers {
   padding-top: 64px;
+  background: var(--cream);
+}
+
+/* Light-section text overrides for the Healing Power feature area.
+   (The iboga photo card keeps its own dark overlay + cream text.) */
+.rivers .medicineDistinction p {
+  color: var(--text-mid);
+}
+.rivers .pill {
+  color: var(--forest);
+  border-color: rgb(122 158 126 / 0.6);
 }
 
 .riverFeature {
@@ -921,7 +931,37 @@
 }
 
 .offerings {
-  background: var(--forest);
+  background: var(--cream);
+}
+
+/* Light-section text overrides. */
+.offerings .sectionLabel {
+  color: #9a7a3e;
+}
+.offerings .sectionTitle {
+  color: var(--text-dark);
+}
+.offerings .sectionTitle em {
+  color: var(--sage);
+}
+.offerings .sectionSub {
+  color: var(--text-mid);
+}
+.offerings .supportHeader {
+  color: #9a7a3e;
+}
+.offerings .offeringQuote {
+  color: var(--text-mid);
+}
+.offerings .tagSage {
+  color: #4a6b4e;
+  border-color: rgb(122 158 126 / 0.5);
+  background: rgb(122 158 126 / 0.1);
+}
+.offerings .tagGold {
+  color: #9a7a3e;
+  border-color: rgb(154 122 62 / 0.5);
+  background: rgb(200 169 110 / 0.12);
 }
 
 .offeringsHeader {
@@ -1533,17 +1573,21 @@
   grid-template-columns: 1fr 1fr;
   gap: 100px;
   align-items: center;
-  background: var(--deep);
+  background: var(--cream);
+}
+
+.contact .sectionLabel {
+  color: #9a7a3e;
 }
 
 .contactLeft .sectionTitle {
-  color: var(--cream);
+  color: var(--text-dark);
 }
 
 .contactCopy {
   margin-top: 28px;
   margin-bottom: 48px;
-  color: rgb(245 240 232 / 0.6);
+  color: var(--text-mid);
 }
 
 .contactDetail {
@@ -1557,13 +1601,13 @@
   font-size: 12px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: #9a7a3e;
 }
 
 .contactDetailValue {
   font-family: var(--font-display), serif;
   font-size: 18px;
-  color: var(--cream);
+  color: var(--text-dark);
 }
 
 .contactForm {
@@ -1582,7 +1626,7 @@
   font-size: 12px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: #9a7a3e;
 }
 
 .formGroup input,
@@ -1592,11 +1636,16 @@
   font-family: var(--font-body), sans-serif;
   font-size: 13px;
   font-weight: 300;
-  color: var(--cream);
-  background: rgb(255 255 255 / 0.04);
-  border: 1px solid rgb(200 169 110 / 0.2);
+  color: var(--text-dark);
+  background: var(--warm-white);
+  border: 1px solid rgb(28 43 30 / 0.18);
   outline: none;
   transition: border-color 0.3s;
+}
+
+.formGroup input::placeholder,
+.formGroup textarea::placeholder {
+  color: rgb(28 43 30 / 0.4);
 }
 
 .formGroup input:focus,

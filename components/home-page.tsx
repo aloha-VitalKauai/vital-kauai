@@ -490,7 +490,7 @@ export function HomePage() {
             wisdom of this plant. The difference is the difference between a symphony and a
             single note.&quot;
           </p>
-          <p style={{ marginTop: 16, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(245,240,232,0.45)", fontStyle: "normal" }}>
+          <p style={{ marginTop: 16, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(28,43,30,0.5)", fontStyle: "normal" }}>
             — Vital Kaua&#699;i
           </p>
         </div>
