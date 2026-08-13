@@ -547,7 +547,9 @@ export function HomePage() {
               <p>Yoga, breathwork, movement, bodywork, sound baths, and more.</p>
               <h3 className={styles.supportHeader}>Vitality &amp; Nutrition</h3>
               <p>
-                Personalized nutrition guidance and vitality support prepare the body to receive.
+                Personalized nutrition guidance and vitality support prepare the body to receive. A
+                world-class chef nourishes you with fresh, local island food grown and caught on
+                Kauaʻi.
               </p>
               <h3 className={styles.supportHeader}>Nature</h3>
               <p>
