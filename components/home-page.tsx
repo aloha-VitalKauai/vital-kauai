@@ -386,22 +386,25 @@ export function HomePage() {
             <div>
               <span className={styles.storyEyebrow}>Why Iboga</span>
               <p className={styles.storyBody}>
-                Vital Kauaʻi is a religious organization offering an in-depth program of holistic
-                preparation and integration, held in sacred ceremony with Iboga.
+                Most people who find us have done the work—therapy, books, and healers. Still,
+                there’s something untouched and unchanged.
               </p>
               <p className={styles.storyBody}>
-                We birthed Vital Kauaʻi so people can come home to themselves—lighter, freer, and
-                more alive.
+                We birthed Vital Kauaʻi from a spiritual calling to help people live clear, joyful
+                and free.
               </p>
               <p className={styles.storyBody}>
-                Iboga is a powerful plant ally. Research is only beginning to reveal its many
-                gifts, and it has profoundly shaped our own lives. We’ve seen it walk with people
-                through suffering, and guide them into deeper alignment with their purpose.
+                What we offer is an in-depth program and a path we’ve walked ourselves: preparation,
+                an eight-day ceremonial container on Kauaʻi with Iboga, and integration across
+                several months of support.
               </p>
               <p className={styles.storyBody}>
-                We bring great care, safety, and integrity to everything we do. Every part of what
-                we offer exists in service: the team, the preparation, the ceremony, and every step
-                of the journey that grows from the root.
+                Iboga has profoundly shaped our own lives, and we’ve watched it carry people through
+                real suffering and return them Home.
+              </p>
+              <p className={styles.storyBody}>
+                We bring great care, safety, and integrity to everything we do. Every branch of
+                Vital Kauaʻi—the team, practices, and guidance—exists to return people to Wholeness.
               </p>
               <Link href="/begin-your-journey" className={styles.storyLink}>
                 Book a Discovery Call →
