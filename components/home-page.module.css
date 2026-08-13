@@ -794,6 +794,7 @@
   display: block;
   margin-bottom: 20px;
   color: var(--gold);
+  font-size: 12px;
   letter-spacing: 0.42em;
 }
 
