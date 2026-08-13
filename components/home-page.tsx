@@ -551,8 +551,9 @@ export function HomePage() {
               </p>
               <h3 className={styles.supportHeader}>Nature</h3>
               <p>
-                The ocean and land of Kauaʻi share in this work, and we hold our kuleana to her in
-                return—in reciprocity and respect.
+                The ocean and land of Kauaʻi are part of the medicine. Her waters, forests, and warm
+                shores calm the nervous system and restore the body, holding you through every step
+                of the journey.
               </p>
               <h3 className={styles.supportHeader}>Community</h3>
               <p>
