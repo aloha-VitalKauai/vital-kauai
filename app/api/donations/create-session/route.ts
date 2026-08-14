@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { legacyPaymentsEnabled, legacyPaymentsDisabledResponse } from "@/lib/payments/legacy-enabled";
 import Stripe from "stripe";
 import { createClient as createServerSupabase } from "@/lib/supabase/server";
 import { createClient as createServiceSupabase } from "@supabase/supabase-js";
@@ -16,6 +17,10 @@ function getStripe() {
 }
 
 export async function POST() {
+  // D-078: fail-closed legacy shutdown. MUST be the first statement — before
+  // any Stripe/Square client construction, any auth call, and any DB write.
+  if (!legacyPaymentsEnabled()) return legacyPaymentsDisabledResponse();
+
   const stripe = getStripe();
   // 1. Authed user
   const supabase = await createServerSupabase();

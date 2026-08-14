@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test lib/journal-sharing.test.ts lib/medicine-questions.test.ts"
+    "test": "node --test lib/journal-sharing.test.ts lib/medicine-questions.test.ts lib/payments/legacy-shutdown.test.ts"
   },
   "dependencies": {
     "@aparajita/capacitor-biometric-auth": "^10.0.0",

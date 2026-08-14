@@ -883,3 +883,72 @@ before PR 3 ingestion, rather than relying solely on application dedup.
   application role forge a below-threshold quarantine directly.
 - **`tg_link_claim_guard` → SECURITY INVOKER** — it makes no identity comparison
   and reads no other table, so DEFINER was pointless privilege.
+
+## D-077 — Founder-authorised wipe of legacy financial data (supersedes P2-D1)
+
+**Decision.** On 2026-08-13 (HST) the founder explicitly authorised deletion of all
+legacy financial rows, stating that only two genuine participants had ever attended
+and that their financial data would be re-entered by hand. Executed the same
+session: `donations` 20 rows, `financial_commitments` 14, `payment_tokens` 3,
+`payment_allocations` 0. `bookings` (11 rows) was deliberately preserved because its
+content is operational booking status rather than financial history, and every row
+recorded `$0` paid.
+
+**This supersedes P2-D1**, recorded during PR 2 planning, which stated that no legacy
+financial row would ever be deleted. P2-D1's reasoning — deletion is unrecoverable,
+there is no importer to restore from, and the rows were inert because `finance` never
+reads them — remains correct. The founder weighed it and chose deletion anyway, to
+clear synthetic figures from the legacy dashboard before live activation. Recorded
+here rather than silently applied.
+
+**Evidence gathered before deleting**, which moved the earlier founder attestation
+from testimony to observation:
+
+- Every donation carrying a Stripe session used a test-mode session identifier; zero
+  live-mode identifiers existed. Checkout Session ids are the only Stripe object type
+  that encodes mode, so this is conclusive.
+- No donation ever completed — all sessioned rows were `status = "pending"`.
+- The two rows lacking any provider identifier were self-labelled in metadata as a
+  pre-launch manual backfill, and both were already refunded.
+- All donation rows belonged to the founder's own account, the organisation's own
+  account, or one internal staff member. No external participant held one.
+
+**Safeguards applied.** A full row-level archive was captured immediately before the
+delete, held outside version control at mode `600` with its SHA-256 recorded. A
+redacted, committable recovery record carrying no member identifiers, no email
+addresses and no payment tokens is at `docs/financials-v2/PR2_WIPE_RECOVERY_REDACTED.md`.
+Cascade behaviour was verified beforehand; post-delete counts were verified zero, and
+the `finance` schema was confirmed untouched at zero state.
+
+**Residual risk, stated plainly.** If any deleted row was genuine, the only
+reconstruction source is the local archive. The evidence makes that unlikely, not
+impossible. The archive must not be discarded.
+
+## D-078 — The legacy Stripe integration is live and must be shut down before PR 3
+
+**Finding.** PR 3's directive recorded that "Stripe is disconnected from the runtime
+system." That was false. Verified 2026-08-13:
+
+- The `stripe-webhook` Supabase Edge Function is deployed and **ACTIVE at version 9**.
+- Four server paths create Stripe Checkout Sessions:
+  `app/api/donations/create-session`, `app/api/donations/create-gift-session`,
+  `app/api/payments/create-journey-session`, and the server component
+  `app/pay/[token]/page.tsx`.
+- Two runtimes hold credentials for the same Stripe account on different SDK versions:
+  the Next.js app on `stripe@^22`, the Edge Function on `stripe@14.21.0`, both pinning
+  request API version `2024-06-20`.
+- The legacy flag `PAYMENT_PROVIDER` (`lib/payment-provider.ts`) **defaults to
+  `"stripe"` when unset — it fails open**, contrary to the fail-closed requirement for
+  financial flags.
+- The Edge Function contains a self-heal path that **inserts** a `donations` row when
+  one is missing, so a completing session recreates financial rows rather than no-oping.
+
+**Consequence.** These paths write to `donations` and `financial_commitments`, which
+D-077 just emptied. Any checkout initiated from the app would repopulate them and
+restore synthetic figures to the legacy dashboard. PR 3 is therefore not "connect
+Stripe" but "supersede a running payment integration."
+
+**Decision.** The legacy Stripe integration is to be shut down fail-closed as a
+narrowly scoped PR 2 closeout, before PR 3 preflight resumes. PR 3 remains BLOCKED
+until that shutdown and the separate migration-history repair are complete and
+reviewed.

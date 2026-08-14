@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { legacyPaymentsEnabled } from "@/lib/payments/legacy-enabled";
 import Stripe from "stripe";
 import { createClient as createServiceSupabase } from "@supabase/supabase-js";
 
@@ -19,6 +20,10 @@ export default async function PayByTokenPage({
   params: Promise<{ token: string }>;
 }) {
   const { token } = await params;
+
+  // D-078: fail-closed legacy shutdown. Before the service-role client is built,
+  // before payment_tokens is read, and before any Stripe call.
+  if (!legacyPaymentsEnabled()) return <LegacyPaymentsDisabled />;
 
   const service = createServiceSupabase(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -192,6 +197,24 @@ function TokenInvalid({ reason }: { reason: string }) {
       </h1>
       <p style={{ color: "#8B8070" }}>
         {messages[reason] ?? messages.not_available}
+      </p>
+    </main>
+  );
+}
+
+function LegacyPaymentsDisabled() {
+  return (
+    <main style={{ maxWidth: 560, margin: "4rem auto", padding: "0 1.25rem" }}>
+      <h1 style={{ fontSize: "1.35rem", marginBottom: "0.75rem" }}>
+        This payment link is no longer active
+      </h1>
+      <p style={{ lineHeight: 1.6 }}>
+        Vital Kaua&#699;i is moving to a new contributions system. This link was
+        issued by the previous one and can no longer be used to pay.
+      </p>
+      <p style={{ lineHeight: 1.6 }}>
+        Nothing has been charged. Please contact us and we will send you a
+        current link.
       </p>
     </main>
   );
