@@ -376,12 +376,14 @@ export function HomePage() {
       <section id="why-iboga" className={styles.whyIboga}>
         <div className={styles.whyIbogaInner}>
           <div className={`${styles.whyIbogaGrid} ${styles.reveal}`}>
-            <div className={styles.videoPlaceholder}>
-              <div className={styles.playCircle}>
-                <div className={styles.playTriangle} />
-              </div>
-              <p className={styles.videoLabel}>Welcome to Vital Kaua&#699;i</p>
-              <p className={styles.videoComingSoon}>Coming Soon</p>
+            <div className={styles.videoFrame}>
+              <iframe
+                src="https://www.youtube.com/embed/cZwvxwemIag"
+                title="Dr. Chris Romig — Vital Kauaʻi"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
             </div>
             <div>
               <span className={styles.storyEyebrow}>Why Iboga</span>
