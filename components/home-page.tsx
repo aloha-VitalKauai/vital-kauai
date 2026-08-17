@@ -378,8 +378,8 @@ export function HomePage() {
           <div className={`${styles.whyIbogaGrid} ${styles.reveal}`}>
             <div className={styles.videoFrame}>
               <iframe
-                src="https://www.youtube.com/embed/F3CXH_lmFsg"
-                title="Welcome to Vital Kauaʻi"
+                src="https://www.youtube.com/embed/cZwvxwemIag"
+                title="Dr. Chris Romig — Vital Kauaʻi"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
