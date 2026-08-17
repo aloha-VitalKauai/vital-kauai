@@ -167,6 +167,29 @@ export function IbogaJourneyPage() {
       {/* ── Journey arc (interactive) ── */}
       <JourneyArc />
 
+      {/* ── Testimonials ── */}
+      <section className={styles.testimonials}>
+        <div className={styles.testimonialsIntro}>
+          <span className={styles.sectionLabel}>Voices from the Journey</span>
+          <h2 className={styles.sectionTitle}>Those Who Have Walked Through</h2>
+        </div>
+        <figure className={styles.testimonialVideo}>
+          <div className={styles.videoFrame}>
+            <iframe
+              src="https://www.youtube.com/embed/sXBHB-vxBcQ"
+              title="Testimonial from Brodie Seagrave"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
+          </div>
+          <figcaption className={styles.testimonialVideoMeta}>
+            <span className={styles.testimonialVideoName}>Brodie Seagrave</span>
+            <span className={styles.testimonialVideoRole}>Retired LAPD</span>
+          </figcaption>
+        </figure>
+      </section>
+
       {/* ── Iboga, The Teacher Plant (forest-dark) ── */}
       <section className={styles.medicine} id="medicine">
         <div className={styles.medicineInner}>
@@ -489,29 +512,6 @@ export function IbogaJourneyPage() {
             </article>
           </div>
         </div>
-      </section>
-
-      {/* ── Testimonials ── */}
-      <section className={styles.testimonials}>
-        <div className={styles.testimonialsIntro}>
-          <span className={styles.sectionLabel}>Voices from the Journey</span>
-          <h2 className={styles.sectionTitle}>Those Who Have Walked Through</h2>
-        </div>
-        <figure className={styles.testimonialVideo}>
-          <div className={styles.videoFrame}>
-            <iframe
-              src="https://www.youtube.com/embed/sXBHB-vxBcQ"
-              title="Testimonial from Brodie Seagrave"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            />
-          </div>
-          <figcaption className={styles.testimonialVideoMeta}>
-            <span className={styles.testimonialVideoName}>Brodie Seagrave</span>
-            <span className={styles.testimonialVideoRole}>Retired LAPD</span>
-          </figcaption>
-        </figure>
       </section>
 
       {/* ── Entry Points ── */}
