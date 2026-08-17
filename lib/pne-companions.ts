@@ -2,7 +2,8 @@
 //
 // Drives:
 //   - /portal/pne                            (the Resources landing page)
-//   - /portal/pne-guide[/week-N]     (per-week companion pages)
+//   - /portal/pne-guide[/week-N]             (pre-ceremony per-week pages)
+//   - /portal/pne-integration-guide[/week-N] (post-ceremony per-week pages)
 //   - PRE_PNE_COMPANION / POST_PNE_COMPANION (linked from the integration
 //     pages — see app/portal/integration/{pre,post}-ceremony/page.tsx)
 //
@@ -109,10 +110,11 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     weekIdx: 0,
     code: "MAHALO",
     theme: "Gratitude",
-    title: "Begin in Gratitude",
-    href: "/portal/pne",
-    status: "coming-soon",
-    videoSummary: "Coming Soon.",
+    title: "Mindful Listening",
+    href: "/portal/pne-integration-guide",
+    status: "live",
+    videoSummary:
+      "How another person's inner experience is received, the ten listening errors that quietly override it, and the practices that return a person to their own authority.",
   },
   {
     phase: "post",
