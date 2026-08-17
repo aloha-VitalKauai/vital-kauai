@@ -500,7 +500,7 @@ export function IbogaJourneyPage() {
         <figure className={styles.testimonialVideo}>
           <div className={styles.videoFrame}>
             <iframe
-              src="https://www.youtube.com/embed/GgcLBHJSsMs"
+              src="https://www.youtube.com/embed/sXBHB-vxBcQ"
               title="Testimonial from Brodie Seagrave"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"
