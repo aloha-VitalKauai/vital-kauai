@@ -1203,7 +1203,7 @@ const BODY_CONTENT = `
     <div class="homes-text">
       <span class="section-label reveal">Where You Will Stay</span>
       <h2 class="section-title reveal">A Private Home<br><em>in Hanalei</em></h2>
-      <p class="homes-body reveal">You will be staying in a private home in Hanalei, carefully selected for comfort, space, and proximity to the land and the bay. Each home sits within walking distance of the water, cradled by the mountains, and prepared with intention.</p>
+      <p class="homes-body reveal">You will be staying in a private home in Hanalei, carefully selected for comfort, space, and proximity to the land and the bay. The home sits within walking distance of the water, cradled by the mountains, and prepared with intention.</p>
     </div>
   </div>
 </section>
