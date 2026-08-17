@@ -503,7 +503,7 @@ export function IbogaJourneyPage() {
               <p>[Client quote placeholder, add your testimonial here.]</p>
             </blockquote>
             <p className={styles.testimonialAttribution}>
-             , [Name], [Location]
+              [Name], [Occupation], [Location]
             </p>
           </div>
           <div className={styles.testimonialVideoCard}>
