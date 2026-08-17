@@ -497,20 +497,21 @@ export function IbogaJourneyPage() {
           <span className={styles.sectionLabel}>Voices from the Journey</span>
           <h2 className={styles.sectionTitle}>Those Who Have Walked Through</h2>
         </div>
-        <div className={styles.testimonialsGrid}>
-          <div className={styles.testimonialCard}>
-            <blockquote className={styles.testimonialQuote}>
-              <p>[Client quote placeholder, add your testimonial here.]</p>
-            </blockquote>
-            <p className={styles.testimonialAttribution}>
-              [Name], [Occupation], [Location]
-            </p>
+        <figure className={styles.testimonialVideo}>
+          <div className={styles.videoFrame}>
+            <iframe
+              src="https://www.youtube.com/embed/GgcLBHJSsMs"
+              title="Testimonial from Brodie Seagrave"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
           </div>
-          <div className={styles.testimonialVideoCard}>
-            <div className={styles.playCircle}>&#9654;</div>
-            <p className={styles.videoPlaceholder}>[Video testimonial placeholder]</p>
-          </div>
-        </div>
+          <figcaption className={styles.testimonialVideoMeta}>
+            <span className={styles.testimonialVideoName}>Brodie Seagrave</span>
+            <span className={styles.testimonialVideoRole}>Retired LAPD</span>
+          </figcaption>
+        </figure>
       </section>
 
       {/* ── Entry Points ── */}
