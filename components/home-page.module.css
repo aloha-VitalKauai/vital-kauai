@@ -1335,14 +1335,11 @@
   text-align: left;
 }
 
-/* While a card's credentials are open (or on hover), lift the whole card
-   above its neighbors so the pop-up never bleeds through them. The open
-   state is applied via inline z-index in the markup (not a class toggle),
-   so React never rewrites the class attribute and clobbers the imperative
-   scroll-reveal class. */
-.teamCard:hover {
-  z-index: 50;
-}
+/* While a card's credentials are open, lift the whole card above its
+   neighbors so the pop-up never bleeds through them. The open state is
+   applied via inline z-index in the markup (not a class toggle), so React
+   never rewrites the class attribute and clobbers the imperative
+   scroll-reveal class. (Desktop hover lift lives in the hover media query.) */
 
 .teamImg {
   width: 120px;
@@ -1352,9 +1349,6 @@
   transition: filter 0.4s;
 }
 
-.teamCard:hover .teamImg {
-  filter: grayscale(0%);
-}
 
 .teamName {
   margin: 0 0 6px;
@@ -1409,11 +1403,6 @@
   transition: color 0.2s, border-color 0.2s;
 }
 
-.credTrigger:hover {
-  color: var(--gold);
-  border-color: var(--gold);
-}
-
 .credCard {
   position: absolute;
   top: calc(100% + 10px);
@@ -1438,11 +1427,31 @@
   right: 0;
 }
 
-.credWrap:hover .credCard,
 .credCard.credCardOpen {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+}
+
+/* Hover-reveal only on true pointer (desktop) devices. On touch, hover
+   styles make iOS Safari swallow the first tap, so touch relies on the
+   tap → .credCardOpen toggle instead. */
+@media (hover: hover) and (pointer: fine) {
+  .credWrap:hover .credCard {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .teamCard:hover {
+    z-index: 50;
+  }
+  .credTrigger:hover {
+    color: var(--gold);
+    border-color: var(--gold);
+  }
+  .teamCard:hover .teamImg {
+    filter: grayscale(0%);
+  }
 }
 
 .credSection {
@@ -1504,9 +1513,6 @@
     transform: none;
     box-shadow: none;
     opacity: 1;
-    display: none;
-  }
-  .credWrap:hover .credCard {
     display: none;
   }
   .credCard.credCardOpen {
