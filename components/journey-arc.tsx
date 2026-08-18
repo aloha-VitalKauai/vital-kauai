@@ -58,7 +58,7 @@ const PHASES: Phase[] = [
       "Daily meditation, breathwork, movement, and/or yoga",
       "Three therapeutic bodywork or energy work sessions",
       "Ceremonial walk along the Nā Pali coast and water ritual",
-      "Fire ritual and whole-plant Iboga ceremony",
+      "Fire ritual and two overnight whole-plant Iboga ceremonies",
       "Sound healing ceremony",
       "Hoʻoponopono ceremony",
       "Nourishment sourced from the ʻāina",
