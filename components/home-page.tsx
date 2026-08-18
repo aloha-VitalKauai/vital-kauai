@@ -41,7 +41,7 @@ const teamMembers: TeamMember[] = [
       {
         heading: "Certifications",
         items: [
-          "Certified Professional Co-Active Coach (CPCC)",
+          "Certified Life Coach (CPCC)",
           "Certified Eating Psychology Coach",
           "Certified Hypnotherapist",
           "Certified Yoga Instructor — Rishikesh, India",
@@ -50,7 +50,7 @@ const teamMembers: TeamMember[] = [
       {
         heading: "Education & Athletics",
         items: [
-          "B.S. Business Administration — Georgetown University (Leadership & Change)",
+          "Georgetown University — B.S. Business Administration (Leadership & Change)",
           "Division I volleyball on scholarship · Scholar-Athlete Award",
         ],
       },
