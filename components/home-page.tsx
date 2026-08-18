@@ -35,7 +35,6 @@ const teamMembers: TeamMember[] = [
         items: [
           "Consciousness, Spirituality & Transpersonal Psychology — Alef Trust",
           "Naturopathic Medicine — National University of Health Sciences",
-          "Health sciences — anatomy, physiology, biology, organic chemistry",
         ],
       },
       {
