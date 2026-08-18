@@ -802,7 +802,7 @@ export function HomePage() {
 
         <div className={styles.teamGrid}>
           {teamMembers.map((member, index) => (
-            <div key={member.name} className={`${styles.teamCard} ${styles.reveal} ${index % 2 ? styles.revealDelay1 : ""}`}>
+            <div key={member.name} className={`${styles.teamCard} ${styles.reveal} ${index % 2 ? styles.revealDelay1 : ""} ${openCred === member.name ? styles.teamCardActive : ""}`}>
               <Image className={styles.teamImg} src={member.image} alt={member.name} width={400} height={500} />
               <div>
                 <h4 className={styles.teamName}>{member.name}</h4>

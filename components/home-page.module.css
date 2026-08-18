@@ -1327,11 +1327,21 @@
 }
 
 .teamCard {
+  position: relative;
   display: grid;
   grid-template-columns: 120px 1fr;
   gap: 24px;
   align-items: start;
   text-align: left;
+}
+
+/* While a card's credentials are open (or on hover), lift the whole card
+   above its neighbors so the pop-up never bleeds through them. */
+.teamCard:hover {
+  z-index: 50;
+}
+.teamCardActive {
+  z-index: 50;
 }
 
 .teamImg {
@@ -1408,14 +1418,14 @@
   position: absolute;
   top: calc(100% + 10px);
   left: 0;
-  z-index: 40;
+  z-index: 60;
   width: min(360px, 86vw);
-  padding: 22px 24px;
+  padding: 24px 26px;
   text-align: left;
-  background: var(--warm-white);
-  border: 1px solid rgb(200 169 110 / 0.5);
+  background: #fbf8f1;
+  border: 1px solid rgb(200 169 110 / 0.55);
   border-top: 3px solid var(--gold);
-  box-shadow: 0 18px 46px rgb(20 26 18 / 0.18);
+  box-shadow: 0 22px 60px rgb(20 26 18 / 0.28);
   opacity: 0;
   visibility: hidden;
   transform: translateY(-6px);
@@ -1481,13 +1491,27 @@
   background: var(--gold);
 }
 
-/* On narrow screens, let the card fill the text column so nothing clips. */
+/* On narrow screens the card can't float safely over stacked cards, so it
+   expands inline in normal flow — fully opaque, pushing content down. */
 @media (max-width: 720px) {
   .credCard,
   .credCardRight {
-    left: 0;
-    right: 0;
+    position: static;
+    left: auto;
+    right: auto;
     width: auto;
+    margin-top: 14px;
+    transform: none;
+    box-shadow: none;
+    opacity: 1;
+    display: none;
+  }
+  .credWrap:hover .credCard {
+    display: none;
+  }
+  .credCard.credCardOpen {
+    display: block;
+    visibility: visible;
   }
 }
 
