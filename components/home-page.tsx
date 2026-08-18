@@ -8,7 +8,16 @@ import { createClient } from "@/lib/supabase/client";
 import { PUBLIC_CEREMONY_DATES_VISIBLE, fetchPublicCohorts, formatCohortRange, groupCohortsByDate, isCohortFull, spotsLeftLabel, type PublicCohort } from "@/lib/cohorts";
 import styles from "./home-page.module.css";
 
-const teamMembers = [
+type CredentialSection = { heading: string; items: string[] };
+type TeamMember = {
+  name: string;
+  role: string;
+  bio: string;
+  image: string;
+  credentials?: CredentialSection[];
+};
+
+const teamMembers: TeamMember[] = [
   {
     name: "Judith Johnson",
     role: "Founder, PsychoNeuroEnergetics · Somatic Integration Director",
@@ -20,6 +29,32 @@ const teamMembers = [
     role: "Co-Founder · Guide and Facilitator",
     bio: "Rachel weaves over two decades of devotion to embodied awakening, bridging Eastern philosophy with Western science. Her foundation includes graduate-level study in naturopathic medicine and transpersonal psychology, along with certifications in life coaching, mind-body nutrition, and hypnotherapy. Her work helps people reawaken to their true nature through her compassionate, powerful, and radically transformative presence.",
     image: "/images/about/rachel-nelson.jpg",
+    credentials: [
+      {
+        heading: "Postgraduate Study & Training",
+        items: [
+          "Consciousness, Spirituality & Transpersonal Psychology — Alef Trust. Postgraduate study spanning consciousness research, transpersonal psychology, psychedelics, shamanism, and the science of non-ordinary states.",
+          "Naturopathic Medicine — National University of Health Sciences. Postgraduate study in the foundations of naturopathy, anatomy, embryology, physiology, homeopathy, and organic chemistry.",
+          "Full health-sciences coursework — anatomy, physiology, biology, and organic chemistry.",
+        ],
+      },
+      {
+        heading: "Certifications",
+        items: [
+          "Certified Professional Co-Active Coach (CPCC) — Co-Active Training Institute, the field's most rigorous and respected coaching certification.",
+          "Certified Eating Psychology Coach — Institute for the Psychology of Eating.",
+          "Certified Hypnotherapist — Authentic Self Hypnosis.",
+          "Certified Yoga Instructor — trained in Rishikesh, India.",
+        ],
+      },
+      {
+        heading: "Education & Athletics",
+        items: [
+          "B.S., Business Administration (Marketing & Management) — Georgetown University, concentration in Leadership & Change.",
+          "Division I volleyball at Georgetown on athletic scholarship; recipient of the Scholar-Athlete Award.",
+        ],
+      },
+    ],
   },
   {
     name: "Josh Perdue",
@@ -110,7 +145,22 @@ export function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [openCred, setOpenCred] = useState<string | null>(null);
   const [publicCohorts, setPublicCohorts] = useState<PublicCohort[]>([]);
+
+  useEffect(() => {
+    if (!openCred) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpenCred(null); };
+    const onDown = (e: Event) => {
+      if (!(e.target as HTMLElement)?.closest?.("[data-cred]")) setOpenCred(null);
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onDown);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onDown);
+    };
+  }, [openCred]);
   const pageRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -747,6 +797,34 @@ export function HomePage() {
                 <h4 className={styles.teamName}>{member.name}</h4>
                 <p className={styles.teamRole}>{member.role}</p>
                 <p className={styles.teamBio}>{member.bio}</p>
+                {member.credentials && (
+                  <div className={styles.credWrap} data-cred>
+                    <button
+                      type="button"
+                      className={styles.credTrigger}
+                      aria-expanded={openCred === member.name}
+                      onClick={() => setOpenCred(openCred === member.name ? null : member.name)}
+                    >
+                      Education &amp; Background →
+                    </button>
+                    <div
+                      role="dialog"
+                      aria-label={`${member.name} — Education and Background`}
+                      className={`${styles.credCard} ${index % 2 ? styles.credCardRight : ""} ${openCred === member.name ? styles.credCardOpen : ""}`}
+                    >
+                      {member.credentials.map((sec) => (
+                        <div key={sec.heading} className={styles.credSection}>
+                          <p className={styles.credHeading}>{sec.heading}</p>
+                          <ul className={styles.credList}>
+                            {sec.items.map((it, i) => (
+                              <li key={i}>{it}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           ))}
