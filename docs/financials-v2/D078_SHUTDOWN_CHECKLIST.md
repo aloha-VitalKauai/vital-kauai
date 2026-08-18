@@ -433,27 +433,42 @@ None of these is exploitable by code currently in the repository. Each is a way 
 *future* change could evade the gate, which is why they are written down rather
 than left implicit.
 
-## Rollback
+## Rollback — fix-forward only
 
-This change adds refusals and contains **no migration**, so rollback carries no
-data implications — there is nothing to un-migrate and no schema to reverse.
+**The obvious rollback is prohibited.** Reverting to a pre-guard build would
+restore exactly the unguarded write paths this change exists to remove, and the
+legacy surface is being retired, not paused. There is no data to un-migrate —
+this change contains no migration and writes, alters and deletes nothing — so a
+revert buys nothing and costs the shutdown.
 
-- [ ] **R1. To roll back the code:** revert the shutdown commit and redeploy.
-      Prior behaviour returns. Nothing else is required.
+- [ ] **R1. NEVER roll back to a pre-guard application build.** Any build that
+      predates D-078 contains 18 unguarded writers to the retired tables. A
+      revert is not a safe operation here; it is a regression to the defect.
 
-- [ ] **R2. Do NOT roll back by setting `LEGACY_PAYMENTS_ENABLED=true`.**
-      Re-enabling legacy payments in production is **prohibited** (founder
-      directive). The flag exists so the code fails closed, not as an operational
-      switch. If a legacy path is ever genuinely needed again, that is a new,
-      separately-authorised decision — not a rollback step.
+- [ ] **R2. Keep the Stripe Edge Function and Square webhook guards deployed.**
+      These two are the paths a *provider* can invoke without anyone in the
+      product doing anything. They must stay guarded even while other things are
+      being repaired, because provider traffic does not stop for an incident.
 
-- [ ] **R3. Re-enabling provider webhooks.** Step 5/6 *disable* rather than
-      delete the endpoints precisely so this is reversible. Because the shutdown
-      returns 503 (not a 200 tombstone), Stripe and Square **retain and retry**
-      events for their retention window, so a short-lived shutdown loses nothing.
+- [ ] **R3. Keep provider webhook registrations disabled.** Steps 5 and 6 disable
+      rather than delete precisely so the configuration survives. "Re-enable the
+      webhook to unblock something" is not a rollback step — it re-opens the
+      ingestion path.
 
-- [ ] **R4. What rollback cannot undo:** nothing. No rows are written, altered or
-      deleted by this change.
+- [ ] **R4. Fix forward, or deploy a maintenance build.** If the shutdown deploy
+      causes a problem, the response is a new commit that corrects it, or a
+      maintenance/holding deployment that keeps the guards intact. Both preserve
+      the invariant; a revert does not.
+
+- [ ] **R5. NEVER re-enable `LEGACY_PAYMENTS_ENABLED` in production.** It is a
+      fail-closed guard, not an operational switch, and it is the single fastest
+      way to undo this entire change. Setting it to `"true"` re-arms all 18
+      writers at once. If a legacy path is ever genuinely needed again, that is a
+      new, separately-authorised decision — never an incident-response action.
+
+**Why a revert is safe to refuse:** because rollback normally exists to undo data
+damage, and there is none to undo. Nothing is written. The only thing a revert
+would "restore" is the ability to write.
 
 ## Pre-deploy finding — one production row appeared after the D-077 wipe
 

@@ -514,7 +514,7 @@ function makeStub(modName, trail = []) {
       }
       return makeStub(modName, nextTrail);
     },
-    construct(_t, args) {
+    construct() {
       record({ module: modName, path: trail.join("."), call: `new ${modName}`, arg0: undefined });
       return makeStub(modName, [...trail, "new"]);
     },

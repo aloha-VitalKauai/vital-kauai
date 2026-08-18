@@ -41,7 +41,8 @@ export async function POST(req: Request) {
   if (!commitment_id || typeof commitment_id !== "string") {
     return NextResponse.json({ error: "commitment_id required" }, { status: 400 });
   }
-  if (action !== "set_amount" && action !== "mark_fulfilled") {
+  const ACTIONS: Action[] = ["set_amount", "mark_fulfilled"];
+  if (!ACTIONS.includes(action as Action)) {
     return NextResponse.json(
       { error: "action must be set_amount or mark_fulfilled" },
       { status: 400 },

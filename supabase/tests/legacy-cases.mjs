@@ -1,5 +1,3 @@
-import { squareSignature, TEST_URL } from "./legacy-fixtures.mjs";
-
 /**
  * The routes that must REFUSE while legacy payments are off, with a request body
  * valid enough to get past their own input validation.
