@@ -8,7 +8,6 @@ import {
   getMyProfile,
   getMyMember,
   getAssignedSpecialist,
-  markDonationPaid,
   markOnboardingComplete,
 } from "@/lib/api/member";
 import { PortalNav } from "./portal-nav";
@@ -94,14 +93,6 @@ export function PortalHomePage({
   const [specialist, setSpecialist] = useState<Specialist | null>(null);
   const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Modal state for signing documents
-  const [modal, setModal] = useState<"donation" | "agreement" | "medical" | null>(null);
-  const [, setModalChecked] = useState(false);
-  const [modalLoading, setModalLoading] = useState(false);
-  const [modalMsg, setModalMsg] = useState<{ type: string; text: string } | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "venmo">("card");
-  const [venmoOpened, setVenmoOpened] = useState(false);
 
   // Lab upload state
   const [memberId, setMemberId] = useState<string | null>(null);
@@ -222,34 +213,6 @@ export function PortalHomePage({
         .toUpperCase()
         .slice(0, 2)
     : userEmail[0].toUpperCase();
-
-  async function handleDonation() {
-    // Simulate payment for now
-    setModalLoading(true);
-    setModalMsg(null);
-    await new Promise((r) => setTimeout(r, 1500));
-    const { error } = await markDonationPaid(supabase, userId, 250.0);
-    setModalLoading(false);
-    if (error) {
-      setModalMsg({ type: "error", text: error.message });
-      return;
-    }
-    // Check if all complete now
-    const data = await getMyProfile(supabase, userId);
-    if (data) {
-      setProfile(data);
-      if (
-        data.membership_agreement_signed &&
-        data.medical_disclaimer_signed &&
-        data.deposit_paid
-      ) {
-        await markOnboardingComplete(supabase, userId);
-        setProfile((prev) => prev ? { ...prev, onboarding_complete: true } : prev);
-      }
-    }
-    setModal(null);
-    setModalChecked(false);
-  }
 
   async function handleLabUpload(file: File) {
     if (!memberId) return;
@@ -670,101 +633,6 @@ export function PortalHomePage({
         </p>
       </footer>
 
-      {/* ── MODALS ── */}
-      {modal && (
-        <div className={styles.modalOverlay} onClick={() => { setModal(null); setModalChecked(false); setModalMsg(null); setPaymentMethod("card"); setVenmoOpened(false); }}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-
-            {modal === "donation" && (
-              <>
-                <div className={styles.modalBannerGold}>
-                  <p className={styles.modalEyebrow}>Required</p>
-                  <h2 className={styles.depositAmount}>
-                    <span>$</span>250
-                  </h2>
-                  <p className={styles.depositNote}>
-                    Refundable contribution &middot; Applied toward first month
-                  </p>
-                </div>
-                <div className={styles.depositBody}>
-                  <div className={styles.depositFeatures}>
-                    {[
-                      ["\uD83D\uDD12", "Fully Refundable", "Applied to month one or returned upon cancellation"],
-                      ["\u2728", "Immediate Activation", "Portal unlocks the moment payment is confirmed"],
-                      ["\uD83D\uDCC5", "Flexible Billing", "Month-to-month or annual options available"],
-                      ["\uD83C\uDF3F", "Member Benefits Begin", "Full access to all programs from day one"],
-                    ].map(([icon, label, desc], i) => (
-                      <div key={i} className={styles.depositFeature}>
-                        <div className={styles.depositFeatureIcon}>{icon}</div>
-                        <p className={styles.depositFeatureLabel}>{label}</p>
-                        <p className={styles.depositFeatureDesc}>{desc}</p>
-                      </div>
-                    ))}
-                  </div>
-                  {modalMsg && <div className={`${styles.alert} ${styles.alertError}`}>{modalMsg.text}</div>}
-                  <div className={styles.payMethodTabs}>
-                    <button
-                      type="button"
-                      className={`${styles.payMethodTab} ${paymentMethod === "card" ? styles.payMethodTabActive : ""}`}
-                      onClick={() => { setPaymentMethod("card"); setVenmoOpened(false); }}
-                    >
-                      &#128179; Card
-                    </button>
-                    <button
-                      type="button"
-                      className={`${styles.payMethodTab} ${paymentMethod === "venmo" ? styles.payMethodTabActive : ""}`}
-                      onClick={() => setPaymentMethod("venmo")}
-                    >
-                      Venmo
-                    </button>
-                  </div>
-                  {paymentMethod === "card" && (
-                    <div className={styles.stripePlaceholder}>
-                      <p>
-                        &#128179; Stripe payment integration goes here. Connect your Stripe account
-                        and replace this with Stripe Elements or a Checkout Session redirect.
-                      </p>
-                      <button
-                        className={styles.btnStripe}
-                        onClick={handleDonation}
-                        disabled={modalLoading}
-                      >
-                        {modalLoading ? "Processing\u2026" : "\uD83D\uDCB3 Simulate Payment \u2014 $250"}
-                      </button>
-                    </div>
-                  )}
-                  {paymentMethod === "venmo" && (
-                    <div className={styles.stripePlaceholder}>
-                      <p>
-                        Send <strong>$250</strong> to <strong>@Rachel-Nelson-05</strong> on Venmo,
-                        then return here and confirm.
-                      </p>
-                      <a
-                        className={styles.btnStripe}
-                        href="https://venmo.com/u/Rachel-Nelson-05"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => setVenmoOpened(true)}
-                        style={{ textDecoration: "none", marginBottom: 12 }}
-                      >
-                        Open Venmo &rarr; @Rachel-Nelson-05
-                      </a>
-                      <button
-                        className={styles.btnStripe}
-                        onClick={handleDonation}
-                        disabled={modalLoading || !venmoOpened}
-                        title={!venmoOpened ? "Open Venmo first to send your $250" : undefined}
-                      >
-                        {modalLoading ? "Processing\u2026" : "I\u2019ve sent my Venmo payment"}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
