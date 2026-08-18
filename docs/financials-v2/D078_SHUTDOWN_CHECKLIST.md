@@ -21,8 +21,10 @@ only 5 of 18 writers and its tests were vacuous. It is superseded.
       the repo remains a *separate* PR 3 preflight blocker and must not be
       touched here.
 
-- [ ] **3. Deploy the application code** (the 15 guarded route handlers, the pay
-      page, and the two onboarding routes whose commitment seed is suppressed).
+- [ ] **3. Deploy the application code.** 16 API route files (14 refuse outright;
+      `approve-member` and `add-member-manually` keep working with only their `$0`
+      commitment seed suppressed), plus the `/pay/[token]` page. With the Edge
+      Function that is 18 of 18 writers.
 
 - [ ] **4. Deploy the `stripe-webhook` Edge Function.** It now refuses with HTTP
       503 before signature verification and before any database write, whenever
@@ -430,3 +432,64 @@ in this repository**. They are real weaknesses in the gate's ability to catch a
 None of these is exploitable by code currently in the repository. Each is a way a
 *future* change could evade the gate, which is why they are written down rather
 than left implicit.
+
+## Rollback
+
+This change adds refusals and contains **no migration**, so rollback carries no
+data implications — there is nothing to un-migrate and no schema to reverse.
+
+- [ ] **R1. To roll back the code:** revert the shutdown commit and redeploy.
+      Prior behaviour returns. Nothing else is required.
+
+- [ ] **R2. Do NOT roll back by setting `LEGACY_PAYMENTS_ENABLED=true`.**
+      Re-enabling legacy payments in production is **prohibited** (founder
+      directive). The flag exists so the code fails closed, not as an operational
+      switch. If a legacy path is ever genuinely needed again, that is a new,
+      separately-authorised decision — not a rollback step.
+
+- [ ] **R3. Re-enabling provider webhooks.** Step 5/6 *disable* rather than
+      delete the endpoints precisely so this is reversible. Because the shutdown
+      returns 503 (not a 200 tombstone), Stripe and Square **retain and retry**
+      events for their retention window, so a short-lived shutdown loses nothing.
+
+- [ ] **R4. What rollback cannot undo:** nothing. No rows are written, altered or
+      deleted by this change.
+
+## Pre-deploy finding — one production row appeared after the D-077 wipe
+
+Recorded during the deployment review on 2026-08-17. `public.donations` held
+**1 row**, not the expected zero.
+
+| Property | Value |
+|---|---|
+| Created | 2026-08-17 20:19 UTC (same day as the review) |
+| Status | `pending` — never completed, `completed_at` is null |
+| Kind / amount | `additional_gift`, $500.00 |
+| Stripe session | **TEST-mode** (`cs_test_`) |
+| Square payment | none |
+| Payment token used | no |
+| Owner | an account with the `founder` role |
+
+**No money moved**: test-mode session, never completed. It is consistent with the
+founder exercising the donate flow while the legacy path is still live.
+
+Two conclusions follow, and the second is the important one:
+
+1. The row should be removed so the tables return to zero before Financials V2
+   takes ownership. **This requires separate founder authorisation** — the D-077
+   authorisation covered the earlier wipe only and is not open-ended.
+2. **This is direct evidence that the legacy payment path is live and still
+   creating rows today.** It is an argument for deploying the shutdown, not
+   against it. Post-deploy, an identical attempt returns 503 and writes nothing.
+
+## After deployment (founder directive)
+
+- [ ] **A1. Repair the migration history.** The production ledger and the repo
+      disagree (`20260814003127…` vs `20260730000001–8`), so `supabase db push`
+      would fail. This remains a separate PR 3 preflight blocker.
+
+- [ ] **A2. Add a database-level freeze on the retired tables as the EARLIEST
+      migration.** Application guards are necessary but not sufficient — a freeze
+      enforced by Postgres removes the whole class of "some future writer evades
+      the analyzer" limitations recorded above, because it does not depend on
+      static analysis being complete.
