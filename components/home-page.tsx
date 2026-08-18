@@ -33,25 +33,31 @@ const teamMembers: TeamMember[] = [
       {
         heading: "Postgraduate Study & Training",
         items: [
-          "Consciousness, Spirituality & Transpersonal Psychology — Alef Trust. Postgraduate study spanning consciousness research, transpersonal psychology, psychedelics, shamanism, and the science of non-ordinary states.",
-          "Naturopathic Medicine — National University of Health Sciences. Postgraduate study in the foundations of naturopathy, anatomy, embryology, physiology, homeopathy, and organic chemistry.",
-          "Full health-sciences coursework — anatomy, physiology, biology, and organic chemistry.",
+          "Consciousness, Spirituality & Transpersonal Psychology — Alef Trust",
+          "Naturopathic Medicine — National University of Health Sciences",
+          "Health sciences — anatomy, physiology, biology, organic chemistry",
         ],
       },
       {
         heading: "Certifications",
         items: [
-          "Certified Professional Co-Active Coach (CPCC) — Co-Active Training Institute, the field's most rigorous and respected coaching certification.",
-          "Certified Eating Psychology Coach — Institute for the Psychology of Eating.",
-          "Certified Hypnotherapist — Authentic Self Hypnosis.",
-          "Certified Yoga Instructor — trained in Rishikesh, India.",
+          "Certified Professional Co-Active Coach (CPCC)",
+          "Certified Eating Psychology Coach",
+          "Certified Hypnotherapist",
+          "Certified Yoga Instructor — Rishikesh, India",
         ],
       },
       {
         heading: "Education & Athletics",
         items: [
-          "B.S., Business Administration (Marketing & Management) — Georgetown University, concentration in Leadership & Change.",
-          "Division I volleyball at Georgetown on athletic scholarship; recipient of the Scholar-Athlete Award.",
+          "B.S. Business Administration — Georgetown University (Leadership & Change)",
+          "Division I volleyball on scholarship · Scholar-Athlete Award",
+        ],
+      },
+      {
+        heading: "Background",
+        items: [
+          "Co-led CBRE's National Religious Facilities Group, serving religious organizations nationwide",
         ],
       },
     ],
