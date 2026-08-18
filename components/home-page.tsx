@@ -688,13 +688,13 @@ export function HomePage() {
               <em className={styles.sageEmphasis}>Visitorship</em>
             </h2>
             <p className={`${styles.sectionSubDark} ${styles.reveal}`}>
-              Your accommodations are private homes on the North Shore: intimate, nature-integrated, steps from Hanalei Bay.
+              Your accommodation is a private home on the North Shore: intimate, nature-integrated, steps from Hanalei Bay.
             </p>
             <div className={styles.stayFeatures}>
               {[
                 [
-                  "Private North Shore Homes",
-                  "Stay in private homes in Hanalei: intimate, nature-integrated, steps from Hanalei Bay",
+                  "Private North Shore Home",
+                  "Stay in a private home in Hanalei: intimate, nature-integrated, steps from Hanalei Bay",
                 ],
                 [
                   "ʻĀina-Based Nourishment",
