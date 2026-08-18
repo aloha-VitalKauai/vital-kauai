@@ -27,8 +27,8 @@ export function LoginLanding({ nextPathParam, errorMessageParam }: LoginLandingP
             <em>Kauaʻi</em>
           </h1>
           <p className={styles.heroSub}>
-            We are a member-based spiritual community offering preparation,
-            ceremony, and integration in service of whole-being
+            We are a member-based spiritual community offering a program of
+            preparation, ceremony, and integration in service of whole-being
             transformation.
           </p>
         </div>
