@@ -1199,7 +1199,7 @@ const BODY_CONTENT = `
           <img src="/images/bathroom.jpg" alt="Bathroom" style="width:100%;height:100%;object-fit:cover;object-position:center 20%;">
         </div>
       </div>
-      <p style="font-size:12px;color:rgba(26,26,24,0.62);letter-spacing:0.04em;font-style:italic;text-align:center;margin-top:8px;">One of our ceremony homes. Photos of your private sanctuary shared personally after your discovery call.</p>
+      <p style="font-size:12px;color:rgba(26,26,24,0.62);letter-spacing:0.04em;font-style:italic;text-align:center;margin-top:8px;">Our ceremony home. Photos of your private sanctuary shared personally after your discovery call.</p>
     </div>
     <div class="homes-text">
       <span class="section-label reveal">Where You Will Stay</span>
@@ -1490,7 +1490,7 @@ const BODY_CONTENT = `
           <span class="faq-icon" aria-hidden="true"></span>
         </summary>
         <div class="faq-answer">
-          <p>Yes, WiFi is available in the homes. Many members find that their relationship with devices naturally shifts once they are here, Hanalei has a way of drawing you fully into the present. Your relationship with devices is yours to navigate, and we fully support a digital reset if that is something you want to explore as part of your journey.</p>
+          <p>Yes, WiFi is available in the home. Many members find that their relationship with devices naturally shifts once they are here, Hanalei has a way of drawing you fully into the present. Your relationship with devices is yours to navigate, and we fully support a digital reset if that is something you want to explore as part of your journey.</p>
         </div>
       </details>
 

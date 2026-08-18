@@ -1336,11 +1336,11 @@
 }
 
 /* While a card's credentials are open (or on hover), lift the whole card
-   above its neighbors so the pop-up never bleeds through them. */
+   above its neighbors so the pop-up never bleeds through them. The open
+   state is applied via inline z-index in the markup (not a class toggle),
+   so React never rewrites the class attribute and clobbers the imperative
+   scroll-reveal class. */
 .teamCard:hover {
-  z-index: 50;
-}
-.teamCardActive {
   z-index: 50;
 }
 
