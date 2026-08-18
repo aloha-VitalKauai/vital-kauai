@@ -43,6 +43,7 @@ export function MedicalDisclaimerPage() {
               <li>
                 <Link href="/church-information">About Vital Kauaʻi Church</Link>
               </li>
+              <li><Link href="/#team">The Team</Link></li>
               <li>
                 <Link href="/faq">FAQ</Link>
               </li>
@@ -81,6 +82,7 @@ export function MedicalDisclaimerPage() {
         <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>
           About Vital Kauaʻi Church
         </Link>
+        <Link href="/#team" onClick={() => setIsMobileNavOpen(false)}>The Team</Link>
         <Link href="/faq" onClick={() => setIsMobileNavOpen(false)}>
           FAQ
         </Link>

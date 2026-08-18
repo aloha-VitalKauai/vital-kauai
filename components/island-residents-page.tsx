@@ -42,6 +42,7 @@ export function IslandResidentsPage() {
             <Link href="/church-information" className={styles.navDropdownLabel}>About</Link>
             <ul className={styles.navDropdownMenu}>
               <li><Link href="/church-information">About Vital Kauaʻi Church</Link></li>
+              <li><Link href="/#team">The Team</Link></li>
               <li><Link href="/faq">FAQ</Link></li>
             </ul>
           </li>
@@ -68,6 +69,7 @@ export function IslandResidentsPage() {
         <Link href="/stay" onClick={() => setIsMobileNavOpen(false)}>Stay With Us</Link>
         <Link href="/island-residents" onClick={() => setIsMobileNavOpen(false)}>Island Residents</Link>
         <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>About Vital Kauaʻi Church</Link>
+        <Link href="/#team" onClick={() => setIsMobileNavOpen(false)}>The Team</Link>
         <Link href="/faq" onClick={() => setIsMobileNavOpen(false)}>FAQ</Link>
         <Link href="/portal" onClick={() => setIsMobileNavOpen(false)}>Member Portal</Link>
       </div>
