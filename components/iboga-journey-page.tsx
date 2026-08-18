@@ -276,8 +276,8 @@ export function IbogaJourneyPage() {
           <div className={styles.scienceCard}>
             <h4 className={styles.scienceCardTitle}>Neuroplasticity &amp; Neurogenesis</h4>
             <p className={styles.scienceCardBody}>
-              Iboga triggers a surge in BDNF and GDNF, the brain&apos;s own growth factors
-             , promoting new neural connections and the repair of damaged pathways.
+              Iboga triggers a surge in BDNF and GDNF, the brain&apos;s own growth factors,
+              promoting new neural connections and the repair of damaged pathways.
             </p>
             <p className={styles.scienceCardStat}>
               Research: Marton et al., Frontiers in Pharmacology, 2019
