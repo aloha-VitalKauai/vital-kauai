@@ -126,6 +126,7 @@ export function TestimonialsPage() {
               <li>
                 <Link href="/church-information">About Vital Kauaʻi Church</Link>
               </li>
+              <li><Link href="/#team">The Team</Link></li>
               <li>
                 <Link href="/testimonials">Testimonials</Link>
               </li>
@@ -167,6 +168,7 @@ export function TestimonialsPage() {
         <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>
           About Vital Kauaʻi Church
         </Link>
+        <Link href="/#team" onClick={() => setIsMobileNavOpen(false)}>The Team</Link>
         <Link href="/testimonials" onClick={() => setIsMobileNavOpen(false)}>
           Testimonials
         </Link>

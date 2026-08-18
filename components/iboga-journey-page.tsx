@@ -62,6 +62,7 @@ export function IbogaJourneyPage() {
               <li>
                 <Link href="/church-information">About Vital Kaua&#699;i Church</Link>
               </li>
+              <li><Link href="/#team">The Team</Link></li>
               <li>
                 <Link href="/faq">FAQ</Link>
               </li>
@@ -101,6 +102,7 @@ export function IbogaJourneyPage() {
         <Link href="/church-information" onClick={() => setIsMobileNavOpen(false)}>
           About Vital Kaua&#699;i Church
         </Link>
+        <Link href="/#team" onClick={() => setIsMobileNavOpen(false)}>The Team</Link>
         <Link href="/faq" onClick={() => setIsMobileNavOpen(false)}>
           FAQ
         </Link>
