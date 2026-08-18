@@ -110,10 +110,11 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     weekIdx: 0,
     code: "MAHALO",
     theme: "Gratitude",
-    title: "Begin in Gratitude",
-    href: "/portal/pne",
-    status: "coming-soon",
-    videoSummary: "Coming Soon.",
+    title: "The Right–Wrong Paradigm",
+    href: "/portal/pne-integration-guide",
+    status: "live",
+    videoSummary:
+      "The binary lens people fall into during conflict, what being right protects, how the paradigm is inherited through families, and the inquiry that opens in its place.",
   },
   {
     phase: "post",
