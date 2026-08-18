@@ -66,6 +66,40 @@ const teamMembers: TeamMember[] = [
     role: "Co-Founder · Director of Operations & Development",
     bio: "Josh's path took him from Stanford Design School into conscious business, somatic healing, and relational transformation. He brings humility, humor, and steady, devoted presence to the operations of Vital Kauaʻi.",
     image: "/images/about/josh-perdue.jpg",
+    credentials: [
+      {
+        heading: "Facilitation & Transformational Practice",
+        items: [
+          "EFT (Emotional Freedom Technique) Tapping Practitioner",
+          "Retreat, group, and 1:1 transformation facilitator",
+          "Nervous-system regulation, somatic practice, and emotional healing",
+        ],
+      },
+      {
+        heading: "Leadership & Entrepreneurship",
+        items: [
+          "Founder & Lead Educator — Trade With Traders / Financially Free Trading",
+          "Built trading communities of 1,000+ members",
+          "TEDx Organizer — Hong Kong, 2015",
+        ],
+      },
+      {
+        heading: "Education & Professional Development",
+        items: [
+          "Design Program — Stanford University",
+          "Finance — Salisbury University",
+          "Conscious Business — Best Life Ever",
+        ],
+      },
+      {
+        heading: "Financial Experience",
+        items: [
+          "A decade+ as an independent trader, market analyst, and financial writer",
+          "Financial Analyst — Salisbury University Student-Managed Investment Fund",
+          "Financial Analyst Intern — U.S. Department of Homeland Security",
+        ],
+      },
+    ],
   },
   {
     name: "Dr. Matt Montee",
