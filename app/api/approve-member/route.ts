@@ -1,5 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
-import { legacyPaymentsEnabled, legacyPaymentsDisabledResponse } from "@/lib/payments/legacy-enabled";
+// D-078: these routes are NOT refused — only their $0 commitment seed is
+// suppressed — so only the predicate is needed, not the refusal response.
+import { legacyPaymentsEnabled } from "@/lib/payments/legacy-enabled";
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyFounder } from '@/lib/auth/founder-check'
 import { renderAppInstallEmail, renderSetupLinkEmail } from '@/lib/email-renderers'
