@@ -81,7 +81,34 @@ async function ensureDonationRow(s: Stripe.Checkout.Session) {
   return inserted;
 }
 
+/**
+ * D-078 fail-closed legacy shutdown, Deno edition.
+ *
+ * Enabled if and only if LEGACY_PAYMENTS_ENABLED is exactly "true". Absent,
+ * empty or malformed disables — the same rule as lib/payments/legacy-enabled.ts.
+ * Duplicated rather than imported because Deno cannot resolve the Next.js "@/"
+ * alias or the "server-only" package; legacy-shutdown.test.ts asserts the two
+ * implementations agree on every input it exercises.
+ */
+export function legacyPaymentsEnabled(): boolean {
+  return Deno.env.get("LEGACY_PAYMENTS_ENABLED") === "true";
+}
+
 Deno.serve(async (req) => {
+  // Refuse BEFORE signature verification, before reading the body, and before
+  // any Supabase write. 503 rather than 200 is deliberate: the founder declined
+  // a tombstone that acknowledges and silently discards events. A non-2xx makes
+  // Stripe retain and retry, so no event is lost if this is ever re-enabled.
+  if (!legacyPaymentsEnabled()) {
+    return new Response(
+      JSON.stringify({
+        error: "legacy_payments_disabled",
+        message: "Legacy payments are disabled. See D-078.",
+      }),
+      { status: 503, headers: { "content-type": "application/json" } },
+    );
+  }
+
   const signature = req.headers.get("stripe-signature");
   if (!signature) return new Response("no signature", { status: 400 });
 

@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { legacyPaymentsEnabled, legacyPaymentsDisabledResponse } from "@/lib/payments/legacy-enabled";
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyFounder } from '@/lib/auth/founder-check'
 import { renderAppInstallEmail, renderSetupLinkEmail } from '@/lib/email-renderers'
@@ -19,6 +20,7 @@ import { createSetupToken, setupAccountUrl } from '@/lib/setup-tokens'
  * Returns: { ok, member_id, setup_link, email_sent }
  */
 export async function POST(req: NextRequest) {
+
   try {
     const founder = await verifyFounder()
     if (!founder) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
@@ -142,7 +144,12 @@ export async function POST(req: NextRequest) {
         .select('id')
         .single()
 
-      if (journeyRow?.id) {
+      // D-078: this $0 draft commitment is a LEGACY financial write and is
+      // suppressed while legacy payments are off. The surrounding member
+      // onboarding is NOT gated — it carries no money, and refusing the whole
+      // route would break approval for a seed the code already treats as
+      // non-blocking. Financials V2 owns commitments from here on.
+      if (journeyRow?.id && legacyPaymentsEnabled()) {
         await supabase.from('financial_commitments').insert({
           member_id:             userId,
           journey_id:            journeyRow.id,

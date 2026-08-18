@@ -1,6 +1,5 @@
 "use client";
 import { useState, useTransition } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
 type CommitmentData = {
@@ -96,7 +95,6 @@ export default function MemberFinancialSection({
   memberName,
   memberEmail,
 }: Props) {
-  const supabase = createClient();
   const router = useRouter();
   const [, startTransition] = useTransition();
 
@@ -181,15 +179,28 @@ export default function MemberFinancialSection({
     startTransition(() => router.refresh());
   }
 
+  /**
+   * D-078: this used to UPDATE financial_commitments directly from the browser.
+   * It now posts to a founder-only server route so `legacyPaymentsEnabled()` is
+   * authoritative for this write like every other. The client keeps its own
+   * validation for immediate feedback, but the server revalidates — the check
+   * here is convenience, not enforcement.
+   */
   async function handleAdjustAmount() {
     if (!commitment) return;
     const cents = Math.round(parseFloat(newAmount) * 100);
     if (!Number.isFinite(cents) || cents < 100) return;
     setAdjustLoading(true);
-    const { error } = await supabase
-      .from("financial_commitments")
-      .update({ expected_amount_cents: cents })
-      .eq("id", commitment.id);
+    const res = await fetch("/api/payments/adjust-commitment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        commitment_id: commitment.id,
+        action: "set_amount",
+        amount_cents: cents,
+      }),
+    });
+    const { error } = await res.json().catch(() => ({ error: "Update failed" }));
     setAdjustLoading(false);
     if (!error) {
       setAdjusting(false);
@@ -200,13 +211,19 @@ export default function MemberFinancialSection({
     }
   }
 
+  /** D-078: browser-direct write replaced by the guarded server route. */
   async function handleMarkFulfilled() {
     if (!commitment) return;
     if (!confirm("Mark this commitment as fulfilled?")) return;
-    const { error } = await supabase
-      .from("financial_commitments")
-      .update({ status: "paid" })
-      .eq("id", commitment.id);
+    const res = await fetch("/api/payments/adjust-commitment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        commitment_id: commitment.id,
+        action: "mark_fulfilled",
+      }),
+    });
+    const { error } = await res.json().catch(() => ({ error: "Update failed" }));
     if (!error) {
       flash("Commitment marked as fulfilled");
       startTransition(() => router.refresh());

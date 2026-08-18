@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { legacyPaymentsEnabled, legacyPaymentsDisabledResponse } from "@/lib/payments/legacy-enabled";
 import { createClient as createServiceSupabase } from "@supabase/supabase-js";
 import { verifyFounder } from "@/lib/auth/founder-check";
 
@@ -26,6 +27,10 @@ export const runtime = "nodejs";
  * commitment payment schedule, they're an accounting reconciliation.
  */
 export async function POST(req: Request) {
+  // D-078: fail-closed legacy shutdown. First statement in the handler —
+  // before any provider call, auth lookup, email send or database write.
+  if (!legacyPaymentsEnabled()) return legacyPaymentsDisabledResponse();
+
   const founder = await verifyFounder();
   if (!founder) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
