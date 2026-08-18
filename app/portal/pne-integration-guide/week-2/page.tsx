@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { PneGuidePrintButton, PneGuideFooter } from "@/components/portal/PneGuidePrint";
 
-export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Integration Guide · Week 1, Vital Kauaʻi" };
+export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Integration Guide · Week 2, Vital Kauaʻi" };
 
 const PAGE_CSS = `
   :root {
@@ -23,8 +23,8 @@ const PAGE_CSS = `
     --body:  'Lora', 'Iowan Old Style', Georgia, serif;
   }
 
-  .pne-integration-w1-page * { box-sizing: border-box; margin: 0; padding: 0; }
-  .pne-integration-w1-page {
+  .pne-companion-integration-w2-page * { box-sizing: border-box; margin: 0; padding: 0; }
+  .pne-companion-integration-w2-page {
     background: var(--bg-cream);
     color: var(--ink-body);
     font-family: var(--body);
@@ -35,11 +35,11 @@ const PAGE_CSS = `
     min-height: 100vh;
   }
 
-  .pne-integration-w1-page .vk-section { padding: 64px 0; }
-  .pne-integration-w1-page .vk-wrap   { max-width: 1080px; margin: 0 auto; padding: 0 40px; }
-  .pne-integration-w1-page .vk-narrow { max-width: 880px;  margin: 0 auto; padding: 0 40px; }
+  .pne-companion-integration-w2-page .vk-section { padding: 64px 0; }
+  .pne-companion-integration-w2-page .vk-wrap   { max-width: 1080px; margin: 0 auto; padding: 0 40px; }
+  .pne-companion-integration-w2-page .vk-narrow { max-width: 880px;  margin: 0 auto; padding: 0 40px; }
 
-  .pne-integration-w1-page .vk-eyebrow {
+  .pne-companion-integration-w2-page .vk-eyebrow {
     font-family: var(--body);
     font-size: 12px;
     letter-spacing: 0.32em;
@@ -49,7 +49,7 @@ const PAGE_CSS = `
     font-weight: 500;
   }
 
-  .pne-integration-w1-page h2.vk-title {
+  .pne-companion-integration-w2-page h2.vk-title {
     font-family: var(--serif);
     font-weight: 400;
     color: var(--ink-dark);
@@ -58,13 +58,13 @@ const PAGE_CSS = `
     margin-bottom: 20px;
     font-size: clamp(34px, 4.6vw, 54px);
   }
-  .pne-integration-w1-page h2.vk-title em {
+  .pne-companion-integration-w2-page h2.vk-title em {
     font-style: italic;
     color: var(--accent-sage);
     font-weight: 400;
   }
 
-  .pne-integration-w1-page p.vk-lede, .pne-integration-w1-page p.vk-body {
+  .pne-companion-integration-w2-page p.vk-lede, .pne-companion-integration-w2-page p.vk-body {
     max-width: 760px;
     font-size: 16px;
     line-height: 1.7;
@@ -72,11 +72,11 @@ const PAGE_CSS = `
     margin-bottom: 16px;
   }
 
-  .pne-integration-w1-page header.hero {
+  .pne-companion-integration-w2-page header.hero {
     background: var(--bg-dark);
     padding: 96px 0 112px;
   }
-  .pne-integration-w1-page .hero h1 {
+  .pne-companion-integration-w2-page .hero h1 {
     color: var(--ink-light);
     font-family: var(--serif);
     font-weight: 400;
@@ -85,8 +85,8 @@ const PAGE_CSS = `
     margin-bottom: 14px;
     letter-spacing: -0.005em;
   }
-  .pne-integration-w1-page .hero h1 em { font-style: italic; color: var(--accent-sage); }
-  .pne-integration-w1-page .hero p.hero-subtitle {
+  .pne-companion-integration-w2-page .hero h1 em { font-style: italic; color: var(--accent-sage); }
+  .pne-companion-integration-w2-page .hero p.hero-subtitle {
     font-family: var(--serif);
     font-style: italic;
     font-size: clamp(17px, 1.8vw, 20px);
@@ -94,14 +94,14 @@ const PAGE_CSS = `
     margin-bottom: 28px;
     letter-spacing: 0.005em;
   }
-  .pne-integration-w1-page .hero p.hero-lede {
+  .pne-companion-integration-w2-page .hero p.hero-lede {
     color: #C9C2A8;
     font-size: 16px;
     line-height: 1.7;
     max-width: 680px;
     margin-bottom: 0;
   }
-  .pne-integration-w1-page .hero p.hero-attrib {
+  .pne-companion-integration-w2-page .hero p.hero-attrib {
     margin-top: 28px;
     font-size: 12px;
     letter-spacing: 0.2em;
@@ -111,7 +111,7 @@ const PAGE_CSS = `
     max-width: 620px;
   }
 
-  .pne-integration-w1-page .gentle-pull {
+  .pne-companion-integration-w2-page .gentle-pull {
     margin-top: 28px;
     padding: 22px 28px;
     background: var(--bg-dark);
@@ -123,7 +123,7 @@ const PAGE_CSS = `
     border-left: 3px solid var(--accent-sage);
     max-width: 760px;
   }
-  .pne-integration-w1-page .gentle-pull-light {
+  .pne-companion-integration-w2-page .gentle-pull-light {
     margin-top: 28px;
     padding: 20px 26px;
     background: var(--bg-card);
@@ -131,7 +131,7 @@ const PAGE_CSS = `
     border-left: 3px solid var(--accent-gold);
     max-width: 760px;
   }
-  .pne-integration-w1-page .gentle-pull-light .label {
+  .pne-companion-integration-w2-page .gentle-pull-light .label {
     font-family: var(--body);
     font-weight: 600;
     color: var(--accent-warm);
@@ -140,7 +140,7 @@ const PAGE_CSS = `
     text-transform: uppercase;
     margin-bottom: 8px;
   }
-  .pne-integration-w1-page .gentle-pull-light p {
+  .pne-companion-integration-w2-page .gentle-pull-light p {
     font-family: var(--serif);
     font-style: italic;
     font-size: 18px;
@@ -149,25 +149,25 @@ const PAGE_CSS = `
     margin: 0;
   }
 
-  .pne-integration-w1-page .def-grid {
+  .pne-companion-integration-w2-page .def-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     margin-top: 32px;
   }
-  .pne-integration-w1-page .def-card {
+  .pne-companion-integration-w2-page .def-card {
     background: var(--bg-card);
     border-radius: 6px;
     padding: 30px 28px;
   }
-  .pne-integration-w1-page .def-card .label {
+  .pne-companion-integration-w2-page .def-card .label {
     font-size: 11px;
     letter-spacing: 0.32em;
     text-transform: uppercase;
     color: var(--accent-sage);
     margin-bottom: 14px;
   }
-  .pne-integration-w1-page .def-card h3 {
+  .pne-companion-integration-w2-page .def-card h3 {
     font-family: var(--serif);
     font-weight: 400;
     font-size: 24px;
@@ -175,7 +175,7 @@ const PAGE_CSS = `
     line-height: 1.2;
     margin-bottom: 12px;
   }
-  .pne-integration-w1-page .def-card p {
+  .pne-companion-integration-w2-page .def-card p {
     color: var(--ink-body);
     font-size: 15px;
     line-height: 1.65;
@@ -183,19 +183,19 @@ const PAGE_CSS = `
   }
 
   /* Practice grid — the six core elements of mindful listening */
-  .pne-integration-w1-page .practice-grid {
+  .pne-companion-integration-w2-page .practice-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 14px;
     margin-top: 28px;
   }
-  .pne-integration-w1-page .practice-card {
+  .pne-companion-integration-w2-page .practice-card {
     background: var(--bg-card);
     border-radius: 6px;
     padding: 26px 22px;
     text-align: center;
   }
-  .pne-integration-w1-page .practice-card .num {
+  .pne-companion-integration-w2-page .practice-card .num {
     font-family: var(--serif);
     font-style: italic;
     font-size: 12px;
@@ -204,7 +204,7 @@ const PAGE_CSS = `
     color: var(--accent-warm);
     margin-bottom: 8px;
   }
-  .pne-integration-w1-page .practice-card h4 {
+  .pne-companion-integration-w2-page .practice-card h4 {
     font-family: var(--serif);
     font-weight: 400;
     font-style: italic;
@@ -213,7 +213,7 @@ const PAGE_CSS = `
     line-height: 1.2;
     margin-bottom: 10px;
   }
-  .pne-integration-w1-page .practice-card p {
+  .pne-companion-integration-w2-page .practice-card p {
     color: var(--ink-body);
     font-size: 14px;
     line-height: 1.55;
@@ -221,26 +221,26 @@ const PAGE_CSS = `
   }
 
   /* Phrase panels — reflective listening and naming feelings */
-  .pne-integration-w1-page .phrase-stack {
+  .pne-companion-integration-w2-page .phrase-stack {
     display: grid;
     grid-template-columns: 1fr;
     gap: 18px;
     margin-top: 32px;
   }
-  .pne-integration-w1-page .phrase-card {
+  .pne-companion-integration-w2-page .phrase-card {
     background: var(--bg-card);
     border-radius: 6px;
     padding: 34px 36px;
     border-left: 3px solid var(--accent-gold);
   }
-  .pne-integration-w1-page .phrase-card .label {
+  .pne-companion-integration-w2-page .phrase-card .label {
     font-size: 11px;
     letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--accent-warm);
     margin-bottom: 14px;
   }
-  .pne-integration-w1-page .phrase-card h4 {
+  .pne-companion-integration-w2-page .phrase-card h4 {
     font-family: var(--serif);
     font-weight: 400;
     font-size: 22px;
@@ -248,19 +248,19 @@ const PAGE_CSS = `
     margin-bottom: 12px;
     line-height: 1.25;
   }
-  .pne-integration-w1-page .phrase-card h4 em { font-style: italic; color: var(--accent-sage); font-weight: 400; }
-  .pne-integration-w1-page .phrase-card > p.intro {
+  .pne-companion-integration-w2-page .phrase-card h4 em { font-style: italic; color: var(--accent-sage); font-weight: 400; }
+  .pne-companion-integration-w2-page .phrase-card > p.intro {
     color: var(--ink-body);
     font-size: 15px;
     line-height: 1.65;
     margin-bottom: 18px;
   }
-  .pne-integration-w1-page .phrase-list {
+  .pne-companion-integration-w2-page .phrase-list {
     list-style: none;
     padding: 0;
     margin: 0;
   }
-  .pne-integration-w1-page .phrase-list li {
+  .pne-companion-integration-w2-page .phrase-list li {
     font-family: var(--serif);
     font-style: italic;
     font-size: 19px;
@@ -269,7 +269,7 @@ const PAGE_CSS = `
     padding: 10px 0 10px 18px;
     border-left: 2px solid var(--line);
   }
-  .pne-integration-w1-page .phrase-card p.phrase-note {
+  .pne-companion-integration-w2-page .phrase-card p.phrase-note {
     color: var(--ink-mute);
     font-size: 14px;
     line-height: 1.55;
@@ -279,21 +279,21 @@ const PAGE_CSS = `
   }
 
   /* Large contemplative callout */
-  .pne-integration-w1-page .script-callout {
+  .pne-companion-integration-w2-page .script-callout {
     margin-top: 28px;
     padding: 36px 40px;
     background: var(--bg-card);
     border-radius: 8px;
     text-align: center;
   }
-  .pne-integration-w1-page .script-callout .label {
+  .pne-companion-integration-w2-page .script-callout .label {
     font-size: 11px;
     letter-spacing: 0.32em;
     text-transform: uppercase;
     color: var(--accent-sage);
     margin-bottom: 14px;
   }
-  .pne-integration-w1-page .script-callout p {
+  .pne-companion-integration-w2-page .script-callout p {
     font-family: var(--serif);
     font-style: italic;
     font-size: clamp(22px, 2.6vw, 28px);
@@ -304,20 +304,20 @@ const PAGE_CSS = `
   }
 
   /* Two-column panel — cost / repair */
-  .pne-integration-w1-page .body-panel {
+  .pne-companion-integration-w2-page .body-panel {
     background: var(--bg-card);
     border-radius: 8px;
     padding: 36px 40px;
     margin-top: 36px;
   }
-  .pne-integration-w1-page .body-panel .label {
+  .pne-companion-integration-w2-page .body-panel .label {
     font-size: 11px;
     letter-spacing: 0.32em;
     text-transform: uppercase;
     color: var(--accent-sage);
     margin-bottom: 16px;
   }
-  .pne-integration-w1-page .body-panel h3 {
+  .pne-companion-integration-w2-page .body-panel h3 {
     font-family: var(--serif);
     font-weight: 400;
     font-size: 28px;
@@ -325,22 +325,22 @@ const PAGE_CSS = `
     margin-bottom: 12px;
     line-height: 1.1;
   }
-  .pne-integration-w1-page .body-panel h3 em { font-style: italic; color: var(--accent-sage); font-weight: 400; }
-  .pne-integration-w1-page .body-panel > p.intro {
+  .pne-companion-integration-w2-page .body-panel h3 em { font-style: italic; color: var(--accent-sage); font-weight: 400; }
+  .pne-companion-integration-w2-page .body-panel > p.intro {
     color: var(--ink-body);
     font-size: 15.5px;
     line-height: 1.65;
     margin-bottom: 24px;
     max-width: 680px;
   }
-  .pne-integration-w1-page .body-cols {
+  .pne-companion-integration-w2-page .body-cols {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 36px;
     padding-top: 16px;
     border-top: 1px solid var(--line-soft);
   }
-  .pne-integration-w1-page .body-col h4 {
+  .pne-companion-integration-w2-page .body-col h4 {
     font-family: var(--serif);
     font-style: italic;
     font-size: 19px;
@@ -348,12 +348,12 @@ const PAGE_CSS = `
     color: var(--accent-sage);
     margin-bottom: 14px;
   }
-  .pne-integration-w1-page .arrow-list {
+  .pne-companion-integration-w2-page .arrow-list {
     list-style: none;
     padding: 0;
     margin: 0;
   }
-  .pne-integration-w1-page .arrow-list li {
+  .pne-companion-integration-w2-page .arrow-list li {
     position: relative;
     padding: 9px 0 9px 22px;
     font-size: 14.5px;
@@ -361,8 +361,8 @@ const PAGE_CSS = `
     color: var(--ink-body);
     border-top: 1px solid var(--line-soft);
   }
-  .pne-integration-w1-page .arrow-list li:first-child { border-top: none; }
-  .pne-integration-w1-page .arrow-list li::before {
+  .pne-companion-integration-w2-page .arrow-list li:first-child { border-top: none; }
+  .pne-companion-integration-w2-page .arrow-list li::before {
     content: '\\2192';
     position: absolute;
     left: 0;
@@ -372,19 +372,19 @@ const PAGE_CSS = `
   }
 
   /* Listening errors — numbered cards, two columns */
-  .pne-integration-w1-page .error-grid {
+  .pne-companion-integration-w2-page .error-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 14px;
     margin-top: 32px;
   }
-  .pne-integration-w1-page .error-card {
+  .pne-companion-integration-w2-page .error-card {
     background: var(--bg-card);
     border-radius: 6px;
     padding: 26px 26px;
     border-top: 3px solid rgba(201, 152, 94, 0.4);
   }
-  .pne-integration-w1-page .error-card .num {
+  .pne-companion-integration-w2-page .error-card .num {
     font-family: var(--serif);
     font-style: italic;
     font-size: 12px;
@@ -393,7 +393,7 @@ const PAGE_CSS = `
     color: var(--accent-warm);
     margin-bottom: 8px;
   }
-  .pne-integration-w1-page .error-card h4 {
+  .pne-companion-integration-w2-page .error-card h4 {
     font-family: var(--serif);
     font-weight: 400;
     font-size: 22px;
@@ -401,13 +401,13 @@ const PAGE_CSS = `
     line-height: 1.2;
     margin-bottom: 10px;
   }
-  .pne-integration-w1-page .error-card p {
+  .pne-companion-integration-w2-page .error-card p {
     color: var(--ink-body);
     font-size: 14.5px;
     line-height: 1.6;
     margin: 0;
   }
-  .pne-integration-w1-page .error-card p.sounds-like {
+  .pne-companion-integration-w2-page .error-card p.sounds-like {
     margin-top: 12px;
     padding-top: 12px;
     border-top: 1px solid var(--line-soft);
@@ -417,14 +417,14 @@ const PAGE_CSS = `
     color: var(--ink-mute);
     line-height: 1.5;
   }
-  .pne-integration-w1-page .error-card p.body-hears {
+  .pne-companion-integration-w2-page .error-card p.body-hears {
     margin-top: 10px;
     font-size: 13.5px;
     color: var(--accent-sage);
     line-height: 1.55;
   }
 
-  .pne-integration-w1-page .sub-heading {
+  .pne-companion-integration-w2-page .sub-heading {
     font-family: var(--serif);
     font-weight: 400;
     font-size: 26px;
@@ -433,33 +433,33 @@ const PAGE_CSS = `
     margin-bottom: 8px;
     line-height: 1.15;
   }
-  .pne-integration-w1-page .sub-heading em {
+  .pne-companion-integration-w2-page .sub-heading em {
     font-style: italic;
     color: var(--accent-sage);
     font-weight: 400;
   }
-  .pne-integration-w1-page .sub-sub {
+  .pne-companion-integration-w2-page .sub-sub {
     color: var(--ink-mute);
     font-size: 15px;
     margin-bottom: 0;
   }
 
   /* Homework panel */
-  .pne-integration-w1-page .homework-panel {
+  .pne-companion-integration-w2-page .homework-panel {
     background: var(--bg-dark);
     color: var(--ink-light);
     border-radius: 6px;
     padding: 48px 44px;
     margin-top: 12px;
   }
-  .pne-integration-w1-page .homework-panel .hp-eyebrow {
+  .pne-companion-integration-w2-page .homework-panel .hp-eyebrow {
     color: var(--accent-gold);
     font-size: 12px;
     letter-spacing: 0.32em;
     text-transform: uppercase;
     margin-bottom: 16px;
   }
-  .pne-integration-w1-page .homework-panel h2 {
+  .pne-companion-integration-w2-page .homework-panel h2 {
     font-family: var(--serif);
     font-weight: 400;
     font-size: clamp(32px, 4vw, 44px);
@@ -467,20 +467,20 @@ const PAGE_CSS = `
     color: #F4EDD6;
     margin-bottom: 12px;
   }
-  .pne-integration-w1-page .homework-panel h2 em { font-style: italic; color: var(--accent-sage); }
-  .pne-integration-w1-page .homework-panel .lede {
+  .pne-companion-integration-w2-page .homework-panel h2 em { font-style: italic; color: var(--accent-sage); }
+  .pne-companion-integration-w2-page .homework-panel .lede {
     font-size: 16px;
     line-height: 1.65;
     color: #C9C2A8;
     max-width: 640px;
     margin-bottom: 24px;
   }
-  .pne-integration-w1-page .hw-step {
+  .pne-companion-integration-w2-page .hw-step {
     padding: 24px 0;
     border-top: 1px solid var(--line-light);
   }
-  .pne-integration-w1-page .hw-step:last-child { border-bottom: 1px solid var(--line-light); }
-  .pne-integration-w1-page .hw-num {
+  .pne-companion-integration-w2-page .hw-step:last-child { border-bottom: 1px solid var(--line-light); }
+  .pne-companion-integration-w2-page .hw-num {
     font-family: var(--serif);
     font-style: italic;
     font-size: 12px;
@@ -489,7 +489,7 @@ const PAGE_CSS = `
     color: var(--accent-gold);
     margin-bottom: 8px;
   }
-  .pne-integration-w1-page .hw-step h3 {
+  .pne-companion-integration-w2-page .hw-step h3 {
     font-family: var(--serif);
     font-weight: 400;
     font-size: 22px;
@@ -497,32 +497,32 @@ const PAGE_CSS = `
     color: #F4EDD6;
     margin-bottom: 10px;
   }
-  .pne-integration-w1-page .hw-tags {
+  .pne-companion-integration-w2-page .hw-tags {
     font-family: var(--serif);
     font-style: italic;
     font-size: 16px;
     color: var(--accent-sage);
     line-height: 1.65;
   }
-  .pne-integration-w1-page .reflection {
+  .pne-companion-integration-w2-page .reflection {
     font-size: 15.5px;
     color: #D9D1B5;
     line-height: 1.7;
     margin-top: 8px;
   }
-  .pne-integration-w1-page .reflection + .reflection {
+  .pne-companion-integration-w2-page .reflection + .reflection {
     margin-top: 18px;
     padding-top: 18px;
     border-top: 1px dashed var(--line-light);
   }
 
-  .pne-integration-w1-page .closing-band {
+  .pne-companion-integration-w2-page .closing-band {
     background: var(--bg-dark);
     color: var(--ink-light);
     padding: 96px 0 104px;
     text-align: center;
   }
-  .pne-integration-w1-page .closing-band .closing-eyebrow {
+  .pne-companion-integration-w2-page .closing-band .closing-eyebrow {
     font-family: var(--body);
     font-size: 12px;
     letter-spacing: 0.32em;
@@ -531,7 +531,7 @@ const PAGE_CSS = `
     margin-bottom: 36px;
     font-weight: 500;
   }
-  .pne-integration-w1-page .closing-band h2 {
+  .pne-companion-integration-w2-page .closing-band h2 {
     font-family: var(--serif);
     font-weight: 400;
     font-size: clamp(38px, 5vw, 56px);
@@ -540,14 +540,14 @@ const PAGE_CSS = `
     margin: 0 auto 36px;
     max-width: 880px;
   }
-  .pne-integration-w1-page .closing-band h2 em {
+  .pne-companion-integration-w2-page .closing-band h2 em {
     display: block;
     font-style: italic;
     color: var(--accent-sage);
     font-weight: 400;
     margin-top: 4px;
   }
-  .pne-integration-w1-page .closing-band p {
+  .pne-companion-integration-w2-page .closing-band p {
     font-size: 16px;
     line-height: 1.75;
     color: #B8B19A;
@@ -556,20 +556,20 @@ const PAGE_CSS = `
   }
 
   @media (max-width: 880px) {
-    .pne-integration-w1-page .vk-section { padding: 48px 0; }
-    .pne-integration-w1-page .vk-wrap, .pne-integration-w1-page .vk-narrow { padding: 0 24px; }
-    .pne-integration-w1-page header.hero { padding: 64px 0 72px; }
-    .pne-integration-w1-page .def-grid { grid-template-columns: 1fr; gap: 14px; }
-    .pne-integration-w1-page .def-card { padding: 24px 22px; }
-    .pne-integration-w1-page .practice-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-    .pne-integration-w1-page .practice-card { padding: 22px 18px; }
-    .pne-integration-w1-page .phrase-card { padding: 26px 22px; }
-    .pne-integration-w1-page .script-callout { padding: 28px 22px; }
-    .pne-integration-w1-page .body-panel { padding: 28px 22px; }
-    .pne-integration-w1-page .body-cols { grid-template-columns: 1fr; gap: 24px; }
-    .pne-integration-w1-page .error-grid { grid-template-columns: 1fr; gap: 12px; }
-    .pne-integration-w1-page .error-card { padding: 22px 20px; }
-    .pne-integration-w1-page .homework-panel { padding: 32px 22px; }
+    .pne-companion-integration-w2-page .vk-section { padding: 48px 0; }
+    .pne-companion-integration-w2-page .vk-wrap, .pne-companion-integration-w2-page .vk-narrow { padding: 0 24px; }
+    .pne-companion-integration-w2-page header.hero { padding: 64px 0 72px; }
+    .pne-companion-integration-w2-page .def-grid { grid-template-columns: 1fr; gap: 14px; }
+    .pne-companion-integration-w2-page .def-card { padding: 24px 22px; }
+    .pne-companion-integration-w2-page .practice-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .pne-companion-integration-w2-page .practice-card { padding: 22px 18px; }
+    .pne-companion-integration-w2-page .phrase-card { padding: 26px 22px; }
+    .pne-companion-integration-w2-page .script-callout { padding: 28px 22px; }
+    .pne-companion-integration-w2-page .body-panel { padding: 28px 22px; }
+    .pne-companion-integration-w2-page .body-cols { grid-template-columns: 1fr; gap: 24px; }
+    .pne-companion-integration-w2-page .error-grid { grid-template-columns: 1fr; gap: 12px; }
+    .pne-companion-integration-w2-page .error-card { padding: 22px 20px; }
+    .pne-companion-integration-w2-page .homework-panel { padding: 32px 22px; }
   }
 `;
 
@@ -588,12 +588,12 @@ export default async function PneIntegrationCompanionWeek1Page() {
       />
       <style dangerouslySetInnerHTML={{ __html: PAGE_CSS }} />
 
-      <div className="pne-integration-w1-page">
+      <div className="pne-companion-integration-w2-page">
         <span id="top" />
         <PneGuidePrintButton />
         <header className="hero">
           <div className="vk-wrap">
-            <h1>Week One <em>PNE (PsychoNeuroEnergetics) Integration Guide</em></h1>
+            <h1>Week Two <em>PNE (PsychoNeuroEnergetics) Integration Guide</em></h1>
             <p className="hero-subtitle">Mindful Listening</p>
             <p className="hero-lede">How another person&apos;s inner experience is received, what the body learns in the moments it is overridden, and the listening practices that return a person to their own authority.</p>
             <p className="hero-attrib">Judith Johnson · Founder of PsychoNeuroEnergetics · Developer of the PNE Practitioner Training Programs</p>
@@ -925,7 +925,7 @@ export default async function PneIntegrationCompanionWeek1Page() {
         <section className="vk-section">
           <div className="vk-narrow">
             <div className="homework-panel">
-              <div className="hp-eyebrow">Week One · Living Practice</div>
+              <div className="hp-eyebrow">Week Two · Living Practice</div>
               <h2>This Week&apos;s <em>Practice</em></h2>
               <p className="lede">Three invitations to bring mindful listening into the relationships you are returning to. Begin with one conversation a day.</p>
 
