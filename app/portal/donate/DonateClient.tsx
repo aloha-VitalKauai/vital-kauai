@@ -356,7 +356,6 @@ export default function DonateClient({
                     ? `Pay ${fmt(customCents)}`
                     : "Pay"}
             </button>
-            <VenmoLink />
           </div>
         )}
 
@@ -449,7 +448,6 @@ export default function DonateClient({
                   ? `Give ${fmt(giftAmount)}`
                   : "Give"}
             </button>
-            <VenmoLink />
           </div>
         )}
 
@@ -502,22 +500,6 @@ export default function DonateClient({
           </div>
         )}
       </div>
-    </div>
-  );
-}
-
-function VenmoLink() {
-  return (
-    <div style={venmoRowStyle}>
-      <span style={venmoOrStyle}>or</span>
-      <a
-        href="https://venmo.com/u/Rachel-Nelson-05"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={venmoLinkStyle}
-      >
-        Send via Venmo &rarr; @Rachel-Nelson-05
-      </a>
     </div>
   );
 }
@@ -761,29 +743,6 @@ const cancelledBannerStyle: React.CSSProperties = {
   padding: "12px 20px",
   textAlign: "center",
   fontSize: 14,
-};
-
-const venmoRowStyle: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: 10,
-  marginTop: 14,
-};
-
-const venmoOrStyle: React.CSSProperties = {
-  fontSize: 12,
-  color: "#7A6F5C",
-  letterSpacing: "0.08em",
-  textTransform: "uppercase",
-};
-
-const venmoLinkStyle: React.CSSProperties = {
-  fontSize: 13,
-  color: "#1A1A18",
-  textDecoration: "none",
-  borderBottom: "1px solid rgba(28,43,30,0.3)",
-  paddingBottom: 1,
 };
 
 const spinnerStyle: React.CSSProperties = {

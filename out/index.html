@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Vital Kauaʻi</title>
   <!--
-    Capacitor webDir placeholder. The native iOS shell uses
-    server.url (https://vital-kauai.vercel.app) for normal launches,
-    so this file is only seen if the network is unreachable on cold
-    start. Calm forest fallback page that auto-redirects when the
-    network returns.
+    Capacitor webDir placeholder. The native iOS shell uses server.url
+    (https://vitalkauai.com/portal) for normal launches, so this file is only
+    seen if the network is unreachable on cold start. When online it opens the
+    portal; when offline it shows a calm retry state and brings the member in
+    automatically once the connection returns.
   -->
-  <meta http-equiv="refresh" content="0; url=https://vital-kauai.vercel.app/portal">
   <style>
     html, body {
       margin: 0;
@@ -25,20 +24,60 @@
       justify-content: center;
       padding: env(safe-area-inset-top) 32px env(safe-area-inset-bottom);
     }
-    p {
+    .wrap { text-align: center; max-width: 26rem; }
+    .lead {
       font-style: italic;
       font-size: clamp(20px, 5vw, 26px);
       font-weight: 300;
       margin: 0;
-      text-align: center;
-      opacity: 0.7;
+      opacity: 0.85;
     }
+    .sub {
+      font-family: -apple-system, system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 14px 0 0;
+      opacity: 0.6;
+    }
+    button {
+      margin-top: 26px;
+      font-family: -apple-system, system-ui, sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #1C2B1E;
+      background: #C8A96E;
+      border: none;
+      border-radius: 4px;
+      padding: 13px 28px;
+      cursor: pointer;
+    }
+    #offline { display: none; }
   </style>
 </head>
 <body>
-  <p>Loading Vital Kauaʻi&hellip;</p>
+  <div class="wrap">
+    <p id="loading" class="lead">Loading Vital Kauaʻi&hellip;</p>
+    <div id="offline">
+      <p class="lead">Waiting for a connection</p>
+      <p class="sub">Vital Kauaʻi opens as soon as you&rsquo;re back online. Reconnect, and we&rsquo;ll bring you in.</p>
+      <button type="button" onclick="go()">Try again</button>
+    </div>
+  </div>
   <script>
-    window.location.replace("https://vital-kauai.vercel.app/portal");
+    var PORTAL = "https://vitalkauai.com/portal";
+    function go() {
+      if (navigator.onLine) {
+        window.location.replace(PORTAL);
+      } else {
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("offline").style.display = "block";
+      }
+    }
+    window.addEventListener("online", function () {
+      window.location.replace(PORTAL);
+    });
+    go();
   </script>
 </body>
 </html>
