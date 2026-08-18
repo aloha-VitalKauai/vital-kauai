@@ -33,7 +33,7 @@ const teamMembers: TeamMember[] = [
       {
         heading: "Postgraduate Study & Training",
         items: [
-          "Consciousness, Spirituality & Transpersonal Psychology — Alef Trust",
+          "Consciousness, Spirituality & Transpersonal Psychology — Alef Trust MSc program",
           "Naturopathic Medicine — National University of Health Sciences",
         ],
       },
