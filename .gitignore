@@ -43,3 +43,9 @@ ios/.sourcemaps/
 # server.url on cold start). Other contents stay ignored.
 out/*
 !out/index.html
+
+# D-077: the unredacted legacy-financial wipe archive contains member
+# identifiers and payment tokens. It is kept outside version control.
+*wipe-archive*
+docs/financials-v2/_evidence/
+.census_salt

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { legacyPaymentsEnabled, legacyPaymentsDisabledResponse } from "@/lib/payments/legacy-enabled";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { createClient as createServiceSupabase, type SupabaseClient } from "@supabase/supabase-js";
 import { getSquareEnv } from "@/lib/square/client";
@@ -34,6 +35,10 @@ type StepResults = {
 };
 
 export async function POST(req: Request) {
+  // D-078: fail-closed legacy shutdown. First statement in the handler —
+  // before any provider call, auth lookup, email send or database write.
+  if (!legacyPaymentsEnabled()) return legacyPaymentsDisabledResponse();
+
   const env = getSquareEnv();
   if (!env.webhookSignatureKey) {
     console.error("square webhook called with no signature key configured");

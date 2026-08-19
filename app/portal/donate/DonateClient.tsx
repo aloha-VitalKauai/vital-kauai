@@ -1,4 +1,5 @@
 "use client";
+import { legacyPaymentsEnabledForDisplay, LEGACY_DISABLED_NOTICE } from "@/lib/payments/legacy-enabled-client";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -66,6 +67,7 @@ export default function DonateClient({
   const [showProcessing, setShowProcessing] = useState(
     paymentParam === "success",
   );
+  const [legacyDisabled, setLegacyDisabled] = useState(!legacyPaymentsEnabledForDisplay());
   const [showCancelled] = useState(paymentParam === "cancelled");
 
   // Pledge payment state
@@ -122,6 +124,13 @@ export default function DonateClient({
   }, [showProcessing]);
 
   async function payPledge() {
+    // D-078: legacy payments are shut down. Presentation guard only; the server
+    // refuses these endpoints with 503 regardless of what happens here.
+    if (!legacyPaymentsEnabledForDisplay()) {
+      setLegacyDisabled(true);
+      return;
+    }
+
     if (!journeyId) return;
     const customCents = customAmount
       ? Math.round(parseFloat(customAmount) * 100)
@@ -152,6 +161,13 @@ export default function DonateClient({
   }
 
   async function payGift() {
+    // D-078: legacy payments are shut down. Presentation guard only; the server
+    // refuses these endpoints with 503 regardless of what happens here.
+    if (!legacyPaymentsEnabledForDisplay()) {
+      setLegacyDisabled(true);
+      return;
+    }
+
     const amount =
       selectedPreset === "custom"
         ? Math.round(parseFloat(giftCustom) * 100)
@@ -347,6 +363,7 @@ export default function DonateClient({
                 pledgeLoading || (pledgeMode === "custom" && !customValid)
               }
               onClick={payPledge}
+              aria-disabled={legacyDisabled}
             >
               {pledgeLoading
                 ? "Opening Stripe…"
@@ -433,6 +450,12 @@ export default function DonateClient({
 
             {giftError && <p style={errorStyle}>{giftError}</p>}
 
+            {legacyDisabled && (
+              <p role="status" style={{ margin: "0.5rem 0", fontSize: "0.9rem", opacity: 0.85 }}>
+                {LEGACY_DISABLED_NOTICE}
+              </p>
+            )}
+
             <button
               style={{
                 ...primaryBtnStyle,
@@ -440,7 +463,7 @@ export default function DonateClient({
                 opacity: giftLoading || !giftValid ? 0.5 : 1,
                 cursor: giftLoading || !giftValid ? "default" : "pointer",
               }}
-              disabled={giftLoading || !giftValid}
+              disabled={giftLoading || !giftValid || legacyDisabled}
               onClick={payGift}
             >
               {giftLoading
