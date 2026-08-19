@@ -43,7 +43,7 @@ export const WEEKS = [
       label: 'The 48-hour window, read this first',
       text: 'The first 48 hours after ceremony are the most neurologically plastic of your entire journey. What you allow yourself to feel, what you speak aloud, what you write, is being encoded more deeply than at almost any other moment in your life. This is a time for receiving what was shown with gratitude, set aside decisions, analysis, and explanation.',
     },
-    video: { label: 'A Message from Rachel & Josh · Week 1', text: 'In this week’s video, Rachel and Josh share what Mahalo has meant in their own lives and how meeting the days right after ceremony with gratitude has shaped how they listen to what wants to come through.' },
+    video: { label: 'A Message from Rachel · Week 1', text: 'In this week’s video, Rachel shares what Mahalo has meant in her own life and how meeting the days right after ceremony with gratitude has shaped how she listens to what wants to come through.', url: 'https://www.youtube.com/embed/sDI4VuxfXSo' },
     actionLabel: 'This week, 4 things',
     actions: [
       {
