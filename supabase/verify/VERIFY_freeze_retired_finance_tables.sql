@@ -23,6 +23,7 @@ declare
   tables       text[] := array['donations','financial_commitments','payment_tokens','payment_allocations'];
   ops          text[] := array['INSERT','UPDATE','DELETE','TRUNCATE'];
   op           text;
+  col          text;
   stmt         text;
   passed       int := 0;
   failed       int := 0;
@@ -45,13 +46,25 @@ begin
 
   -- ── 2. every write must be refused ────────────────────────────────────────
   foreach t in array tables loop
+
+    -- payment_tokens is keyed on `token`, not `id`. Hardcoding `id` raised
+    -- 42703 (undefined_column) and was misread as a failure, so pick a column
+    -- that actually exists on each table.
+    select column_name into col from information_schema.columns
+     where table_schema='public' and table_name=t order by ordinal_position limit 1;
+
     foreach op in array ops loop
 
+      -- TRUNCATE must be CASCADE. donations and financial_commitments are
+      -- FK-referenced (1 and 2 inbound FKs), so a plain TRUNCATE raises 0A000
+      -- from the FK check BEFORE the freeze trigger is reached — a real refusal,
+      -- but it never exercises the trigger. CASCADE clears that objection so the
+      -- freeze itself is what has to refuse.
       stmt := case op
         when 'INSERT'   then format('insert into public.%I default values', t)
-        when 'UPDATE'   then format('update public.%I set id = id', t)
+        when 'UPDATE'   then format('update public.%I set %I = %I', t, col, col)
         when 'DELETE'   then format('delete from public.%I', t)
-        when 'TRUNCATE' then format('truncate public.%I', t)
+        when 'TRUNCATE' then format('truncate public.%I cascade', t)
       end;
 
       begin
@@ -73,10 +86,10 @@ begin
             if got_sqlstate = 'VK078' then
               raise notice 'WRITE %-6s %-24s blocked (VK078)', op, t;
               passed := passed + 1;
-            elsif got_sqlstate = '42501' then
-              -- Privilege refused it before the trigger was reached. Also a pass:
-              -- the write was prevented, just by the other mechanism.
-              raise notice 'WRITE %-6s %-24s blocked (42501 privilege)', op, t;
+            elsif got_sqlstate in ('42501','0A000') then
+              -- Refused before the trigger was reached. 42501 = privilege,
+              -- 0A000 = FK check on TRUNCATE. Both are genuine refusals.
+              raise notice 'WRITE %-6s %-24s blocked (%)', op, t, got_sqlstate;
               passed := passed + 1;
             else
               failed := failed + 1;

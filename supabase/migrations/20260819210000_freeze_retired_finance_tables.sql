@@ -103,6 +103,24 @@ begin
          before truncate on public.%I
          for each statement execute function public.tg_legacy_finance_frozen()', t, t);
     execute format('alter table public.%I enable always trigger trg_freeze_%I_truncate', t, t);
+
+    -- Statement-level INSERT/UPDATE/DELETE.
+    --
+    -- Necessary, not belt-and-braces. A FOR EACH ROW trigger fires once per
+    -- AFFECTED row, so against an empty table an UPDATE or DELETE affects zero
+    -- rows, fires nothing, and reports success. Verification caught exactly that:
+    -- 7 of 16 write attempts were silent no-ops rather than refusals.
+    --
+    -- The freeze was still effective (INSERT is blocked, so rows can never
+    -- appear, so UPDATE/DELETE stay no-ops) but that is a chain of reasoning
+    -- rather than an outright refusal. These make it unconditional: the ATTEMPT
+    -- is refused regardless of row count.
+    execute format('drop trigger if exists trg_freeze_%I_stmt on public.%I', t, t);
+    execute format(
+      'create trigger trg_freeze_%I_stmt
+         before insert or update or delete on public.%I
+         for each statement execute function public.tg_legacy_finance_frozen()', t, t);
+    execute format('alter table public.%I enable always trigger trg_freeze_%I_stmt', t, t);
   end loop;
 end $$;
 
@@ -145,6 +163,12 @@ begin
      and tg.tgname like 'trg_freeze_%_truncate'
      and c.relname in ('donations','financial_commitments','payment_tokens','payment_allocations');
 
+  select count(*) into n_stmt_triggers
+    from pg_trigger tg join pg_class c on c.oid = tg.tgrelid
+   where not tg.tgisinternal
+     and tg.tgname like 'trg_freeze_%_stmt'
+     and c.relname in ('donations','financial_commitments','payment_tokens','payment_allocations');
+
   select count(*) into n_write_grants
     from information_schema.role_table_grants
    where table_schema = 'public'
@@ -157,6 +181,9 @@ begin
   end if;
   if n_trunc_triggers <> 4 then
     raise exception 'freeze incomplete: expected 4 truncate triggers, found %', n_trunc_triggers;
+  end if;
+  if n_stmt_triggers <> 4 then
+    raise exception 'freeze incomplete: expected 4 statement triggers, found %', n_stmt_triggers;
   end if;
   if n_write_grants <> 0 then
     raise exception 'freeze incomplete: % write grants remain on retired tables', n_write_grants;
