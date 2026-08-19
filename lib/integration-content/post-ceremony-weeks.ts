@@ -43,7 +43,7 @@ export const WEEKS = [
       label: 'The 48-hour window, read this first',
       text: 'The first 48 hours after ceremony are the most neurologically plastic of your entire journey. What you allow yourself to feel, what you speak aloud, what you write, is being encoded more deeply than at almost any other moment in your life. This is a time for receiving what was shown with gratitude, set aside decisions, analysis, and explanation.',
     },
-    video: { label: 'A Message from Rachel · Week 1', text: 'In this week’s video, Rachel shares what Mahalo has meant in her own life and how meeting the days right after ceremony with gratitude has shaped how she listens to what wants to come through.', url: 'https://www.youtube.com/embed/sDI4VuxfXSo' },
+    video: { label: 'A Message from Rachel · Week 1', text: 'Gratitude, admiration, thanks. The first week of integration is about doing less and receiving more. We look at why gratitude puts you in the ultimate state to receive, what to protect during these seven days, and the daily practice to return to when old patterns surface.', url: 'https://www.youtube.com/embed/sDI4VuxfXSo' },
     actionLabel: 'This week, 4 things',
     actions: [
       {
