@@ -85,6 +85,7 @@ function payment(o: Partial<ProviderPayment> = {}): ProviderPayment {
     amountCents: 5000,
     currency: "usd",
     livemode: true,
+    createdAt: new Date("2026-08-19T10:00:00Z"),
     metadata: { financial_version: "v2", agreement_id: AGREEMENT },
     ...o,
   };

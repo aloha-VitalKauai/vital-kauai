@@ -49,6 +49,26 @@
       "functions": [
         "get_public_cohorts"
       ]
+    },
+    {
+      "file": "lib/finance/reconciliation/supabase-db.ts",
+      "functions": [
+        "advance_reconciliation_run",
+        "finish_reconciliation_run",
+        "raise_reconciliation_exception",
+        "record_dry_run_report",
+        "start_reconciliation_run"
+      ]
+    },
+    {
+      "file": "lib/finance/reconciliation/worker.ts",
+      "functions": [
+        "abandon_stale_runs",
+        "claim_stripe_events",
+        "complete_stripe_event",
+        "purge_expired_event_payloads",
+        "sweep_stale_event_claims"
+      ]
     }
   ],
   "scanDirs": [

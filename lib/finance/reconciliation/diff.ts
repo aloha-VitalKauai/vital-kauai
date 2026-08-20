@@ -10,12 +10,14 @@
  * both, so a dry run cannot diverge from the writing run it authorises.
  */
 
+/** Mirrors the `finance.exception_kind` enum; only the kinds PR 3 raises. */
 export type ExceptionKind =
   | "unattributable_payment"
   | "provider_without_ledger"
   | "ledger_without_provider"
   | "amount_mismatch"
   | "currency_violation"
+  | "missing_provider_object"
   | "orphan_refund"
   | "refund_status_regression";
 
@@ -23,6 +25,8 @@ export type ExceptionKind =
 export type ProviderPayment = {
   objectId: string;
   paymentIntentId: string | null;
+  /** When Stripe says it happened. The ledger records this, never ingest time. */
+  createdAt: Date;
   /** Verified against the PaymentIntent, per D-030. */
   status: string;
   amountCents: number;
@@ -35,6 +39,8 @@ export type ProviderRefund = {
   objectId: string;
   /** The PaymentIntent the refunded charge belongs to. */
   paymentIntentId: string | null;
+  /** When Stripe says it happened. */
+  createdAt: Date;
   status: string;
   amountCents: number;
   livemode: boolean;
@@ -50,12 +56,33 @@ export type LedgerRow = {
   livemode: boolean;
 };
 
+/**
+ * A ledger entry the run intends to write.
+ *
+ * The shape is dictated by the CHECK constraints on `finance.ledger_entries`, not
+ * by convenience:
+ *   - L1 `stripe_payment`: amount > 0, source stripe, provider_payment_intent_id
+ *     NOT NULL, no parent.
+ *   - L3 `refund`: amount < 0, parent_entry_id NOT NULL, and for a stripe source
+ *     provider_object_id NOT NULL.
+ * A plan that violates either fails at INSERT with 23514, so the planner enforces
+ * them rather than discovering them in production.
+ */
 export type PlannedLedgerEntry = {
   agreementId: string;
   entryType: "stripe_payment" | "refund";
+  /** Negative for a refund (L3), positive for a payment (L1). */
   amountCents: number;
   providerObjectId: string;
   providerPaymentIntentId: string | null;
+  /** Required for a refund (L3); null for a payment (L1 forbids one). */
+  parentEntryId: string | null;
+  /**
+   * `ledger_entries.occurred_at` is NOT NULL and means when the money moved, per
+   * Stripe. Defaulting it to ingest time would misdate every entry and corrupt
+   * the earliest-occurred_at lookback that run #1 depends on (acceptance 2).
+   */
+  occurredAt: Date;
   livemode: boolean;
 };
 
@@ -194,12 +221,29 @@ export function diffWindow(input: DiffInput): DiffResult {
     const agreementId = resolveAgreementId(p.metadata);
 
     if (agreementId) {
+      // L1 requires provider_payment_intent_id NOT NULL on a stripe_payment. A
+      // succeeded, attributable payment with no PaymentIntent cannot be written,
+      // and dropping it silently would understate a balance — so it is raised.
+      if (!p.paymentIntentId) {
+        exceptions.push({
+          kind: "missing_provider_object",
+          livemode,
+          providerObjectId: p.objectId,
+          agreementId,
+          amountCents: p.amountCents,
+          currency: p.currency,
+          detail: { reason: "no_payment_intent_id", object_id: p.objectId },
+        });
+        continue;
+      }
       entries.push({
         agreementId,
         entryType: "stripe_payment",
         amountCents: p.amountCents,
         providerObjectId: p.objectId,
         providerPaymentIntentId: p.paymentIntentId,
+        parentEntryId: null, // L1 forbids a parent on a payment.
+        occurredAt: p.createdAt,
         livemode,
       });
       continue;
@@ -274,9 +318,17 @@ export function diffWindow(input: DiffInput): DiffResult {
     entries.push({
       agreementId: parent.agreementId,
       entryType: "refund",
-      amountCents: r.amountCents,
+      // L3: a refund is NEGATIVE. Stripe reports refund amounts as positive
+      // magnitudes, so the sign is applied here; writing the provider's value
+      // verbatim would fail the CHECK and, if it ever passed, would inflate the
+      // balance it was meant to reduce.
+      amountCents: -Math.abs(r.amountCents),
       providerObjectId: r.objectId,
       providerPaymentIntentId: r.paymentIntentId,
+      // L3 requires a parent. It is the payment this refund reverses, matched by
+      // PaymentIntent identity above — never inferred.
+      parentEntryId: parent.id,
+      occurredAt: r.createdAt,
       livemode,
     });
   }

@@ -27,6 +27,7 @@ function payment(o: Partial<ProviderPayment> = {}): ProviderPayment {
     amountCents: 5000,
     currency: "usd",
     livemode: true,
+    createdAt: new Date("2026-08-19T10:00:00Z"),
     metadata: { financial_version: "v2", agreement_id: AGREEMENT },
     ...o,
   };
@@ -39,6 +40,7 @@ function refund(o: Partial<ProviderRefund> = {}): ProviderRefund {
     status: "succeeded",
     amountCents: 1000,
     livemode: true,
+    createdAt: new Date("2026-08-19T11:00:00Z"),
     ...o,
   };
 }
@@ -238,7 +240,9 @@ test("a refund parented by PaymentIntent becomes a refund entry", () => {
   assert.equal(r.entries.length, 1);
   assert.equal(r.entries[0].entryType, "refund");
   assert.equal(r.entries[0].agreementId, AGREEMENT);
-  assert.equal(r.entries[0].amountCents, 1000);
+  // Negative per L3 — Stripe reports the magnitude, the ledger records the effect.
+  assert.equal(r.entries[0].amountCents, -1000);
+  assert.equal(r.entries[0].parentEntryId, "led_1");
 });
 
 test("a refund with no parent payment raises orphan_refund", () => {
@@ -302,4 +306,62 @@ test("counters reflect work examined, not objects supplied", () => {
   });
   assert.equal(r.objectsScanned, 2);
   assert.equal(r.objectsMatched, 1);
+});
+
+// ── Ledger CHECK conformance (L1, L3) ────────────────────────────────────────
+// These mirror constraints on finance.ledger_entries. A plan that violates them
+// fails at INSERT with 23514, so they are enforced when planning rather than
+// discovered in production.
+
+test("L3: a planned refund is NEGATIVE and carries its parent entry", () => {
+  // Stripe reports refund amounts as positive magnitudes. Writing that verbatim
+  // would fail the CHECK and, if it ever passed, would INFLATE the balance the
+  // refund was meant to reduce.
+  const r = diffWindow({ ...base, refunds: [refund()], ledger: [ledgerRow()] });
+  const entry = r.entries[0];
+  assert.equal(entry.entryType, "refund");
+  assert.ok(entry.amountCents < 0, `refund amount ${entry.amountCents} must be negative`);
+  assert.equal(entry.amountCents, -1000);
+  assert.equal(entry.parentEntryId, "led_1");
+});
+
+test("L1: a planned stripe_payment is positive, parentless, and has a PaymentIntent", () => {
+  const r = diffWindow({ ...base, payments: [payment()] });
+  const entry = r.entries[0];
+  assert.ok(entry.amountCents > 0);
+  assert.equal(entry.parentEntryId, null);
+  assert.ok(entry.providerPaymentIntentId, "L1 requires provider_payment_intent_id NOT NULL");
+});
+
+test("L1: an attributable payment with no PaymentIntent is raised, not written", () => {
+  // Dropping it silently would understate a balance; writing it would violate L1.
+  const r = diffWindow({
+    ...base,
+    payments: [payment({ paymentIntentId: null })],
+  });
+  assert.equal(r.entries.length, 0);
+  assert.equal(r.exceptions[0].kind, "missing_provider_object");
+});
+
+test("every planned entry satisfies the ledger CHECKs it is subject to", () => {
+  // A sweep over a mixed plan, so a future edit cannot introduce a shape the
+  // database will reject.
+  const r = diffWindow({
+    ...base,
+    payments: [payment(), payment({ objectId: "ch_2", paymentIntentId: "pi_2" })],
+    refunds: [refund(), refund({ objectId: "re_2", amountCents: 250 })],
+    ledger: [ledgerRow()],
+  });
+  for (const e of r.entries) {
+    assert.notEqual(e.amountCents, 0, "amount_cents <> 0");
+    if (e.entryType === "stripe_payment") {
+      assert.ok(e.amountCents > 0);
+      assert.equal(e.parentEntryId, null);
+      assert.ok(e.providerPaymentIntentId);
+    } else {
+      assert.ok(e.amountCents < 0);
+      assert.ok(e.parentEntryId, "L3 requires parent_entry_id");
+      assert.ok(e.providerObjectId, "L3 requires provider_object_id for a stripe refund");
+    }
+  }
 });
