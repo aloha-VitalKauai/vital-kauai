@@ -110,7 +110,46 @@ PR 1 already shipped every schema object PR 3 needs. Confirmed present in
 `quarantine_object`, `release_quarantine`, `resolve_exception`, and the run
 guards `tg_run_insert_guard`, `tg_run_authorization`, `tg_run_freeze_approved`.
 
-**PR 3 therefore adds no schema.** It is application-layer work only:
+**CORRECTION (2026-08-19, after privilege inspection).** An earlier revision of this
+file claimed "PR 3 adds no schema." **That was wrong**, and it was wrong because the
+tables existing was mistaken for the tables being writable. The privilege model tells a
+different story. For `service_role` — the role every server route runs as — the `finance`
+schema is deliberately **append-only**, and no table grants `UPDATE` or `DELETE` at all:
+
+| Table | `service_role` privileges |
+|---|---|
+| `stripe_events` | `INSERT`, `SELECT` |
+| `ledger_entries` | `INSERT`, `SELECT` |
+| `agreements`, `agreement_amounts`, `agreement_lifecycle_events` | `INSERT`, `SELECT` |
+| `reconciliation_runs` | **`SELECT` only** |
+| `reconciliation_exceptions` | **`SELECT` only** |
+| `checkout_sessions`, `payment_links` | **`SELECT` only** |
+
+Mutation is routed exclusively through `SECURITY DEFINER` functions, and the complete set
+of those that write `finance` is six: `approve_dry_run`, `create_agreement`,
+`quarantine_object`, `release_quarantine`, `resolve_exception`, `revoke_payment_link`.
+**None** of them creates a reconciliation run, advances run counters or the cursor, claims
+or releases a `stripe_events` row, or inserts an exception.
+
+Consequences for PR 3, stated plainly:
+
+- **Phase 1 (ingestion) is implementable as pure application work.** `service_role` holds
+  `INSERT` on `stripe_events`, which is all ingestion needs.
+- **Phases 2–4 are not.** The claim/re-claim branch and stale-claim sweeper require
+  `UPDATE` on `stripe_events`; the §10a job requires `INSERT` **and** `UPDATE` on
+  `reconciliation_runs`; exception raising requires `INSERT` on
+  `reconciliation_exceptions`. The application role can do none of these, and no function
+  exists to do them on its behalf. Code written against them would fail at runtime with
+  `permission denied`, not at review.
+
+So PR 3 **does** require a migration — one adding `SECURITY DEFINER` mutation functions in
+the same style PR 1 established (validate, then act, with attribution set internally).
+Granting `UPDATE` to `service_role` instead would be the wrong fix: it would dissolve the
+append-only property that PR 1 spent fifteen review passes establishing, and the run
+guards (`tg_run_authorization`, `tg_run_freeze_approved`) assume callers cannot rewrite
+run rows freely.
+
+The rest of PR 3 is application-layer work:
 
 - V2 webhook ingestion of **all** Stripe events into `finance.stripe_events`
 - PaymentIntent status verification before any `stripe_payment` is written (D-030)
