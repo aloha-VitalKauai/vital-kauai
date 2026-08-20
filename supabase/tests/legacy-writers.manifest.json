@@ -27,6 +27,12 @@
       ]
     },
     {
+      "file": "app/dashboard/financials/reconciliation/page.tsx",
+      "functions": [
+        "is_founder"
+      ]
+    },
+    {
       "file": "lib/assessments/finalizeAssessment.ts",
       "functions": [
         "finalize_assessment"
