@@ -952,3 +952,79 @@ Stripe" but "supersede a running payment integration."
 narrowly scoped PR 2 closeout, before PR 3 preflight resumes. PR 3 remains BLOCKED
 until that shutdown and the separate migration-history repair are complete and
 reviewed.
+
+## D-079 — PR 3 requires a mutation surface; `finance` is append-only to the app role
+
+**Finding.** PR 3 was scoped as "application-layer work only", and an early revision
+of `PR3_PREFLIGHT.md` asserted "PR 3 adds no schema". Both were wrong, and wrong for
+the same reason: the tables existing was mistaken for the tables being writable.
+
+Verified against production 2026-08-19. For `service_role` — the role every server
+route runs as — the `finance` schema is deliberately append-only:
+
+- **No table in `finance` grants `UPDATE` or `DELETE`** to `anon`, `authenticated`
+  or `service_role`.
+- `reconciliation_runs`, `reconciliation_exceptions`, `checkout_sessions` and
+  `payment_links` grant `SELECT` only.
+- `stripe_events`, `ledger_entries`, `agreements`, `agreement_amounts` and
+  `agreement_lifecycle_events` grant `INSERT` and `SELECT`.
+- The complete set of SECURITY DEFINER writers into `finance` is six functions:
+  `approve_dry_run`, `create_agreement`, `quarantine_object`, `release_quarantine`,
+  `resolve_exception`, `revoke_payment_link`. **None** creates a reconciliation run,
+  advances run counters or the cursor, claims a `stripe_events` row, or raises an
+  exception.
+
+**Consequence.** Phase 1 ingestion is genuinely pure application work, because
+`INSERT` on `stripe_events` is granted. Everything after it was not implementable as
+specified: the claim/re-claim branch and stale-claim sweeper need `UPDATE` on
+`stripe_events`; the §10a job needs `INSERT` **and** `UPDATE` on
+`reconciliation_runs`; exception raising needs `INSERT` on
+`reconciliation_exceptions`. Code written against them fails at runtime with
+`permission denied` — not at review, and not in a way a mocked test would catch.
+
+**Decision.** PR 3 adds one migration
+(`20260820003000_finance_reconciliation_mutations.sql`) providing nine SECURITY
+DEFINER functions and nothing more: `claim_stripe_events`, `complete_stripe_event`,
+`sweep_stale_event_claims`, `start_reconciliation_run`,
+`advance_reconciliation_run`, `finish_reconciliation_run`, `abandon_stale_runs`,
+`raise_reconciliation_exception`, `reset_object_failure_streak`.
+
+**Granting `UPDATE` to `service_role` was considered and rejected.** Note that
+`service_role` already holds `BYPASSRLS`, so the RLS policies on these tables do not
+constrain it — the grants are the only thing that does. Granting `UPDATE` would not
+be a small relaxation; it would remove the sole remaining control and let any route
+rewrite a run's approval evidence, window or counters. The run guards
+(`tg_run_authorization`, `tg_run_freeze_approved`) are written on the assumption that
+callers cannot do that.
+
+**Authorization model.** The EXECUTE grant is the boundary, and the only one: every
+function revokes from `PUBLIC` and grants solely to `service_role`. A role check
+inside the bodies is deliberately absent — once execution enters a SECURITY DEFINER
+function `current_user` is the owner for the whole call tree, so such a check would
+inspect `postgres` and pass unconditionally. It would read as a safeguard while
+enforcing nothing. Founder-only operations remain the existing functions, which
+authorize via `is_founder()`; that works because it reads JWT claims rather than the
+effective role.
+
+**Hardening.** Every function pins `search_path`, validates inputs, and constrains
+which state transitions it permits: only a `processing` event may be completed, only
+a `running` run may advance or finish, only a `completed` run may report an exhausted
+window (18b), counter deltas are additive and non-negative (D-049), and a failed
+event or run must carry an error. The migration asserts all of this in the same
+transaction that applies it, including that no `UPDATE`/`DELETE`/`TRUNCATE` grant
+exists in `finance` afterwards.
+
+**Two defects were found by executing the behaviour, not by reading the DDL**, and
+both would have shipped otherwise:
+
+1. `reconciliation_exceptions.detail` is `jsonb`, not `text`. The first version of
+   `raise_reconciliation_exception` declared it `text` and failed with `42804` on
+   every call. The static assertions all passed.
+2. `exc_processing_failure_shape` (D-061) requires that a
+   `provider_object_processing_failed` exception carry `provider_object_id` plus
+   `detail.object_type` and `detail.error_class` drawn from fixed vocabularies. The
+   function now validates this itself, turning an opaque `23514` into a message that
+   names the offending field.
+
+This is the same lesson D-078's review rounds recorded: a check that has never been
+executed is a claim, not evidence.
