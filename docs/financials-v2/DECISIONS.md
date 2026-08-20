@@ -1028,3 +1028,80 @@ both would have shipped otherwise:
 
 This is the same lesson D-078's review rounds recorded: a check that has never been
 executed is a claim, not evidence.
+
+## D-080 — The authoritative Stripe event subscription (resolves the "all events" contradiction)
+
+**The contradiction.** `PR_PLAN.md` (PR 3) says ingestion covers "**all** Stripe
+events into `finance.stripe_events`". `ARCHITECTURE.md` §10 instead enumerates four
+event types, and §10a rule 7 names four **object** types reconciliation walks. Taken
+naively these give three different answers to "what should the endpoint subscribe
+to", and defaulting to "all events" would have settled it by accident.
+
+**Resolution — the statements answer different questions.**
+
+1. *What does the handler do with what arrives?* PR_PLAN's "all" governs this, and it
+   is correct: the handler filters nothing. Filtering would discard an event Stripe
+   had already committed to delivering, and D-078's lesson is that discarding
+   provider events is the expensive mistake.
+
+2. *What should the endpoint be subscribed to?* **Neither document states this.**
+   ARCHITECTURE §10's four-type list is NOT the answer — it is the predicate of the
+   partial unique index `stripe_events_terminal_at_most_once_uq` and governs
+   deduplication, as D-056 says explicitly. §10's remark that "under-including a
+   type costs nothing, while over-including one silently discards a real event" is
+   about that index, not about subscription.
+
+   The controlling requirement is therefore **§10a rule 7**: reconciliation
+   enumerates *PaymentIntent, Charge, Refund and Checkout Session*. The subscription
+   is the finance-relevant event types of exactly those four objects.
+
+**Decision.** `lib/finance/stripe-event-types.ts` holds the single authoritative
+list — **20 event types** across the four reconciled objects. The Stripe dashboard
+configuration, the handler, this documentation and the automated tests all reference
+that one file, so they cannot drift apart.
+
+**Subscribing to every Stripe event is rejected.** It would record `customer.*`,
+`invoice.*`, `product.*`, `payout.*` and similar types serving no requirement,
+inflating a table that carries a 24-month retention obligation and diluting the
+shadow signal PR 3 exists to produce. A test asserts each of those maps to no
+reconciled object and is not subscribed.
+
+**Enforced by tests, not by assertion:** every at-most-once type is subscribed (or
+the index would defend a type never received); the at-most-once list matches the
+index predicate exactly; `payment_intent.payment_failed` is subscribed but NOT
+deduplicated (Stripe emits it per failed *attempt*, so two are legitimate for one
+PaymentIntent — acceptance 18k); every subscribed type maps to a reconciled object;
+every reconciled object is covered by at least one subscribed type; and
+`charge.refund.updated` classifies as a Refund rather than a Charge, which prefix
+order would otherwise get wrong.
+
+**Handler behaviour on an unlisted type.** It is still recorded — question 1 above —
+and logged as configuration drift. Silence would let the dashboard diverge from this
+file unnoticed, which is the failure mode this decision exists to prevent.
+
+## D-081 — A 23505 on `stripe_events` has two causes, and conflating them destroys data
+
+**Finding.** PR 3A's ingestion route treated any `23505` as a duplicate delivery and
+answered `200`. There are two distinct causes:
+
+- `stripe_events_pkey` — the same `event_id` twice. Routine redelivery; the event is
+  already recorded and `200` is correct.
+- `stripe_events_terminal_at_most_once_uq` — a **different** event (different
+  `event_id`) of a terminal type for the same object.
+
+For the second, `200` acknowledges an event that was never stored, and Stripe then
+stops retrying. That is exactly the hazard ARCHITECTURE §10 names — "over-including
+one silently discards a real event" — reached through the handler rather than
+through the index definition.
+
+**Decision.** Classification keys on the **constraint name**, not the SQLSTATE. A
+primary-key collision returns `200`; an at-most-once conflict returns `409` and logs
+the event id, type and object id. A `23505` naming no recognised constraint is
+treated as a conflict, not as benign — defaulting to "duplicate" would reintroduce
+the silent discard by another route.
+
+The `409` means Stripe retains the event and retries will keep colliding. That is
+deliberate: a stuck, noisy event is recoverable by a human, a silently discarded one
+is not. Reaching this state means either the at-most-once assumption is wrong for
+that type or something upstream is genuinely duplicating, and both need a decision
+rather than a default.

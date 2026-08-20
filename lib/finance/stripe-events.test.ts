@@ -11,10 +11,14 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import {
+  classifyInsertError,
   isDuplicateEvent,
   resolveObjectId,
   toStripeEventRow,
   PG_UNIQUE_VIOLATION,
+  STRIPE_EVENTS_PKEY,
+  TERMINAL_AT_MOST_ONCE_EVENT_TYPES,
+  TERMINAL_AT_MOST_ONCE_INDEX,
   type IngestableStripeEvent,
 } from "./stripe-events.ts";
 
@@ -77,10 +81,81 @@ test("rejects an event missing the fields the row requires", () => {
   );
 });
 
-test("classifies a unique violation as a duplicate delivery", () => {
-  // Stripe redelivers freely, so this is the routine case, not the exceptional
-  // one. Misclassifying it would make every retry collide and never settle.
-  assert.equal(isDuplicateEvent({ code: PG_UNIQUE_VIOLATION }), true);
+test("a primary-key collision is a duplicate delivery", () => {
+  // Stripe redelivers freely, so this is the routine case. Misclassifying it
+  // would make every retry collide and never settle.
+  const pkErr = {
+    code: PG_UNIQUE_VIOLATION,
+    message: `duplicate key value violates unique constraint "${STRIPE_EVENTS_PKEY}"`,
+  };
+  assert.equal(classifyInsertError(pkErr), "duplicate_delivery");
+  assert.equal(isDuplicateEvent(pkErr), true);
+});
+
+test("an at-most-once index collision is NOT a duplicate delivery", () => {
+  // The decisive case. This is a DIFFERENT event (different event_id) of a
+  // terminal type for the same object. Answering 200 would acknowledge and
+  // destroy a real event — the hazard ARCHITECTURE §10 names explicitly:
+  // "over-including one silently discards a real event".
+  const idxErr = {
+    code: PG_UNIQUE_VIOLATION,
+    message: `duplicate key value violates unique constraint "${TERMINAL_AT_MOST_ONCE_INDEX}"`,
+  };
+  assert.equal(classifyInsertError(idxErr), "at_most_once_conflict");
+  assert.equal(isDuplicateEvent(idxErr), false);
+});
+
+test("the constraint name decides, not the SQLSTATE alone", () => {
+  // Both cases are 23505. Keying on the code alone lets the at-most-once
+  // conflict masquerade as a routine redelivery.
+  assert.notEqual(
+    classifyInsertError({
+      code: PG_UNIQUE_VIOLATION,
+      message: `... unique constraint "${STRIPE_EVENTS_PKEY}"`,
+    }),
+    classifyInsertError({
+      code: PG_UNIQUE_VIOLATION,
+      message: `... unique constraint "${TERMINAL_AT_MOST_ONCE_INDEX}"`,
+    }),
+  );
+});
+
+test("the constraint name is also read from the details field", () => {
+  // PostgREST puts it in `details` rather than `message` in some shapes.
+  assert.equal(
+    classifyInsertError({
+      code: PG_UNIQUE_VIOLATION,
+      message: "duplicate key value violates unique constraint",
+      details: `Key (event_type, object_id, livemode) already exists in ${TERMINAL_AT_MOST_ONCE_INDEX}`,
+    }),
+    "at_most_once_conflict",
+  );
+});
+
+test("an unrecognised 23505 is not assumed benign", () => {
+  // Defaulting to "duplicate" would reintroduce the silent discard by another
+  // route. Unknown means loud, not safe.
+  assert.equal(
+    classifyInsertError({ code: PG_UNIQUE_VIOLATION, message: "some other constraint" }),
+    "at_most_once_conflict",
+  );
+  assert.equal(classifyInsertError({ code: PG_UNIQUE_VIOLATION }), "at_most_once_conflict");
+});
+
+test("the at-most-once list matches the index in the database exactly", () => {
+  // D-056 / D-076. payment_intent.payment_failed must NOT appear: Stripe emits it
+  // per failed ATTEMPT, so two are legitimate for one PaymentIntent (18k).
+  assert.deepEqual([...TERMINAL_AT_MOST_ONCE_EVENT_TYPES], [
+    "checkout.session.completed",
+    "checkout.session.expired",
+    "payment_intent.succeeded",
+    "payment_intent.canceled",
+  ]);
+  assert.ok(
+    !TERMINAL_AT_MOST_ONCE_EVENT_TYPES.includes(
+      "payment_intent.payment_failed" as never,
+    ),
+  );
 });
 
 test("does not classify other failures as duplicates", () => {
