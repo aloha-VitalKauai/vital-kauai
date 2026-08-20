@@ -172,8 +172,8 @@ export default function DonateClient({
       selectedPreset === "custom"
         ? Math.round(parseFloat(giftCustom) * 100)
         : selectedPreset;
-    if (!amount || !Number.isFinite(amount) || amount < 100 || amount > 2_500_000) {
-      setGiftError("Please enter a valid amount ($1–$25,000).");
+    if (!amount || !Number.isFinite(amount) || amount < 100 || amount > 500_000_000) {
+      setGiftError("Please enter a valid amount ($1–$5,000,000).");
       return;
     }
     const popup = window.open("", "_blank", "noopener,noreferrer");
@@ -217,7 +217,7 @@ export default function DonateClient({
     giftAmount &&
       Number.isFinite(giftAmount) &&
       giftAmount >= 100 &&
-      giftAmount <= 2_500_000,
+      giftAmount <= 500_000_000,
   );
 
   return (
@@ -436,14 +436,14 @@ export default function DonateClient({
                 <input
                   type="number"
                   min={1}
-                  max={10000}
+                  max={5000000}
                   step="0.01"
                   placeholder="Enter amount"
                   value={giftCustom}
                   onChange={(e) => setGiftCustom(e.target.value)}
                   style={inputStyle}
                 />
-                <p style={hintStyle}>Min $1&ensp;·&ensp;Max $25,000</p>
+                <p style={hintStyle}>Min $1&ensp;·&ensp;Max $5,000,000</p>
               </div>
             )}
 
