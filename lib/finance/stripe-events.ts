@@ -90,17 +90,70 @@ export function toStripeEventRow(event: IngestableStripeEvent): StripeEventRow {
 /** Postgres unique-violation SQLSTATE. */
 export const PG_UNIQUE_VIOLATION = "23505";
 
+/** The at-most-once index from ARCHITECTURE §10 / D-056 / D-076. */
+export const TERMINAL_AT_MOST_ONCE_INDEX = "stripe_events_terminal_at_most_once_uq";
+
+/** Primary key on `event_id`. */
+export const STRIPE_EVENTS_PKEY = "stripe_events_pkey";
+
 /**
- * Is this insert error a duplicate delivery rather than a failure?
+ * The four event types ARCHITECTURE §10 declares at-most-once **per object**,
+ * matching `stripe_events_terminal_at_most_once_uq` exactly.
  *
- * Stripe redelivers on any non-2xx and can deliver the same event more than once
- * even on success, so duplicates are routine rather than exceptional.
- * `event_id` is the primary key, so the second insert raises 23505 — which means
- * the event is already durably recorded and the delivery has succeeded.
- *
- * Treating this as an error would be actively harmful: a 500 makes Stripe retry,
- * which raises 23505 again, and the event never stops being redelivered.
+ * Deliberately NOT the set of types worth subscribing to — this is only the set
+ * the database structurally deduplicates. `payment_intent.payment_failed` is
+ * absent because Stripe emits it per failed ATTEMPT, so two are legitimate for
+ * one PaymentIntent (acceptance 18k).
  */
-export function isDuplicateEvent(error: { code?: string | null } | null): boolean {
-  return error?.code === PG_UNIQUE_VIOLATION;
+export const TERMINAL_AT_MOST_ONCE_EVENT_TYPES = [
+  "checkout.session.completed",
+  "checkout.session.expired",
+  "payment_intent.succeeded",
+  "payment_intent.canceled",
+] as const;
+
+export type InsertOutcome = "duplicate_delivery" | "at_most_once_conflict" | "other_error";
+
+type PgErrorish = { code?: string | null; message?: string | null; details?: string | null } | null;
+
+/**
+ * Classify an insert failure.
+ *
+ * 23505 has TWO causes here, and conflating them destroys data:
+ *
+ *   1. `stripe_events_pkey` — the same `event_id` arriving twice. Stripe
+ *      redelivers on any non-2xx and may redeliver even after success, so this is
+ *      routine. The event is already durably recorded; answering 200 is correct,
+ *      and answering non-2xx would make Stripe retry into the same collision
+ *      forever.
+ *
+ *   2. `stripe_events_terminal_at_most_once_uq` — a DIFFERENT event (different
+ *      `event_id`) of a terminal type for the same object. This is not a
+ *      duplicate delivery: it is a distinct event that the at-most-once invariant
+ *      says should not exist. ARCHITECTURE §10 names this exact hazard —
+ *      "over-including one silently discards a real event" — and answering 200
+ *      would do precisely that, acknowledging an event that was never stored.
+ *
+ * So the constraint name, not the SQLSTATE, decides. Matching on 23505 alone
+ * would let case 2 masquerade as case 1.
+ */
+export function classifyInsertError(error: PgErrorish): InsertOutcome {
+  if (error?.code !== PG_UNIQUE_VIOLATION) return "other_error";
+
+  const haystack = `${error?.message ?? ""} ${error?.details ?? ""}`;
+  if (haystack.includes(TERMINAL_AT_MOST_ONCE_INDEX)) return "at_most_once_conflict";
+  if (haystack.includes(STRIPE_EVENTS_PKEY)) return "duplicate_delivery";
+
+  // A 23505 naming no constraint we recognise is not assumed benign. Defaulting
+  // to "duplicate" here would reintroduce the silent discard by another route.
+  return "at_most_once_conflict";
+}
+
+/**
+ * Is this a routine redelivery of an event already recorded?
+ *
+ * True only for a primary-key collision. See `classifyInsertError`.
+ */
+export function isDuplicateEvent(error: PgErrorish): boolean {
+  return classifyInsertError(error) === "duplicate_delivery";
 }

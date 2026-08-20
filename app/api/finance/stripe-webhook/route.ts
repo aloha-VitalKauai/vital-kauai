@@ -30,10 +30,11 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient as createServiceSupabase } from "@supabase/supabase-js";
 import {
-  isDuplicateEvent,
+  classifyInsertError,
   toStripeEventRow,
   type IngestableStripeEvent,
 } from "@/lib/finance/stripe-events";
+import { isSubscribedEventType } from "@/lib/finance/stripe-event-types";
 
 // Raw body access and the Node crypto used by signature verification.
 export const runtime = "nodejs";
@@ -100,20 +101,53 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "unmappable_event" }, { status: 500 });
   }
 
+  // Record everything delivered, but say so when the endpoint is configured
+  // beyond the authoritative subscription. Filtering here would DISCARD an event
+  // Stripe already committed to delivering; staying silent would let the
+  // dashboard drift away from lib/finance/stripe-event-types.ts unnoticed.
+  if (!isSubscribedEventType(row.event_type)) {
+    console.warn(
+      "finance/stripe-webhook: event type outside the authoritative subscription — recording it, but the Stripe endpoint configuration has drifted",
+      { event_type: row.event_type, event_id: row.event_id },
+    );
+  }
+
   const { error } = await getServiceClient()
     .schema("finance")
     .from("stripe_events")
     .insert(row);
 
   if (error) {
-    // Duplicate delivery: the event is already durably recorded, so this delivery
-    // has succeeded. Returning non-2xx here would make Stripe retry forever,
-    // since every retry would collide the same way.
-    if (isDuplicateEvent(error)) {
-      return NextResponse.json({ received: true, duplicate: true }, { status: 200 });
+    switch (classifyInsertError(error)) {
+      case "duplicate_delivery":
+        // Same event_id arriving twice. Already durably recorded, so this
+        // delivery succeeded. Non-2xx here would make Stripe retry into the same
+        // collision forever.
+        return NextResponse.json({ received: true, duplicate: true }, { status: 200 });
+
+      case "at_most_once_conflict":
+        // A DIFFERENT event of a terminal type for the same object. Not a
+        // duplicate — a distinct event that the at-most-once invariant
+        // (ARCHITECTURE §10, D-056, D-076) says cannot exist. Either that
+        // assumption is wrong for this type or something upstream is genuinely
+        // duplicating; both need a human. Answering 200 would acknowledge and
+        // destroy it, the exact hazard §10 names. So this fails loudly and Stripe
+        // retains the event. Retries keep colliding, deliberately: a stuck, noisy
+        // event is recoverable, a silently discarded one is not.
+        console.error(
+          "finance/stripe-webhook: at-most-once conflict — second terminal event for one object",
+          {
+            event_id: row.event_id,
+            event_type: row.event_type,
+            object_id: row.object_id,
+          },
+        );
+        return NextResponse.json({ error: "at_most_once_conflict" }, { status: 409 });
+
+      default:
+        console.error("finance/stripe-webhook: insert failed", error);
+        return NextResponse.json({ error: "not_recorded" }, { status: 500 });
     }
-    console.error("finance/stripe-webhook: insert failed", error);
-    return NextResponse.json({ error: "not_recorded" }, { status: 500 });
   }
 
   return NextResponse.json({ received: true }, { status: 200 });
