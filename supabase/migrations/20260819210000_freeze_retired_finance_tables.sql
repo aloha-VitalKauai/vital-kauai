@@ -149,6 +149,7 @@ do $$
 declare
   n_row_triggers  int;
   n_trunc_triggers int;
+  n_stmt_triggers int;
   n_write_grants  int;
 begin
   select count(*) into n_row_triggers
