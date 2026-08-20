@@ -63,7 +63,7 @@ export default async function ReconciliationPage() {
   }
 
   const { data, error } = await supabase
-    .schema("finance")
+    .schema("finance_api")
     .from("reconciliation_runs")
     .select(
       "id, livemode, dry_run, status, window_start, window_end, window_exhausted, " +

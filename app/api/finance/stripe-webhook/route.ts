@@ -30,9 +30,10 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient as createServiceSupabase } from "@supabase/supabase-js";
 import {
-  classifyInsertError,
+  mapRecordEventStatus,
   toStripeEventRow,
   type IngestableStripeEvent,
+  type RecordEventStatus,
 } from "@/lib/finance/stripe-events";
 import { isSubscribedEventType } from "@/lib/finance/stripe-event-types";
 
@@ -112,43 +113,31 @@ export async function POST(req: Request) {
     );
   }
 
-  const { error } = await getServiceClient()
-    .schema("finance")
-    .from("stripe_events")
-    .insert(row);
+  // Through the façade, never `finance` directly: that schema is not exposed to
+  // PostgREST, which is what keeps its other tables off the REST surface. The
+  // function returns a STATUS rather than making this route parse an error
+  // message for a constraint name.
+  const { data, error } = await getServiceClient()
+    .schema("finance_api")
+    .rpc("record_stripe_event", {
+      p_event_id: row.event_id,
+      p_event_type: row.event_type,
+      p_object_id: row.object_id,
+      p_livemode: row.livemode,
+      p_payload: row.payload,
+    });
 
   if (error) {
-    switch (classifyInsertError(error)) {
-      case "duplicate_delivery":
-        // Same event_id arriving twice. Already durably recorded, so this
-        // delivery succeeded. Non-2xx here would make Stripe retry into the same
-        // collision forever.
-        return NextResponse.json({ received: true, duplicate: true }, { status: 200 });
-
-      case "at_most_once_conflict":
-        // A DIFFERENT event of a terminal type for the same object. Not a
-        // duplicate — a distinct event that the at-most-once invariant
-        // (ARCHITECTURE §10, D-056, D-076) says cannot exist. Either that
-        // assumption is wrong for this type or something upstream is genuinely
-        // duplicating; both need a human. Answering 200 would acknowledge and
-        // destroy it, the exact hazard §10 names. So this fails loudly and Stripe
-        // retains the event. Retries keep colliding, deliberately: a stuck, noisy
-        // event is recoverable, a silently discarded one is not.
-        console.error(
-          "finance/stripe-webhook: at-most-once conflict — second terminal event for one object",
-          {
-            event_id: row.event_id,
-            event_type: row.event_type,
-            object_id: row.object_id,
-          },
-        );
-        return NextResponse.json({ error: "at_most_once_conflict" }, { status: 409 });
-
-      default:
-        console.error("finance/stripe-webhook: insert failed", error);
-        return NextResponse.json({ error: "not_recorded" }, { status: 500 });
-    }
+    console.error("finance/stripe-webhook: record_stripe_event failed", error);
+    return NextResponse.json({ error: "not_recorded" }, { status: 500 });
   }
 
-  return NextResponse.json({ received: true }, { status: 200 });
+  const outcome = mapRecordEventStatus(data as RecordEventStatus);
+  if (outcome.http === 409) {
+    console.error(
+      "finance/stripe-webhook: at-most-once conflict — second terminal event for one object",
+      { event_id: row.event_id, event_type: row.event_type, object_id: row.object_id },
+    );
+  }
+  return NextResponse.json(outcome.body, { status: outcome.http });
 }

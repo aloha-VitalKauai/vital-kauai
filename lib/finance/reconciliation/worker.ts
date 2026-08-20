@@ -57,7 +57,7 @@ export async function runEventWorker(
   client: SupabaseClient,
   opts: { livemode: boolean; batch?: number; staleAfter?: string } = { livemode: false },
 ): Promise<WorkerResult> {
-  const fin = () => client.schema("finance");
+  const fin = () => client.schema("finance_api");
   const batch = opts.batch ?? DEFAULT_CLAIM_BATCH;
 
   const claimed = must(
@@ -128,7 +128,7 @@ export async function sweepStaleClaims(
   staleAfter: string = DEFAULT_STALE_AFTER,
 ): Promise<number> {
   return (must(
-    await client.schema("finance").rpc("sweep_stale_event_claims", {
+    await client.schema("finance_api").rpc("sweep_stale_event_claims", {
       p_livemode: livemode,
       p_stale_after: staleAfter,
     }),
@@ -147,7 +147,7 @@ export async function sweepAbandonedRuns(
   staleAfter: string = DEFAULT_STALE_AFTER,
 ): Promise<number> {
   return (must(
-    await client.schema("finance").rpc("abandon_stale_runs", { p_stale_after: staleAfter }),
+    await client.schema("finance_api").rpc("abandon_stale_runs", { p_stale_after: staleAfter }),
     "abandon_stale_runs",
   ) ?? 0) as number;
 }
@@ -183,7 +183,7 @@ export async function purgeExpiredPayloads(
   let total = 0;
   for (let i = 0; i < maxBatches; i += 1) {
     const purged = (must(
-      await client.schema("finance").rpc("purge_expired_event_payloads", {
+      await client.schema("finance_api").rpc("purge_expired_event_payloads", {
         p_before: before,
         p_limit: batch,
       }),
