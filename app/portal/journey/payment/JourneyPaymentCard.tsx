@@ -1,4 +1,5 @@
 "use client";
+import { legacyPaymentsEnabledForDisplay, LEGACY_DISABLED_NOTICE } from "@/lib/payments/legacy-enabled-client";
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -35,6 +36,7 @@ export default function JourneyPaymentCard({
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
+  const [legacyDisabled, setLegacyDisabled] = useState(!legacyPaymentsEnabledForDisplay());
   const [partial, setPartial] = useState("");
   const [processing, setProcessing] = useState(
     params.get("payment") === "success",
@@ -90,6 +92,13 @@ export default function JourneyPaymentCard({
   }, [processing, paid, journeyId, bookingId, provider, router, supabase]);
 
   async function pay(amountCents?: number) {
+    // D-078: legacy payments are shut down. Presentation guard only; the server
+    // refuses these endpoints with 503 regardless of what happens here.
+    if (!legacyPaymentsEnabledForDisplay()) {
+      setLegacyDisabled(true);
+      return;
+    }
+
     const popup = window.open("", "_blank", "noopener,noreferrer");
     setLoading(true);
     setFailed(false);
@@ -170,7 +179,12 @@ export default function JourneyPaymentCard({
       )}
 
       <div style={{ marginTop: "1.5rem", display: "flex", flexDirection: "column", gap: 10 }}>
-        <button style={btnStyle} disabled={loading || !canPay} onClick={() => pay()}>
+        {legacyDisabled && (
+        <p role="status" style={{ margin: "0.5rem 0", fontSize: "0.9rem", opacity: 0.85 }}>
+          {LEGACY_DISABLED_NOTICE}
+        </p>
+      )}
+      <button style={btnStyle} disabled={loading || !canPay || legacyDisabled} onClick={() => pay()}>
           {loading
             ? `Opening ${providerName}…`
             : failed
@@ -192,7 +206,7 @@ export default function JourneyPaymentCard({
             />
             <button
               style={{ ...btnStyle, width: "auto", padding: "10px 16px" }}
-              disabled={loading || !partial || !Number.isFinite(partialCents) || partialCents < 100}
+              disabled={loading || !partial || !Number.isFinite(partialCents) || partialCents < 100 || legacyDisabled}
               onClick={() => pay(partialCents)}
             >
               Pay {partial && Number.isFinite(partialCents) ? fmt(partialCents) : ""}

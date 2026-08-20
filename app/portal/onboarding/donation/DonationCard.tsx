@@ -1,4 +1,5 @@
 "use client";
+import { legacyPaymentsEnabledForDisplay, LEGACY_DISABLED_NOTICE } from "@/lib/payments/legacy-enabled-client";
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -15,6 +16,7 @@ export default function DonationCard({
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
+  const [legacyDisabled, setLegacyDisabled] = useState(!legacyPaymentsEnabledForDisplay());
   const [processing, setProcessing] = useState(
     params.get("donation") === "success",
   );
@@ -52,6 +54,13 @@ export default function DonationCard({
   }, [processing, router, supabase]);
 
   async function handlePay() {
+    // D-078: legacy payments are shut down. Presentation guard only; the server
+    // refuses these endpoints with 503 regardless of what happens here.
+    if (!legacyPaymentsEnabledForDisplay()) {
+      setLegacyDisabled(true);
+      return;
+    }
+
     const popup = window.open("", "_blank", "noopener,noreferrer");
     setLoading(true);
     setFailed(false);
@@ -128,7 +137,12 @@ export default function DonationCard({
         </p>
       )}
 
-      <button className="btn-stripe" onClick={handlePay} disabled={loading}>
+      {legacyDisabled && (
+        <p role="status" style={{ margin: "0.5rem 0", fontSize: "0.9rem", opacity: 0.85 }}>
+          {LEGACY_DISABLED_NOTICE}
+        </p>
+      )}
+      <button className="btn-stripe" onClick={handlePay} disabled={loading || legacyDisabled}>
         {loading
           ? "Opening Stripe…"
           : failed

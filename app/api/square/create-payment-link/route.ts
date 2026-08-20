@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { legacyPaymentsEnabled, legacyPaymentsDisabledResponse } from "@/lib/payments/legacy-enabled";
 import { randomUUID } from "node:crypto";
 import { createClient as createServerSupabase } from "@/lib/supabase/server";
 import { createClient as createServiceSupabase } from "@supabase/supabase-js";
@@ -22,6 +23,10 @@ type Body = {
 };
 
 export async function POST(req: Request) {
+  // D-078: fail-closed legacy shutdown. MUST be the first statement — before
+  // any Stripe/Square client construction, any auth call, and any DB write.
+  if (!legacyPaymentsEnabled()) return legacyPaymentsDisabledResponse();
+
   if (!isSquareActive()) {
     return NextResponse.json(
       { error: "Square is not the active payment provider" },

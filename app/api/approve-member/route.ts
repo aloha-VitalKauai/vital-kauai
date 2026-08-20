@@ -1,4 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
+// D-078: these routes are NOT refused — only their $0 commitment seed is
+// suppressed — so only the predicate is needed, not the refusal response.
+import { legacyPaymentsEnabled } from "@/lib/payments/legacy-enabled";
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyFounder } from '@/lib/auth/founder-check'
 import { renderAppInstallEmail, renderSetupLinkEmail } from '@/lib/email-renderers'
@@ -19,6 +22,7 @@ function env() {
 // GET  /api/approve-member?token=xxx  <- clicked from founder email button
 // POST /api/approve-member            <- called from ops dashboard
 export async function GET(req: NextRequest) {
+
   try {
     const token = req.nextUrl.searchParams.get('token')
     if (!token) return htmlResponse(errorPage('Missing approval token.'), 400)
@@ -30,6 +34,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+
   try {
     const founder = await verifyFounder()
     if (!founder) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
@@ -202,7 +207,9 @@ async function handleApproval(token: string, source: string) {
       console.log(`[approve-member] STEP:journey, already exists ${journeyId}`)
     }
 
-    if (journeyId) {
+    // D-078: legacy commitment seed only. Approval itself is never gated;
+    // see the note in add-member-manually for the reasoning.
+    if (journeyId && legacyPaymentsEnabled()) {
       const { data: existingCommit } = await db()
         .from('financial_commitments')
         .select('id')

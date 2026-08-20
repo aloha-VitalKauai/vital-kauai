@@ -87,7 +87,13 @@ export const PRE_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
 ]
 
 export const POST_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
-  { practice: '', reflection: '' },
+  {
+    teaching: 'A teaching from PsychoNeuroEnergetics: the binary lens people fall into during conflict, what being right protects, how the paradigm is inherited through families, and the inquiry that opens in its place.',
+    practice: 'Trading a verdict for a need',
+    reflection: 'Where in your life are you most committed to being right? What would you have to feel if you set that position down?',
+    reflectionFollowUp: 'What role were you cast in growing up — the responsible one, the hero, the scapegoat? What did that role protect the family from facing?',
+    reflectionThird: 'Take one judgment you carry and rewrite it as a need. What changes in your body when you say the second version?',
+  },
   {
     teaching: 'A teaching from PsychoNeuroEnergetics: how inner experience is received, what the body learns in the moments it is overridden, and the listening practices that return a person to their own authority.',
     practice: 'Reparative listening practice',

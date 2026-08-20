@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { legacyPaymentsEnabled, legacyPaymentsDisabledResponse } from "@/lib/payments/legacy-enabled";
 import { createClient as createServerSupabase } from "@/lib/supabase/server";
 import { createClient as createServiceSupabase } from "@supabase/supabase-js";
 
@@ -14,6 +15,10 @@ export const runtime = "nodejs";
  * is created via the booking flow.
  */
 export async function POST(req: Request) {
+  // D-078: fail-closed legacy shutdown. First statement in the handler —
+  // before any provider call, auth lookup, email send or database write.
+  if (!legacyPaymentsEnabled()) return legacyPaymentsDisabledResponse();
+
   const { member_id, amount_cents } = await req
     .json()
     .catch(() => ({} as Record<string, unknown>));
