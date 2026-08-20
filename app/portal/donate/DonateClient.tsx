@@ -22,7 +22,7 @@ type Props = {
   history: DonationRow[];
 };
 
-const GIFT_PRESETS = [5000, 10000, 25000, 50000]; // $50, $100, $250, $500
+const GIFT_PRESETS = [50000, 250000, 500000, 1500000]; // $500, $2,500, $5,000, $15,000
 
 function fmt(cents: number) {
   return new Intl.NumberFormat("en-US", {
@@ -411,6 +411,8 @@ export default function DonateClient({
                 Custom
               </button>
             </div>
+
+            <p style={hintStyle}>A gift of $15,000 supports one member&rsquo;s entire program.</p>
 
             {selectedPreset === "custom" && (
               <div style={{ marginTop: 12 }}>
