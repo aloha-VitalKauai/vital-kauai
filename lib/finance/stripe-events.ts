@@ -112,48 +112,48 @@ export const TERMINAL_AT_MOST_ONCE_EVENT_TYPES = [
   "payment_intent.canceled",
 ] as const;
 
-export type InsertOutcome = "duplicate_delivery" | "at_most_once_conflict" | "other_error";
+/**
+ * What `finance_api.record_stripe_event` reports back.
+ *
+ * The distinction that matters (D-081) is now decided in SQL from the constraint
+ * diagnostic rather than by parsing an error message here, which is strictly more
+ * robust: two different unique violations are possible and they mean opposite
+ * things.
+ */
+export type RecordEventStatus = "recorded" | "duplicate" | "at_most_once_conflict";
 
-type PgErrorish = { code?: string | null; message?: string | null; details?: string | null } | null;
+export type RecordEventOutcome = {
+  http: number;
+  body: Record<string, unknown>;
+};
 
 /**
- * Classify an insert failure.
+ * Map the recorded status onto the HTTP answer Stripe receives.
  *
- * 23505 has TWO causes here, and conflating them destroys data:
+ * Stripe retains and retries any non-2xx, so the status code IS the contract:
  *
- *   1. `stripe_events_pkey` — the same `event_id` arriving twice. Stripe
- *      redelivers on any non-2xx and may redeliver even after success, so this is
- *      routine. The event is already durably recorded; answering 200 is correct,
- *      and answering non-2xx would make Stripe retry into the same collision
- *      forever.
+ *   recorded / duplicate  -> 200. The event is durably stored (the second is the
+ *     same event id arriving twice, which is routine). A non-2xx would make
+ *     Stripe retry into the same collision forever.
  *
- *   2. `stripe_events_terminal_at_most_once_uq` — a DIFFERENT event (different
- *      `event_id`) of a terminal type for the same object. This is not a
- *      duplicate delivery: it is a distinct event that the at-most-once invariant
- *      says should not exist. ARCHITECTURE §10 names this exact hazard —
- *      "over-including one silently discards a real event" — and answering 200
- *      would do precisely that, acknowledging an event that was never stored.
- *
- * So the constraint name, not the SQLSTATE, decides. Matching on 23505 alone
- * would let case 2 masquerade as case 1.
+ *   at_most_once_conflict -> 409. A DIFFERENT event of a terminal type for the
+ *     same object: a distinct event the at-most-once invariant says cannot exist.
+ *     Answering 200 would acknowledge and destroy it — the exact hazard §10 names.
+ *     Failing loudly keeps it in Stripe's queue; retries keep colliding, which is
+ *     deliberate, because a stuck noisy event is recoverable and a silently
+ *     discarded one is not.
  */
-export function classifyInsertError(error: PgErrorish): InsertOutcome {
-  if (error?.code !== PG_UNIQUE_VIOLATION) return "other_error";
-
-  const haystack = `${error?.message ?? ""} ${error?.details ?? ""}`;
-  if (haystack.includes(TERMINAL_AT_MOST_ONCE_INDEX)) return "at_most_once_conflict";
-  if (haystack.includes(STRIPE_EVENTS_PKEY)) return "duplicate_delivery";
-
-  // A 23505 naming no constraint we recognise is not assumed benign. Defaulting
-  // to "duplicate" here would reintroduce the silent discard by another route.
-  return "at_most_once_conflict";
-}
-
-/**
- * Is this a routine redelivery of an event already recorded?
- *
- * True only for a primary-key collision. See `classifyInsertError`.
- */
-export function isDuplicateEvent(error: PgErrorish): boolean {
-  return classifyInsertError(error) === "duplicate_delivery";
+export function mapRecordEventStatus(status: RecordEventStatus | string): RecordEventOutcome {
+  switch (status) {
+    case "recorded":
+      return { http: 200, body: { received: true } };
+    case "duplicate":
+      return { http: 200, body: { received: true, duplicate: true } };
+    case "at_most_once_conflict":
+      return { http: 409, body: { error: "at_most_once_conflict" } };
+    default:
+      // An unrecognised status is not assumed benign; treating it as success
+      // would reintroduce the silent discard by another route.
+      return { http: 500, body: { error: "unrecognised_record_status", status } };
+  }
 }

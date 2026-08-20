@@ -122,7 +122,7 @@ export async function GET() {
   if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status });
 
   const { data: runs, error } = await auth.supabase
-    .schema("finance")
+    .schema("finance_api")
     .from("reconciliation_runs")
     .select(
       "id, livemode, dry_run, status, window_start, window_end, window_exhausted, " +
@@ -196,7 +196,7 @@ async function approve(
   // than raising. A founder double-clicking must not see an error, and D-059
   // freezes approved evidence so a second approval could not be applied anyway.
   const { data: existing, error: readErr } = await auth.supabase
-    .schema("finance")
+    .schema("finance_api")
     .from("reconciliation_runs")
     .select("id, dry_run, approved_at, approved_by, approval_note")
     .eq("id", runId)
@@ -226,7 +226,7 @@ async function approve(
   // The actual approval, on the founder's session. Attribution is set INSIDE the
   // function from auth.uid(); this route cannot supply or influence it.
   const { error } = await auth.supabase
-    .schema("finance")
+    .schema("finance_api")
     .rpc("approve_dry_run", { p_run_id: runId, p_note: note });
 
   if (error) {
@@ -254,7 +254,7 @@ async function startCanary(
   // Read the authorizing run through the FOUNDER's session, so RLS confirms they
   // may see it before the service role is used for anything.
   const { data: dry, error: readErr } = await auth.supabase
-    .schema("finance")
+    .schema("finance_api")
     .from("reconciliation_runs")
     .select(
       "id, livemode, dry_run, status, approved_at, window_start, window_end, implementation_version",
@@ -277,7 +277,7 @@ async function startCanary(
   // this a second click would start another writing run over the same window —
   // contradicting what the founder was told they were approving.
   const { data: existingCanary, error: canaryReadErr } = await auth.supabase
-    .schema("finance")
+    .schema("finance_api")
     .from("reconciliation_runs")
     .select("id, status")
     .eq("authorized_by_run_id", approvedRunId)
@@ -319,7 +319,7 @@ async function startCanary(
   // founder session verified above. tg_run_authorization still re-checks the
   // approval independently, so this cannot manufacture permission.
   const { data: runId, error } = await serviceClient()
-    .schema("finance")
+    .schema("finance_api")
     .rpc("start_reconciliation_run", {
       p_livemode: dry.livemode,
       p_implementation_version: implementationVersion,

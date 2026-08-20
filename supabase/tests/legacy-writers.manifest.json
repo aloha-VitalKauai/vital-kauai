@@ -27,6 +27,12 @@
       ]
     },
     {
+      "file": "app/api/finance/stripe-webhook/route.ts",
+      "functions": [
+        "record_stripe_event"
+      ]
+    },
+    {
       "file": "app/dashboard/financials/reconciliation/page.tsx",
       "functions": [
         "is_founder"
@@ -63,6 +69,7 @@
         "finish_reconciliation_run",
         "raise_reconciliation_exception",
         "record_dry_run_report",
+        "record_ledger_entry",
         "start_reconciliation_run"
       ]
     },

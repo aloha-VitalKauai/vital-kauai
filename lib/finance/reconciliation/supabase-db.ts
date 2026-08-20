@@ -1,14 +1,15 @@
 /**
  * Financials V2 — PR 3B: the Supabase implementation of `FinanceDb`.
  *
- * Every mutation goes through a D-079/D-080 SECURITY DEFINER function. Nothing
- * here UPDATEs or DELETEs a `finance` table directly, because `service_role`
- * holds no such grant — the schema is append-only to the application role, and
- * that is the enforcement rather than a convention.
+ * Every call goes through the `finance_api` façade, which is the only exposed
+ * schema; `finance` itself stays private so PostgREST publishes none of its
+ * tables. The façade is SECURITY INVOKER throughout, so authorization is still
+ * the underlying `finance` grants and RLS — the wrappers add no privilege.
  *
- * The one direct write is `INSERT` into `finance.ledger_entries`, which
- * `service_role` does hold, and which the table's own CHECK constraints (L1, L3,
- * L12, L13) validate.
+ * Nothing here UPDATEs or DELETEs a `finance` table, because `service_role` holds
+ * no such grant. The ledger write goes through `finance_api.record_ledger_entry`
+ * rather than a writable view, so the façade exposes no table-writing surface;
+ * the table's own CHECKs (L1, L3, L12, L13) still validate the row.
  */
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
@@ -36,7 +37,11 @@ function must<T>(res: { data: T; error: { message: string } | null }, what: stri
 
 export function createSupabaseFinanceDb(client?: SupabaseClient): FinanceDb {
   const db = client ?? financeServiceClient();
-  const fin = () => db.schema("finance");
+  // The facade, never `finance` directly: `finance` is NOT exposed to PostgREST,
+  // and keeping it that way is what stops every table in it becoming a REST
+  // collection. Every member of `finance_api` is SECURITY INVOKER, so the grants
+  // below still do the authorising.
+  const fin = () => db.schema("finance_api");
 
   return {
     async startRun(a) {
@@ -73,6 +78,8 @@ export function createSupabaseFinanceDb(client?: SupabaseClient): FinanceDb {
       must(
         await fin().rpc("finish_reconciliation_run", {
           p_run_id: a.runId,
+          // text at the boundary: the enum lives in the private schema and the
+          // façade casts it inward, so PostgREST never resolves finance.run_status.
           p_status: a.status as RunStatus,
           p_window_exhausted: a.windowExhausted ?? false,
           p_error: a.error ?? null,
@@ -119,28 +126,23 @@ export function createSupabaseFinanceDb(client?: SupabaseClient): FinanceDb {
     },
 
     async writeLedgerEntry(entry) {
-      // Attribution is `recorded_by_system`, never `recorded_by`: no human made
-      // this entry, and `ledger_single_attribution` permits only one of the two.
-      // `source` is always 'stripe' here — L13 forbids provider ids on an
-      // external-sourced row, so a reconciliation entry could not be anything else.
-      const res = await fin()
-        .from("ledger_entries")
-        .insert({
-          agreement_id: entry.agreementId,
-          entry_type: entry.entryType,
-          amount_cents: entry.amountCents,
-          currency: "usd",
-          source: "stripe",
-          provider_object_id: entry.providerObjectId,
-          provider_payment_intent_id: entry.providerPaymentIntentId,
-          parent_entry_id: entry.parentEntryId,
-          occurred_at: entry.occurredAt.toISOString(),
-          recorded_by_system: RECONCILIATION_ACTOR,
-          livemode: entry.livemode,
-        });
+      // Attribution is `recorded_by_system`, set inside the façade function: no
+      // human made this entry, and `ledger_single_attribution` permits only one of
+      // the two. `source` is fixed to 'stripe' there too, since L13 forbids
+      // provider ids on an external-sourced row.
+      const res = await fin().rpc("record_ledger_entry", {
+        p_agreement_id: entry.agreementId,
+        p_entry_type: entry.entryType,
+        p_amount_cents: entry.amountCents,
+        p_provider_object_id: entry.providerObjectId,
+        p_provider_payment_intent_id: entry.providerPaymentIntentId,
+        p_parent_entry_id: entry.parentEntryId,
+        p_occurred_at: entry.occurredAt.toISOString(),
+        p_livemode: entry.livemode,
+      });
       if (res.error) {
         throw new Error(
-          `ledger_entries insert (${entry.entryType} ${entry.providerObjectId}): ${res.error.message}`,
+          `record_ledger_entry (${entry.entryType} ${entry.providerObjectId}): ${res.error.message}`,
         );
       }
     },
