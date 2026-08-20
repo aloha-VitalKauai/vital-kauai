@@ -23,7 +23,7 @@ type Props = {
   history: DonationRow[];
 };
 
-const GIFT_PRESETS = [5000, 10000, 25000, 50000]; // $50, $100, $250, $500
+const GIFT_PRESETS = [50000, 250000, 500000, 1500000]; // $500, $2,500, $5,000, $15,000
 
 function fmt(cents: number) {
   return new Intl.NumberFormat("en-US", {
@@ -172,8 +172,8 @@ export default function DonateClient({
       selectedPreset === "custom"
         ? Math.round(parseFloat(giftCustom) * 100)
         : selectedPreset;
-    if (!amount || !Number.isFinite(amount) || amount < 100 || amount > 2_500_000) {
-      setGiftError("Please enter a valid amount ($1–$25,000).");
+    if (!amount || !Number.isFinite(amount) || amount < 100 || amount > 500_000_000) {
+      setGiftError("Please enter a valid amount ($1–$5,000,000).");
       return;
     }
     const popup = window.open("", "_blank", "noopener,noreferrer");
@@ -217,7 +217,7 @@ export default function DonateClient({
     giftAmount &&
       Number.isFinite(giftAmount) &&
       giftAmount >= 100 &&
-      giftAmount <= 2_500_000,
+      giftAmount <= 500_000_000,
   );
 
   return (
@@ -429,19 +429,21 @@ export default function DonateClient({
               </button>
             </div>
 
+            <p style={hintStyle}>A gift of $15,000 supports one member&rsquo;s entire program.</p>
+
             {selectedPreset === "custom" && (
               <div style={{ marginTop: 12 }}>
                 <input
                   type="number"
                   min={1}
-                  max={10000}
+                  max={5000000}
                   step="0.01"
                   placeholder="Enter amount"
                   value={giftCustom}
                   onChange={(e) => setGiftCustom(e.target.value)}
                   style={inputStyle}
                 />
-                <p style={hintStyle}>Min $1&ensp;·&ensp;Max $25,000</p>
+                <p style={hintStyle}>Min $1&ensp;·&ensp;Max $5,000,000</p>
               </div>
             )}
 

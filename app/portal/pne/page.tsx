@@ -23,6 +23,10 @@ export default async function PnePage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=/portal/pne");
 
+  // PNE Resources section temporarily hidden — send visitors to the
+  // resources hub. Remove this line to restore the section.
+  redirect("/portal/resources");
+
   const pre = companionsFor("pre");
   const post = companionsFor("post");
 

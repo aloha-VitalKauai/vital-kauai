@@ -17,16 +17,6 @@ type ResourceCard = {
   status?: "live" | "coming-soon";
 };
 
-const CORE_RESOURCES: ResourceCard[] = [
-  {
-    title: "PNE",
-    description:
-      "PsychoNeuroEnergetics teachings on safety, regulation, sensation, emotion, and the language of the body.",
-    href: "/portal/pne",
-    status: "live",
-  },
-];
-
 const JOURNAL_RESOURCES: ResourceCard[] = [
   {
     title: "Comprehensive Journal · Pre-Ceremony",
@@ -106,11 +96,6 @@ export default async function ResourcesPage() {
             main { padding-left: 20px !important; padding-right: 20px !important; }
           }
         `}</style>
-        <SectionLabel>PsychoNeuroEnergetics</SectionLabel>
-        <div className="res-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-          {CORE_RESOURCES.map((r) => <ResourceCardLink key={r.title} r={r} />)}
-        </div>
-
         <SectionLabel>Comprehensive Journal</SectionLabel>
         <div className="res-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           {JOURNAL_RESOURCES.map((r) => <ResourceCardLink key={r.title} r={r} />)}
