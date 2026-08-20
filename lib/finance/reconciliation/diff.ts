@@ -29,6 +29,14 @@ export type ProviderPayment = {
   createdAt: Date;
   /** Verified against the PaymentIntent, per D-030. */
   status: string;
+  /**
+   * True only when `status` came from the PaymentIntent itself.
+   *
+   * D-030 requires PaymentIntent verification before any `stripe_payment` is
+   * written, because a Charge can exist for a payment that never succeeded.
+   * A Charge whose PaymentIntent could not be read is NOT evidence of money.
+   */
+  statusVerifiedFromPaymentIntent: boolean;
   amountCents: number;
   currency: string;
   livemode: boolean;
@@ -160,7 +168,15 @@ export function diffWindow(input: DiffInput): DiffResult {
   for (const row of ledger) {
     if (row.livemode !== livemode) continue;
     if (row.providerObjectId) byObjectId.set(row.providerObjectId, row);
-    if (row.providerPaymentIntentId) byPaymentIntent.set(row.providerPaymentIntentId, row);
+    // ONLY payments. A refund row also carries the PaymentIntent, so indexing it
+    // here would let a second refund pick the first refund as its parent — which
+    // trigger L3b rejects ("a stripe refund must target a stripe_payment"),
+    // failing the whole run — or let a refund masquerade as the payment for a
+    // charge, producing a false amount_mismatch AND skipping the genuinely
+    // missing payment.
+    if (row.entryType === "stripe_payment" && row.providerPaymentIntentId) {
+      byPaymentIntent.set(row.providerPaymentIntentId, row);
+    }
   }
 
   const matchLedger = (objectId: string, paymentIntentId: string | null) =>
@@ -217,6 +233,24 @@ export function diffWindow(input: DiffInput): DiffResult {
     // D-030: only a verified `succeeded` PaymentIntent may become a payment. A
     // pending or failed object is simply not yet a fact about money.
     if (p.status !== SUCCEEDED) continue;
+
+    // Looks succeeded, but the status did not come from the PaymentIntent. Writing
+    // on Charge evidence alone is precisely what D-030 forbids, and silently
+    // skipping would understate a balance — so it is raised.
+    if (!p.statusVerifiedFromPaymentIntent) {
+      exceptions.push({
+        kind: "missing_provider_object",
+        livemode,
+        providerObjectId: p.objectId,
+        amountCents: p.amountCents,
+        currency: p.currency,
+        detail: {
+          reason: "payment_intent_status_unverified",
+          payment_intent_id: p.paymentIntentId ?? null,
+        },
+      });
+      continue;
+    }
 
     const agreementId = resolveAgreementId(p.metadata);
 

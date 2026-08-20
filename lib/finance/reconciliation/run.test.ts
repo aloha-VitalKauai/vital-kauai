@@ -72,6 +72,9 @@ function fakeDb(over: Partial<FinanceDb> = {}): { db: FinanceDb; calls: Calls } 
     async quarantinedObjectIds() {
       return new Set<string>();
     },
+    async openExceptionSubjects() {
+      return [];
+    },
     ...over,
   };
   return { db, calls };
@@ -86,6 +89,7 @@ function payment(o: Partial<ProviderPayment> = {}): ProviderPayment {
     currency: "usd",
     livemode: true,
     createdAt: new Date("2026-08-19T10:00:00Z"),
+    statusVerifiedFromPaymentIntent: true,
     metadata: { financial_version: "v2", agreement_id: AGREEMENT },
     ...o,
   };
@@ -94,10 +98,10 @@ function payment(o: Partial<ProviderPayment> = {}): ProviderPayment {
 function fakeSource(payments: ProviderPayment[] = [], over: Partial<StripeSource> = {}): StripeSource {
   return {
     async listPayments() {
-      return { payments, apiCalls: 2, retries: 0 };
+      return { payments, apiCalls: 2, retries: 0, truncated: false };
     },
     async listRefunds() {
-      return { refunds: [], apiCalls: 1, retries: 0 };
+      return { refunds: [], apiCalls: 1, retries: 0, truncated: false };
     },
     ...over,
   };
@@ -124,7 +128,7 @@ test("the run row is created before any Stripe call", async () => {
   const source = fakeSource([], {
     async listPayments() {
       order.push("stripe");
-      return { payments: [], apiCalls: 1, retries: 0 };
+      return { payments: [], apiCalls: 1, retries: 0, truncated: false };
     },
   });
   await executeReconciliationRun({ ...base, db, source, dryRun: true });
@@ -317,11 +321,19 @@ test("a database refusal of an unauthorized writing run surfaces, not swallowed"
 // ── Ceilings and completion (18) ─────────────────────────────────────────────
 
 test("A18: a run hitting a ceiling ends partial with the window NOT exhausted", async () => {
+  // The ceiling is REAL truncation reported by the source, not a label applied
+  // after enumerating everything — a post-hoc ceiling bounds nothing and would
+  // leave a busy window permanently un-completable.
   const { db, calls } = fakeDb();
+  const source = fakeSource([payment()], {
+    async listPayments() {
+      return { payments: [payment()], apiCalls: 2, retries: 0, truncated: true };
+    },
+  });
   const out = await executeReconciliationRun({
     ...base,
     db,
-    source: fakeSource([payment(), payment({ objectId: "ch_2", paymentIntentId: "pi_2" })]),
+    source,
     dryRun: true,
     maxObjects: 1,
   });
@@ -380,9 +392,31 @@ test("A18d: a run-fatal failure raises exactly one reconciliation_run_failed", a
       throw new ReconciliationFatal("403 forbidden", "run_fatal");
     },
   });
-  await executeReconciliationRun({ ...base, db, source, dryRun: true });
+  await executeReconciliationRun({
+    ...base,
+    db,
+    source,
+    dryRun: false,
+    authorizedByRunId: "run_dry",
+  });
   assert.equal(calls.exceptions.length, 1);
   assert.equal((calls.exceptions[0] as { kind: string }).kind, "reconciliation_run_failed");
+});
+
+test("A18i: a dry run writes NO exception even when the run fails", async () => {
+  // raise_reconciliation_exception inserts without touching run counters, so
+  // neither run_dry_writes_nothing nor the report guard would catch this. The
+  // "a dry run writes nothing" guarantee the founder approves against has to hold
+  // on the failure path too.
+  const { db, calls } = fakeDb();
+  const source = fakeSource([], {
+    async listPayments() {
+      throw new ReconciliationFatal("403 forbidden", "run_fatal");
+    },
+  });
+  const out = await executeReconciliationRun({ ...base, db, source, dryRun: true });
+  assert.equal(out.status, "failed");
+  assert.equal(calls.exceptions.length, 0, "a dry run must not create an exception row");
 });
 
 test("recording the failure never masks the failure", async () => {
@@ -406,7 +440,7 @@ test("A11: exhausting the retry budget ends the run failed", async () => {
   const { db } = fakeDb();
   const source = fakeSource([], {
     async listPayments() {
-      return { payments: [], apiCalls: 10, retries: 100 };
+      return { payments: [], apiCalls: 10, retries: 100, truncated: false };
     },
   });
   const out = await executeReconciliationRun({ ...base, db, source, dryRun: true });
@@ -424,12 +458,21 @@ test("A15: every counter on the run row matches the observed work", async () => 
     source: fakeSource([payment(), payment({ objectId: "ch_2", paymentIntentId: "pi_2", metadata: {} })]),
     dryRun: true,
   });
-  const adv = calls.advanced[0] as {
-    objectsScanned: number;
-    apiCalls: number;
-  };
-  assert.equal(adv.objectsScanned, 2);
-  assert.equal(adv.apiCalls, 3, "2 from payments + 1 from refunds");
+  // advanceRun is called several times now: a heartbeat between the Stripe walks,
+  // then the enumeration counters before any write. Sum what was reported.
+  const advs = calls.advanced as Array<{
+    objectsScanned?: number;
+    apiCalls?: number;
+  }>;
+  assert.equal(
+    advs.reduce((n, a) => n + (a.objectsScanned ?? 0), 0),
+    2,
+  );
+  assert.equal(
+    advs.reduce((n, a) => n + (a.apiCalls ?? 0), 0),
+    3,
+    "2 from payments + 1 from refunds",
+  );
 });
 
 // ── Quarantine (12) ──────────────────────────────────────────────────────────
@@ -448,5 +491,9 @@ test("A12: a quarantined object is skipped by the run", async () => {
     authorizedByRunId: "run_dry",
   });
   assert.equal(calls.entries.length, 0);
-  assert.equal((calls.advanced[0] as { objectsScanned: number }).objectsScanned, 0);
+  const scanned = (calls.advanced as Array<{ objectsScanned?: number }>).reduce(
+    (n, a) => n + (a.objectsScanned ?? 0),
+    0,
+  );
+  assert.equal(scanned, 0);
 });

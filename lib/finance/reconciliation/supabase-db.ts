@@ -107,7 +107,13 @@ export function createSupabaseFinanceDb(client?: SupabaseClient): FinanceDb {
         p_agreement_id: a.agreementId ?? null,
         p_legacy_donation_id: null,
         p_amount_cents: a.amountCents ?? null,
-        p_currency: a.currency ?? null,
+        // The ledger is USD-only and `raise_reconciliation_exception` enforces it,
+        // so forwarding the offending currency would make a `currency_violation`
+        // impossible to record: the raise throws, the run fails, the window never
+        // advances, and the next run re-scans the same charge and fails again —
+        // one foreign-currency payment wedges reconciliation permanently. The
+        // actual currency is preserved in `detail`.
+        p_currency: a.currency === "usd" ? "usd" : null,
       });
       return must(res, "raise_reconciliation_exception") as string;
     },
@@ -199,6 +205,19 @@ export function createSupabaseFinanceDb(client?: SupabaseClient): FinanceDb {
         providerPaymentIntentId: r.provider_payment_intent_id,
         livemode: r.livemode,
       }));
+    },
+
+    async openExceptionSubjects(livemode) {
+      const res = await fin()
+        .from("reconciliation_exceptions")
+        .select("kind, provider_object_id")
+        .eq("livemode", livemode)
+        .eq("resolution_status", "open")
+        .not("provider_object_id", "is", null)
+        .returns<{ kind: string; provider_object_id: string }[]>();
+      return (must(res, "openExceptionSubjects") ?? []).map(
+        (r) => `${r.kind}:${r.provider_object_id}`,
+      );
     },
 
     async quarantinedObjectIds(livemode) {

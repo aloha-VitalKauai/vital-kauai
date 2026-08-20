@@ -17,6 +17,7 @@ import {
   ceilingReached,
   computeWindow,
   retryBudgetExhausted,
+  MAX_OBJECTS_PER_RUN,
   type ReconciliationWindow,
 } from "@/lib/finance/reconciliation/policy";
 import {
@@ -85,19 +86,36 @@ export type FinanceDb = {
     windowEnd: Date;
   }): Promise<LedgerRow[]>;
   quarantinedObjectIds(livemode: boolean): Promise<Set<string>>;
+  /** `kind:provider_object_id` for every OPEN exception, for the reopen count. */
+  openExceptionSubjects(livemode: boolean): Promise<string[]>;
 };
 
-/** Provider enumeration. Each call paginates to exhaustion internally. */
+/**
+ * Provider enumeration. Each call paginates to exhaustion unless `maxItems`
+ * truncates it.
+ *
+ * `maxItems` is what makes the object ceiling REAL. Checking a ceiling after
+ * enumerating everything bounds nothing — it only relabels a fully-covered window
+ * as `partial`, and because the watermark advances only on `completed`, a window
+ * with more objects than the ceiling would be re-scanned forever and no dry run
+ * would ever become approvable.
+ */
 export type StripeSource = {
-  listPayments(w: ReconciliationWindow & { livemode: boolean }): Promise<{
+  listPayments(
+    w: ReconciliationWindow & { livemode: boolean; maxItems?: number },
+  ): Promise<{
     payments: ProviderPayment[];
     apiCalls: number;
     retries: number;
+    truncated: boolean;
   }>;
-  listRefunds(w: ReconciliationWindow & { livemode: boolean }): Promise<{
+  listRefunds(
+    w: ReconciliationWindow & { livemode: boolean; maxItems?: number },
+  ): Promise<{
     refunds: ProviderRefund[];
     apiCalls: number;
     retries: number;
+    truncated: boolean;
   }>;
 };
 
@@ -203,7 +221,25 @@ export async function executeReconciliationRun(opts: RunOptions): Promise<RunOut
   const finishFailed = async (message: string): Promise<RunOutcome> => {
     // The cursor is left untouched so the next run resumes rather than restarting
     // (acceptance 11, 18d).
-    await db.finishRun({ runId, status: "failed", windowExhausted: false, error: message });
+    //
+    // Guarded: `finish_reconciliation_run` raises if the run is no longer
+    // `running` (a sweeper may have abandoned it) or if the error text is blank.
+    // An unhandled rejection here would strand the run in `running` and hold the
+    // single-flight lock — the failure path must not be able to fail.
+    try {
+      await db.finishRun({
+        runId,
+        status: "failed",
+        windowExhausted: false,
+        error: message || "unknown error",
+      });
+    } catch (finishErr) {
+      console.error(
+        "reconciliation: could not finish a failed run; the sweeper will abandon it",
+        runId,
+        finishErr,
+      );
+    }
     return {
       runId,
       status: "failed",
@@ -220,10 +256,24 @@ export async function executeReconciliationRun(opts: RunOptions): Promise<RunOut
   };
 
   try {
-    const [paymentsResult, refundsResult] = [
-      await source.listPayments({ ...window, livemode }),
-      await source.listRefunds({ ...window, livemode }),
-    ];
+    // Heartbeat between the two Stripe walks. Each can legitimately take minutes
+    // (8 retry attempts at up to 30s per page), and `abandon_stale_runs` reclaims
+    // a run after 15 minutes of silence — a healthy run must not look dead, or the
+    // single-flight slot is released to a second writer while this one is still
+    // going.
+    const objectBudget = opts.maxObjects ?? MAX_OBJECTS_PER_RUN;
+    const paymentsResult = await source.listPayments({
+      ...window,
+      livemode,
+      maxItems: objectBudget,
+    });
+    await db.advanceRun({ runId, apiCalls: paymentsResult.apiCalls, retries: paymentsResult.retries });
+    const refundsResult = await source.listRefunds({
+      ...window,
+      livemode,
+      // Whatever the payments walk did not consume.
+      maxItems: Math.max(objectBudget - paymentsResult.payments.length, 0),
+    });
     apiCalls += paymentsResult.apiCalls + refundsResult.apiCalls;
     retries += paymentsResult.retries + refundsResult.retries;
 
@@ -252,31 +302,58 @@ export async function executeReconciliationRun(opts: RunOptions): Promise<RunOut
     objectsScanned = plan.objectsScanned;
     objectsMatched = plan.objectsMatched;
 
-    const ceiling = ceilingReached({
+    // Record what was examined BEFORE writing anything. If a write throws
+    // mid-loop the ledger rows already inserted are real, and a run row still
+    // reporting zero work would be a false audit trail.
+    await db.advanceRun({
+      runId,
       objectsScanned,
-      apiCalls,
-      elapsedMs: elapsedMs(),
-      maxObjects: opts.maxObjects,
-      maxApiCalls: opts.maxApiCalls,
-      maxDurationMs: opts.maxDurationMs,
+      objectsMatched,
+      apiCalls: refundsResult.apiCalls,
+      retries: refundsResult.retries,
     });
+
+    // Truncated enumeration means the window genuinely was not covered. The
+    // api-call and duration limits are observed resource ceilings and are checked
+    // the same way; the object ceiling is now enforced by `maxItems` above rather
+    // than discovered after the fact.
+    const truncated = paymentsResult.truncated || refundsResult.truncated;
+    const ceiling =
+      (truncated ? "objects" : false) ||
+      ceilingReached({
+        objectsScanned: 0,
+        apiCalls,
+        elapsedMs: elapsedMs(),
+        maxApiCalls: opts.maxApiCalls,
+        maxDurationMs: opts.maxDurationMs,
+      });
 
     if (dryRun) {
       // 17/18i — a dry run writes no ledger entry and no exception. Its real
       // counters stay 0 (the CHECK run_dry_writes_nothing enforces that at the
       // table) and its findings go to the prospective columns instead.
+      // Counters were already recorded before the write phase; advancing them
+      // again would DOUBLE them, because every counter on the run row is additive
+      // (D-049). Only the cursor moves here.
       await db.advanceRun({
         runId,
         cursor: { window_end: window.windowEnd.toISOString() },
-        objectsScanned,
-        objectsMatched,
-        apiCalls,
-        retries,
       });
+      // `would_reopen_count` is the subset whose subject already has an OPEN
+      // exception: a writing run would bump those rather than create them.
+      // Hard-coding 0 told the founder nothing would be reopened even when it
+      // would, which is an incomplete picture to approve against.
+      const openSubjects = new Set(
+        (await db.openExceptionSubjects(livemode)) ?? [],
+      );
+      const wouldReopen = plan.exceptions.filter(
+        (e) => e.providerObjectId && openSubjects.has(`${e.kind}:${e.providerObjectId}`),
+      ).length;
+
       await db.recordDryRunReport({
         runId,
-        wouldCreateCount: plan.exceptions.length,
-        wouldReopenCount: 0,
+        wouldCreateCount: plan.exceptions.length - wouldReopen,
+        wouldReopenCount: wouldReopen,
         prospectiveByKind: countByKind(plan.exceptions),
         reportSamples: sampleFindings(plan.exceptions),
         reportVersion,
@@ -290,13 +367,11 @@ export async function executeReconciliationRun(opts: RunOptions): Promise<RunOut
         await db.raiseException({ ...exception, runId });
         exceptionsCreated += 1;
       }
+      // As above: only the cursor and the exceptions actually created in this
+      // phase. Re-sending the enumeration counters would double them.
       await db.advanceRun({
         runId,
         cursor: { window_end: window.windowEnd.toISOString() },
-        objectsScanned,
-        objectsMatched,
-        apiCalls,
-        retries,
         exceptionsCreated,
       });
     }
@@ -309,7 +384,7 @@ export async function executeReconciliationRun(opts: RunOptions): Promise<RunOut
       runId,
       status,
       windowExhausted: status === "completed",
-      error: ceiling ? null : null,
+      error: ceiling ? `stopped at ceiling: ${ceiling}` : null,
     });
 
     return {
@@ -337,6 +412,11 @@ export async function executeReconciliationRun(opts: RunOptions): Promise<RunOut
           : String(err);
 
     try {
+      // A dry run writes NOTHING — including here. `raise_reconciliation_exception`
+      // inserts without touching run counters, so neither the
+      // run_dry_writes_nothing CHECK nor the report guard would catch it, and the
+      // guarantee the founder approves against would be quietly false.
+      if (dryRun) throw new Error("dry run: exception suppressed");
       await db.raiseException({
         kind: "reconciliation_run_failed" as PlannedException["kind"],
         livemode,

@@ -272,6 +272,34 @@ async function startCanary(
     return NextResponse.json({ error: "run_not_approved" }, { status: 409 });
   }
 
+  // One approval authorises ONE canary. tg_run_authorization checks that the
+  // cited run is approved, but not that it has already been spent, so without
+  // this a second click would start another writing run over the same window —
+  // contradicting what the founder was told they were approving.
+  const { data: existingCanary, error: canaryReadErr } = await auth.supabase
+    .schema("finance")
+    .from("reconciliation_runs")
+    .select("id, status")
+    .eq("authorized_by_run_id", approvedRunId)
+    .eq("dry_run", false)
+    .limit(1)
+    .returns<{ id: string; status: string }[]>();
+
+  if (canaryReadErr) {
+    console.error("finance/reconciliation: canary dedup read failed", canaryReadErr.message);
+    return NextResponse.json({ error: "read_failed" }, { status: 500 });
+  }
+  if (existingCanary && existingCanary.length > 0) {
+    return NextResponse.json(
+      {
+        error: "canary_already_started",
+        run_id: existingCanary[0].id,
+        status: existingCanary[0].status,
+      },
+      { status: 409 },
+    );
+  }
+
   // 18g — the canary is contained within the approved window and spans at most 24
   // hours. tg_run_authorization independently enforces the window_start and
   // implementation_version match; this narrows the END, which is the part that

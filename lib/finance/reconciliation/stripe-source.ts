@@ -83,8 +83,9 @@ export function createStripeSource(stripe?: Stripe): StripeSource {
       // Charges carry the settled amount and the PaymentIntent link, so they are
       // the enumeration root; the PaymentIntent is expanded for its status (D-030)
       // rather than fetched per object, which would multiply API calls.
-      const { items, apiCalls, retries } = await paginateAll<Stripe.Charge>({
+      const { items, apiCalls, retries, truncated } = await paginateAll<Stripe.Charge>({
         idOf,
+        maxItems: w.maxItems,
         fetchPage: async ({ startingAfter, limit }) => {
           const page = await client.charges.list({
             limit,
@@ -115,10 +116,13 @@ export function createStripeSource(stripe?: Stripe): StripeSource {
             objectId: c.id,
             paymentIntentId,
             createdAt: stripeTime(c.created),
-            // D-030: prefer the PaymentIntent's status. A Charge can be present
-            // for a payment that never succeeded, so the Charge's own flag is not
-            // sufficient evidence to write money.
-            status: pi?.status ?? (c.status === "succeeded" ? "succeeded" : c.status),
+            // D-030: the status MUST come from the PaymentIntent. A Charge can be
+            // present for a payment that never succeeded, so the Charge's own flag
+            // is not sufficient evidence to write money. When expansion did not
+            // yield the PaymentIntent, the Charge status is reported but marked
+            // unverified, and the diff refuses to write on it.
+            status: pi?.status ?? c.status,
+            statusVerifiedFromPaymentIntent: pi != null,
             amountCents: c.amount,
             currency: c.currency,
             livemode: c.livemode,
@@ -128,14 +132,15 @@ export function createStripeSource(stripe?: Stripe): StripeSource {
           };
         });
 
-      return { payments, apiCalls, retries };
+      return { payments, apiCalls, retries, truncated };
     },
 
     async listRefunds(w) {
       // Guarded above and here: this is the call whose objects carry no mode flag.
       assertKeyMatchesMode(w.livemode);
-      const { items, apiCalls, retries } = await paginateAll<Stripe.Refund>({
+      const { items, apiCalls, retries, truncated } = await paginateAll<Stripe.Refund>({
         idOf,
+        maxItems: w.maxItems,
         fetchPage: async ({ startingAfter, limit }) => {
           const page = await client.refunds.list({
             limit,
@@ -166,7 +171,7 @@ export function createStripeSource(stripe?: Stripe): StripeSource {
           livemode: w.livemode,
         }));
 
-      return { refunds, apiCalls, retries };
+      return { refunds, apiCalls, retries, truncated };
     },
   };
 }
