@@ -215,11 +215,11 @@ export async function startCheckout(token: string, origin: string): Promise<
   }
 }
 
-function v2Metadata(agreementId: string, attemptId: string): Record<string, string> {
+export function v2Metadata(agreementId: string, attemptId: string): Record<string, string> {
   return { financial_version: "v2", agreement_id: agreementId, attempt_id: attemptId };
 }
 
-async function sessionUrl(stripeSessionId: string): Promise<string | null> {
+export async function sessionUrl(stripeSessionId: string): Promise<string | null> {
   try {
     const s = await v2StripeClient().checkout.sessions.retrieve(stripeSessionId);
     return s.url ?? null;
@@ -228,7 +228,7 @@ async function sessionUrl(stripeSessionId: string): Promise<string | null> {
   }
 }
 
-async function memberEmailForAgreement(db: SupabaseClient, agreementId: string): Promise<string | null> {
+export async function memberEmailForAgreement(db: SupabaseClient, agreementId: string): Promise<string | null> {
   const { data: agr } = await db
     .schema("finance_api")
     .from("agreement_balances")

@@ -71,15 +71,15 @@ export async function GET(req: Request) {
   // Histories: append-only rows ARE the permanent audit trail.
   const [amountsRes, lifecycleRes, ledgerRes, journeysRes, statusRes] = await Promise.all([
     ids.length
-      ? fin.from("agreement_amounts").select("*").in("agreement_id", ids)
+      ? fin.from("founder_agreement_amount_history").select("*").in("agreement_id", ids)
           .order("created_at", { ascending: false })
       : Promise.resolve({ data: [], error: null }),
     ids.length
-      ? fin.from("agreement_lifecycle_events").select("*").in("agreement_id", ids)
+      ? fin.from("founder_lifecycle_history").select("*").in("agreement_id", ids)
           .order("created_at", { ascending: false })
       : Promise.resolve({ data: [], error: null }),
     ids.length
-      ? fin.from("ledger_entries").select("*").in("agreement_id", ids)
+      ? fin.from("founder_ledger_history").select("*").in("agreement_id", ids)
           .order("occurred_at", { ascending: false })
       : Promise.resolve({ data: [], error: null }),
     // Journey options for the create form, under the founder's own session.
@@ -90,7 +90,7 @@ export async function GET(req: Request) {
       .order("start_at", { ascending: false }),
     // Current lifecycle status per agreement = latest event's to_status.
     ids.length
-      ? fin.from("agreement_lifecycle_events").select("agreement_id, to_status, occurred_at, seq")
+      ? fin.from("founder_lifecycle_history").select("agreement_id, to_status, occurred_at, seq")
           .in("agreement_id", ids)
       : Promise.resolve({ data: [], error: null }),
   ]);

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vital Kauaʻi — Member Contribution Portal</title>
+  <style>
+    :root {
+      --ivory: #f6f1e8;
+      --paper: #fffdf8;
+      --forest: #0d2118;
+      --forest-2: #173529;
+      --sage: #b7c9b8;
+      --sage-soft: #e7efe7;
+      --copper: #a6653f;
+      --copper-dark: #8f5434;
+      --ink: #18211c;
+      --muted: #687169;
+      --line: #dedbd1;
+      --display: Georgia, "Times New Roman", serif;
+      --body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--ivory); font-family: var(--body); }
+    button, input { font: inherit; }
+    .topbar { min-height: 74px; padding: 0 44px; display: flex; align-items: center; justify-content: space-between; color: #f7f0e5; background: var(--forest); }
+    .brand { font: 24px/1 var(--display); letter-spacing: .08em; }
+    .brand em { color: var(--sage); }
+    .nav { display: flex; align-items: center; gap: 28px; color: #c8d1c9; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
+    .nav a { color: inherit; text-decoration: none; }
+    .nav .active { color: white; }
+    main { width: min(100% - 40px, 1000px); margin: 0 auto; padding: 78px 0 96px; }
+    .eyebrow { margin: 0 0 18px; color: var(--copper); font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+    h1, h2, h3 { font-family: var(--display); font-weight: 400; }
+    h1 { max-width: 820px; margin: 0 0 24px; color: #111914; font-size: clamp(45px, 6vw, 72px); line-height: .98; letter-spacing: -.035em; }
+    .intro { max-width: 790px; color: #415047; font-size: 18px; line-height: 1.65; }
+    .intro p { margin: 0 0 14px; }
+    .section { margin-top: 46px; }
+    .card { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; }
+    .overview { overflow: hidden; }
+    .overview-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; padding: 30px 34px 22px; }
+    .overview-head h2 { margin: 0; font-size: 31px; }
+    .status { display: inline-flex; align-items: center; gap: 7px; padding: 8px 12px; border-radius: 999px; background: var(--sage-soft); color: var(--forest-2); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+    .status:before { width: 7px; height: 7px; border-radius: 50%; background: #5c8767; content: ""; }
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); }
+    .metric { padding: 24px 34px 29px; }
+    .metric + .metric { border-left: 1px solid var(--line); }
+    .metric span { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .metric strong { display: block; margin-top: 9px; font: 36px/1 var(--display); }
+    .contribution { display: grid; grid-template-columns: 1fr 320px; gap: 30px; padding: 34px; }
+    .contribution h2 { margin: 0 0 8px; font-size: 30px; }
+    .quiet { color: var(--muted); font-size: 14px; line-height: 1.55; }
+    .progress { height: 8px; margin: 26px 0 12px; overflow: hidden; border-radius: 8px; background: #e4e3dc; }
+    .progress i { display: block; width: 54%; height: 100%; border-radius: inherit; background: var(--copper); }
+    .numbers { display: flex; justify-content: space-between; color: #475249; font-size: 13px; }
+    .pay-box { align-self: stretch; padding: 25px; border-radius: 14px; color: #f5f0e6; background: var(--forest); }
+    .pay-box .label { color: #aebcb1; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    .pay-box .amount { margin: 8px 0 5px; font: 39px/1 var(--display); }
+    .pay-box p { margin: 0 0 20px; color: #bfcac1; font-size: 12px; line-height: 1.5; }
+    .primary { width: 100%; min-height: 48px; padding: 13px 18px; border: 0; border-radius: 10px; color: white; background: var(--copper); font-weight: 700; cursor: pointer; }
+    .primary:hover { background: var(--copper-dark); }
+    .gift { padding: 34px; }
+    .gift h2 { margin: 0 0 7px; font-size: 30px; }
+    .gift-options { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 24px; }
+    .gift-options button { min-height: 48px; border: 1px solid #d6d7d0; border-radius: 10px; background: white; color: var(--ink); font-weight: 650; }
+    .gift-options .selected { border-color: var(--forest-2); box-shadow: inset 0 0 0 1px var(--forest-2); background: var(--sage-soft); }
+    .gift-action { display: grid; grid-template-columns: 1fr 220px; gap: 14px; margin-top: 14px; }
+    .gift-action .note { display: flex; align-items: center; color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .activity { overflow: hidden; }
+    .activity-head { padding: 30px 34px 18px; }
+    .activity h2 { margin: 0; font-size: 30px; }
+    .row { display: grid; grid-template-columns: 140px 1fr 150px 120px; align-items: center; gap: 18px; padding: 18px 34px; border-top: 1px solid var(--line); font-size: 14px; }
+    .row .date, .row .method { color: var(--muted); }
+    .row .amount { text-align: right; font-weight: 750; }
+    .row .negative { color: #8d4c3b; }
+    .support { margin-top: 28px; text-align: center; color: var(--muted); font-size: 13px; }
+    .support a { color: var(--forest-2); text-underline-offset: 3px; }
+    @media (max-width: 760px) {
+      .topbar { min-height: 64px; padding: 0 20px; }
+      .nav a:not(.active) { display: none; }
+      main { width: min(100% - 32px, 600px); padding: 50px 0 70px; }
+      h1 { font-size: 47px; }
+      .intro { font-size: 16px; }
+      .metrics { grid-template-columns: 1fr; }
+      .metric + .metric { border-top: 1px solid var(--line); border-left: 0; }
+      .contribution { grid-template-columns: 1fr; padding: 26px; }
+      .gift { padding: 26px; }
+      .gift-options { grid-template-columns: repeat(2, 1fr); }
+      .gift-options button:last-child { grid-column: span 2; }
+      .gift-action { grid-template-columns: 1fr; }
+      .row { grid-template-columns: 1fr auto; gap: 5px 14px; padding: 17px 25px; }
+      .row .method { grid-column: 1; }
+      .row .amount { grid-column: 2; grid-row: 1 / span 2; }
+      .overview-head { align-items: flex-start; flex-direction: column; padding: 26px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">VITAL <em>KAUAʻI</em></div>
+    <nav class="nav" aria-label="Portal navigation">
+      <a href="#">Dashboard</a><a href="#">The Journey</a><a class="active" href="#">Contribution</a><a href="#">Contact</a>
+    </nav>
+  </header>
+  <main>
+    <section aria-labelledby="page-title">
+      <p class="eyebrow">Your Contribution</p>
+      <h1 id="page-title">Thank you for your contribution.</h1>
+      <div class="intro">
+        <p>Your contribution is always welcome and appreciated. It opens the door for members called to this work who carry fewer resources, so they can be met with the same care.</p>
+        <p>It supports the ʻāina of Kauaʻi’s North Shore and the nonprofits we walk alongside who protect and preserve this land. And it sustains the church itself, the people, practice, and ceremony at the heart of Vital Kauaʻi.</p>
+      </div>
+    </section>
+
+    <section class="section card overview" aria-labelledby="overview-title">
+      <div class="overview-head"><h2 id="overview-title">Your Contribution</h2><span class="status">Partially received</span></div>
+      <div class="metrics">
+        <div class="metric"><span>Contribution</span><strong>$7,500</strong></div>
+        <div class="metric"><span>Received</span><strong>$4,000</strong></div>
+        <div class="metric"><span>Remaining</span><strong>$3,500</strong></div>
+      </div>
+    </section>
+
+    <section class="section card contribution" aria-labelledby="agreement-title">
+      <div>
+        <p class="eyebrow">Journey Contribution</p>
+        <h2 id="agreement-title">Iboga Journey · Fall 2026</h2>
+        <p class="quiet">Your secure card payment will apply to the full remaining Contribution. Card details are handled by Stripe.</p>
+        <div class="progress" aria-label="54 percent received"><i></i></div>
+        <div class="numbers"><span>$4,000 received</span><span>$7,500 Contribution</span></div>
+      </div>
+      <aside class="pay-box">
+        <div class="label">Remaining</div>
+        <div class="amount">$3,500</div>
+        <p>You’ll review the amount before paying securely through Stripe.</p>
+        <button class="primary">Continue to secure payment</button>
+      </aside>
+    </section>
+
+    <section class="section card gift" aria-labelledby="gift-title">
+      <p class="eyebrow">Optional</p>
+      <h2 id="gift-title">Make an additional gift</h2>
+      <p class="quiet">An additional gift is separate from your Contribution and never changes what remains.</p>
+      <div class="gift-options" role="group" aria-label="Gift amount">
+        <button>$50</button><button class="selected">$100</button><button>$250</button><button>$500</button><button>Custom</button>
+      </div>
+      <div class="gift-action">
+        <div class="note">Your gift supports access, the ʻāina, nonprofit partners, and the life of Vital Kauaʻi.</div>
+        <button class="primary">Continue with gift</button>
+      </div>
+    </section>
+
+    <section class="section card activity" aria-labelledby="activity-title">
+      <div class="activity-head"><p class="eyebrow">History</p><h2 id="activity-title">Payment activity</h2></div>
+      <div class="row"><span class="date">Aug 18, 2026</span><strong>Journey Contribution</strong><span class="method">Card payment</span><span class="amount">+$2,000</span></div>
+      <div class="row"><span class="date">Aug 04, 2026</span><strong>Journey Contribution</strong><span class="method">Recorded payment</span><span class="amount">+$2,000</span></div>
+      <div class="row"><span class="date">Jul 21, 2026</span><strong>Additional gift</strong><span class="method">Refund</span><span class="amount negative">−$100</span></div>
+    </section>
+
+    <p class="support">Questions about your Contribution? <a href="/contact">Contact Vital Kauaʻi</a>.</p>
+  </main>
+</body>
+</html>

@@ -99,7 +99,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
                 <a href="/portal/reading-list" className="pn-dropdown-subitem">Recommended Reading</a>
               </div>
             </div>
-            <a href="/portal/donate" className="pn-link">Contribute</a>
+            <a href="/portal/donate" className="pn-link">Contribution</a>
             <a href="/portal/contact" className="pn-link">Contact</a>
           {/* Community tab hidden while the section is being built out.
               Restore by uncommenting this line. */}
@@ -182,7 +182,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
           <a href="/portal/ceremony-guidelines" className="pn-mobile-week" onClick={close}>Ceremony Guidelines</a>
           <a href="/portal/reading-list" className="pn-mobile-week" onClick={close}>Recommended Reading</a>
         </div>
-        <a href="/portal/donate" onClick={close}>Contribute</a>
+        <a href="/portal/donate" onClick={close}>Contribution</a>
         <a href="/portal/contact" onClick={close}>Contact</a>
         {/* Community link hidden — restore with the main nav link when the section is ready. */}
         <form action="/auth/logout" method="post">

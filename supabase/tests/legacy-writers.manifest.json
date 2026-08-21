@@ -1,10 +1,388 @@
 {
-  "dynamicTableSites": [],
+  "writers": [
+    {
+      "file": "app/api/add-member-manually/route.ts",
+      "writes": [
+        "financial_commitments.insert"
+      ],
+      "reads": [],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    },
+    {
+      "file": "app/api/approve-member/route.ts",
+      "writes": [
+        "financial_commitments.insert"
+      ],
+      "reads": [
+        "financial_commitments.eq",
+        "financial_commitments.limit",
+        "financial_commitments.maybeSingle",
+        "financial_commitments.select"
+      ],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    },
+    {
+      "file": "app/api/donations/create-gift-session/route.ts",
+      "writes": [
+        "donations.insert",
+        "donations.update"
+      ],
+      "reads": [
+        "donations.eq",
+        "donations.select",
+        "donations.single"
+      ],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    },
+    {
+      "file": "app/api/donations/create-session/route.ts",
+      "writes": [
+        "donations.insert",
+        "donations.update"
+      ],
+      "reads": [
+        "donations.eq",
+        "donations.gte",
+        "donations.order",
+        "donations.select",
+        "donations.single"
+      ],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    },
+    {
+      "file": "app/api/payments/adjust-booked/route.ts",
+      "writes": [
+        "financial_commitments.insert",
+        "financial_commitments.update"
+      ],
+      "reads": [
+        "financial_commitments.eq",
+        "financial_commitments.is",
+        "financial_commitments.limit",
+        "financial_commitments.maybeSingle",
+        "financial_commitments.not",
+        "financial_commitments.order",
+        "financial_commitments.select",
+        "financial_commitments.single"
+      ],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    },
+    {
+      "file": "app/api/payments/adjust-collected/route.ts",
+      "writes": [
+        "donations.insert"
+      ],
+      "reads": [
+        "donations.eq",
+        "donations.select",
+        "donations.single"
+      ],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    },
+    {
+      "file": "app/api/payments/adjust-commitment/route.ts",
+      "writes": [
+        "financial_commitments.update"
+      ],
+      "reads": [
+        "financial_commitments.eq",
+        "financial_commitments.maybeSingle",
+        "financial_commitments.select"
+      ],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    },
+    {
+      "file": "app/api/payments/adjust-outstanding/route.ts",
+      "writes": [
+        "financial_commitments.insert",
+        "financial_commitments.update"
+      ],
+      "reads": [
+        "donations.eq",
+        "donations.select",
+        "financial_commitments.eq",
+        "financial_commitments.is",
+        "financial_commitments.limit",
+        "financial_commitments.maybeSingle",
+        "financial_commitments.not",
+        "financial_commitments.order",
+        "financial_commitments.select",
+        "financial_commitments.single"
+      ],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    },
+    {
+      "file": "app/api/payments/create-journey-session/route.ts",
+      "writes": [
+        "donations.insert",
+        "donations.update"
+      ],
+      "reads": [
+        "donations.eq",
+        "donations.select",
+        "donations.single",
+        "financial_commitments.eq",
+        "financial_commitments.in",
+        "financial_commitments.maybeSingle",
+        "financial_commitments.select",
+        "payment_allocations.eq",
+        "payment_allocations.select"
+      ],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    },
+    {
+      "file": "app/api/payments/email-link/route.ts",
+      "writes": [
+        "payment_tokens.insert"
+      ],
+      "reads": [
+        "financial_commitments.eq",
+        "financial_commitments.select",
+        "financial_commitments.single",
+        "payment_allocations.eq",
+        "payment_allocations.select"
+      ],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    },
+    {
+      "file": "app/api/payments/generate-link/route.ts",
+      "writes": [
+        "payment_tokens.insert"
+      ],
+      "reads": [
+        "financial_commitments.eq",
+        "financial_commitments.select",
+        "financial_commitments.single"
+      ],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    },
+    {
+      "file": "app/api/payments/record-offline/route.ts",
+      "writes": [
+        "donations.insert",
+        "financial_commitments.update",
+        "payment_allocations.insert"
+      ],
+      "reads": [
+        "donations.select",
+        "donations.single",
+        "financial_commitments.eq",
+        "financial_commitments.select",
+        "financial_commitments.single",
+        "payment_allocations.eq",
+        "payment_allocations.select"
+      ],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    },
+    {
+      "file": "app/api/payments/revoke-token/route.ts",
+      "writes": [
+        "payment_tokens.update"
+      ],
+      "reads": [
+        "payment_tokens.eq",
+        "payment_tokens.is"
+      ],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    },
+    {
+      "file": "app/api/payments/sync-program-price/route.ts",
+      "writes": [
+        "financial_commitments.update"
+      ],
+      "reads": [
+        "financial_commitments.eq",
+        "financial_commitments.in",
+        "financial_commitments.limit",
+        "financial_commitments.maybeSingle",
+        "financial_commitments.order",
+        "financial_commitments.select"
+      ],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    },
+    {
+      "file": "app/api/square/create-payment-link/route.ts",
+      "writes": [
+        "donations.delete",
+        "donations.insert",
+        "donations.update"
+      ],
+      "reads": [
+        "donations.eq",
+        "donations.select",
+        "donations.single"
+      ],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    },
+    {
+      "file": "app/api/square/webhook/route.ts",
+      "writes": [
+        "donations.insert",
+        "donations.update"
+      ],
+      "reads": [
+        "donations.eq",
+        "donations.limit",
+        "donations.maybeSingle",
+        "donations.order",
+        "donations.select",
+        "donations.single"
+      ],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    },
+    {
+      "file": "app/pay/[token]/page.tsx",
+      "writes": [
+        "donations.insert",
+        "donations.update"
+      ],
+      "reads": [
+        "donations.contains",
+        "donations.eq",
+        "donations.gte",
+        "donations.select",
+        "donations.single",
+        "financial_commitments.eq",
+        "financial_commitments.select",
+        "financial_commitments.single",
+        "payment_allocations.eq",
+        "payment_allocations.select",
+        "payment_tokens.eq",
+        "payment_tokens.maybeSingle",
+        "payment_tokens.select"
+      ],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    },
+    {
+      "file": "supabase/functions/stripe-webhook/index.ts",
+      "writes": [
+        "donations.insert",
+        "donations.update",
+        "payment_allocations.insert",
+        "payment_tokens.update"
+      ],
+      "reads": [
+        "donations.eq",
+        "donations.is",
+        "donations.maybeSingle",
+        "donations.neq",
+        "donations.select",
+        "donations.single",
+        "financial_commitments.eq",
+        "financial_commitments.select",
+        "financial_commitments.single",
+        "payment_allocations.eq",
+        "payment_allocations.select",
+        "payment_tokens.eq",
+        "payment_tokens.is"
+      ],
+      "guarded": true,
+      "unguardedHandlers": [],
+      "isClient": false,
+      "dynamicTables": [],
+      "rpcCalls": [],
+      "classification": "guarded"
+    }
+  ],
   "readers": [
-    "app/dashboard/[id]/page.tsx",
-    "app/portal/donate/page.tsx"
+    "app/dashboard/[id]/page.tsx"
   ],
   "residuals": {},
+  "scanDirs": [
+    "app",
+    "components",
+    "lib",
+    "supabase",
+    "scripts",
+    "public"
+  ],
+  "unscannedSourceDirs": [],
+  "dynamicTableSites": [],
   "rpcSites": [
     {
       "file": "app/actions/opsAlerts.ts",
@@ -110,6 +488,15 @@
       ]
     },
     {
+      "file": "lib/finance/member-checkout.ts",
+      "functions": [
+        "begin_member_contribution_checkout",
+        "begin_member_gift_checkout",
+        "finalize_checkout_session",
+        "transition_checkout_session"
+      ]
+    },
+    {
       "file": "lib/finance/reconciliation/supabase-db.ts",
       "functions": [
         "advance_reconciliation_run",
@@ -130,385 +517,6 @@
         "record_v2_stripe_payment",
         "sweep_stale_event_claims",
         "transition_checkout_session"
-      ]
-    }
-  ],
-  "scanDirs": [
-    "app",
-    "components",
-    "lib",
-    "supabase",
-    "scripts",
-    "public"
-  ],
-  "unscannedSourceDirs": [],
-  "writers": [
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "app/api/add-member-manually/route.ts",
-      "guarded": true,
-      "isClient": false,
-      "reads": [],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "financial_commitments.insert"
-      ]
-    },
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "app/api/approve-member/route.ts",
-      "guarded": true,
-      "isClient": false,
-      "reads": [
-        "financial_commitments.eq",
-        "financial_commitments.limit",
-        "financial_commitments.maybeSingle",
-        "financial_commitments.select"
-      ],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "financial_commitments.insert"
-      ]
-    },
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "app/api/donations/create-gift-session/route.ts",
-      "guarded": true,
-      "isClient": false,
-      "reads": [
-        "donations.eq",
-        "donations.select",
-        "donations.single"
-      ],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "donations.insert",
-        "donations.update"
-      ]
-    },
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "app/api/donations/create-session/route.ts",
-      "guarded": true,
-      "isClient": false,
-      "reads": [
-        "donations.eq",
-        "donations.gte",
-        "donations.order",
-        "donations.select",
-        "donations.single"
-      ],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "donations.insert",
-        "donations.update"
-      ]
-    },
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "app/api/payments/adjust-booked/route.ts",
-      "guarded": true,
-      "isClient": false,
-      "reads": [
-        "financial_commitments.eq",
-        "financial_commitments.is",
-        "financial_commitments.limit",
-        "financial_commitments.maybeSingle",
-        "financial_commitments.not",
-        "financial_commitments.order",
-        "financial_commitments.select",
-        "financial_commitments.single"
-      ],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "financial_commitments.insert",
-        "financial_commitments.update"
-      ]
-    },
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "app/api/payments/adjust-collected/route.ts",
-      "guarded": true,
-      "isClient": false,
-      "reads": [
-        "donations.eq",
-        "donations.select",
-        "donations.single"
-      ],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "donations.insert"
-      ]
-    },
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "app/api/payments/adjust-commitment/route.ts",
-      "guarded": true,
-      "isClient": false,
-      "reads": [
-        "financial_commitments.eq",
-        "financial_commitments.maybeSingle",
-        "financial_commitments.select"
-      ],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "financial_commitments.update"
-      ]
-    },
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "app/api/payments/adjust-outstanding/route.ts",
-      "guarded": true,
-      "isClient": false,
-      "reads": [
-        "donations.eq",
-        "donations.select",
-        "financial_commitments.eq",
-        "financial_commitments.is",
-        "financial_commitments.limit",
-        "financial_commitments.maybeSingle",
-        "financial_commitments.not",
-        "financial_commitments.order",
-        "financial_commitments.select",
-        "financial_commitments.single"
-      ],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "financial_commitments.insert",
-        "financial_commitments.update"
-      ]
-    },
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "app/api/payments/create-journey-session/route.ts",
-      "guarded": true,
-      "isClient": false,
-      "reads": [
-        "donations.eq",
-        "donations.select",
-        "donations.single",
-        "financial_commitments.eq",
-        "financial_commitments.in",
-        "financial_commitments.maybeSingle",
-        "financial_commitments.select",
-        "payment_allocations.eq",
-        "payment_allocations.select"
-      ],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "donations.insert",
-        "donations.update"
-      ]
-    },
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "app/api/payments/email-link/route.ts",
-      "guarded": true,
-      "isClient": false,
-      "reads": [
-        "financial_commitments.eq",
-        "financial_commitments.select",
-        "financial_commitments.single",
-        "payment_allocations.eq",
-        "payment_allocations.select"
-      ],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "payment_tokens.insert"
-      ]
-    },
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "app/api/payments/generate-link/route.ts",
-      "guarded": true,
-      "isClient": false,
-      "reads": [
-        "financial_commitments.eq",
-        "financial_commitments.select",
-        "financial_commitments.single"
-      ],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "payment_tokens.insert"
-      ]
-    },
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "app/api/payments/record-offline/route.ts",
-      "guarded": true,
-      "isClient": false,
-      "reads": [
-        "donations.select",
-        "donations.single",
-        "financial_commitments.eq",
-        "financial_commitments.select",
-        "financial_commitments.single",
-        "payment_allocations.eq",
-        "payment_allocations.select"
-      ],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "donations.insert",
-        "financial_commitments.update",
-        "payment_allocations.insert"
-      ]
-    },
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "app/api/payments/revoke-token/route.ts",
-      "guarded": true,
-      "isClient": false,
-      "reads": [
-        "payment_tokens.eq",
-        "payment_tokens.is"
-      ],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "payment_tokens.update"
-      ]
-    },
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "app/api/payments/sync-program-price/route.ts",
-      "guarded": true,
-      "isClient": false,
-      "reads": [
-        "financial_commitments.eq",
-        "financial_commitments.in",
-        "financial_commitments.limit",
-        "financial_commitments.maybeSingle",
-        "financial_commitments.order",
-        "financial_commitments.select"
-      ],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "financial_commitments.update"
-      ]
-    },
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "app/api/square/create-payment-link/route.ts",
-      "guarded": true,
-      "isClient": false,
-      "reads": [
-        "donations.eq",
-        "donations.select",
-        "donations.single"
-      ],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "donations.delete",
-        "donations.insert",
-        "donations.update"
-      ]
-    },
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "app/api/square/webhook/route.ts",
-      "guarded": true,
-      "isClient": false,
-      "reads": [
-        "donations.eq",
-        "donations.limit",
-        "donations.maybeSingle",
-        "donations.order",
-        "donations.select",
-        "donations.single"
-      ],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "donations.insert",
-        "donations.update"
-      ]
-    },
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "app/pay/[token]/page.tsx",
-      "guarded": true,
-      "isClient": false,
-      "reads": [
-        "donations.contains",
-        "donations.eq",
-        "donations.gte",
-        "donations.select",
-        "donations.single",
-        "financial_commitments.eq",
-        "financial_commitments.select",
-        "financial_commitments.single",
-        "payment_allocations.eq",
-        "payment_allocations.select",
-        "payment_tokens.eq",
-        "payment_tokens.maybeSingle",
-        "payment_tokens.select"
-      ],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "donations.insert",
-        "donations.update"
-      ]
-    },
-    {
-      "classification": "guarded",
-      "dynamicTables": [],
-      "file": "supabase/functions/stripe-webhook/index.ts",
-      "guarded": true,
-      "isClient": false,
-      "reads": [
-        "donations.eq",
-        "donations.is",
-        "donations.maybeSingle",
-        "donations.neq",
-        "donations.select",
-        "donations.single",
-        "financial_commitments.eq",
-        "financial_commitments.select",
-        "financial_commitments.single",
-        "payment_allocations.eq",
-        "payment_allocations.select",
-        "payment_tokens.eq",
-        "payment_tokens.is"
-      ],
-      "rpcCalls": [],
-      "unguardedHandlers": [],
-      "writes": [
-        "donations.insert",
-        "donations.update",
-        "payment_allocations.insert",
-        "payment_tokens.update"
       ]
     }
   ]

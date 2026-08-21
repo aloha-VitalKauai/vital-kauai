@@ -32,7 +32,7 @@ export async function GET(req: Request) {
   const [links, sessions] = await Promise.all([
     fin.from("payment_links").select("*").eq("agreement_id", agreementId)
       .order("created_at", { ascending: false }).limit(5),
-    fin.from("checkout_sessions").select("*").eq("agreement_id", agreementId)
+    fin.from("founder_checkout_sessions").select("*").eq("agreement_id", agreementId)
       .order("created_at", { ascending: false }).limit(5),
   ]);
   return NextResponse.json({ links: links.data ?? [], sessions: sessions.data ?? [] });

@@ -1194,3 +1194,33 @@ security_invoker+barrier views (`founder_financial_overview`,
 `founder_payment_activity`, migration 20260821180000) carry the aggregates;
 each embeds an explicit `is_founder()` boundary and is granted to
 `authenticated` only.
+
+## D-085 — PR 8: member portal is V2-only; member privacy is a grant boundary (2026-08-21)
+
+The Member Contribution Portal at /portal/donate reads only the four member-safe
+`finance_api` views (`member_contribution_overview`, `member_contribution_agreements`,
+`member_payment_activity`, `member_checkout_status`), each SECURITY INVOKER +
+BARRIER with an explicit `finance.current_member_id()` boundary. The broad PR 3C
+façades (`agreement_amounts`, `ledger_entries`, `checkout_sessions`,
+`agreement_lifecycle_events`) are revoked from `authenticated`: member RLS let a
+member read their OWN rows through them, including founder reasons, actor UUIDs,
+provider ids, Stripe session ids and link ids. Founder surfaces read explicit
+founder-only replacement views (`founder_agreement_amount_history`,
+`founder_ledger_history`, `founder_checkout_sessions`, `founder_lifecycle_history`).
+
+Member checkout runs on the PR 6 engine. `finance.begin_member_contribution_checkout`
+derives the FULL payable remaining under lock — no client amount exists in the
+protocol — and refuses non-ownership as VK404, indistinguishable from a missing id.
+`finance.begin_member_gift_checkout` reuses the member's single `additional_gift`
+agreement (the `agreements_member_journey_purpose_key` NULLS NOT DISTINCT invariant
+is deliberate and unweakened); distinct gifts are distinct attempts and ledger
+facts, one live at a time. The member-callable rpcs return NO Stripe or
+idempotency material; service-role code fetches it by attempt id through
+`machine_checkout_attempts` (service_role-only grant). Request identity is the
+deterministic key `vk2_member_{contribution|gift}_<member>_<request>` in the
+existing unique `checkout_sessions.idempotency_key`.
+
+The superseded member payment pages (/portal/journey/payment,
+/portal/onboarding/donation) are pure server redirects to /portal/donate.
+`FINANCE_V2_CHECKOUT_READY` gates issuance only; it never changes a read source,
+and a failed member read renders unknown — never $0.

@@ -21,7 +21,7 @@ const ITEMS: { label: string; href: string }[] = [
   // day, post-ceremony integration after.
   { label: "Journey", href: "/portal/journey" },
   { label: "Resources", href: "/portal/resources" },
-  { label: "Contribute", href: "/portal/donate" },
+  { label: "Contribution", href: "/portal/donate" },
 ];
 
 function activeKey(pathname: string): string | null {
@@ -36,7 +36,7 @@ function activeKey(pathname: string): string | null {
     pathname === "/portal/donate" ||
     pathname.startsWith("/portal/onboarding/donation")
   ) {
-    return "Contribute";
+    return "Contribution";
   }
   if (pathname.startsWith("/portal/")) return "Resources";
   return null;
