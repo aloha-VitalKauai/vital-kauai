@@ -4,8 +4,8 @@ import { useState, useMemo, useTransition, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { createJourney, rescheduleJourney } from "@/app/actions/journeys";
-import MemberFinancialSection from "./MemberFinancialSection";
 import BookingStatusSection from "./BookingStatusSection";
+import V2FinancialPanel from "@/app/components/dashboard/financials/V2FinancialPanel";
 import type { Booking } from "@/lib/api/bookings";
 import MemberMedicalPanel, { type MedMember, type LabDoc } from "../medical/MemberMedicalPanel";
 import {
@@ -13,7 +13,6 @@ import {
   CeremonyRecordsCard,
   IntakeCard,
   IntegrationProgressCards,
-  FinancialRecordsCard,
   TimelineCard,
   type DosingRecord,
   type SignedDocument,
@@ -1215,33 +1214,25 @@ export default function MemberProfileEditor({
         <DocumentsCard documents={documents as SignedDocument[]} profile={profile} />
       ) : activeTab === "Financials" ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {/* Financial records — auto-tracked contributions */}
-          <FinancialRecordsCard
-            donations={donations}
-            commitment={commitment ?? null}
-            collectedCents={collectedCents}
-          />
+          {/* Financial truth: Financials V2 (PR 5). Contribution, Received,
+              Remaining and Payment state come only from the canonical V2 views,
+              and every action runs through the finance_api facade on the
+              founder's own session. */}
+          <div id="journey-financials" style={{ scrollMarginTop: 80 }} />
+          <V2FinancialPanel memberId={member.id} memberName={member.full_name ?? null} />
 
-          {/* Booking & payment status (Square era) */}
+          {/* Booking OPERATIONS only: status, package, notes. The editable
+              payment_status / amount_due / amount_paid fields were retired with
+              PR 5 — a founder must never maintain the same financial fact here
+              and in Financials V2. The legacy FinancialRecordsCard and
+              MemberFinancialSection (adjust-amount, offline payments, payment
+              tokens — all D-078-guarded surfaces over wiped tables) are no
+              longer rendered. */}
           <div id="booking-status" style={{ scrollMarginTop: 80 }} />
           <BookingStatusSection
             booking={booking}
             memberId={member.id}
             memberName={member.full_name ?? null}
-          />
-
-          {/* Journey payment — full financial section */}
-          <div id="journey-financials" style={{ scrollMarginTop: 80 }} />
-          <MemberFinancialSection
-            commitment={commitment ? { ...commitment, journey_id: commitment.journey_id ?? null, kind: commitment.kind ?? null } : null}
-            collectedCents={collectedCents}
-            tokens={tokens}
-            tokenAmounts={tokenAmounts}
-            donations={donations}
-            journeyTitle={journeyTitle}
-            journeyEndAt={journeyEndAt}
-            memberName={member.full_name ?? null}
-            memberEmail={member.email ?? null}
           />
         </div>
       ) : activeTab === "Timeline" ? (
