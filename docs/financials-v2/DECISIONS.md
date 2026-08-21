@@ -1105,3 +1105,50 @@ deliberate: a stuck, noisy event is recoverable by a human, a silently discarded
 is not. Reaching this state means either the at-most-once assumption is wrong for
 that type or something upstream is genuinely duplicating, and both need a decision
 rather than a default.
+
+## D-082 — Financials V2 begins from a verified clean state; PR 4 renders no legacy comparison
+
+**Finding (PR 4 preflight, 2026-08-21, read-only).** The comparison PR 4 was
+specified to display cannot be built honestly:
+
+- PR 2's importer and its per-member variance report — still described in
+  PR_PLAN.md, including in PR 4's own outcome — **were never built**. PR 2 was
+  rescoped to Clean-Start Activation on the founder's attestation that no genuine
+  historical financial record existed; D-077 then wiped the legacy financial
+  tables.
+- No surviving source is a trustworthy financial reference. The retired tables
+  are empty and frozen. `public.audit_log` preserved `before_state` for every
+  wiped row and **independently corroborates D-077** (20 rows, 0 completed,
+  2 refunded, 0 live-mode identifiers) — but it records money that never moved
+  (test-mode, never-completed sessions), begins only at the audit trigger's
+  creation (2026-04-18), and carries degraded attribution; it is forensic
+  evidence, not financial history. `bookings.amount_paid_cents` sums to 0 and its
+  `amount_due` disagrees with the deleted commitment for the same participant.
+  `members.program_price` is a price list.
+
+**Decision.** Financials V2 starts from a verified clean state. PR 4 is a
+**Financial Verification workspace**, not a shadow/diff page:
+
+- It renders a clean-start banner stating that no verified historical payments
+  were imported and that financial activity begins with Financials V2.
+- It shows canonical V2 member and journey positions, Stripe-versus-V2
+  reconciliation status, unattributed payments and exceptions, quarantined
+  objects, and system health.
+- It renders **no retired-reference or legacy-delta columns** — not even marked
+  "unavailable". A permanently empty column is visual noise, and no later PR
+  makes historical reference data reappear.
+- Resolution and release run exclusively through `finance.resolve_exception()`
+  and `finance.release_quarantine()` via SECURITY INVOKER `finance_api`
+  wrappers; actor and timestamp remain database-generated.
+
+**Consequential amendments to PR_PLAN.md:**
+- PR 2 is recorded as Clean-Start Activation; the importer text is marked
+  superseded.
+- PR 4 no longer promises legacy variances.
+- **PR 8's precondition** becomes: shadow verification reviewed and accepted,
+  meaning successful V2/Stripe reconciliation with **no unexplained
+  exceptions** — not resolution of nonexistent legacy variances.
+
+**What this does not change.** The unredacted wipe archive and `audit_log`
+remain preserved as forensic evidence. §0a's read-only comparison carve-out
+becomes moot rather than revoked.
