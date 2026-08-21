@@ -75,7 +75,10 @@ export default function ContributionPortalClient({
 
   const [busy, setBusy] = useState<string | null>(null); // agreement_id or "gift"
   const [notice, setNotice] = useState<string | null>(null);
-  const [confirming, setConfirming] = useState(returned === "confirming");
+  // The banner never asserts payment on a bare URL param: it requires the
+  // attempt id (whose status the bounded poll verifies) and speaks only of
+  // confirming, not of receipt (bounded review #6).
+  const [confirming, setConfirming] = useState(returned === "confirming" && Boolean(returnedAttempt));
   const [confirmDone, setConfirmDone] = useState(false);
 
   // One requestId per user intent, regenerated only when the intent changes.
@@ -175,7 +178,12 @@ export default function ContributionPortalClient({
     return giftChoice;
   }, [giftChoice, customGift]);
 
-  const contributionAgreements = (agreements ?? []).filter((a) => a.purpose !== "additional_gift");
+  // Cards and the overview badge share ONE visibility rule: canceled/waived
+  // agreements neither render nor color the badge (bounded review #7).
+  const contributionAgreements = (agreements ?? []).filter(
+    (a) => a.purpose !== "additional_gift"
+      && a.lifecycle_status !== "canceled" && a.lifecycle_status !== "waived",
+  );
   const liveByAgreement = new Map(liveAttempts.map((s) => [s.agreement_id, s]));
 
   const overviewState = (() => {
@@ -216,15 +224,15 @@ export default function ContributionPortalClient({
       {/* Return-state banners */}
       {returned === "canceled" && (
         <section role="status" style={{ ...card, ...sectionGap, padding: "16px 22px", fontSize: 14, color: FOREST2 }}>
-          Your secure payment was canceled before completing. No payment was made — you can
-          continue whenever you're ready.
+          Your secure payment session was closed before completing. You can continue
+          whenever you're ready — your figures below always reflect what has been received.
         </section>
       )}
       {(confirming || confirmDone) && (
         <section role="status" aria-live="polite" style={{ ...card, ...sectionGap, padding: "16px 22px", fontSize: 14, color: FOREST2, background: SAGE_SOFT }}>
           {confirmDone
             ? "Thank you — your payment has been received and your Contribution is updated below."
-            : "Payment received by Stripe; confirming with Vital Kauaʻi… This can take a moment. Your figures will update once confirmed."}
+            : "Confirming your payment… This can take a moment. Your figures will update once confirmed."}
         </section>
       )}
       {notice && (
@@ -295,7 +303,6 @@ export default function ContributionPortalClient({
         )
       ) : (
         contributionAgreements
-          .filter((a) => a.lifecycle_status !== "canceled" && a.lifecycle_status !== "waived")
           .map((a) => (
             <AgreementCard
               key={a.agreement_id}
@@ -345,12 +352,12 @@ export default function ContributionPortalClient({
             Your gift supports access, the ʻāina, nonprofit partners, and the life of Vital Kauaʻi.
           </p>
           {checkoutReady ? (
-            <button type="button" disabled={!giftCents || busy === "gift"}
-              onClick={() => giftCents && beginCheckout("gift", { kind: "additional_gift", amountCents: giftCents })}
-              style={{ minHeight: 48, padding: "13px 22px", border: 0, borderRadius: 10, color: "#fff", background: !giftCents || busy === "gift" ? "#c9b6a8" : COPPER, fontWeight: 700, cursor: !giftCents || busy === "gift" ? "default" : "pointer" }}
+            <button type="button" disabled={!giftCents || busy?.startsWith("gift:")}
+              onClick={() => giftCents && beginCheckout(`gift:${giftCents}`, { kind: "additional_gift", amountCents: giftCents })}
+              style={{ minHeight: 48, padding: "13px 22px", border: 0, borderRadius: 10, color: "#fff", background: !giftCents || busy?.startsWith("gift:") ? "#c9b6a8" : COPPER, fontWeight: 700, cursor: !giftCents || busy?.startsWith("gift:") ? "default" : "pointer" }}
               onMouseOver={(e) => { if (giftCents && busy !== "gift") e.currentTarget.style.background = COPPER_DARK; }}
               onMouseOut={(e) => { if (giftCents && busy !== "gift") e.currentTarget.style.background = COPPER; }}>
-              {busy === "gift" ? "Preparing secure payment…" : "Continue with gift"}
+              {busy?.startsWith("gift:") ? "Preparing secure payment…" : "Continue with gift"}
             </button>
           ) : (
             <div>
@@ -480,13 +487,29 @@ function AgreementCard({
             This Contribution is being prepared. Payment will open once it is active.
           </p>
         ) : processing ? (
-          <>
-            <p style={{ margin: "0 0 14px", color: "#bfcac1", fontSize: 12, lineHeight: 1.5 }}>
-              Payment processing — your secure session is being prepared. This resolves on
-              its own; nothing further is needed right now.
-            </p>
-            <button type="button" disabled style={btnStyle(false)}>Payment processing</button>
-          </>
+          // A prior request stopped before the secure session opened. The
+          // begin call is idempotent — continuing resumes that same attempt
+          // and finishes preparing it (bounded review #4); nothing is charged
+          // twice. When checkout is paused, the truth is "paused", not
+          // "resolving on its own".
+          checkoutReady ? (
+            <>
+              <p style={{ margin: "0 0 14px", color: "#bfcac1", fontSize: 12, lineHeight: 1.5 }}>
+                A previous payment session didn't finish being prepared. Continuing will
+                resume it securely — nothing has been charged.
+              </p>
+              <button type="button" onClick={onPay} disabled={busy} style={btnStyle(!busy)}>
+                {busy ? "Preparing secure payment…" : "Continue to secure payment"}
+              </button>
+            </>
+          ) : (
+            <>
+              <button type="button" disabled style={btnStyle(false)}>Continue to secure payment</button>
+              <p style={{ margin: "10px 0 0", color: "#bfcac1", fontSize: 12 }}>
+                Secure card payment is temporarily unavailable. Nothing has been charged.
+              </p>
+            </>
+          )
         ) : payable ? (
           checkoutReady ? (
             <>

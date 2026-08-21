@@ -146,6 +146,15 @@ export async function startMemberCheckout(
         p_to_status: "expired",
       });
       if (trErr) return { ok: false, reason: "conflict" };
+    } else if (attempt.status === "creating") {
+      // Nothing exists at Stripe yet; cancel the stale attempt so the retry's
+      // fresh intent can open at the new amount instead of resuming this one
+      // forever (bounded review #5).
+      const { error: trErr } = await fin.rpc("transition_checkout_session", {
+        p_attempt_id: attempt.id,
+        p_to_status: "canceled",
+      });
+      if (trErr) return { ok: false, reason: "conflict" };
     }
     return { ok: false, reason: "amount_changed", retryWithNewRequest: true };
   }

@@ -197,13 +197,18 @@ begin
   v_key := 'vk2_member_contribution_' || v_member || '_' || p_request_id;
 
   -- Replay of the same intent returns the same attempt, whatever its state.
+  -- current_payable_cents is ALWAYS the live figure (bounded review #1): the
+  -- attempt's own amount here would compare equal to itself and blind the
+  -- service's drift check on every replay.
   select * into v_attempt from finance.checkout_sessions s where s.idempotency_key = v_key;
   if found then
     if v_attempt.agreement_id <> p_agreement_id then
       raise exception 'member_checkout: request id was used for a different agreement' using errcode = 'VK409';
     end if;
     return query select v_attempt.id, v_attempt.agreement_id, v_attempt.amount_cents,
-                        v_attempt.status::text, v_attempt.amount_cents;
+                        v_attempt.status::text,
+                        (select b.payable_remaining_cents from finance.v_agreement_balances b
+                          where b.agreement_id = v_attempt.agreement_id);
     return;
   end if;
 
@@ -306,6 +311,11 @@ begin
   -- amount-and-time coincidence.
   select * into v_attempt from finance.checkout_sessions s where s.idempotency_key = v_key;
   if found then
+    -- A request is bound to ITS amount (bounded review #2): replaying the id
+    -- with a different figure is a distinct intent, never a silent substitute.
+    if v_attempt.amount_cents <> p_amount_cents then
+      raise exception 'member_gift: request id was used for a different amount' using errcode = 'VK409';
+    end if;
     return query select v_attempt.id, v_attempt.agreement_id, v_attempt.amount_cents,
                         v_attempt.status::text;
     return;
@@ -384,6 +394,45 @@ language sql
 as $$ select * from finance.begin_member_gift_checkout(p_amount_cents, p_request_id); $$;
 revoke all on function finance_api.begin_member_gift_checkout(bigint, uuid) from public;
 grant execute on function finance_api.begin_member_gift_checkout(bigint, uuid) to authenticated;
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- 7b. Bounded review #5: a `creating` attempt whose amount drifted could never
+--     be cleared — transitions were open-only and the id-present CHECK forbade
+--     any other status with a NULL session id. `creating → canceled` is the
+--     truthful terminal state for an attempt that never reached Stripe.
+-- ─────────────────────────────────────────────────────────────────────────────
+
+alter table finance.checkout_sessions drop constraint checkout_session_id_present;
+alter table finance.checkout_sessions add constraint checkout_session_id_present
+  check (status in ('creating', 'canceled') or stripe_session_id is not null);
+
+create or replace function finance.transition_checkout_session(
+  p_attempt_id uuid, p_to_status text
+) returns void
+language plpgsql security definer set search_path = pg_catalog, public, finance
+as $fn$
+declare cs finance.checkout_sessions%rowtype;
+begin
+  if p_to_status not in ('completed','expired','canceled') then
+    raise exception 'transition_checkout_session: illegal target %', p_to_status using errcode='VK400';
+  end if;
+  select * into cs from finance.checkout_sessions where id = p_attempt_id for update;
+  if not found then raise exception 'transition: attempt % not found', p_attempt_id using errcode='VK404'; end if;
+  if cs.status = p_to_status::finance.checkout_status then return; end if;
+  -- creating may only be canceled (nothing exists at Stripe to complete or
+  -- expire); every other transition still requires an open session.
+  if cs.status = 'creating' then
+    if p_to_status <> 'canceled' then
+      raise exception 'transition: creating may only be canceled' using errcode='VK409';
+    end if;
+  elsif cs.status <> 'open' then
+    raise exception 'transition: session is %, only open transitions', cs.status using errcode='VK409';
+  end if;
+  update finance.checkout_sessions
+     set status = p_to_status::finance.checkout_status,
+         completed_at = case when p_to_status='completed' then clock_timestamp() else completed_at end
+   where id = p_attempt_id;
+end $fn$;
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- 8. In-transaction assertions

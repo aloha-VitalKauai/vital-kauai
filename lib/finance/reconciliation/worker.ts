@@ -109,6 +109,25 @@ export async function runEventWorker(
         }
       }
 
+      // PR 8: Stripe's own expiry closes our session row. Without this, an
+      // abandoned attempt held the one-live slot forever and every later
+      // checkout on the agreement was refused. A `creating` row (finalize
+      // failed after Stripe create) refuses the transition — that corner is
+      // the stranded-attempt sweeper's, and the refusal is logged, not fatal.
+      if (relevant && ev.event_type === "checkout.session.expired") {
+        const cs = (ev.payload as { data?: { object?: {
+          id?: string; metadata?: Record<string, string>;
+        } } } | null)?.data?.object;
+        const attemptId = cs?.metadata?.attempt_id;
+        if (cs?.id && attemptId) {
+          const { error: exErr } = await fin().rpc("transition_checkout_session", {
+            p_attempt_id: attemptId,
+            p_to_status: "expired",
+          });
+          if (exErr) console.error("worker: session expiry transition failed", cs.id, exErr.message);
+        }
+      }
+
       // checkout.session.completed transitions OUR session row only when Stripe
       // says the money is settled — an unpaid/processing completion writes
       // nothing (proof #7). The ledger is written by the PaymentIntent path
