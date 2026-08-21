@@ -43,3 +43,34 @@ test("no client-side balance formula: money fields pass through from SQL", () =>
   assert.ok(!/net_received_cents\s*[-+]\s*/.test(src), "React recomputes received");
   assert.ok(!/operating_margin_cents\s*=/.test(src), "React recomputes margin");
 });
+
+// PR 7 bounded review — each fix below answered a real finding; a regression
+// reintroduces a silent all-clear or a double count on the money dashboard.
+
+test("failed balances/checkout reads are tracked, not coalesced to all-clear", () => {
+  const src = readFileSync("app/dashboard/financials/page.tsx", "utf8");
+  assert.match(src, /failed\.push\("balances"\)/);
+  assert.match(src, /failed\.push\("checkout"\)/);
+});
+
+test("reconciled-at excludes dry runs and filters livemode in SQL", () => {
+  const src = readFileSync("app/dashboard/financials/page.tsx", "utf8");
+  assert.match(src, /!r\.dry_run/, "a dry run may never stamp Reconciled");
+  const livemodeFilters = src.match(/\.eq\("livemode", true\)/g) ?? [];
+  assert.ok(livemodeFilters.length >= 2, "runs and checkout_sessions must filter livemode in SQL");
+});
+
+test("an in-flight attempt is not double-counted across its link and session", () => {
+  const src = readFileSync("app/dashboard/financials/page.tsx", "utf8");
+  assert.match(src, /!linkedIds\.has\(l\.id\)/, "creating links must be excluded when a session owns them");
+});
+
+test("quarantined exceptions annotate the recon count, never add to it", () => {
+  const src = readFileSync("app/dashboard/financials/FounderFinancialCommandCenter.tsx", "utf8");
+  assert.ok(!src.includes("openLiveExceptions + health.quarantined"), "quarantined is a subset of open");
+});
+
+test("refunded totals are visible in the overview when non-zero", () => {
+  const src = readFileSync("app/dashboard/financials/FounderFinancialCommandCenter.tsx", "utf8");
+  assert.match(src, /refunded_cents > 0/);
+});

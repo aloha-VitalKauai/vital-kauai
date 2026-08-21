@@ -47,7 +47,7 @@ type ActivityRow = {
 type RunRow = { id: string; livemode: boolean; dry_run: boolean; status: string; window_exhausted: boolean; finished_at: string | null };
 type ExcRow = { id: string; livemode: boolean; resolution_status: string; quarantined_at: string | null; released_at: string | null };
 type LinkRow = { id: string; agreement_id: string; status: string; expires_at: string };
-type SessRow = { id: string; agreement_id: string; status: string; expires_at: string };
+type SessRow = { id: string; agreement_id: string; payment_link_id: string | null; status: string; expires_at: string | null };
 
 export default async function FinancialsPage() {
   const supabase = await createClient();
@@ -66,16 +66,19 @@ export default async function FinancialsPage() {
       .returns<BalanceRow[]>(),
     fin.from("founder_payment_activity").select("*")
       .order("occurred_at", { ascending: false }).limit(50).returns<ActivityRow[]>(),
+    // Live-mode only, filtered in SQL: test-mode runs must not consume the row
+    // window and starve a real "Reconciled" timestamp out of view.
     fin.from("reconciliation_runs")
       .select("id, livemode, dry_run, status, window_exhausted, finished_at")
+      .eq("livemode", true)
       .order("started_at", { ascending: false }).limit(10).returns<RunRow[]>(),
     fin.from("reconciliation_exceptions")
       .select("id, livemode, resolution_status, quarantined_at, released_at")
       .eq("resolution_status", "open").returns<ExcRow[]>(),
     fin.from("payment_links").select("id, agreement_id, status, expires_at")
       .in("status", ["active", "creating"]).returns<LinkRow[]>(),
-    fin.from("checkout_sessions").select("id, agreement_id, status, expires_at")
-      .in("status", ["creating", "open"]).returns<SessRow[]>(),
+    fin.from("checkout_sessions").select("id, agreement_id, payment_link_id, status, expires_at")
+      .in("status", ["creating", "open"]).eq("livemode", true).returns<SessRow[]>(),
     supabase.from("payout_commitments").select("*").neq("status", "canceled")
       .order("due_date", { ascending: true, nullsFirst: false })
       .order("created_at", { ascending: false }).limit(50),
@@ -95,6 +98,11 @@ export default async function FinancialsPage() {
   if (journeysRes.error) failed.push("journeys");
   if (activityRes.error) failed.push("activity");
   if (runsRes.error || excRes.error) failed.push("reconciliation");
+  // Balances feed the attention queue and per-member payment states; links and
+  // sessions feed the checkout review count. A failed read must surface as
+  // unknown — coalescing to [] would render an all-clear that was never read.
+  if (balancesRes.error) failed.push("balances");
+  if (linksRes.error || sessRes.error) failed.push("checkout");
 
   const nameById = new Map<string, { name: string; email: string | null }>();
   for (const m of (namesRes.data ?? []) as { id: string; full_name: string | null; email: string | null }[]) {
@@ -105,12 +113,24 @@ export default async function FinancialsPage() {
     journeyMeta.set(j.id, { start_at: j.start_at, member_id: j.member_id });
   }
 
-  // Reconciliation health: live mode only for launch status.
+  // Reconciliation health: live mode only for launch status. A dry run is a
+  // rehearsal — it applies nothing, so it can never stamp "Reconciled".
   const liveRuns = (runsRes.data ?? []).filter((r) => r.livemode);
-  const lastGood = liveRuns.find((r) => r.status === "completed" && r.window_exhausted);
+  const lastGood = liveRuns.find((r) => r.status === "completed" && r.window_exhausted && !r.dry_run);
   const openLive = (excRes.data ?? []).filter((e) => e.livemode);
   const quarantined = openLive.filter((e) => e.quarantined_at && !e.released_at);
   const checkoutReady = process.env.FINANCE_V2_CHECKOUT_READY === "true";
+
+  // One in-flight attempt owns both a `creating` link row and a `creating`
+  // session row; counting both would double every attempt. A session (any
+  // current status) marks its link as accounted for — a `creating` link with NO
+  // session is the genuine orphaned-claim signal. A `creating` session with a
+  // null expires_at predates the Stripe call and counts by status alone.
+  const sessRows = sessRes.data ?? [];
+  const linkedIds = new Set(sessRows.map((s) => s.payment_link_id).filter(Boolean));
+  const checkoutNeedsReview =
+    sessRows.filter((s) => s.status === "creating" || (s.expires_at !== null && new Date(s.expires_at) < new Date())).length +
+    (linksRes.data ?? []).filter((l) => l.status === "creating" && !linkedIds.has(l.id)).length;
 
   const cohortList = (cohortsRes.data ?? []) as { id: string; title: string }[];
   const cohortTitles = Object.fromEntries(cohortList.map((c) => [c.id, c.title]));
@@ -162,9 +182,7 @@ export default async function FinancialsPage() {
           openLiveExceptions: openLive.length,
           quarantined: quarantined.length,
           checkoutReady,
-          checkoutNeedsReview:
-            (sessRes.data ?? []).filter((s) => s.status === "creating" || new Date(s.expires_at) < new Date()).length +
-            (linksRes.data ?? []).filter((l) => l.status === "creating").length,
+          checkoutNeedsReview: checkoutNeedsReview,
         }}
       />
 

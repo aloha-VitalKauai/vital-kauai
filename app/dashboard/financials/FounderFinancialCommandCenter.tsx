@@ -8,7 +8,7 @@
  * founder's place.
  */
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const IVORY = "#F7F4ED", PAPER = "#FFFDF8", DEEP = "#0D2A1D", FOREST = "#214C38";
@@ -58,7 +58,12 @@ function rel(iso: string | null): string {
 
 const STATE_LABEL: Record<string, string> = {
   unpaid: "Unpaid", partial: "Partial", paid: "Paid", overpaid: "Overpaid",
-  refunded: "Refunded", not_applicable: "Not applicable",
+  refunded: "Refunded", not_applicable: "Not applicable", unknown: "Unknown",
+};
+
+/** 44px touch target for small inline links without disturbing layout. */
+const touchLink: React.CSSProperties = {
+  display: "inline-block", padding: "12px 0", margin: "-12px 0", textDecoration: "none",
 };
 
 const card: React.CSSProperties = { background: PAPER, border: `1px solid ${SAND}`, borderRadius: 15 };
@@ -83,6 +88,24 @@ export default function FounderFinancialCommandCenter({
   const stateFilter = params.get("state") ?? "all";
   const attentionOnly = params.get("attention") === "1";
 
+  // A failed read is unknown, never an all-clear. Each of these suppresses the
+  // green states its data would otherwise justify.
+  const balancesFailed = failedSections.includes("balances");
+  const checkoutFailed = failedSections.includes("checkout");
+  const reconFailed = failedSections.includes("reconciliation");
+
+  // The search box is local state: filtering is immediate, while the URL (and
+  // the server round-trip it triggers on this force-dynamic page) updates on a
+  // debounce. Back/forward resyncs the box from the URL.
+  const [search, setSearch] = useState(q);
+  useEffect(() => { setSearch(q); }, [q]);
+  useEffect(() => {
+    if (search === q) return;
+    const t = setTimeout(() => setParam("q", search), 300);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, q]);
+
   function setParam(key: string, value: string | null) {
     const next = new URLSearchParams(params.toString());
     if (value === null || value === "" || value === "all") next.delete(key);
@@ -104,11 +127,28 @@ export default function FounderFinancialCommandCenter({
 
   const attention = useMemo(() => {
     const items: { key: string; icon: string; title: string; meta: string; amount?: number; href: string }[] = [];
-    if (health.openLiveExceptions > 0 || health.quarantined > 0) {
+    // quarantined ⊂ openLiveExceptions — the subset annotates, never adds.
+    if (health.openLiveExceptions > 0) {
       items.push({
         key: "recon", icon: "!",
-        title: `${health.openLiveExceptions + health.quarantined} reconciliation item(s) need review`,
-        meta: "Live-mode exceptions · open Verification",
+        title: `${health.openLiveExceptions} reconciliation item(s) need review`,
+        meta: `${health.quarantined > 0 ? `${health.quarantined} quarantined · ` : ""}Live-mode exceptions · open Verification`,
+        href: "/dashboard/financials/verification",
+      });
+    }
+    if (reconFailed) {
+      items.push({
+        key: "recon-unknown", icon: "?",
+        title: "Reconciliation status could not be refreshed",
+        meta: "Exception counts are unknown, not zero · open Verification",
+        href: "/dashboard/financials/verification",
+      });
+    }
+    if (balancesFailed) {
+      items.push({
+        key: "balances-unknown", icon: "?",
+        title: "Agreement balances could not be refreshed",
+        meta: "Attention amounts and payment states are unknown, not current",
         href: "/dashboard/financials/verification",
       });
     }
@@ -129,7 +169,14 @@ export default function FounderFinancialCommandCenter({
         href: `/dashboard/${b.member_id}?tab=Financials`,
       });
     }
-    if (health.checkoutNeedsReview > 0) {
+    if (checkoutFailed) {
+      items.push({
+        key: "checkout-unknown", icon: "?",
+        title: "Checkout link status could not be refreshed",
+        meta: "Link and session states are unknown, not clear · open Verification",
+        href: "/dashboard/financials/verification",
+      });
+    } else if (health.checkoutNeedsReview > 0) {
       items.push({
         key: "checkout", icon: "…",
         title: `${health.checkoutNeedsReview} checkout item(s) need review`,
@@ -138,16 +185,16 @@ export default function FounderFinancialCommandCenter({
       });
     }
     return items;
-  }, [balances, members, health]);
+  }, [balances, members, health, balancesFailed, checkoutFailed, reconFailed]);
 
   const filteredMembers = useMemo(() => {
-    const needle = q.trim().toLowerCase();
+    const needle = search.trim().toLowerCase();
     return members
       .filter((m) => !needle || m.name.toLowerCase().includes(needle) || (m.email ?? "").toLowerCase().includes(needle))
       .filter((m) => stateFilter === "all" || (memberState.get(m.member_id) ?? "not_applicable") === stateFilter)
       .filter((m) => !attentionOnly || m.payable_remaining_cents > 0)
       .sort((a, b) => b.remaining_cents - a.remaining_cents || a.name.localeCompare(b.name));
-  }, [members, q, stateFilter, attentionOnly, memberState]);
+  }, [members, search, stateFilter, attentionOnly, memberState]);
 
   return (
     <>
@@ -155,12 +202,14 @@ export default function FounderFinancialCommandCenter({
       <section style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 14, padding: "13px 16px", background: "#f1f6f1", border: "1px solid #c9dccd", borderRadius: 12, marginBottom: 16, color: "#375141", fontSize: 13 }}>
         <span style={{ background: SAGE, color: "#1f5a3d", borderRadius: 999, padding: "6px 10px", textTransform: "uppercase", letterSpacing: "0.08em", fontSize: 10, fontWeight: 750 }}>V2 active</span>
         <span>{health.checkoutReady ? "Checkout links available" : "Checkout links paused"}</span>
-        <span>Reconciled {rel(health.reconciledAt)}</span>
-        <span style={{ color: health.openLiveExceptions + health.checkoutNeedsReview > 0 ? COPPER : FOREST, fontWeight: 650 }}>
-          {health.openLiveExceptions + health.checkoutNeedsReview} item(s) need review
+        <span>{reconFailed ? "Reconciliation status unknown" : `Reconciled ${rel(health.reconciledAt)}`}</span>
+        <span style={{ color: checkoutFailed || health.openLiveExceptions + health.checkoutNeedsReview > 0 ? COPPER : FOREST, fontWeight: 650 }}>
+          {checkoutFailed
+            ? `${health.openLiveExceptions} item(s) need review · checkout unknown`
+            : `${health.openLiveExceptions + health.checkoutNeedsReview} item(s) need review`}
         </span>
-        <a href="/dashboard/financials/verification" style={{ marginLeft: "auto", color: FOREST, fontWeight: 650, textDecoration: "none" }}>Open verification →</a>
-        <a href="/dashboard/financials/reconciliation" style={{ color: FOREST, fontWeight: 650, textDecoration: "none" }}>Run controls</a>
+        <a href="/dashboard/financials/verification" style={{ ...touchLink, marginLeft: "auto", color: FOREST, fontWeight: 650 }}>Open verification →</a>
+        <a href="/dashboard/financials/reconciliation" style={{ ...touchLink, color: FOREST, fontWeight: 650 }}>Run controls</a>
       </section>
 
       {failedSections.length > 0 && (
@@ -184,7 +233,7 @@ export default function FounderFinancialCommandCenter({
           <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginBottom: 18 }}>
             {[
               { l: "Contribution", v: overview.contribution_cents, h: `${overview.active_agreements} active agreement(s)` },
-              { l: "Received", v: overview.net_received_cents, h: overview.contribution_cents > 0 ? `${Math.round((overview.net_received_cents / overview.contribution_cents) * 100)}% of Contribution` : "Net of refunds and reversals" },
+              { l: "Received", v: overview.net_received_cents, h: (overview.contribution_cents > 0 ? `${Math.round((overview.net_received_cents / overview.contribution_cents) * 100)}% of Contribution` : "Net of refunds and reversals") + (overview.refunded_cents > 0 ? ` · ${usd(overview.refunded_cents)} refunded` : "") },
               { l: "Remaining", v: overview.remaining_cents, h: `${usd(overview.payable_remaining_cents)} collectible now` },
               { l: "Expenses", v: overview.expenses_cents, h: "Operational costs" },
               { l: "Payouts", v: overview.payouts_cents, h: `${usd(overview.pending_payouts_cents)} pending or scheduled` },
@@ -192,7 +241,7 @@ export default function FounderFinancialCommandCenter({
             ].map((t) => (
               <div key={t.l} style={{ ...card, padding: "20px 22px", minHeight: 110 }}>
                 <div style={label}>{t.l}</div>
-                <div style={{ fontFamily: "var(--font-display, serif)", fontSize: 30, color: t.danger ? DANGER : DEEP, margin: "10px 0 6px", fontVariantNumeric: "tabular-nums" }}>
+                <div style={{ fontFamily: "var(--font-display, serif)", fontSize: "clamp(22px, 5.5vw, 30px)", color: t.danger ? DANGER : DEEP, margin: "10px 0 6px", fontVariantNumeric: "tabular-nums" }}>
                   {usd(t.v)}
                 </div>
                 <div style={{ fontSize: 12, color: MUTED }}>{t.h}</div>
@@ -251,8 +300,8 @@ export default function FounderFinancialCommandCenter({
         {tab === "members" && (
           <>
             <div style={{ display: "flex", gap: 10, padding: "15px 22px", background: "#fbf9f3", borderBottom: "1px solid #ece6da", flexWrap: "wrap" }}>
-              <input type="search" placeholder="Search members" defaultValue={q}
-                onChange={(e) => setParam("q", e.target.value)}
+              <input type="search" placeholder="Search members" value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 style={{ flex: 1, minWidth: 180, border: `1px solid ${SAND}`, borderRadius: 8, padding: "10px 12px", background: "#fff", fontSize: 13 }} />
               <select value={stateFilter} onChange={(e) => setParam("state", e.target.value)}
                 style={{ border: `1px solid ${SAND}`, borderRadius: 8, padding: "10px 12px", background: "#fff", color: FOREST, fontSize: 13 }}>
@@ -277,7 +326,7 @@ export default function FounderFinancialCommandCenter({
                       {members.length === 0 ? "No V2 member positions yet." : "Nothing matches the current filters."}
                     </td></tr>
                   ) : filteredMembers.map((m) => {
-                    const st = memberState.get(m.member_id) ?? "not_applicable";
+                    const st = balancesFailed ? "unknown" : (memberState.get(m.member_id) ?? "not_applicable");
                     return (
                       <tr key={m.member_id}>
                         <td style={{ padding: "14px 20px", borderTop: "1px solid #eee8dd", fontSize: 13 }}>
@@ -288,12 +337,12 @@ export default function FounderFinancialCommandCenter({
                           <td key={i} style={{ padding: "14px 20px", borderTop: "1px solid #eee8dd", textAlign: "right", fontVariantNumeric: "tabular-nums", fontWeight: 650, fontSize: 12 }}>{usd(v)}</td>
                         ))}
                         <td style={{ padding: "14px 20px", borderTop: "1px solid #eee8dd" }}>
-                          <span style={{ display: "inline-block", borderRadius: 999, padding: "5px 9px", fontSize: 9, letterSpacing: "0.07em", textTransform: "uppercase", fontWeight: 750, background: st === "paid" ? SAGE : "#f2e6d8", color: st === "paid" ? "#2b6847" : "#8a5325" }}>
+                          <span style={{ display: "inline-block", borderRadius: 999, padding: "5px 9px", fontSize: 9, letterSpacing: "0.07em", textTransform: "uppercase", fontWeight: 750, background: st === "paid" ? SAGE : st === "unknown" ? "#eeece5" : "#f2e6d8", color: st === "paid" ? "#2b6847" : st === "unknown" ? MUTED : "#8a5325" }}>
                             {STATE_LABEL[st] ?? st}
                           </span>
                         </td>
                         <td style={{ padding: "14px 20px", borderTop: "1px solid #eee8dd" }}>
-                          <a href={`/dashboard/${m.member_id}?tab=Financials`} style={{ color: COPPER, fontWeight: 750, fontSize: 12, textDecoration: "none" }}>Open member</a>
+                          <a href={`/dashboard/${m.member_id}?tab=Financials`} style={{ ...touchLink, color: COPPER, fontWeight: 750, fontSize: 12 }}>Open member</a>
                         </td>
                       </tr>
                     );
