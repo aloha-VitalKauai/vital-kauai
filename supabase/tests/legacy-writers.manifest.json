@@ -22,8 +22,7 @@
       "file": "app/api/finance/reconciliation/route.ts",
       "functions": [
         "approve_dry_run",
-        "is_founder",
-        "start_reconciliation_run"
+        "is_founder"
       ]
     },
     {
