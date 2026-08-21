@@ -1176,3 +1176,21 @@ UPDATE/DELETE, so the append-only audit property is untouched.
 rows are append-only *history* where a double-click produces a visible duplicate
 history row rather than duplicated money, and a reversal is naturally idempotent
 because the ledger trigger refuses to reverse an already-reversed parent.
+
+## D-084 — PR 7 is V2-only; the legacy read flag and fallback are struck
+
+**Correction.** The original PR 7 plan ("founder surfaces read V2 behind a
+feature flag, legacy when off") is no longer implementable or desirable: D-077
+wiped the retired tables, D-078 froze them and forbids re-enabling legacy flags,
+D-082 established the clean start, and PR 4/5 already made founder surfaces
+V2-native. **PR 7 therefore ships with no financial read flag and no legacy
+fallback.** A failed V2 read renders an explicit unknown/error state — never a
+legacy value and never $0, because a zero is a fact while a failed read is
+unknown. The retired views `financials_overview`, `cohort_margin_summary` and
+`private_ceremony_summary` leave `/dashboard/financials`; the cohort/private
+margin tabs are removed rather than kept as a misleading continuity surface.
+The PR 7 section of PR_PLAN.md is replaced accordingly. Two bounded
+security_invoker+barrier views (`founder_financial_overview`,
+`founder_payment_activity`, migration 20260821180000) carry the aggregates;
+each embeds an explicit `is_founder()` boundary and is granted to
+`authenticated` only.
