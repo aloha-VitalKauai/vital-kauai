@@ -77,7 +77,7 @@ export default async function FinancialsPage() {
       .eq("resolution_status", "open").returns<ExcRow[]>(),
     fin.from("payment_links").select("id, agreement_id, status, expires_at")
       .in("status", ["active", "creating"]).returns<LinkRow[]>(),
-    fin.from("checkout_sessions").select("id, agreement_id, payment_link_id, status, expires_at")
+    fin.from("founder_checkout_sessions").select("id, agreement_id, payment_link_id, status, expires_at")
       .in("status", ["creating", "open"]).eq("livemode", true).returns<SessRow[]>(),
     supabase.from("payout_commitments").select("*").neq("status", "canceled")
       .order("due_date", { ascending: true, nullsFirst: false })
