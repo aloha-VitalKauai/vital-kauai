@@ -19,6 +19,14 @@
       ]
     },
     {
+      "file": "app/api/finance/exceptions/route.ts",
+      "functions": [
+        "is_founder",
+        "release_quarantine",
+        "resolve_exception"
+      ]
+    },
+    {
       "file": "app/api/finance/reconciliation/route.ts",
       "functions": [
         "approve_dry_run",
@@ -33,6 +41,12 @@
     },
     {
       "file": "app/dashboard/financials/reconciliation/page.tsx",
+      "functions": [
+        "is_founder"
+      ]
+    },
+    {
+      "file": "app/dashboard/financials/verification/page.tsx",
       "functions": [
         "is_founder"
       ]

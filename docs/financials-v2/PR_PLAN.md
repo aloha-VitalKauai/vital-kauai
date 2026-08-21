@@ -32,6 +32,12 @@
 **Done when:** every test in "PR 1 acceptance tests" below passes on a fresh database.
 
 ### PR 2 — Legacy fact import and variance report
+
+> **SUPERSEDED (D-077, D-082).** PR 2 was executed as **Clean-Start Activation
+> and Test-Data Isolation**. No importer was built and no variance report exists:
+> the founder attested no genuine historical financial record existed, and D-077
+> wiped the legacy financial tables. The text below is retained for the record.
+
 **Outcome:** Verified historic money exists in the V2 ledger, unattributable money sits in the exceptions queue, and every per-member difference from legacy figures is itemised for adjudication.
 **Contains:**
 - **Agreement creation.** The import creates one agreement per `(member_id, journey_id, purpose)` — the uniqueness rule in ARCHITECTURE §4 — plus its initial lifecycle event. Every legacy donation is assigned to an agreement by this grouping. Ledger entries require `agreement_id`, so this precedes any ledger write.
@@ -92,9 +98,10 @@ Integration tests against the Stripe test-mode API and a seeded database. Each i
 20. A verified `succeeded` PaymentIntent with valid metadata is ingested; one without resolvable attribution raises `unattributable_payment` and is not ingested.
 21. No heuristic match occurs — an amount-and-timestamp coincidence with no identity or metadata match raises an exception rather than matching.
 
-### PR 4 — Founder-only shadow/diff page
-**Outcome:** The founder can compare V2 figures against legacy figures side by side, and can see and resolve reconciliation exceptions. **This PR is founder-visible.**
-**Contains:** a founder-gated page showing per-member and per-journey V2 vs legacy figures with deltas; the exceptions queue UI. **The queue resolves and releases exclusively through `finance.resolve_exception()` and `finance.release_quarantine()`** — no role holds a direct `UPDATE` on the resolution or quarantine columns, so a UI written against those columns will fail. Actor and timestamp are set inside the functions; the UI supplies only the target status and a non-blank note.
+### PR 4 — Founder-only Financial Verification workspace
+**Amended by D-082:** no legacy comparison exists to render (see PR 2 above), so this PR shows canonical V2 state rather than a diff.
+**Outcome:** The founder can see canonical V2 member and journey positions, Stripe-versus-V2 reconciliation status, and can see and resolve reconciliation exceptions and quarantined objects. A clean-start banner states that financial activity begins with Financials V2. **This PR is founder-visible.**
+**Contains:** a founder-gated page showing per-member and per-journey V2 positions (no retired-reference or legacy-delta columns — D-082), reconciliation status, system health and recent runs; the exceptions queue UI. **The queue resolves and releases exclusively through `finance.resolve_exception()` and `finance.release_quarantine()`** — no role holds a direct `UPDATE` on the resolution or quarantine columns, so a UI written against those columns will fail. Actor and timestamp are set inside the functions; the UI supplies only the target status and a non-blank note.
 **Excludes:** any member-facing surface. Any change to legacy displayed numbers.
 
 ### PR 5 — Founder amendment and external-payment controls
@@ -124,7 +131,7 @@ Integration tests against the Stripe test-mode API and a seeded database. Each i
 ### PR 8 — Member Contribution reads and pays through V2 behind a feature flag
 **Outcome:** Members see V2 figures and pay through V2 Checkout Sessions when the flag is on. **First participant-facing change.**
 **Contains:** feature-flagged member portal and pay-page read and write paths.
-**Precondition:** shadow verification reviewed and accepted; all variances explained or resolved.
+**Precondition (amended by D-082):** shadow verification reviewed and accepted — meaning successful V2/Stripe reconciliation with no unexplained exceptions. (Formerly "all variances explained or resolved"; no legacy variances exist to resolve.)
 
 ### PR 9 — Cutover, legacy drain, retirement and final QA
 **Outcome:** All new sessions and payment writes go to V2 only; legacy financial tables are frozen reference data; legacy financial display is retired.
