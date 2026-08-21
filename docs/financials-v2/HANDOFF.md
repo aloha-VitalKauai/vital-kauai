@@ -111,6 +111,20 @@ Cohort/Private margin tabs left the page. Expenses/payouts mutations reused
 unchanged. Checkout state reported truthfully: links paused unless
 FINANCE_V2_CHECKOUT_READY === "true" (still unset).
 
+## PR 8 state (2026-08-21)
+
+Branch claude/financials-v2-pr8 (head 7b867d2). Migration
+`20260821220000_finance_pr8_member_portal.sql` is committed but NOT APPLIED —
+its façade revocations would break the deployed founder pages until the PR 8
+consumers ship, so it is applied at deploy time, immediately before merge.
+Four-role behavioral proof PASSED in a rolled-back production transaction
+(member scoping, façade denial, cross-member VK404, gift replay identity,
+concurrent-gift VK409, bounds, anon/non-member denial, service machine view).
+Gates at 7b867d2: 369/369 tests, tsc clean, production build clean
+(/portal/donate + /api/finance/member-checkout compile). Bounded adversarial
+review: see PR notes. Checkout remains fail-closed (flag unset) until the PR 6
+closeout drills and launch evidence pass.
+
 ## Next action
 
 PR 6 closeout (controlled live-mode exercise, two remaining sweeper drivers,
