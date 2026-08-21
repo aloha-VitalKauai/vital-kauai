@@ -80,6 +80,53 @@ export async function runEventWorker(
       // the table instead of only in a log line.
       const relevant = isSubscribedEventType(ev.event_type) && objectTypeForEvent(ev.event_type);
 
+      // PR 6: a VERIFIED succeeded PaymentIntent carrying V2 attribution records
+      // exactly one ledger payment. The event object IS the PaymentIntent (D-030
+      // status verified at the source); record_v2_stripe_payment is idempotent on
+      // (payment_intent, livemode), so duplicate deliveries return the same row.
+      if (relevant && ev.event_type === "payment_intent.succeeded") {
+        const pi = (ev.payload as { data?: { object?: {
+          id?: string; status?: string; amount_received?: number; amount?: number;
+          created?: number; metadata?: Record<string, string>;
+        } } } | null)?.data?.object;
+        const meta = pi?.metadata ?? {};
+        if (pi?.id && pi.status === "succeeded" && meta.financial_version === "v2" && meta.agreement_id) {
+          const amount = pi.amount_received ?? pi.amount ?? 0;
+          if (amount > 0) {
+            must(
+              await fin().rpc("record_v2_stripe_payment", {
+                p_agreement_id: meta.agreement_id,
+                p_amount_cents: amount,
+                p_provider_object_id: pi.id,
+                p_payment_intent_id: pi.id,
+                p_occurred_at: pi.created ? new Date(pi.created * 1000).toISOString() : null,
+                p_livemode: ev.livemode,
+                p_origin_event_id: ev.event_id,
+              }),
+              "record_v2_stripe_payment",
+            );
+          }
+        }
+      }
+
+      // checkout.session.completed transitions OUR session row only when Stripe
+      // says the money is settled — an unpaid/processing completion writes
+      // nothing (proof #7). The ledger is written by the PaymentIntent path
+      // above, never from the Session event (proof #6 holds without it).
+      if (relevant && ev.event_type === "checkout.session.completed") {
+        const cs = (ev.payload as { data?: { object?: {
+          id?: string; payment_status?: string; metadata?: Record<string, string>;
+        } } } | null)?.data?.object;
+        const attemptId = cs?.metadata?.attempt_id;
+        if (cs?.id && attemptId && cs.payment_status === "paid") {
+          const { error: trErr } = await fin().rpc("transition_checkout_session", {
+            p_attempt_id: attemptId,
+            p_to_status: "completed",
+          });
+          if (trErr) console.error("worker: session transition failed", cs.id, trErr.message);
+        }
+      }
+
       must(
         await fin().rpc("complete_stripe_event", {
           p_event_id: ev.event_id,

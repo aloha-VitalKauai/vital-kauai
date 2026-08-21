@@ -20,6 +20,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 // ── Palette (Vital Kauaʻi) ───────────────────────────────────────────────────
 const IVORY = "#FBFAF6";
@@ -70,6 +71,7 @@ type Data = {
 
 type DrawerState =
   | { kind: "create" }
+  | { kind: "collect"; agreement: Balance }
   | { kind: "amend"; agreement: Balance }
   | { kind: "payment"; agreement: Balance; idempotencyKey: string }
   | { kind: "reverse"; agreement: Balance; entry: LedgerRow }
@@ -247,12 +249,13 @@ function AgreementCard({
   const transitions = TRANSITIONS[a.lifecycle_status] ?? [];
   const terminal = a.lifecycle_status === "canceled" || a.lifecycle_status === "waived";
 
-  // One dominant action per state: draft → Activate; active → Record payment.
+  // One dominant action per state (PR6_BUILD_SPEC §4.1): draft → Activate;
+  // active with money remaining → Collect; active fully received → none.
   const dominant =
     a.lifecycle_status === "draft"
       ? { label: "Activate agreement", act: () => openDrawer({ kind: "transition", agreement: a, toStatus: "active", label: "Activate agreement" }) }
-      : a.lifecycle_status === "active"
-        ? { label: "Record external payment", act: () => openDrawer({ kind: "payment", agreement: a, idempotencyKey: crypto.randomUUID() }) }
+      : a.lifecycle_status === "active" && a.remaining_cents > 0
+        ? { label: "Collect remaining balance", act: () => openDrawer({ kind: "collect", agreement: a }) }
         : null;
 
   return (
@@ -284,6 +287,15 @@ function AgreementCard({
           <button type="button" style={BTN_GHOST} onClick={() => openDrawer({ kind: "amend", agreement: a })}>
             Amend Contribution
           </button>
+          {a.lifecycle_status === "active" && (
+            <button
+              type="button"
+              style={BTN_GHOST}
+              onClick={() => openDrawer({ kind: "payment", agreement: a, idempotencyKey: crypto.randomUUID() })}
+            >
+              Record external payment
+            </button>
+          )}
           {a.lifecycle_status === "draft" && (
             <button
               type="button"
@@ -307,6 +319,8 @@ function AgreementCard({
             ))}
         </div>
       )}
+      {a.lifecycle_status === "active" && <LinkStrip agreementId={a.agreement_id} />}
+
       {terminal && transitions.length === 0 && (
         <p style={{ fontSize: 12, color: MUTED, marginBottom: 14 }}>
           This agreement is {LIFECYCLE_LABEL[a.lifecycle_status]?.toLowerCase()}. Its history remains below.
@@ -421,12 +435,14 @@ function ActionDrawer({
   }, [amount]);
 
   const needsAmount = drawer.kind === "create" || drawer.kind === "amend" || drawer.kind === "payment";
+  // collect: amount is server-derived; only the reason gates the buttons.
   const valid =
     reason.trim().length > 0 &&
     (!needsAmount || (Number.isInteger(cents) && (drawer.kind === "payment" ? cents > 0 : cents >= 0)));
 
   const title =
-    drawer.kind === "create" ? "Create Contribution agreement"
+    drawer.kind === "collect" ? "Collect remaining balance"
+    : drawer.kind === "create" ? "Create Contribution agreement"
     : drawer.kind === "amend" ? "Amend Contribution"
     : drawer.kind === "payment" ? "Record external payment"
     : drawer.kind === "reverse" ? "Reverse entry"
@@ -435,6 +451,8 @@ function ActionDrawer({
   // The confirmation preview: exactly what will be recorded, before it is.
   function preview(): string {
     switch (drawer.kind) {
+      case "collect":
+        return `Create a secure, single-use Stripe link for ${usd(drawer.agreement.remaining_cents)} — the live Payable Remaining. The amount is calculated from the live V2 ledger when the link is created.`;
       case "create":
         return `Create a ${purpose.replace(/_/g, " ")} agreement for ${memberName ?? "this member"} with a Contribution of ${usd(cents)}.`;
       case "amend":
@@ -445,6 +463,31 @@ function ActionDrawer({
         return `Reverse the ${drawer.entry.entry_type.replace(/_/g, " ")} of ${usd(drawer.entry.amount_cents)} from ${fmtDate(drawer.entry.occurred_at)}. A negating entry is added; nothing is deleted.`;
       case "transition":
         return `${drawer.label}: ${LIFECYCLE_LABEL[drawer.agreement.lifecycle_status]} → ${LIFECYCLE_LABEL[drawer.toStatus]}.`;
+    }
+  }
+
+  const [issued, setIssued] = useState<{
+    url: string; amountCents: number; expiresAt: string; emailed: boolean; emailError: string | null;
+  } | null>(null);
+
+  async function executeCollect(email: boolean) {
+    if (drawer.kind !== "collect") return;
+    setBusy(true);
+    try {
+      const res = await fetch("/api/finance/payment-links", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action: "issue", agreementId: drawer.agreement.agreement_id, reason: reason.trim(), email }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        onError(json.detail ? `${json.error}: ${json.detail}` : (json.error ?? "request failed"));
+        return;
+      }
+      // The raw token exists only in this response (proof #24): show it once.
+      setIssued({ url: json.url, amountCents: json.amountCents, expiresAt: json.expiresAt, emailed: json.emailed, emailError: json.emailError });
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -471,8 +514,10 @@ function ActionDrawer({
         });
       } else if (drawer.kind === "reverse") {
         Object.assign(body, { action: "reverse", entryId: drawer.entry.id });
-      } else {
+      } else if (drawer.kind === "transition") {
         Object.assign(body, { action: "transition", agreementId: drawer.agreement.agreement_id, toStatus: drawer.toStatus });
+      } else {
+        return; // collect executes through executeCollect, never here
       }
 
       const res = await fetch("/api/finance/agreements", {
@@ -515,7 +560,32 @@ function ActionDrawer({
         <p style={SECTION_LABEL}>Financials V2</p>
         <h3 style={{ ...HEADING, fontSize: 21, marginBottom: 16 }}>{title}</h3>
 
-        {!confirming ? (
+        {issued ? (
+          <>
+            <div style={{ background: "#edf6ee", border: `0.5px solid ${SAGE}`, borderRadius: 10, padding: "16px 18px" }}>
+              <p style={{ margin: "0 0 6px", fontWeight: 650, color: FOREST }}>Secure contribution link created</p>
+              <p style={{ margin: "0 0 8px", fontFamily: "var(--font-display, serif)", fontSize: 22, color: FOREST }}>
+                {usd(issued.amountCents)} <span style={{ fontSize: 13, color: MUTED, fontFamily: "var(--font-body, sans-serif)" }}>· expires {fmtDate(issued.expiresAt)}</span>
+              </p>
+              {issued.emailed ? (
+                <p style={{ margin: 0, fontSize: 13, color: "#3d6b47" }}>Sent by email.</p>
+              ) : (
+                <p style={{ margin: 0, fontSize: 13, color: DANGER }}>
+                  {issued.emailError
+                    ? `The link is active, but the email was not sent (${issued.emailError}). Copy it now or revoke it and create another.`
+                    : "Copy the link now — it cannot be shown again after this drawer closes."}
+                </p>
+              )}
+              <button type="button" style={{ ...BTN_GHOST, marginTop: 10 }}
+                onClick={() => { void navigator.clipboard.writeText(issued.url); }}>
+                Copy secure link
+              </button>
+            </div>
+            <div style={{ marginTop: 16 }}>
+              <button type="button" style={BTN_COPPER} onClick={() => onDone("Secure link created.")}>Done</button>
+            </div>
+          </>
+        ) : !confirming ? (
           <>
             {drawer.kind === "create" && (
               <>
@@ -541,6 +611,18 @@ function ActionDrawer({
                   </Field>
                 )}
               </>
+            )}
+
+            {drawer.kind === "collect" && (
+              <div style={{ background: "#f3f7f2", border: "0.5px solid #9fbea8", borderRadius: 12, padding: "14px 16px", marginBottom: 12 }}>
+                <p style={{ ...SECTION_LABEL, color: "#57906e", marginBottom: 4 }}>Amount to collect</p>
+                <p style={{ margin: 0, fontFamily: "var(--font-display, serif)", fontSize: 30, color: FOREST, fontVariantNumeric: "tabular-nums" }}>
+                  {usd(drawer.agreement.remaining_cents)}
+                </p>
+                <p style={{ margin: "6px 0 0", fontSize: 12, color: MUTED }}>
+                  Calculated from the live V2 ledger when the link is created. This amount cannot be edited here.
+                </p>
+              </div>
             )}
 
             {needsAmount && (
@@ -586,6 +668,24 @@ function ActionDrawer({
                 } />
             </Field>
 
+            {drawer.kind === "collect" ? (
+              <div style={{ display: "grid", gap: 9, marginTop: 18 }}>
+                <button type="button" disabled={busy || reason.trim().length === 0}
+                  style={{ ...BTN_COPPER, minHeight: 46, opacity: reason.trim() ? 1 : 0.45 }}
+                  onClick={() => void executeCollect(true)}>
+                  {busy ? "Creating secure link…" : "Create and email secure link"}
+                </button>
+                <button type="button" disabled={busy || reason.trim().length === 0}
+                  style={{ ...BTN_GHOST, minHeight: 46, opacity: reason.trim() ? 1 : 0.45 }}
+                  onClick={() => void executeCollect(false)}>
+                  Create link only
+                </button>
+                <button type="button" style={{ ...BTN_GHOST, border: "none", color: MUTED }} onClick={onClose}>Cancel</button>
+                <p style={{ textAlign: "center", fontSize: 11, color: MUTED, margin: 0 }}>
+                  Single-use link · Secure payment powered by Stripe
+                </p>
+              </div>
+            ) : (
             <div style={{ display: "flex", gap: 10, marginTop: 18 }}>
               <button type="button" style={{ ...BTN_COPPER, opacity: valid ? 1 : 0.45, cursor: valid ? "pointer" : "default" }}
                 disabled={!valid} onClick={() => setConfirming(true)}>
@@ -593,6 +693,7 @@ function ActionDrawer({
               </button>
               <button type="button" style={BTN_GHOST} onClick={onClose}>Cancel</button>
             </div>
+            )}
           </>
         ) : (
           <>
@@ -614,6 +715,67 @@ function ActionDrawer({
           </>
         )}
       </div>
+    </div>
+  );
+}
+
+// ── Link/session status strip (member-safe labels; spec §4.4) ────────────────
+
+function LinkStrip({ agreementId }: { agreementId: string }) {
+  const router = useRouter();
+  const [data, setData] = useState<{
+    links: { id: string; status: string; expires_at: string; consumed_by_session_id: string | null }[];
+    sessions: { id: string; status: string; expires_at: string; stripe_session_id: string | null }[];
+  } | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    void fetch(`/api/finance/payment-links?agreementId=${agreementId}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => { if (alive && j) setData(j); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, [agreementId]);
+
+  if (!data) return null;
+  const link = data.links[0];
+  const session = data.sessions.find((s) => s.status === "open" || s.status === "creating") ?? data.sessions[0];
+  if (!link && !session) return null;
+
+  let label = ""; let canRevoke = false;
+  if (session?.status === "open") { label = `Stripe checkout open · expires ${new Date(session.expires_at).toLocaleDateString()}`; }
+  else if (session?.status === "completed") { label = "Payment confirmed"; }
+  else if (session?.status === "expired") { label = "Checkout expired"; }
+  else if (link?.status === "active") { label = `Link ready · expires ${new Date(link.expires_at).toLocaleDateString()}`; canRevoke = true; }
+  else if (link?.status === "creating") { label = "Creating secure checkout…"; }
+  else if (link?.status === "consumed") { label = session ? "Link used · checkout still available" : "Link used"; }
+  else if (link?.status === "revoked") { label = "Link revoked"; }
+  if (!label) return null;
+
+  async function revoke() {
+    if (!link) return;
+    setBusy(true);
+    try {
+      await fetch("/api/finance/payment-links", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action: "revoke", linkId: link.id }),
+      });
+      router.refresh();
+    } finally { setBusy(false); }
+  }
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 10, borderTop: `0.5px solid ${LINE}`, paddingTop: 12, marginBottom: 14, fontSize: 12, color: MUTED }}>
+      <span style={{ width: 8, height: 8, borderRadius: "50%", background: SAGE, display: "inline-block" }} />
+      <strong style={{ color: FOREST, fontWeight: 650 }}>{label}</strong>
+      <span style={{ flex: 1 }} />
+      {canRevoke && (
+        <button type="button" disabled={busy} onClick={() => void revoke()}
+          style={{ background: "none", border: "none", color: DANGER, fontSize: 12, cursor: "pointer" }}>
+          {busy ? "Revoking…" : "Revoke"}
+        </button>
+      )}
     </div>
   );
 }
