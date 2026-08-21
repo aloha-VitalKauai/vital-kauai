@@ -1,8 +1,36 @@
 "use client";
 
+import { useState, type CSSProperties } from "react";
 import SiteFooter from "@/components/SiteFooter";
 
 export default function PortalContactPage() {
+  const [delState, setDelState] = useState<
+    "idle" | "confirm" | "sending" | "sent" | "error"
+  >("idle");
+
+  async function requestDeletion() {
+    setDelState("sending");
+    try {
+      const res = await fetch("/api/account-deletion", { method: "POST" });
+      setDelState(res.ok ? "sent" : "error");
+    } catch {
+      setDelState("error");
+    }
+  }
+
+  const delBtn: CSSProperties = {
+    fontSize: 11,
+    letterSpacing: "0.16em",
+    textTransform: "uppercase",
+    fontWeight: 600,
+    padding: "12px 22px",
+    borderRadius: 4,
+    background: "transparent",
+    color: "#F5F0E8",
+    border: "1px solid rgba(168,197,172,0.4)",
+    cursor: "pointer",
+  };
+
   return (
     <div style={{ minHeight: "100vh", background: "#0E1A10", color: "#F5F0E8" }}>
       <main style={{ maxWidth: 720, margin: "0 auto", padding: "80px 32px 100px" }}>
@@ -61,6 +89,59 @@ export default function PortalContactPage() {
             For urgent medical support during your stay, also call <strong style={{ color: "#F5F0E8" }}>911</strong> or
             reach <strong style={{ color: "#F5F0E8" }}>Wilcox Medical Center</strong> in Līhuʻe.
           </p>
+        </section>
+
+        {/* Your account — deletion request */}
+        <section
+          style={{
+            background: "rgba(245,240,232,0.04)",
+            border: "1px solid rgba(168,197,172,0.18)",
+            borderRadius: 12,
+            padding: "28px 32px",
+            marginTop: 24,
+          }}
+        >
+          <p style={{ fontSize: 10, letterSpacing: "0.32em", textTransform: "uppercase", color: "#C8A96E", fontWeight: 600, margin: "0 0 14px" }}>
+            Your Account
+          </p>
+          <p style={{ fontSize: 14, color: "rgba(245,240,232,0.72)", lineHeight: 1.75, margin: "0 0 18px" }}>
+            You can request deletion of your account at any time. We&rsquo;ll remove your account and member data and confirm with you by email.
+          </p>
+          {delState === "sent" ? (
+            <p style={{ fontSize: 14, color: "#A8C5AC", lineHeight: 1.7, margin: 0 }}>
+              Your request has been received. Our team will remove your account and follow up by email.
+            </p>
+          ) : delState === "confirm" ? (
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              <button
+                type="button"
+                onClick={requestDeletion}
+                style={{ ...delBtn, background: "#A32D2D", borderColor: "#A32D2D" }}
+              >
+                Confirm deletion request
+              </button>
+              <button type="button" onClick={() => setDelState("idle")} style={delBtn}>
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => setDelState("confirm")}
+                disabled={delState === "sending"}
+                style={delBtn}
+              >
+                {delState === "sending" ? "Submitting…" : "Request account deletion"}
+              </button>
+              {delState === "error" && (
+                <p style={{ fontSize: 13, color: "#E8A79B", lineHeight: 1.7, margin: "12px 0 0" }}>
+                  We couldn&rsquo;t submit that just now. Please email{" "}
+                  <a href="mailto:aloha@vitalkauai.com" style={{ color: "#E2CFA0" }}>aloha@vitalkauai.com</a>.
+                </p>
+              )}
+            </>
+          )}
         </section>
       </main>
       <SiteFooter />
