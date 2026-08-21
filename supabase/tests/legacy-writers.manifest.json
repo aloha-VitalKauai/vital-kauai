@@ -19,6 +19,17 @@
       ]
     },
     {
+      "file": "app/api/finance/agreements/route.ts",
+      "functions": [
+        "amend_contribution",
+        "create_agreement_with_contribution",
+        "is_founder",
+        "record_external_payment",
+        "reverse_ledger_entry",
+        "transition_agreement"
+      ]
+    },
+    {
       "file": "app/api/finance/exceptions/route.ts",
       "functions": [
         "is_founder",

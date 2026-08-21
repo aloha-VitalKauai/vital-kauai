@@ -3,7 +3,6 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   BOOKING_STATUS_VALUES,
-  PAYMENT_STATUS_VALUES,
   BOOKING_STATUS_LABEL,
   PAYMENT_STATUS_LABEL,
   type Booking,
@@ -24,33 +23,22 @@ export default function BookingStatusSection({ booking, memberId, memberName }: 
   const [bookingStatus, setBookingStatus] = useState<BookingStatus>(
     booking?.booking_status ?? "invited",
   );
-  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>(
-    booking?.payment_status ?? "unpaid",
-  );
+  // PR 5 (D-082/D-083 era): the editable payment_status / amount_due /
+  // amount_paid controls are RETIRED. Financial truth lives in Financials V2
+  // above; this section is booking OPERATIONS only. The existing stored values
+  // are passed through unchanged on save so the API contract is untouched and
+  // this surface can never diverge from what is already recorded.
+  const paymentStatus: PaymentStatus = booking?.payment_status ?? "unpaid";
   const [packageName, setPackageName] = useState(booking?.package_name ?? "");
-  const [amountDueDollars, setAmountDueDollars] = useState(
-    booking?.amount_due_cents != null ? (booking.amount_due_cents / 100).toString() : "",
-  );
-  const [amountPaidDollars, setAmountPaidDollars] = useState(
-    booking?.amount_paid_cents != null ? (booking.amount_paid_cents / 100).toString() : "0",
-  );
   const [notes, setNotes] = useState(booking?.notes ?? "");
   const [reason, setReason] = useState("");
 
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ text: string; err?: boolean } | null>(null);
 
-  const initialAmountDue =
-    booking?.amount_due_cents != null ? (booking.amount_due_cents / 100).toString() : "";
-  const initialAmountPaid =
-    booking?.amount_paid_cents != null ? (booking.amount_paid_cents / 100).toString() : "0";
-
   const dirty =
     bookingStatus !== (booking?.booking_status ?? "invited") ||
-    paymentStatus !== (booking?.payment_status ?? "unpaid") ||
     packageName !== (booking?.package_name ?? "") ||
-    amountDueDollars !== initialAmountDue ||
-    amountPaidDollars !== initialAmountPaid ||
     notes !== (booking?.notes ?? "");
 
   function flash(text: string, err?: boolean) {
@@ -60,13 +48,9 @@ export default function BookingStatusSection({ booking, memberId, memberName }: 
 
   async function handleSave() {
     setSaving(true);
-    const amount_due_cents = dollarsToCents(amountDueDollars);
-    const amount_paid_cents = dollarsToCents(amountPaidDollars);
-    if (amount_due_cents === "invalid" || amount_paid_cents === "invalid") {
-      setSaving(false);
-      flash("Amounts must be positive numbers", true);
-      return;
-    }
+    // Payment fields pass through verbatim — see the retirement note above.
+    const amount_due_cents = booking?.amount_due_cents ?? null;
+    const amount_paid_cents = booking?.amount_paid_cents ?? 0;
 
     const res = await fetch("/api/bookings/update", {
       method: "POST",
@@ -154,20 +138,6 @@ export default function BookingStatusSection({ booking, memberId, memberName }: 
           </select>
         </div>
         <div>
-          <label style={FIELD_LABEL}>Payment status</label>
-          <select
-            value={paymentStatus}
-            onChange={(e) => setPaymentStatus(e.target.value as PaymentStatus)}
-            style={DARK_INPUT}
-          >
-            {PAYMENT_STATUS_VALUES.map((v) => (
-              <option key={v} value={v}>
-                {PAYMENT_STATUS_LABEL[v]}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
           <label style={FIELD_LABEL}>Package (optional)</label>
           <input
             type="text"
@@ -177,29 +147,11 @@ export default function BookingStatusSection({ booking, memberId, memberName }: 
             style={DARK_INPUT}
           />
         </div>
-        <div>
-          <label style={FIELD_LABEL}>Amount due ($)</label>
-          <input
-            type="number"
-            min={0}
-            step="0.01"
-            placeholder="0.00"
-            value={amountDueDollars}
-            onChange={(e) => setAmountDueDollars(e.target.value)}
-            style={DARK_INPUT}
-          />
-        </div>
-        <div>
-          <label style={FIELD_LABEL}>Amount paid ($)</label>
-          <input
-            type="number"
-            min={0}
-            step="0.01"
-            placeholder="0.00"
-            value={amountPaidDollars}
-            onChange={(e) => setAmountPaidDollars(e.target.value)}
-            style={DARK_INPUT}
-          />
+        <div style={{ gridColumn: "1 / -1" }}>
+          <p style={{ fontSize: 12, color: "rgba(232,221,200,0.55)", margin: "2px 0 0" }}>
+            Payment amounts and state are managed in Financials V2 above. This
+            section covers booking operations only.
+          </p>
         </div>
         <div style={{ gridColumn: "1 / -1" }}>
           <label style={FIELD_LABEL}>Notes (optional)</label>
@@ -296,16 +248,6 @@ function paymentBadgeTone(s: PaymentStatus): "neutral" | "warn" | "ok" | "danger
   if (s === "deposit_paid" || s === "payment_plan_active") return "warn";
   if (s === "failed" || s === "refunded") return "danger";
   return "neutral";
-}
-
-// Parse a dollar string to integer cents. Returns null for empty, "invalid"
-// for a non-numeric or negative value, integer cents otherwise.
-function dollarsToCents(s: string): number | null | "invalid" {
-  const trim = s.trim();
-  if (trim === "") return null;
-  const cents = Math.round(parseFloat(trim) * 100);
-  if (!Number.isFinite(cents) || cents < 0) return "invalid";
-  return cents;
 }
 
 const CARD: React.CSSProperties = {

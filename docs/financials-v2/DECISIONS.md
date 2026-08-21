@@ -1152,3 +1152,27 @@ specified to display cannot be built honestly:
 **What this does not change.** The unredacted wipe archive and `audit_log`
 remain preserved as forensic evidence. §0a's read-only comparison carve-out
 becomes moot rather than revoked.
+
+## D-083 — External-payment submission is idempotent at the database
+
+**Problem.** A founder recording a cheque must not be able to record it twice by
+double-click, browser retry, or network replay. Client-side debouncing is
+courtesy, not enforcement; PR 5's requirement is that duplication be impossible.
+
+**Decision.** `finance.ledger_entries` gains a nullable `idempotency_key uuid`
+with a partial unique index (`WHERE idempotency_key IS NOT NULL`).
+`finance.record_external_payment` REQUIRES the key: the client generates it once
+per form open (not per click), and a second submission with the same key hits the
+unique index, is caught inside the function, and returns the EXISTING entry id —
+the caller sees success, no new money exists. Verified against production: the
+same submission twice returned the same id and the balance did not move.
+
+**Why nullable.** Reconciliation-written rows have a natural identity — the
+provider object — enforced by their own indexes; a synthetic key would add
+nothing. The column is set at INSERT only; `tg_append_only` still forbids
+UPDATE/DELETE, so the append-only audit property is untouched.
+
+**Scope note.** PR 5's other writers do not take a key: amendment and lifecycle
+rows are append-only *history* where a double-click produces a visible duplicate
+history row rather than duplicated money, and a reversal is naturally idempotent
+because the ledger trigger refuses to reverse an already-reversed parent.

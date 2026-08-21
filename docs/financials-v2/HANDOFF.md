@@ -7,7 +7,7 @@
 
 ## Current status
 
-**Phase:** PR 4 — founder-only Financial Verification workspace. **Implemented** under the corrected scope (D-082): clean-start banner, canonical V2 positions with no legacy columns, exceptions queue with resolve/dismiss/release through the database functions, quarantine, health and recent runs, at `/dashboard/financials/verification`.
+**Phase:** PR 5 — founder financial controls. **Implemented.** PR 4 shipped before it (#904). PR 5 detail under the corrected scope (D-082): clean-start banner, canonical V2 positions with no legacy columns, exceptions queue with resolve/dismiss/release through the database functions, quarantine, health and recent runs, at `/dashboard/financials/verification`.
 
 | PR | Outcome | State |
 |---|---|---|
@@ -67,10 +67,26 @@ evidence in `PR4_PREFLIGHT.md`.
   no route may supply them, and no role holds direct `UPDATE` on resolution or
   quarantine columns.
 
+## PR 5 (this PR)
+
+Founder financial controls, mounted inside the member-profile Financials tab.
+Five SECURITY DEFINER functions (create-with-Contribution, amend, external
+payment, reversal, lifecycle transition) with finance_api SECURITY INVOKER
+wrappers; D-083 database-enforced idempotency for external payments
+(ledger_entries.idempotency_key + partial unique index). Reusable
+V2FinancialPanel component (app/components/dashboard/financials/) built to the
+Vital Kauaʻi design language for PR 7 to mount unchanged. Booking payment
+editing (payment_status / amount_due / amount_paid) RETIRED from
+BookingStatusSection — booking operations remain, financial truth lives only in
+V2. Legacy FinancialRecordsCard and MemberFinancialSection are no longer
+rendered (files intact for the D-078 test suite). "Collect remaining balance"
+deliberately absent — that becomes functional in PR 6.
+
 ## Next action
 
-PR 5 — founder amendment and external-payment controls (`finance.create_agreement`
-exists and is founder-callable; amendment and external-payment functions do not yet).
+PR 6 — V2 Checkout Sessions, Stripe idempotency and single-use links. Note the
+endpoint API version (2026-03-25.dahlia) and the SDK pin (2024-06-20) must be
+reconciled when PR 6 starts parsing event payloads.
 
 ## Blockers
 
