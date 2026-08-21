@@ -50,6 +50,15 @@ export async function GET(req: Request) {
 
   try {
     result.abandonedRuns = await sweepAbandonedRuns(financeServiceClient());
+    // PR 6: claimed links with no Stripe-bound attempt return to active after
+    // the 15-minute TTL (D-035 — safe because no Stripe call was made).
+    {
+      const { data, error } = await financeServiceClient()
+        .schema("finance_api")
+        .rpc("restore_orphaned_link_claims", { p_stale_after: "15 minutes" });
+      if (error) console.error("finance-worker: orphan restore failed", error.message);
+      result.orphanedLinksRestored = (data as number | null) ?? 0;
+    }
 
     for (const livemode of modes) {
       const client = financeServiceClient();

@@ -82,11 +82,25 @@ V2. Legacy FinancialRecordsCard and MemberFinancialSection are no longer
 rendered (files intact for the D-078 test suite). "Collect remaining balance"
 deliberately absent — that becomes functional in PR 6.
 
+## PR 6 (this PR)
+
+The checkout protocol per PR6_BUILD_SPEC: hashed single-use links, three-phase
+attempt (claim -> durable attempt -> Stripe Session with a self-derived
+deterministic idempotency key), one payable Session per (agreement, livemode),
+verified payment_intent.succeeded -> exactly one stripe_payment via
+record_v2_stripe_payment (idempotent on payment intent + mode), Collect drawer +
+link strip in V2FinancialPanel, /contribute/[token] bridge and thank-you page
+with canonical confirmation, orphaned-claim sweeper on the worker cron. The V2
+checkout Stripe client pins 2026-03-25.dahlia (STRIPE_V2_API_VERSION in
+lib/finance/checkout.ts), matching the live destination.
+
+Rollout state: founder issuance is behind FINANCE_V2_CHECKOUT_READY (unset =
+fail closed). Revocation, status, the bridge and the worker paths are live.
+
 ## Next action
 
-PR 6 — V2 Checkout Sessions, Stripe idempotency and single-use links. Note the
-endpoint API version (2026-03-25.dahlia) and the SDK pin (2024-06-20) must be
-reconciled when PR 6 starts parsing event payloads.
+Controlled live-mode exercise per PR6_BUILD_SPEC §10 steps 3-5, then a bounded
+review, then set FINANCE_V2_CHECKOUT_READY=true. Then PR 7/8.
 
 ## Blockers
 

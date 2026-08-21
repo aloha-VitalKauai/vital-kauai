@@ -13,6 +13,12 @@
       ]
     },
     {
+      "file": "app/api/cron/finance-worker/route.ts",
+      "functions": [
+        "restore_orphaned_link_claims"
+      ]
+    },
+    {
       "file": "app/api/cron/reconcile/route.ts",
       "functions": [
         "fn_reconcile_financial_state"
@@ -35,6 +41,14 @@
         "is_founder",
         "release_quarantine",
         "resolve_exception"
+      ]
+    },
+    {
+      "file": "app/api/finance/payment-links/route.ts",
+      "functions": [
+        "is_founder",
+        "issue_payment_link",
+        "revoke_payment_link"
       ]
     },
     {
@@ -87,6 +101,15 @@
       ]
     },
     {
+      "file": "lib/finance/checkout.ts",
+      "functions": [
+        "begin_checkout_attempt",
+        "claim_payment_link",
+        "finalize_checkout_session",
+        "peek_payment_link"
+      ]
+    },
+    {
       "file": "lib/finance/reconciliation/supabase-db.ts",
       "functions": [
         "advance_reconciliation_run",
@@ -104,7 +127,9 @@
         "claim_stripe_events",
         "complete_stripe_event",
         "purge_expired_event_payloads",
-        "sweep_stale_event_claims"
+        "record_v2_stripe_payment",
+        "sweep_stale_event_claims",
+        "transition_checkout_session"
       ]
     }
   ],
