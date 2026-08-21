@@ -34,9 +34,17 @@
 import { NextResponse } from "next/server";
 import { createClient as createServerSupabase } from "@/lib/supabase/server";
 import { createClient as createServiceSupabase } from "@supabase/supabase-js";
-import { REPORT_VERSION } from "@/lib/finance/reconciliation/run";
+import {
+  executeReconciliationRun,
+  REPORT_VERSION,
+} from "@/lib/finance/reconciliation/run";
+import { createSupabaseFinanceDb } from "@/lib/finance/reconciliation/supabase-db";
+import { createStripeSource } from "@/lib/finance/reconciliation/stripe-source";
 
 export const runtime = "nodejs";
+// The canary now executes inline, which means Stripe enumeration happens inside
+// this request; the default budget would truncate it mid-run.
+export const maxDuration = 300;
 
 /** Canary containment: at most 24 hours, per acceptance 18g. */
 export const CANARY_MAX_SPAN_MS = 24 * 60 * 60 * 1000;
@@ -315,33 +323,52 @@ async function startCanary(
     return NextResponse.json({ error: "build_identifier_unavailable" }, { status: 503 });
   }
 
-  // start_reconciliation_run is service_role-only: machine work, authorized by the
-  // founder session verified above. tg_run_authorization still re-checks the
-  // approval independently, so this cannot manufacture permission.
-  const { data: runId, error } = await serviceClient()
-    .schema("finance_api")
-    .rpc("start_reconciliation_run", {
-      p_livemode: dry.livemode,
-      p_implementation_version: implementationVersion,
-      p_window_start: start.toISOString(),
-      p_window_end: cappedEnd.toISOString(),
-      p_dry_run: false,
-      p_cursor: {},
-      p_resumed_from_run_id: null,
-      p_authorized_by_run_id: approvedRunId,
+  // CREATE AND EXECUTE IN ONE OPERATION.
+  //
+  // Calling `start_reconciliation_run` alone would insert a row with status
+  // `running` that nothing ever advances: the reconcile cron always starts its own
+  // DRY run and never adopts an existing writing run. The orphan then holds the
+  // single-flight lock for its livemode until `abandon_stale_runs` reclaims it 15
+  // minutes later — so the canary would block ordinary reconciliation and, worse,
+  // would never actually rehearse anything.
+  //
+  // `executeReconciliationRun` opens the run AND drives it to a terminal state, so
+  // an orphan is not representable. Authorization is unchanged: it passes
+  // `authorizedByRunId` through to the same `start_reconciliation_run`, and
+  // `tg_run_authorization` re-checks the approval independently.
+  //
+  // The window is passed as `inheritedWindow` so the 24-hour cap computed above is
+  // the window actually used, rather than being recomputed from the watermark.
+  try {
+    const outcome = await executeReconciliationRun({
+      db: createSupabaseFinanceDb(serviceClient()),
+      source: createStripeSource(),
+      livemode: dry.livemode,
+      dryRun: false,
+      implementationVersion,
+      now: new Date(),
+      authorizedByRunId: approvedRunId,
+      inheritedWindow: { windowStart: start, windowEnd: cappedEnd },
     });
 
-  if (error) {
-    console.error("finance/reconciliation: canary refused", error.message);
-    return NextResponse.json({ error: "canary_refused", detail: error.message }, { status: 409 });
+    return NextResponse.json({
+      started: true,
+      run_id: outcome.runId,
+      status: outcome.status,
+      livemode: dry.livemode,
+      window_start: start.toISOString(),
+      window_end: cappedEnd.toISOString(),
+      authorized_by_run_id: approvedRunId,
+      objects_scanned: outcome.objectsScanned,
+      entries_written: outcome.entriesWritten,
+      exceptions_created: outcome.exceptionsCreated,
+      error: outcome.error ?? null,
+    });
+  } catch (err) {
+    // A refusal from tg_run_authorization surfaces here rather than leaving a
+    // half-created run behind.
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("finance/reconciliation: canary refused", message);
+    return NextResponse.json({ error: "canary_refused", detail: message }, { status: 409 });
   }
-
-  return NextResponse.json({
-    started: true,
-    run_id: runId,
-    livemode: dry.livemode,
-    window_start: start.toISOString(),
-    window_end: cappedEnd.toISOString(),
-    authorized_by_run_id: approvedRunId,
-  });
 }

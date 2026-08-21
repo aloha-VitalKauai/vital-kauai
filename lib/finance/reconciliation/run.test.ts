@@ -497,3 +497,71 @@ test("A12: a quarantined object is skipped by the run", async () => {
   );
   assert.equal(scanned, 0);
 });
+
+// ── The canary must EXECUTE, not merely be created ───────────────────────────
+
+test("a canary run reaches a terminal state rather than being left running", async () => {
+  // The defect this pins: the founder route used to call start_reconciliation_run
+  // directly, which INSERTS a row with status `running` that nothing advances.
+  // The reconcile cron always starts its own DRY run and never adopts an existing
+  // writing run, so the orphan held the single-flight lock for its livemode until
+  // abandon_stale_runs reclaimed it 15 minutes later — blocking ordinary
+  // reconciliation, and never actually rehearsing anything.
+  const { db, calls } = fakeDb();
+  const out = await executeReconciliationRun({
+    ...base,
+    db,
+    source: fakeSource(),
+    dryRun: false,
+    authorizedByRunId: "run_dry",
+    inheritedWindow: {
+      windowStart: new Date("2026-05-23T04:10:00Z"),
+      windowEnd: new Date("2026-05-24T04:10:00Z"),
+    },
+  });
+
+  assert.notEqual(out.status, "running", "a canary must not be left running");
+  assert.ok(
+    ["completed", "partial", "failed"].includes(out.status),
+    `unexpected terminal status ${out.status}`,
+  );
+  assert.equal(calls.finished.length, 1, "the run must be finished exactly once");
+});
+
+test("a canary uses the capped window verbatim and cites its authorisation", async () => {
+  // The 24-hour cap is computed by the route; passing it as inheritedWindow is what
+  // stops executeReconciliationRun recomputing a 90-day window from the watermark
+  // and quietly widening what the first writing run may touch.
+  const { db, calls } = fakeDb({
+    async lastCompletedWindowEnd() {
+      return new Date("2026-08-01T00:00:00Z"); // would produce a different window
+    },
+  });
+  const capped = {
+    windowStart: new Date("2026-05-23T04:10:00Z"),
+    windowEnd: new Date("2026-05-24T04:10:00Z"),
+  };
+  await executeReconciliationRun({
+    ...base,
+    db,
+    source: fakeSource(),
+    dryRun: false,
+    authorizedByRunId: "run_dry",
+    inheritedWindow: capped,
+  });
+
+  const started = calls.started[0] as {
+    windowStart: Date;
+    windowEnd: Date;
+    dryRun: boolean;
+    authorizedByRunId: string;
+  };
+  assert.equal(started.windowStart.toISOString(), capped.windowStart.toISOString());
+  assert.equal(started.windowEnd.toISOString(), capped.windowEnd.toISOString());
+  assert.equal(
+    (started.windowEnd.getTime() - started.windowStart.getTime()) / 3_600_000,
+    24,
+  );
+  assert.equal(started.dryRun, false);
+  assert.equal(started.authorizedByRunId, "run_dry");
+});

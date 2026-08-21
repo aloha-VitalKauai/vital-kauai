@@ -14,6 +14,7 @@
  */
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type RunSummary = {
   id: string;
@@ -62,6 +63,7 @@ export default function ReconciliationControls({
   latestApproved: RunSummary | null;
   recentRuns: RunSummary[];
 }) {
+  const router = useRouter();
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -83,6 +85,11 @@ export default function ReconciliationControls({
         setError(json.detail ? `${json.error}: ${json.detail}` : (json.error ?? "request failed"));
         return null;
       }
+      // Re-fetch the server component. Approval and canary state are rendered from
+      // props resolved at page load, so without this the page stays one step behind
+      // its own database: approving would show a success message while the "Start
+      // the canary" panel never appeared, which reads as a failed click.
+      router.refresh();
       return json;
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
