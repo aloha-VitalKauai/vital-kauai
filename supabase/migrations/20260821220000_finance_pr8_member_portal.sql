@@ -284,6 +284,7 @@ declare
   v_member uuid;
   v_key text;
   v_agreement uuid;
+  v_lc finance.agreement_lifecycle;
   v_attempt finance.checkout_sessions%rowtype;
 begin
   v_member := finance.current_member_id();
@@ -310,31 +311,55 @@ begin
     return;
   end if;
 
+  -- One additional_gift agreement per member is a database invariant
+  -- (agreements_member_journey_purpose_key, NULLS NOT DISTINCT). Create it
+  -- once, reuse it for every later gift; distinct gifts are distinct attempts
+  -- and distinct ledger facts on that one agreement.
+  select a.id into v_agreement from finance.agreements a
+   where a.member_id = v_member and a.journey_id is null and a.purpose = 'additional_gift';
+  if v_agreement is null then
+    begin
+      insert into finance.agreements (member_id, journey_id, purpose, created_by)
+      values (v_member, null, 'additional_gift', auth.uid())
+      returning id into v_agreement;
+      insert into finance.agreement_lifecycle_events (agreement_id, from_status, to_status, reason, actor_id)
+      values (v_agreement, null, 'draft', 'Member additional gift', auth.uid());
+      insert into finance.agreement_amounts (agreement_id, amount_cents, effective_at, reason, actor_id)
+      values (v_agreement, p_amount_cents, now(), 'Member additional gift', auth.uid());
+      insert into finance.agreement_lifecycle_events (agreement_id, from_status, to_status, reason, actor_id)
+      values (v_agreement, 'draft', 'active', 'Member additional gift', auth.uid());
+    exception when unique_violation then
+      -- Concurrent first gift: the other creator won; reuse its agreement.
+      select a.id into v_agreement from finance.agreements a
+       where a.member_id = v_member and a.journey_id is null and a.purpose = 'additional_gift';
+      if v_agreement is null then
+        raise exception 'member_gift: gift agreement unavailable' using errcode = 'VK409';
+      end if;
+    end;
+  else
+    v_lc := finance.member_agreement_lifecycle(v_agreement);
+    if v_lc = 'fulfilled' or v_lc = 'draft' then
+      insert into finance.agreement_lifecycle_events (agreement_id, from_status, to_status, reason, actor_id)
+      values (v_agreement, v_lc, 'active', 'Member additional gift', auth.uid());
+    elsif v_lc is distinct from 'active' then
+      -- canceled/waived: a founder decision this function must not overrule.
+      raise exception 'member_gift: gift agreement unavailable' using errcode = 'VK409';
+    end if;
+  end if;
+
   begin
-    insert into finance.agreements (member_id, journey_id, purpose, created_by)
-    values (v_member, null, 'additional_gift', auth.uid())
-    returning id into v_agreement;
-
-    insert into finance.agreement_lifecycle_events (agreement_id, from_status, to_status, reason, actor_id)
-    values (v_agreement, null, 'draft', 'Member additional gift', auth.uid());
-
-    insert into finance.agreement_amounts (agreement_id, amount_cents, effective_at, reason, actor_id)
-    values (v_agreement, p_amount_cents, now(), 'Member additional gift', auth.uid());
-
-    insert into finance.agreement_lifecycle_events (agreement_id, from_status, to_status, reason, actor_id)
-    values (v_agreement, 'draft', 'active', 'Member additional gift', auth.uid());
-
     insert into finance.checkout_sessions
       (agreement_id, amount_cents, livemode, idempotency_key, expires_at, payment_link_id)
     values
       (v_agreement, p_amount_cents, true, v_key, now() + interval '2 hours', null)
     returning * into v_attempt;
   exception when unique_violation then
-    -- Concurrent replay of the same request: the block (including the just-
-    -- created agreement) rolls back and the winner's row is returned.
+    -- Replay race on the key, or the one-live-per-agreement constraint: a
+    -- DIFFERENT gift attempt is still open. Same request returns it; a new
+    -- request is refused until the open one settles.
     select * into v_attempt from finance.checkout_sessions s where s.idempotency_key = v_key;
     if not found then
-      raise exception 'member_gift: attempt creation failed' using errcode = 'VK409';
+      raise exception 'member_gift: another gift checkout is in progress' using errcode = 'VK409';
     end if;
   end;
 
