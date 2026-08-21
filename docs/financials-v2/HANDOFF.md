@@ -97,10 +97,24 @@ lib/finance/checkout.ts), matching the live destination.
 Rollout state: founder issuance is behind FINANCE_V2_CHECKOUT_READY (unset =
 fail closed). Revocation, status, the bridge and the worker paths are live.
 
+## PR 7 (this PR)
+
+/dashboard/financials replaced with the V2-only Founder Financial Command Center
+per PR7_BUILD_SPEC and D-084 (no legacy fallback, no financial read flag).
+Migration 20260821180000: finance_api.founder_financial_overview and
+founder_payment_activity — security_invoker + security_barrier, explicit
+is_founder() boundary, granted to authenticated only, verified as all four roles
+rolled-back (member sees zero rows; anon/service hold no grant; the retired-table
+dependency check is asserted in-transaction). The retired
+financials_overview/cohort_margin_summary/private_ceremony_summary reads and the
+Cohort/Private margin tabs left the page. Expenses/payouts mutations reused
+unchanged. Checkout state reported truthfully: links paused unless
+FINANCE_V2_CHECKOUT_READY === "true" (still unset).
+
 ## Next action
 
-Controlled live-mode exercise per PR6_BUILD_SPEC §10 steps 3-5, then a bounded
-review, then set FINANCE_V2_CHECKOUT_READY=true. Then PR 7/8.
+PR 6 closeout (controlled live-mode exercise, two remaining sweeper drivers,
+bounded review, then FINANCE_V2_CHECKOUT_READY=true). Then PR 8.
 
 ## Blockers
 

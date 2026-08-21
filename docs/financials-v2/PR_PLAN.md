@@ -123,10 +123,9 @@ Integration tests against the Stripe test-mode API and a seeded database. Each i
 **Required tests:** a PaymentIntent webhook processes correctly **without the Session webhook ever arriving**; a founder amendment between Session creation and reuse causes expiry-and-recreate rather than an obsolete charge; unconfirmed expiry blocks checkout and raises `stale_session_expiry_failed`.
 **Excludes:** routing members to the V2 flow. Sessions are exercised in a controlled test path only.
 
-### PR 7 — Founder Financials reads V2 behind a feature flag
-**Outcome:** Founder financial surfaces read `finance.v_agreement_balances` when the flag is on, legacy when off.
-**Contains:** feature-flagged read path for founder dashboards.
-**Excludes:** member-facing surfaces.
+### PR 7 — Founder Financial Command Center (V2-only; replaced per D-084)
+**Outcome:** `/dashboard/financials` is the organization-wide V2 command center: canonical Contribution/Received/Refunded/Remaining/Payable totals, attention queue, member/journey positions, append-only payment activity, expenses/payouts with operating margin, and reconciliation health. **No feature flag and no legacy fallback** — a failed V2 read renders unknown, never a retired figure or $0.
+**Excludes:** member-facing surfaces (PR 8), checkout protocol (PR 6), mutations (deep-links to PR 5 controls).
 
 ### PR 8 — Member Contribution reads and pays through V2 behind a feature flag
 **Outcome:** Members see V2 figures and pay through V2 Checkout Sessions when the flag is on. **First participant-facing change.**
