@@ -125,33 +125,6 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
     .eq("member_id", id)
     .order("sort_order", { ascending: true });
 
-  // PR 9 (D-086): the Financials tab and timeline are served entirely by the V2
-  // panel, which reads canonical founder-safe views under the founder session.
-  // Nothing financial is loaded here any more. The journey/cohort title stays
-  // because it is scheduling context, not a financial fact.
-  let journeyTitle: string | null = null;
-  let journeyEndAt: string | null = null;
-  {
-    const { data: journey } = await supabase
-      .from("journeys")
-      .select("end_at, cohort_id")
-      .eq("member_id", id)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    if (journey?.cohort_id) {
-      const { data: cohort } = await supabase
-        .from("cohorts")
-        .select("title, end_at")
-        .eq("id", journey.cohort_id)
-        .maybeSingle();
-      journeyTitle = (cohort as { title?: string | null })?.title ?? null;
-      journeyEndAt = (cohort as { end_at?: string | null })?.end_at ?? journey.end_at ?? null;
-    } else {
-      journeyEndAt = journey?.end_at ?? null;
-    }
-  }
-
 
   // PR 9 (D-086): financial timeline events, projected server-side from
   // founder-safe V2 views. Only a label, a timestamp and a formatted amount
@@ -163,8 +136,13 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
   // yield an empty set for a member with no payments yet, and an empty set is
   // not a safe filter input.
   const [{ data: v2Activity }, { data: v2Agreements }] = await Promise.all([
-    fin.from("founder_payment_activity").select("id, entry_type, amount_cents, occurred_at, member_id")
-      .eq("member_id", id).order("occurred_at", { ascending: false }).limit(50),
+    fin.from("founder_payment_activity")
+      .select("id, entry_type, amount_cents, occurred_at, member_id, livemode")
+      // Every other founder figure is derived from f_balances(true), i.e. live
+      // mode only. Without this a test-mode entry would appear here as real
+      // money and reconcile against nothing on any other surface.
+      .eq("member_id", id).eq("livemode", true)
+      .order("occurred_at", { ascending: false }).limit(50),
     fin.from("agreement_balances").select("agreement_id").eq("member_id", id),
   ]);
   const agreementIds = ((v2Agreements ?? []) as Array<{ agreement_id: string }>)
@@ -193,7 +171,9 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
         id: `v2-ledger-${e.id}`,
         at: e.occurred_at,
         label: ENTRY_LABEL[e.entry_type] ?? "Payment activity",
-        detail: `$${Math.abs(e.amount_cents / 100).toLocaleString("en-US")}${e.amount_cents < 0 ? " returned" : ""}`,
+        detail: `$${Math.abs(e.amount_cents / 100).toLocaleString("en-US", {
+          minimumFractionDigits: 2, maximumFractionDigits: 2,
+        })}${e.amount_cents < 0 ? " returned" : ""}`,
       })),
     ...((v2Lifecycle ?? []) as Array<{ id: string; agreement_id: string; to_status: string; occurred_at: string }>)
       .map((l) => ({
@@ -238,8 +218,6 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       medicineQuestionCount={medicineQuestionCount}
       journalResponseCount={responseSummary.journal}
       pneReflectionCount={responseSummary.pne}
-      journeyTitle={journeyTitle}
-      journeyEndAt={journeyEndAt}
       specialists={specialists}
       nurses={nurses}
       outcomesRows={outcomesRows ?? []}

@@ -85,3 +85,40 @@ test("the retired payment link performs no lookup of any kind", () => {
   assert.match(src, /This link has retired\./);
   assert.match(src, /Nothing has been charged\./);
 });
+
+// ── Bounded adversarial review fixes ─────────────────────────────────────────
+
+test("timeline money is live-mode only, like every other founder figure", () => {
+  const src = readFileSync(MEMBER, "utf8");
+  // f_balances(true) makes every other founder total live-mode only. A
+  // test-mode entry on the timeline would read as real money and reconcile
+  // against nothing.
+  assert.match(src, /founder_payment_activity[\s\S]{0,400}?\.eq\("livemode", true\)/);
+});
+
+test("money strings keep both cents digits", () => {
+  // Bare toLocaleString renders 1050 cents as "$10.5".
+  for (const f of [MEMBER, OPS]) {
+    const src = readFileSync(f, "utf8");
+    const bare = /toLocaleString\(\s*("en-US"\s*)?\)/.test(src);
+    assert.ok(!bare, `${f} formats money without fixing fraction digits`);
+  }
+  assert.match(readFileSync(MEMBER, "utf8"), /minimumFractionDigits: 2/);
+  assert.match(readFileSync(OPS, "utf8"), /minimumFractionDigits:2/);
+});
+
+test("the retirement gate audits scope from what it actually read", () => {
+  const src = readFileSync("scripts/retirement-gate.mjs", "utf8");
+  // The audit must not honour the scan's own skip list, or adding one name to
+  // PRUNED_DIRS would blind both the scan and its auditor.
+  assert.match(src, /NEVER_FIRST_PARTY/);
+  assert.match(src, /source file exists but was never scanned/);
+  assert.ok(!/hasSource && !scanned/.test(src), "the inverted scope rule survives");
+});
+
+test("retired table names match on a word boundary, not only inside quotes", () => {
+  const src = readFileSync("scripts/retirement-gate.mjs", "utf8");
+  // Otherwise a raw SQL string naming a retired table walks through, because
+  // the name is not adjacent to a quote character.
+  assert.match(src, /new RegExp\(`\\\\b\$\{t\}\\\\b`\)/);
+});

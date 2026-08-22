@@ -940,23 +940,23 @@ export default function OpsDashboardPage() {
               <div style={{display:'flex',justifyContent:'space-between',gap:10}}>
                 <div style={{flex:1}}>
                   <div style={{fontSize:9,color:C.dim,letterSpacing:'.08em',textTransform:'uppercase',marginBottom:3}}>Contribution</div>
-                  <div style={{fontSize:20,fontWeight:600,color:C.text,fontFamily:'var(--font-cormorant-garamond,serif)',lineHeight:1}}>{finReady?`$${contribRev.toLocaleString()}`:'Unavailable'}</div>
+                  <div style={{fontSize:20,fontWeight:600,color:C.text,fontFamily:'var(--font-cormorant-garamond,serif)',lineHeight:1}}>{finReady?`$${contribRev.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`:'Unavailable'}</div>
                   <div style={{fontSize:9,color:C.dim,marginTop:3}}>{finReady?`${agreementsN} active agreement${agreementsN===1?'':'s'}`:'Open Financials to retry'}</div>
                 </div>
                 <div style={{flex:1,textAlign:'right'}}>
                   <div style={{fontSize:9,color:C.dim,letterSpacing:'.08em',textTransform:'uppercase',marginBottom:3}}>Received</div>
-                  <div style={{fontSize:20,fontWeight:600,color:C.low,fontFamily:'var(--font-cormorant-garamond,serif)',lineHeight:1}}>{finReady?`$${receivedRev.toLocaleString()}`:'Unavailable'}</div>
+                  <div style={{fontSize:20,fontWeight:600,color:C.low,fontFamily:'var(--font-cormorant-garamond,serif)',lineHeight:1}}>{finReady?`$${receivedRev.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`:'Unavailable'}</div>
                   <div style={{fontSize:9,color:C.dim,marginTop:3}}>cash received</div>
                 </div>
               </div>
               <div style={{display:'flex',justifyContent:'space-between',paddingTop:9,marginTop:9,borderTop:`0.5px solid ${C.border}`}}>
                 <div>
                   <div style={{fontSize:9,color:C.dim,letterSpacing:'.08em',textTransform:'uppercase',marginBottom:2}}>Operating margin</div>
-                  <div style={{fontSize:15,fontWeight:600,color:marginRev>=0?C.low:C.high}}>{finReady?`$${marginRev.toLocaleString()}`:'Unavailable'}</div>
+                  <div style={{fontSize:15,fontWeight:600,color:marginRev>=0?C.low:C.high}}>{finReady?`$${marginRev.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`:'Unavailable'}</div>
                 </div>
                 <div style={{textAlign:'right'}}>
                   <div style={{fontSize:9,color:C.dim,letterSpacing:'.08em',textTransform:'uppercase',marginBottom:2}}>Remaining</div>
-                  <div style={{fontSize:15,fontWeight:600,color:C.text}}>{finReady?`$${remainingRev.toLocaleString()}`:'—'}</div>
+                  <div style={{fontSize:15,fontWeight:600,color:C.text}}>{finReady?`$${remainingRev.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`:'—'}</div>
                 </div>
               </div>
             </div>}

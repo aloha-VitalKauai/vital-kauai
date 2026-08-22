@@ -49,15 +49,17 @@ const RETIRED_TABLES = ["donations", "financial_commitments", "payment_tokens", 
 const RETIRED_VIEWS = ["financials_overview", "cohort_margin_summary", "private_ceremony_summary"];
 
 /**
- * A retired table name in quotes is a table reference regardless of how it is
- * reached — `from("donations")`, `db["from"]("donations")` and a destructured
- * `from` all reduce to the same literal. Matching the literal catches the
- * computed and aliased forms that an AST walk over `.from(...)` would miss.
+ * Matched on a word boundary, not on adjacent quotes. `from("donations")`,
+ * `db["from"]("donations")`, a destructured `from`, and a raw
+ * `'insert into donations …'` string all reduce to the same word — and an
+ * AST walk over `.from(...)` would miss most of them. The cost is that prose
+ * mentioning a retired table also trips the gate, which is the right trade:
+ * it is trivially fixed by rewording, and it removes an evasion route.
  */
 const FORBIDDEN = [
   ...RETIRED_TABLES.map((t) => ({
     id: `retired-table:${t}`,
-    re: new RegExp(`["'\`]${t}["'\`]`),
+    re: new RegExp(`\\b${t}\\b`),
     why: `references the retired table ${t}`,
   })),
   ...RETIRED_VIEWS.map((v) => ({
@@ -97,42 +99,53 @@ export function listAllFiles(root) {
 }
 
 /**
- * Independent scope audit. Derived from the filesystem, so a new source
- * directory or a new executable extension cannot slip past the scan by simply
- * not being in a list.
+ * Directories that cannot hold first-party source under any circumstances.
+ * Deliberately much smaller than PRUNED_DIRS: the audit must NOT honour the
+ * same skip list the scan uses, or adding one name to PRUNED_DIRS would blind
+ * the scan and the audit that exists to catch the blinding.
  */
-export function auditScope(root) {
-  const problems = [];
-  const all = listAllFiles(root);
+const NEVER_FIRST_PARTY = new Set(["node_modules", ".git"]);
 
-  // Every self-exemption must still exist; a stale exemption is a hole.
-  for (const p of SELF_EXEMPT) {
-    if (!all.includes(p)) problems.push(`declared self-exempt file is missing: ${p}`);
-  }
-
-  // Any executable extension present on disk must be one we scan.
-  const seen = new Set();
-  for (const f of all) {
-    const e = extname(f);
-    if ([".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts"].includes(e)) seen.add(e);
-  }
-  for (const e of seen) {
-    if (!SCANNED_EXTENSIONS.has(e)) problems.push(`extension ${e} exists on disk but is not scanned`);
-  }
-
-  // A new top-level source directory must be scanned, not silently pruned.
-  for (const entry of readdirSync(root)) {
-    if (PRUNED_DIRS.has(entry) || entry.startsWith(".")) continue;
+function walkUnpruned(root, dir, out) {
+  for (const entry of readdirSync(dir)) {
+    const abs = join(dir, entry);
     let st;
-    try { st = statSync(join(root, entry)); } catch { continue; }
-    if (!st.isDirectory()) continue;
-    const files = [];
-    walk(root, join(root, entry), files);
-    const hasSource = files.some((f) => SCANNED_EXTENSIONS.has(extname(f)));
-    const scanned = files.some((f) => SCANNED_EXTENSIONS.has(extname(f)) && !SELF_EXEMPT.includes(f));
-    if (hasSource && !scanned && files.length > 0) {
-      problems.push(`top-level directory ${entry} holds source that the scan never reads`);
+    try { st = statSync(abs); } catch { continue; }
+    if (st.isDirectory()) {
+      if (NEVER_FIRST_PARTY.has(entry)) continue;
+      walkUnpruned(root, abs, out);
+    } else if (st.isFile()) {
+      out.push(relative(root, abs));
     }
+  }
+}
+
+/**
+ * Independent scope audit.
+ *
+ * It compares what exists on disk against the list of files the scan actually
+ * opened. Anything executable that the scan did not read is a scope problem —
+ * whether it is in a new directory, has a new extension, or was hidden by
+ * someone adding a name to PRUNED_DIRS. Deriving the answer from the scan's own
+ * behaviour is the point: a rule phrased in terms of the skip list could always
+ * be satisfied by editing the skip list.
+ */
+export function auditScope(root, filesRead = null) {
+  const problems = [];
+  const read = new Set(filesRead ?? scanRepository(root).filesRead);
+
+  const onDisk = [];
+  walkUnpruned(root, root, onDisk);
+
+  for (const p of SELF_EXEMPT) {
+    if (!onDisk.includes(p)) problems.push(`declared self-exempt file is missing: ${p}`);
+  }
+
+  for (const f of onDisk) {
+    const e = extname(f);
+    if (!SCANNED_EXTENSIONS.has(e)) continue;
+    if (SELF_EXEMPT.includes(f)) continue;
+    if (!read.has(f)) problems.push(`source file exists but was never scanned: ${f}`);
   }
   return problems;
 }
@@ -140,10 +153,12 @@ export function auditScope(root) {
 /** Scan every source file for any trace of the retired financial runtime. */
 export function scanRepository(root) {
   const findings = [];
+  const filesRead = [];
   const files = listAllFiles(root).filter((f) => SCANNED_EXTENSIONS.has(extname(f)));
 
   for (const file of files) {
     if (SELF_EXEMPT.includes(file)) continue;
+    filesRead.push(file);
     const src = readFileSync(join(root, file), "utf8");
 
     for (const rule of FORBIDDEN) {
@@ -170,11 +185,12 @@ export function scanRepository(root) {
       }
     }
   }
-  return findings;
+  return { findings, filesRead };
 }
 
 export function runGate(root) {
-  return { scope: auditScope(root), findings: scanRepository(root) };
+  const { findings, filesRead } = scanRepository(root);
+  return { scope: auditScope(root, filesRead), findings };
 }
 
 // CLI: node scripts/retirement-gate.mjs

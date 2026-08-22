@@ -139,8 +139,6 @@ export default function MemberProfileEditor({
   medicineQuestionCount = 0,
   journalResponseCount = 0,
   pneReflectionCount = 0,
-  journeyTitle = null,
-  journeyEndAt = null,
   specialists = [],
   nurses = [],
   outcomesRows = [],
@@ -162,8 +160,6 @@ export default function MemberProfileEditor({
   medicineQuestionCount?: number;
   journalResponseCount?: number;
   pneReflectionCount?: number;
-  journeyTitle?: string | null;
-  journeyEndAt?: string | null;
   specialists?: string[];
   nurses?: Array<{ id: string; full_name: string }>;
   outcomesRows?: Array<Record<string, any>>;
