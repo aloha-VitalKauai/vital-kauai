@@ -120,9 +120,14 @@ export async function runEventWorker(
         } } } | null)?.data?.object;
         const attemptId = cs?.metadata?.attempt_id;
         if (cs?.id && attemptId) {
+          // The Session id is passed so the database can refuse the transition
+          // when this is not the Session the attempt actually owns. Metadata
+          // alone would let an unrelated Session's expiry free a slot whose own
+          // Session is still open and payable.
           const { error: exErr } = await fin().rpc("transition_checkout_session", {
             p_attempt_id: attemptId,
             p_to_status: "expired",
+            p_stripe_session_id: cs.id,
           });
           if (exErr) console.error("worker: session expiry transition failed", cs.id, exErr.message);
         }
@@ -141,6 +146,7 @@ export async function runEventWorker(
           const { error: trErr } = await fin().rpc("transition_checkout_session", {
             p_attempt_id: attemptId,
             p_to_status: "completed",
+            p_stripe_session_id: cs.id,
           });
           if (trErr) console.error("worker: session transition failed", cs.id, trErr.message);
         }
