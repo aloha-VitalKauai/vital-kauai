@@ -12,8 +12,8 @@
  * balance.
  *
  * NOT the legacy surface. This module has no relationship to
- * `lib/payments/legacy-enabled.ts`. The D-078 guard exists to keep the RETIRED
- * payment paths shut, and `LEGACY_PAYMENTS_ENABLED` must never be "true"
+ * the retired payment runtime. The D-078 guard existed to keep those RETIRED
+ * payment paths shut; PR 9 removed that legacy runtime outright
  * (D-078 R5). Gating V2 ingestion on that flag would disable V2 permanently.
  */
 

@@ -5,11 +5,11 @@
    them into a single chronological list of events. It uses ONLY existing
    timestamps — no new timestamps, no inference, no new tables/queries.
 
-   Money-received events come exclusively from the `donations` ledger (the
-   authoritative source the Financials card sums). The Square webhook writes
-   the same payment to both donations and bookings.paid_at / deposit_paid_at,
-   so those duplicate fields are intentionally NOT emitted here to avoid
-   double-counting. ─────────────────────────────────────────────────── */
+   PR 9 (D-086): financial events arrive pre-projected in `financeEvents`,
+   built server-side from founder-safe Financials V2 views. This module never
+   queries and never sees a provider id, idempotency key, actor UUID or raw
+   metadata — only a label, a timestamp and an already-formatted amount.
+   ─────────────────────────────────────────────────────────────────── */
 
 export type TimelineCategory =
   | "lifecycle"
@@ -63,13 +63,13 @@ export type TimelineInput = {
     guides_present?: string | null;
     medicine_form?: string | null;
   }>;
-  donations?: Array<{
-    id?: string;
-    amount_cents?: number | null;
-    completed_at?: Dated;
-    kind?: string | null;
+  /** Display-safe Financials V2 events, projected by the server. */
+  financeEvents?: Array<{
+    id: string;
+    at: Dated;
+    label: string;
+    detail?: string;
   }>;
-  tokens?: Array<{ token?: string; created_at?: Dated }>;
   labs?: Array<{
     id?: string;
     lab_type?: string | null;
@@ -114,21 +114,6 @@ const LAB_LABELS: Record<string, string> = {
 function labLabel(type: string | null | undefined) {
   if (!type) return "Lab";
   return LAB_LABELS[type] ?? humanize(type);
-}
-
-function donationKindLabel(kind: string | null | undefined) {
-  switch (kind) {
-    case "initial_membership":
-      return "Initial membership";
-    case "journey_contribution":
-      return "Journey contribution";
-    case "additional_gift":
-      return "Additional gift";
-    case "monthly_membership":
-      return "Monthly membership";
-    default:
-      return "Contribution";
-  }
 }
 
 /* ── Aggregator ────────────────────────────────────────────────── */
@@ -189,19 +174,10 @@ export function buildMemberTimeline(input: TimelineInput): TimelineEvent[] {
     }
   }
 
-  /* Financial — donations ledger is the single source for money received */
+  /* Financial — Financials V2 is the only source of money events. */
   add("booking-created", input.booking?.created_at, "Booking created", "financial", input.booking?.package_name ?? undefined);
-  for (const t of input.tokens ?? []) {
-    add(`token-${t.token}`, t.created_at, "Payment link sent", "financial");
-  }
-  for (const d of input.donations ?? []) {
-    add(
-      `donation-${d.id}`,
-      d.completed_at,
-      `Contribution received — ${donationKindLabel(d.kind)}`,
-      "financial",
-      d.amount_cents != null ? money(d.amount_cents / 100) : undefined,
-    );
+  for (const e of input.financeEvents ?? []) {
+    add(e.id, e.at, e.label, "financial", e.detail);
   }
 
   /* Ceremony */

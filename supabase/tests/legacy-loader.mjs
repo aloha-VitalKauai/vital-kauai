@@ -139,10 +139,8 @@ export const STUBBED = new Set([
   "@supabase/supabase-js",
   "@/lib/supabase/server",
   "@/lib/supabase/client",
-  "@/lib/square/client",
   "@/lib/email-renderers",
   "@/lib/auth/founder-check",
-  "@/lib/payment-provider",
   "@/lib/billing/getMembershipDonationConfig",
   "@/lib/api/bookings",
 ]);

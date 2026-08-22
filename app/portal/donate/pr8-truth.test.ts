@@ -21,22 +21,7 @@ const REDIRECTS = [
   "app/portal/onboarding/donation/page.tsx",
 ];
 
-const RENDERED = [PAGE, CLIENT];
-const LEGACY_READS = [
-  'from("donations")', "member_financial_overview", "program_price",
-  "financial_commitments", "payment_tokens", "payment_allocations",
-  "journey_expected_amount", "Venmo", "venmo", "square", "Square",
-];
-
-test("the rendered portal reads no legacy financial object", () => {
-  for (const f of RENDERED) {
-    const src = readFileSync(f, "utf8");
-    for (const name of LEGACY_READS) {
-      assert.ok(!src.includes(name), `${f} references legacy ${name}`);
-    }
-  }
-});
-
+// Legacy-read absence is proven repository-wide by the PR 9 retirement gate.
 test("a failed member read renders unknown, never zero", () => {
   const src = readFileSync(PAGE, "utf8");
   assert.match(src, /overviewRes\.error \? null/);

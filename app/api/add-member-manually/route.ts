@@ -1,7 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
-// D-078: these routes are NOT refused — only their $0 commitment seed is
+// PR 9 (D-086): onboarding carries no financial write at all. The former $0
 // suppressed — so only the predicate is needed, not the refusal response.
-import { legacyPaymentsEnabled } from "@/lib/payments/legacy-enabled";
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyFounder } from '@/lib/auth/founder-check'
 import { renderAppInstallEmail, renderSetupLinkEmail } from '@/lib/email-renderers'
@@ -146,20 +145,9 @@ export async function POST(req: NextRequest) {
         .select('id')
         .single()
 
-      // D-078: this $0 draft commitment is a LEGACY financial write and is
-      // suppressed while legacy payments are off. The surrounding member
-      // onboarding is NOT gated — it carries no money, and refusing the whole
-      // route would break approval for a seed the code already treats as
-      // non-blocking. Financials V2 owns commitments from here on.
-      if (journeyRow?.id && legacyPaymentsEnabled()) {
-        await supabase.from('financial_commitments').insert({
-          member_id:             userId,
-          journey_id:            journeyRow.id,
-          kind:                  'journey_contribution',
-          expected_amount_cents: 0,
-          status:                'draft',
-        })
-      }
+      // PR 9 (D-086): the legacy $0 commitment seed is gone. Manual add creates
+      // the member and journey and nothing financial; Financials V2 owns every
+      // Contribution, created deliberately by a founder.
     } catch (err: any) {
       console.error('[add-member-manually] journey/commitment seed failed (non-blocking):', err?.message || err)
     }

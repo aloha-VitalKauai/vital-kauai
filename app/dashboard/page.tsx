@@ -40,7 +40,9 @@ export default async function DashboardPage() {
     supabase.from("member_profiles").select("id, deposit_amount, membership_agreement_signed, medical_disclaimer_signed, deposit_paid"),
     supabase.from("leads").select("id, full_name, welcome_video_sent, discovery_call_booked, converted_to_member"),
     supabase.from("ceremony_records").select("id, member_id, ceremony_date, status, guides_present, medicine_form").order("ceremony_date", { ascending: true }),
-    supabase.from("financials_overview").select("*").single(),
+    // PR 9 (D-086): canonical V2 only. Read under the founder's own session —
+    // the view carries its own is_founder() boundary.
+    supabase.schema("finance_api").from("founder_financial_overview").select("*"),
   ]);
 
   const rows = members ?? [];
@@ -51,24 +53,16 @@ export default async function DashboardPage() {
   const converted = (leads ?? []).filter((l) => l.converted_to_member).length;
   const conversionRate = totalLeads > 0 ? Math.round((converted / totalLeads) * 100) : 0;
 
-  // Revenue & margin pulled from `financials_overview` so all three dashboards
-  // (Overview, Financials, Ops) reconcile.
-  //   • Booked    — sum of active financial_commitments per member, falling
-  //                 back to legacy members.program_price when no commitment
-  //                 exists. Computed in the view → reflects edits live.
-  //   • Collected — completed donations (cash in the bank).
-  // Margin is computed against Collected (the only thing actually realized).
-  const collectedCents = overview?.total_revenue_cents ?? 0;
-  const bookedCents = overview?.booked_revenue_cents ?? 0;
-  const totalExpensesCents = overview?.total_expenses_cents ?? 0;
-  const activePayoutsCents =
-    (overview?.payouts_pending_cents ?? 0) +
-    (overview?.payouts_scheduled_cents ?? 0) +
-    (overview?.payouts_paid_cents ?? 0);
-  const marginCents = collectedCents - totalExpensesCents - activePayoutsCents;
-  const hasCollected = collectedCents > 0;
-  const marginPct =
-    hasCollected ? Math.round((marginCents / collectedCents) * 100) : null;
+  // Financial facts come from the canonical V2 overview and are NOT recomputed
+  // here — operating margin in particular is derived once in SQL. A failed read
+  // becomes `null`, which renders as unavailable: a zero would be a claim we
+  // cannot support (D-086 invariant 2).
+  const fin = ((overview as unknown as {
+    contribution_cents: number; net_received_cents: number;
+    remaining_cents: number; operating_margin_cents: number;
+  }[] | null)?.[0]) ?? null;
+  const financeUnavailable = fin === null;
+  const money = (cents: number) => fmt(cents / 100, "$");
 
   const medCleared = rows.filter((r) => r.medical_cleared).length;
   const cardiacCleared = rows.filter((r) => r.cardiac_cleared).length;
@@ -115,15 +109,41 @@ export default async function DashboardPage() {
         </h1>
       </div>
 
-      {/* KPI Cards — 7 columns: members, leads, conversion, booked, collected, margin, medical */}
+      {financeUnavailable && (
+        <div
+          role="status"
+          style={{ background: "#fffdf8", border: "1px solid #dedbd1", borderRadius: 10, padding: "12px 16px", marginBottom: "1rem", fontSize: 13, color: "#173529" }}
+        >
+          Financials unavailable — these figures could not be loaded and are not shown as zero.{" "}
+          <Link href="/dashboard/financials" style={{ color: "#a6653f", fontWeight: 650 }}>
+            Open Financials
+          </Link>
+        </div>
+      )}
+
+      {/* KPI Cards — 7 columns: members, leads, conversion, Contribution, Received, margin, medical */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: 10, marginBottom: "1.25rem" }}>
         {[
           { label: "Total members", value: String(rows.length), sub: "active members" },
           { label: "Total leads", value: String(totalLeads), up: totalLeads > 0 ? `${totalLeads} tracked` : undefined },
           { label: "Conversion", value: `${conversionRate}%`, sub: "leads → members" },
-          { label: "Booked revenue", value: fmt(bookedCents / 100, "$"), sub: `${rows.length} members enrolled` },
-          { label: "Collected revenue", value: fmt(collectedCents / 100, "$"), sub: "Cash received to date" },
-          { label: "Gross margin", value: fmt(marginCents / 100, "$"), up: marginPct != null ? `${marginPct}% on collected` : undefined },
+          // Canonical V2 vocabulary. When the read fails the value is the word
+          // "Unavailable", never a dollar figure — see D-086 invariant 2.
+          {
+            label: "Contribution",
+            value: fin ? money(fin.contribution_cents) : "Unavailable",
+            sub: fin ? `${money(fin.remaining_cents)} remaining` : "Open Financials to retry",
+          },
+          {
+            label: "Received",
+            value: fin ? money(fin.net_received_cents) : "Unavailable",
+            sub: fin ? "Net of refunds and reversals" : "Open Financials to retry",
+          },
+          {
+            label: "Operating margin",
+            value: fin ? money(fin.operating_margin_cents) : "Unavailable",
+            sub: fin ? "Received less operating costs" : "Open Financials to retry",
+          },
           { label: "Medically cleared", value: `${medCleared}/${rows.length}`, sub: `cardiac screened: ${cardiacCleared}/${rows.length}` },
         ].map((c) => (
           <div key={c.label} style={{ background: "#fff", border: "0.5px solid rgba(0,0,0,0.1)", borderRadius: 10, padding: "1rem 1.1rem" }}>
