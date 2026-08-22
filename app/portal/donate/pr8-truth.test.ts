@@ -55,11 +55,9 @@ test("no client-side money arithmetic beyond display formatting", () => {
 test("the approved Contribution language is verbatim", () => {
   const src = readFileSync(CLIENT, "utf8");
   for (const line of [
-    "Thank you for your contribution.",
-    "Your contribution is always welcome and appreciated. It opens the door for",
-    "members called to this work who carry fewer resources, so they can be met with",
-    "It supports the ʻāina of Kauaʻi’s North Shore and the nonprofits we walk",
-    "itself, the people, practice, and ceremony at the heart of Vital Kauaʻi.",
+    "Mahalo for your contribution.",
+    "Your support helps us provide scholarships for members in need,",
+    "particularly for our first responders and essential workers.",
     "An additional gift is separate from your Contribution and never changes what remains.",
   ]) {
     assert.ok(src.includes(line), `approved copy missing: ${line}`);

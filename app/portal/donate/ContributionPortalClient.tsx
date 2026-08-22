@@ -205,18 +205,12 @@ export default function ContributionPortalClient({
           Your Contribution
         </p>
         <h1 id="contribution-title" style={{ fontFamily: DISPLAY, fontWeight: 400, maxWidth: 820, margin: "0 0 22px", color: "#111914", fontSize: "clamp(38px, 6vw, 64px)", lineHeight: 1.02, letterSpacing: "-0.03em" }}>
-          Thank you for your contribution.
+          Mahalo for your contribution.
         </h1>
         <div style={{ maxWidth: 790, color: "#415047", fontSize: 17, lineHeight: 1.65 }}>
-          <p style={{ margin: "0 0 14px" }}>
-            Your contribution is always welcome and appreciated. It opens the door for
-            members called to this work who carry fewer resources, so they can be met with
-            the same care.
-          </p>
           <p style={{ margin: 0 }}>
-            It supports the ʻāina of Kauaʻi’s North Shore and the nonprofits we walk
-            alongside who protect and preserve this land. And it sustains the church
-            itself, the people, practice, and ceremony at the heart of Vital Kauaʻi.
+            Your support helps us provide scholarships for members in need,
+            particularly for our first responders and essential workers.
           </p>
         </div>
       </section>
