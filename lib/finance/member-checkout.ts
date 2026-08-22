@@ -19,9 +19,9 @@ import {
   memberEmailForAgreement,
 } from "./checkout";
 
-/** Organizational gift bounds (spec §4.5): whole dollars, $5–$25,000. */
+/** Organizational gift bounds (spec §4.5): whole dollars, $5–$5,000,000. */
 export const GIFT_MIN_CENTS = 500;
-export const GIFT_MAX_CENTS = 2_500_000;
+export const GIFT_MAX_CENTS = 500_000_000;
 
 export type MemberCheckoutRefusal =
   | "not_found"            // not the member's agreement / not a member — 404, no enumeration

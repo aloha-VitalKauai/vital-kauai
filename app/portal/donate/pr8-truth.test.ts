@@ -105,10 +105,19 @@ test("the member service returns no Stripe secret material to the caller", () =>
   assert.match(src, /machine_checkout_attempts/);
 });
 
-test("gift bounds are named server constants", () => {
+test("gift bounds are named server constants, and the client agrees with them", () => {
   const src = readFileSync(SERVICE, "utf8");
+  // A client-only limit is exactly what the spec forbids: the browser would
+  // accept an amount the server then refuses with a generic error.
+  const client = readFileSync(CLIENT, "utf8");
+  const clientMax = Number(/GIFT_MAX_DOLLARS = (\d+)/.exec(client)?.[1]);
+  const serverMax = Number(/GIFT_MAX_CENTS = ([\d_]+)/.exec(src)?.[1].replace(/_/g, ""));
+  assert.equal(clientMax * 100, serverMax, "client and server gift ceilings must agree");
+  const clientMin = Number(/GIFT_MIN_DOLLARS = (\d+)/.exec(client)?.[1]);
+  const serverMin = Number(/GIFT_MIN_CENTS = ([\d_]+)/.exec(src)?.[1].replace(/_/g, ""));
+  assert.equal(clientMin * 100, serverMin, "client and server gift floors must agree");
   assert.match(src, /GIFT_MIN_CENTS = 500/);
-  assert.match(src, /GIFT_MAX_CENTS = 2_500_000/);
+  assert.match(src, /GIFT_MAX_CENTS = 500_000_000/);
 });
 
 test("superseded portal payment routes are pure redirects", () => {
