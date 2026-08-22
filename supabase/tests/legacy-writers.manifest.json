@@ -370,8 +370,7 @@
     }
   ],
   "readers": [
-    "app/dashboard/[id]/page.tsx",
-    "app/portal/donate/page.tsx"
+    "app/dashboard/[id]/page.tsx"
   ],
   "residuals": {},
   "scanDirs": [
@@ -392,9 +391,67 @@
       ]
     },
     {
+      "file": "app/api/cron/finance-worker/route.ts",
+      "functions": [
+        "restore_orphaned_link_claims"
+      ]
+    },
+    {
       "file": "app/api/cron/reconcile/route.ts",
       "functions": [
         "fn_reconcile_financial_state"
+      ]
+    },
+    {
+      "file": "app/api/finance/agreements/route.ts",
+      "functions": [
+        "amend_contribution",
+        "create_agreement_with_contribution",
+        "is_founder",
+        "record_external_payment",
+        "reverse_ledger_entry",
+        "transition_agreement"
+      ]
+    },
+    {
+      "file": "app/api/finance/exceptions/route.ts",
+      "functions": [
+        "is_founder",
+        "release_quarantine",
+        "resolve_exception"
+      ]
+    },
+    {
+      "file": "app/api/finance/payment-links/route.ts",
+      "functions": [
+        "is_founder",
+        "issue_payment_link",
+        "revoke_payment_link"
+      ]
+    },
+    {
+      "file": "app/api/finance/reconciliation/route.ts",
+      "functions": [
+        "approve_dry_run",
+        "is_founder"
+      ]
+    },
+    {
+      "file": "app/api/finance/stripe-webhook/route.ts",
+      "functions": [
+        "record_stripe_event"
+      ]
+    },
+    {
+      "file": "app/dashboard/financials/reconciliation/page.tsx",
+      "functions": [
+        "is_founder"
+      ]
+    },
+    {
+      "file": "app/dashboard/financials/verification/page.tsx",
+      "functions": [
+        "is_founder"
       ]
     },
     {
@@ -419,6 +476,47 @@
       "file": "lib/cohorts.ts",
       "functions": [
         "get_public_cohorts"
+      ]
+    },
+    {
+      "file": "lib/finance/checkout.ts",
+      "functions": [
+        "begin_checkout_attempt",
+        "claim_payment_link",
+        "finalize_checkout_session",
+        "peek_payment_link"
+      ]
+    },
+    {
+      "file": "lib/finance/member-checkout.ts",
+      "functions": [
+        "begin_member_contribution_checkout",
+        "begin_member_gift_checkout",
+        "finalize_checkout_session",
+        "transition_checkout_session"
+      ]
+    },
+    {
+      "file": "lib/finance/reconciliation/supabase-db.ts",
+      "functions": [
+        "advance_reconciliation_run",
+        "finish_reconciliation_run",
+        "raise_reconciliation_exception",
+        "record_dry_run_report",
+        "record_ledger_entry",
+        "start_reconciliation_run"
+      ]
+    },
+    {
+      "file": "lib/finance/reconciliation/worker.ts",
+      "functions": [
+        "abandon_stale_runs",
+        "claim_stripe_events",
+        "complete_stripe_event",
+        "purge_expired_event_payloads",
+        "record_v2_stripe_payment",
+        "sweep_stale_event_claims",
+        "transition_checkout_session"
       ]
     }
   ]

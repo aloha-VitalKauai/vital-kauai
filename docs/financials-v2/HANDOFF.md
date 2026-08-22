@@ -1,62 +1,134 @@
 # Financials V2 — Handoff
 
-**Updated:** 2026-07-29 · **Updated by:** PR 0
+**Updated:** 2026-08-21 · **Updated by:** PR 4 preflight
 **Protocol:** every Financials V2 PR updates this file as its final commit. It is the first document read when picking the work back up.
 
 ---
 
 ## Current status
 
-**Phase:** PR 1 — `finance` schema foundation.
-
-**Remediation round 2 (post-BLOCK at `eaab168`).** The prior review found the
-test system reported confidence it had not earned. Corrected:
-
-- **Migration atomicity.** Every migration is explicitly transactional. The
-  `ALTER FUNCTION` in 0001 previously autocommitted *before* its own
-  verification block, so the safety mechanism produced the outage it claimed to
-  prevent and then reported "Migration rolled back" falsely.
-  `atomicity_sim.sh` reproduces the exact production scenario and proves the
-  migration now fails with `proconfig` unchanged and `is_founder()` still working.
-- **Coverage rebuilt.** `coverage_map.py` (which counted a bare comment) is
-  deleted. `coverage_verify.py` parses **executed** TAP/static/concurrency
-  results against a manifest of named assertions. Self-tested: an empty results
-  file and a comments-only file both report **0/140**, and a failing assertion
-  is reported as failing, not covered.
-- **`payment_links` enforcement.** Column-scoped INSERT, a creation-time guard,
-  and revocation/consumption terminality. `service_role` could previously insert
-  a link already `revoked` with forged attribution, and un-revoke one.
-- **Mutation testing.** 13 safeguards; a safeguard is not covered unless removing
-  it breaks a test. First run had **5 survivors**; all now killed.
-- **Suites are gating.** `|| true` removed; `08_no_placeholders.sh` fails on
-  `pass()`, `WHERE false`, tautological checks or suppressed suites.
-**State:** **PR 0 is not approved.** Documents written and revised across fifteen review passes: an adversarial model review (29 findings, 9 blockers), an internal-consistency check (9 defects, 3 blockers), a first external review of PR #838 (7 findings, B-3 … B-9), a clean-context re-verification (1 blocker, 6 minors), a second external review (6 findings, B-10 … B-15), a third external review at the Stripe boundary (6 findings, B-16 … B-21), a PR 1 executability review (9 blockers, 8 minors — B-22 … B-30), an operational readiness review (7 blockers, 6 minors — **zero of twenty operational points defined**, B-31 … B-43), an independent review returning **BLOCK** on the reconciliation state machine (B-44 … B-51), a second **BLOCK** on executability of that machine (B-52 … B-57), a third **BLOCK** on transition integrity and enforcement (B-58 … B-62), a fourth **BLOCK** on constraint and platform executability (B-63 … B-66), a fifth **BLOCK** on structural enforcement and resolution attribution (B-67 … B-68), and a sixth **BLOCK** on `INSERT`-time bypass of function-guarded transitions (B-69 … B-70, plus B-71 found by the audit they prompted), and a seventh **BLOCK** on two unsatisfiable specifications (B-72 … B-73). All resolved. Awaiting independent re-review.
-
-The clean-context pass caught a defect introduced by the B-7 fix itself: L12 originally defined "provider-originated" as `source='stripe' AND provider_object_id IS NOT NULL`, which contradicted L1 and D-020 — a Stripe payment imported without a charge-object id would have demanded a human actor that no document assigned. L12 now keys on `source` alone.
+**Phase:** PR 5 — founder financial controls. **Implemented.** PR 4 shipped before it (#904). PR 5 detail under the corrected scope (D-082): clean-start banner, canonical V2 positions with no legacy columns, exceptions queue with resolve/dismiss/release through the database functions, quarantine, health and recent runs, at `/dashboard/financials/verification`.
 
 | PR | Outcome | State |
 |---|---|---|
-| 0 | Architecture and project-control documents | **Merged** — `aa32694`, approved after 15 review passes |
-| 1 | `finance` schema foundation | **In review** — draft PR, 143 assertions passing on a fresh database |
-| 2–9 | See [PR_PLAN.md](PR_PLAN.md) | Not started |
+| 0 | Architecture and project-control documents | **Merged** `aa32694` |
+| 1 | `finance` schema foundation | **Merged** `c76f209` (#839). 140/140 requirements proven; deployed to production 2026-08-03 |
+| 2 | **Clean-start activation** (NOT the importer PR_PLAN describes) | **Complete.** See §"PR 2 was rescoped" |
+| 3 | Stripe shadow ingestion + §10a reconciliation | **Merged and DEPLOYED** — 3A `bcda54c`, 3B `76112ba`, 3C `92d0486`, canary fix `0724a7c` |
+| 4 | Founder-only verification workspace | **Preflight done** — `PR4_PREFLIGHT.md` |
+| 5–9 | See [PR_PLAN.md](PR_PLAN.md) | Not started |
+
+## PR 2 was rescoped — PR_PLAN is stale on this point
+
+`PR_PLAN.md` still describes PR 2 as a two-pass importer producing "a per-member
+variance report against legacy figures". **That was never built.** PR 2 became
+Clean-Start Activation: the founder attested no genuine historical financial record
+existed, and D-077 subsequently wiped the legacy financial tables entirely.
+
+Consequence for PR 4: the variance artifact PR 4 was designed to display **does not
+exist**, and no trustworthy historical financial reference survives. PR 4 renders an
+honest *reference-unavailable* state rather than synthesising a comparison. Full
+evidence in `PR4_PREFLIGHT.md`.
+
+## What is live in production
+
+- **`finance` schema is PRIVATE.** It is not exposed to PostgREST. All application
+  access goes through the **`finance_api`** façade — SECURITY INVOKER throughout, so
+  it adds no privilege and the underlying grants and RLS still authorise.
+- **V2 Stripe ingestion is live.** Endpoint `financials-v2-shadow`
+  (`we_1U6kwIKBySbdp3Q1Klr1wEhu`) at `/api/finance/stripe-webhook`, 20 event types,
+  Snapshot payloads, signature enforced (a forged signature is rejected with zero
+  rows written).
+- **Reconciliation runs hourly** (`/api/cron/finance-reconcile`, always a dry run).
+  The **worker, sweepers and 24-month retention** run every 10 minutes
+  (`/api/cron/finance-worker`).
+- **Founder control** at `/dashboard/financials/reconciliation`: review a dry-run
+  report, approve it on the founder's own session, start the canary.
+- **Legacy payment surface is shut** (D-078) and the retired tables are frozen at the
+  database level (12 `VK078` triggers, write grants revoked).
+
+## Decisions added since PR 1
+
+| | |
+|---|---|
+| **D-077** | Founder-authorised wipe of legacy financial data. Supersedes P2-D1 |
+| **D-078** | Legacy Stripe integration shut down fail-closed |
+| **D-079** | `finance` is append-only to the app role; PR 3 adds SECURITY DEFINER mutation functions rather than grants |
+| **D-080** | The authoritative 20-event Stripe subscription; "all events" resolved |
+| **D-081** | A `23505` on `stripe_events` has two causes and conflating them destroys data |
+
+## Standing constraints
+
+- **Never expose `finance`** to PostgREST. Expose only `finance_api`.
+- **Never set `LEGACY_PAYMENTS_ENABLED=true`** (D-078 R5), and never roll back to a
+  pre-guard build.
+- The retired tables stay frozen and empty.
+- Founder identity and timestamps on financial actions are **database-generated**;
+  no route may supply them, and no role holds direct `UPDATE` on resolution or
+  quarantine columns.
+
+## PR 5 (this PR)
+
+Founder financial controls, mounted inside the member-profile Financials tab.
+Five SECURITY DEFINER functions (create-with-Contribution, amend, external
+payment, reversal, lifecycle transition) with finance_api SECURITY INVOKER
+wrappers; D-083 database-enforced idempotency for external payments
+(ledger_entries.idempotency_key + partial unique index). Reusable
+V2FinancialPanel component (app/components/dashboard/financials/) built to the
+Vital Kauaʻi design language for PR 7 to mount unchanged. Booking payment
+editing (payment_status / amount_due / amount_paid) RETIRED from
+BookingStatusSection — booking operations remain, financial truth lives only in
+V2. Legacy FinancialRecordsCard and MemberFinancialSection are no longer
+rendered (files intact for the D-078 test suite). "Collect remaining balance"
+deliberately absent — that becomes functional in PR 6.
+
+## PR 6 (this PR)
+
+The checkout protocol per PR6_BUILD_SPEC: hashed single-use links, three-phase
+attempt (claim -> durable attempt -> Stripe Session with a self-derived
+deterministic idempotency key), one payable Session per (agreement, livemode),
+verified payment_intent.succeeded -> exactly one stripe_payment via
+record_v2_stripe_payment (idempotent on payment intent + mode), Collect drawer +
+link strip in V2FinancialPanel, /contribute/[token] bridge and thank-you page
+with canonical confirmation, orphaned-claim sweeper on the worker cron. The V2
+checkout Stripe client pins 2026-03-25.dahlia (STRIPE_V2_API_VERSION in
+lib/finance/checkout.ts), matching the live destination.
+
+Rollout state: founder issuance is behind FINANCE_V2_CHECKOUT_READY (unset =
+fail closed). Revocation, status, the bridge and the worker paths are live.
+
+## PR 7 (this PR)
+
+/dashboard/financials replaced with the V2-only Founder Financial Command Center
+per PR7_BUILD_SPEC and D-084 (no legacy fallback, no financial read flag).
+Migration 20260821180000: finance_api.founder_financial_overview and
+founder_payment_activity — security_invoker + security_barrier, explicit
+is_founder() boundary, granted to authenticated only, verified as all four roles
+rolled-back (member sees zero rows; anon/service hold no grant; the retired-table
+dependency check is asserted in-transaction). The retired
+financials_overview/cohort_margin_summary/private_ceremony_summary reads and the
+Cohort/Private margin tabs left the page. Expenses/payouts mutations reused
+unchanged. Checkout state reported truthfully: links paused unless
+FINANCE_V2_CHECKOUT_READY === "true" (still unset).
+
+## PR 8 state (2026-08-21)
+
+Branch claude/financials-v2-pr8 (head 7b867d2). Migration
+`20260821220000_finance_pr8_member_portal.sql` is committed but NOT APPLIED —
+its façade revocations would break the deployed founder pages until the PR 8
+consumers ship, so it is applied at deploy time, immediately before merge.
+Four-role behavioral proof PASSED in a rolled-back production transaction
+(member scoping, façade denial, cross-member VK404, gift replay identity,
+concurrent-gift VK409, bounds, anon/non-member denial, service machine view).
+Gates at 7b867d2: 369/369 tests, tsc clean, production build clean
+(/portal/donate + /api/finance/member-checkout compile). Bounded adversarial
+review: see PR notes. Checkout remains fail-closed (flag unset) until the PR 6
+closeout drills and launch evidence pass.
 
 ## Next action
 
-Independent review of PR 1. PR 2 does not begin until PR 1 is approved and merged.
-
-### PR 1 status
-
-All schema objects exist and are verified from the database catalogs on a fresh database: **13 enums, 9 tables, 5 views, 8 partial unique indexes, 6 functions, 11 triggers**, RLS enabled *and* forced on all nine tables, and **zero** `SECURITY DEFINER` functions without a pinned `search_path`.
-
-**143 pgTAP assertions pass, 0 fail**, after a complete `dropdb`/`createdb` reset. Two real defects were found by these tests and fixed before commit — see the PR description.
-
-**B-74 is closed.** True multi-session concurrency tests are implemented in `supabase/tests/concurrency.sh`, driving two persistent psql sessions through FIFOs so statements interleave deterministically. They demonstrate actual locking outcomes rather than inspecting for `FOR UPDATE`. **11 assertions, all passing**, covering requirements 21, 35, 37, 50 and 101.
-
-**A correction to the earlier B-74 wording:** it named requirements 21, 35, 42, 48, 101. Two of those were wrong — **42** is `anon` privileges, not concurrency, and **48** is sequential (its concurrent counterpart is **50**). The genuinely concurrent requirements are **21, 35, 37, 50, 101**, and those are what is now tested.
-
-**Remaining gap, disclosed rather than hidden:** a script (`supabase/tests/coverage_map.py`) maps all 140 numbered requirements to test tags. **93 have executable coverage; 47 do not.** Those 47 are listed by the script and must be closed before PR 1 merges — tracked as **B-75**.
-
-**Environment:** local PostgreSQL **17.10**; production is **17.6**. Same major version, different minor. Nothing was applied to production.
+PR 6 closeout (controlled live-mode exercise, two remaining sweeper drivers,
+bounded review, then FINANCE_V2_CHECKOUT_READY=true). Then PR 8.
 
 ## Blockers
 

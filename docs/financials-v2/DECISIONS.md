@@ -952,3 +952,275 @@ Stripe" but "supersede a running payment integration."
 narrowly scoped PR 2 closeout, before PR 3 preflight resumes. PR 3 remains BLOCKED
 until that shutdown and the separate migration-history repair are complete and
 reviewed.
+
+## D-079 — PR 3 requires a mutation surface; `finance` is append-only to the app role
+
+**Finding.** PR 3 was scoped as "application-layer work only", and an early revision
+of `PR3_PREFLIGHT.md` asserted "PR 3 adds no schema". Both were wrong, and wrong for
+the same reason: the tables existing was mistaken for the tables being writable.
+
+Verified against production 2026-08-19. For `service_role` — the role every server
+route runs as — the `finance` schema is deliberately append-only:
+
+- **No table in `finance` grants `UPDATE` or `DELETE`** to `anon`, `authenticated`
+  or `service_role`.
+- `reconciliation_runs`, `reconciliation_exceptions`, `checkout_sessions` and
+  `payment_links` grant `SELECT` only.
+- `stripe_events`, `ledger_entries`, `agreements`, `agreement_amounts` and
+  `agreement_lifecycle_events` grant `INSERT` and `SELECT`.
+- The complete set of SECURITY DEFINER writers into `finance` is six functions:
+  `approve_dry_run`, `create_agreement`, `quarantine_object`, `release_quarantine`,
+  `resolve_exception`, `revoke_payment_link`. **None** creates a reconciliation run,
+  advances run counters or the cursor, claims a `stripe_events` row, or raises an
+  exception.
+
+**Consequence.** Phase 1 ingestion is genuinely pure application work, because
+`INSERT` on `stripe_events` is granted. Everything after it was not implementable as
+specified: the claim/re-claim branch and stale-claim sweeper need `UPDATE` on
+`stripe_events`; the §10a job needs `INSERT` **and** `UPDATE` on
+`reconciliation_runs`; exception raising needs `INSERT` on
+`reconciliation_exceptions`. Code written against them fails at runtime with
+`permission denied` — not at review, and not in a way a mocked test would catch.
+
+**Decision.** PR 3 adds one migration
+(`20260820003000_finance_reconciliation_mutations.sql`) providing nine SECURITY
+DEFINER functions and nothing more: `claim_stripe_events`, `complete_stripe_event`,
+`sweep_stale_event_claims`, `start_reconciliation_run`,
+`advance_reconciliation_run`, `finish_reconciliation_run`, `abandon_stale_runs`,
+`raise_reconciliation_exception`, `reset_object_failure_streak`.
+
+**Granting `UPDATE` to `service_role` was considered and rejected.** Note that
+`service_role` already holds `BYPASSRLS`, so the RLS policies on these tables do not
+constrain it — the grants are the only thing that does. Granting `UPDATE` would not
+be a small relaxation; it would remove the sole remaining control and let any route
+rewrite a run's approval evidence, window or counters. The run guards
+(`tg_run_authorization`, `tg_run_freeze_approved`) are written on the assumption that
+callers cannot do that.
+
+**Authorization model.** The EXECUTE grant is the boundary, and the only one: every
+function revokes from `PUBLIC` and grants solely to `service_role`. A role check
+inside the bodies is deliberately absent — once execution enters a SECURITY DEFINER
+function `current_user` is the owner for the whole call tree, so such a check would
+inspect `postgres` and pass unconditionally. It would read as a safeguard while
+enforcing nothing. Founder-only operations remain the existing functions, which
+authorize via `is_founder()`; that works because it reads JWT claims rather than the
+effective role.
+
+**Hardening.** Every function pins `search_path`, validates inputs, and constrains
+which state transitions it permits: only a `processing` event may be completed, only
+a `running` run may advance or finish, only a `completed` run may report an exhausted
+window (18b), counter deltas are additive and non-negative (D-049), and a failed
+event or run must carry an error. The migration asserts all of this in the same
+transaction that applies it, including that no `UPDATE`/`DELETE`/`TRUNCATE` grant
+exists in `finance` afterwards.
+
+**Two defects were found by executing the behaviour, not by reading the DDL**, and
+both would have shipped otherwise:
+
+1. `reconciliation_exceptions.detail` is `jsonb`, not `text`. The first version of
+   `raise_reconciliation_exception` declared it `text` and failed with `42804` on
+   every call. The static assertions all passed.
+2. `exc_processing_failure_shape` (D-061) requires that a
+   `provider_object_processing_failed` exception carry `provider_object_id` plus
+   `detail.object_type` and `detail.error_class` drawn from fixed vocabularies. The
+   function now validates this itself, turning an opaque `23514` into a message that
+   names the offending field.
+
+This is the same lesson D-078's review rounds recorded: a check that has never been
+executed is a claim, not evidence.
+
+## D-080 — The authoritative Stripe event subscription (resolves the "all events" contradiction)
+
+**The contradiction.** `PR_PLAN.md` (PR 3) says ingestion covers "**all** Stripe
+events into `finance.stripe_events`". `ARCHITECTURE.md` §10 instead enumerates four
+event types, and §10a rule 7 names four **object** types reconciliation walks. Taken
+naively these give three different answers to "what should the endpoint subscribe
+to", and defaulting to "all events" would have settled it by accident.
+
+**Resolution — the statements answer different questions.**
+
+1. *What does the handler do with what arrives?* PR_PLAN's "all" governs this, and it
+   is correct: the handler filters nothing. Filtering would discard an event Stripe
+   had already committed to delivering, and D-078's lesson is that discarding
+   provider events is the expensive mistake.
+
+2. *What should the endpoint be subscribed to?* **Neither document states this.**
+   ARCHITECTURE §10's four-type list is NOT the answer — it is the predicate of the
+   partial unique index `stripe_events_terminal_at_most_once_uq` and governs
+   deduplication, as D-056 says explicitly. §10's remark that "under-including a
+   type costs nothing, while over-including one silently discards a real event" is
+   about that index, not about subscription.
+
+   The controlling requirement is therefore **§10a rule 7**: reconciliation
+   enumerates *PaymentIntent, Charge, Refund and Checkout Session*. The subscription
+   is the finance-relevant event types of exactly those four objects.
+
+**Decision.** `lib/finance/stripe-event-types.ts` holds the single authoritative
+list — **20 event types** across the four reconciled objects. The Stripe dashboard
+configuration, the handler, this documentation and the automated tests all reference
+that one file, so they cannot drift apart.
+
+**Subscribing to every Stripe event is rejected.** It would record `customer.*`,
+`invoice.*`, `product.*`, `payout.*` and similar types serving no requirement,
+inflating a table that carries a 24-month retention obligation and diluting the
+shadow signal PR 3 exists to produce. A test asserts each of those maps to no
+reconciled object and is not subscribed.
+
+**Enforced by tests, not by assertion:** every at-most-once type is subscribed (or
+the index would defend a type never received); the at-most-once list matches the
+index predicate exactly; `payment_intent.payment_failed` is subscribed but NOT
+deduplicated (Stripe emits it per failed *attempt*, so two are legitimate for one
+PaymentIntent — acceptance 18k); every subscribed type maps to a reconciled object;
+every reconciled object is covered by at least one subscribed type; and
+`charge.refund.updated` classifies as a Refund rather than a Charge, which prefix
+order would otherwise get wrong.
+
+**Handler behaviour on an unlisted type.** It is still recorded — question 1 above —
+and logged as configuration drift. Silence would let the dashboard diverge from this
+file unnoticed, which is the failure mode this decision exists to prevent.
+
+## D-081 — A 23505 on `stripe_events` has two causes, and conflating them destroys data
+
+**Finding.** PR 3A's ingestion route treated any `23505` as a duplicate delivery and
+answered `200`. There are two distinct causes:
+
+- `stripe_events_pkey` — the same `event_id` twice. Routine redelivery; the event is
+  already recorded and `200` is correct.
+- `stripe_events_terminal_at_most_once_uq` — a **different** event (different
+  `event_id`) of a terminal type for the same object.
+
+For the second, `200` acknowledges an event that was never stored, and Stripe then
+stops retrying. That is exactly the hazard ARCHITECTURE §10 names — "over-including
+one silently discards a real event" — reached through the handler rather than
+through the index definition.
+
+**Decision.** Classification keys on the **constraint name**, not the SQLSTATE. A
+primary-key collision returns `200`; an at-most-once conflict returns `409` and logs
+the event id, type and object id. A `23505` naming no recognised constraint is
+treated as a conflict, not as benign — defaulting to "duplicate" would reintroduce
+the silent discard by another route.
+
+The `409` means Stripe retains the event and retries will keep colliding. That is
+deliberate: a stuck, noisy event is recoverable by a human, a silently discarded one
+is not. Reaching this state means either the at-most-once assumption is wrong for
+that type or something upstream is genuinely duplicating, and both need a decision
+rather than a default.
+
+## D-082 — Financials V2 begins from a verified clean state; PR 4 renders no legacy comparison
+
+**Finding (PR 4 preflight, 2026-08-21, read-only).** The comparison PR 4 was
+specified to display cannot be built honestly:
+
+- PR 2's importer and its per-member variance report — still described in
+  PR_PLAN.md, including in PR 4's own outcome — **were never built**. PR 2 was
+  rescoped to Clean-Start Activation on the founder's attestation that no genuine
+  historical financial record existed; D-077 then wiped the legacy financial
+  tables.
+- No surviving source is a trustworthy financial reference. The retired tables
+  are empty and frozen. `public.audit_log` preserved `before_state` for every
+  wiped row and **independently corroborates D-077** (20 rows, 0 completed,
+  2 refunded, 0 live-mode identifiers) — but it records money that never moved
+  (test-mode, never-completed sessions), begins only at the audit trigger's
+  creation (2026-04-18), and carries degraded attribution; it is forensic
+  evidence, not financial history. `bookings.amount_paid_cents` sums to 0 and its
+  `amount_due` disagrees with the deleted commitment for the same participant.
+  `members.program_price` is a price list.
+
+**Decision.** Financials V2 starts from a verified clean state. PR 4 is a
+**Financial Verification workspace**, not a shadow/diff page:
+
+- It renders a clean-start banner stating that no verified historical payments
+  were imported and that financial activity begins with Financials V2.
+- It shows canonical V2 member and journey positions, Stripe-versus-V2
+  reconciliation status, unattributed payments and exceptions, quarantined
+  objects, and system health.
+- It renders **no retired-reference or legacy-delta columns** — not even marked
+  "unavailable". A permanently empty column is visual noise, and no later PR
+  makes historical reference data reappear.
+- Resolution and release run exclusively through `finance.resolve_exception()`
+  and `finance.release_quarantine()` via SECURITY INVOKER `finance_api`
+  wrappers; actor and timestamp remain database-generated.
+
+**Consequential amendments to PR_PLAN.md:**
+- PR 2 is recorded as Clean-Start Activation; the importer text is marked
+  superseded.
+- PR 4 no longer promises legacy variances.
+- **PR 8's precondition** becomes: shadow verification reviewed and accepted,
+  meaning successful V2/Stripe reconciliation with **no unexplained
+  exceptions** — not resolution of nonexistent legacy variances.
+
+**What this does not change.** The unredacted wipe archive and `audit_log`
+remain preserved as forensic evidence. §0a's read-only comparison carve-out
+becomes moot rather than revoked.
+
+## D-083 — External-payment submission is idempotent at the database
+
+**Problem.** A founder recording a cheque must not be able to record it twice by
+double-click, browser retry, or network replay. Client-side debouncing is
+courtesy, not enforcement; PR 5's requirement is that duplication be impossible.
+
+**Decision.** `finance.ledger_entries` gains a nullable `idempotency_key uuid`
+with a partial unique index (`WHERE idempotency_key IS NOT NULL`).
+`finance.record_external_payment` REQUIRES the key: the client generates it once
+per form open (not per click), and a second submission with the same key hits the
+unique index, is caught inside the function, and returns the EXISTING entry id —
+the caller sees success, no new money exists. Verified against production: the
+same submission twice returned the same id and the balance did not move.
+
+**Why nullable.** Reconciliation-written rows have a natural identity — the
+provider object — enforced by their own indexes; a synthetic key would add
+nothing. The column is set at INSERT only; `tg_append_only` still forbids
+UPDATE/DELETE, so the append-only audit property is untouched.
+
+**Scope note.** PR 5's other writers do not take a key: amendment and lifecycle
+rows are append-only *history* where a double-click produces a visible duplicate
+history row rather than duplicated money, and a reversal is naturally idempotent
+because the ledger trigger refuses to reverse an already-reversed parent.
+
+## D-084 — PR 7 is V2-only; the legacy read flag and fallback are struck
+
+**Correction.** The original PR 7 plan ("founder surfaces read V2 behind a
+feature flag, legacy when off") is no longer implementable or desirable: D-077
+wiped the retired tables, D-078 froze them and forbids re-enabling legacy flags,
+D-082 established the clean start, and PR 4/5 already made founder surfaces
+V2-native. **PR 7 therefore ships with no financial read flag and no legacy
+fallback.** A failed V2 read renders an explicit unknown/error state — never a
+legacy value and never $0, because a zero is a fact while a failed read is
+unknown. The retired views `financials_overview`, `cohort_margin_summary` and
+`private_ceremony_summary` leave `/dashboard/financials`; the cohort/private
+margin tabs are removed rather than kept as a misleading continuity surface.
+The PR 7 section of PR_PLAN.md is replaced accordingly. Two bounded
+security_invoker+barrier views (`founder_financial_overview`,
+`founder_payment_activity`, migration 20260821180000) carry the aggregates;
+each embeds an explicit `is_founder()` boundary and is granted to
+`authenticated` only.
+
+## D-085 — PR 8: member portal is V2-only; member privacy is a grant boundary (2026-08-21)
+
+The Member Contribution Portal at /portal/donate reads only the four member-safe
+`finance_api` views (`member_contribution_overview`, `member_contribution_agreements`,
+`member_payment_activity`, `member_checkout_status`), each SECURITY INVOKER +
+BARRIER with an explicit `finance.current_member_id()` boundary. The broad PR 3C
+façades (`agreement_amounts`, `ledger_entries`, `checkout_sessions`,
+`agreement_lifecycle_events`) are revoked from `authenticated`: member RLS let a
+member read their OWN rows through them, including founder reasons, actor UUIDs,
+provider ids, Stripe session ids and link ids. Founder surfaces read explicit
+founder-only replacement views (`founder_agreement_amount_history`,
+`founder_ledger_history`, `founder_checkout_sessions`, `founder_lifecycle_history`).
+
+Member checkout runs on the PR 6 engine. `finance.begin_member_contribution_checkout`
+derives the FULL payable remaining under lock — no client amount exists in the
+protocol — and refuses non-ownership as VK404, indistinguishable from a missing id.
+`finance.begin_member_gift_checkout` reuses the member's single `additional_gift`
+agreement (the `agreements_member_journey_purpose_key` NULLS NOT DISTINCT invariant
+is deliberate and unweakened); distinct gifts are distinct attempts and ledger
+facts, one live at a time. The member-callable rpcs return NO Stripe or
+idempotency material; service-role code fetches it by attempt id through
+`machine_checkout_attempts` (service_role-only grant). Request identity is the
+deterministic key `vk2_member_{contribution|gift}_<member>_<request>` in the
+existing unique `checkout_sessions.idempotency_key`.
+
+The superseded member payment pages (/portal/journey/payment,
+/portal/onboarding/donation) are pure server redirects to /portal/donate.
+`FINANCE_V2_CHECKOUT_READY` gates issuance only; it never changes a read source,
+and a failed member read renders unknown — never $0.
