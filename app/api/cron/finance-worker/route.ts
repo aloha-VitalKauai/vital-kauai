@@ -49,6 +49,27 @@ export async function GET(req: Request) {
   const now = new Date();
   const result: Record<string, unknown> = {};
 
+  // Recovery runs FIRST and on its own error boundary. It unwinds money-adjacent
+  // state, so an unrelated sweep failure must not be able to starve it — before
+  // this ordering, a persistent abandon_stale_runs error returned early and
+  // recovery never ran at all.
+  let recoveryFailed = false;
+  try {
+    result.checkoutRecovery = await runCheckoutRecovery(
+      financeServiceClient(),
+      stripeCheckoutGateway(),
+      // Cleanup (adopt, cancel, expire) always runs. Creating a new payable
+      // Session is gated on the same readiness flag as issuance, so rolling
+      // the flag back actually stops money moving.
+      { allowSessionCreation: process.env.FINANCE_V2_CHECKOUT_READY === "true" },
+    );
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("finance-worker: checkout recovery failed", message);
+    result.checkoutRecovery = { error: message };
+    recoveryFailed = true;
+  }
+
   try {
     result.abandonedRuns = await sweepAbandonedRuns(financeServiceClient());
     // PR 6: claimed links with no Stripe-bound attempt return to active after
@@ -59,26 +80,6 @@ export async function GET(req: Request) {
         .rpc("restore_orphaned_link_claims", { p_stale_after: "15 minutes" });
       if (error) console.error("finance-worker: orphan restore failed", error.message);
       result.orphanedLinksRestored = (data as number | null) ?? 0;
-    }
-
-    // PR 6 closeout: attempts stranded in `creating` and sessions left `open`
-    // past expiry both hold the one-live slot. This is a DIFFERENT failure from
-    // the orphan restore above, which only covers a claimed link that never
-    // reached an attempt row. Recovery talks to Stripe, so it is isolated: a
-    // provider outage must not stop the event queue from draining.
-    try {
-      result.checkoutRecovery = await runCheckoutRecovery(
-        financeServiceClient(),
-        stripeCheckoutGateway(),
-        // Cleanup (adopt, cancel, expire) always runs. Creating a new payable
-        // Session is gated on the same readiness flag as issuance, so rolling
-        // the flag back actually stops money moving.
-        { allowSessionCreation: process.env.FINANCE_V2_CHECKOUT_READY === "true" },
-      );
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      console.error("finance-worker: checkout recovery failed", message);
-      result.checkoutRecovery = { error: message };
     }
 
     for (const livemode of modes) {
@@ -93,6 +94,13 @@ export async function GET(req: Request) {
     // by the duration budget, and losing a pass costs nothing.
     result.payloadsPurged = await purgeExpiredPayloads(financeServiceClient(), now);
 
+    // A dead recovery sweeper must not be reported as a healthy run: this route
+    // is the only signal that money-adjacent state is still being unwound, and
+    // 200/ok is what alerting keys on. A missing Stripe key or a claim failure
+    // surfaces as 500 even when everything else drained cleanly.
+    if (recoveryFailed) {
+      return NextResponse.json({ ok: false, degraded: "checkout_recovery", ...result }, { status: 500 });
+    }
     return NextResponse.json({ ok: true, ...result });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

@@ -24,7 +24,13 @@
  */
 
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { v2StripeClient, v2Metadata, STRIPE_V2_API_VERSION } from "@/lib/finance/checkout";
+import {
+  v2StripeClient,
+  v2Metadata,
+  memberEmailForAgreement,
+  financeServiceClient,
+  STRIPE_V2_API_VERSION,
+} from "@/lib/finance/checkout";
 
 /**
  * Stripe idempotency keys live 24 hours. We stop replaying at 23 so a key can
@@ -63,12 +69,14 @@ const ENUMERATION_SKEW_AHEAD_MS = 10 * 60 * 1000;
 export type StrandedAttempt = {
   attempt_id: string;
   agreement_id: string;
+  /** Non-null means the attempt came from a founder link, not the member portal. */
   payment_link_id: string | null;
   amount_cents: number;
   idempotency_key: string;
   livemode: boolean;
   created_at: string;
   recovery_attempts: number;
+  purpose: string;
 };
 
 export type StaleSession = {
@@ -102,10 +110,25 @@ export interface CheckoutGateway {
   }): Promise<{ data: GatewaySession[]; hasMore: boolean }>;
   retrieveSession(id: string): Promise<GatewaySession>;
   expireSession(id: string): Promise<GatewaySession>;
-  createSession(
-    attempt: StrandedAttempt,
-    idempotencyKey: string,
-  ): Promise<{ id: string; expiresAt: number | null }>;
+  createSession(input: {
+    attempt: StrandedAttempt;
+    idempotencyKey: string;
+    productName: string;
+    customerEmail: string | null;
+  }): Promise<{ id: string; expiresAt: number | null }>;
+  /** Used to unwind a Session we created but could not record. */
+  memberEmail(agreementId: string): Promise<string | null>;
+}
+
+/**
+ * The product name must match the original request byte for byte, or Stripe
+ * rejects the reused idempotency key and the replay cannot return the original
+ * Session. These strings are the ones the member checkout route sends.
+ */
+export function productNameForPurpose(purpose: string): string {
+  return purpose === "additional_gift"
+    ? "Vital Kauaʻi Additional Gift"
+    : "Vital Kauaʻi Journey Contribution";
 }
 
 export type RecoveryOutcome =
@@ -232,7 +255,12 @@ export async function recoverStrandedAttempt(
     // A provider read failure is not evidence of anything. Release and retry.
     console.error("checkout-recovery: enumeration failed", attempt.attempt_id,
       err instanceof Error ? err.message : err);
-    await fin.rpc("release_recovery_claim", { p_attempt_id: attempt.attempt_id });
+    // No decision was reached, so this pass must not spend one of the five
+    // lives — otherwise a Stripe outage alone exhausts every in-flight attempt.
+    await fin.rpc("release_recovery_claim", {
+      p_attempt_id: attempt.attempt_id,
+      p_undo_attempt: true,
+    });
     return "error";
   }
 
@@ -307,58 +335,131 @@ export async function recoverStrandedAttempt(
     return "ambiguous";
   }
 
-  if (ageHours < IDEMPOTENCY_WINDOW_HOURS) {
+  // A replay is only ever attempted when ALL of these hold. Anything else is
+  // unwound by cancelling a provably empty attempt, which frees the slot and
+  // lets the member start again through the ordinary path — where the amount is
+  // re-derived under lock and the request is built correctly.
+  //
+  //   • inside the idempotency window, so a duplicate is impossible;
+  //   • checkout is not paused (fail-closed);
+  //   • the attempt came from the member portal. A founder-link attempt cannot
+  //     be replayed faithfully: its cancel_url embeds the raw link token, which
+  //     is hashed at rest and unrecoverable by design, so the rebuilt request
+  //     would differ and Stripe would reject the key — the replay could never
+  //     return the original Session anyway.
+  const replayable =
+    ageHours < IDEMPOTENCY_WINDOW_HOURS &&
+    allowSessionCreation &&
+    attempt.payment_link_id === null;
+
+  if (ageHours < IDEMPOTENCY_WINDOW_HOURS && !allowSessionCreation) {
     // Fail-closed: while checkout is paused, recovery may still adopt, cancel
-    // and expire — but it must not mint a NEW payable Session. Otherwise
-    // rolling the readiness flag back would not actually stop money moving.
-    if (!allowSessionCreation) {
-      await fin.rpc("release_recovery_claim", { p_attempt_id: attempt.attempt_id });
-      return "deferred";
+    // and expire — but it must not mint a NEW payable Session. This pass
+    // reached no decision, so it must not spend one of the attempt's lives.
+    await fin.rpc("release_recovery_claim", {
+      p_attempt_id: attempt.attempt_id,
+      p_undo_attempt: true,
+    });
+    return "deferred";
+  }
+
+  if (replayable) {
+    // Re-validate against canonical truth before minting anything payable. The
+    // attempt's amount was captured up to 23 hours ago; a payment or an
+    // amendment since then means the member must re-consent rather than be
+    // sent to a stale figure.
+    const { data: balData, error: balErr } = await fin
+      .from("agreement_balances")
+      .select("payable_remaining_cents, payment_state")
+      .eq("agreement_id", attempt.agreement_id)
+      .returns<{ payable_remaining_cents: number; payment_state: string }[]>();
+    if (balErr) {
+      await fin.rpc("release_recovery_claim", {
+        p_attempt_id: attempt.attempt_id,
+        p_undo_attempt: true,
+      });
+      return "error";
     }
-    // Inside the window the persisted key still protects us: if a Session was
-    // in fact created, Stripe collapses this into that same object rather than
-    // making a second one.
-    try {
-      const created = await gateway.createSession(attempt, attempt.idempotency_key);
+    const balance = balData?.[0];
+    const stillCurrent =
+      balance != null &&
+      balance.payable_remaining_cents > 0 &&
+      balance.payable_remaining_cents === attempt.amount_cents;
+
+    if (stillCurrent) {
+      let created: { id: string; expiresAt: number | null } | null = null;
+      try {
+        const email = await gateway.memberEmail(attempt.agreement_id);
+        created = await gateway.createSession({
+          attempt,
+          idempotencyKey: attempt.idempotency_key,
+          productName: productNameForPurpose(attempt.purpose),
+          customerEmail: email,
+        });
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        // An idempotency collision proves a Session exists that enumeration
+        // could not see. Never guess its id — say so and let a later pass
+        // adopt it.
+        const collision = /idempot/i.test(message);
+        await raiseException(fin, {
+          kind: "stranded_checkout_attempt",
+          livemode: attempt.livemode,
+          agreementId: attempt.agreement_id,
+          amountCents: attempt.amount_cents,
+          detail: {
+            attempt_id: attempt.attempt_id,
+            reason: collision ? "idempotency_key_already_used" : "replay_failed",
+            provider_message: message.slice(0, 300),
+            note: collision
+              ? "A Session exists for this key but was not visible to enumeration; it will be adopted on a later pass."
+              : "Replay inside the idempotency window failed; nothing was charged.",
+          },
+        });
+        return collision ? "ambiguous" : "error";
+      }
+
       const { error } = await fin.rpc("finalize_checkout_session", {
         p_attempt_id: attempt.attempt_id,
         p_stripe_session_id: created.id,
         p_expires_at: created.expiresAt ? new Date(created.expiresAt * 1000).toISOString() : null,
       });
       if (error) {
+        // The Session is live at Stripe but the database will never reference
+        // it. Unwind it now — an unreferenced payable Session carrying valid V2
+        // metadata would be honoured by the ledger if anyone ever paid it.
         console.error("checkout-recovery: finalize after replay failed", attempt.attempt_id, error.message);
+        let unwound = false;
+        try {
+          const dead = await gateway.expireSession(created.id);
+          unwound = dead.status === "expired";
+        } catch { /* fall through to the exception below */ }
+        if (!unwound) {
+          await raiseException(fin, {
+            kind: "stranded_checkout_attempt",
+            livemode: attempt.livemode,
+            agreementId: attempt.agreement_id,
+            amountCents: attempt.amount_cents,
+            providerObjectId: created.id,
+            detail: {
+              attempt_id: attempt.attempt_id,
+              reason: "orphaned_session_after_finalize_failure",
+              note: "A live Session was created but could not be recorded or expired. Expire it in Stripe by hand.",
+            },
+          });
+          return "ambiguous";
+        }
         await fin.rpc("release_recovery_claim", { p_attempt_id: attempt.attempt_id });
         return "error";
       }
       await fin.rpc("release_recovery_claim", { p_attempt_id: attempt.attempt_id });
       return "replayed";
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      // An idempotency collision proves a Session exists that enumeration could
-      // not see (Stripe list lag). Never guess its id — say so and let the next
-      // pass find it.
-      const collision = /idempot/i.test(message);
-      await raiseException(fin, {
-        kind: "stranded_checkout_attempt",
-        livemode: attempt.livemode,
-        agreementId: attempt.agreement_id,
-        amountCents: attempt.amount_cents,
-        detail: {
-          attempt_id: attempt.attempt_id,
-          reason: collision ? "idempotency_key_already_used" : "replay_failed",
-          provider_message: message.slice(0, 300),
-          note: collision
-            ? "A Session exists for this key but was not visible to enumeration; it will be adopted on a later pass."
-            : "Replay inside the idempotency window failed; nothing was charged.",
-        },
-      });
-      return collision ? "ambiguous" : "error";
     }
+    // Amount drifted or nothing is owed any more: fall through and cancel.
   }
 
-  // Beyond the window the key is dead: replaying would mint a SECOND Session.
-  // Exhaustive enumeration already proved none exists, so the attempt is
-  // provably empty and the slot is safe to free.
+  // Provably empty. Cancelling frees the single-flight slot; the member starts
+  // again through the ordinary path, which re-derives the amount under lock.
   const { error } = await fin.rpc("transition_checkout_session", {
     p_attempt_id: attempt.attempt_id,
     p_to_status: "canceled",
@@ -429,6 +530,7 @@ export async function recoverStaleSession(
       const { error } = await fin.rpc("transition_checkout_session", {
         p_attempt_id: session.attempt_id,
         p_to_status: "completed",
+        p_stripe_session_id: session.stripe_session_id,
       });
       if (error) {
         console.error("checkout-recovery: complete transition failed", session.attempt_id, error.message);
@@ -456,6 +558,7 @@ export async function recoverStaleSession(
     const { error } = await fin.rpc("transition_checkout_session", {
       p_attempt_id: session.attempt_id,
       p_to_status: "expired",
+      p_stripe_session_id: session.stripe_session_id,
     });
     if (error) {
       console.error("checkout-recovery: expire transition failed", session.attempt_id, error.message);
@@ -519,12 +622,23 @@ export async function recoverStaleSession(
 export async function runCheckoutRecovery(
   client: SupabaseClient,
   gateway: CheckoutGateway,
-  opts: { strandedAfter?: string; limit?: number; allowSessionCreation?: boolean } = {},
+  opts: {
+    strandedAfter?: string;
+    limit?: number;
+    allowSessionCreation?: boolean;
+    livemode?: boolean;
+  } = {},
 ): Promise<RecoveryResult> {
   const fin = client.schema("finance_api");
   const outcomes: Record<string, number> = {};
 
+  // One deployment holds one Stripe key, so it may only sweep that key's mode.
+  // Enumerating the live account on behalf of a test-mode attempt would "prove"
+  // a Session absent that exists in the other account entirely.
+  const livemode = opts.livemode ?? (process.env.STRIPE_SECRET_KEY ?? "").startsWith("sk_live_");
+
   const { data: strandedData, error: strandedErr } = await fin.rpc("claim_stranded_attempts", {
+    p_livemode: livemode,
     p_older_than: opts.strandedAfter ?? STRANDED_AFTER,
     p_claim_ttl: "10 minutes",
     p_limit: opts.limit ?? 20,
@@ -538,6 +652,7 @@ export async function runCheckoutRecovery(
   }
 
   const { data: staleData, error: staleErr } = await fin.rpc("claim_stale_sessions", {
+    p_livemode: livemode,
     p_claim_ttl: "10 minutes",
     p_limit: opts.limit ?? 20,
   });
@@ -585,25 +700,38 @@ export function stripeCheckoutGateway(): CheckoutGateway {
       const s = await stripe.checkout.sessions.expire(id);
       return { id: s.id, status: s.status ?? null };
     },
-    async createSession(attempt, idempotencyKey) {
+    async memberEmail(agreementId) {
+      return memberEmailForAgreement(financeServiceClient(), agreementId);
+    },
+    /**
+     * Byte-identical to the member checkout route's request. A reused
+     * idempotency key whose parameters differ is REJECTED by Stripe, so any
+     * drift here turns the replay from "return the original Session" into a
+     * permanent error — precisely in the crash this exists to repair. Recovery
+     * only ever replays member-portal attempts, whose URLs are reconstructible;
+     * founder-link attempts are excluded upstream.
+     */
+    async createSession({ attempt, idempotencyKey, productName, customerEmail }) {
+      const origin = "https://vitalkauai.com";
       const s = await stripe.checkout.sessions.create(
         {
           mode: "payment",
           payment_method_types: ["card"],
+          customer_email: customerEmail ?? undefined,
           line_items: [
             {
               quantity: 1,
               price_data: {
                 currency: "usd",
                 unit_amount: attempt.amount_cents,
-                product_data: { name: "Vital Kauaʻi Contribution" },
+                product_data: { name: productName },
               },
             },
           ],
           metadata: v2Metadata(attempt.agreement_id, attempt.attempt_id),
           payment_intent_data: { metadata: v2Metadata(attempt.agreement_id, attempt.attempt_id) },
-          success_url: "https://vitalkauai.com/portal/donate?checkout=confirming&attempt=" + attempt.attempt_id,
-          cancel_url: "https://vitalkauai.com/portal/donate?checkout=canceled&attempt=" + attempt.attempt_id,
+          success_url: `${origin}/portal/donate?checkout=confirming&attempt=${attempt.attempt_id}`,
+          cancel_url: `${origin}/portal/donate?checkout=canceled&attempt=${attempt.attempt_id}`,
         },
         { idempotencyKey },
       );

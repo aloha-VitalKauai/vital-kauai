@@ -27,11 +27,22 @@ import {
 
 type RpcCall = { fn: string; args: Record<string, unknown> };
 
-function fakeClient(handlers: Record<string, (args: Record<string, unknown>) => unknown> = {}) {
+function fakeClient(
+  handlers: Record<string, (args: Record<string, unknown>) => unknown> = {},
+  balance: { payable_remaining_cents: number; payment_state: string } | null =
+    { payable_remaining_cents: 10000, payment_state: "unpaid" },
+) {
   const calls: RpcCall[] = [];
   const client = {
     schema() {
       return {
+        from() {
+          return {
+            select() { return this; },
+            eq() { return this; },
+            returns() { return Promise.resolve({ data: balance ? [balance] : [], error: null }); },
+          };
+        },
         rpc(fn: string, args: Record<string, unknown>) {
           calls.push({ fn, args });
           const h = handlers[fn];
@@ -67,6 +78,7 @@ function attempt(o: Partial<StrandedAttempt> = {}): StrandedAttempt {
     livemode: true,
     created_at: hoursAgo(1),
     recovery_attempts: 1,
+    purpose: "journey_contribution",
     ...o,
   };
 }
@@ -120,9 +132,13 @@ function gateway(opts: {
       if (!e) throw new Error("expire refused");
       return { ...e, id };
     },
-    async createSession(_a, key) {
+    async memberEmail() {
+      log.push("email");
+      return "member@example.com";
+    },
+    async createSession({ idempotencyKey }) {
       log.push("create");
-      createKeys.push(key);
+      createKeys.push(idempotencyKey);
       if (typeof opts.create === "function") opts.create();
       if (!opts.create) throw new Error("create failed");
       return opts.create;
@@ -531,4 +547,141 @@ test("the sweep passes the readiness gate through to each attempt", async () => 
   assert.equal(result.outcomes.deferred, 1);
   assert.ok(!log.includes("create"));
   assert.equal(called(calls, "finalize_checkout_session").length, 0);
+});
+
+// ── Bounded adversarial review fixes ─────────────────────────────────────────
+
+test("a deferred pass does NOT spend one of the attempt's lives", async () => {
+  // recovery_attempts is incremented at claim time. Without an undo, pausing
+  // checkout for an hour exhausts every in-flight attempt and holds its slot
+  // forever — the opposite of what the kill switch is for.
+  const { client, calls } = fakeClient();
+  const { gw } = gateway({ pages: [[]], create: { id: "cs_no", expiresAt: null } });
+
+  const outcome = await recoverStrandedAttempt(
+    client, gw, attempt({ created_at: hoursAgo(2) }), { allowSessionCreation: false },
+  );
+
+  assert.equal(outcome, "deferred");
+  const rel = called(calls, "release_recovery_claim");
+  assert.equal(rel.length, 1);
+  assert.equal(rel[0]!.args.p_undo_attempt, true, "a no-decision pass must roll the counter back");
+});
+
+test("a provider read outage does NOT spend one of the attempt's lives", async () => {
+  const { client, calls } = fakeClient();
+  const { gw } = gateway({ listThrows: true });
+
+  await recoverStrandedAttempt(client, gw, attempt());
+
+  assert.equal(called(calls, "release_recovery_claim")[0]!.args.p_undo_attempt, true);
+});
+
+test("the sweep claims only the mode its Stripe key belongs to", async () => {
+  const { client, calls } = fakeClient({
+    claim_stranded_attempts: () => [],
+    claim_stale_sessions: () => [],
+  });
+  const { gw } = gateway();
+
+  await runCheckoutRecovery(client, gw, { livemode: true });
+
+  assert.equal(called(calls, "claim_stranded_attempts")[0]!.args.p_livemode, true);
+  assert.equal(called(calls, "claim_stale_sessions")[0]!.args.p_livemode, true);
+
+  const test2 = fakeClient({ claim_stranded_attempts: () => [], claim_stale_sessions: () => [] });
+  await runCheckoutRecovery(test2.client, gateway().gw, { livemode: false });
+  assert.equal(called(test2.calls, "claim_stranded_attempts")[0]!.args.p_livemode, false);
+});
+
+test("a founder-link attempt is never replayed: its request cannot be rebuilt", async () => {
+  // cancel_url embeds the raw token, which is hashed at rest. A rebuilt request
+  // would differ, so Stripe would reject the key and the replay could never
+  // return the original Session.
+  const { client, calls } = fakeClient();
+  const { gw, log } = gateway({ pages: [[]], create: { id: "cs_never", expiresAt: null } });
+
+  const outcome = await recoverStrandedAttempt(
+    client, gw, attempt({ created_at: hoursAgo(2), payment_link_id: "link_1" }),
+  );
+
+  assert.equal(outcome, "canceled");
+  assert.ok(!log.includes("create"));
+  assert.equal(called(calls, "transition_checkout_session")[0]!.args.p_to_status, "canceled");
+});
+
+test("a drifted amount cancels instead of replaying a stale figure", async () => {
+  // The attempt captured 10000 up to 23h ago; canonical truth now says 25000.
+  const { client, calls } = fakeClient({}, { payable_remaining_cents: 25000, payment_state: "unpaid" });
+  const { gw, log } = gateway({ pages: [[]], create: { id: "cs_stale", expiresAt: null } });
+
+  const outcome = await recoverStrandedAttempt(client, gw, attempt({ created_at: hoursAgo(2) }));
+
+  assert.equal(outcome, "canceled");
+  assert.ok(!log.includes("create"), "must not send the member to a figure they never agreed to");
+  assert.equal(called(calls, "transition_checkout_session")[0]!.args.p_to_status, "canceled");
+});
+
+test("an agreement already paid is never given a new payable Session", async () => {
+  const { client, calls } = fakeClient({}, { payable_remaining_cents: 0, payment_state: "paid" });
+  const { gw, log } = gateway({ pages: [[]], create: { id: "cs_paid", expiresAt: null } });
+
+  const outcome = await recoverStrandedAttempt(client, gw, attempt({ created_at: hoursAgo(2) }));
+
+  assert.equal(outcome, "canceled");
+  assert.ok(!log.includes("create"));
+  assert.equal(called(calls, "finalize_checkout_session").length, 0);
+});
+
+test("a replay whose finalize fails expires the Session it just created", async () => {
+  // Otherwise a live payable Session carrying valid V2 metadata exists that the
+  // database will never reference again.
+  const { client, calls } = fakeClient({
+    finalize_checkout_session: () => { throw new Error("finalize: attempt is open, expected creating"); },
+  });
+  const { gw, log } = gateway({
+    pages: [[]],
+    create: { id: "cs_orphan", expiresAt: null },
+    expire: { id: "cs_orphan", status: "expired" },
+  });
+
+  const outcome = await recoverStrandedAttempt(client, gw, attempt({ created_at: hoursAgo(2) }));
+
+  assert.equal(outcome, "error");
+  assert.ok(log.includes("expire"), "the orphaned Session must be unwound at Stripe");
+  assert.equal(called(calls, "raise_reconciliation_exception").length, 0);
+});
+
+test("an orphaned Session that cannot be expired becomes a founder-visible exception", async () => {
+  const { client, calls } = fakeClient({
+    finalize_checkout_session: () => { throw new Error("finalize failed"); },
+  });
+  const { gw } = gateway({
+    pages: [[]],
+    create: { id: "cs_orphan2", expiresAt: null },
+    expire: undefined,
+  });
+
+  const outcome = await recoverStrandedAttempt(client, gw, attempt({ created_at: hoursAgo(2) }));
+
+  assert.equal(outcome, "ambiguous");
+  const exc = called(calls, "raise_reconciliation_exception")[0]!;
+  assert.equal(exc.args.p_provider_object_id, "cs_orphan2");
+  assert.equal(
+    (exc.args.p_detail as { reason: string }).reason,
+    "orphaned_session_after_finalize_failure",
+  );
+});
+
+test("stale-session transitions name the Session they inspected", async () => {
+  const { client, calls } = fakeClient();
+  const { gw } = gateway({ retrieve: { id: "cs_live_1", status: "expired" } });
+
+  await recoverStaleSession(client, gw, staleSession());
+
+  assert.equal(
+    called(calls, "transition_checkout_session")[0]!.args.p_stripe_session_id,
+    "cs_live_1",
+    "the database must be able to refuse an event that belongs to another Session",
+  );
 });

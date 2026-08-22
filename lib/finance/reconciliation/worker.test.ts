@@ -228,6 +228,9 @@ test("checkout.session.expired releases only the attempt named in its metadata",
   assert.equal(tr.length, 1, "exactly one attempt may be touched");
   assert.equal(tr[0]!.args.p_attempt_id, "att_target");
   assert.equal(tr[0]!.args.p_to_status, "expired");
+  // The Session id is pinned so the database can refuse an event belonging to
+  // a different Session that merely carries our attempt_id in its metadata.
+  assert.equal(tr[0]!.args.p_stripe_session_id, "cs_1");
   assert.equal(result.processed, 1);
 });
 
