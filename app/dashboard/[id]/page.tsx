@@ -157,14 +157,23 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
   // founder-safe V2 views. Only a label, a timestamp and a formatted amount
   // cross into the client — no provider id, actor or raw metadata.
   const fin = supabase.schema("finance_api");
-  const [{ data: v2Activity }, { data: v2Lifecycle }] = await Promise.all([
+  // Lifecycle rows are keyed by agreement, not by member, so they MUST be
+  // restricted to this member's agreements explicitly. The agreement ids come
+  // from a member-scoped query — deriving them from the activity rows would
+  // yield an empty set for a member with no payments yet, and an empty set is
+  // not a safe filter input.
+  const [{ data: v2Activity }, { data: v2Agreements }] = await Promise.all([
     fin.from("founder_payment_activity").select("id, entry_type, amount_cents, occurred_at, member_id")
       .eq("member_id", id).order("occurred_at", { ascending: false }).limit(50),
-    fin.from("founder_lifecycle_history").select("id, agreement_id, from_status, to_status, occurred_at"),
+    fin.from("agreement_balances").select("agreement_id").eq("member_id", id),
   ]);
-  const agreementIds = new Set(
-    ((v2Activity ?? []) as Array<{ agreement_id?: string }>).map((a) => a.agreement_id).filter(Boolean),
-  );
+  const agreementIds = ((v2Agreements ?? []) as Array<{ agreement_id: string }>)
+    .map((a) => a.agreement_id);
+  const { data: v2Lifecycle } = agreementIds.length
+    ? await fin.from("founder_lifecycle_history")
+        .select("id, agreement_id, to_status, occurred_at")
+        .in("agreement_id", agreementIds)
+    : { data: [] as Array<{ id: string; agreement_id: string; to_status: string; occurred_at: string }> };
   const ENTRY_LABEL: Record<string, string> = {
     stripe_payment: "Card payment",
     external_payment: "Recorded payment",
@@ -187,7 +196,6 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
         detail: `$${Math.abs(e.amount_cents / 100).toLocaleString("en-US")}${e.amount_cents < 0 ? " returned" : ""}`,
       })),
     ...((v2Lifecycle ?? []) as Array<{ id: string; agreement_id: string; to_status: string; occurred_at: string }>)
-      .filter((l) => agreementIds.size === 0 || agreementIds.has(l.agreement_id))
       .map((l) => ({
         id: `v2-lifecycle-${l.id}`,
         at: l.occurred_at,
