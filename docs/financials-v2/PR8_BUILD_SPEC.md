@@ -467,3 +467,34 @@ complete or resume a secure full-remaining card checkout, optionally make a
 separate gift, and see the resulting net activity — while another member, an
 anonymous caller, client tampering, retries, concurrent clicks and internal
 façade probing cannot reveal private fields or create duplicate/mis-priced money.
+
+---
+
+## Amendment — production copy and gift policy (D-086, 2026-08-22)
+
+The approved language in §3 and the presets in §4.5 were amended in production
+after PR 8 shipped. The **live** text and policy, which PR 9 preserves and must
+not reopen, are:
+
+**Hero copy** (GitHub #910):
+
+> YOUR CONTRIBUTION
+>
+> Mahalo for your contribution.
+>
+> Your support helps us provide scholarships for members in need, particularly
+> for our first responders and essential workers.
+
+**Gift presets** (GitHub #911): **$500, $2,500, $5,000, $15,000**, plus Custom.
+
+**Gift bounds** (GitHub #913): whole dollars, **$5 minimum, $5,000,000 maximum**.
+#911 raised the browser ceiling only; the server constant and the database check
+were still $25,000, so any custom gift between the two was accepted by the UI and
+then refused with a generic error — the hidden client-only limit this spec
+forbids. #913 aligned all three layers and added a test that derives both
+ceilings from source and fails if they diverge again.
+
+This is *our* risk ceiling only. Card networks and Stripe impose their own
+per-charge limits far below it, so a gift near the maximum would be declined by
+the issuer long before it reached the ledger. Declines are rendered truthfully
+and are never represented as payment.
