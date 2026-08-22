@@ -1139,8 +1139,8 @@ function relativeWeekDay(arc: JourneyArc, weekIdx: number) {
     const days = 42 - weekIdx * 7
     return `${days} days before ceremony`
   }
-  const days = weekIdx * 7
-  return days === 0 ? 'On ceremony day' : `${days} days after ceremony`
+  const days = 7 + weekIdx * 7
+  return `${days} days after ceremony`
 }
 
 // ─── Styles ────────────────────────────────────────────────────────────

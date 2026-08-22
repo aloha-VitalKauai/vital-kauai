@@ -175,7 +175,11 @@ export async function sendJourneyEmail(args: {
  *
  * Mirrors lib/weekCountdown.ts:
  *   pre  week N start  = ceremony - 42 + (N-1)*7 days
- *   post week N start  = ceremony +  0 + (N-1)*7 days
+ *   post week N start  = ceremony +  7 + (N-1)*7 days
+ *
+ * The ceremony week (day 0 through day 6) is deliberately silent — members
+ * are on-island — so integration Week 1 lands a week after the ceremony
+ * rather than on the day of it.
  *
  * "Entering" means today === weekStart (UTC day comparison). The cron runs
  * once a day, so we only fire on the boundary day.
@@ -196,7 +200,7 @@ export function weekToSendToday(
   for (let i = 0; i < 6; i++) {
     const preStart = ceremony.getTime() + (-42 + i * 7) * MS
     if (dayKey(new Date(preStart)) === today) return { arc: 'pre', week_idx: i }
-    const postStart = ceremony.getTime() + i * 7 * MS
+    const postStart = ceremony.getTime() + (7 + i * 7) * MS
     if (dayKey(new Date(postStart)) === today) return { arc: 'post', week_idx: i }
   }
   return null
@@ -232,7 +236,7 @@ export function currentWeekForJourney(
       const daysLate = Math.round((today - preStart) / MS)
       if (!best || daysLate < best.daysLate) best = { arc: 'pre', week_idx: i, daysLate }
     }
-    const postStart = dayKey(new Date(ceremony.getTime() + i * 7 * MS))
+    const postStart = dayKey(new Date(ceremony.getTime() + (7 + i * 7) * MS))
     if (postStart <= today) {
       const daysLate = Math.round((today - postStart) / MS)
       if (!best || daysLate < best.daysLate) best = { arc: 'post', week_idx: i, daysLate }

@@ -7,16 +7,17 @@ import { getCurrentArcWeek } from "@/lib/weekCountdown";
  * up the member's ceremony date and drop them on the week they are in
  * right now — using the same week calendar the weekly journey emails
  * follow (six preparation weeks before ceremony, six integration weeks
- * after). Pre-ceremony weeks count down from 42 days before ceremony; on
- * ceremony day the arc hands off to post-ceremony integration.
+ * after). Pre-ceremony weeks count down from 42 days before ceremony; the
+ * ceremony week itself belongs to no arc week, and integration begins
+ * seven days after ceremony.
  *
  * A ?week token is appended so a repeat tap re-snaps the integration page
  * to the current week even when the member has browsed to another week
  * (the App Router keeps the page mounted across a query-only change, so a
  * fresh token is what re-triggers the page's re-apply effect).
  *
- * When no journey has a ceremony date inside the twelve-week arc — a
- * member not yet scheduled, booked far out, or long past integration — we
+ * When no journey has a ceremony date inside the arc — a member not yet
+ * scheduled, booked far out, mid-ceremony-week, or long past integration — we
  * hand off to the integration page without a forced week so its
  * resume-where-you-left-off logic picks the right week. Only canceled
  * journeys are ignored; the newest live arc wins for returning members.
@@ -38,7 +39,7 @@ export default async function JourneyPage() {
 
   const rows = journeys ?? [];
 
-  // Prefer the newest journey whose twelve-week arc contains today.
+  // Prefer the newest journey whose arc contains today.
   for (const j of rows) {
     const current = getCurrentArcWeek(j.start_at);
     if (current) {

@@ -3,8 +3,9 @@
  *
  * Anchor is the member's ceremony start date (start_at). Each week is a
  * 7-day window. Pre-ceremony Week 1 begins 42 days before ceremony;
- * Week 6 begins 7 days before. Post-ceremony Week 1 begins on the
- * ceremony day; Week 6 begins 35 days after.
+ * Week 6 begins 7 days before. The ceremony week itself (day 0 through
+ * day 6) belongs to no arc week — members are on-island. Post-ceremony
+ * Week 1 begins 7 days after ceremony; Week 6 begins 42 days after.
  *
  * Returns a phase tag and a short, plain-spoken label. Returns null
  * if the ceremony date is unknown — caller can render a fallback.
@@ -51,8 +52,9 @@ export function getWeekCountdown(
 
   // Week start offset relative to ceremony, in days.
   // Pre-ceremony Week 1 = -42, Week 6 = -7.
-  // Post-ceremony Week 1 = 0,  Week 6 = +35.
-  const offset = arc === "pre" ? -42 + weekIndex * 7 : weekIndex * 7;
+  // Ceremony week = 0..+6, no arc week.
+  // Post-ceremony Week 1 = +7, Week 6 = +42.
+  const offset = arc === "pre" ? -42 + weekIndex * 7 : 7 + weekIndex * 7;
   const weekStart = new Date(ceremony.getTime() + offset * MS_PER_DAY);
   const weekEnd = new Date(weekStart.getTime() + 7 * MS_PER_DAY);
 
@@ -79,11 +81,12 @@ export function getWeekCountdown(
 /**
  * The (arc, week) a member is in right now, by the same week calendar the
  * weekly journey emails follow. The arc spans 42 days before ceremony
- * through 42 days after (six preparation weeks, then six integration
- * weeks). Returns null when today falls outside that window — before it
- * begins, after it ends, or when the ceremony date is unknown — so the
- * caller can fall back to resume-where-you-left-off instead of pinning
- * the member to Week 1 or the final week.
+ * through 49 days after: six preparation weeks, the ceremony week, then
+ * six integration weeks. Returns null when today falls outside that
+ * window — before it begins, after it ends, during the ceremony week
+ * itself, or when the ceremony date is unknown — so the caller can fall
+ * back to resume-where-you-left-off instead of pinning the member to
+ * Week 1 or the final week.
  */
 export function getCurrentArcWeek(
   ceremonyStartAt: string | null | undefined,
@@ -98,10 +101,12 @@ export function getCurrentArcWeek(
   const daysIn = diffDaysUTC(now, arcStart);
   if (daysIn < 0) return null; // before the arc begins
 
-  // Week 0..5 = pre-ceremony; week 6..11 = post-ceremony (week 6 begins on
-  // ceremony day). Beyond week 11 the twelve-week arc is complete.
+  // Week 0..5 = pre-ceremony; week 6 = the ceremony week itself, which
+  // belongs to no arc week; week 7..12 = post-ceremony. Beyond week 12 the
+  // arc is complete.
   const week = Math.floor(daysIn / 7);
   if (week <= 5) return { arc: "pre", weekIndex: week };
-  if (week <= 11) return { arc: "post", weekIndex: week - 6 };
+  if (week === 6) return null; // ceremony week — members are on-island
+  if (week <= 12) return { arc: "post", weekIndex: week - 7 };
   return null; // arc complete
 }
