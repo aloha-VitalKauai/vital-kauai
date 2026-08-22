@@ -90,14 +90,19 @@ function gateway(opts: {
   expire?: GatewaySession | (() => GatewaySession);
   create?: { id: string; expiresAt: number | null } | (() => never);
   listThrows?: boolean;
-} = {}): { gw: CheckoutGateway; log: string[]; createKeys: string[] } {
+} = {}): {
+  gw: CheckoutGateway; log: string[]; createKeys: string[];
+  windows: { createdGte: number; createdLte: number }[];
+} {
   const log: string[] = [];
   const createKeys: string[] = [];
+  const windows: { createdGte: number; createdLte: number }[] = [];
   const pages = opts.pages ?? [[]];
   let pageIndex = 0;
   const gw: CheckoutGateway = {
-    async listSessionsPage() {
+    async listSessionsPage(params) {
       log.push("list");
+      windows.push({ createdGte: params.createdGte, createdLte: params.createdLte });
       if (opts.listThrows) throw new Error("stripe unreachable");
       const data = pages[pageIndex] ?? [];
       pageIndex += 1;
@@ -123,7 +128,7 @@ function gateway(opts: {
       return opts.create;
     },
   };
-  return { gw, log, createKeys };
+  return { gw, log, createKeys, windows };
 }
 
 const S = (id: string, attemptId: string, o: Partial<GatewaySession> = {}): GatewaySession => ({
@@ -446,4 +451,84 @@ test("a claim failure surfaces instead of being reported as a clean sweep", asyn
   });
   const { gw } = gateway();
   await assert.rejects(() => runCheckoutRecovery(client, gw), /deadlock detected/);
+});
+
+// ── Adversarial-review fixes ─────────────────────────────────────────────────
+
+test("enumeration searches up to NOW, so a Session created by a late replay is visible", async () => {
+  // The duplicate-charge path: an attempt from 22h ago whose replay created a
+  // Session 22h AFTER the row. A window anchored to created_at + 2h would miss
+  // it, read zero as proof of absence, and cancel a live payable Session.
+  const createdAtMs = Date.now() - 22 * 3_600_000;
+  const { gw, windows } = gateway({ pages: [[]] });
+
+  await findSessionsForAttempt(gw, "att_1", createdAtMs);
+
+  const w = windows[0]!;
+  assert.ok(
+    w.createdLte >= Math.floor(Date.now() / 1000),
+    "upper bound must reach the present, not a fixed offset from the attempt row",
+  );
+  assert.ok(w.createdGte <= Math.floor(createdAtMs / 1000), "lower bound must precede the attempt");
+  const spanHours = (w.createdLte - w.createdGte) / 3600;
+  assert.ok(spanHours > 22, `window spanned only ${spanHours.toFixed(1)}h`);
+});
+
+test("a Session created hours after its attempt row is still adopted, never cancelled", async () => {
+  const { client, calls } = fakeClient();
+  // Beyond the idempotency window, with the Session found by the widened sweep.
+  const { gw, log } = gateway({ pages: [[S("cs_late_replay", "att_1")]] });
+
+  const outcome = await recoverStrandedAttempt(
+    client, gw, attempt({ created_at: hoursAgo(30) }),
+  );
+
+  assert.equal(outcome, "finalized");
+  assert.equal(called(calls, "transition_checkout_session").length, 0, "must not cancel a live Session");
+  assert.ok(!log.includes("create"));
+});
+
+test("fail-closed: with checkout paused, recovery never mints a new payable Session", async () => {
+  const { client, calls } = fakeClient();
+  const { gw, log } = gateway({ pages: [[]], create: { id: "cs_should_not_exist", expiresAt: null } });
+
+  const outcome = await recoverStrandedAttempt(
+    client, gw, attempt({ created_at: hoursAgo(2) }), { allowSessionCreation: false },
+  );
+
+  assert.equal(outcome, "deferred");
+  assert.ok(!log.includes("create"), "a paused platform must not create Sessions");
+  assert.equal(called(calls, "finalize_checkout_session").length, 0);
+  assert.equal(called(calls, "release_recovery_claim").length, 1, "claim released for a later pass");
+});
+
+test("with checkout paused, cleanup still adopts and still cancels", async () => {
+  const adopt = fakeClient();
+  const { gw: gwAdopt } = gateway({ pages: [[S("cs_found", "att_1")]] });
+  assert.equal(
+    await recoverStrandedAttempt(adopt.client, gwAdopt, attempt(), { allowSessionCreation: false }),
+    "finalized",
+  );
+
+  const cancel = fakeClient();
+  const { gw: gwCancel } = gateway({ pages: [[]] });
+  assert.equal(
+    await recoverStrandedAttempt(cancel.client, gwCancel, attempt({ created_at: hoursAgo(40) }),
+      { allowSessionCreation: false }),
+    "canceled",
+  );
+});
+
+test("the sweep passes the readiness gate through to each attempt", async () => {
+  const { client, calls } = fakeClient({
+    claim_stranded_attempts: () => [attempt({ created_at: hoursAgo(2) })],
+    claim_stale_sessions: () => [],
+  });
+  const { gw, log } = gateway({ pages: [[]], create: { id: "cs_x", expiresAt: null } });
+
+  const result = await runCheckoutRecovery(client, gw, { allowSessionCreation: false });
+
+  assert.equal(result.outcomes.deferred, 1);
+  assert.ok(!log.includes("create"));
+  assert.equal(called(calls, "finalize_checkout_session").length, 0);
 });

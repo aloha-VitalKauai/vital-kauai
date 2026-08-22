@@ -45,9 +45,20 @@ export const ENUMERATION_PAGE_SIZE = 100;
  */
 export const ENUMERATION_MAX_PAGES = 50;
 
-/** Sessions are created seconds after their attempt row; this brackets clock skew. */
+/**
+ * Enumeration starts slightly before the attempt row to absorb clock skew and
+ * runs to NOW — never to a fixed offset from the row.
+ *
+ * A replay may create the Session at any point inside the 23-hour window, so a
+ * Session belonging to an attempt created at T0 can legitimately carry a Stripe
+ * `created` of T0+22h. Bounding the search at T0+2h would make that Session
+ * invisible to the next sweep, which would then read "zero matches" as proof of
+ * absence and cancel the attempt — freeing the single-flight slot while a live,
+ * payable Session still exists at Stripe. Two payable Sessions for one
+ * agreement is the duplicate-charge case this whole module exists to prevent.
+ */
 const ENUMERATION_LOOKBACK_MS = 10 * 60 * 1000;
-const ENUMERATION_LOOKAHEAD_MS = 2 * 60 * 60 * 1000;
+const ENUMERATION_SKEW_AHEAD_MS = 10 * 60 * 1000;
 
 export type StrandedAttempt = {
   attempt_id: string;
@@ -106,6 +117,7 @@ export type RecoveryOutcome =
   | "ambiguous"
   | "unconfirmed"
   | "exhausted"
+  | "deferred"
   | "error";
 
 export type RecoveryResult = {
@@ -125,7 +137,7 @@ export async function findSessionsForAttempt(
   createdAtMs: number,
 ): Promise<{ matches: GatewaySession[]; exhaustive: boolean }> {
   const createdGte = Math.floor((createdAtMs - ENUMERATION_LOOKBACK_MS) / 1000);
-  const createdLte = Math.ceil((createdAtMs + ENUMERATION_LOOKAHEAD_MS) / 1000);
+  const createdLte = Math.ceil((Date.now() + ENUMERATION_SKEW_AHEAD_MS) / 1000);
 
   const matches: GatewaySession[] = [];
   let startingAfter: string | undefined;
@@ -188,7 +200,9 @@ export async function recoverStrandedAttempt(
   client: SupabaseClient,
   gateway: CheckoutGateway,
   attempt: StrandedAttempt,
+  opts: { allowSessionCreation?: boolean } = {},
 ): Promise<RecoveryOutcome> {
+  const allowSessionCreation = opts.allowSessionCreation ?? true;
   const fin = client.schema("finance_api");
 
   // Circuit breaker before any Stripe call.
@@ -294,6 +308,13 @@ export async function recoverStrandedAttempt(
   }
 
   if (ageHours < IDEMPOTENCY_WINDOW_HOURS) {
+    // Fail-closed: while checkout is paused, recovery may still adopt, cancel
+    // and expire — but it must not mint a NEW payable Session. Otherwise
+    // rolling the readiness flag back would not actually stop money moving.
+    if (!allowSessionCreation) {
+      await fin.rpc("release_recovery_claim", { p_attempt_id: attempt.attempt_id });
+      return "deferred";
+    }
     // Inside the window the persisted key still protects us: if a Session was
     // in fact created, Stripe collapses this into that same object rather than
     // making a second one.
@@ -498,7 +519,7 @@ export async function recoverStaleSession(
 export async function runCheckoutRecovery(
   client: SupabaseClient,
   gateway: CheckoutGateway,
-  opts: { strandedAfter?: string; limit?: number } = {},
+  opts: { strandedAfter?: string; limit?: number; allowSessionCreation?: boolean } = {},
 ): Promise<RecoveryResult> {
   const fin = client.schema("finance_api");
   const outcomes: Record<string, number> = {};
@@ -511,7 +532,9 @@ export async function runCheckoutRecovery(
   if (strandedErr) throw new Error(`claim_stranded_attempts: ${strandedErr.message}`);
   const stranded = (strandedData as unknown as StrandedAttempt[] | null) ?? [];
   for (const attempt of stranded) {
-    bump(outcomes, await recoverStrandedAttempt(client, gateway, attempt));
+    bump(outcomes, await recoverStrandedAttempt(client, gateway, attempt, {
+      allowSessionCreation: opts.allowSessionCreation ?? true,
+    }));
   }
 
   const { data: staleData, error: staleErr } = await fin.rpc("claim_stale_sessions", {

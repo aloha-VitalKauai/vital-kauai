@@ -70,6 +70,10 @@ export async function GET(req: Request) {
       result.checkoutRecovery = await runCheckoutRecovery(
         financeServiceClient(),
         stripeCheckoutGateway(),
+        // Cleanup (adopt, cancel, expire) always runs. Creating a new payable
+        // Session is gated on the same readiness flag as issuance, so rolling
+        // the flag back actually stops money moving.
+        { allowSessionCreation: process.env.FINANCE_V2_CHECKOUT_READY === "true" },
       );
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
