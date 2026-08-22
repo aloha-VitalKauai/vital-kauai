@@ -46,8 +46,8 @@ const METHOD_LABEL: Record<string, string> = {
   reversal: "Refund or correction",
 };
 
-const GIFT_PRESETS = [5000, 10000, 25000, 50000] as const;
-const GIFT_MIN_DOLLARS = 5, GIFT_MAX_DOLLARS = 25000;
+const GIFT_PRESETS = [50000, 250000, 500000, 1500000] as const;
+const GIFT_MIN_DOLLARS = 5, GIFT_MAX_DOLLARS = 5000000;
 
 type AgreementWithJourney = MemberAgreement & { journeyStartAt: string | null };
 
