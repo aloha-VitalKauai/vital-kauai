@@ -479,6 +479,17 @@
       ]
     },
     {
+      "file": "lib/finance/checkout-recovery.ts",
+      "functions": [
+        "claim_stale_sessions",
+        "claim_stranded_attempts",
+        "finalize_checkout_session",
+        "raise_reconciliation_exception",
+        "release_recovery_claim",
+        "transition_checkout_session"
+      ]
+    },
+    {
       "file": "lib/finance/checkout.ts",
       "functions": [
         "begin_checkout_attempt",

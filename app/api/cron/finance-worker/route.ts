@@ -19,6 +19,7 @@ import {
   sweepAbandonedRuns,
   sweepStaleClaims,
 } from "@/lib/finance/reconciliation/worker";
+import { runCheckoutRecovery, stripeCheckoutGateway } from "@/lib/finance/checkout-recovery";
 
 export const runtime = "nodejs";
 // Draining a backlog can outlast the default budget; a truncated run would leave
@@ -58,6 +59,22 @@ export async function GET(req: Request) {
         .rpc("restore_orphaned_link_claims", { p_stale_after: "15 minutes" });
       if (error) console.error("finance-worker: orphan restore failed", error.message);
       result.orphanedLinksRestored = (data as number | null) ?? 0;
+    }
+
+    // PR 6 closeout: attempts stranded in `creating` and sessions left `open`
+    // past expiry both hold the one-live slot. This is a DIFFERENT failure from
+    // the orphan restore above, which only covers a claimed link that never
+    // reached an attempt row. Recovery talks to Stripe, so it is isolated: a
+    // provider outage must not stop the event queue from draining.
+    try {
+      result.checkoutRecovery = await runCheckoutRecovery(
+        financeServiceClient(),
+        stripeCheckoutGateway(),
+      );
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.error("finance-worker: checkout recovery failed", message);
+      result.checkoutRecovery = { error: message };
     }
 
     for (const livemode of modes) {

@@ -207,3 +207,64 @@ test("the purge horizon sent to the database is the computed cutoff", async () =
   await purgeExpiredPayloads(client, new Date("2026-08-20T12:00:00Z"));
   assert.equal(calls[0].args.p_before, "2024-08-20T12:00:00.000Z");
 });
+
+// ── PR 6 closeout: Stripe-driven session expiry ──────────────────────────────
+
+test("checkout.session.expired releases only the attempt named in its metadata", async () => {
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [ev({
+      event_type: "checkout.session.expired",
+      object_id: "cs_1",
+      livemode: true,
+      payload: { data: { object: { id: "cs_1", metadata: { attempt_id: "att_target" } } } },
+    })],
+    complete_stripe_event: () => null,
+    transition_checkout_session: () => null,
+  });
+
+  const result = await runEventWorker(client, { livemode: true });
+
+  const tr = calls.filter((c) => c.fn === "transition_checkout_session");
+  assert.equal(tr.length, 1, "exactly one attempt may be touched");
+  assert.equal(tr[0]!.args.p_attempt_id, "att_target");
+  assert.equal(tr[0]!.args.p_to_status, "expired");
+  assert.equal(result.processed, 1);
+});
+
+test("an expired Session without V2 attribution touches no attempt", async () => {
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [ev({
+      event_type: "checkout.session.expired",
+      object_id: "cs_foreign",
+      livemode: true,
+      payload: { data: { object: { id: "cs_foreign", metadata: {} } } },
+    })],
+    complete_stripe_event: () => null,
+  });
+
+  await runEventWorker(client, { livemode: true });
+
+  assert.equal(calls.filter((c) => c.fn === "transition_checkout_session").length, 0);
+});
+
+test("an expiry transition that is refused does not fail the event", async () => {
+  // A `creating` attempt refuses the transition; that corner belongs to the
+  // stranded sweeper, and the event itself is still validly processed.
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [ev({
+      event_type: "checkout.session.expired",
+      object_id: "cs_1",
+      livemode: true,
+      payload: { data: { object: { id: "cs_1", metadata: { attempt_id: "att_creating" } } } },
+    })],
+    complete_stripe_event: () => null,
+    transition_checkout_session: () => { throw new Error("transition: creating may only be canceled"); },
+  });
+
+  const result = await runEventWorker(client, { livemode: true });
+
+  assert.equal(result.processed, 1);
+  assert.equal(result.failed, 0);
+  const done = calls.filter((c) => c.fn === "complete_stripe_event");
+  assert.equal(done[0]!.args.p_status, "processed");
+});
