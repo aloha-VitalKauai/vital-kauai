@@ -1258,3 +1258,25 @@ byte-identical.
 PR 11 ships append-only expenses with voids. Removing them as specified would
 have left no way to record an expense at all. Both tables are empty; no
 hard-delete control was added.
+
+## D-087 — a cancelled or waived agreement stops being owed, but keeps its Received (2026-08-23)
+
+`finance.f_balances` never consulted agreement lifecycle, so a CANCELLED or
+WAIVED agreement kept contributing its full amount to Contribution and
+Remaining. Because PR 7's review fix hides those cards client-side, the effect
+was worse than a wrong number: the overview showed a Remaining balance with no
+card explaining where it came from. It surfaced only when PR 9's drill produced
+the first cancellation this system has ever had.
+
+The fix is deliberately narrow. For a cancelled or waived agreement:
+`contribution_cents`, `remaining_cents` and `payable_remaining_cents` become 0,
+`contribution_applies` becomes false and `payment_state` becomes
+`not_applicable` — so nothing is owed and no checkout can start. **Received is
+untouched.**
+
+Removing the row outright was considered and rejected. Cancelling an agreement
+means nothing further is due; it does not mean the money never arrived. A $50
+payment on a later-cancelled $100 Contribution would have vanished from founder
+totals while still sitting in the ledger, in Stripe and in the bank — breaking
+the invariant that Received means net money received. The migration asserts that
+invariant directly: total Received across the view must equal the live ledger.

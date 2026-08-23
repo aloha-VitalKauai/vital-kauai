@@ -127,8 +127,13 @@ closeout drills and launch evidence pass.
 
 ## PR 9 state (2026-08-22)
 
-Branch `claude/financials-v2-pr9-retirement`, reviewed head **`30a82ad`**.
-Production is **`85f7b82`** — PR 9 is NOT merged and NOT deployed.
+**MERGED AND DEPLOYED.** Production SHA **`a409dd6`** (PR #914, squashed).
+Migration `20260822020000` applied and stamped; `fn_reconcile_financial_state`
+is ABSENT. Verified in production: legacy routes 404, `/pay/<token>` renders the
+retirement notice with no lookup, V2 crons and webhook alive, retired tables
+`0/0/0/0` with 12 freeze triggers all firing on the primary and zero write
+grants, `finance` unexposed to anon, canonical money $100/$100/$0, 1 ledger row,
+0 open exceptions.
 
 Financials V2 is the only financial system the application can reach. 29 files
 removed: 14 legacy route handlers, the legacy cron, the dead financial
@@ -153,16 +158,38 @@ passed in a rolled-back production transaction. One bounded adversarial review:
 
 **Authorized deviation:** expense/payout entry routes retained until PR 11.
 
-### Outstanding before PR 9 may be called complete (spec §4.2)
+### Acceptance status
 
-1. Duplicate-delivery drill — resend the live `payment_intent.succeeded` from
-   Stripe and confirm no second ledger entry and no balance movement.
-2. Cancel/resume, expiry and revocation drills — founder chose to create one
-   small test agreement for this; not yet created.
-3. A reconciliation run whose window covers the 02:39 payment. All completed
-   live runs so far are DRY runs, and the window lags ~30 minutes.
-4. Merge, apply the migration, deploy, then verify the tombstone, the disabled
-   old provider destinations and the freeze in production.
+DONE: server-side drills (one-live enforcement, cancel frees the slot, resume via
+finalize, confirmed expiry refusing a foreign Session id, paid agreement refusing
+checkout, link claim → orphan restore, revocation and issuance proven
+founder-gated), four-role and freeze proofs, reconciliation matching the live
+payment (`scanned=1 matched=1 exc=0` across 22 consecutive runs, all DRY).
+
+OUTSTANDING, needs founder action:
+1. Duplicate-delivery drill — resend `evt_3U74pqKBySbdp3Q106ChA1en` from the
+   Stripe destination; confirm no second ledger entry and no balance movement.
+2. Positive revoke and member-portal cancel/resume — founder acts, deliberately
+   not manufactured here.
+3. An APPLYING (non-dry) reconciliation run, which needs the approval → canary
+   sequence. Dry runs report `would_create=0`, so there is nothing pending.
+4. Deploy and verify the legacy Edge tombstone (returns 410); confirm the old
+   Stripe/Square destinations are disabled.
+
+### Known defect — cancel/waive do not affect canonical totals
+
+`finance.f_balances` never consults agreement lifecycle, so a CANCELLED or
+WAIVED agreement still contributes to Contribution and Remaining. The member
+portal hides such agreements' cards (PR 7 review fix), which makes it worse: the
+overview shows a Remaining balance with no card explaining it. Pre-existing in
+the PR 8-era views; surfaced by the first cancellation this system has had.
+**Founder decision recorded: cancelled and waived agreements must be EXCLUDED
+ENTIRELY from Contribution, Received and Remaining.** Fix pending as its own PR
+with proofs.
+
+Artifact: agreement `72aa064a` (`membership`) is a PR 9 drill scaffold. It is
+cancelled and amended to $0, so it contributes nothing. It could not be deleted —
+`agreement_amounts` is append-only, correctly — and remains as audit evidence.
 
 `FINANCE_V2_CHECKOUT_READY` is **true** in Vercel Production. One live $100
 payment has been taken and reconciled to exactly one ledger entry.
