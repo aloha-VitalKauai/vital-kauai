@@ -1280,3 +1280,23 @@ payment on a later-cancelled $100 Contribution would have vanished from founder
 totals while still sitting in the ledger, in Stripe and in the bank — breaking
 the invariant that Received means net money received. The migration asserts that
 invariant directly: total Received across the view must equal the live ledger.
+
+## D-088 — PR 10A: public support is its own attributed, append-only path (2026-08-23)
+
+A supporter is not a member. Public contributions get `public_support_entries` —
+append-only, sign-disciplined (contribution > 0; refund < 0 and parented),
+exact-once by provider identity and mode — attributed to an explicit
+`legal_entities` row (Vital Kauaʻi Church) and `funds` row (General Support),
+never to a member agreement. Supporter identity and acknowledgment snapshots are
+founder/service-only; acknowledgment snapshots are immutable and corrections
+supersede rather than edit.
+
+Everything ships inert: draft campaign, unconfigured entity, and a database
+trigger (VK428) that refuses activation until the founder configures the legal
+receipt identity and approves the acknowledgment wording. The founder's stated
+tax basis is recorded as configuration — engineering does not verify or assert
+tax status.
+
+anon's entire finance_api surface is exactly one SECURITY DEFINER function
+returning campaign-safe status fields, asserted in-transaction along with RLS,
+grants, invoker/barrier properties and the append-only discipline.
