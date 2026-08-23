@@ -9,25 +9,9 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const FILES = [
-  "app/dashboard/financials/page.tsx",
-  "app/dashboard/financials/FounderFinancialCommandCenter.tsx",
-];
-const RETIRED = [
-  "financials_overview", "cohort_margin_summary", "private_ceremony_summary",
-  '"donations"', "financial_commitments", "payment_tokens", "payment_allocations",
-  "FinancialKpiRow", "CohortAndPrivateTabs",
-];
-
-test("the command center reads no retired financial object", () => {
-  for (const f of FILES) {
-    const src = readFileSync(f, "utf8");
-    for (const name of RETIRED) {
-      assert.ok(!src.includes(name), `${f} references retired object ${name}`);
-    }
-  }
-});
-
+// Absence of retired objects is proven repository-wide by the PR 9 retirement
+// gate (scripts/retirement-gate.mjs), which supersedes the per-file lists that
+// used to live here.
 test("a failed overview read renders unknown, never zero", () => {
   const src = readFileSync("app/dashboard/financials/page.tsx", "utf8");
   // The overview must become null on error — not a zero-filled default object.

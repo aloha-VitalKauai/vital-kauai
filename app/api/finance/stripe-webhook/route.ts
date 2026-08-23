@@ -9,9 +9,9 @@
  *
  * THIS IS NOT THE LEGACY WEBHOOK, AND IS NOT GUARDED BY D-078.
  * The legacy `stripe-webhook` Supabase Edge Function stays shut behind
- * `LEGACY_PAYMENTS_ENABLED`, which must never be "true" (D-078 R5). This route is
+ * the retired legacy payment paths (removed entirely in PR 9). This route is
  * the replacement surface, so it deliberately does NOT call
- * `legacyPaymentsEnabled()` — doing so would tie V2 to a flag contractually
+ * any legacy gate — doing so would tie V2 to a control contractually
  * pinned off, disabling ingestion forever. The two are separate Stripe endpoints
  * against the same account: the legacy one disabled, this one live.
  *

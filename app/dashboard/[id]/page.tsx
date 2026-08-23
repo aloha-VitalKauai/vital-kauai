@@ -33,9 +33,6 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
     { data: documents },
     { data: ceremonies },
     { data: checklist },
-    { data: commitment },
-    { data: memberDonationsData },
-    { data: privateCeremonyRows },
     { data: labDocs },
     { data: dosing },
   ] = await Promise.all([
@@ -51,25 +48,6 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
     supabase.from("signed_documents").select("*").eq("member_id", id).order("signed_at", { ascending: false }),
     supabase.from("ceremony_records").select("*").eq("member_id", id).order("ceremony_date", { ascending: false }),
     supabase.from("member_checklist").select("*").eq("member_id", id).order("created_at", { ascending: true }),
-    supabase
-      .from("financial_commitments")
-      .select("id, expected_amount_cents, status, journey_id, kind")
-      .eq("member_id", id)
-      .in("status", ["draft", "active", "partially_paid", "paid", "waived"])
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle(),
-    supabase
-      .from("donations")
-      .select("id, amount_cents, completed_at, kind, metadata, status")
-      .eq("member_id", id)
-      .eq("status", "completed")
-      .order("completed_at", { ascending: false })
-      .limit(25),
-    supabase
-      .from("private_ceremony_summary")
-      .select("booked_cents, expense_cents")
-      .eq("member_id", id),
     // Lab documents power the Member Profile Medical tab (same source as the
     // standalone ops Medical view), scoped to this member.
     supabase
@@ -85,22 +63,6 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       .eq("member_id", id)
       .order("administered_at", { ascending: false }),
   ]);
-
-  // Roll up booked + expenses across this member's private ceremony journeys so
-  // the profile's Program Price / Cost of Service cards mirror the Financials
-  // → Private Ceremony tab. Null when the member has no private journeys yet —
-  // the editor falls back to the manually-entered members.program_price /
-  // cost_of_service in that case.
-  const pcRows = (privateCeremonyRows ?? []) as Array<{
-    booked_cents: number | null;
-    expense_cents: number | null;
-  }>;
-  const bookedCents = pcRows.length
-    ? pcRows.reduce((sum, r) => sum + (r.booked_cents ?? 0), 0)
-    : null;
-  const expenseCents = pcRows.length
-    ? pcRows.reduce((sum, r) => sum + (r.expense_cents ?? 0), 0)
-    : null;
 
   if (!member) notFound();
 
@@ -163,63 +125,63 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
     .eq("member_id", id)
     .order("sort_order", { ascending: true });
 
-  // Financial detail: allocations, tokens, journey+cohort title
-  let collectedCents = 0;
-  let tokens: Array<{ token: string; expires_at: string; consumed_at: string | null; created_at: string }> = [];
-  let journeyTitle: string | null = null;
-  let journeyEndAt: string | null = null;
 
-  if (commitment) {
-    const [{ data: allocs }, { data: toks }] = await Promise.all([
-      supabase
-        .from("payment_allocations")
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .select("allocated_amount_cents, donation:donations(status)" as any)
-        .eq("commitment_id", commitment.id),
-      supabase
-        .from("payment_tokens")
-        .select("token, expires_at, consumed_at, created_at")
-        .eq("commitment_id", commitment.id)
-        .order("created_at", { ascending: false }),
-    ]);
-
-    collectedCents = ((allocs ?? []) as unknown as Array<{ allocated_amount_cents: number; donation: { status: string } | null }>)
-      .filter((r) => r.donation?.status === "completed")
-      .reduce((sum, r) => sum + r.allocated_amount_cents, 0);
-
-    tokens = (toks ?? []) as typeof tokens;
-
-    // Journey → cohort title
-    if (commitment.journey_id) {
-      const { data: journey } = await supabase
-        .from("journeys")
-        .select("end_at, cohort_id")
-        .eq("id", commitment.journey_id)
-        .maybeSingle();
-
-      if (journey?.cohort_id) {
-        const { data: cohort } = await supabase
-          .from("cohorts")
-          .select("title, end_at")
-          .eq("id", journey.cohort_id)
-          .maybeSingle();
-        journeyTitle = (cohort as { title?: string | null })?.title ?? null;
-        journeyEndAt = (cohort as { end_at?: string | null })?.end_at ?? journey.end_at ?? null;
-      } else {
-        journeyEndAt = journey?.end_at ?? null;
-      }
-    }
-  }
-
-  // Build token → donation amount map (consumed tokens show what was paid)
-  const tokenAmounts: Record<string, number> = {};
-  for (const d of memberDonationsData ?? []) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const tokenUsed = (d.metadata as any)?.token_used;
-    if (tokenUsed && d.amount_cents) {
-      tokenAmounts[tokenUsed] = d.amount_cents;
-    }
-  }
+  // PR 9 (D-086): financial timeline events, projected server-side from
+  // founder-safe V2 views. Only a label, a timestamp and a formatted amount
+  // cross into the client — no provider id, actor or raw metadata.
+  const fin = supabase.schema("finance_api");
+  // Lifecycle rows are keyed by agreement, not by member, so they MUST be
+  // restricted to this member's agreements explicitly. The agreement ids come
+  // from a member-scoped query — deriving them from the activity rows would
+  // yield an empty set for a member with no payments yet, and an empty set is
+  // not a safe filter input.
+  const [{ data: v2Activity }, { data: v2Agreements }] = await Promise.all([
+    fin.from("founder_payment_activity")
+      .select("id, entry_type, amount_cents, occurred_at, member_id, livemode")
+      // Every other founder figure is derived from f_balances(true), i.e. live
+      // mode only. Without this a test-mode entry would appear here as real
+      // money and reconcile against nothing on any other surface.
+      .eq("member_id", id).eq("livemode", true)
+      .order("occurred_at", { ascending: false }).limit(50),
+    fin.from("agreement_balances").select("agreement_id").eq("member_id", id),
+  ]);
+  const agreementIds = ((v2Agreements ?? []) as Array<{ agreement_id: string }>)
+    .map((a) => a.agreement_id);
+  const { data: v2Lifecycle } = agreementIds.length
+    ? await fin.from("founder_lifecycle_history")
+        .select("id, agreement_id, to_status, occurred_at")
+        .in("agreement_id", agreementIds)
+    : { data: [] as Array<{ id: string; agreement_id: string; to_status: string; occurred_at: string }> };
+  const ENTRY_LABEL: Record<string, string> = {
+    stripe_payment: "Card payment",
+    external_payment: "Recorded payment",
+    refund: "Refund or correction",
+    reversal: "Refund or correction",
+  };
+  const LIFECYCLE_LABEL: Record<string, string> = {
+    draft: "Contribution created",
+    active: "Contribution activated",
+    fulfilled: "Contribution fulfilled",
+    canceled: "Contribution canceled",
+    waived: "Contribution waived",
+  };
+  const financeEvents = [
+    ...((v2Activity ?? []) as Array<{ id: string; entry_type: string; amount_cents: number; occurred_at: string }>)
+      .map((e) => ({
+        id: `v2-ledger-${e.id}`,
+        at: e.occurred_at,
+        label: ENTRY_LABEL[e.entry_type] ?? "Payment activity",
+        detail: `$${Math.abs(e.amount_cents / 100).toLocaleString("en-US", {
+          minimumFractionDigits: 2, maximumFractionDigits: 2,
+        })}${e.amount_cents < 0 ? " returned" : ""}`,
+      })),
+    ...((v2Lifecycle ?? []) as Array<{ id: string; agreement_id: string; to_status: string; occurred_at: string }>)
+      .map((l) => ({
+        id: `v2-lifecycle-${l.id}`,
+        at: l.occurred_at,
+        label: LIFECYCLE_LABEL[l.to_status] ?? "Contribution updated",
+      })),
+  ];
 
   // Active integration specialists for the Assigned Partner dropdown.
   const { data: specialistRows } = await supabase
@@ -256,19 +218,11 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       medicineQuestionCount={medicineQuestionCount}
       journalResponseCount={responseSummary.journal}
       pneReflectionCount={responseSummary.pne}
-      commitment={commitment ?? undefined}
-      collectedCents={collectedCents}
-      tokens={tokens}
-      tokenAmounts={tokenAmounts}
-      donations={(memberDonationsData ?? []) as Array<{ id: string; amount_cents: number; completed_at: string | null; kind: string; metadata: Record<string, unknown> | null }>}
-      journeyTitle={journeyTitle}
-      journeyEndAt={journeyEndAt}
       specialists={specialists}
       nurses={nurses}
       outcomesRows={outcomesRows ?? []}
-      bookedCents={bookedCents}
-      expenseCents={expenseCents}
       booking={booking}
+      financeEvents={financeEvents}
       labs={labDocs ?? []}
       dosing={dosing ?? []}
     />

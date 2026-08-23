@@ -139,21 +139,13 @@ export default function MemberProfileEditor({
   medicineQuestionCount = 0,
   journalResponseCount = 0,
   pneReflectionCount = 0,
-  commitment,
-  collectedCents = 0,
-  tokens = [],
-  tokenAmounts = {},
-  donations = [],
-  journeyTitle = null,
-  journeyEndAt = null,
   specialists = [],
   nurses = [],
   outcomesRows = [],
-  bookedCents = null,
-  expenseCents = null,
   booking = null,
   labs = [],
   dosing = [],
+  financeEvents = [],
 }: {
   member: Member;
   profile: Profile;
@@ -168,21 +160,14 @@ export default function MemberProfileEditor({
   medicineQuestionCount?: number;
   journalResponseCount?: number;
   pneReflectionCount?: number;
-  commitment?: Commitment;
-  collectedCents?: number;
-  tokens?: PaymentToken[];
-  tokenAmounts?: Record<string, number>;
-  donations?: DonationRow[];
-  journeyTitle?: string | null;
-  journeyEndAt?: string | null;
   specialists?: string[];
   nurses?: Array<{ id: string; full_name: string }>;
   outcomesRows?: Array<Record<string, any>>;
-  bookedCents?: number | null;
-  expenseCents?: number | null;
   booking?: Booking | null;
   labs?: LabDoc[];
   dosing?: DosingRecord[];
+  /** Display-safe Financials V2 timeline events, projected by the server. */
+  financeEvents?: Array<{ id: string; at: string | null; label: string; detail?: string }>;
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -206,15 +191,14 @@ export default function MemberProfileEditor({
         intake,
         checklist,
         ceremonies,
-        donations,
-        tokens,
         labs,
         dosing,
         booking,
         preProgress,
         postProgress,
+        financeEvents,
       }),
-    [member, profile, intake, checklist, ceremonies, donations, tokens, labs, dosing, booking, preProgress, postProgress],
+    [member, profile, intake, checklist, ceremonies, labs, dosing, booking, preProgress, postProgress, financeEvents],
   );
 
   /* Editable member fields */
@@ -456,19 +440,10 @@ export default function MemberProfileEditor({
       })
       .eq("id", member.id);
 
-    // Keep the member's active commitment's expected_amount_cents in lockstep
-    // with program_price so the Love Exchange page shows one unilateral number.
-    // No-ops cleanly if the member has no active commitment yet.
-    if (!error && priceNum != null && Number.isFinite(priceNum)) {
-      await fetch("/api/payments/sync-program-price", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          member_id: member.id,
-          amount_cents: Math.round(priceNum * 100),
-        }),
-      }).catch((e) => console.error("sync-program-price failed", e));
-    }
+    // PR 9 (D-086): saving a member profile must not mutate financial truth.
+    // program_price is retained only as non-canonical planning input; the
+    // Contribution lives in Financials V2 and is changed through Amend
+    // Contribution, which writes an audited amendment.
 
     setSaving(false);
     if (!error) {
@@ -485,15 +460,11 @@ export default function MemberProfileEditor({
   }
 
   const sc = STATUS_COLORS[status] ?? fallbackColor;
-  // Top stat cards mirror the Financials → Private Ceremony row for this
-  // member when one exists (booked = sum of commitments / fallback to
-  // program_price; expenses = sum of expense_entries logged to the journey).
-  // Falls back to the manually-entered members.program_price /
-  // cost_of_service for members who don't yet have a private journey.
-  const price =
-    bookedCents != null ? bookedCents / 100 : programPrice ? Number(programPrice) : null;
-  const cost =
-    expenseCents != null ? expenseCents / 100 : costOfService ? Number(costOfService) : null;
+  // Non-canonical operational planning inputs, entered by hand on this form.
+  // They are NOT ledger facts and must never be read as Contribution,
+  // Received or Remaining — those live only in Financials V2.
+  const price = programPrice ? Number(programPrice) : null;
+  const cost = costOfService ? Number(costOfService) : null;
   const profit = price != null && cost != null ? price - cost : null;
 
   return (

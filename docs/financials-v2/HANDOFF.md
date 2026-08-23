@@ -125,6 +125,48 @@ Gates at 7b867d2: 369/369 tests, tsc clean, production build clean
 review: see PR notes. Checkout remains fail-closed (flag unset) until the PR 6
 closeout drills and launch evidence pass.
 
+## PR 9 state (2026-08-22)
+
+Branch `claude/financials-v2-pr9-retirement`, reviewed head **`30a82ad`**.
+Production is **`85f7b82`** — PR 9 is NOT merged and NOT deployed.
+
+Financials V2 is the only financial system the application can reach. 29 files
+removed: 14 legacy route handlers, the legacy cron, the dead financial
+components, both provider clients, both enable flags, and the entire
+guard-centric D-078 suite. `/dashboard`, `/dashboard/ops` and the member profile
+read canonical `finance_api` views; a failed or non-founder read renders
+"Unavailable", never `$0`. `/pay/[token]` is a no-lookup notice and the legacy
+Edge webhook is a dependency-free 410 tombstone.
+
+`scripts/retirement-gate.mjs` proves absence repository-wide across all eight
+executable extensions, deriving its scope from the files it actually read rather
+than from a skip list. Ten mutants killed, null control green, tree byte-restored.
+
+Migration `20260822020000` (drop `public.fn_reconcile_financial_state`) is
+written and proven in a rolled-back transaction but **NOT APPLIED**.
+
+Gates at `30a82ad`: 248/248 tests, `tsc` clean, production build clean
+(128 pages, down from 144), retirement gate clean. Four-role and freeze proofs
+passed in a rolled-back production transaction. One bounded adversarial review:
+8 findings, all resolved; two further defects were found and fixed before it ran
+(a cross-member timeline leak, and the inverted scope audit).
+
+**Authorized deviation:** expense/payout entry routes retained until PR 11.
+
+### Outstanding before PR 9 may be called complete (spec §4.2)
+
+1. Duplicate-delivery drill — resend the live `payment_intent.succeeded` from
+   Stripe and confirm no second ledger entry and no balance movement.
+2. Cancel/resume, expiry and revocation drills — founder chose to create one
+   small test agreement for this; not yet created.
+3. A reconciliation run whose window covers the 02:39 payment. All completed
+   live runs so far are DRY runs, and the window lags ~30 minutes.
+4. Merge, apply the migration, deploy, then verify the tombstone, the disabled
+   old provider destinations and the freeze in production.
+
+`FINANCE_V2_CHECKOUT_READY` is **true** in Vercel Production. One live $100
+payment has been taken and reconciled to exactly one ledger entry.
+
 ## Next action
 
 PR 6 closeout (controlled live-mode exercise, two remaining sweeper drivers,

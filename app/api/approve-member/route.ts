@@ -1,7 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
-// D-078: these routes are NOT refused — only their $0 commitment seed is
+// PR 9 (D-086): onboarding carries no financial write at all. The former $0
 // suppressed — so only the predicate is needed, not the refusal response.
-import { legacyPaymentsEnabled } from "@/lib/payments/legacy-enabled";
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyFounder } from '@/lib/auth/founder-check'
 import { renderAppInstallEmail, renderSetupLinkEmail } from '@/lib/email-renderers'
@@ -170,10 +169,8 @@ async function handleApproval(token: string, source: string) {
   console.log(`[approve-member] STEP:timeline, logged`)
 
   // === STEP 7: Seed journey + draft commitment (non-blocking) ===
-  // Gives the founder something to attach a program_price to immediately after
-  // approval, saving program_price in the member editor updates this draft
-  // commitment's expected_amount_cents via /api/payments/sync-program-price,
-  // which then flows to the member's Love Exchange page as "Pledged / Remaining".
+  // The journey is scheduling context only. Nothing financial is created here:
+  // a Contribution is an explicit founder action in Financials V2.
   // Log-and-continue: approval has already committed, and these rows can be
   // recreated from the dashboard if the insert blips.
   try {
@@ -207,36 +204,9 @@ async function handleApproval(token: string, source: string) {
       console.log(`[approve-member] STEP:journey, already exists ${journeyId}`)
     }
 
-    // D-078: legacy commitment seed only. Approval itself is never gated;
-    // see the note in add-member-manually for the reasoning.
-    if (journeyId && legacyPaymentsEnabled()) {
-      const { data: existingCommit } = await db()
-        .from('financial_commitments')
-        .select('id')
-        .eq('member_id', userId)
-        .eq('journey_id', journeyId)
-        .limit(1)
-        .maybeSingle()
-
-      if (!existingCommit) {
-        const { error: commitErr } = await db()
-          .from('financial_commitments')
-          .insert({
-            member_id:             userId,
-            journey_id:            journeyId,
-            kind:                  'journey_contribution',
-            expected_amount_cents: 0,
-            status:                'draft',
-          })
-        if (commitErr) {
-          console.error('[approve-member] STEP:commitment, FAILED (non-blocking):', JSON.stringify(commitErr))
-        } else {
-          console.log(`[approve-member] STEP:commitment, draft created for journey ${journeyId}`)
-        }
-      } else {
-        console.log(`[approve-member] STEP:commitment, already exists for journey ${journeyId}`)
-      }
-    }
+    // PR 9 (D-086): the legacy $0 commitment seed is gone. Approval creates the
+    // journey and nothing financial — a Contribution is an explicit founder act
+    // in Financials V2, not a side effect of onboarding.
   } catch (err: any) {
     console.error('[approve-member] STEP:journey+commitment, unexpected error (non-blocking):', err?.message || err)
   }

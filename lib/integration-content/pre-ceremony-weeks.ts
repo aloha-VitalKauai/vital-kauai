@@ -14,8 +14,8 @@ export type ActionCard =
   | { kind: 'static';   text: string; links?: ActionLinkArr; key: string }
 
 // Member-facing contribution destination. Both the portal home docCard and
-// the pre-ceremony week content route here; the page itself picks the right
-// payment provider (Stripe today, Square once PAYMENT_PROVIDER=square).
+// the pre-ceremony week content route here; the page is the Financials V2
+// Member Contribution Portal.
 export const STRIPE_LOVE_OFFERING_URL = '/portal/donate'
 
 export const actionsForWeek = (

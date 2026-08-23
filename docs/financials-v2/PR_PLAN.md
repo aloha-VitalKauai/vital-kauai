@@ -316,3 +316,29 @@ All of the following must pass through automated database tests before PR 1 open
 132. **`authorized_by_run_id` remains insertable** for a writing run citing a genuinely approved dry run.
 133. **Agreement creation requires its initial lifecycle event** — inserting an agreement and committing **without** an initial event fails **at commit**; inserting the agreement **first** and then its initial `draft` event in one transaction succeeds; `finance.create_agreement()` succeeds unchanged; the one-initial-event unique index still rejects a duplicate initial event.
 133b. **Child-first insertion is rejected**, confirming the deferred trigger is not a licence to reorder: inserting a lifecycle event before its agreement fails on the non-deferrable foreign key.
+
+
+---
+
+## PR 9 — final V2 retirement and operational acceptance (D-086)
+
+PR 9 is **retirement and acceptance**, not a drain. No data is migrated and no
+history is reconstructed; the clean start of D-082 stands.
+
+It removes the legacy financial runtime from source — 14 route handlers, the
+legacy cron, the dead financial components, both provider clients and both
+enable flags — and replaces the last legacy-derived displays on `/dashboard`,
+`/dashboard/ops` and the member profile with canonical `finance_api` reads. A
+failed or non-founder read renders "Unavailable"; it is never a zero.
+
+The D-078 guard-centric scanner is superseded by `scripts/retirement-gate.mjs`,
+which proves absence rather than guarding, and is itself proven by ten mutants.
+
+One bounded migration drops `public.fn_reconcile_financial_state()`. The four
+frozen tables, their twelve triggers and all audit evidence are untouched.
+
+**Authorized deviation:** expense/payout entry routes are retained until PR 11.
+**Precondition for completion:** the PR 6 live acceptance evidence — duplicate
+delivery, cancel/resume, expiry, revocation drills and a clean reconciliation.
+PR 9 may be built and reviewed before that evidence exists, but not declared
+complete. Subsequent work is scheduled in `PR10_PLUS_ROADMAP.md`.

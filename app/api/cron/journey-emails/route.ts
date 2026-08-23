@@ -14,7 +14,7 @@ export const runtime = 'nodejs'
  * Daily cron — sends weekly preparation/integration emails to members on the
  * day they enter a new pre/post-ceremony week.
  *
- * Auth: Bearer ${CRON_SECRET} OR ?secret=... (matches /api/cron/reconcile).
+ * Auth: Bearer ${CRON_SECRET} OR ?secret=... (same shape as the finance crons).
  *
  * Logic:
  *   1. Pull active journeys with a known start_at.

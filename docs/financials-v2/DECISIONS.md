@@ -1224,3 +1224,37 @@ The superseded member payment pages (/portal/journey/payment,
 /portal/onboarding/donation) are pure server redirects to /portal/donate.
 `FINANCE_V2_CHECKOUT_READY` gates issuance only; it never changes a read source,
 and a failed member read renders unknown — never $0.
+
+## D-086 — PR 9: one reachable financial system (2026-08-22)
+
+Financials V2 is the only financial system the application can reach. Every
+legacy financial read, writer, route, component, provider client and enable flag
+is **removed from source**, not merely disabled — a future environment change
+cannot re-arm the retired system, because there is no longer anything to arm.
+
+The retired schema stays exactly as it is: four empty tables, twelve
+ALWAYS-enabled `VK078` freeze triggers, revoked write grants, and every
+historical migration and ledger entry. That is forensic evidence, and D-086 does
+not touch it. The single database change is dropping
+`public.fn_reconcile_financial_state()`, which had zero consumers — re-proved
+inside the migration transaction, not merely beforehand.
+
+`FINANCE_V2_CHECKOUT_READY` survives as the one fail-closed interlock. It gates
+Session creation and any recovery that could mint a payable Session; it never
+selects a read source, figures stay visible while checkout is paused, and
+recovery cleanup keeps running.
+
+The D-078 gate asked "is every legacy writer guarded?". That question is now
+meaningless. `scripts/retirement-gate.mjs` asks "can any application code reach
+the retired system at all?" and answers it repository-wide across all eight
+executable extensions, catching direct, computed, aliased and dynamic
+references. Its scope is derived from the filesystem rather than trusted from a
+skip list, so a new directory or extension cannot silently fall outside it. Ten
+mutants prove it bites; the null control proves it is not merely failing on
+everything; a restoration assertion proves the harness leaves the tree
+byte-identical.
+
+**Authorized deviation:** the expense and payout entry routes are retained until
+PR 11 ships append-only expenses with voids. Removing them as specified would
+have left no way to record an expense at all. Both tables are empty; no
+hard-delete control was added.

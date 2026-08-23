@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --import ./supabase/tests/legacy-loader.mjs --test lib/journal-sharing.test.ts lib/medicine-questions.test.ts lib/payments/legacy-shutdown.test.ts lib/finance/stripe-events.test.ts lib/finance/checkout-recovery.test.ts lib/finance/reconciliation/policy.test.ts lib/finance/reconciliation/paginate.test.ts lib/finance/stripe-event-types.test.ts app/dashboard/financials/pr7-truth.test.ts app/portal/donate/pr8-truth.test.ts lib/finance/reconciliation/diff.test.ts lib/finance/reconciliation/run.test.ts lib/finance/reconciliation/canary.test.ts lib/finance/reconciliation/worker.test.ts lib/finance/reconciliation/stripe-source.test.ts lib/finance/reconciliation/object-families.test.ts"
+    "test": "node --import ./supabase/tests/legacy-loader.mjs --test supabase/tests/retirement-gate.test.ts lib/journal-sharing.test.ts lib/medicine-questions.test.ts lib/finance/stripe-events.test.ts lib/finance/checkout-recovery.test.ts lib/finance/reconciliation/policy.test.ts lib/finance/reconciliation/paginate.test.ts lib/finance/stripe-event-types.test.ts app/dashboard/pr9-truth.test.ts app/dashboard/financials/pr7-truth.test.ts app/portal/donate/pr8-truth.test.ts lib/finance/reconciliation/diff.test.ts lib/finance/reconciliation/run.test.ts lib/finance/reconciliation/canary.test.ts lib/finance/reconciliation/worker.test.ts lib/finance/reconciliation/stripe-source.test.ts lib/finance/reconciliation/object-families.test.ts"
   },
   "dependencies": {
     "@aparajita/capacitor-biometric-auth": "^10.0.0",
