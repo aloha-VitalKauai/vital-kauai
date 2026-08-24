@@ -47,6 +47,11 @@ create table finance.legal_entities (
   -- The founder's stated basis (e.g. a church under 508(c)(1)(A)). Recorded,
   -- not verified — engineering does not assert tax status.
   tax_exempt_basis            text null,
+  -- Founder-approved acknowledgment wording, versioned configuration. The
+  -- receipt template is assembled from these snapshots, never ad hoc in React.
+  ack_tax_language            text null,
+  ack_no_goods_statement      text null,
+  ack_template_version        text not null default 'v1',
   tax_deductible_ack_enabled  boolean not null default false,
   created_at                  timestamptz not null default now(),
   created_by                  uuid null references auth.users(id) on delete restrict
@@ -78,6 +83,9 @@ create table finance.public_support_campaigns (
   min_amount_cents          bigint not null default 500,
   max_amount_cents          bigint not null default 500000000,
   constraint campaign_bounds_sane check (min_amount_cents > 0 and max_amount_cents >= min_amount_cents),
+  -- Bounds are founder-APPROVED, not merely defaulted; activation requires it.
+  bounds_approved_at        timestamptz null,
+  bounds_approved_by        uuid null references auth.users(id) on delete restrict,
   livemode                  boolean not null,
   -- Provider identity: service/founder surfaces only, never public.
   provider_payment_link_id  text null,
@@ -118,6 +126,19 @@ begin
     end if;
     if not v_entity.tax_deductible_ack_enabled then
       raise exception 'campaign activation refused: acknowledgment wording is not founder-approved'
+        using errcode = 'VK428';
+    end if;
+    if v_entity.receipt_footer is null or length(btrim(v_entity.receipt_footer)) = 0 then
+      raise exception 'campaign activation refused: receipt identity/footer is not configured'
+        using errcode = 'VK428';
+    end if;
+    if v_entity.ack_tax_language is null or length(btrim(v_entity.ack_tax_language)) = 0
+       or v_entity.ack_no_goods_statement is null or length(btrim(v_entity.ack_no_goods_statement)) = 0 then
+      raise exception 'campaign activation refused: tax-deductible or no-goods language is not configured'
+        using errcode = 'VK428';
+    end if;
+    if new.bounds_approved_at is null then
+      raise exception 'campaign activation refused: contribution bounds are not founder-approved'
         using errcode = 'VK428';
     end if;
   end if;
@@ -319,6 +340,8 @@ create or replace function finance.configure_legal_entity(
   p_receipt_footer text,
   p_receipt_contact text,
   p_tax_exempt_basis text,
+  p_ack_tax_language text,
+  p_ack_no_goods_statement text,
   p_enable_acknowledgments boolean
 )
 returns void
@@ -330,9 +353,11 @@ begin
   if not public.is_founder() then
     raise exception 'configure_legal_entity: founder role required';
   end if;
-  if p_enable_acknowledgments
-     and (p_legal_name is null or length(btrim(p_legal_name)) = 0) then
-    raise exception 'configure_legal_entity: acknowledgments require a legal name'
+  if p_enable_acknowledgments and (
+       p_legal_name is null or length(btrim(p_legal_name)) = 0
+       or p_ack_tax_language is null or length(btrim(p_ack_tax_language)) = 0
+       or p_ack_no_goods_statement is null or length(btrim(p_ack_no_goods_statement)) = 0) then
+    raise exception 'configure_legal_entity: acknowledgments require legal name, tax language and no-goods statement'
       using errcode = 'VK400';
   end if;
   update finance.legal_entities
@@ -341,6 +366,8 @@ begin
          receipt_footer             = p_receipt_footer,
          receipt_contact            = p_receipt_contact,
          tax_exempt_basis           = p_tax_exempt_basis,
+         ack_tax_language           = p_ack_tax_language,
+         ack_no_goods_statement     = p_ack_no_goods_statement,
          tax_deductible_ack_enabled = p_enable_acknowledgments
    where id = p_entity_id;
   if not found then
@@ -349,8 +376,38 @@ begin
   end if;
 end $fn$;
 
-revoke all on function finance.configure_legal_entity(uuid, text, text, text, text, text, boolean) from public;
-grant execute on function finance.configure_legal_entity(uuid, text, text, text, text, text, boolean) to authenticated;
+revoke all on function finance.configure_legal_entity(uuid, text, text, text, text, text, text, text, boolean) from public;
+grant execute on function finance.configure_legal_entity(uuid, text, text, text, text, text, text, text, boolean) to authenticated;
+
+create or replace function finance.set_campaign_bounds(
+  p_campaign_id uuid, p_min_amount_cents bigint, p_max_amount_cents bigint
+)
+returns void
+language plpgsql
+security definer
+set search_path = pg_catalog, public, finance
+as $fn$
+begin
+  if not public.is_founder() then
+    raise exception 'set_campaign_bounds: founder role required';
+  end if;
+  if p_min_amount_cents is null or p_min_amount_cents <= 0
+     or p_max_amount_cents is null or p_max_amount_cents < p_min_amount_cents then
+    raise exception 'set_campaign_bounds: invalid bounds' using errcode = 'VK400';
+  end if;
+  update finance.public_support_campaigns
+     set min_amount_cents = p_min_amount_cents,
+         max_amount_cents = p_max_amount_cents,
+         bounds_approved_at = now(),
+         bounds_approved_by = auth.uid()
+   where id = p_campaign_id;
+  if not found then
+    raise exception 'set_campaign_bounds: campaign % not found', p_campaign_id using errcode = 'VK404';
+  end if;
+end $fn$;
+
+revoke all on function finance.set_campaign_bounds(uuid, bigint, bigint) from public;
+grant execute on function finance.set_campaign_bounds(uuid, bigint, bigint) to authenticated;
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- 8. finance_api façades
@@ -445,14 +502,25 @@ grant select on finance_api.machine_public_campaigns to service_role;
 -- finance_api wrapper for the founder configuration rpc.
 create or replace function finance_api.configure_legal_entity(
   p_entity_id uuid, p_legal_name text, p_ein_last4 text, p_receipt_footer text,
-  p_receipt_contact text, p_tax_exempt_basis text, p_enable_acknowledgments boolean
+  p_receipt_contact text, p_tax_exempt_basis text, p_ack_tax_language text,
+  p_ack_no_goods_statement text, p_enable_acknowledgments boolean
 )
 returns void
 language sql
 as $$ select finance.configure_legal_entity(p_entity_id, p_legal_name, p_ein_last4,
-       p_receipt_footer, p_receipt_contact, p_tax_exempt_basis, p_enable_acknowledgments); $$;
-revoke all on function finance_api.configure_legal_entity(uuid, text, text, text, text, text, boolean) from public;
-grant execute on function finance_api.configure_legal_entity(uuid, text, text, text, text, text, boolean) to authenticated;
+       p_receipt_footer, p_receipt_contact, p_tax_exempt_basis, p_ack_tax_language,
+       p_ack_no_goods_statement, p_enable_acknowledgments); $$;
+revoke all on function finance_api.configure_legal_entity(uuid, text, text, text, text, text, text, text, boolean) from public;
+grant execute on function finance_api.configure_legal_entity(uuid, text, text, text, text, text, text, text, boolean) to authenticated;
+
+create or replace function finance_api.set_campaign_bounds(
+  p_campaign_id uuid, p_min_amount_cents bigint, p_max_amount_cents bigint
+)
+returns void
+language sql
+as $$ select finance.set_campaign_bounds(p_campaign_id, p_min_amount_cents, p_max_amount_cents); $$;
+revoke all on function finance_api.set_campaign_bounds(uuid, bigint, bigint) from public;
+grant execute on function finance_api.set_campaign_bounds(uuid, bigint, bigint) to authenticated;
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- 9. Seeds: one INACTIVE entity, one fund, one DRAFT campaign
@@ -532,6 +600,20 @@ begin
     and has_function_privilege('anon', p.oid, 'EXECUTE')
     and p.proname <> 'public_campaign_status';
   if bad > 0 then raise exception 'PR10A assert: anon can execute % other finance_api functions', bad; end if;
+
+  -- Every DEFINER function is search_path-pinned.
+  select count(*) into bad
+  from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+  where n.nspname in ('finance','finance_api')
+    and p.proname in ('configure_legal_entity','set_campaign_bounds','public_campaign_status')
+    and p.prosecdef and p.proconfig is null;
+  if bad > 0 then raise exception 'PR10A assert: % DEFINER functions lack a search_path pin', bad; end if;
+
+  -- service_role performs machine work but can NEVER grant founder approval.
+  if has_function_privilege('service_role', 'finance.configure_legal_entity(uuid, text, text, text, text, text, text, text, boolean)', 'EXECUTE')
+     or has_function_privilege('service_role', 'finance.set_campaign_bounds(uuid, bigint, bigint)', 'EXECUTE') then
+    raise exception 'PR10A assert: service_role can execute a founder approval function';
+  end if;
 
   -- The public status function exposes no provider material.
   if (select pg_get_function_result(p.oid) from pg_proc p
