@@ -87,7 +87,7 @@ export async function runEventWorker(
       if (relevant && ev.event_type === "payment_intent.succeeded") {
         const pi = (ev.payload as { data?: { object?: {
           id?: string; status?: string; amount_received?: number; amount?: number;
-          created?: number; metadata?: Record<string, string>;
+          created?: number; metadata?: Record<string, string>; latest_charge?: unknown;
         } } } | null)?.data?.object;
         const meta = pi?.metadata ?? {};
         if (pi?.id && pi.status === "succeeded" && meta.financial_version === "v2" && meta.agreement_id) {
@@ -104,6 +104,30 @@ export async function runEventWorker(
                 p_origin_event_id: ev.event_id,
               }),
               "record_v2_stripe_payment",
+            );
+          }
+        } else if (
+          // PR 10B: a verified public-support payment records the FULL charged
+          // amount (contribution + voluntary processing support) as exactly one
+          // public entry, attributed through OUR attempt row — never through
+          // event metadata alone. Idempotent on (payment_intent, livemode).
+          pi?.id && pi.status === "succeeded"
+          && meta.financial_version === "public_support_v1" && meta.attempt_id
+        ) {
+          const amount = pi.amount_received ?? pi.amount ?? 0;
+          if (amount > 0) {
+            must(
+              await fin().rpc("record_public_support_payment", {
+                p_payment_intent_id: pi.id,
+                p_amount_cents: amount,
+                p_session_id: null,
+                p_charge_id: typeof pi.latest_charge === "string" ? pi.latest_charge : null,
+                p_occurred_at: pi.created ? new Date(pi.created * 1000).toISOString() : null,
+                p_livemode: ev.livemode,
+                p_origin_event_id: ev.event_id,
+                p_attempt_id: meta.attempt_id,
+              }),
+              "record_public_support_payment",
             );
           }
         }
@@ -139,16 +163,72 @@ export async function runEventWorker(
       // above, never from the Session event (proof #6 holds without it).
       if (relevant && ev.event_type === "checkout.session.completed") {
         const cs = (ev.payload as { data?: { object?: {
-          id?: string; payment_status?: string; metadata?: Record<string, string>;
+          id?: string; payment_status?: string; payment_intent?: unknown;
+          metadata?: Record<string, string>;
+          customer_details?: { email?: string | null; name?: string | null } | null;
         } } } | null)?.data?.object;
-        const attemptId = cs?.metadata?.attempt_id;
-        if (cs?.id && attemptId && cs.payment_status === "paid") {
+        const csMeta = cs?.metadata ?? {};
+        const attemptId = csMeta.attempt_id;
+        if (cs?.id && attemptId && cs.payment_status === "paid"
+            && csMeta.financial_version !== "public_support_v1") {
           const { error: trErr } = await fin().rpc("transition_checkout_session", {
             p_attempt_id: attemptId,
             p_to_status: "completed",
             p_stripe_session_id: cs.id,
           });
           if (trErr) console.error("worker: session transition failed", cs.id, trErr.message);
+        }
+        // PR 10B: the Session carries the supporter's email for the
+        // acknowledgment. Identity links only after the money fact exists and
+        // only when the Session provably belongs to that PaymentIntent. If the
+        // PaymentIntent event has not arrived yet (VK404), the event is left
+        // `processing` so the stale sweep re-queues it — event order never
+        // changes the financial result, and identity is linked exactly once.
+        if (cs?.id && cs.payment_status === "paid"
+            && csMeta.financial_version === "public_support_v1"
+            && typeof cs.payment_intent === "string"
+            && cs.customer_details?.email) {
+          const { error: linkErr } = await fin().rpc("link_public_supporter", {
+            p_payment_intent_id: cs.payment_intent,
+            p_livemode: ev.livemode,
+            p_session_id: cs.id,
+            p_email: cs.customer_details.email,
+            p_display_name: cs.customer_details.name ?? null,
+          });
+          if (linkErr) {
+            if (linkErr.code === "VK404" && ev.attempt_count < 5) {
+              // Money not committed yet: defer to the stale sweep for retry.
+              continue;
+            }
+            console.error("worker: supporter link failed", cs.id, linkErr.message);
+          }
+        }
+      }
+
+      // PR 10B: a refund on a PUBLIC contribution becomes one negative
+      // parented entry, idempotent on (refund_id, livemode). A VK404 means the
+      // charge belongs to the member ledger — member refunds flow through
+      // reconciliation as before, so it is not an error here.
+      if (relevant && ev.event_type === "charge.refunded") {
+        const ch = (ev.payload as { data?: { object?: {
+          id?: string; payment_intent?: unknown;
+          refunds?: { data?: Array<{ id?: string; amount?: number; created?: number }> } | null;
+        } } } | null)?.data?.object;
+        if (ch?.id && typeof ch.payment_intent === "string") {
+          for (const r of ch.refunds?.data ?? []) {
+            if (!r.id || !r.amount || r.amount <= 0) continue;
+            const { error: rfErr } = await fin().rpc("record_public_support_refund", {
+              p_refund_id: r.id,
+              p_payment_intent_id: ch.payment_intent,
+              p_amount_cents: -Math.abs(r.amount),
+              p_occurred_at: r.created ? new Date(r.created * 1000).toISOString() : null,
+              p_livemode: ev.livemode,
+              p_origin_event_id: ev.event_id,
+            });
+            if (rfErr && rfErr.code !== "VK404") {
+              throw new Error(`record_public_support_refund: ${rfErr.message}`);
+            }
+          }
         }
       }
 
