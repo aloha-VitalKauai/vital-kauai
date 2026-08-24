@@ -275,6 +275,26 @@ test("an expiry transition that is refused does not fail the event", async () =>
 
 // ── PR 10B: public support ───────────────────────────────────────────────────
 
+test("a PUBLIC Session's expiry never touches the member transition", async () => {
+  // Each public request id is its own attempt — there is no slot to free, and
+  // the member transition would only log a spurious failure.
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [ev({
+      event_type: "checkout.session.expired",
+      object_id: "cs_pub",
+      livemode: true,
+      payload: { data: { object: { id: "cs_pub",
+        metadata: { financial_version: "public_support_v1", attempt_id: "att_pub" } } } },
+    })],
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, { livemode: true });
+
+  assert.equal(calls.filter((c) => c.fn === "transition_checkout_session").length, 0);
+  assert.equal(r.processed, 1);
+});
+
 function vkErr(code: string, message: string): never {
   throw Object.assign(new Error(message), { code });
 }
