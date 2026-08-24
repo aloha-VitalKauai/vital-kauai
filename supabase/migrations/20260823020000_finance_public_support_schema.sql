@@ -378,6 +378,7 @@ end $fn$;
 
 revoke all on function finance.configure_legal_entity(uuid, text, text, text, text, text, text, text, boolean) from public;
 grant execute on function finance.configure_legal_entity(uuid, text, text, text, text, text, text, text, boolean) to authenticated;
+revoke execute on function finance.configure_legal_entity(uuid, text, text, text, text, text, text, text, boolean) from service_role;
 
 create or replace function finance.set_campaign_bounds(
   p_campaign_id uuid, p_min_amount_cents bigint, p_max_amount_cents bigint
@@ -408,6 +409,7 @@ end $fn$;
 
 revoke all on function finance.set_campaign_bounds(uuid, bigint, bigint) from public;
 grant execute on function finance.set_campaign_bounds(uuid, bigint, bigint) to authenticated;
+revoke execute on function finance.set_campaign_bounds(uuid, bigint, bigint) from service_role;
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- 8. finance_api façades
@@ -512,6 +514,7 @@ as $$ select finance.configure_legal_entity(p_entity_id, p_legal_name, p_ein_las
        p_ack_no_goods_statement, p_enable_acknowledgments); $$;
 revoke all on function finance_api.configure_legal_entity(uuid, text, text, text, text, text, text, text, boolean) from public;
 grant execute on function finance_api.configure_legal_entity(uuid, text, text, text, text, text, text, text, boolean) to authenticated;
+revoke execute on function finance_api.configure_legal_entity(uuid, text, text, text, text, text, text, text, boolean) from service_role;
 
 create or replace function finance_api.set_campaign_bounds(
   p_campaign_id uuid, p_min_amount_cents bigint, p_max_amount_cents bigint
@@ -521,6 +524,7 @@ language sql
 as $$ select finance.set_campaign_bounds(p_campaign_id, p_min_amount_cents, p_max_amount_cents); $$;
 revoke all on function finance_api.set_campaign_bounds(uuid, bigint, bigint) from public;
 grant execute on function finance_api.set_campaign_bounds(uuid, bigint, bigint) to authenticated;
+revoke execute on function finance_api.set_campaign_bounds(uuid, bigint, bigint) from service_role;
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- 9. Seeds: one INACTIVE entity, one fund, one DRAFT campaign
