@@ -143,7 +143,10 @@ export async function runEventWorker(
           id?: string; metadata?: Record<string, string>;
         } } } | null)?.data?.object;
         const attemptId = cs?.metadata?.attempt_id;
-        if (cs?.id && attemptId) {
+        // A PUBLIC Session's attempt_id names a public_checkout_attempts row,
+        // not a member attempt — there is no slot to free (each public request
+        // id is its own attempt), so the member transition must not fire.
+        if (cs?.id && attemptId && cs.metadata?.financial_version !== "public_support_v1") {
           // The Session id is passed so the database can refuse the transition
           // when this is not the Session the attempt actually owns. Metadata
           // alone would let an unrelated Session's expiry free a slot whose own

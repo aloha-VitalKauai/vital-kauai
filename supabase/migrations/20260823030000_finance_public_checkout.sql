@@ -65,6 +65,33 @@ revoke all on function finance_api.set_campaign_fee_policy(uuid, integer, intege
 grant execute on function finance_api.set_campaign_fee_policy(uuid, integer, integer, text) to authenticated;
 revoke execute on function finance_api.set_campaign_fee_policy(uuid, integer, integer, text) from service_role;
 
+-- The /support page renders the voluntary processing-cost support choice
+-- SERVER-side from these founder-configured parameters — the browser never
+-- does fee math. The anon surface stays exactly one function; it just says
+-- more. (Return columns change, so drop + recreate + re-grant.)
+drop function finance_api.public_campaign_status(text);
+create function finance_api.public_campaign_status(p_slug text)
+returns table(
+  slug text, status text, entity_display_name text, fund_display_name text,
+  min_amount_cents bigint, max_amount_cents bigint, copy_version text,
+  fee_bps integer, fee_fixed_cents integer, fee_policy_version text
+)
+language sql
+stable
+security definer
+set search_path = pg_catalog, public, finance
+as $fn$
+  select c.slug, c.status::text, e.display_name, f.display_name,
+         c.min_amount_cents, c.max_amount_cents, c.copy_version,
+         c.fee_bps, c.fee_fixed_cents, c.fee_policy_version
+  from finance.public_support_campaigns c
+  join finance.legal_entities e on e.id = c.legal_entity_id
+  join finance.funds f on f.id = c.fund_id
+  where c.slug = p_slug and c.livemode = true;
+$fn$;
+revoke all on function finance_api.public_campaign_status(text) from public;
+grant execute on function finance_api.public_campaign_status(text) to anon, authenticated;
+
 -- ─────────────────────────────────────────────────────────────────────────────
 -- 2. Public checkout attempts
 -- ─────────────────────────────────────────────────────────────────────────────
@@ -536,6 +563,17 @@ from finance.public_checkout_attempts a
 where public.is_founder();
 grant select on finance_api.founder_public_checkout_attempts to authenticated;
 
+-- Machine view of public entries so reconciliation can MATCH public money:
+-- a recorded public contribution/refund is a match, and a public payment with
+-- no entry is raised as provider_without_ledger — never suppressed just
+-- because it is public-flavored. Service only.
+create or replace view finance_api.machine_public_support_entries
+  with (security_invoker = true, security_barrier = true) as
+select p.id, p.entry_type, p.amount_cents, p.livemode,
+       p.provider_payment_intent_id, p.provider_refund_id, p.occurred_at
+from finance.public_support_entries p;
+grant select on finance_api.machine_public_support_entries to service_role;
+
 -- ─────────────────────────────────────────────────────────────────────────────
 -- 6. Assertions
 -- ─────────────────────────────────────────────────────────────────────────────
@@ -556,6 +594,22 @@ begin
     and has_function_privilege('anon', p.oid, 'EXECUTE')
     and p.proname <> 'public_campaign_status';
   if bad > 0 then raise exception 'PR10B assert: anon can execute % extra functions', bad; end if;
+
+  -- ... and the recreated status function kept its anon grant (a lost grant
+  -- would satisfy the count above vacuously) while exposing no provider or
+  -- idempotency material.
+  if not exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+                 where n.nspname = 'finance_api' and p.proname = 'public_campaign_status'
+                   and has_function_privilege('anon', p.oid, 'EXECUTE')) then
+    raise exception 'PR10B assert: anon lost public_campaign_status';
+  end if;
+  if exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+             where n.nspname = 'finance_api' and p.proname = 'public_campaign_status'
+               and (pg_get_function_result(p.oid) ilike '%stripe%'
+                    or pg_get_function_result(p.oid) ilike '%idempotency%'
+                    or pg_get_function_result(p.oid) ilike '%secret%')) then
+    raise exception 'PR10B assert: public function result carries provider material';
+  end if;
 
   -- The checkout/projection machine surface is service-role only.
   select count(*) into bad

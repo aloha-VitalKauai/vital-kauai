@@ -1,0 +1,87 @@
+/**
+ * PR 10B (D-088): POST /api/support/checkout — the public support entrance.
+ *
+ * Anonymous by design; there is no identity to check. The body may carry ONLY
+ * the contribution amount, the yes/no processing-support choice and an opaque
+ * request id — a request that tries to smuggle a support amount or a total is
+ * rejected outright, because fee math is the server's and the browser's
+ * arithmetic is never trusted. Whether checkout is possible at all is the
+ * campaign's founder-approved state in the database: no active campaign, no
+ * Session (fail-closed while the campaign is draft).
+ */
+
+import { NextResponse } from "next/server";
+import {
+  startPublicCheckout,
+  PUBLIC_SUPPORT_HARD_MAX_CENTS,
+  type PublicCheckoutRefusal,
+} from "@/lib/finance/public-checkout";
+
+export const runtime = "nodejs";
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Any of these in the body is an attempt to do the server's fee math. */
+const FORBIDDEN_KEYS = [
+  "totalCents", "total_cents", "total",
+  "supportCents", "support_cents",
+  "processingSupportCents", "processing_support_cents",
+  "feeCents", "fee_cents",
+];
+
+const REFUSAL_STATUS: Record<PublicCheckoutRefusal, number> = {
+  unavailable: 503,
+  invalid_amount: 400,
+  request_conflict: 409,
+  already_received: 409,
+  stale_attempt: 409,
+  provider_unavailable: 502,
+  conflict: 409,
+};
+
+export async function POST(req: Request) {
+  let body: Record<string, unknown>;
+  try {
+    body = (await req.json()) as Record<string, unknown>;
+  } catch {
+    return NextResponse.json({ error: "invalid_json" }, { status: 400 });
+  }
+
+  for (const key of FORBIDDEN_KEYS) {
+    if (key in body) {
+      return NextResponse.json({ error: "amount_math_not_accepted" }, { status: 400 });
+    }
+  }
+
+  const requestId = typeof body.requestId === "string" ? body.requestId : "";
+  if (!UUID_RE.test(requestId)) {
+    return NextResponse.json({ error: "request_id_required" }, { status: 400 });
+  }
+
+  const contributionCents = body.contributionCents;
+  if (
+    typeof contributionCents !== "number" ||
+    !Number.isSafeInteger(contributionCents) ||
+    contributionCents <= 0 ||
+    contributionCents > PUBLIC_SUPPORT_HARD_MAX_CENTS
+  ) {
+    return NextResponse.json({ error: "invalid_amount" }, { status: 400 });
+  }
+
+  if (typeof body.coverProcessing !== "boolean") {
+    return NextResponse.json({ error: "cover_processing_required" }, { status: 400 });
+  }
+
+  const result = await startPublicCheckout(
+    { contributionCents, coverProcessing: body.coverProcessing, requestId },
+    new URL(req.url).origin,
+  );
+
+  if (!result.ok) {
+    return NextResponse.json(
+      { error: result.reason, retryWithNewRequest: result.retryWithNewRequest ?? false },
+      { status: REFUSAL_STATUS[result.reason] },
+    );
+  }
+  return NextResponse.json({ ok: true, url: result.url, quote: result.quote });
+}

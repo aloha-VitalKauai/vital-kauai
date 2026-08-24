@@ -105,10 +105,28 @@ export type PlannedException = {
   currency?: string;
 };
 
+/**
+ * PR 10B: a public support entry, as reconciliation sees it. Public money is
+ * MATCHED here — never written: the worker (attempt-attributed, exact-once) is
+ * the only writer of public entries, so reconciliation's whole job for them is
+ * to notice when provider money and recorded public money disagree.
+ */
+export type PublicEntryRow = {
+  id: string;
+  entryType: "contribution" | "refund";
+  /** Positive for a contribution (the FULL charged amount), negative for a refund. */
+  amountCents: number;
+  providerPaymentIntentId: string | null;
+  providerRefundId: string | null;
+  livemode: boolean;
+};
+
 export type DiffInput = {
   payments: ProviderPayment[];
   refunds: ProviderRefund[];
   ledger: LedgerRow[];
+  /** Public support entries for the window (PR 10B). */
+  publicEntries?: PublicEntryRow[];
   livemode: boolean;
   /** Objects actively quarantined; skipped entirely (acceptance 12, 18e). */
   quarantinedObjectIds?: ReadonlySet<string>;
@@ -153,8 +171,16 @@ function looksLegacy(metadata: Record<string, string | undefined>): boolean {
   return Boolean(metadata.donation_id || metadata.commitment_id || metadata.token_used);
 }
 
+/** Is this provider object public-support money, by its own attribution? */
+function isPublicSupport(metadata: Record<string, string | undefined>): boolean {
+  return metadata.financial_version === "public_support_v1";
+}
+
 export function diffWindow(input: DiffInput): DiffResult {
-  const { payments, refunds, ledger, livemode, quarantinedObjectIds = new Set() } = input;
+  const {
+    payments, refunds, ledger, livemode,
+    publicEntries = [], quarantinedObjectIds = new Set(),
+  } = input;
 
   const entries: PlannedLedgerEntry[] = [];
   const exceptions: PlannedException[] = [];
@@ -183,6 +209,20 @@ export function diffWindow(input: DiffInput): DiffResult {
     byObjectId.get(objectId) ??
     (paymentIntentId ? byPaymentIntent.get(paymentIntentId) : undefined);
 
+  // PR 10B identity indexes for public entries: contribution by PaymentIntent,
+  // refund by the provider refund id. Identity only, as everywhere else.
+  const publicByPaymentIntent = new Map<string, PublicEntryRow>();
+  const publicByRefundId = new Map<string, PublicEntryRow>();
+  for (const row of publicEntries) {
+    if (row.livemode !== livemode) continue;
+    if (row.entryType === "contribution" && row.providerPaymentIntentId) {
+      publicByPaymentIntent.set(row.providerPaymentIntentId, row);
+    }
+    if (row.entryType === "refund" && row.providerRefundId) {
+      publicByRefundId.set(row.providerRefundId, row);
+    }
+  }
+
   // ── Payments ──────────────────────────────────────────────────────────────
   for (const p of payments) {
     // Mode isolation: a live-mode run never considers a test-mode object.
@@ -210,6 +250,32 @@ export function diffWindow(input: DiffInput): DiffResult {
           detail: {
             provider_amount_cents: p.amountCents,
             ledger_amount_cents: existing.amountCents,
+          },
+        });
+      }
+      continue;
+    }
+
+    // PR 10B: a public-support payment matches its public entry by
+    // PaymentIntent identity. The entry records the FULL charged amount
+    // (contribution + voluntary processing support), so amounts must agree.
+    const publicMatch = p.paymentIntentId
+      ? publicByPaymentIntent.get(p.paymentIntentId)
+      : undefined;
+    if (publicMatch) {
+      objectsMatched += 1;
+      if (publicMatch.amountCents !== p.amountCents) {
+        exceptions.push({
+          kind: "amount_mismatch",
+          livemode,
+          providerObjectId: p.objectId,
+          amountCents: p.amountCents,
+          currency: p.currency,
+          detail: {
+            source: "public_support",
+            public_entry_id: publicMatch.id,
+            provider_amount_cents: p.amountCents,
+            entry_amount_cents: publicMatch.amountCents,
           },
         });
       }
@@ -283,6 +349,25 @@ export function diffWindow(input: DiffInput): DiffResult {
       continue;
     }
 
+    // PR 10B: verified public-support money with NO public entry. Raised,
+    // never suppressed and never written here — the attempt-attributed worker
+    // is the only writer of public entries.
+    if (isPublicSupport(p.metadata)) {
+      exceptions.push({
+        kind: "provider_without_ledger",
+        livemode,
+        providerObjectId: p.objectId,
+        amountCents: p.amountCents,
+        currency: p.currency,
+        detail: {
+          reason: "public_support_unrecorded",
+          payment_intent_id: p.paymentIntentId ?? null,
+          attempt_id: p.metadata.attempt_id ?? null,
+        },
+      });
+      continue;
+    }
+
     // Not attributable to a V2 agreement. Which exception depends on WHY.
     if (looksLegacy(p.metadata)) {
       // The intended shadow-phase output, not a defect: money taken by the legacy
@@ -329,6 +414,44 @@ export function diffWindow(input: DiffInput): DiffResult {
           providerObjectId: r.objectId,
           ledgerEntryId: already.id,
           detail: { provider_status: r.status },
+        });
+      }
+      continue;
+    }
+
+    // PR 10B: a refund already recorded as a public entry matches by refund id.
+    const publicRefund = publicByRefundId.get(r.objectId);
+    if (publicRefund) {
+      objectsMatched += 1;
+      if (r.status === "failed" || r.status === "canceled") {
+        exceptions.push({
+          kind: "refund_status_regression",
+          livemode,
+          providerObjectId: r.objectId,
+          detail: {
+            provider_status: r.status,
+            source: "public_support",
+            public_entry_id: publicRefund.id,
+          },
+        });
+      }
+      continue;
+    }
+
+    // PR 10B: an unrecorded refund whose PaymentIntent is public money belongs
+    // to the public projection — raised when succeeded, and never allowed to
+    // fall through to the member orphan path.
+    if (r.paymentIntentId && publicByPaymentIntent.has(r.paymentIntentId)) {
+      if (r.status === "succeeded") {
+        exceptions.push({
+          kind: "provider_without_ledger",
+          livemode,
+          providerObjectId: r.objectId,
+          amountCents: r.amountCents,
+          detail: {
+            reason: "public_refund_unrecorded",
+            payment_intent_id: r.paymentIntentId,
+          },
         });
       }
       continue;
@@ -388,6 +511,40 @@ export function diffWindow(input: DiffInput): DiffResult {
       providerObjectId: row.providerObjectId,
       amountCents: row.amountCents,
       detail: { entry_type: row.entryType },
+    });
+  }
+
+  // ── PR 10B: public entries with no provider object ────────────────────────
+  // A recorded public contribution matches provider payments by PaymentIntent
+  // (its provider identity), a recorded public refund by refund id. The entry
+  // id rides in detail, not ledger_entry_id — that column references the
+  // member ledger.
+  const paymentIntentIds = new Set(
+    payments.filter((p) => p.livemode === livemode && p.paymentIntentId)
+      .map((p) => p.paymentIntentId as string),
+  );
+  const refundObjectIds = new Set(
+    refunds.filter((r) => r.livemode === livemode).map((r) => r.objectId),
+  );
+  for (const row of publicEntries) {
+    if (row.livemode !== livemode) continue;
+    const seen =
+      row.entryType === "contribution"
+        ? row.providerPaymentIntentId !== null &&
+          paymentIntentIds.has(row.providerPaymentIntentId)
+        : row.providerRefundId !== null && refundObjectIds.has(row.providerRefundId);
+    if (seen) continue;
+    exceptions.push({
+      kind: "ledger_without_provider",
+      livemode,
+      amountCents: row.amountCents,
+      detail: {
+        source: "public_support",
+        public_entry_id: row.id,
+        entry_type: row.entryType,
+        payment_intent_id: row.providerPaymentIntentId,
+        refund_id: row.providerRefundId,
+      },
     });
   }
 

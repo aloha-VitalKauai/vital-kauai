@@ -69,6 +69,9 @@ function fakeDb(over: Partial<FinanceDb> = {}): { db: FinanceDb; calls: Calls } 
     async ledgerForWindow() {
       return [];
     },
+    async publicEntriesForWindow() {
+      return [];
+    },
     async quarantinedObjectIds() {
       return new Set<string>();
     },
