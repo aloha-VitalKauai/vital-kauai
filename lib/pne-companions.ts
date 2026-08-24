@@ -115,6 +115,7 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     status: "live",
     videoSummary:
       "The binary lens people fall into during conflict, what being right protects, how the paradigm is inherited through families, and the inquiry that opens in its place.",
+    videoUrl: "https://www.youtube.com/embed/FXQQLrXun38?rel=0",
   },
   {
     phase: "post",

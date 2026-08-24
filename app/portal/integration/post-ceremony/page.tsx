@@ -166,10 +166,11 @@ type MonthlyTracking = {
 // Per-week PNE Companion theme + URL, filtered from the shared companion
 // registry. Live weeks get a hash-anchored deep-link to #top; coming-soon
 // weeks render their theme as plain text.
-const POST_PNE_COMPANION: ReadonlyArray<{ theme: string; url: string }> =
+const POST_PNE_COMPANION: ReadonlyArray<{ theme: string; url: string; videoUrl?: string }> =
   companionsFor('post').map((c) => ({
     theme: c.title,
     url: c.status === 'live' ? `${c.href}#top` : '',
+    videoUrl: c.videoUrl,
   }))
 
 const DOT: Record<string, string> = {
@@ -943,16 +944,37 @@ function PostCeremonyPageInner() {
                   <p className="pne-companion-read pne-companion-read-static">{label}</p>
                 )
               })()}
-              <div className="video-frame" style={{ marginTop: 18 }}>
-                <div className="video-primer">
-                  <div className="vp-play"><span className="vp-play-icon">▶</span></div>
-                  <div>
-                    <div className="vp-label">PNE Teaching · Week {i + 1}</div>
-                    <div className="vp-text">A short teaching paired with this week&apos;s principle and the body&apos;s lived response to it.</div>
-                    <div className="vp-coming-soon">Coming Soon</div>
+              {POST_PNE_COMPANION[i]?.videoUrl ? (
+                <div className="video-frame" style={{ marginTop: 18 }}>
+                  <div className="video-embed">
+                    <iframe
+                      src={POST_PNE_COMPANION[i].videoUrl}
+                      title={`PNE Integration Guide: ${POST_PNE_COMPANION[i].theme}`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
+                  </div>
+                  {POST_PNE_DETAILS[i]?.teaching && (
+                    <div className="vp-text" style={{ background: 'var(--forest)', padding: '18px 22px' }}>
+                      {POST_PNE_DETAILS[i].teaching}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="video-frame" style={{ marginTop: 18 }}>
+                  <div className="video-primer">
+                    <div className="vp-play"><span className="vp-play-icon">▶</span></div>
+                    <div>
+                      <div className="vp-label">PNE Teaching · Week {i + 1}</div>
+                      <div className="vp-text">
+                        {POST_PNE_DETAILS[i]?.teaching
+                          ?? 'A short teaching paired with this week’s principle and the body’s lived response to it.'}
+                      </div>
+                      <div className="vp-coming-soon">Coming Soon</div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
               <div className="pne-detail">
                 <div className="vp-label">This Week&apos;s PNE Practice</div>
                 {POST_PNE_DETAILS[i]?.practice
