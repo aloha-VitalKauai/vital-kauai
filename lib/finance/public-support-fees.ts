@@ -1,15 +1,15 @@
 /**
- * PR 10B (D-088): voluntary processing-cost support.
+ * PR 10B (D-088, amended): the card processing fee on public support.
  *
- * A supporter may choose to add enough to their contribution that Vital Kauaʻi
- * receives the full intended amount after card processing. This is VOLUNTARY
- * processing-cost support, never a mandatory surcharge, and it is an ESTIMATE
- * built from founder-configured fee parameters — Stripe's actual fee is a PR 11
- * accounting fact and is never inferred here.
+ * FOUNDER DECISION (2026-08-24, non-negotiable): the supporter pays the
+ * processing fee. Vital Kauaʻi receives the intended contribution amount after
+ * standard card processing costs; the fee is always added, never optional.
+ * The fee is an ESTIMATE built from founder-configured fee parameters —
+ * Stripe's actual fee is a PR 11 accounting fact and is never inferred here.
  *
  * All arithmetic is integer cents with deterministic ceiling rounding, computed
  * on the server from configuration. The browser never does fee math and never
- * submits a support amount — only the contribution and a yes/no choice.
+ * submits a fee amount — only the contribution and an opaque request id.
  *
  * Model: if the processor takes pct (basis points) plus a fixed fee, the total
  * T that nets the intended contribution C satisfies T = C + fixed + T*pct, so
@@ -34,9 +34,9 @@ export const DEFAULT_FEE_POLICY: FeePolicy = {
   feePolicyVersion: "stripe-standard-v1",
 };
 
-export type ProcessingSupportQuote = {
+export type ProcessingFeeQuote = {
   contributionCents: number;
-  processingSupportCents: number;
+  processingFeeCents: number;
   totalCents: number;
   feePolicyVersion: string;
 };
@@ -46,10 +46,10 @@ export type ProcessingSupportQuote = {
  * nonsense — a fee policy at or above 100% is configuration corruption, not a
  * quote.
  */
-export function quoteProcessingSupport(
+export function quoteProcessingFee(
   contributionCents: number,
   policy: FeePolicy,
-): ProcessingSupportQuote {
+): ProcessingFeeQuote {
   if (!Number.isSafeInteger(contributionCents) || contributionCents <= 0) {
     throw new Error(`invalid contribution: ${contributionCents}`);
   }
@@ -66,21 +66,8 @@ export function quoteProcessingSupport(
   const totalCents = Math.floor((numerator + denominator - 1) / denominator);
   return {
     contributionCents,
-    processingSupportCents: totalCents - contributionCents,
+    processingFeeCents: totalCents - contributionCents,
     totalCents,
     feePolicyVersion: policy.feePolicyVersion,
-  };
-}
-
-/** The charge when the supporter declines coverage: exactly the contribution. */
-export function quoteWithoutSupport(contributionCents: number): ProcessingSupportQuote {
-  if (!Number.isSafeInteger(contributionCents) || contributionCents <= 0) {
-    throw new Error(`invalid contribution: ${contributionCents}`);
-  }
-  return {
-    contributionCents,
-    processingSupportCents: 0,
-    totalCents: contributionCents,
-    feePolicyVersion: "none",
   };
 }

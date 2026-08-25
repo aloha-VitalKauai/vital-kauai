@@ -1,13 +1,14 @@
 /**
- * PR 10B (D-088): POST /api/support/checkout — the public support entrance.
+ * PR 10B (D-088, amended): POST /api/support/checkout — the public support
+ * entrance.
  *
  * Anonymous by design; there is no identity to check. The body may carry ONLY
- * the contribution amount, the yes/no processing-support choice and an opaque
- * request id — a request that tries to smuggle a support amount or a total is
- * rejected outright, because fee math is the server's and the browser's
- * arithmetic is never trusted. Whether checkout is possible at all is the
- * campaign's founder-approved state in the database: no active campaign, no
- * Session (fail-closed while the campaign is draft).
+ * the contribution amount and an opaque request id — the card processing fee
+ * is always computed by the server from founder configuration, so a request
+ * that tries to smuggle a fee, a total, or the retired coverage flag is
+ * rejected outright. Whether checkout is possible at all is the campaign's
+ * founder-approved state in the database: no active campaign, no Session
+ * (fail-closed while the campaign is draft).
  */
 
 import { NextResponse } from "next/server";
@@ -21,12 +22,16 @@ export const runtime = "nodejs";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-/** Any of these in the body is an attempt to do the server's fee math. */
+/** Any of these in the body is an attempt to do the server's fee math — the
+ * fee is mandatory and server-derived, so the retired coverage flag is just
+ * as forbidden as a smuggled amount. */
 const FORBIDDEN_KEYS = [
   "totalCents", "total_cents", "total",
+  "feeCents", "fee_cents", "fee",
+  "processingFeeCents", "processing_fee_cents",
   "supportCents", "support_cents",
   "processingSupportCents", "processing_support_cents",
-  "feeCents", "fee_cents",
+  "coverProcessing", "cover_processing",
 ];
 
 const REFUSAL_STATUS: Record<PublicCheckoutRefusal, number> = {
@@ -68,12 +73,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "invalid_amount" }, { status: 400 });
   }
 
-  if (typeof body.coverProcessing !== "boolean") {
-    return NextResponse.json({ error: "cover_processing_required" }, { status: 400 });
-  }
-
   const result = await startPublicCheckout(
-    { contributionCents, coverProcessing: body.coverProcessing, requestId },
+    { contributionCents, requestId },
     new URL(req.url).origin,
   );
 

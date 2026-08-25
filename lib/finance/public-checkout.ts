@@ -1,16 +1,19 @@
 /**
- * PR 10B (D-088): the public support checkout service.
+ * PR 10B (D-088, amended): the public support checkout service.
  *
- * An anonymous supporter chooses an amount on /support and may voluntarily add
- * processing-cost support. EVERYTHING trusted is derived on the server:
- * begin_public_checkout re-computes the support amount from founder-configured
- * fee parameters inside Postgres, persists an append-only attempt bound to the
- * request id, and only then does service-role code create the Stripe Checkout
- * Session with the attempt's deterministic idempotency key. The browser
- * submits only the contribution amount, a yes/no coverage choice and an opaque
- * request id — never a support amount, never a total.
+ * FOUNDER DECISION (2026-08-24, non-negotiable): the supporter pays the card
+ * processing fee. Vital Kauaʻi receives the intended contribution amount after
+ * standard processing costs; the fee is always added, never optional.
  *
- * The estimated processing support is an ESTIMATE from configuration; Stripe's
+ * An anonymous supporter chooses a contribution amount on /support. EVERYTHING
+ * trusted is derived on the server: begin_public_checkout computes the
+ * processing fee from founder-configured fee parameters inside Postgres,
+ * persists an append-only attempt bound to the request id, and only then does
+ * service-role code create the Stripe Checkout Session with the attempt's
+ * deterministic idempotency key. The browser submits ONLY the contribution
+ * amount and an opaque request id — never a fee, never a total.
+ *
+ * The estimated processing fee is an ESTIMATE from configuration; Stripe's
  * actual fee is a PR 11 accounting fact and is never inferred here.
  */
 
@@ -36,10 +39,11 @@ export type PublicCheckoutResult =
   | {
       ok: true;
       url: string;
-      /** Server-derived breakdown, shown to the supporter before redirect. */
+      /** Server-derived breakdown, shown to the supporter before redirect:
+       * Contribution / Card processing fee / Total charged. */
       quote: {
         contributionCents: number;
-        processingSupportCents: number;
+        processingFeeCents: number;
         totalCents: number;
         feePolicyVersion: string;
       };
@@ -52,7 +56,7 @@ type BeginRow = {
   legal_entity_id: string;
   fund_id: string;
   requested_contribution_cents: number;
-  processing_support_cents: number;
+  processing_fee_cents: number;
   total_charge_cents: number;
   fee_policy_version: string;
   status: string;
@@ -86,19 +90,18 @@ function publicSupportMetadata(row: BeginRow): Record<string, string> {
  * approved state and bounds, enforced inside the database.
  */
 export async function startPublicCheckout(
-  input: { contributionCents: number; coverProcessing: boolean; requestId: string },
+  input: { contributionCents: number; requestId: string },
   origin: string,
 ): Promise<PublicCheckoutResult> {
   const service = financeServiceClient();
   const fin = service.schema("finance_api");
 
-  // 1. Persist the attempt inside Postgres. The support amount and total are
+  // 1. Persist the attempt inside Postgres. The processing fee and total are
   //    computed there from founder configuration; a replayed request id
   //    returns the SAME attempt and is refused if the inputs changed.
   const rpc = await fin.rpc("begin_public_checkout", {
     p_campaign_slug: PUBLIC_SUPPORT_CAMPAIGN_SLUG,
     p_contribution_cents: input.contributionCents,
-    p_cover_processing: input.coverProcessing,
     p_request_id: input.requestId,
   });
   if (rpc.error) {
@@ -114,7 +117,7 @@ export async function startPublicCheckout(
 
   const quote = {
     contributionCents: begun.requested_contribution_cents,
-    processingSupportCents: begun.processing_support_cents,
+    processingFeeCents: begun.processing_fee_cents,
     totalCents: begun.total_charge_cents,
     feePolicyVersion: begun.fee_policy_version,
   };
@@ -155,15 +158,17 @@ export async function startPublicCheckout(
         },
       },
     ];
-    if (begun.processing_support_cents > 0) {
+    if (begun.processing_fee_cents > 0) {
       // Its own line, so the supporter's Stripe receipt shows the same
-      // breakdown they confirmed: contribution + voluntary support = total.
+      // breakdown they confirmed: Contribution + Card processing fee = Total.
+      // (Guarded so a founder-configured zero fee can never send Stripe a
+      // zero-amount line item.)
       lineItems.push({
         quantity: 1,
         price_data: {
           currency: "usd",
-          unit_amount: begun.processing_support_cents,
-          product_data: { name: "Voluntary processing-cost support" },
+          unit_amount: begun.processing_fee_cents,
+          product_data: { name: "Card processing fee" },
         },
       });
     }

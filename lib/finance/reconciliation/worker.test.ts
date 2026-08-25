@@ -325,7 +325,7 @@ const publicCs = (over: Record<string, unknown> = {}) => ev({
 });
 
 test("a public-support PaymentIntent records the FULL charged amount exactly once", async () => {
-  // $100 contribution + $3.30 voluntary processing support = one entry for
+  // $100 contribution + $3.30 card processing fee = one entry for
   // $103.30, attributed through OUR attempt row — never metadata alone.
   const { client, calls } = fakeClient({
     claim_stripe_events: () => [publicPi()],
@@ -482,6 +482,39 @@ test("a refund on a public contribution becomes one parented NEGATIVE entry", as
   assert.equal(rf[0]!.args.p_payment_intent_id, "pi_pub");
   assert.equal(rf[0]!.args.p_amount_cents, -10330, "stored refund is negative");
   assert.equal(rf[0]!.args.p_livemode, true);
+  assert.equal(r.processed, 1);
+});
+
+test("PARTIAL refunds are recorded individually, each exactly once, at face value", async () => {
+  // Disclosure (amendment #13): a partial refund is its own parented negative
+  // fact; the net position is the sum of the contribution and every refund.
+  // A full refund of a $103.30 charge therefore includes the $3.30 fee.
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [ev({
+      event_id: "evt_rf_partial",
+      event_type: "charge.refunded",
+      object_id: "ch_pub",
+      livemode: true,
+      payload: { data: { object: {
+        id: "ch_pub", payment_intent: "pi_pub",
+        refunds: { data: [
+          { id: "re_part_1", amount: 500 },
+          { id: "re_part_2", amount: 9830 },
+        ] },
+      } } },
+    })],
+    record_public_support_refund: () => "entry_rf",
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, { livemode: true });
+
+  const rf = calls.filter((c) => c.fn === "record_public_support_refund");
+  assert.equal(rf.length, 2);
+  assert.equal(rf[0]!.args.p_refund_id, "re_part_1");
+  assert.equal(rf[0]!.args.p_amount_cents, -500);
+  assert.equal(rf[1]!.args.p_refund_id, "re_part_2");
+  assert.equal(rf[1]!.args.p_amount_cents, -9830);
   assert.equal(r.processed, 1);
 });
 

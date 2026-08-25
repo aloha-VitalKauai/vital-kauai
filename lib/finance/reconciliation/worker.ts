@@ -108,7 +108,7 @@ export async function runEventWorker(
           }
         } else if (
           // PR 10B: a verified public-support payment records the FULL charged
-          // amount (contribution + voluntary processing support) as exactly one
+          // amount (contribution + processing fee) as exactly one
           // public entry, attributed through OUR attempt row — never through
           // event metadata alone. Idempotent on (payment_intent, livemode).
           pi?.id && pi.status === "succeeded"

@@ -258,7 +258,7 @@ export function diffWindow(input: DiffInput): DiffResult {
 
     // PR 10B: a public-support payment matches its public entry by
     // PaymentIntent identity. The entry records the FULL charged amount
-    // (contribution + voluntary processing support), so amounts must agree.
+    // (contribution + processing fee), so amounts must agree.
     const publicMatch = p.paymentIntentId
       ? publicByPaymentIntent.get(p.paymentIntentId)
       : undefined;
