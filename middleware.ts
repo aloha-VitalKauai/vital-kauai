@@ -43,6 +43,11 @@ export async function middleware(request: NextRequest) {
   // session-less: a brand-new member has no session yet, so they must stay
   // public even under the whole-site login wall, or the emailed setup and
   // payment links bounce straight to /login.
+  //
+  // /support (PR 10C) is the permanent public contribution page — the printed
+  // QR points here, so it must work for anyone with no session at all. The
+  // page itself is fail-closed: with no ACTIVE campaign it renders a quiet
+  // notice and the checkout API refuses in the database before any Stripe call.
   const isPublicPath =
     path === "/login" ||
     path.startsWith("/auth/") ||
@@ -50,7 +55,9 @@ export async function middleware(request: NextRequest) {
     path === "/preview-logout" ||
     path === "/setup-account" ||
     path === "/pay" ||
-    path.startsWith("/pay/");
+    path.startsWith("/pay/") ||
+    path === "/support" ||
+    path.startsWith("/support/");
 
   if (!user && !isPublicPath) {
     // Front-end-only access: a signed, HTTP-only cookie that lets an approved

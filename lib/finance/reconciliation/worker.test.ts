@@ -379,10 +379,22 @@ test("the member PaymentIntent path is untouched by the public branch", async ()
   assert.equal(calls.filter((c) => c.fn === "record_public_support_payment").length, 0);
 });
 
+const sampleAck = (over: Record<string, unknown> = {}) => [{
+  ack_id: "ack_1", receipt_number: "VK-2026-00001", amount_cents: 10330,
+  contribution_cents: 10000, processing_fee_cents: 330,
+  contribution_date: "2026-08-25", legal_name: "Configured Legal Name",
+  receipt_footer: null, tax_language: "Configured tax language.",
+  no_goods_statement: "Configured no-goods.", template_version: "v1",
+  fund_display_name: "General Support", delivery_status: "pending",
+  ...over,
+}];
+
 test("a paid public Session links identity and never touches member session rows", async () => {
   const { client, calls } = fakeClient({
     claim_stripe_events: () => [publicCs()],
     link_public_supporter: () => null,
+    issue_donor_acknowledgment: () => sampleAck(),
+    mark_acknowledgment_delivery: () => null,
     complete_stripe_event: () => null,
   });
 
@@ -397,6 +409,61 @@ test("a paid public Session links identity and never touches member session rows
   // The member checkout-session transition must not fire for a public Session.
   assert.equal(calls.filter((c) => c.fn === "transition_checkout_session").length, 0);
   assert.equal(r.processed, 1);
+});
+
+test("PR10C: the acknowledgment is issued after identity links, and its delivery is bookkept truthfully", async () => {
+  // Without RESEND_API_KEY the sender is disabled, so an honest run marks the
+  // delivery FAILED with that reason — never silently 'sent'.
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [publicCs()],
+    link_public_supporter: () => null,
+    issue_donor_acknowledgment: () => sampleAck(),
+    mark_acknowledgment_delivery: () => null,
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, { livemode: true });
+
+  const issue = calls.filter((c) => c.fn === "issue_donor_acknowledgment");
+  assert.equal(issue.length, 1);
+  assert.equal(issue[0]!.args.p_payment_intent_id, "pi_pub");
+  assert.equal(issue[0]!.args.p_livemode, true);
+  const mark = calls.filter((c) => c.fn === "mark_acknowledgment_delivery");
+  assert.equal(mark.length, 1);
+  assert.equal(mark[0]!.args.p_ack_id, "ack_1");
+  assert.equal(mark[0]!.args.p_delivered, false);
+  assert.match(String(mark[0]!.args.p_error), /RESEND_API_KEY/);
+  assert.equal(r.processed, 1);
+});
+
+test("PR10C: a duplicate delivery finds the acknowledgment already sent and sends nothing", async () => {
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [publicCs()],
+    link_public_supporter: () => null,
+    issue_donor_acknowledgment: () => sampleAck({ delivery_status: "sent" }),
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, { livemode: true });
+
+  assert.equal(calls.filter((c) => c.fn === "issue_donor_acknowledgment").length, 1);
+  assert.equal(calls.filter((c) => c.fn === "mark_acknowledgment_delivery").length, 0);
+  assert.equal(r.processed, 1);
+});
+
+test("PR10C: an acknowledgment failure never fails the event", async () => {
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [publicCs()],
+    link_public_supporter: () => null,
+    issue_donor_acknowledgment: () => vkErr("VK428", "wording not founder-approved"),
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, { livemode: true });
+
+  assert.equal(r.processed, 1);
+  assert.equal(r.failed, 0);
+  assert.equal(calls.filter((c) => c.fn === "complete_stripe_event")[0]!.args.p_status, "processed");
 });
 
 test("identity arriving before money is DEFERRED, not failed and not completed", async () => {
