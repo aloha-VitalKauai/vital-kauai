@@ -80,24 +80,36 @@ export default async function PublicSupportConsole() {
   const samples = [500, 10000, 100000].map((cents) => quoteProcessingFee(cents, feePolicy));
   const sample100 = samples[1];
 
-  const ackPreview =
-    configured && c.legal_name && c.ack_tax_language && c.ack_no_goods_statement
-      ? renderAcknowledgmentEmail({
-          ack_id: "preview",
-          receipt_number: "VK-2026-00000 (SAMPLE)",
-          amount_cents: sample100.totalCents,
-          contribution_cents: sample100.contributionCents,
-          processing_fee_cents: sample100.processingFeeCents,
-          contribution_date: "2026-08-25",
-          legal_name: c.legal_name,
-          receipt_footer: c.receipt_footer,
-          tax_language: c.ack_tax_language,
-          no_goods_statement: c.ack_no_goods_statement,
-          template_version: c.ack_template_version,
-          fund_display_name: c.fund_display_name,
-          delivery_status: "pending",
-        })
-      : null;
+  const ackPreview = (() => {
+    if (!(configured && c.legal_name && c.ack_tax_language && c.ack_no_goods_statement)) return null;
+    try {
+      return renderAcknowledgmentEmailSafe(c, sample100);
+    } catch {
+      // e.g. a template version this build cannot faithfully render.
+      return null;
+    }
+  })();
+
+  function renderAcknowledgmentEmailSafe(
+    cc: FounderCampaign,
+    q: { contributionCents: number; processingFeeCents: number; totalCents: number },
+  ) {
+    return renderAcknowledgmentEmail({
+      ack_id: "preview",
+      receipt_number: "VK-2026-00000 (SAMPLE)",
+      amount_cents: q.totalCents,
+      contribution_cents: q.contributionCents,
+      processing_fee_cents: q.processingFeeCents,
+      contribution_date: "2026-08-25",
+      legal_name: cc.legal_name ?? "",
+      receipt_footer: cc.receipt_footer,
+      tax_language: cc.ack_tax_language ?? "",
+      no_goods_statement: cc.ack_no_goods_statement ?? "",
+      template_version: cc.ack_template_version,
+      fund_display_name: cc.fund_display_name,
+      delivery_status: "pending",
+    });
+  }
 
   return (
     <main style={{ maxWidth: 1080, margin: "0 auto", padding: "32px 20px 80px", fontFamily: "var(--font-body, sans-serif)" }}>

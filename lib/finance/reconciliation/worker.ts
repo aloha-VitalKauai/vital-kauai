@@ -400,7 +400,9 @@ async function issueAndDeliverAcknowledgment(
       return;
     }
     const ack = (res.data as AcknowledgmentSnapshot[] | null)?.[0];
-    if (!ack || ack.delivery_status !== "pending") return;
+    // `pending` = never attempted; `failed` = attempted and did not go out, so
+    // a later duplicate delivery may retry. `sent` never re-sends.
+    if (!ack || (ack.delivery_status !== "pending" && ack.delivery_status !== "failed")) return;
 
     let delivered = false;
     let errMsg: string | null = null;
