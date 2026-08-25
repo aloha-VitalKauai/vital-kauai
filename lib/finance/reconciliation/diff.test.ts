@@ -366,3 +366,136 @@ test("every planned entry satisfies the ledger CHECKs it is subject to", () => {
     }
   }
 });
+
+// ── PR 10B — public support matching ─────────────────────────────────────────
+// Public money is MATCHED, never written: the attempt-attributed worker is the
+// only writer of public entries. Reconciliation's job is to notice when
+// provider money and recorded public money disagree.
+
+import { type PublicEntryRow } from "./diff.ts";
+
+function publicEntry(o: Partial<PublicEntryRow> = {}): PublicEntryRow {
+  return {
+    id: "pse_1",
+    entryType: "contribution",
+    amountCents: 10330,
+    providerPaymentIntentId: "pi_pub",
+    providerRefundId: null,
+    livemode: true,
+    ...o,
+  };
+}
+
+const publicPayment = (o: Partial<ProviderPayment> = {}) =>
+  payment({
+    objectId: "ch_pub",
+    paymentIntentId: "pi_pub",
+    amountCents: 10330,
+    metadata: { financial_version: "public_support_v1", attempt_id: "att_1" },
+    ...o,
+  });
+
+test("PR10B: a recorded public contribution matches its entry and writes nothing", () => {
+  const r = diffWindow({
+    ...base,
+    payments: [publicPayment()],
+    publicEntries: [publicEntry()],
+  });
+  assert.equal(r.entries.length, 0);
+  assert.equal(r.exceptions.length, 0);
+  assert.equal(r.objectsMatched, 1);
+});
+
+test("PR10B: verified public money with NO entry raises provider_without_ledger, never suppressed", () => {
+  const r = diffWindow({ ...base, payments: [publicPayment()] });
+  assert.equal(r.entries.length, 0, "reconciliation never writes public money");
+  assert.equal(r.exceptions.length, 1);
+  assert.equal(r.exceptions[0].kind, "provider_without_ledger");
+  assert.equal(r.exceptions[0].detail.reason, "public_support_unrecorded");
+  assert.equal(r.exceptions[0].detail.attempt_id, "att_1");
+});
+
+test("PR10B: a public amount disagreement is amount_mismatch with the public source named", () => {
+  const r = diffWindow({
+    ...base,
+    payments: [publicPayment({ amountCents: 10000 })],
+    publicEntries: [publicEntry()],
+  });
+  assert.equal(r.exceptions.length, 1);
+  assert.equal(r.exceptions[0].kind, "amount_mismatch");
+  assert.equal(r.exceptions[0].detail.source, "public_support");
+  assert.equal(r.exceptions[0].detail.entry_amount_cents, 10330);
+  assert.equal(r.exceptions[0].detail.provider_amount_cents, 10000);
+  // The public entry id rides in detail — ledger_entry_id references the
+  // member ledger and must stay unset.
+  assert.equal(r.exceptions[0].ledgerEntryId, undefined);
+});
+
+test("PR10B: an unverified public payment is missing_provider_object, same as a member one", () => {
+  const r = diffWindow({
+    ...base,
+    payments: [publicPayment({ statusVerifiedFromPaymentIntent: false })],
+  });
+  assert.equal(r.exceptions[0].kind, "missing_provider_object");
+});
+
+test("PR10B: a recorded public refund matches by refund id", () => {
+  const r = diffWindow({
+    ...base,
+    refunds: [refund({ objectId: "re_pub", paymentIntentId: "pi_pub", amountCents: 10330 })],
+    publicEntries: [
+      publicEntry(),
+      publicEntry({
+        id: "pse_rf", entryType: "refund", amountCents: -10330,
+        providerPaymentIntentId: "pi_pub", providerRefundId: "re_pub",
+      }),
+    ],
+    payments: [publicPayment()],
+  });
+  assert.equal(r.entries.length, 0);
+  assert.equal(r.exceptions.length, 0);
+  assert.equal(r.objectsMatched, 2);
+});
+
+test("PR10B: an unrecorded refund on public money is raised, never the member orphan path", () => {
+  const r = diffWindow({
+    ...base,
+    refunds: [refund({ objectId: "re_pub", paymentIntentId: "pi_pub", amountCents: 500 })],
+    publicEntries: [publicEntry()],
+    payments: [publicPayment()],
+  });
+  assert.equal(r.entries.length, 0, "a public refund is never planned as a member entry");
+  const kinds = r.exceptions.map((e) => e.kind);
+  assert.ok(kinds.includes("provider_without_ledger"));
+  assert.ok(!kinds.includes("orphan_refund"));
+  const rf = r.exceptions.find((e) => e.detail.reason === "public_refund_unrecorded");
+  assert.ok(rf, "the refund gap is named");
+});
+
+test("PR10B: a public entry with no provider object raises ledger_without_provider", () => {
+  const r = diffWindow({ ...base, publicEntries: [publicEntry()] });
+  assert.equal(r.exceptions.length, 1);
+  assert.equal(r.exceptions[0].kind, "ledger_without_provider");
+  assert.equal(r.exceptions[0].detail.source, "public_support");
+  assert.equal(r.exceptions[0].detail.public_entry_id, "pse_1");
+  assert.equal(r.exceptions[0].ledgerEntryId, undefined);
+});
+
+test("PR10B: mode isolation — a test-mode public entry is invisible to a live run", () => {
+  const r = diffWindow({ ...base, publicEntries: [publicEntry({ livemode: false })] });
+  assert.equal(r.exceptions.length, 0);
+});
+
+test("PR10B: the member $100 path is untouched when public entries are present", () => {
+  const r = diffWindow({
+    ...base,
+    payments: [payment({ amountCents: 10000 })],
+    ledger: [],
+    publicEntries: [publicEntry()],
+  });
+  // The member payment still plans its ledger entry; the public entry raises
+  // its own absence separately.
+  assert.equal(r.entries.length, 1);
+  assert.equal(r.entries[0].agreementId, AGREEMENT);
+  assert.equal(r.entries[0].amountCents, 10000);
+});

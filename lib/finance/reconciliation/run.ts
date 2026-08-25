@@ -26,6 +26,7 @@ import {
   diffWindow,
   type LedgerRow,
   type PlannedException,
+  type PublicEntryRow,
   type PlannedLedgerEntry,
   type ProviderPayment,
   type ProviderRefund,
@@ -85,6 +86,12 @@ export type FinanceDb = {
     windowStart: Date;
     windowEnd: Date;
   }): Promise<LedgerRow[]>;
+  /** PR 10B: public support entries for the window, matched but never written. */
+  publicEntriesForWindow(args: {
+    livemode: boolean;
+    windowStart: Date;
+    windowEnd: Date;
+  }): Promise<PublicEntryRow[]>;
   quarantinedObjectIds(livemode: boolean): Promise<Set<string>>;
   /** `kind:provider_object_id` for every OPEN exception, for the reopen count. */
   openExceptionSubjects(livemode: boolean): Promise<string[]>;
@@ -281,8 +288,9 @@ export async function executeReconciliationRun(opts: RunOptions): Promise<RunOut
       return await finishFailed(`retry budget exhausted (${retries} retries)`);
     }
 
-    const [ledger, quarantined] = [
+    const [ledger, publicEntries, quarantined] = [
       await db.ledgerForWindow({ livemode, ...window }),
+      await db.publicEntriesForWindow({ livemode, ...window }),
       await db.quarantinedObjectIds(livemode),
     ];
 
@@ -290,6 +298,7 @@ export async function executeReconciliationRun(opts: RunOptions): Promise<RunOut
       payments: paymentsResult.payments,
       refunds: refundsResult.refunds,
       ledger,
+      publicEntries,
       livemode,
       quarantinedObjectIds: quarantined,
     });

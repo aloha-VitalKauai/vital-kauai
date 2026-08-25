@@ -209,6 +209,37 @@ export function createSupabaseFinanceDb(client?: SupabaseClient): FinanceDb {
       }));
     },
 
+    async publicEntriesForWindow(a) {
+      // Same identity-only discipline as the member ledger: the window scopes
+      // candidates, matching never widens beyond it.
+      const res = await fin()
+        .from("machine_public_support_entries")
+        .select(
+          "id, entry_type, amount_cents, provider_payment_intent_id, provider_refund_id, livemode",
+        )
+        .eq("livemode", a.livemode)
+        .gte("occurred_at", a.windowStart.toISOString())
+        .lt("occurred_at", a.windowEnd.toISOString())
+        .returns<
+          {
+            id: string;
+            entry_type: "contribution" | "refund";
+            amount_cents: number;
+            provider_payment_intent_id: string | null;
+            provider_refund_id: string | null;
+            livemode: boolean;
+          }[]
+        >();
+      return (must(res, "publicEntriesForWindow") ?? []).map((r) => ({
+        id: r.id,
+        entryType: r.entry_type,
+        amountCents: r.amount_cents,
+        providerPaymentIntentId: r.provider_payment_intent_id,
+        providerRefundId: r.provider_refund_id,
+        livemode: r.livemode,
+      }));
+    },
+
     async openExceptionSubjects(livemode) {
       const res = await fin()
         .from("reconciliation_exceptions")

@@ -33,7 +33,8 @@ function fakeClient(handlers: Record<string, (args: Record<string, unknown>) => 
           try {
             return Promise.resolve({ data: h(args), error: null });
           } catch (e) {
-            return Promise.resolve({ data: null, error: { message: (e as Error).message } });
+            const err = e as Error & { code?: string };
+            return Promise.resolve({ data: null, error: { message: err.message, code: err.code } });
           }
         },
       };
@@ -270,4 +271,297 @@ test("an expiry transition that is refused does not fail the event", async () =>
   assert.equal(result.failed, 0);
   const done = calls.filter((c) => c.fn === "complete_stripe_event");
   assert.equal(done[0]!.args.p_status, "processed");
+});
+
+// ── PR 10B: public support ───────────────────────────────────────────────────
+
+test("a PUBLIC Session's expiry never touches the member transition", async () => {
+  // Each public request id is its own attempt — there is no slot to free, and
+  // the member transition would only log a spurious failure.
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [ev({
+      event_type: "checkout.session.expired",
+      object_id: "cs_pub",
+      livemode: true,
+      payload: { data: { object: { id: "cs_pub",
+        metadata: { financial_version: "public_support_v1", attempt_id: "att_pub" } } } },
+    })],
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, { livemode: true });
+
+  assert.equal(calls.filter((c) => c.fn === "transition_checkout_session").length, 0);
+  assert.equal(r.processed, 1);
+});
+
+function vkErr(code: string, message: string): never {
+  throw Object.assign(new Error(message), { code });
+}
+
+const publicPi = (over: Record<string, unknown> = {}) => ev({
+  event_id: "evt_pub_pi",
+  object_id: "pi_pub",
+  livemode: true,
+  payload: { data: { object: {
+    id: "pi_pub", status: "succeeded", amount_received: 10330, created: 1_766_000_000,
+    latest_charge: "ch_pub",
+    metadata: { financial_version: "public_support_v1", attempt_id: "att_pub" },
+    ...over,
+  } } },
+});
+
+const publicCs = (over: Record<string, unknown> = {}) => ev({
+  event_id: "evt_pub_cs",
+  event_type: "checkout.session.completed",
+  object_id: "cs_pub",
+  livemode: true,
+  payload: { data: { object: {
+    id: "cs_pub", payment_status: "paid", payment_intent: "pi_pub",
+    metadata: { financial_version: "public_support_v1", attempt_id: "att_pub" },
+    customer_details: { email: "Supporter@Example.com", name: "A Supporter" },
+    ...over,
+  } } },
+});
+
+test("a public-support PaymentIntent records the FULL charged amount exactly once", async () => {
+  // $100 contribution + $3.30 card processing fee = one entry for
+  // $103.30, attributed through OUR attempt row — never metadata alone.
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [publicPi()],
+    record_public_support_payment: () => "entry_1",
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, { livemode: true });
+
+  const rec = calls.filter((c) => c.fn === "record_public_support_payment");
+  assert.equal(rec.length, 1);
+  assert.equal(rec[0]!.args.p_amount_cents, 10330);
+  assert.equal(rec[0]!.args.p_payment_intent_id, "pi_pub");
+  assert.equal(rec[0]!.args.p_attempt_id, "att_pub");
+  assert.equal(rec[0]!.args.p_charge_id, "ch_pub");
+  assert.equal(rec[0]!.args.p_livemode, true);
+  assert.equal(rec[0]!.args.p_origin_event_id, "evt_pub_pi");
+  // The member path must not fire for a public payment.
+  assert.equal(calls.filter((c) => c.fn === "record_v2_stripe_payment").length, 0);
+  assert.equal(r.processed, 1);
+});
+
+test("a public PaymentIntent without attempt attribution writes no money", async () => {
+  // Metadata missing attempt_id: nothing to attribute through, so nothing is
+  // recorded — reconciliation surfaces it, the worker never guesses.
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [publicPi({ metadata: { financial_version: "public_support_v1" } })],
+    complete_stripe_event: () => null,
+  });
+
+  await runEventWorker(client, { livemode: true });
+
+  assert.equal(calls.filter((c) => c.fn === "record_public_support_payment").length, 0);
+  assert.equal(calls.filter((c) => c.fn === "record_v2_stripe_payment").length, 0);
+});
+
+test("the member PaymentIntent path is untouched by the public branch", async () => {
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [publicPi({
+      metadata: { financial_version: "v2", agreement_id: "agr_1" }, amount_received: 10000,
+    })],
+    record_v2_stripe_payment: () => "row_1",
+    complete_stripe_event: () => null,
+  });
+
+  await runEventWorker(client, { livemode: true });
+
+  const member = calls.filter((c) => c.fn === "record_v2_stripe_payment");
+  assert.equal(member.length, 1);
+  assert.equal(member[0]!.args.p_amount_cents, 10000);
+  assert.equal(calls.filter((c) => c.fn === "record_public_support_payment").length, 0);
+});
+
+test("a paid public Session links identity and never touches member session rows", async () => {
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [publicCs()],
+    link_public_supporter: () => null,
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, { livemode: true });
+
+  const link = calls.filter((c) => c.fn === "link_public_supporter");
+  assert.equal(link.length, 1);
+  assert.equal(link[0]!.args.p_payment_intent_id, "pi_pub");
+  assert.equal(link[0]!.args.p_session_id, "cs_pub");
+  assert.equal(link[0]!.args.p_email, "Supporter@Example.com");
+  assert.equal(link[0]!.args.p_display_name, "A Supporter");
+  // The member checkout-session transition must not fire for a public Session.
+  assert.equal(calls.filter((c) => c.fn === "transition_checkout_session").length, 0);
+  assert.equal(r.processed, 1);
+});
+
+test("identity arriving before money is DEFERRED, not failed and not completed", async () => {
+  // VK404 = the public entry does not exist yet (the PI event has not landed).
+  // The event is left `processing` for the stale sweep, so event order can
+  // never change the financial result — and the rest of the batch continues.
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [
+      publicCs(),
+      ev({ event_id: "evt_after", event_type: "customer.created", object_id: "cus_1" }),
+    ],
+    link_public_supporter: () => vkErr("VK404", "no public entry for pi_pub"),
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, { livemode: true });
+
+  const done = calls.filter((c) => c.fn === "complete_stripe_event");
+  assert.equal(done.length, 1, "only the FOLLOWING event may be completed");
+  assert.equal(done[0]!.args.p_event_id, "evt_after");
+  assert.equal(r.failed, 0);
+  assert.equal(r.processed, 0);
+  assert.equal(r.ignored, 1);
+});
+
+test("after 5 attempts a VK404 link stops deferring and the event closes", async () => {
+  // A Session that will never match (e.g. its PI was test-mode noise) must not
+  // cycle through the sweep forever; the link failure is logged, not fatal.
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [publicCs() ].map((e) => ({ ...e, attempt_count: 5 })),
+    link_public_supporter: () => vkErr("VK404", "no public entry for pi_pub"),
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, { livemode: true });
+
+  assert.equal(r.processed, 1);
+  assert.equal(calls.filter((c) => c.fn === "complete_stripe_event").length, 1);
+});
+
+test("a member Session completion still transitions its attempt", async () => {
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [publicCs({
+      id: "cs_member", metadata: { financial_version: "v2", attempt_id: "att_member" },
+      customer_details: null,
+    })],
+    transition_checkout_session: () => null,
+    complete_stripe_event: () => null,
+  });
+
+  await runEventWorker(client, { livemode: true });
+
+  const tr = calls.filter((c) => c.fn === "transition_checkout_session");
+  assert.equal(tr.length, 1);
+  assert.equal(tr[0]!.args.p_attempt_id, "att_member");
+  assert.equal(calls.filter((c) => c.fn === "link_public_supporter").length, 0);
+});
+
+test("a refund on a public contribution becomes one parented NEGATIVE entry", async () => {
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [ev({
+      event_id: "evt_rf",
+      event_type: "charge.refunded",
+      object_id: "ch_pub",
+      livemode: true,
+      payload: { data: { object: {
+        id: "ch_pub", payment_intent: "pi_pub",
+        refunds: { data: [
+          { id: "re_1", amount: 10330, created: 1_766_100_000 },
+          { id: "re_zero", amount: 0 }, // malformed: skipped, never sent as 0
+        ] },
+      } } },
+    })],
+    record_public_support_refund: () => "entry_rf",
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, { livemode: true });
+
+  const rf = calls.filter((c) => c.fn === "record_public_support_refund");
+  assert.equal(rf.length, 1);
+  assert.equal(rf[0]!.args.p_refund_id, "re_1");
+  assert.equal(rf[0]!.args.p_payment_intent_id, "pi_pub");
+  assert.equal(rf[0]!.args.p_amount_cents, -10330, "stored refund is negative");
+  assert.equal(rf[0]!.args.p_livemode, true);
+  assert.equal(r.processed, 1);
+});
+
+test("PARTIAL refunds are recorded individually, each exactly once, at face value", async () => {
+  // Disclosure (amendment #13): a partial refund is its own parented negative
+  // fact; the net position is the sum of the contribution and every refund.
+  // A full refund of a $103.30 charge therefore includes the $3.30 fee.
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [ev({
+      event_id: "evt_rf_partial",
+      event_type: "charge.refunded",
+      object_id: "ch_pub",
+      livemode: true,
+      payload: { data: { object: {
+        id: "ch_pub", payment_intent: "pi_pub",
+        refunds: { data: [
+          { id: "re_part_1", amount: 500 },
+          { id: "re_part_2", amount: 9830 },
+        ] },
+      } } },
+    })],
+    record_public_support_refund: () => "entry_rf",
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, { livemode: true });
+
+  const rf = calls.filter((c) => c.fn === "record_public_support_refund");
+  assert.equal(rf.length, 2);
+  assert.equal(rf[0]!.args.p_refund_id, "re_part_1");
+  assert.equal(rf[0]!.args.p_amount_cents, -500);
+  assert.equal(rf[1]!.args.p_refund_id, "re_part_2");
+  assert.equal(rf[1]!.args.p_amount_cents, -9830);
+  assert.equal(r.processed, 1);
+});
+
+test("a refund on a MEMBER charge is not the public path's business", async () => {
+  // VK404 from the refund recorder means the PI belongs to the member ledger;
+  // member refunds flow through reconciliation as before.
+  const { client } = fakeClient({
+    claim_stripe_events: () => [ev({
+      event_id: "evt_rf_member",
+      event_type: "charge.refunded",
+      object_id: "ch_member",
+      livemode: true,
+      payload: { data: { object: {
+        id: "ch_member", payment_intent: "pi_member",
+        refunds: { data: [{ id: "re_m", amount: 500 }] },
+      } } },
+    })],
+    record_public_support_refund: () => vkErr("VK404", "not a public entry"),
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, { livemode: true });
+
+  assert.equal(r.processed, 1);
+  assert.equal(r.failed, 0);
+});
+
+test("a real refund-recording failure fails the event with the reason", async () => {
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [ev({
+      event_id: "evt_rf_bad",
+      event_type: "charge.refunded",
+      object_id: "ch_pub",
+      livemode: true,
+      payload: { data: { object: {
+        id: "ch_pub", payment_intent: "pi_pub",
+        refunds: { data: [{ id: "re_1", amount: 10330 }] },
+      } } },
+    })],
+    record_public_support_refund: () => vkErr("VK500", "refund exceeds remaining"),
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, { livemode: true });
+
+  assert.equal(r.failed, 1);
+  const done = calls.filter((c) => c.fn === "complete_stripe_event").at(-1);
+  assert.equal(done?.args.p_status, "failed");
+  assert.match(String(done?.args.p_error), /refund exceeds remaining/);
 });
