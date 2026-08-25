@@ -75,6 +75,38 @@ export default function ContributionPortalClient({
 
   const [busy, setBusy] = useState<string | null>(null); // agreement_id or "gift"
   const [notice, setNotice] = useState<string | null>(null);
+  // True while the member's one-live gift slot is held by an earlier checkout;
+  // unlocks the cancel affordance next to the notice.
+  const [giftBlocked, setGiftBlocked] = useState(false);
+  const [cancelingGift, setCancelingGift] = useState(false);
+
+  async function cancelGiftCheckout() {
+    if (cancelingGift) return;
+    setCancelingGift(true);
+    try {
+      const res = await fetch("/api/finance/member-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ kind: "cancel_gift" }),
+      });
+      const j = (await res.json()) as { ok?: boolean; error?: string };
+      if (j.ok || j.error === "nothing_to_cancel") {
+        setGiftBlocked(false);
+        setNotice("Your previous gift checkout was canceled. Nothing was charged — you can start a new gift.");
+        router.refresh();
+      } else if (j.error === "already_received") {
+        setGiftBlocked(false);
+        setNotice("That gift payment was already completed, so there was nothing to cancel. Thank you.");
+        router.refresh();
+      } else {
+        setNotice("We couldn't cancel the previous checkout. Nothing has been charged — please try again.");
+      }
+    } catch {
+      setNotice("We couldn't cancel the previous checkout. Nothing has been charged — please try again.");
+    } finally {
+      setCancelingGift(false);
+    }
+  }
   // The banner never asserts payment on a bare URL param: it requires the
   // attempt id (whose status the bounded poll verifies) and speaks only of
   // confirming, not of receipt (bounded review #6).
@@ -153,7 +185,8 @@ export default function ContributionPortalClient({
         router.refresh();
         setNotice("This Contribution has already been received. Thank you.");
       } else if (j.error === "gift_in_progress") {
-        setNotice("A gift checkout is already in progress. Please finish or let it expire before starting another.");
+        setGiftBlocked(true);
+        setNotice("A gift checkout is already in progress. You can cancel it below and start fresh — nothing has been charged.");
       } else if (res.status === 502) {
         setNotice("Our payment provider could not be reached. Nothing has been charged — please try again in a moment.");
       } else {
@@ -232,6 +265,14 @@ export default function ContributionPortalClient({
       {notice && (
         <section role="status" style={{ ...card, ...sectionGap, padding: "16px 22px", fontSize: 14, color: FOREST2 }}>
           {notice}
+          {giftBlocked && (
+            <div style={{ marginTop: 12 }}>
+              <button type="button" onClick={cancelGiftCheckout} disabled={cancelingGift}
+                style={{ minHeight: 42, padding: "10px 18px", border: `1px solid ${FOREST2}`, borderRadius: 10, background: "#fff", color: FOREST2, fontWeight: 650, cursor: cancelingGift ? "default" : "pointer" }}>
+                {cancelingGift ? "Canceling…" : "Cancel the in-progress gift checkout"}
+              </button>
+            </div>
+          )}
         </section>
       )}
 
