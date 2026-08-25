@@ -13,6 +13,7 @@ import { NextResponse } from "next/server";
 import { createClient as createServerSupabase } from "@/lib/supabase/server";
 import {
   startMemberCheckout,
+  cancelMemberGiftCheckout,
   GIFT_MIN_CENTS,
   GIFT_MAX_CENTS,
   type MemberCheckoutRefusal,
@@ -74,6 +75,22 @@ export async function POST(req: Request) {
     body = (await req.json()) as Record<string, unknown>;
   } catch {
     return NextResponse.json({ error: "invalid_json" }, { status: 400 });
+  }
+
+  // Canceling needs no intent id: it resolves the caller's OWN live gift
+  // attempt server-side from their authenticated email, confirms the Session
+  // is dead at Stripe first, and never touches a paid session.
+  if (body.kind === "cancel_gift") {
+    if (!user.email) return NextResponse.json({ error: "conflict" }, { status: 409 });
+    const result = await cancelMemberGiftCheckout(user.email);
+    if (!result.ok) {
+      const status =
+        result.reason === "nothing_to_cancel" ? 404 :
+        result.reason === "already_received" ? 409 :
+        result.reason === "provider_unavailable" ? 502 : 409;
+      return NextResponse.json({ error: result.reason }, { status });
+    }
+    return NextResponse.json({ ok: true, canceled: result.canceled });
   }
 
   const requestId = typeof body.requestId === "string" ? body.requestId : "";

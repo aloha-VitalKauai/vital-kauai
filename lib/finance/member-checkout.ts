@@ -232,3 +232,77 @@ export async function startMemberCheckout(
     return { ok: false, reason: "provider_unavailable" };
   }
 }
+
+/**
+ * PR 8 follow-up (founder-found UX gap): cancel the member's own in-progress
+ * additional-gift checkout so a wrong amount does not hold the one-live slot
+ * until Stripe's expiry.
+ *
+ * Ownership is derived server-side only: the caller's AUTHENTICATED email
+ * resolves their member id, and candidates are matched by the DATABASE-built
+ * idempotency-key prefix (vk2_member_gift_<member_id>_...). A paid session is
+ * never canceled — Stripe refuses to expire a completed Session and we
+ * surface that as already_received. The Session is confirmed dead at Stripe
+ * BEFORE our slot frees, the same order the amount-drift path uses.
+ */
+export async function cancelMemberGiftCheckout(
+  callerEmail: string,
+): Promise<
+  | { ok: true; canceled: number }
+  | { ok: false; reason: "nothing_to_cancel" | "already_received" | "provider_unavailable" | "conflict" }
+> {
+  const service = financeServiceClient();
+  const fin = service.schema("finance_api");
+
+  const { data: prof } = await service
+    .from("member_profiles")
+    .select("id")
+    .eq("email", callerEmail)
+    .returns<{ id: string }[]>();
+  const memberId = prof?.[0]?.id;
+  if (!memberId) return { ok: false, reason: "nothing_to_cancel" };
+
+  const { data: rows, error } = await fin
+    .from("machine_checkout_attempts")
+    .select("id, stripe_session_id, status, idempotency_key")
+    .like("idempotency_key", `vk2_member_gift_${memberId}_%`)
+    .in("status", ["creating", "open"])
+    .returns<{ id: string; stripe_session_id: string | null; status: string; idempotency_key: string }[]>();
+  if (error) return { ok: false, reason: "conflict" };
+  if (!rows || rows.length === 0) return { ok: false, reason: "nothing_to_cancel" };
+
+  const stripe = v2StripeClient();
+  let canceled = 0;
+  for (const attempt of rows) {
+    if (attempt.status === "open" && attempt.stripe_session_id) {
+      try {
+        await stripe.checkout.sessions.expire(attempt.stripe_session_id);
+      } catch {
+        // Refusing to expire usually means the Session just completed — the
+        // money is (or is about to be) real, so the slot must NOT free.
+        try {
+          const s = await stripe.checkout.sessions.retrieve(attempt.stripe_session_id);
+          if (s.status === "complete") return { ok: false, reason: "already_received" };
+          if (s.status !== "expired") return { ok: false, reason: "provider_unavailable" };
+        } catch {
+          return { ok: false, reason: "provider_unavailable" };
+        }
+      }
+      const { error: trErr } = await fin.rpc("transition_checkout_session", {
+        p_attempt_id: attempt.id,
+        p_to_status: "expired",
+        p_stripe_session_id: attempt.stripe_session_id,
+      });
+      if (trErr) return { ok: false, reason: "conflict" };
+      canceled += 1;
+    } else if (attempt.status === "creating") {
+      const { error: trErr } = await fin.rpc("transition_checkout_session", {
+        p_attempt_id: attempt.id,
+        p_to_status: "canceled",
+      });
+      if (trErr) return { ok: false, reason: "conflict" };
+      canceled += 1;
+    }
+  }
+  return canceled > 0 ? { ok: true, canceled } : { ok: false, reason: "nothing_to_cancel" };
+}
