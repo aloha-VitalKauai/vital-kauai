@@ -17,8 +17,45 @@ import {
   PUBLIC_SUPPORT_HARD_MAX_CENTS,
   type PublicCheckoutRefusal,
 } from "@/lib/finance/public-checkout";
+import { fetchPublicCampaign } from "@/lib/finance/public-support-page";
+import { quoteProcessingFee } from "@/lib/finance/public-support-fees";
 
 export const runtime = "nodejs";
+
+/**
+ * GET ?amount=<cents> — a pure server-derived quote so the page can show
+ * Contribution / Card processing fee / Total charged BEFORE anything is
+ * created. Runs with anon authority (public_campaign_status is all it reads),
+ * computes with the founder-configured parameters, writes nothing, and
+ * touches Stripe never. No active campaign → no quote.
+ */
+export async function GET(req: Request) {
+  const raw = new URL(req.url).searchParams.get("amount") ?? "";
+  const amount = Number(raw);
+  if (!Number.isSafeInteger(amount) || amount <= 0 || amount > PUBLIC_SUPPORT_HARD_MAX_CENTS) {
+    return NextResponse.json({ error: "invalid_amount" }, { status: 400 });
+  }
+  const campaign = await fetchPublicCampaign();
+  if (!campaign || campaign.status !== "active") {
+    return NextResponse.json({ error: "unavailable" }, { status: 503 });
+  }
+  if (amount < campaign.min_amount_cents || amount > campaign.max_amount_cents) {
+    return NextResponse.json(
+      {
+        error: "invalid_amount",
+        minCents: campaign.min_amount_cents,
+        maxCents: campaign.max_amount_cents,
+      },
+      { status: 400 },
+    );
+  }
+  const quote = quoteProcessingFee(amount, {
+    feeBps: campaign.fee_bps,
+    feeFixedCents: campaign.fee_fixed_cents,
+    feePolicyVersion: campaign.fee_policy_version,
+  });
+  return NextResponse.json({ ok: true, quote });
+}
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 

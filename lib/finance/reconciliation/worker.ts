@@ -17,6 +17,11 @@ import {
   isSubscribedEventType,
   objectTypeForEvent,
 } from "@/lib/finance/stripe-event-types";
+import {
+  renderAcknowledgmentEmail,
+  type AcknowledgmentSnapshot,
+} from "@/lib/finance/acknowledgment-email";
+import { sendJourneyEmail } from "@/lib/journey-emails";
 
 export const DEFAULT_CLAIM_BATCH = 50;
 export const DEFAULT_STALE_AFTER = "15 minutes";
@@ -204,6 +209,18 @@ export async function runEventWorker(
               continue;
             }
             console.error("worker: supporter link failed", cs.id, linkErr.message);
+          } else {
+            // PR 10C: identity is linked, so the acknowledgment can be issued
+            // from the verified money fact — exact-once per entry — and
+            // delivered best-effort. Nothing here may fail the event: an
+            // undelivered acknowledgment stays `pending`/`failed` in the
+            // bookkeeping for the founder, while the money facts stand.
+            await issueAndDeliverAcknowledgment(fin, {
+              paymentIntentId: cs.payment_intent,
+              livemode: ev.livemode,
+              email: cs.customer_details.email,
+              sessionId: cs.id,
+            });
           }
         }
       }
@@ -348,4 +365,62 @@ export async function purgeExpiredPayloads(
     if (purged < batch) break;
   }
   return total;
+}
+
+/** The rpc surface the acknowledgment flow needs — satisfied by the real
+ * client's schema() and by the test fake alike. */
+type FinanceRpc = () => {
+  rpc: (
+    fn: string,
+    args: Record<string, unknown>,
+  ) => PromiseLike<{ data: unknown; error: { message: string; code?: string } | null }>;
+};
+
+/**
+ * PR 10C: issue the acknowledgment from the verified money fact and deliver
+ * it best-effort. Exact-once at the database (unique per entry); duplicate
+ * event deliveries find a non-`pending` snapshot and send nothing. NOTHING
+ * here throws to the caller — an undelivered acknowledgment is bookkeeping
+ * (`failed`/`pending`), never a failed event.
+ */
+async function issueAndDeliverAcknowledgment(
+  fin: FinanceRpc,
+  args: { paymentIntentId: string; livemode: boolean; email: string; sessionId: string },
+): Promise<void> {
+  try {
+    const res = await fin().rpc("issue_donor_acknowledgment", {
+      p_payment_intent_id: args.paymentIntentId,
+      p_livemode: args.livemode,
+    });
+    if (res.error) {
+      // VK428 = wording not founder-approved yet; VK404/VK409 = ordering
+      // corners. All are visible in logs and in the delivery bookkeeping the
+      // founder reviews; none change the money facts.
+      console.error("worker: acknowledgment issue failed", args.sessionId, res.error.message);
+      return;
+    }
+    const ack = (res.data as AcknowledgmentSnapshot[] | null)?.[0];
+    if (!ack || ack.delivery_status !== "pending") return;
+
+    let delivered = false;
+    let errMsg: string | null = null;
+    try {
+      const { subject, html } = renderAcknowledgmentEmail(ack);
+      const messageId = await sendJourneyEmail({ to: args.email, subject, html });
+      if (messageId === null) errMsg = "email sending disabled (no RESEND_API_KEY)";
+      else delivered = true;
+    } catch (e) {
+      errMsg = e instanceof Error ? e.message : String(e);
+    }
+    const mark = await fin().rpc("mark_acknowledgment_delivery", {
+      p_ack_id: ack.ack_id,
+      p_delivered: delivered,
+      p_error: errMsg,
+    });
+    if (mark.error) {
+      console.error("worker: acknowledgment delivery bookkeeping failed", ack.ack_id, mark.error.message);
+    }
+  } catch (e) {
+    console.error("worker: acknowledgment flow failed", args.sessionId, e instanceof Error ? e.message : e);
+  }
 }
