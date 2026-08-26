@@ -238,6 +238,51 @@ test("direct Calendly booking with NO authorization → parked, balance untouche
   assert.equal(remainingFor(db, PROFILE_A, "coaching"), 10);
 });
 
+test("unauthorized booking cannot launder into counting via reschedule", async () => {
+  // Direct Calendly booking with no Vital authorization → parked. The member
+  // then reschedules it: the replacement must INHERIT needs_review, not gain
+  // counting status from old_invitee's mere presence.
+  const db = makeDb(); // no holds anywhere
+  await processSessionWebhook(fakeSupabase(db), created({ inviteeUri: "inv-direct" }), "receipt-1");
+  assert.equal(db.session_bookings[0].needs_review, true);
+  assert.equal(remainingFor(db, PROFILE_A, "coaching"), 10);
+
+  db.webhook_receipts.push({ id: "receipt-2" });
+  await processSessionWebhook(fakeSupabase(db), canceled({ inviteeUri: "inv-direct" }), "receipt-2");
+  db.webhook_receipts.push({ id: "receipt-3" });
+  const outcome = await processSessionWebhook(
+    fakeSupabase(db),
+    created({ inviteeUri: "inv-direct-2", oldInvitee: "inv-direct" }),
+    "receipt-3",
+  );
+
+  assert.equal((outcome as any).response.needsReview, true);
+  const replacement = db.session_bookings.find(
+    (b) => b.calendly_invitee_uri === "inv-direct-2",
+  )!;
+  assert.equal(replacement.counts_against_allowance, false);
+  assert.equal(replacement.needs_review, true);
+  assert.equal(db.session_bookings.filter((b) => b.counts_against_allowance).length, 0);
+  assert.equal(remainingFor(db, PROFILE_A, "coaching"), 10);
+});
+
+test("reschedule whose previous booking is unknown fails closed — even with a hold available", async () => {
+  const db = makeDb();
+  activeHold(db, "hold-1");
+  const outcome = await processSessionWebhook(
+    fakeSupabase(db),
+    created({ inviteeUri: "inv-new", oldInvitee: "inv-ghost" }),
+    "receipt-1",
+  );
+  assert.equal((outcome as any).response.needsReview, true);
+  const b = db.session_bookings[0];
+  assert.equal(b.counts_against_allowance, false);
+  assert.equal(b.needs_review, true);
+  // The reschedule branch must not fall back to consuming a hold.
+  assert.equal(db.session_booking_holds[0].consumed_at, null);
+  assert.equal(remainingFor(db, PROFILE_A, "coaching"), 10);
+});
+
 test("one entitlement produces exactly one counted booking", async () => {
   const db = makeDb();
   activeHold(db, "hold-1");
@@ -286,6 +331,7 @@ test("reschedule (canceled + created with old_invitee) → net balance unchanged
     calendly_invitee_uri: "inv-old",
     status: "scheduled",
     counts_against_allowance: true,
+    needs_review: false,
   });
   db.session_booking_holds.push({
     id: "hold-1",

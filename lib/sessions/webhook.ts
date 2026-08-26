@@ -14,9 +14,12 @@
 //                      deducts. No authorization → parked needs_review.
 //   invitee.canceled → booking stops counting, the session returns
 //   reschedule       → Calendly sends canceled + created; net balance 0.
-//                      The created half carries old_invitee: it stays counted
-//                      (it replaces a counted booking) and does NOT consume
-//                      an authorization.
+//                      The created half carries old_invitee. It INHERITS the
+//                      allowance status of the booking it replaces — an
+//                      authorized booking stays counted, an unauthorized
+//                      (needs_review) one stays parked, and an unknown old
+//                      booking fails closed. old_invitee alone is never
+//                      authorization, and a reschedule never consumes a hold.
 //   duplicate        → blocked twice over: the receipt idempotency claim and
 //                      the unique index on session_bookings.calendly_invitee_uri
 //                      (plain insert; 23505 = already recorded)
@@ -38,6 +41,7 @@ export type SessionEvent = {
   email: string | null;
   fullName: string;
   startTime: string | null;
+  oldInviteeUri: string | null;
   isReschedule: boolean;
 };
 
@@ -59,6 +63,9 @@ export function extractSessionEvent(body: any): SessionEvent | null {
     p.scheduled_event?.uri ||
     (typeof p.event === "string" ? p.event : p.event?.uri || null);
 
+  const oldInviteeUri: string | null =
+    typeof p.old_invitee === "string" ? p.old_invitee : p.old_invitee?.uri ?? null;
+
   return {
     eventType,
     eventTypeUri,
@@ -70,7 +77,8 @@ export function extractSessionEvent(body: any): SessionEvent | null {
       p.scheduled_event?.start_time ||
       (typeof p.event === "object" ? p.event?.start_time : null) ||
       null,
-    isReschedule: p.old_invitee != null,
+    oldInviteeUri,
+    isReschedule: oldInviteeUri != null,
   };
 }
 
@@ -159,13 +167,29 @@ async function recordBooking(
   }
   const matched = profileId != null;
 
-  // Authorization gate: a fresh (non-reschedule) booking may only count by
-  // consuming a valid hold. Find the oldest candidate; the claim itself is
-  // atomic further down. A reschedule's created half counts without one — it
-  // replaces a booking that already consumed its authorization, and eating an
-  // unrelated hold would strand a different in-flight booking attempt.
+  // Authorization gate. A fresh booking may only count by consuming a valid
+  // hold. A reschedule may only count by INHERITING authorization from the
+  // booking it replaces — old_invitee alone is never authorization, so an
+  // unauthorized needs_review booking cannot launder into a counted one by
+  // being rescheduled.
   let candidateHoldId: string | null = null;
-  if (matched && !event.isReschedule) {
+  let counts = false;
+  if (matched && event.isReschedule) {
+    // The canceled half of the pair has usually already flipped the old
+    // row's counts_against_allowance off (that is how the session returns),
+    // and Calendly's delivery order isn't guaranteed either way. The durable
+    // marker of the old booking's authorization is needs_review, which
+    // cancellation never touches. Unknown old booking → fail closed.
+    const { data: previous } = await supabase
+      .from("session_bookings")
+      .select("id, needs_review")
+      .eq("calendly_invitee_uri", event.oldInviteeUri)
+      .maybeSingle();
+    counts = previous != null && previous.needs_review === false;
+  } else if (matched) {
+    // Find the oldest candidate hold; the claim itself is atomic further
+    // down. A reschedule never reaches this branch — eating an unrelated
+    // hold would strand a different in-flight booking attempt.
     const { data: hold } = await supabase
       .from("session_booking_holds")
       .select("id")
@@ -177,8 +201,8 @@ async function recordBooking(
       .limit(1)
       .maybeSingle();
     candidateHoldId = hold?.id ?? null;
+    counts = candidateHoldId != null;
   }
-  let counts = matched && (event.isReschedule || candidateHoldId != null);
 
   // Plain insert; the partial unique index on calendly_invitee_uri makes a
   // replayed webhook fail with 23505 — one invitee, one deduction, ever.
