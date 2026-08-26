@@ -280,6 +280,83 @@ test("network throw → 'calendly_error' and the hold is released", async () => 
   });
 });
 
+// ── practitioner-hosted calendars we hold no token for (PNE today) ──────────
+
+const URL_ONLY_MAPPING = {
+  calendly_event_type_uri: null,
+  scheduling_url: "https://calendly.com/practitioner/private-session",
+} as never;
+
+test("a URL-only mapping books on the practitioner's own link, with no Calendly API call", async () => {
+  await withToken(undefined, async () => {
+    const state = makeState({ mapping: URL_ONLY_MAPPING });
+    const calls: any[] = [];
+    const result = await createSessionBookingLink(fakeSupabase(state), MEMBER, fakeFetch(calls));
+
+    assert.equal(result.ok, true);
+    if (!result.ok) return;
+    assert.equal(
+      result.bookingUrl,
+      "https://calendly.com/practitioner/private-session?email=a%40test.local&name=Member+A",
+    );
+    assert.equal(calls.length, 0, "no token, so no scheduling_links call is attempted");
+    assert.equal(state.holds.length, 1, "the session is still reserved");
+    assert.equal(state.holds[0].booking_url, result.bookingUrl);
+  });
+});
+
+test("availability is still gated for URL-only mappings", async () => {
+  await withToken(undefined, async () => {
+    const state = makeState({ mapping: URL_ONLY_MAPPING, grantNext: false });
+    const calls: any[] = [];
+    const result = await createSessionBookingLink(fakeSupabase(state), MEMBER, fakeFetch(calls));
+    assert.deepEqual(result, { ok: false, reason: "no_sessions_remaining" });
+    assert.equal(calls.length, 0);
+  });
+});
+
+test("repeat clicks reuse the practitioner link too — one authorization", async () => {
+  await withToken(undefined, async () => {
+    const state = makeState({ mapping: URL_ONLY_MAPPING });
+    const first = await createSessionBookingLink(fakeSupabase(state), MEMBER, fakeFetch([]));
+    const second = await createSessionBookingLink(fakeSupabase(state), MEMBER, fakeFetch([]));
+    assert.equal(first.ok && second.ok, true);
+    if (!first.ok || !second.ok) return;
+    assert.equal(second.bookingUrl, first.bookingUrl);
+    assert.equal(state.holds.length, 1);
+    assert.equal(state.rpcCalls.length, 1);
+  });
+});
+
+test("a token plus an event type still prefers a single-use link over any URL", async () => {
+  await withToken("tok", async () => {
+    const state = makeState({
+      mapping: {
+        calendly_event_type_uri: "https://api.calendly.com/event_types/COACH",
+        scheduling_url: "https://calendly.com/practitioner/should-not-be-used",
+      } as never,
+    });
+    const calls: any[] = [];
+    const result = await createSessionBookingLink(fakeSupabase(state), MEMBER, fakeFetch(calls));
+    assert.equal(result.ok, true);
+    if (!result.ok) return;
+    assert.match(result.bookingUrl, /calendly\.com\/d\/single-use/);
+    assert.doesNotMatch(result.bookingUrl, /should-not-be-used/);
+    assert.equal(calls.length, 1);
+  });
+});
+
+test("a mapping with neither a mintable link nor a URL stays not_configured", async () => {
+  await withToken(undefined, async () => {
+    const state = makeState({
+      mapping: { calendly_event_type_uri: null, scheduling_url: null } as never,
+    });
+    const result = await createSessionBookingLink(fakeSupabase(state), MEMBER, fakeFetch([]));
+    assert.deepEqual(result, { ok: false, reason: "not_configured" });
+    assert.equal(state.holds.length, 0, "the hold is released");
+  });
+});
+
 test("attach failure → link withheld, hold released — fail closed", async () => {
   await withToken("tok", async () => {
     const state = makeState({ attachError: true });
