@@ -24,6 +24,7 @@ import { type JournalSharingState } from "@/lib/journal-sharing";
 import { type MedicineQuestionGroup } from "@/lib/medicine-questions";
 import { buildMemberTimeline } from "./memberTimeline";
 import MedicalNotesLog from "@/components/dashboard/MedicalNotesLog";
+import SessionsTrackerCard from "./SessionsTrackerCard";
 /* Integration Specialist options come from the integration_specialists
    table via the `specialists` prop. Same source as /dashboard/integration
    and the portal card — one source of truth. */
@@ -1124,6 +1125,7 @@ export default function MemberProfileEditor({
               </div>
             </div>
           </div>
+          <SessionsTrackerCard memberId={member.id} />
           {/* Always render both progress cards, even with no progress rows —
               missing data normalizes to 0/6 and every week stays clickable so
               founders can view the read-only journal for any member. */}

@@ -7,7 +7,6 @@ import Link from 'next/link'
 import { POST_CEREMONY_WEEKS, POST_PNE_DETAILS } from '@/lib/journal-prompts'
 import { companionsFor } from '@/lib/pne-companions'
 import SectionIndex, { type SectionIndexItem } from '@/components/portal/SectionIndex'
-import HeroCountdown from '@/components/portal/HeroCountdown'
 import SessionBookingCard from '@/components/portal/SessionBookingCard'
 import {
   WEEKS,
@@ -747,7 +746,6 @@ function PostCeremonyPageInner() {
             <p className="pc-hero-desc">Integration is how you build from what the medicine opened. As with your preparation, each week draws on a Hawaiian principle, paired with a teaching from psychoneuroenergetics (PNE) to support the body, mind, and spirit. You&apos;ll find journal prompts, action items, and voices from the Vital Kauaʻi community to support your homecoming.</p>
           </div>
           <div className="pc-hero-aside">
-            <HeroCountdown mode="post" />
             <SessionBookingCard />
           </div>
         </div>
