@@ -672,6 +672,15 @@ function PostCeremonyPageInner() {
         .w1-action-body { flex:1;min-width:0;display:flex;align-items:flex-start;gap:14px;padding:16px 18px;text-decoration:none;color:var(--ink); }
         .w1-action-dot { width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:7px; }
         .w1-action-text { font-size:13.5px;color:var(--ink);line-height:1.55; }
+        /* Make the linked action items read as tappable (anchors only, not
+           the non-link static rows). */
+        a.w1-action-body .w1-action-text { color:#9a7a3e;text-decoration:underline;text-decoration-color:rgba(200,169,110,.55);text-underline-offset:3px; }
+        .w1-action.is-checked a.w1-action-body .w1-action-text { color:var(--ink-soft);text-decoration:line-through;text-decoration-color:rgba(107,140,110,.5); }
+        .w1-action-arrow { color:#9a7a3e;white-space:nowrap; }
+        .w1-actions-hint { font-size:12.5px;font-style:italic;color:var(--ink-soft);margin:-6px 0 14px; }
+        @media (hover:hover) {
+          a.w1-action-body:hover .w1-action-text { color:var(--gold);text-decoration-color:var(--gold); }
+        }
         .w1-action-check { flex-shrink:0;display:flex;align-items:center;justify-content:center;width:54px;background:none;border:none;border-left:.5px solid var(--border);cursor:pointer;font-family:inherit;padding:0;color:var(--gold);transition:background .15s; }
         .w1-action-check:hover { background:rgba(200,169,110,.1); }
         .w1-action-check-box { width:22px;height:22px;border:1.5px solid rgba(200,169,110,.6);border-radius:4px;display:flex;align-items:center;justify-content:center;background:white;transition:background .2s,border-color .2s; }
@@ -805,6 +814,7 @@ function PostCeremonyPageInner() {
             {/* ACTIONS */}
             <section className="w1-section" id="action-items">
               <h3 className="w1-h3">Action Items</h3>
+              <p className="w1-actions-hint">Tap each item to open it.</p>
               <div className="w1-actions">
                 {actionsForWeek(w.actions).map((card, ai) => {
                   // PNE Practice + Reflection are folded into the single
@@ -886,7 +896,7 @@ function PostCeremonyPageInner() {
                     body = (
                       <a href={decorateHref(card.href)} target="_blank" rel="noopener noreferrer" className="w1-action-body">
                         <span className="w1-action-dot" />
-                        <span className="w1-action-text">{card.text}</span>
+                        <span className="w1-action-text">{card.text}<span className="w1-action-arrow"> ↗</span></span>
                       </a>
                     )
                   } else {
