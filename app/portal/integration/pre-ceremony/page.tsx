@@ -8,6 +8,7 @@ import { PRE_CEREMONY_WEEKS, PRE_PNE_DETAILS } from '@/lib/journal-prompts'
 import { companionsFor } from '@/lib/pne-companions'
 import SectionIndex, { type SectionIndexItem } from '@/components/portal/SectionIndex'
 import HeroCountdown from '@/components/portal/HeroCountdown'
+import SessionBookingCard from '@/components/portal/SessionBookingCard'
 import {
   WEEKS,
   actionsForWeek,
@@ -644,6 +645,7 @@ function PreCeremonyPageInner() {
           </div>
           <div className="pc-hero-aside">
             <HeroCountdown mode="pre" />
+            <SessionBookingCard />
           </div>
         </div>
       </div>

@@ -8,6 +8,7 @@ import { POST_CEREMONY_WEEKS, POST_PNE_DETAILS } from '@/lib/journal-prompts'
 import { companionsFor } from '@/lib/pne-companions'
 import SectionIndex, { type SectionIndexItem } from '@/components/portal/SectionIndex'
 import HeroCountdown from '@/components/portal/HeroCountdown'
+import SessionBookingCard from '@/components/portal/SessionBookingCard'
 import {
   WEEKS,
   actionsForWeek,
@@ -738,6 +739,7 @@ function PostCeremonyPageInner() {
           </div>
           <div className="pc-hero-aside">
             <HeroCountdown mode="post" />
+            <SessionBookingCard />
           </div>
         </div>
       </div>
