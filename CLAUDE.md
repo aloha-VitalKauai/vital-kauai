@@ -1,5 +1,38 @@
 # Vital Kauaʻi — Claude operating notes
 
+## Consistency over novelty
+
+**Before creating a new abstraction, helper, component, data-access
+pattern, role check, type, or styling convention, search the repository
+for the existing canonical pattern and reuse it. If two patterns already
+exist, do not introduce a third — pick the one that is more common and
+say so in the PR description.**
+
+**When touching legacy code, improve only the part required for the
+current feature.** Do not perform broad cleanup unless the cleanup is the
+explicit PR objective. "While I'm here" refactors make review harder and
+hide the real change.
+
+Corollaries worth stating outright:
+
+- **Database row types come from `lib/database.types.ts`**, which is
+  generated from the production schema. Do not hand-write an `interface
+  Member`, `Profile`, `Journey`, or similar that mirrors a table — import
+  the generated `Tables<'members'>` instead. Regenerate with
+  `npm run db:types` after any migration and commit the result in the
+  same PR as the migration.
+- **A failed read is never a zero.** Distinguish "unknown" from "0" /
+  "none" / "empty" in every surface, not just financial ones. Never let
+  an error path fall through to data that looks valid.
+- **High-integrity rules live in Postgres**, as constraints, RLS
+  policies, or views — not in React. If correctness depends on it, the
+  database enforces it.
+- **One PR, one outcome.** Foundation → integration → UI, as separate
+  PRs. State in the description what the PR changes, what it
+  deliberately does not change, and how it was verified.
+
+Run `npm run typecheck` and `npm test` before opening a PR.
+
 ## Working with Rachel
 
 Rachel is a founder of Vital Kauaʻi. When she asks for a change on this
@@ -89,6 +122,10 @@ rollback plan. See `.github/pull_request_template.md`.
 - Top-nav tabs are configured in `app/dashboard/DashboardTabs.tsx`.
 - Shared dashboard components live in `components/dashboard/`.
 - Supabase server/client helpers in `lib/supabase/`.
+- Generated database types in `lib/database.types.ts` — see
+  **Consistency over novelty** above. Currently covers the `public`
+  schema only; the `finance_api` schema is not yet generated, so
+  `.schema("finance_api")` calls remain untyped.
 - Deployment: Vercel, connected to GitHub.
 
 ## Content conventions

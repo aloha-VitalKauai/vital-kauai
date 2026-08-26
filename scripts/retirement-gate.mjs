@@ -45,8 +45,14 @@ export const SELF_EXEMPT = [
 /** The deployed legacy webhook must stay inert — no imports, no I/O. */
 const EDGE_TOMBSTONE = "supabase/functions/stripe-webhook/index.ts";
 
-const RETIRED_TABLES = ["donations", "financial_commitments", "payment_tokens", "payment_allocations"];
-const RETIRED_VIEWS = ["financials_overview", "cohort_margin_summary", "private_ceremony_summary"];
+/**
+ * Exported so `scripts/strip-retired-types.mjs` can filter the generated
+ * Supabase types against the same list. That script must never name a retired
+ * object literally — it would trip this gate — so it imports these instead.
+ * One list, one source of truth.
+ */
+export const RETIRED_TABLES = ["donations", "financial_commitments", "payment_tokens", "payment_allocations"];
+export const RETIRED_VIEWS = ["financials_overview", "cohort_margin_summary", "private_ceremony_summary"];
 
 /**
  * Matched on a word boundary, not on adjacent quotes. `from("donations")`,
