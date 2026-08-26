@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { sessionRowState, shouldShowRow } from './sessionCardState.ts';
+import { describeError, sessionRowState, shouldShowRow } from './sessionCardState.ts';
 
 test('sessions remaining reads plainly and allows booking', () => {
   assert.deepEqual(sessionRowState({ remaining: 7 }), {
@@ -52,4 +52,43 @@ test('a member who used every session still sees their row', () => {
   // granted 10, all booked → remaining 0, but the row belongs to them.
   assert.equal(shouldShowRow(10), true);
   assert.equal(sessionRowState({ remaining: 0 }).label, '0 sessions left');
+});
+
+// ── console diagnostics must be structurally unable to leak ─────────────────
+
+test('describeError keeps name, code, and message', () => {
+  const err = Object.assign(new Error('permission denied for table x'), { code: 'PGRST301' });
+  assert.equal(describeError(err), 'Error PGRST301: permission denied for table x');
+});
+
+test('describeError uses status when code is absent, and handles strings', () => {
+  assert.equal(
+    describeError({ name: 'AuthApiError', status: 401, message: 'Invalid token' }),
+    'AuthApiError 401: Invalid token',
+  );
+  assert.equal(describeError('boom'), 'Error: boom');
+  assert.equal(describeError(undefined), 'Error: unknown error');
+});
+
+test('describeError NEVER emits emails, ids, tokens, URLs, or response payloads carried on the error', () => {
+  const hostile = {
+    name: 'FetchError',
+    message: 'request failed',
+    email: 'member@example.com',
+    member_id: '9545409f-82f9-42a4-9941-9d4b0d26cb64',
+    access_token: 'eyJhbGciOi.SECRET.TOKEN',
+    booking_url: 'https://calendly.com/d/secret-single-use',
+    response: { data: [{ email: 'member@example.com', quantity: 10 }] },
+    stack: 'at getSessionBalances (eyJSECRET)',
+  };
+  const out = describeError(hostile);
+  assert.equal(out, 'FetchError: request failed');
+  for (const leak of ['member@example.com', '9545409f', 'eyJ', 'calendly.com', 'quantity']) {
+    assert.doesNotMatch(out, new RegExp(leak));
+  }
+});
+
+test('describeError caps runaway messages at 300 characters', () => {
+  const out = describeError(new Error('x'.repeat(2000)));
+  assert.equal(out.length, 300);
 });

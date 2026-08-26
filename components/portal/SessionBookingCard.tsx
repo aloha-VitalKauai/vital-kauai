@@ -23,7 +23,7 @@ import {
   type SessionBalance,
   type SessionType,
 } from '@/lib/sessions/balance'
-import { sessionRowState, shouldShowRow } from './sessionCardState'
+import { describeError, sessionRowState, shouldShowRow } from './sessionCardState'
 
 const LABELS: Record<SessionType, { name: string; detail: string }> = {
   coaching: { name: 'Coaching', detail: '1 Hour Coaching Call' },
@@ -265,8 +265,10 @@ export default function SessionBookingCard() {
       if (!cancelled) setBalances(result)
     })().catch((err) => {
       // A balance we can't read is a card we don't show, never a broken hero.
-      // Members see nothing; the console keeps the reason for diagnosis.
-      console.error('[sessions] balance load failed:', err)
+      // Members see nothing; the console keeps a SANITIZED reason — name,
+      // code, message only, never the raw error object (which could carry
+      // response payloads or session material).
+      console.error('[sessions] balance load failed:', describeError(err))
       if (!cancelled) setBalances(null)
     })
     return () => { cancelled = true }

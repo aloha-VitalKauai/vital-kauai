@@ -33,3 +33,23 @@ export function sessionRowState(args: {
 export function shouldShowRow(granted: number): boolean {
   return granted > 0;
 }
+
+// Reduce an unknown thrown value to a short, sanitized string for console
+// diagnostics. Deliberately extracts ONLY name + code/status + message —
+// never the raw object — so a rejection that happens to carry response
+// payloads, tokens, emails, or stack-embedded values can never reach the
+// console. The message is capped; anything longer than an error message
+// isn't an error message.
+export function describeError(err: unknown): string {
+  const e = err as { name?: unknown; code?: unknown; status?: unknown; message?: unknown } | null;
+  const name = typeof e?.name === 'string' ? e.name : 'Error';
+  const code =
+    typeof e?.code === 'string' || typeof e?.code === 'number'
+      ? String(e.code)
+      : typeof e?.status === 'string' || typeof e?.status === 'number'
+        ? String(e.status)
+        : '';
+  const message =
+    typeof e?.message === 'string' ? e.message : typeof err === 'string' ? err : 'unknown error';
+  return `${name}${code ? ` ${code}` : ''}: ${message}`.slice(0, 300);
+}
