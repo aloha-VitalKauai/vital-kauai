@@ -13,6 +13,17 @@
 -- scheduler, no cron. When the Calendly webhook records the real booking, the
 -- member's oldest active hold is marked consumed.
 --
+-- A hold is a BOOKING AUTHORIZATION with two phases:
+--   pending — just acquired, no link yet. The short (15-minute) expiry only
+--             covers a crash between acquiring and issuing the link.
+--   issued  — booking_url is set and expires_at is extended to the LINK's
+--             own validity horizon (Calendly single-use links stay bookable
+--             ~90 days). The authorization lives exactly as long as the link,
+--             so an unused link can never outlive its entitlement and become
+--             a second one. Repeat Book clicks return the same issued link.
+-- A fresh (non-reschedule) webhook booking only counts against the allowance
+-- by consuming a valid authorization — a matching email alone never deducts.
+--
 -- acquire_session_hold() is the ONLY way holds are created. It serializes
 -- concurrent attempts per (member, type) with a transaction-scoped advisory
 -- lock, so two simultaneous requests cannot both see the last session free.
@@ -24,6 +35,7 @@ create table if not exists public.session_booking_holds (
   member_id              uuid not null references public.member_profiles(id) on delete cascade,
   session_type           text not null check (session_type in ('coaching', 'pne')),
   expires_at             timestamptz not null,
+  booking_url            text,
   consumed_at            timestamptz,
   consumed_by_booking_id uuid references public.session_bookings(id) on delete set null,
   created_at             timestamptz not null default now()

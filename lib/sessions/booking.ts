@@ -1,19 +1,27 @@
 // Sessions V1 Build 2 — the gated booking flow.
 //
 //   Member clicks Book
-//     → acquire_session_hold() atomically reserves 1 of the remaining
-//       sessions (or refuses: two simultaneous attempts on the last session
-//       cannot both pass — the function serializes per member + type)
-//     → a SINGLE-USE Calendly scheduling link is created for the mapped
-//       event type and returned
-//   If the member never completes the booking, the hold expires on its own
-//   (15-minute window) and the session becomes available again.
+//     → if an ISSUED authorization (hold + single-use link) is already
+//       outstanding for this member + type, return the SAME link — repeat
+//       clicks never mint a second entitlement
+//     → otherwise acquire_session_hold() atomically reserves 1 of the
+//       remaining sessions (or refuses: two simultaneous attempts on the
+//       last session cannot both pass)
+//     → a SINGLE-USE Calendly scheduling link is created and ATTACHED to the
+//       hold, extending the authorization to the link's own validity horizon
+//       (~90 days). The link and its entitlement expire together; an unused
+//       link can never outlive its hold and turn into a free session.
 //
-// Any failure after the hold is taken releases it immediately — a member
-// must never lose availability to an error.
+// Any failure after the hold is taken releases it immediately — and if the
+// link can't be attached to the hold, the link is withheld entirely (a URL
+// nobody received can't be booked).
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { SessionType } from "./balance";
+
+// Calendly single-use scheduling links remain bookable for ~90 days; the
+// authorization must live exactly as long as the link it backs.
+export const CALENDLY_LINK_VALIDITY_DAYS = 90;
 
 export type BookingLinkResult =
   | { ok: true; bookingUrl: string; holdExpiresAt: string }
@@ -38,6 +46,27 @@ export async function createSessionBookingLink(
   fetchImpl: typeof fetch = fetch,
 ): Promise<BookingLinkResult> {
   const { memberId, sessionType } = args;
+
+  // 0. One outstanding authorization per member + type: a still-valid issued
+  //    link is returned as-is instead of minting another.
+  const { data: outstanding } = await supabase
+    .from("session_booking_holds")
+    .select("id, booking_url, expires_at")
+    .eq("member_id", memberId)
+    .eq("session_type", sessionType)
+    .is("consumed_at", null)
+    .not("booking_url", "is", null)
+    .gt("expires_at", new Date().toISOString())
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (outstanding?.booking_url) {
+    return {
+      ok: true,
+      bookingUrl: outstanding.booking_url,
+      holdExpiresAt: outstanding.expires_at,
+    };
+  }
 
   // 1. Atomically reserve one session. Empty result = nothing available.
   const { data: holds, error: holdErr } = await supabase.rpc("acquire_session_hold", {
@@ -104,10 +133,23 @@ export async function createSessionBookingLink(
   if (args.memberEmail) params.set("email", args.memberEmail);
   if (args.memberName) params.set("name", args.memberName);
   const query = params.toString();
+  const finalUrl = query ? `${bookingUrl}?${query}` : bookingUrl;
 
-  return {
-    ok: true,
-    bookingUrl: query ? `${bookingUrl}?${query}` : bookingUrl,
-    holdExpiresAt: hold.hold_expires_at,
-  };
+  // 4. Attach the link to its authorization and extend the hold to the
+  //    link's validity horizon: they now expire together. If the attach
+  //    fails, the link is withheld and the hold released — fail closed.
+  const linkExpiresAt = new Date(
+    Date.now() + CALENDLY_LINK_VALIDITY_DAYS * 24 * 60 * 60 * 1000,
+  ).toISOString();
+  const { error: attachErr } = await supabase
+    .from("session_booking_holds")
+    .update({ booking_url: finalUrl, expires_at: linkExpiresAt })
+    .eq("id", hold.hold_id)
+    .is("consumed_at", null);
+  if (attachErr) {
+    await releaseHold();
+    return { ok: false, reason: "calendly_error" };
+  }
+
+  return { ok: true, bookingUrl: finalUrl, holdExpiresAt: linkExpiresAt };
 }

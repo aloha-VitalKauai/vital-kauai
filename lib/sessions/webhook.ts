@@ -8,11 +8,15 @@
 // completely untouched.
 //
 // Behavior contract (Build 2 acceptance):
-//   invitee.created  → booking row recorded, balance drops by 1
+//   invitee.created  → booking row recorded. It counts against the allowance
+//                      ONLY by atomically consuming a valid authorization
+//                      (an active hold) — a matching email alone never
+//                      deducts. No authorization → parked needs_review.
 //   invitee.canceled → booking stops counting, the session returns
 //   reschedule       → Calendly sends canceled + created; net balance 0.
-//                      The created half carries old_invitee, so it does NOT
-//                      consume a booking hold.
+//                      The created half carries old_invitee: it stays counted
+//                      (it replaces a counted booking) and does NOT consume
+//                      an authorization.
 //   duplicate        → blocked twice over: the receipt idempotency claim and
 //                      the unique index on session_bookings.calendly_invitee_uri
 //                      (plain insert; 23505 = already recorded)
@@ -155,6 +159,27 @@ async function recordBooking(
   }
   const matched = profileId != null;
 
+  // Authorization gate: a fresh (non-reschedule) booking may only count by
+  // consuming a valid hold. Find the oldest candidate; the claim itself is
+  // atomic further down. A reschedule's created half counts without one — it
+  // replaces a booking that already consumed its authorization, and eating an
+  // unrelated hold would strand a different in-flight booking attempt.
+  let candidateHoldId: string | null = null;
+  if (matched && !event.isReschedule) {
+    const { data: hold } = await supabase
+      .from("session_booking_holds")
+      .select("id")
+      .eq("member_id", profileId)
+      .eq("session_type", sessionType)
+      .is("consumed_at", null)
+      .gt("expires_at", new Date().toISOString())
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    candidateHoldId = hold?.id ?? null;
+  }
+  let counts = matched && (event.isReschedule || candidateHoldId != null);
+
   // Plain insert; the partial unique index on calendly_invitee_uri makes a
   // replayed webhook fail with 23505 — one invitee, one deduction, ever.
   const { data: inserted, error: insertErr } = await supabase
@@ -168,8 +193,8 @@ async function recordBooking(
       invitee_name: event.fullName,
       scheduled_at: event.startTime,
       status: "scheduled",
-      counts_against_allowance: matched,
-      needs_review: !matched,
+      counts_against_allowance: counts,
+      needs_review: !counts,
     })
     .select("id")
     .single();
@@ -182,25 +207,23 @@ async function recordBooking(
     throw new Error(insertErr.message);
   }
 
-  // A fresh booking consumes the member's oldest active hold. A reschedule's
-  // created half does not — no hold was involved, and eating an unrelated
-  // hold would silently strand a different in-flight booking attempt.
-  if (matched && !event.isReschedule) {
-    const { data: hold } = await supabase
+  // Atomic consumption: only the caller that flips consumed_at from null
+  // wins the authorization. If a concurrent booking claimed it first, this
+  // booking is downgraded to needs_review — one entitlement can never
+  // produce two counted bookings, no matter how webhooks interleave.
+  if (candidateHoldId) {
+    const { data: claimed } = await supabase
       .from("session_booking_holds")
-      .select("id")
-      .eq("member_id", profileId)
-      .eq("session_type", sessionType)
+      .update({ consumed_at: new Date().toISOString(), consumed_by_booking_id: inserted.id })
+      .eq("id", candidateHoldId)
       .is("consumed_at", null)
-      .gt("expires_at", new Date().toISOString())
-      .order("created_at", { ascending: true })
-      .limit(1)
-      .maybeSingle();
-    if (hold) {
+      .select("id");
+    if (!claimed || claimed.length === 0) {
+      counts = false;
       await supabase
-        .from("session_booking_holds")
-        .update({ consumed_at: new Date().toISOString(), consumed_by_booking_id: inserted.id })
-        .eq("id", hold.id);
+        .from("session_bookings")
+        .update({ counts_against_allowance: false, needs_review: true })
+        .eq("id", inserted.id);
     }
   }
 
@@ -211,7 +234,7 @@ async function recordBooking(
       ok: true,
       session: sessionType,
       recorded: "booked",
-      needsReview: !matched,
+      needsReview: !counts,
       bookingId: inserted.id,
     },
   };

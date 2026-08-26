@@ -6,11 +6,13 @@
 
 begin;
 create extension if not exists pgtap;
-select plan(13);
+select plan(15);
 
 -- ── structure ───────────────────────────────────────────────────────────────
 
 select has_table('public', 'session_booking_holds', 'session_booking_holds exists');
+select has_column('public', 'session_booking_holds', 'booking_url',
+  'a hold carries its issued single-use link (the authorization IS the link)');
 select ok(
   (select relrowsecurity from pg_class where relname = 'session_booking_holds'),
   'RLS is enabled on session_booking_holds');
@@ -85,6 +87,24 @@ select is(
   0,
   'consumed hold + recorded booking = session spent, nothing to reserve');
 
+-- An ISSUED authorization (link attached, expiry extended to the link's
+-- ~90-day horizon) blocks re-acquisition long after the 15-minute pending
+-- window has passed — the old link can never become a second entitlement.
+insert into public.member_session_allowances (member_id, session_type, quantity, reason)
+  values ('bbbbbbbb-0000-4000-8000-000000000002', 'coaching', 1, 'program');
+insert into public.session_booking_holds
+  (member_id, session_type, expires_at, booking_url, created_at)
+  values ('bbbbbbbb-0000-4000-8000-000000000002', 'coaching',
+          now() + interval '90 days',
+          'https://calendly.com/d/issued-link?email=member-b%40test.local',
+          now() - interval '1 hour');
+
+select is(
+  (select count(*)::int from public.acquire_session_hold(
+    'bbbbbbbb-0000-4000-8000-000000000002', 'coaching')),
+  0,
+  'an issued-link authorization outlives the pending window and still blocks acquisition');
+
 -- ── privilege boundaries ────────────────────────────────────────────────────
 
 set local role authenticated;
@@ -96,8 +116,10 @@ select throws_ok(
   '42501', null,
   'members cannot call acquire_session_hold directly (service role only)');
 
-select is((select count(*)::int from public.session_booking_holds), 0,
-  'member B sees none of member A''s holds');
+select is(
+  (select count(*)::int from public.session_booking_holds
+    where member_id = 'aaaaaaaa-0000-4000-8000-000000000001'), 0,
+  'none of member A''s holds are visible to member B');
 
 select throws_ok(
   $$insert into public.session_booking_holds (member_id, session_type, expires_at)
@@ -112,8 +134,8 @@ select is((select count(*)::int from public.session_booking_holds), 2,
 
 select set_config('request.jwt.claim.sub', 'ffffffff-0000-4000-8000-000000000003', true);
 
-select is((select count(*)::int from public.session_booking_holds), 2,
-  'the founder sees all holds');
+select is((select count(*)::int from public.session_booking_holds), 3,
+  'the founder sees all holds across members');
 
 reset role;
 

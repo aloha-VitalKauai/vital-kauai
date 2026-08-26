@@ -127,6 +127,19 @@ function makeDb(): Db {
   };
 }
 
+// An issued booking authorization (hold with its single-use link attached).
+function activeHold(db: Db, id: string, sessionType = "coaching", createdAt = "2026-08-26T00:00:00Z") {
+  db.session_booking_holds.push({
+    id,
+    member_id: PROFILE_A,
+    session_type: sessionType,
+    consumed_at: null,
+    expires_at: "2099-01-01T00:00:00Z",
+    booking_url: `https://calendly.com/d/${id}`,
+    created_at: createdAt,
+  });
+}
+
 function created(opts: {
   inviteeUri: string;
   email?: string | null;
@@ -174,8 +187,9 @@ function remainingFor(db: Db, memberId: string, type: SessionType): number {
 
 // ── acceptance: book / cancel / reschedule / duplicate / unknown ────────────
 
-test("booked → recorded, coaching 10 → 9", async () => {
+test("authorized booking → recorded, hold consumed, coaching 10 → 9", async () => {
   const db = makeDb();
+  activeHold(db, "hold-1");
   const outcome = await processSessionWebhook(
     fakeSupabase(db),
     created({ inviteeUri: "inv-1" }),
@@ -189,11 +203,14 @@ test("booked → recorded, coaching 10 → 9", async () => {
   assert.equal(b.counts_against_allowance, true);
   assert.equal(b.needs_review, false);
   assert.equal(remainingFor(db, PROFILE_A, "coaching"), 9);
+  assert.notEqual(db.session_booking_holds[0].consumed_at, null);
+  assert.equal(db.session_booking_holds[0].consumed_by_booking_id, b.id);
   assert.equal(db.webhook_receipts[0].processing_status, "processed");
 });
 
-test("booked PNE → pne 6 → 5, coaching untouched at 10", async () => {
+test("authorized PNE booking → pne 6 → 5, coaching untouched at 10", async () => {
   const db = makeDb();
+  activeHold(db, "hold-p1", "pne");
   await processSessionWebhook(
     fakeSupabase(db),
     created({ inviteeUri: "inv-p1", typeUri: PNE_URI }),
@@ -201,6 +218,40 @@ test("booked PNE → pne 6 → 5, coaching untouched at 10", async () => {
   );
   assert.equal(remainingFor(db, PROFILE_A, "pne"), 5);
   assert.equal(remainingFor(db, PROFILE_A, "coaching"), 10);
+});
+
+test("direct Calendly booking with NO authorization → parked, balance untouched", async () => {
+  // A matched email alone must never deduct: without a valid hold the
+  // booking is recorded for founder review but cannot count.
+  const db = makeDb();
+  const outcome = await processSessionWebhook(
+    fakeSupabase(db),
+    created({ inviteeUri: "inv-direct" }),
+    "receipt-1",
+  );
+  assert.equal(outcome.handled, true);
+  assert.equal((outcome as any).response.needsReview, true);
+  const b = db.session_bookings[0];
+  assert.equal(b.member_id, PROFILE_A);
+  assert.equal(b.counts_against_allowance, false);
+  assert.equal(b.needs_review, true);
+  assert.equal(remainingFor(db, PROFILE_A, "coaching"), 10);
+});
+
+test("one entitlement produces exactly one counted booking", async () => {
+  const db = makeDb();
+  activeHold(db, "hold-1");
+  await processSessionWebhook(fakeSupabase(db), created({ inviteeUri: "inv-1" }), "receipt-1");
+  db.webhook_receipts.push({ id: "receipt-2" });
+  await processSessionWebhook(fakeSupabase(db), created({ inviteeUri: "inv-2" }), "receipt-2");
+
+  const counting = db.session_bookings.filter((b) => b.counts_against_allowance);
+  const parked = db.session_bookings.filter((b) => b.needs_review);
+  assert.equal(counting.length, 1);
+  assert.equal(counting[0].calendly_invitee_uri, "inv-1");
+  assert.equal(parked.length, 1);
+  assert.equal(parked[0].calendly_invitee_uri, "inv-2");
+  assert.equal(remainingFor(db, PROFILE_A, "coaching"), 9);
 });
 
 test("canceled → booking stops counting, the session returns", async () => {
@@ -266,8 +317,9 @@ test("reschedule (canceled + created with old_invitee) → net balance unchanged
   assert.equal(db.session_booking_holds[0].consumed_at, null);
 });
 
-test("duplicate webhook (same receipt claim) → ignored, balance unchanged", async () => {
+test("duplicate webhook (same receipt claim) → ignored, balance unchanged, hold consumed once", async () => {
   const db = makeDb();
+  activeHold(db, "hold-1");
   await processSessionWebhook(fakeSupabase(db), created({ inviteeUri: "inv-1" }), "receipt-1");
   db.webhook_receipts.push({ id: "receipt-2" });
   const dup = await processSessionWebhook(
@@ -279,10 +331,12 @@ test("duplicate webhook (same receipt claim) → ignored, balance unchanged", as
   assert.equal((dup as any).response.deduplicated, true);
   assert.equal(db.session_bookings.length, 1);
   assert.equal(remainingFor(db, PROFILE_A, "coaching"), 9);
+  assert.equal(db.session_booking_holds[0].consumed_by_booking_id, db.session_bookings[0].id);
 });
 
 test("duplicate webhook (no receipt, unique index backstop) → ignored", async () => {
   const db = makeDb();
+  activeHold(db, "hold-1");
   await processSessionWebhook(fakeSupabase(db), created({ inviteeUri: "inv-1" }), "receipt-1");
   const dup = await processSessionWebhook(
     fakeSupabase(db),
@@ -292,6 +346,7 @@ test("duplicate webhook (no receipt, unique index backstop) → ignored", async 
   assert.equal(dup.handled, true);
   assert.equal((dup as any).response.deduplicated, true);
   assert.equal(db.session_bookings.length, 1);
+  assert.equal(remainingFor(db, PROFILE_A, "coaching"), 9);
 });
 
 test("unknown email → needs_review, member null, zero balance impact", async () => {
