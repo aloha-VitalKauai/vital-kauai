@@ -552,7 +552,7 @@ export default async function SomaticCompanionWeek3Page() {
             <div className="vk-eyebrow">Why This Matters</div>
             <h2 className="vk-title">A Foundation of <em>Inner Safety</em></h2>
             <p className="vk-lede">Building somatic awareness before your Iboga journey gives the body a foundation of inner safety. It supports you in understanding what your body is communicating, and in learning to relate to sensations as messengers rather than something to escape.</p>
-            <p className="vk-body">If something intense arises during ceremony, somatic awareness allows you to recognize it as a sensation moving through the body. You can stay with it, breathe with it, and let it pass through. The same skill supports your sessions with your integration guide, where tender memories and sensations may rise as part of the healing.</p>
+            <p className="vk-body">If something intense arises during ceremony, somatic awareness allows you to recognize it as a sensation moving through the body. You can stay with it, breathe with it, and let it pass through. The same skill supports your sessions with your PNE Practitioner, where tender memories and sensations may rise as part of the healing.</p>
 
             <div className="gentle-pull">Do not fear the fear. It is only a sensation, moving through.</div>
           </div>
@@ -736,7 +736,7 @@ export default async function SomaticCompanionWeek3Page() {
           <div className="vk-narrow">
             <div className="vk-eyebrow">In Your PNE Sessions</div>
             <h2 className="vk-title">Working With <em>Sensation</em></h2>
-            <p className="vk-lede">During your sessions with your integration guide, you will track sensations together. The body scanning and regulation practices from Week One are building the capacity that makes this work feel steady and possible.</p>
+            <p className="vk-lede">During your sessions with your PNE Practitioner, you will track sensations together. The body scanning and regulation practices from Week One are building the capacity that makes this work feel steady and possible.</p>
 
             <div className="felt-example">
               <div className="label">An Example</div>

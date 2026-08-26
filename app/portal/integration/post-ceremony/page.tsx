@@ -1069,8 +1069,8 @@ function PostCeremonyPageInner() {
                 <p className="ma-text">The arc settles into a rhythm. Stay connected to your guide, your community, and the practices you have built.</p>
                 <div className="ma-grid">
                   <div className="ma-card">
-                    <span className="ma-card-label">Continue with your integration guide</span>
-                    <div className="ma-card-text">Your integration guide is available beyond the six-week arc. Reach out to set a continuing cadence that supports you.</div>
+                    <span className="ma-card-label">Continue with your PNE Practitioner</span>
+                    <div className="ma-card-text">Your PNE Practitioner is available beyond the six-week arc. Reach out to set a continuing cadence that supports you.</div>
                   </div>
                   <div className="ma-card">
                     <span className="ma-card-label">Stay in community</span>
@@ -1097,7 +1097,7 @@ function PostCeremonyPageInner() {
               <div className="bridge">
                 <span className="bridge-eyebrow">You are held</span>
                 <h3 className="bridge-title">The work continues.<br /><em>So do we.</em></h3>
-                <p className="bridge-text">Vital Kauaʻi is always here for you. Your integration guide, your care team, and this portal remain with you. If something arises six weeks from now or six months from now, reach out and stay connected. <strong style={{ color: 'var(--gold)' }}>aloha@vitalkauai.com</strong></p>
+                <p className="bridge-text">Vital Kauaʻi is always here for you. Your PNE Practitioner, your care team, and this portal remain with you. If something arises six weeks from now or six months from now, reach out and stay connected. <strong style={{ color: 'var(--gold)' }}>aloha@vitalkauai.com</strong></p>
               </div>
             )}
 

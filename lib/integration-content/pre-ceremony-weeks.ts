@@ -29,7 +29,7 @@ export const actionsForWeek = (
       { kind: 'internal', href: '/portal/pne-guide#top',    text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', key: 'a2' },
       { kind: 'static',                                              text: "Complete this week's PNE Practice", key: 'a3' },
       { kind: 'static',                                              text: "Complete this week's PNE Reflection", key: 'a4' },
-      { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule three or four of your six integration-guide calls up front', key: 'a5' },
+      { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule three or four of your six PNE Practitioner calls up front', key: 'a5' },
     ]
   }
   return actions.map((a, idx) => {
@@ -144,10 +144,10 @@ export const WEEKS = [
       {
         key: 'a5',
         color: 'blue',
-        text: 'Connect with your integration guide',
+        text: 'Connect with your PNE Practitioner',
         note: 'Come with your intentions from Week 1. Come with your questions. Come as you are. This call is the beginning of a relationship that will hold you through the hardest parts of what\'s ahead.',
         links: [
-          { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
+          { text: 'Connect with your PNE Practitioner', href: '/portal#integration-specialist' },
         ],
       },
       {
@@ -162,9 +162,9 @@ export const WEEKS = [
       {
         key: 'a7',
         color: 'amber',
-        text: 'Schedule next week\'s call with Rachel & Josh',
+        text: 'Schedule next week\'s coaching call with Rachel & Josh',
         links: [
-          { text: 'Schedule next week\'s call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true },
+          { text: 'Schedule next week\'s coaching call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true },
         ],
       },
     ],
@@ -183,7 +183,7 @@ export const WEEKS = [
     reentry: { strong: 'Arriving at this week behind?', text: ' If you haven\'t yet completed your first integration call with your guide, do that first, before starting anything here. One real conversation with your guide is worth more than moving forward alone. If you\'re behind on journaling, write just five minutes on Week 1\'s prompts before opening Week 3. Start here: one integration call scheduled, one journal prompt written.' },
     sub: 'You have everything you need, right here, in this moment. The past is memory; the future is imaginary. Now is the only ground that is true, and the only place where change and choice can happen.\n\nMany of us have learned to leave the present moment because it is how our bodies keep us safe. Presence means meeting the past or future anxieties with care.\n\nWeek 3 is about remembering the power of the present moment. Through simple practices of breath, body awareness, and sensation, you build the muscle of presence, and the capacity to be with what is.',
     video: { label: 'A Message from Rachel · Week 3', text: 'This week’s theme explores why the present moment is the only place life truly happens. Rachel draws on Rumi, quantum mechanics, neuroscience, and Buddhist teaching. She closes with simple practices for returning to presence.', url: 'https://www.youtube.com/embed/PeJ96KqpsiA' },
-    box: { type: 'info', label: 'If something surfaces this week', text: 'Iboga is intelligent and relational. It begins its work the moment you say yes. If difficult material arises, old grief, anxiety, somatic intensity, here is what to do: slow down deliberately. Bring your attention to one physical sensation at a time. Breathe. Place both feet on the floor. Be with what is arising, presence is enough. Your integration guide is available between sessions. Reach out whenever you need support.\n\nSome days will feel harder to begin. Noticing that, naming it honestly, is itself the practice.' },
+    box: { type: 'info', label: 'If something surfaces this week', text: 'Iboga is intelligent and relational. It begins its work the moment you say yes. If difficult material arises, old grief, anxiety, somatic intensity, here is what to do: slow down deliberately. Bring your attention to one physical sensation at a time. Breathe. Place both feet on the floor. Be with what is arising, presence is enough. Your PNE Practitioner is available between sessions. Reach out whenever you need support.\n\nSome days will feel harder to begin. Noticing that, naming it honestly, is itself the practice.' },
     actionLabel: 'Actions this week, 4 only',
     actions: [
       {
@@ -260,7 +260,7 @@ export const WEEKS = [
     reentry: { strong: 'A note on pacing:', text: ' Let the Coherent Heart Breath be with you this week. Return to it before each journal prompt, let it settle you before you begin, and steady you when the material goes deep.' },
     sub: 'Kala means to free, to loosen, or to release. In the Hawaiian practice of hoʻoponopono, kala is the step where people release one another from old grudges and loosen the emotional ties that keep them bound. This week, PNE turns that same idea toward our emotions. When we allow emotion to move through us in a healthy way, we let go of what keeps us contracted and create more freedom. When we feel more free, we return to our unlimited nature.',
     video: { label: 'A Message from Rachel & Josh · Week 4', text: 'Week 4 explores Kala, the Hawaiian principle of release — to forgive, to loosen, to free. We weave ancient wisdom with modern science to remember a deeper truth: beneath the separation we feel, we are unlimited.', url: 'https://www.youtube.com/embed/D8RreGvB-NY' },
-    box: { type: 'warn', label: 'Pacing permission, read this before you begin', text: 'This week\'s journaling may bring up old grief, anger, shame, or material you haven\'t touched in years. That is appropriate. It is a sign the process is working. Write for ten minutes. Stop. Breathe. Come back tomorrow. Go slow on purpose. If something feels too large to hold alone, reach out to your integration guide before your next scheduled call.\n\nAnd know this: this process moves in waves. Feeling more unsettled now than you did in Week 1, more uncertain, more raw, is often a sign something is genuinely moving. Regression before breakthrough is real.' },
+    box: { type: 'warn', label: 'Pacing permission, read this before you begin', text: 'This week\'s journaling may bring up old grief, anger, shame, or material you haven\'t touched in years. That is appropriate. It is a sign the process is working. Write for ten minutes. Stop. Breathe. Come back tomorrow. Go slow on purpose. If something feels too large to hold alone, reach out to your PNE Practitioner before your next scheduled call.\n\nAnd know this: this process moves in waves. Feeling more unsettled now than you did in Week 1, more uncertain, more raw, is often a sign something is genuinely moving. Regression before breakthrough is real.' },
     actionLabel: 'Actions this week, 4 only',
     actions: [
       {
@@ -284,10 +284,10 @@ export const WEEKS = [
       {
         key: 'a4',
         color: 'blue',
-        text: 'Connect with your integration guide',
+        text: 'Connect with your PNE Practitioner',
         note: 'Bring the material that is surfacing. Your guide is trained to hold exactly this territory.',
         links: [
-          { text: 'Connect with your integration guide', href: '/portal#integration-specialist' },
+          { text: 'Connect with your PNE Practitioner', href: '/portal#integration-specialist' },
         ],
       },
       {
@@ -387,9 +387,9 @@ export const WEEKS = [
       {
         key: 'a7',
         color: 'amber',
-        text: 'Schedule next week\'s call with Rachel & Josh',
+        text: 'Schedule next week\'s coaching call with Rachel & Josh',
         links: [
-          { text: 'Schedule next week\'s call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true },
+          { text: 'Schedule next week\'s coaching call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true },
         ],
       },
     ],

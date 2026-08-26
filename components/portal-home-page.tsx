@@ -19,7 +19,7 @@ import styles from "./portal-home-page.module.css";
 function findIntegrationGuidePhoto(name: string | null | undefined): string | null {
   if (!name) return null;
   const target = name.trim().toLowerCase();
-  // Prefer somatic-cat entries (the integration-guide section), fall back to any match.
+  // Prefer somatic-cat entries (the PNE Practitioner section), fall back to any match.
   const somatic = HEALING_CIRCLE_MEMBERS.find(
     (m) => m.cat === "somatic" && m.name.trim().toLowerCase() === target && m.photo,
   );
@@ -69,7 +69,7 @@ const PREP_ITEMS: { text: string; link?: string; external?: boolean; isLab?: boo
   { text: "Fill out the Intake Form, basic information required (emergency contact, etc.); all other questions optional", link: "/intake-form" },
   { text: "Submit your Contribution/Donate", link: CONTRIBUTION_URL },
   { text: "Read Iboga Preparedness Guide", link: "/iboga-preparedness-guide.html" },
-  { text: "Book your preparation calls with your integration guide", link: "/portal#integration-specialist" },
+  { text: "Book your preparation calls with your PNE Practitioner", link: "/portal#integration-specialist" },
   { text: "Discuss all medications and supplements with Rachel and Josh \u2014 confirm any required washout periods" },
   { text: "Confirm required lab work with your physician and submit results", isLab: true },
   { text: "Begin dietary preparation protocol", link: "/portal/dietary" },
@@ -585,7 +585,7 @@ export function PortalHomePage({
                 return guidePhoto ? (
                   <Image
                     src={guidePhoto}
-                    alt={memberData?.assigned_partner || "Your Integration Guide"}
+                    alt={memberData?.assigned_partner || "Your PNE Practitioner"}
                     width={92}
                     height={92}
                     className={styles.teamPhoto}
@@ -596,13 +596,13 @@ export function PortalHomePage({
               })()}
               <p className={styles.teamRole}>Integration Specialist</p>
               <p className={styles.teamName}>
-                {memberData?.assigned_partner || "Your Integration Guide"}
+                {memberData?.assigned_partner || "Your PNE Practitioner"}
               </p>
               {specialist?.bio ? (
                 <p className={styles.teamBio}>{specialist.bio}</p>
               ) : null}
               <p className={styles.teamBio}>
-                Your journey includes six total sessions with your integration guide. Your
+                Your journey includes six total sessions with your PNE Practitioner. Your
                 guide helps you access core imprints, bring awareness to sensations, learn how
                 to regulate and create safety, and establish new beliefs over the course of
                 3+ months.

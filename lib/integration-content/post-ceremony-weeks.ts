@@ -65,9 +65,9 @@ export const WEEKS = [
       {
         key: 'a5',
         color: 'amber',
-        text: 'Schedule your remaining two or three integration-guide calls so you use all six',
+        text: 'Schedule your remaining two or three PNE Practitioner calls so you use all six',
         links: [
-          { text: 'Schedule your remaining two or three integration-guide calls so you use all six', href: '/portal#integration-specialist' },
+          { text: 'Schedule your remaining two or three PNE Practitioner calls so you use all six', href: '/portal#integration-specialist' },
         ],
       },
       {

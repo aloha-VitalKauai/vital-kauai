@@ -637,7 +637,7 @@ export function HomePage() {
               </p>
               <h3 className={styles.supportHeader}>Coaching &amp; Psychoneuroenergetics (PNE)</h3>
               <p>
-                1:1 coaching and PNE integration guide to help you build the capacity to feel safe,
+                1:1 coaching and a PNE Practitioner to help you build the capacity to feel safe,
                 track the nervous system, self-resource, and integrate what the root reveals.
               </p>
               <h3 className={styles.supportHeader}>Somatic Practices</h3>
