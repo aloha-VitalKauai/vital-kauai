@@ -20,14 +20,33 @@ dropdb --if-exists "$DB"; createdb "$DB"
 psql -q -d "$DB" -v ON_ERROR_STOP=1 -f supabase/tests/_local_bootstrap.sql
 psql -q -d "$DB" -v ON_ERROR_STOP=1 -f supabase/migrations/20260825235000_sessions_v1_foundation.sql
 psql -q -d "$DB" -v ON_ERROR_STOP=1 -f supabase/migrations/20260826003000_sessions_v2_booking_holds.sql
+psql -q -d "$DB" -v ON_ERROR_STOP=1 -f supabase/migrations/20260826020000_sessions_default_program_grant.sql
 
+# The full production schema is applied above, so activating this member fires
+# the default program grant (10 coaching). This test is about the LAST session,
+# so the auto-granted ledger is cleared and replaced with exactly one — stated
+# explicitly here rather than depending on whatever the default happens to be.
 psql -q -d "$DB" -v ON_ERROR_STOP=1 <<'SQL'
 insert into auth.users (id, email) values
   ('aaaaaaaa-0000-4000-8000-000000000001', 'member-a@test.local');
 insert into public.member_profiles (id, email) values
   ('aaaaaaaa-0000-4000-8000-000000000001', 'member-a@test.local');
+insert into public.members (id, profile_id, email) values
+  ('aaaaaaaa-0000-4000-8000-000000000001',
+   'aaaaaaaa-0000-4000-8000-000000000001', 'member-a@test.local');
+
+delete from public.member_session_allowances
+ where member_id = 'aaaaaaaa-0000-4000-8000-000000000001';
 insert into public.member_session_allowances (member_id, session_type, quantity, reason)
   values ('aaaaaaaa-0000-4000-8000-000000000001', 'coaching', 1, 'program');
+
+do $$
+begin
+  if (select coalesce(sum(quantity),0) from public.member_session_allowances
+       where member_id='aaaaaaaa-0000-4000-8000-000000000001' and session_type='coaching') <> 1 then
+    raise exception 'concurrency seed is not exactly 1 coaching session';
+  end if;
+end $$;
 SQL
 
 ACQUIRE="select count(*) from public.acquire_session_hold('aaaaaaaa-0000-4000-8000-000000000001','coaching');"
