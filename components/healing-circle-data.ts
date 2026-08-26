@@ -17,7 +17,7 @@ export type Member = {
 
 export const categoryLabels: Record<Exclude<MemberCategory, "hidden">, string> = {
   founders: "Founders",
-  somatic: "Integration Guides",
+  somatic: "PNE Practitioners",
   plant: "Plant Medicine",
   healers: "Healers",
 };
@@ -86,7 +86,7 @@ export const members: Member[] = [
   {
     id: "rachel_int",
     name: "Rachel Nelson",
-    role: "Integration Guide",
+    role: "PNE Practitioner",
     cat: "somatic",
     photo: "/images/about/rachel-nelson.jpg",
     shortBio:
@@ -209,7 +209,7 @@ export const members: Member[] = [
 export const filterTabs = [
   { value: "all", label: "All" },
   { value: "founders", label: "Founders" },
-  { value: "somatic", label: "Integration Guides" },
+  { value: "somatic", label: "PNE Practitioners" },
   { value: "plant", label: "Plant Medicine" },
   { value: "healers", label: "Healers" },
 ] as const;

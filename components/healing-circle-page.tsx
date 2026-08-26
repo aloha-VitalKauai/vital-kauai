@@ -37,7 +37,7 @@ export function HealingCirclePage() {
         return member.cat === activeFilter;
       });
       // On the All tab, dedupe by name so people with multiple roles
-      // (e.g. Rachel: founder + integration guide + healer) appear once.
+      // (e.g. Rachel: founder + PNE Practitioner + healer) appear once.
       // The data is ordered so the primary/founder role comes first, which
       // is the one we keep.
       if (activeFilter !== "all") return filtered;

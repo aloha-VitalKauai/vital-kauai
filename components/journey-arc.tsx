@@ -31,8 +31,8 @@ const PHASES: Phase[] = [
     week: "6+ Weeks",
     essence: "Your commitment before you sit with the medicine.",
     items: [
-      "Three or four 1:1 integration-guide calls up front (six total across your journey)",
-      "Two 1:1 preparation and check-in calls with Rachel & Josh",
+      "Three or four 1:1 PNE Practitioner calls up front (six total across your journey)",
+      "Two 1:1 coaching calls with Rachel & Josh",
       "A support-team call with Rachel & Josh, with your home circle invited",
       "Weekly journal prompts and reflections in your member portal",
       "The PsychoNeuroEnergetics (PNE) Guide — week-by-week teachings, reflections, and practices to expand your nervous-system capacity",
@@ -80,7 +80,7 @@ const PHASES: Phase[] = [
     essence: "Where the work takes root.",
     items: [
       "Six weekly 1:1 integration coaching calls with Rachel & Josh",
-      "Two to three 1:1 follow-up calls with your integration guide, in any weeks you choose",
+      "Two to three 1:1 follow-up calls with your PNE Practitioner, in any weeks you choose",
       "Continued member-portal support to anchor what arose into new patterns",
       "The PsychoNeuroEnergetics (PNE) Guide — week-by-week teachings, reflections, and practices to integrate your journey",
       "Lifetime invitation into the Vital Kauaʻi community of those who’ve walked this path",
@@ -148,7 +148,7 @@ export function JourneyArc() {
         <p className={styles.lead}>
           The Iboga Journey is a held offering of preparation, ceremony, and integration that
           unfolds over months. Every phase is guided, every step supported, with 16 personal calls
-          across your journey—ten with Rachel &amp; Josh and six with your integration guide.
+          across your journey—ten with Rachel &amp; Josh and six with your PNE Practitioner.
         </p>
       </div>
 
