@@ -85,42 +85,52 @@ export async function createSessionBookingLink(
       .is("consumed_at", null);
   };
 
-  // 2. Resolve which Calendly event type this session type books.
+  // 2. Resolve which Calendly event this session type books. A mapping is
+  //    bookable either because we can mint links for it (event type URI + our
+  //    token) or because it carries the practitioner's own public URL.
   const { data: mapping } = await supabase
     .from("calendly_event_mappings")
-    .select("calendly_event_type_uri")
+    .select("calendly_event_type_uri, scheduling_url")
     .eq("session_type", sessionType)
     .eq("active", true)
     .limit(1)
     .maybeSingle();
   const token = calendlyTokenFor(sessionType);
-  if (!mapping || !token) {
+  const canMintLink = Boolean(mapping?.calendly_event_type_uri && token);
+  if (!mapping || (!canMintLink && !mapping.scheduling_url)) {
     await releaseHold();
     return { ok: false, reason: "not_configured" };
   }
 
-  // 3. Single-use scheduling link: gate first, then hand out one booking's
-  //    worth of access — never a reusable URL.
+  // 3. Prefer a single-use scheduling link: gate first, then hand out one
+  //    booking's worth of access rather than a reusable URL. Where we hold no
+  //    token for the practitioner's calendar (PNE today), fall back to their
+  //    public link — the ledger still refuses to deduct for any booking that
+  //    arrives without a valid authorization.
   let bookingUrl: string | null = null;
-  try {
-    const res = await fetchImpl("https://api.calendly.com/scheduling_links", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        max_event_count: 1,
-        owner: mapping.calendly_event_type_uri,
-        owner_type: "EventType",
-      }),
-    });
-    if (res.ok) {
-      const json: any = await res.json();
-      bookingUrl = json?.resource?.booking_url ?? null;
+  if (canMintLink) {
+    try {
+      const res = await fetchImpl("https://api.calendly.com/scheduling_links", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          max_event_count: 1,
+          owner: mapping.calendly_event_type_uri,
+          owner_type: "EventType",
+        }),
+      });
+      if (res.ok) {
+        const json: any = await res.json();
+        bookingUrl = json?.resource?.booking_url ?? null;
+      }
+    } catch {
+      bookingUrl = null;
     }
-  } catch {
-    bookingUrl = null;
+  } else {
+    bookingUrl = mapping.scheduling_url;
   }
   if (!bookingUrl) {
     await releaseHold();
