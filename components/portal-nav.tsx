@@ -84,8 +84,6 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
               <button className="pn-dropdown-trigger">Resources</button>
               <div className="pn-dropdown-menu">
                 <a href="/portal/journal" className="pn-dropdown-item pn-dropdown-parent">Comprehensive Journal</a>
-                <a href="/portal/journal#pre" className="pn-dropdown-subitem">Pre-Ceremony</a>
-                <a href="/portal/journal#post" className="pn-dropdown-subitem">Post-Ceremony</a>
                 <a href="/portal/vital-kauai-guides" className="pn-dropdown-item pn-dropdown-parent">Vital Kauaʻi Guides</a>
                 <a href="/intake-form-legacy.html" className="pn-dropdown-subitem">Member Intake &amp; Readiness Form</a>
                 <a href="/iboga-preparedness-guide.html" className="pn-dropdown-subitem">Iboga Preparedness Guide</a>
@@ -165,10 +163,6 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         </div>
         <span className="pn-mobile-section-label">Resources</span>
         <a href="/portal/journal" onClick={close}>Comprehensive Journal</a>
-        <div className="pn-mobile-week-row">
-          <a href="/portal/journal#pre" className="pn-mobile-week" onClick={close}>Pre-Ceremony</a>
-          <a href="/portal/journal#post" className="pn-mobile-week" onClick={close}>Post-Ceremony</a>
-        </div>
         <a href="/portal/vital-kauai-guides" onClick={close}>Vital Kauaʻi Guides</a>
         <div className="pn-mobile-week-row">
           <a href="/intake-form-legacy.html" className="pn-mobile-week" onClick={close}>Member Intake &amp; Readiness Form</a>
