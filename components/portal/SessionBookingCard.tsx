@@ -263,8 +263,10 @@ export default function SessionBookingCard() {
       if (!user) return
       const result = await getSessionBalances(supabase, user.id)
       if (!cancelled) setBalances(result)
-    })().catch(() => {
+    })().catch((err) => {
       // A balance we can't read is a card we don't show, never a broken hero.
+      // Members see nothing; the console keeps the reason for diagnosis.
+      console.error('[sessions] balance load failed:', err)
       if (!cancelled) setBalances(null)
     })
     return () => { cancelled = true }
