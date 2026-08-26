@@ -19,15 +19,9 @@ type ResourceCard = {
 
 const JOURNAL_RESOURCES: ResourceCard[] = [
   {
-    title: "Comprehensive Journal · Pre-Ceremony",
-    description: "Your weekly prompts and PNE reflections for the six weeks of preparation.",
-    href: "/portal/journal#pre",
-    status: "live",
-  },
-  {
-    title: "Comprehensive Journal · Post-Ceremony",
-    description: "Your weekly prompts and PNE reflections for the six weeks of integration.",
-    href: "/portal/journal#post",
+    title: "Open Your Journal",
+    description: "Your weekly prompts and PNE reflections across the six weeks of preparation and six weeks of integration.",
+    href: "/portal/journal",
     status: "live",
   },
 ];
