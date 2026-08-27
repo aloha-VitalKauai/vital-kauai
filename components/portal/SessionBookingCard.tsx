@@ -276,29 +276,66 @@ export default function SessionBookingCard() {
   }, [])
 
   const book = useCallback(async (type: SessionType) => {
+    // The scheduler opens in its own tab so the member keeps their place in
+    // the portal. The tab has to be opened HERE, synchronously inside the
+    // click: browsers only permit window.open while a user gesture is still
+    // on the stack, and the await below breaks that chain.
+    const tab = window.open('', '_blank')
+    if (tab) {
+      try {
+        // Sever window.opener so the scheduler can never reach back into the
+        // portal tab, and leave something calm on screen while we fetch.
+        tab.opener = null
+        tab.document.write(
+          '<!doctype html><title>Opening your scheduler…</title>' +
+            '<body style="margin:0;display:grid;place-items:center;height:100vh;' +
+            'background:#1c2b1e;color:#a8c5ac;font:14px/1.6 -apple-system,sans-serif">' +
+            'Opening your scheduler…</body>',
+        )
+        tab.document.close()
+      } catch {
+        // A browser that refuses the write still navigates fine below.
+      }
+    }
+    const abandonTab = () => {
+      try {
+        tab?.close()
+      } catch {
+        /* already gone */
+      }
+    }
+
     setBusy(type)
     setNotice(null)
     try {
       const result = await requestSessionBooking(type)
 
       if (result.status === 'unavailable') {
+        abandonTab()
         setUnavailable((u) => ({ ...u, [type]: true }))
         return
       }
       if (result.status === 'none_remaining') {
         // Nothing left after all—reflect that rather than explaining it.
+        abandonTab()
         setBalances((b) => (b ? { ...b, [type]: { ...b[type], remaining: 0 } } : b))
         return
       }
       if (result.status === 'error') {
+        abandonTab()
         setNotice(BOOKING_UNAVAILABLE_NOTICE)
         return
       }
 
-      // Leaving the page; `busy` stays set so the button cannot be re-pressed
-      // during navigation.
-      window.location.assign(result.bookingUrl)
+      if (tab) {
+        tab.location.href = result.bookingUrl
+      } else {
+        // Popup blocked, or a standalone PWA that refuses new windows: fall
+        // back to this tab rather than stranding the member with nothing.
+        window.location.assign(result.bookingUrl)
+      }
     } catch {
+      abandonTab()
       setNotice(BOOKING_UNAVAILABLE_NOTICE)
     } finally {
       setBusy((current) => (current === type ? null : current))
