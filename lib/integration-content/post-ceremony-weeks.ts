@@ -5,13 +5,27 @@
 // page imports from this file.
 
 import { POST_CEREMONY_WEEKS } from '@/lib/journal-prompts'
+import { COACHING_CALL_URL } from './pre-ceremony-weeks'
+import type { SessionType } from '@/lib/sessions/balance'
 
-export type ActionLinkArr = { text: string; href: string; external?: boolean }[]
+export type ActionLinkArr = {
+  text: string
+  href: string
+  external?: boolean
+  /**
+   * Books through the Sessions engine instead of following `href` — same
+   * contract as the pre-ceremony weeks. The engine resolves the destination
+   * from the session type's Calendly mapping; `href` is kept as the record of
+   * where the item pointed before it was wired to the engine.
+   */
+  session?: SessionType
+}[]
 export type ActionCard =
   | { kind: 'internal'; href: string; text: string; key: string }
   | { kind: 'hash';     href: string; text: string; key: string }
   | { kind: 'external'; href: string; text: string; key: string }
   | { kind: 'static';   text: string; links?: ActionLinkArr; key: string }
+  | { kind: 'session';  sessionType: SessionType; text: string; key: string }
 
 export const actionsForWeek = (
   actions: ReadonlyArray<{ text: string; links?: ActionLinkArr; key?: string }>,
@@ -22,6 +36,7 @@ export const actionsForWeek = (
     if (links.length === 0) return { kind: 'static', text: a.text, key }
     if (links.length > 1)   return { kind: 'static', text: a.text, links, key }
     const lnk = links[0]
+    if (lnk.session)               return { kind: 'session', sessionType: lnk.session, text: a.text, key }
     if (lnk.external)              return { kind: 'external', href: lnk.href, text: a.text, key }
     if (lnk.href.startsWith('#'))  return { kind: 'hash',     href: lnk.href, text: a.text, key }
     return { kind: 'internal', href: lnk.href, text: a.text, key }
@@ -67,7 +82,7 @@ export const WEEKS = [
         color: 'amber',
         text: 'Schedule your remaining two or three PNE Practitioner calls so you use all six',
         links: [
-          { text: 'Schedule your remaining two or three PNE Practitioner calls so you use all six', href: '/portal#integration-specialist' },
+          { text: 'Schedule your remaining two or three PNE Practitioner calls so you use all six', href: '/portal#integration-specialist', session: 'pne' as const },
         ],
       },
       {
@@ -76,7 +91,7 @@ export const WEEKS = [
         text: 'Schedule your six weekly integration coaching calls with Rachel & Josh',
         note: 'Book all six now so they are on the calendar; one call each week supports steady integration.',
         links: [
-          { text: 'Schedule your six weekly integration coaching calls with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-check-in-call', external: true },
+          { text: 'Schedule your six weekly integration coaching calls with Rachel & Josh', href: COACHING_CALL_URL, external: true, session: 'coaching' as const },
         ],
       },
     ],
