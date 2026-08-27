@@ -23,6 +23,7 @@ import {
   type SessionBalance,
   type SessionType,
 } from '@/lib/sessions/balance'
+import { BOOKING_UNAVAILABLE_NOTICE, requestSessionBooking } from '@/lib/sessions/book-client'
 import { describeError, sessionRowState, shouldShowRow } from './sessionCardState'
 
 const LABELS: Record<SessionType, { name: string; detail: string }> = {
@@ -278,32 +279,27 @@ export default function SessionBookingCard() {
     setBusy(type)
     setNotice(null)
     try {
-      const res = await fetch(`/api/sessions/${type}/book`, { method: 'POST' })
+      const result = await requestSessionBooking(type)
 
-      if (res.status === 503) {
+      if (result.status === 'unavailable') {
         setUnavailable((u) => ({ ...u, [type]: true }))
         return
       }
-      if (res.status === 409) {
+      if (result.status === 'none_remaining') {
         // Nothing left after all—reflect that rather than explaining it.
         setBalances((b) => (b ? { ...b, [type]: { ...b[type], remaining: 0 } } : b))
         return
       }
-      if (!res.ok) {
-        setNotice('Scheduling is unavailable right now. Please try again shortly.')
+      if (result.status === 'error') {
+        setNotice(BOOKING_UNAVAILABLE_NOTICE)
         return
       }
 
-      const { booking_url: bookingUrl } = await res.json()
-      if (!bookingUrl) {
-        setNotice('Scheduling is unavailable right now. Please try again shortly.')
-        return
-      }
       // Leaving the page; `busy` stays set so the button cannot be re-pressed
       // during navigation.
-      window.location.assign(bookingUrl)
+      window.location.assign(result.bookingUrl)
     } catch {
-      setNotice('Scheduling is unavailable right now. Please try again shortly.')
+      setNotice(BOOKING_UNAVAILABLE_NOTICE)
     } finally {
       setBusy((current) => (current === type ? null : current))
     }

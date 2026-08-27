@@ -13,6 +13,7 @@ import {
 } from "@/lib/api/member";
 import { PortalNav } from "./portal-nav";
 import PortalJourneyCard from "@/components/portal/PortalJourneyCard";
+import BookSessionButton from "@/components/portal/BookSessionButton";
 import { members as HEALING_CIRCLE_MEMBERS } from "@/components/healing-circle-data";
 import styles from "./portal-home-page.module.css";
 
@@ -576,6 +577,13 @@ export function PortalHomePage({
                 welcome call, two preparation calls, a call with your support circle, and six
                 weekly integration calls).
               </p>
+              <BookSessionButton
+                type="coaching"
+                className={`${styles.teamCta} ${styles.teamCtaButton}`}
+                noticeClassName={styles.teamCtaNotice}
+              >
+                Book a Session
+              </BookSessionButton>
             </div>
             <div id="integration-specialist" className={styles.teamCard}>
               {(() => {
@@ -607,16 +615,13 @@ export function PortalHomePage({
                 to regulate and create safety, and establish new beliefs over the course of
                 3+ months.
               </p>
-              {specialist?.calendly_url ? (
-                <a
-                  href={`${specialist.calendly_url}?name=${encodeURIComponent(profile?.full_name ?? "")}&email=${encodeURIComponent(profile?.email ?? userEmail ?? "")}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={styles.teamCta}
-                >
-                  Book a Session
-                </a>
-              ) : null}
+              <BookSessionButton
+                type="pne"
+                className={`${styles.teamCta} ${styles.teamCtaButton}`}
+                noticeClassName={styles.teamCtaNotice}
+              >
+                Book a Session
+              </BookSessionButton>
             </div>
 
             {/* FUNCTIONAL MEDICINE—Dr. Matt Montee */}

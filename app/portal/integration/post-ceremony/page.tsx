@@ -675,7 +675,6 @@ function PostCeremonyPageInner() {
            the non-link static rows). */
         a.w1-action-body .w1-action-text { color:#9a7a3e;text-decoration:underline;text-decoration-color:rgba(200,169,110,.55);text-underline-offset:3px; }
         .w1-action.is-checked a.w1-action-body .w1-action-text { color:var(--ink-soft);text-decoration:line-through;text-decoration-color:rgba(107,140,110,.5); }
-        .w1-action-arrow { color:#9a7a3e;white-space:nowrap; }
         .w1-actions-hint { font-size:12.5px;font-style:italic;color:var(--ink-soft);margin:-6px 0 14px; }
         @media (hover:hover) {
           a.w1-action-body:hover .w1-action-text { color:var(--gold);text-decoration-color:var(--gold); }
@@ -894,7 +893,7 @@ function PostCeremonyPageInner() {
                     body = (
                       <a href={decorateHref(card.href)} target="_blank" rel="noopener noreferrer" className="w1-action-body">
                         <span className="w1-action-dot" />
-                        <span className="w1-action-text">{card.text}<span className="w1-action-arrow"> ↗</span></span>
+                        <span className="w1-action-text">{card.text}</span>
                       </a>
                     )
                   } else {
