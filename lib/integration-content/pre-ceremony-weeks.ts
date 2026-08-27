@@ -7,7 +7,18 @@
 import { PRE_CEREMONY_WEEKS } from '@/lib/journal-prompts'
 import type { SessionType } from '@/lib/sessions/balance'
 
-export type ActionLinkArr = { text: string; href: string; external?: boolean }[]
+export type ActionLinkArr = {
+  text: string
+  href: string
+  external?: boolean
+  /**
+   * Books through the Sessions engine instead of following `href`. The member
+   * lands on the same Calendly event, but only after an authorization is taken,
+   * so the call counts against their allowance. `href` stays as the record of
+   * which event that is.
+   */
+  session?: SessionType
+}[]
 export type ActionCard =
   | { kind: 'internal'; href: string; text: string; key: string }
   | { kind: 'hash';     href: string; text: string; key: string }
@@ -22,6 +33,12 @@ export type ActionCard =
 // the pre-ceremony week content route here; the page is the Financials V2
 // Member Contribution Portal.
 export const STRIPE_LOVE_OFFERING_URL = '/portal/donate'
+
+// The 1 Hour Coaching Call with Rachel & Josh. The slug still reads
+// "30-minute-check-in-call" from an earlier incarnation of the event; the
+// event itself is 60 minutes and is the one the `coaching` session type maps
+// to. The separate /30-minute-prep-call event is a different, 30-minute call.
+export const COACHING_CALL_URL = 'https://calendly.com/aloha-vitalkauai/30-minute-check-in-call'
 
 export const actionsForWeek = (
   weekIdx: number,
@@ -43,6 +60,7 @@ export const actionsForWeek = (
     if (links.length === 0) return { kind: 'static', text: a.text, key }
     if (links.length > 1)   return { kind: 'static', text: a.text, links, key }
     const lnk = links[0]
+    if (lnk.session)               return { kind: 'session', sessionType: lnk.session, text: a.text, key }
     if (lnk.external)              return { kind: 'external', href: lnk.href, text: a.text, key }
     if (lnk.href.startsWith('#'))  return { kind: 'hash',     href: lnk.href, text: a.text, key }
     return { kind: 'internal', href: lnk.href, text: a.text, key }
@@ -169,7 +187,7 @@ export const WEEKS = [
         color: 'amber',
         text: 'Schedule next week\'s coaching call with Rachel & Josh',
         links: [
-          { text: 'Schedule next week\'s coaching call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true },
+          { text: 'Schedule next week\'s coaching call with Rachel & Josh', href: COACHING_CALL_URL, external: true, session: 'coaching' as const },
         ],
       },
     ],
@@ -394,7 +412,7 @@ export const WEEKS = [
         color: 'amber',
         text: 'Schedule next week\'s coaching call with Rachel & Josh',
         links: [
-          { text: 'Schedule next week\'s coaching call with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true },
+          { text: 'Schedule next week\'s coaching call with Rachel & Josh', href: COACHING_CALL_URL, external: true, session: 'coaching' as const },
         ],
       },
     ],
