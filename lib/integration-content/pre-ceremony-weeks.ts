@@ -254,7 +254,7 @@ export const WEEKS = [
         color: 'blue',
         text: 'Connect with Rachel & Josh',
         links: [
-          { text: 'Connect with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true },
+          { text: 'Connect with Rachel & Josh', href: COACHING_CALL_URL, external: true, session: 'coaching' as const },
         ],
       },
       {
@@ -515,7 +515,7 @@ export const WEEKS = [
         text: 'Connect with Rachel & Josh',
         note: 'Bring your finalized Questions for the Medicine. Bring anything still alive. Speak everything that is ready to be said.',
         links: [
-          { text: 'Connect with Rachel & Josh', href: 'https://calendly.com/aloha-vitalkauai/30-minute-prep-call', external: true },
+          { text: 'Connect with Rachel & Josh', href: COACHING_CALL_URL, external: true, session: 'coaching' as const },
         ],
       },
     ],

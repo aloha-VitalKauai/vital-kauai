@@ -8,6 +8,7 @@ import { POST_CEREMONY_WEEKS, POST_PNE_DETAILS } from '@/lib/journal-prompts'
 import { companionsFor } from '@/lib/pne-companions'
 import SectionIndex, { type SectionIndexItem } from '@/components/portal/SectionIndex'
 import SessionBookingCard from '@/components/portal/SessionBookingCard'
+import BookSessionButton from '@/components/portal/BookSessionButton'
 import {
   WEEKS,
   actionsForWeek,
@@ -675,6 +676,16 @@ function PostCeremonyPageInner() {
            the non-link static rows). */
         a.w1-action-body .w1-action-text { color:#9a7a3e;text-decoration:underline;text-decoration-color:rgba(200,169,110,.55);text-underline-offset:3px; }
         .w1-action.is-checked a.w1-action-body .w1-action-text { color:var(--ink-soft);text-decoration:line-through;text-decoration-color:rgba(107,140,110,.5); }
+        /* A booking action is a <button> so it can take an authorization before
+           navigating; these strip the browser's button chrome so it reads as
+           the same row as its neighbours. */
+        .w1-action-book { background:none;border:none;font:inherit;text-align:left;cursor:pointer;width:100%; }
+        .w1-action-book:disabled { cursor:default;opacity:.6; }
+        .w1-action-book .w1-action-text { color:#9a7a3e;text-decoration:underline;text-decoration-color:rgba(200,169,110,.55);text-underline-offset:3px; }
+        .w1-action-book:hover .w1-action-text { color:var(--gold);text-decoration-color:var(--gold); }
+        .w1-action.is-checked .w1-action-book .w1-action-text { color:var(--ink-soft);text-decoration:line-through;text-decoration-color:rgba(107,140,110,.5); }
+        /* Rare failure state; sits between the row and its checkbox. */
+        .w1-action-notice { flex:none;align-self:center;margin:0;padding:0 14px;font-size:12px;color:var(--ink-soft);max-width:200px;line-height:1.4; }
         .w1-actions-hint { font-size:12.5px;font-style:italic;color:var(--ink-soft);margin:-6px 0 14px; }
         @media (hover:hover) {
           a.w1-action-body:hover .w1-action-text { color:var(--gold);text-decoration-color:var(--gold); }
@@ -888,6 +899,20 @@ function PostCeremonyPageInner() {
                         <span className="w1-action-dot" />
                         <span className="w1-action-text">{card.text}</span>
                       </a>
+                    )
+                  } else if (card.kind === 'session') {
+                    // Same destination the member would reach by hand, routed
+                    // through the Sessions engine so the booking is authorized
+                    // and counted against the allowance the card above reads.
+                    body = (
+                      <BookSessionButton
+                        type={card.sessionType}
+                        className="w1-action-body w1-action-book"
+                        noticeClassName="w1-action-notice"
+                      >
+                        <span className="w1-action-dot" />
+                        <span className="w1-action-text">{card.text}</span>
+                      </BookSessionButton>
                     )
                   } else if (card.kind === 'external') {
                     body = (
