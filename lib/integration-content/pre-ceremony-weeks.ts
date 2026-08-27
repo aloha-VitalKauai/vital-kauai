@@ -5,6 +5,7 @@
 // page imports from this file.
 
 import { PRE_CEREMONY_WEEKS } from '@/lib/journal-prompts'
+import type { SessionType } from '@/lib/sessions/balance'
 
 export type ActionLinkArr = { text: string; href: string; external?: boolean }[]
 export type ActionCard =
@@ -12,6 +13,10 @@ export type ActionCard =
   | { kind: 'hash';     href: string; text: string; key: string }
   | { kind: 'external'; href: string; text: string; key: string }
   | { kind: 'static';   text: string; links?: ActionLinkArr; key: string }
+  // Books through the Sessions engine rather than linking out: the member is
+  // sent to the practitioner's own Calendly page, but only after an
+  // authorization is taken, so the booking counts against their allowance.
+  | { kind: 'session';  sessionType: SessionType; text: string; key: string }
 
 // Member-facing contribution destination. Both the portal home docCard and
 // the pre-ceremony week content route here; the page is the Financials V2
@@ -29,7 +34,7 @@ export const actionsForWeek = (
       { kind: 'internal', href: '/portal/pne-guide#top',    text: 'Read Week 1 in The PsychoNeuroEnergetics (PNE) Guide, complete the practice and PNE reflection', key: 'a2' },
       { kind: 'static',                                              text: "Complete this week's PNE Practice", key: 'a3' },
       { kind: 'static',                                              text: "Complete this week's PNE Reflection", key: 'a4' },
-      { kind: 'internal', href: '/portal#integration-specialist',      text: 'Schedule three or four of your six PNE Practitioner calls up front', key: 'a5' },
+      { kind: 'session',  sessionType: 'pne',                           text: 'Schedule three or four of your six PNE Practitioner calls up front', key: 'a5' },
     ]
   }
   return actions.map((a, idx) => {

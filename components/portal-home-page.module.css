@@ -790,6 +790,27 @@
   border-color: var(--gold);
 }
 
+/* The booking CTAs are <button>s rather than links: they ask the Sessions
+   engine for an authorized link first, then navigate. This strips the browser's
+   button chrome so they read identically to the .teamCta anchors beside them. */
+.teamCtaButton {
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.teamCtaButton:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.teamCtaNotice {
+  margin: 12px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(245, 240, 232, 0.6);
+}
+
 /* ─── Checklist Block ─── */
 .checklistBlock {
   background: var(--forest);
