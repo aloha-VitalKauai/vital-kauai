@@ -328,72 +328,9 @@ const PAGE_CSS = `
     font-size: 1.12em;
   }
 
-  .pne-companion-w3-page .flow {
-    margin-top: 32px;
-  }
-  .pne-companion-w3-page .flow-step {
-    display: grid;
-    grid-template-columns: 80px 1fr;
-    gap: 24px;
-    padding: 28px 0;
-    border-top: 1px solid var(--line);
-    align-items: start;
-  }
-  .pne-companion-w3-page .flow-step:last-child {
-    border-bottom: 1px solid var(--line);
-  }
-  .pne-companion-w3-page .flow-step .roman {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 22px;
-    color: var(--accent-warm);
-    line-height: 1;
-    padding-top: 4px;
-    letter-spacing: 0.05em;
-  }
-  .pne-companion-w3-page .flow-step h3 {
-    font-family: var(--serif);
-    font-weight: 400;
-    font-size: 24px;
-    color: var(--ink-dark);
-    margin-bottom: 6px;
-    line-height: 1.2;
-  }
-  .pne-companion-w3-page .flow-step .prompt {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 19px;
-    font-weight: 500;
-    color: var(--accent-sage);
-    margin-bottom: 8px;
-  }
-  .pne-companion-w3-page .flow-step p {
-    color: var(--ink-body);
-    font-size: 15px;
-    line-height: 1.6;
-    margin: 0;
-  }
-
-  .pne-companion-w3-page .six-step-heading {
-    font-family: var(--serif);
-    font-weight: 400;
-    font-size: 26px;
-    color: var(--ink-dark);
-    margin-top: 48px;
-    margin-bottom: 8px;
-    line-height: 1.15;
-  }
-  .pne-companion-w3-page .six-step-heading em {
-    font-style: italic;
-    color: var(--accent-sage);
-    font-weight: 400;
-  }
-  .pne-companion-w3-page .six-step-sub {
-    color: var(--ink-mute);
-    font-size: 15px;
-    margin-bottom: 0;
-  }
-
+  /* Opens the Week 1 guide's Internal Safety exercises in a new tab. */
+  .pne-companion-w3-page .hw-step-link { color: inherit; text-decoration: underline; text-decoration-color: rgba(143,166,138,.6); text-underline-offset: 4px; }
+  .pne-companion-w3-page .hw-step-link:hover { color: var(--accent-sage); text-decoration-color: var(--accent-sage); }
   .pne-companion-w3-page .homework-panel {
     background: var(--bg-dark);
     color: var(--ink-light);
@@ -515,8 +452,6 @@ const PAGE_CSS = `
     .pne-companion-w3-page .vocab-panel { padding: 28px 22px; }
     .pne-companion-w3-page .vocab-cols { grid-template-columns: 1fr 1fr; gap: 14px; }
     .pne-companion-w3-page .felt-example { padding: 22px 24px; }
-    .pne-companion-w3-page .flow-step { grid-template-columns: 1fr; gap: 8px; }
-    .pne-companion-w3-page .flow-step .roman { font-size: 18px; }
     .pne-companion-w3-page .homework-panel { padding: 32px 22px; }
   }
 `;
@@ -744,59 +679,6 @@ export default async function SomaticCompanionWeek3Page() {
               <p>As you stay with it, the knot begins to soften and reveal itself. You notice it carries a fear of being misunderstood, and beneath that, a longing to be seen. That deepening, evolving awareness is the <em>felt sense</em>.</p>
             </div>
 
-            <h3 className="six-step-heading">A Six-Step <em>Inner Practice</em></h3>
-            <p className="six-step-sub">A practice you can return to whenever a sensation calls for attention.</p>
-
-            <div className="flow">
-              <div className="flow-step">
-                <div className="roman">I</div>
-                <div>
-                  <h3>Notice the Sensation</h3>
-                  <div className="prompt">&ldquo;What am I feeling right now in my body?&rdquo;</div>
-                  <p>Pause. Bring your attention inward. Let the body show you where it is asking to be met.</p>
-                </div>
-              </div>
-              <div className="flow-step">
-                <div className="roman">II</div>
-                <div>
-                  <h3>Name It Without Judgment</h3>
-                  <div className="prompt">&ldquo;Tightness.&rdquo; &ldquo;Heaviness.&rdquo; &ldquo;Warmth.&rdquo;</div>
-                  <p>Use simple, descriptive language. The naming itself begins to create gentle space between you and the sensation.</p>
-                </div>
-              </div>
-              <div className="flow-step">
-                <div className="roman">III</div>
-                <div>
-                  <h3>Make Space for It</h3>
-                  <div className="prompt">&ldquo;Can I welcome it? Can I breathe into it?&rdquo;</div>
-                  <p>Allow the sensation to be there. Let your breath move toward it, the way you would draw close to something tender.</p>
-                </div>
-              </div>
-              <div className="flow-step">
-                <div className="roman">IV</div>
-                <div>
-                  <h3>Follow Its Movement</h3>
-                  <div className="prompt">&ldquo;Notice any shifts. Stay curious.&rdquo;</div>
-                  <p>Sensations are alive. They expand, contract, soften, move. Stay with what unfolds, with the patience of someone watching weather change.</p>
-                </div>
-              </div>
-              <div className="flow-step">
-                <div className="roman">V</div>
-                <div>
-                  <h3>Ask</h3>
-                  <div className="prompt">&ldquo;What might this be about?&rdquo;</div>
-                  <p>Without forcing an answer, let the question rest near the sensation. Sometimes meaning arises. Sometimes the sensation simply softens.</p>
-                </div>
-              </div>
-              <div className="flow-step">
-                <div className="roman">VI</div>
-                <div>
-                  <h3>Offer Compassion</h3>
-                  <div className="prompt">&ldquo;I am here with you.&rdquo;</div>
-                  <p>Speak inwardly to the part of you holding this. Let your presence be the warmth that lets the body know it is safe to release.</p>
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -805,13 +687,16 @@ export default async function SomaticCompanionWeek3Page() {
             <div className="homework-panel">
               <div className="hp-eyebrow">Week Three · Living Practice</div>
               <h2>This Week&apos;s <em>Practice</em></h2>
-              <p className="lede">Three invitations to deepen your relationship with sensation. Approach each with curiosity. The body has been waiting to be heard.</p>
+              <p className="lede">Two invitations to deepen your relationship with sensation. Approach each with curiosity. The body has been waiting to be heard.</p>
 
               <div className="hw-step">
                 <div className="hw-num">One</div>
-                <h3>Continue your regulation practices.</h3>
-                <div className="hw-tags">Breathing &nbsp;·&nbsp; Grounding &nbsp;·&nbsp; 4 / 7 / 8 Breath &nbsp;·&nbsp; PNE Breath (Belly / Heart) &nbsp;·&nbsp; Orienting &nbsp;·&nbsp; Felt-Sense Regulation</div>
-                <p className="reflection">Return to your Week One material in the PNE section of the resources tab in your portal.</p>
+                <h3>
+                  <a href="/portal/pne-guide#internal-safety" target="_blank" rel="noopener noreferrer" className="hw-step-link">
+                    Continue your regulation practices.
+                  </a>
+                </h3>
+                <div className="hw-tags">4 / 7 / 8 Breath &nbsp;·&nbsp; Grounding &nbsp;·&nbsp; PNE Breath (Belly / Heart) &nbsp;·&nbsp; Orienting &nbsp;·&nbsp; Felt-Sense Regulation</div>
               </div>
 
               <div className="hw-step">
@@ -820,12 +705,6 @@ export default async function SomaticCompanionWeek3Page() {
                 <p className="reflection">How easily can you feel sensation in your body?</p>
                 <p className="reflection">When sensation arrives, do you tend to feel it in one place, or in many?</p>
                 <p className="reflection">When you are stressed, what sensations do you notice most?</p>
-              </div>
-
-              <div className="hw-step">
-                <div className="hw-num">Three</div>
-                <h3>Practice the six-step inner practice once this week.</h3>
-                <p className="reflection">Choose any sensation that calls to you. Walk it through the six steps. Notice what shifts, and what simply asks to be witnessed.</p>
               </div>
             </div>
           </div>
