@@ -388,6 +388,20 @@ const PAGE_CSS = `
     text-align: center;
     letter-spacing: 0.04em;
   }
+  .pne-companion-page .breath-panel .body {
+    color: var(--ink-body);
+    font-size: 15.5px;
+    line-height: 1.7;
+    margin-bottom: 18px;
+    max-width: 720px;
+  }
+  .pne-companion-page .breath-panel .closer {
+    font-style: italic;
+    color: var(--ink-body);
+    font-size: 15.5px;
+    line-height: 1.65;
+    margin: 24px 0 0;
+  }
   .pne-companion-page .breath-step h4 { font-family: var(--body); font-weight: 600; font-size: 16px; color: var(--ink-dark); margin-bottom: 6px; }
   .pne-companion-page .breath-step p  { color: var(--ink-body); font-size: 15px; line-height: 1.6; margin: 0; }
 
@@ -867,6 +881,22 @@ export default async function SomaticCompanionPage() {
               <div className="practice-card"><h3>A Sacred Place in Nature</h3><p>Find one specific, accessible place near you&mdash;a park bench, a quiet trail, a riverbank, or a stretch of beach. This personal sanctuary becomes a reliable anchor for grounding your nervous system regularly.</p></div>
               <div className="practice-card"><h3>A Resilient Web</h3><p>By weaving together safe people and nurturing natural spaces, you create a living support network that sustains you far beyond any one professional relationship. The web itself becomes the medicine.</p></div>
               <div className="practice-card"><h3>An Organized Life</h3><p>Reduce clutter where you can. Create devoted places for your belongings. An organized home reduces cognitive load and offers the nervous system a calm, predictable environment to soften into.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section className="vk-section">
+          <div className="vk-narrow">
+            <div className="breath-panel" id="four-seven-eight">
+              <div className="label">This Week&apos;s PNE Practice: The 4 / 7 / 8 Breath</div>
+              <h3>The 4 / 7 / 8 Breath</h3>
+              <p className="sub">A practice for returning to calm</p>
+              <p className="body">A simple, rhythmic breath that signals safety to the body. It slows the heart rate, lowers cortisol, and brings the system out of activation. Any breath where the exhale is longer than the inhale calms the nervous system.</p>
+              <p className="body">Bring one hand to your belly. Soften your gaze.</p>
+              <div className="breath-step"><span className="pill">4 sec</span><p>Inhale through the nose. Fill the belly first, then the chest.</p></div>
+              <div className="breath-step"><span className="pill">7 sec</span><p>Hold. Rest at the top.</p></div>
+              <div className="breath-step"><span className="pill">8 sec</span><p>Exhale through the mouth. Slow, soft, complete.</p></div>
+              <p className="closer">Repeat for four cycles.</p>
             </div>
           </div>
         </section>
