@@ -20,7 +20,10 @@ import {
 } from "./MemberProfileSections";
 import MemberJournalViewer, { type JournalPhase } from "./MemberJournalViewer";
 import MemberMedicineQuestions from "./MemberMedicineQuestions";
-import { type JournalSharingState } from "@/lib/journal-sharing";
+import {
+  describeJournalSharingConsent,
+  type JournalSharingState,
+} from "@/lib/journal-sharing";
 import { type MedicineQuestionGroup } from "@/lib/medicine-questions";
 import { buildMemberTimeline } from "./memberTimeline";
 import MedicalNotesLog from "@/components/dashboard/MedicalNotesLog";
@@ -181,6 +184,14 @@ export default function MemberProfileEditor({
      intake + lab documents. Same data/logic as the standalone ops Medical
      view, scoped to the current member. */
   const medMember = { ...member, intake, labs } as MedMember;
+
+  /* Journal & reflection sharing consent, derived from the member row so the
+     intake card states plainly whether the care team may read their
+     reflections. Same helper the /intake review page uses. */
+  const journalSharingConsent = useMemo(
+    () => describeJournalSharingConsent(member),
+    [member],
+  );
 
   /* Read-only Journey Timeline (V1): aggregate existing timestamps from the
      records already loaded for this member. Pure derivation — no new data. */
@@ -1030,7 +1041,7 @@ export default function MemberProfileEditor({
           )}
 
           {/* Intake form summary */}
-          <IntakeCard intake={intake} memberId={member.id} />
+          <IntakeCard intake={intake} memberId={member.id} consent={journalSharingConsent} />
 
           {/* Preparation checklist — exclude post-ceremony outcome surveys */}
           {(() => {
@@ -1097,7 +1108,7 @@ export default function MemberProfileEditor({
           <MedicalNotesLog memberId={member.id} authorRole="founder" />
         </div>
       ) : activeTab === "Intake" ? (
-        <IntakeCard intake={intake} memberId={member.id} />
+        <IntakeCard intake={intake} memberId={member.id} consent={journalSharingConsent} />
       ) : activeTab === "Integration" ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={CARD}>

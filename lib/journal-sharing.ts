@@ -42,6 +42,69 @@ export function resolveJournalSharingState(
   return "undecided";
 }
 
+// Founder-facing description of the consent itself, for the intake review page
+// and the member snapshot card. Deliberately distinct from
+// resolveJournalSharingState: that collapses member consent and legacy
+// compatibility access into "shared" because both grant read access, but a
+// founder reviewing the intake needs to see WHICH it is. Legacy access is not
+// a record of consent, so it is never labelled as one here.
+export type JournalSharingConsent = {
+  state: JournalSharingState;
+  // True only when the member themselves ticked the box on the intake form.
+  consented: boolean;
+  label: string;
+  detail: string;
+  decidedAt: string | null;
+};
+
+export function describeJournalSharingConsent(
+  member: JournalSharingFields | null | undefined,
+): JournalSharingConsent {
+  const decidedAt = member?.journal_sharing_decided_at ?? null;
+
+  if (member?.journal_sharing_enabled === true) {
+    return {
+      state: "shared",
+      consented: true,
+      label: "Shared with the care team",
+      detail:
+        "This member chose to share their journal reflections, questions for the plant, and PNE responses with the Vital Kauaʻi care team.",
+      decidedAt,
+    };
+  }
+
+  if (member?.legacy_journal_access_enabled === true) {
+    return {
+      state: "shared",
+      consented: false,
+      label: "Legacy access — not a record of consent",
+      detail:
+        "The care team can view this member's reflections through pre-existing administrative access, not because the member opted in. Treat this as unconsented and confirm with them directly before relying on it.",
+      decidedAt,
+    };
+  }
+
+  if (decidedAt) {
+    return {
+      state: "private",
+      consented: false,
+      label: "Private — the member chose not to share",
+      detail:
+        "This member deliberately left the sharing box unchecked. Their journal, medicine questions, and PNE responses stay visible only to them.",
+      decidedAt,
+    };
+  }
+
+  return {
+    state: "undecided",
+    consented: false,
+    label: "No decision recorded",
+    detail:
+      "This member has not yet answered the sharing question, so their reflections remain private by default.",
+    decidedAt: null,
+  };
+}
+
 export function journalSharingNotice(state: JournalSharingState): string | null {
   if (state === "private") {
     return "This member has chosen to keep their journal and reflection responses private.";

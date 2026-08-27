@@ -6,6 +6,7 @@ import {
   collectExtraResponses,
   readIntakeValue,
 } from "@/lib/intake-fields";
+import { describeJournalSharingConsent } from "@/lib/journal-sharing";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -63,7 +64,13 @@ export default async function MemberIntakeReviewPage({
   const supabase = await createClient();
 
   const [{ data: member }, { data: intake }] = await Promise.all([
-    supabase.from("members").select("id, full_name, email").eq("id", id).maybeSingle(),
+    supabase
+      .from("members")
+      .select(
+        "id, full_name, email, journal_sharing_enabled, journal_sharing_decided_at, legacy_journal_access_enabled",
+      )
+      .eq("id", id)
+      .maybeSingle(),
     supabase
       .from("intake_forms")
       .select("*")
@@ -77,6 +84,10 @@ export default async function MemberIntakeReviewPage({
 
   const intakeRecord = (intake ?? null) as Record<string, unknown> | null;
   const extras = intakeRecord ? collectExtraResponses(intakeRecord) : [];
+
+  // Read from the member row, not the intake `responses` snapshot: the members
+  // column is what the portal actually enforces access against.
+  const consent = describeJournalSharingConsent(member);
 
   return (
     <div
@@ -158,6 +169,68 @@ export default async function MemberIntakeReviewPage({
 
       {/* Body */}
       <div style={{ maxWidth: 820, margin: "0 auto", padding: "0 2rem" }}>
+        {/* Journal & reflection sharing consent. Surfaced above the answers
+            because it governs who may read them — a founder must never have to
+            hunt for it. Lives on the member row, so it renders even when no
+            intake has been submitted. */}
+        <section
+          style={{
+            marginTop: 40,
+            padding: "26px 28px",
+            background: consent.consented ? "rgba(122,158,126,0.09)" : COLORS.cream,
+            border: `1px solid ${COLORS.border}`,
+            borderLeft: `3px solid ${consent.consented ? COLORS.sage : COLORS.gold}`,
+          }}
+        >
+          <p
+            style={{
+              fontSize: 8.5,
+              letterSpacing: "0.44em",
+              textTransform: "uppercase",
+              color: COLORS.gold,
+              margin: 0,
+              fontWeight: 500,
+            }}
+          >
+            Journal &amp; Reflection Sharing
+          </p>
+          <p
+            style={{
+              fontFamily: SERIF,
+              fontSize: "clamp(20px, 2.2vw, 26px)",
+              fontWeight: 300,
+              lineHeight: 1.25,
+              margin: "10px 0 8px",
+              color: COLORS.forest,
+            }}
+          >
+            {consent.label}
+          </p>
+          <p
+            style={{
+              fontSize: 13.5,
+              lineHeight: 1.6,
+              color: COLORS.textMid,
+              margin: 0,
+              maxWidth: 640,
+            }}
+          >
+            {consent.detail}
+          </p>
+          <p
+            style={{
+              fontSize: 11,
+              color: COLORS.textMuted,
+              margin: "14px 0 0",
+              letterSpacing: "0.04em",
+            }}
+          >
+            {consent.decidedAt
+              ? `Decided ${fmtDatetime(consent.decidedAt)}`
+              : "No decision on file"}
+          </p>
+        </section>
+
         {!intakeRecord ? (
           <div
             style={{

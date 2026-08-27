@@ -137,6 +137,16 @@ export function readIntakeValue(
 }
 
 /**
+ * Intake payload keys that are rendered by a dedicated part of the review page
+ * rather than the generic "Other responses" catch-all. The journal sharing
+ * consent is submitted as a hidden field, so it always lands in `responses` —
+ * but the founder-facing copy is read from the member's canonical `members`
+ * row (the source of truth the portal actually enforces against), so showing
+ * the raw snapshot boolean here as well would be duplicate and confusing.
+ */
+const HANDLED_ELSEWHERE = new Set(["journal_sharing_enabled"]);
+
+/**
  * Returns extra entries present in `responses` that aren't covered by any
  * INTAKE_SECTIONS field—keeps the review page forward-compatible if new
  * questions appear on the intake form before INTAKE_SECTIONS is updated.
@@ -144,7 +154,7 @@ export function readIntakeValue(
 export function collectExtraResponses(
   intake: Record<string, unknown>,
 ): [string, string][] {
-  const known = new Set<string>();
+  const known = new Set<string>(HANDLED_ELSEWHERE);
   for (const sec of INTAKE_SECTIONS) for (const [k] of sec.fields) known.add(k);
   const responses = intake.responses;
   if (!responses || typeof responses !== "object") return [];

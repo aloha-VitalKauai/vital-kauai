@@ -5,6 +5,7 @@ import {
   resolveJournalSharingState,
   journalSharingNotice,
   sanitizeProgressForFounder,
+  describeJournalSharingConsent,
 } from "./journal-sharing.ts";
 
 test("canCareTeamViewJournal: personal share enables access", () => {
@@ -89,4 +90,56 @@ test("sanitizeProgressForFounder passes content through when allowed", () => {
 test("sanitizeProgressForFounder tolerates null/undefined progress", () => {
   assert.equal(sanitizeProgressForFounder(null, false), null);
   assert.equal(sanitizeProgressForFounder(undefined, false), undefined);
+});
+
+test("describeJournalSharingConsent: member opt-in is reported as consent", () => {
+  const c = describeJournalSharingConsent({
+    journal_sharing_enabled: true,
+    journal_sharing_decided_at: "2026-07-24T00:00:00.000Z",
+  });
+  assert.equal(c.state, "shared");
+  assert.equal(c.consented, true);
+  assert.equal(c.decidedAt, "2026-07-24T00:00:00.000Z");
+});
+
+// The distinction the founder UI exists to make: legacy access grants reads but
+// is explicitly NOT a record that the member agreed to share.
+test("describeJournalSharingConsent: legacy access is never labelled as consent", () => {
+  const c = describeJournalSharingConsent({
+    journal_sharing_enabled: false,
+    legacy_journal_access_enabled: true,
+  });
+  assert.equal(c.state, "shared");
+  assert.equal(c.consented, false);
+  assert.match(c.label, /not a record of consent/i);
+});
+
+// Member consent wins the label even when legacy access also happens to be on,
+// so a genuine opt-in is never downgraded to a legacy warning.
+test("describeJournalSharingConsent: personal consent takes precedence over legacy", () => {
+  const c = describeJournalSharingConsent({
+    journal_sharing_enabled: true,
+    legacy_journal_access_enabled: true,
+  });
+  assert.equal(c.consented, true);
+  assert.match(c.label, /shared with the care team/i);
+});
+
+test("describeJournalSharingConsent: deliberate opt-out reads as private", () => {
+  const c = describeJournalSharingConsent({
+    journal_sharing_enabled: false,
+    journal_sharing_decided_at: "2026-07-24T00:00:00.000Z",
+  });
+  assert.equal(c.state, "private");
+  assert.equal(c.consented, false);
+  assert.match(c.label, /chose not to share/i);
+});
+
+test("describeJournalSharingConsent: no decision is distinct from opting out", () => {
+  for (const member of [null, undefined, {}, { journal_sharing_enabled: false }]) {
+    const c = describeJournalSharingConsent(member);
+    assert.equal(c.state, "undecided");
+    assert.equal(c.consented, false);
+    assert.equal(c.decidedAt, null);
+  }
 });
