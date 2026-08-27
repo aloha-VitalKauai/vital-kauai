@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { PneGuidePrintButton, PneGuideFooter } from "@/components/portal/PneGuidePrint";
+import { WEEK_ONE_PRACTICES_HREF, WEEK_ONE_PRACTICES_HEADING, WEEK_ONE_PRACTICES_TAGS } from "@/lib/pne-companions";
 
 export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Guide · Week 2, Vital Kauaʻi" };
 
@@ -428,6 +429,14 @@ const PAGE_CSS = `
     color: #F4EDD6;
     margin-bottom: 10px;
   }
+  /* Matches the practice tag lists in the Weeks 3-5 guides. */
+  .pne-companion-w2-page .hw-tags {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--accent-sage);
+    line-height: 1.65;
+  }
   .pne-companion-w2-page .reflection {
     font-size: 15.5px;
     color: #D9D1B5;
@@ -764,11 +773,11 @@ export default async function SomaticCompanionWeek2Page() {
               <div className="hw-step">
                 <div className="hw-num">Practice</div>
                 <h3>
-                  <a href="/portal/pne-guide#internal-safety" target="_blank" rel="noopener noreferrer" className="hw-step-link">
-                    Continue the regulation practices from Week One.
+                  <a href={WEEK_ONE_PRACTICES_HREF} target="_blank" rel="noopener noreferrer" className="hw-step-link">
+                    {WEEK_ONE_PRACTICES_HEADING}
                   </a>
                 </h3>
-                <p className="reflection">4 / 7 / 8 Breath, grounding, orienting, and felt-sense practices.</p>
+                <div className="hw-tags">{WEEK_ONE_PRACTICES_TAGS}</div>
               </div>
             </div>
           </div>

@@ -5,6 +5,11 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { PRE_CEREMONY_WEEKS, PRE_PNE_DETAILS } from '@/lib/journal-prompts'
+import {
+  WEEK_ONE_PRACTICES_HEADING,
+  WEEK_ONE_PRACTICES_HREF,
+  WEEK_ONE_PRACTICES_SENTENCE,
+} from '@/lib/pne-companions'
 import { companionsFor } from '@/lib/pne-companions'
 import SectionIndex, { type SectionIndexItem } from '@/components/portal/SectionIndex'
 import HeroCountdown from '@/components/portal/HeroCountdown'
@@ -1054,23 +1059,23 @@ function PreCeremonyPageInner() {
                 </div>
               ) : i === 1 ? (
                 <div className="pne-detail pne-practice-rich">
-                  <div className="vp-label">This Week&apos;s PNE Practice: Continue the Regulation Practices from Week One</div>
+                  <div className="vp-label">This Week&apos;s PNE Practice: {WEEK_ONE_PRACTICES_HEADING}</div>
                   <h4 className="pne-practice-title">
-                    <a href="/portal/pne-guide#internal-safety" target="_blank" rel="noopener noreferrer" className="pne-practice-link">
-                      Continue the Regulation Practices from Week One
+                    <a href={WEEK_ONE_PRACTICES_HREF} target="_blank" rel="noopener noreferrer" className="pne-practice-link">
+                      {WEEK_ONE_PRACTICES_HEADING}
                     </a>
                   </h4>
-                  <p className="vp-text pne-practice-p">4 / 7 / 8 Breath, grounding, orienting, and felt-sense practices.</p>
+                  <p className="vp-text pne-practice-p">{WEEK_ONE_PRACTICES_SENTENCE}</p>
                 </div>
               ) : i === 2 ? (
                 <div className="pne-detail pne-practice-rich">
-                  <div className="vp-label">This Week&apos;s PNE Practice: Continue Your Regulation Practices</div>
+                  <div className="vp-label">This Week&apos;s PNE Practice: {WEEK_ONE_PRACTICES_HEADING}</div>
                   <h4 className="pne-practice-title">
-                    <a href="/portal/pne-guide#internal-safety" target="_blank" rel="noopener noreferrer" className="pne-practice-link">
-                      Continue Your Regulation Practices
+                    <a href={WEEK_ONE_PRACTICES_HREF} target="_blank" rel="noopener noreferrer" className="pne-practice-link">
+                      {WEEK_ONE_PRACTICES_HEADING}
                     </a>
                   </h4>
-                  <p className="vp-text pne-practice-p">4 / 7 / 8 Breath, grounding, PNE Breath (Belly / Heart), orienting, and felt-sense regulation.</p>
+                  <p className="vp-text pne-practice-p">{WEEK_ONE_PRACTICES_SENTENCE}</p>
                 </div>
               ) : i === 3 ? (
                 <div className="pne-detail pne-practice-rich">

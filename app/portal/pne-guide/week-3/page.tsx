@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { PneGuidePrintButton, PneGuideFooter } from "@/components/portal/PneGuidePrint";
+import { WEEK_ONE_PRACTICES_HREF, WEEK_ONE_PRACTICES_HEADING, WEEK_ONE_PRACTICES_TAGS } from "@/lib/pne-companions";
 
 export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Guide · Week 3, Vital Kauaʻi" };
 
@@ -671,7 +672,7 @@ export default async function SomaticCompanionWeek3Page() {
           <div className="vk-narrow">
             <div className="vk-eyebrow">In Your PNE Sessions</div>
             <h2 className="vk-title">Working With <em>Sensation</em></h2>
-            <p className="vk-lede">During your sessions with your PNE Practitioner, you will track sensations together. The body scanning and regulation practices from Week One are building the capacity that makes this work feel steady and possible.</p>
+            <p className="vk-lede">During your sessions with your PNE Practitioner, you will track sensations together. The body scanning and <a href={WEEK_ONE_PRACTICES_HREF} target="_blank" rel="noopener noreferrer" className="hw-step-link">regulation practices from Week One</a> are building the capacity that makes this work feel steady and possible.</p>
 
             <div className="felt-example">
               <div className="label">An Example</div>
@@ -692,11 +693,11 @@ export default async function SomaticCompanionWeek3Page() {
               <div className="hw-step">
                 <div className="hw-num">One</div>
                 <h3>
-                  <a href="/portal/pne-guide#internal-safety" target="_blank" rel="noopener noreferrer" className="hw-step-link">
-                    Continue your regulation practices.
+                  <a href={WEEK_ONE_PRACTICES_HREF} target="_blank" rel="noopener noreferrer" className="hw-step-link">
+                    {WEEK_ONE_PRACTICES_HEADING}
                   </a>
                 </h3>
-                <div className="hw-tags">4 / 7 / 8 Breath &nbsp;·&nbsp; Grounding &nbsp;·&nbsp; PNE Breath (Belly / Heart) &nbsp;·&nbsp; Orienting &nbsp;·&nbsp; Felt-Sense Regulation</div>
+                <div className="hw-tags">{WEEK_ONE_PRACTICES_TAGS}</div>
               </div>
 
               <div className="hw-step">

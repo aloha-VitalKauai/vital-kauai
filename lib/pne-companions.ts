@@ -244,3 +244,38 @@ export const PNE_ADDITIONAL_RESOURCES: ReadonlyArray<PneAdditionalResource> = [
     status: "live",
   },
 ]
+
+// ── The Week One practices ────────────────────────────────────────────────
+//
+// Later weeks repeatedly ask members to keep practising what Week One taught.
+// Those references live in six different page files, so the wording, the list
+// and the link are defined here once — otherwise they drift, and a member is
+// told to continue a practice the guide never gave them.
+//
+// The list is drawn from the Week One guide itself: the 4 / 7 / 8 Breath
+// panel, plus the "Exercises for Internal Safety" section's Through the Body
+// and Through the Senses groups. Anything a later week adds of its own (felt
+// sense tracking, the three-step practice) stays listed separately, so this
+// list stays true to Week One.
+
+/** Deep link to "Exercises for Internal Safety" in the Week One guide. */
+export const WEEK_ONE_PRACTICES_HREF = "/portal/pne-guide#internal-safety"
+
+/** The one phrasing every later week uses to point back. */
+export const WEEK_ONE_PRACTICES_HEADING =
+  "Continue the regulation practices from Week One."
+
+export const WEEK_ONE_PRACTICES: ReadonlyArray<string> = [
+  "4 / 7 / 8 Breath",
+  "Grounding",
+  "Self-Hold",
+  "Butterfly Tap",
+  "Orienting Gaze",
+  "Five Senses Anchor",
+]
+
+/** The list as the guides render it: separated by non-breaking middots. */
+export const WEEK_ONE_PRACTICES_TAGS = WEEK_ONE_PRACTICES.join(" · ")
+
+/** The list as a sentence, for the portal's PNE panels. */
+export const WEEK_ONE_PRACTICES_SENTENCE = `${WEEK_ONE_PRACTICES.slice(0, -1).join(", ")}, and ${WEEK_ONE_PRACTICES[WEEK_ONE_PRACTICES.length - 1]}.`
