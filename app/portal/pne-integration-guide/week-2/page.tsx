@@ -182,7 +182,7 @@ const PAGE_CSS = `
     margin: 0;
   }
 
-  /* Practice grid — the six core elements of mindful listening */
+  /* Practice grid—the six core elements of mindful listening */
   .pne-companion-integration-w2-page .practice-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -220,7 +220,7 @@ const PAGE_CSS = `
     margin: 0;
   }
 
-  /* Phrase panels — reflective listening and naming feelings */
+  /* Phrase panels—reflective listening and naming feelings */
   .pne-companion-integration-w2-page .phrase-stack {
     display: grid;
     grid-template-columns: 1fr;
@@ -303,7 +303,7 @@ const PAGE_CSS = `
     margin: 0 auto;
   }
 
-  /* Two-column panel — cost / repair */
+  /* Two-column panel—cost / repair */
   .pne-companion-integration-w2-page .body-panel {
     background: var(--bg-card);
     border-radius: 8px;
@@ -371,7 +371,7 @@ const PAGE_CSS = `
     font-size: 13px;
   }
 
-  /* Listening errors — numbered cards, two columns */
+  /* Listening errors—numbered cards, two columns */
   .pne-companion-integration-w2-page .error-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -802,7 +802,7 @@ export default async function PneIntegrationCompanionWeek1Page() {
               <div className="error-card">
                 <div className="num">Six</div>
                 <h4>Getting Distracted</h4>
-                <p>Partial attention — checking phones, multitasking, scanning the room — registers as abandonment at a nervous-system level.</p>
+                <p>Partial attention—checking phones, multitasking, scanning the room—registers as abandonment at a nervous-system level.</p>
                 <p className="body-hears">The body experiences it as: I am not important enough to be fully here for. Even brief disengagement can reopen old attachment wounds.</p>
               </div>
               <div className="error-card">

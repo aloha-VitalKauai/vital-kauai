@@ -173,7 +173,7 @@ const PAGE_CSS = `
     margin: 0;
   }
 
-  /* Practice grid — six practices of personal spiritual connection */
+  /* Practice grid—six practices of personal spiritual connection */
   .pne-companion-w6-page .practice-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -211,7 +211,7 @@ const PAGE_CSS = `
     margin: 0;
   }
 
-  /* Prayer stack — two prayer cards */
+  /* Prayer stack—two prayer cards */
   .pne-companion-w6-page .prayer-stack {
     display: grid;
     grid-template-columns: 1fr;
@@ -257,7 +257,7 @@ const PAGE_CSS = `
     margin: 14px 0 0;
   }
 
-  /* Discernment question — large contemplative callout */
+  /* Discernment question—large contemplative callout */
   .pne-companion-w6-page .discern-question {
     margin-top: 28px;
     padding: 36px 40px;

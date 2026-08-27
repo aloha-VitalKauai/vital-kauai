@@ -85,7 +85,7 @@ function renderActionText(
   }
   return segments.map((seg, i) => {
     if (typeof seg === 'string') return <Fragment key={i}>{seg}</Fragment>
-    // Hash-only links scroll the current page — keep them in the same tab.
+    // Hash-only links scroll the current page—keep them in the same tab.
     // Everything else (internal route or external URL) opens in a new tab so
     // members don't lose their place on the week page.
     const isHashOnly = seg.href.startsWith('#')

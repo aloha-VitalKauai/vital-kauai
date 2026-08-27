@@ -46,7 +46,7 @@ export function LoginForm({ nextPathParam, errorMessageParam, hideReturnHome, hi
   const nextPath = sanitizeNextPath(nextPathParam ?? null);
   const errorMessage = errorMessageParam ?? null;
 
-  // Detect recovery tokens in URL hash — redirect to set-password page
+  // Detect recovery tokens in URL hash—redirect to set-password page
   // This handles the case where Supabase redirects here with tokens
   // instead of directly to /setup-account
   useEffect(() => {
@@ -66,7 +66,7 @@ export function LoginForm({ nextPathParam, errorMessageParam, hideReturnHome, hi
     try {
       // Front-end-only access runs on the server first. If the typed
       // credentials match the shared front-end login, the server sets a signed,
-      // HTTP-only cookie and we send the visitor to the public homepage — the
+      // HTTP-only cookie and we send the visitor to the public homepage—the
       // password never reaches Supabase and no member session is created. The
       // special credentials are never present in this bundle; we only forward
       // what was typed and act on the server's yes/no. Any error falls through
@@ -98,7 +98,7 @@ export function LoginForm({ nextPathParam, errorMessageParam, hideReturnHome, hi
         return;
       }
 
-      // Founder IDs — hardcoded for reliability
+      // Founder IDs—hardcoded for reliability
       const FOUNDER_IDS = [
         "d6e824e3-69ab-447c-b046-afecfe4b7028", // aloha@vitalkauai.com
         "268f721a-9c7c-4bb2-82b7-3c29178281b1", // joshuaperdue2@gmail.com

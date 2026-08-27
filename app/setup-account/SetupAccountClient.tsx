@@ -248,13 +248,13 @@ export default function SetupAccountClient() {
             <>
               {resendState === 'sent' ? (
                 <p style={{ background: 'rgba(93,202,165,0.1)', border: '1px solid rgba(93,202,165,0.3)', borderRadius: 6, color: '#5DCAA5', fontFamily: 'sans-serif', fontSize: 14, lineHeight: 1.6, padding: '14px 16px', marginBottom: 28, textAlign: 'left' }}>
-                  Check your inbox in a moment — if an account for that email still needs setup, a fresh link is on its way. It stays good for up to 30 days. Need a hand? Write to aloha@vitalkauai.com and we&rsquo;ll get you set up.
+                  Check your inbox in a moment—if an account for that email still needs setup, a fresh link is on its way. It stays good for up to 30 days. Need a hand? Write to aloha@vitalkauai.com and we&rsquo;ll get you set up.
                 </p>
               ) : (
                 <div style={{ marginBottom: 28 }}>
                   {resendState === 'failed' && (
                     <p style={{ background: 'rgba(224,92,58,0.12)', border: '1px solid rgba(224,92,58,0.3)', borderRadius: 6, color: '#e05c3a', fontFamily: 'sans-serif', fontSize: 14, lineHeight: 1.6, padding: '12px 16px', marginBottom: 12, textAlign: 'left' }}>
-                      Something interrupted that — give it another try.
+                      Something interrupted that—give it another try.
                     </p>
                   )}
                   <input

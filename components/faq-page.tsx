@@ -235,7 +235,7 @@ export function FaqPage() {
         </div>
       </section>
 
-      {/* FAQ sections — rendered on the dark band so the cream/gold accordion reads */}
+      {/* FAQ sections—rendered on the dark band so the cream/gold accordion reads */}
       <section className={styles.darkBand}>
         <div className={styles.sectionInnerWide}>
           <div className="faq-list">

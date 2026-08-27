@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 // Mobile-only sanctuary wayfinding dock. Visible under 768px, hidden on
-// desktop. Four destinations, all existing portal routes — no new routes,
+// desktop. Four destinations, all existing portal routes—no new routes,
 // no nav-architecture changes. Visually mirrors the existing portal-nav
 // language: dark forest backdrop, sage hairline, uppercase Jost labels
 // with wide tracking, cream text muted on inactive and full on active.
@@ -17,7 +17,7 @@ import { usePathname } from "next/navigation";
 const ITEMS: { label: string; href: string }[] = [
   { label: "Dashboard", href: "/portal" },
   // Journey routes through the wayfinder, which drops the member on the
-  // calendar week they're in — pre-ceremony preparation before ceremony
+  // calendar week they're in—pre-ceremony preparation before ceremony
   // day, post-ceremony integration after.
   { label: "Journey", href: "/portal/journey" },
   { label: "Resources", href: "/portal/resources" },

@@ -34,7 +34,7 @@ const PRINT_STYLES = `
     .pne-print-btn { top: 12px; right: 12px; padding: 6px 10px; font-size: 9px; letter-spacing: 0.14em; }
   }
 
-  /* Footer — visible on screen and in print. */
+  /* Footer—visible on screen and in print. */
   .pne-guide-footer {
     background: #F1ECDD; text-align: center;
     padding: 46px 24px 42px; border-top: 1px solid rgba(31,38,32,0.10);
@@ -61,7 +61,7 @@ const PRINT_STYLES = `
     [class*="pne-companion"] { background: #fff !important; }
     [class*="pne-companion"], [class*="pne-companion"] * { color: #1F2620 !important; }
 
-    /* Flatten EVERYTHING to white — no tinted band, card, or quote block
+    /* Flatten EVERYTHING to white—no tinted band, card, or quote block
        prints as a solid ink slab (wasteful, and dark-on-dark is unreadable). */
     [class*="pne-companion"], [class*="pne-companion"] *,
     .pne-guide-footer, .pne-guide-footer * {

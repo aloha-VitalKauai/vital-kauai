@@ -6,7 +6,7 @@ import {
   type PneCompanion,
 } from "@/lib/pne-companions";
 
-export const metadata = { title: "PsychoNeuroEnergetics (PNE) Resources — Vital Kauaʻi" };
+export const metadata = { title: "PsychoNeuroEnergetics (PNE) Resources—Vital Kauaʻi" };
 
 const FOREST = "#0E1A10";
 const FOREST_DEEP = "#0A130C";
@@ -23,7 +23,7 @@ export default async function PnePage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=/portal/pne");
 
-  // PNE Resources section temporarily hidden — send visitors to the
+  // PNE Resources section temporarily hidden—send visitors to the
   // resources hub. Remove this line to restore the section.
   redirect("/portal/resources");
 

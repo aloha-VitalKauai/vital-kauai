@@ -1,6 +1,6 @@
 // Pre-ceremony Integration page content. Plain TS module so server code
 // (the journey-emails cron, the founder dashboard's auto-derived email
-// preview) can import the data — Next.js refuses to expose constants from
+// preview) can import the data—Next.js refuses to expose constants from
 // 'use client' modules to Server Components, so the data lives here and the
 // page imports from this file.
 
@@ -55,7 +55,7 @@ export const WEEKS = [
     subtitle: 'This is the beginning of something real.',
     sub: 'You are the creator of your life. This first week is an invitation to honestly look at the reality you have created for yourself. It’s an opportunity to notice the patterns, environments, relationships, thoughts, and beliefs that have shaped your current experience, and from that awareness begin creating in a way that is more aligned with who you truly are.',
     italic: 'This week calls for presence. Just begin.',
-    video: { label: 'A Message from Rachel & Josh · Week 1', text: 'In this opening session of the Vital Kauaʻi series, we explore ʻIke — the Hawaiian principle of seeing, knowing, and perceiving — and how your awareness shapes the reality you experience. We move from the science of the mind and body as one system, through epigenetics and neuroplasticity, to what it means to live beyond the senses.', url: 'https://www.youtube.com/embed/_qdr02dq_NU' },
+    video: { label: 'A Message from Rachel & Josh · Week 1', text: 'In this opening session of the Vital Kauaʻi series, we explore ʻIke—the Hawaiian principle of seeing, knowing, and perceiving—and how your awareness shapes the reality you experience. We move from the science of the mind and body as one system, through epigenetics and neuroplasticity, to what it means to live beyond the senses.', url: 'https://www.youtube.com/embed/_qdr02dq_NU' },
     box: { type: 'info', label: 'The most important safety factor is your honesty.', text: 'Your labs, your diet, and your supplement plan all matter—but it\'s your willingness to see yourself clearly that shapes how the medicine meets you. Iboga brings truth to the surface. When you arrive having already begun that process with yourself, the experience becomes something you can move through with awareness. This is how the medicine meets you.' },
     actionLabel: 'Actions this week, 4 only',
     actions: [
@@ -259,7 +259,7 @@ export const WEEKS = [
     carryForward: 'Your nervous system is more regulated. Your body has begun its preparation. You have a map of your own inner states. You are ready for what this week asks, trust what you\'ve built.',
     reentry: { strong: 'A note on pacing:', text: ' Let the Coherent Heart Breath be with you this week. Return to it before each journal prompt, let it settle you before you begin, and steady you when the material goes deep.' },
     sub: 'Kala means to free, to loosen, or to release. In the Hawaiian practice of hoʻoponopono, kala is the step where people release one another from old grudges and loosen the emotional ties that keep them bound. This week, PNE turns that same idea toward our emotions. When we allow emotion to move through us in a healthy way, we let go of what keeps us contracted and create more freedom. When we feel more free, we return to our unlimited nature.',
-    video: { label: 'A Message from Rachel & Josh · Week 4', text: 'Week 4 explores Kala, the Hawaiian principle of release — to forgive, to loosen, to free. We weave ancient wisdom with modern science to remember a deeper truth: beneath the separation we feel, we are unlimited.', url: 'https://www.youtube.com/embed/D8RreGvB-NY' },
+    video: { label: 'A Message from Rachel & Josh · Week 4', text: 'Week 4 explores Kala, the Hawaiian principle of release—to forgive, to loosen, to free. We weave ancient wisdom with modern science to remember a deeper truth: beneath the separation we feel, we are unlimited.', url: 'https://www.youtube.com/embed/D8RreGvB-NY' },
     box: { type: 'warn', label: 'Pacing permission, read this before you begin', text: 'This week\'s journaling may bring up old grief, anger, shame, or material you haven\'t touched in years. That is appropriate. It is a sign the process is working. Write for ten minutes. Stop. Breathe. Come back tomorrow. Go slow on purpose. If something feels too large to hold alone, reach out to your PNE Practitioner before your next scheduled call.\n\nAnd know this: this process moves in waves. Feeling more unsettled now than you did in Week 1, more uncertain, more raw, is often a sign something is genuinely moving. Regression before breakthrough is real.' },
     actionLabel: 'Actions this week, 4 only',
     actions: [

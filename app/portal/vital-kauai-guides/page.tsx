@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { PNE_ADDITIONAL_RESOURCES } from "@/lib/pne-companions";
 
-export const metadata = { title: "Vital Kauaʻi Guides — Vital Kauaʻi" };
+export const metadata = { title: "Vital Kauaʻi Guides—Vital Kauaʻi" };
 
 const FOREST = "#0E1A10";
 const CREAM = "#F5F0E8";

@@ -5,7 +5,7 @@
 //   - /portal/pne-guide[/week-N]             (pre-ceremony per-week pages)
 //   - /portal/pne-integration-guide[/week-N] (post-ceremony per-week pages)
 //   - PRE_PNE_COMPANION / POST_PNE_COMPANION (linked from the integration
-//     pages — see app/portal/integration/{pre,post}-ceremony/page.tsx)
+//     pages—see app/portal/integration/{pre,post}-ceremony/page.tsx)
 //
 // Adding/editing a week here automatically refreshes the landing page,
 // the integration page links, and any future video library that reads
@@ -227,7 +227,7 @@ export const PNE_ADDITIONAL_RESOURCES: ReadonlyArray<PneAdditionalResource> = [
   },
   {
     title: "Ceremony Day Guide",
-    description: "A walkthrough of the day itself — flow, support, what to bring close.",
+    description: "A walkthrough of the day itself—flow, support, what to bring close.",
     href: "/ceremony-day-guide.html",
     status: "live",
   },

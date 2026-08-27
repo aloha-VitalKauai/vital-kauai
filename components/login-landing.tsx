@@ -10,8 +10,8 @@ type LoginLandingProps = {
 
 // The gated front door at /login. The entire site sits behind this screen;
 // signing in here leads into all member material (unchanged). This adds the
-// church's public identity — whale-video hero, name, "religious nonprofit",
-// contact — above the existing sign-in form, so the gate also reads as a real
+// church's public identity—whale-video hero, name, "religious nonprofit",
+// contact—above the existing sign-in form, so the gate also reads as a real
 // public homepage. "/" and the site's gating are intentionally untouched.
 export function LoginLanding({ nextPathParam, errorMessageParam }: LoginLandingProps) {
   return (

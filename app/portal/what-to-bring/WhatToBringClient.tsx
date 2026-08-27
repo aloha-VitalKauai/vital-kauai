@@ -9,7 +9,7 @@ const STORAGE_KEY = "vk-packing-checks";
 
 const PRACTICAL_ITEMS = [
   { key: "water-bottle", label: "Water bottle" },
-  { key: "eye-mask-earplugs", label: "Eye mask and earplugs", note: "The island roosters are enthusiastic \u2014 earplugs make for deeper rest" },
+  { key: "eye-mask-earplugs", label: "Eye mask and earplugs", note: "The island roosters are enthusiastic\u2014earplugs make for deeper rest" },
   { key: "notebook", label: "Notebook or journal" },
   { key: "swimwear", label: "Swimwear", note: "Swim goggles and a wetsuit top recommended; snorkel gear optional." },
   { key: "flip-flops", label: "Flip-flops or sandals" },
@@ -25,10 +25,10 @@ const PRACTICAL_ITEMS = [
   { key: "rain-jacket", label: "Rain jacket" },
   { key: "sunscreen", label: "Zinc-based reef-safe sunscreen", note: "Required for ocean activities. Non-reef-safe sunscreen is banned in Hawai\u02BBi." },
   { key: "mosquito-repellent", label: "Organic mosquito repellent and/or lavender essential oil" },
-  { key: "toiletries", label: "Personal toiletries \u2014 shampoo, conditioner, and your favorites", note: "We provide hand soap. Bring everything else you love and rely on." },
-  { key: "yoga-mat", label: "Yoga mat (optional)", note: "We have loaners available \u2014 bring your own if you prefer." },
+  { key: "toiletries", label: "Personal toiletries\u2014shampoo, conditioner, and your favorites", note: "We provide hand soap. Bring everything else you love and rely on." },
+  { key: "yoga-mat", label: "Yoga mat (optional)", note: "We have loaners available\u2014bring your own if you prefer." },
   { key: "alarm-clock", label: "Alarm clock or phone for waking", note: "For those on a digital detox, a simple travel alarm clock keeps mornings device-free." },
-  { key: "instruments", label: "Musical instruments, costumes, special poetry, readings, songs (optional)", note: "If something calls to you to bring and offer \u2014 trust that. There will be space for it." },
+  { key: "instruments", label: "Musical instruments, costumes, special poetry, readings, songs (optional)", note: "If something calls to you to bring and offer\u2014trust that. There will be space for it." },
 ];
 
 const SACRED_ITEMS = [
@@ -90,7 +90,7 @@ export default function WhatToBringClient() {
             return;
           }
           if (!user || raw.memberId !== user.id) {
-            // A different member used this device — drop their checklist.
+            // A different member used this device—drop their checklist.
             localStorage.removeItem(STORAGE_KEY);
           }
         }
@@ -215,11 +215,11 @@ export default function WhatToBringClient() {
             <p style={{ fontSize: 13, color: inkLight, marginBottom: 18, lineHeight: 1.6 }}>We ask that you leave the following at home. These items interfere with the depth and safety of the work.</p>
             <ul style={{ listStyle: "none", display: "grid", gap: 8 }}>
               {[
-                { text: "Processed or ceremonially-restricted foods", note: "All meals are lovingly provided and tailored to your journey. You\u2019re welcome to bring healthy snacks or shop for additional foods you love at Hanalei Market \u2014 it\u2019s just minutes away." },
+                { text: "Processed or ceremonially-restricted foods", note: "All meals are lovingly provided and tailored to your journey. You\u2019re welcome to bring healthy snacks or shop for additional foods you love at Hanalei Market\u2014it\u2019s just minutes away." },
                 { text: "Alcohol" },
                 { text: "Plant medicines", note: "If you have questions about this, please reach out before you arrive" },
-                { text: "Additional supplements", note: "Unless essential to your health \u2014 let us know in advance" },
-                { text: "Unnecessary medications", note: "For Iboga journeys especially \u2014 please discuss all medications with our team before your arrival" },
+                { text: "Additional supplements", note: "Unless essential to your health\u2014let us know in advance" },
+                { text: "Unnecessary medications", note: "For Iboga journeys especially\u2014please discuss all medications with our team before your arrival" },
               ].map((item) => (
                 <li key={item.text} style={{ display: "flex", alignItems: "flex-start", gap: 12, fontSize: 14, lineHeight: 1.5 }}>
                   <span style={{ color: sage, fontWeight: 600, flexShrink: 0, marginTop: 1 }}>&mdash;</span>

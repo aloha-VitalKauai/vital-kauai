@@ -5,7 +5,7 @@ import { getCurrentArcWeek } from "@/lib/weekCountdown";
 /**
  * Journey wayfinder. The mobile dock's "Journey" tab lands here; we look
  * up the member's ceremony date and drop them on the week they are in
- * right now — using the same week calendar the weekly journey emails
+ * right now—using the same week calendar the weekly journey emails
  * follow (six preparation weeks before ceremony, six integration weeks
  * after). Pre-ceremony weeks count down from 42 days before ceremony; on
  * ceremony day the arc hands off to post-ceremony integration.
@@ -15,8 +15,8 @@ import { getCurrentArcWeek } from "@/lib/weekCountdown";
  * (the App Router keeps the page mounted across a query-only change, so a
  * fresh token is what re-triggers the page's re-apply effect).
  *
- * When no journey has a ceremony date inside the twelve-week arc — a
- * member not yet scheduled, booked far out, or long past integration — we
+ * When no journey has a ceremony date inside the twelve-week arc—a
+ * member not yet scheduled, booked far out, or long past integration—we
  * hand off to the integration page without a forced week so its
  * resume-where-you-left-off logic picks the right week. Only canceled
  * journeys are ignored; the newest live arc wins for returning members.

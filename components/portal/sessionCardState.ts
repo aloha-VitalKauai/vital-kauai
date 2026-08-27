@@ -2,8 +2,8 @@
 // component so it can be tested without a DOM.
 //
 // The member sees one thing per session type: how many are left, and whether
-// they can book. Everything the engine does underneath — holds, booking
-// authorizations, webhook state, the allowance ledger — stays invisible.
+// they can book. Everything the engine does underneath—holds, booking
+// authorizations, webhook state, the allowance ledger—stays invisible.
 
 export type SessionRowState = {
   label: string;
@@ -36,7 +36,7 @@ export function shouldShowRow(granted: number): boolean {
 
 // Reduce an unknown thrown value to a short, sanitized string for console
 // diagnostics. Deliberately extracts ONLY name + code/status + message —
-// never the raw object — so a rejection that happens to carry response
+// never the raw object—so a rejection that happens to carry response
 // payloads, tokens, emails, or stack-embedded values can never reach the
 // console. The message is capped; anything longer than an error message
 // isn't an error message.

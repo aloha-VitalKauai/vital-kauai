@@ -49,7 +49,7 @@ function combineTitles(titles: string[]): string {
  * Merges cohorts that share the same start/end dates into a single display row
  * (e.g. a Men's + Women's journey on the same week become one card titled
  * "Men's / Women's Iboga Journeys"). Capacity and assigned_count are summed.
- * Use for public card rendering only — the scheduling form should stay ungrouped.
+ * Use for public card rendering only—the scheduling form should stay ungrouped.
  */
 export function groupCohortsByDate(cohorts: PublicCohort[]): PublicCohort[] {
   const groups = new Map<string, PublicCohort[]>()

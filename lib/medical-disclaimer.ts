@@ -21,11 +21,11 @@ export const MEDICAL_DISCLAIMER: DisclaimerBlock[] = [
   { kind: "h", html: "<em>Nature</em> of Our Work" },
   {
     kind: "p",
-    html: "Nothing offered by Vital Kauaʻi Church — on this website, in written materials, or in direct communication with our Stewards or practitioners — constitutes medical advice, psychiatric treatment, clinical diagnosis, or therapeutic intervention as defined by state or federal law. Vital Kauaʻi Church does not practice medicine. Our Stewards and practitioners offer ceremony, sacred presence, somatic guidance, and spiritual support within a religious context. They are not all licensed medical professionals, and they do not hold themselves out as such.",
+    html: "Nothing offered by Vital Kauaʻi Church—on this website, in written materials, or in direct communication with our Stewards or practitioners—constitutes medical advice, psychiatric treatment, clinical diagnosis, or therapeutic intervention as defined by state or federal law. Vital Kauaʻi Church does not practice medicine. Our Stewards and practitioners offer ceremony, sacred presence, somatic guidance, and spiritual support within a religious context. They are not all licensed medical professionals, and they do not hold themselves out as such.",
   },
   {
     kind: "highlight",
-    html: "All practices within Vital Kauaʻi Church are sacramental and ecclesiastical in nature. They are expressions of sincere religious belief — not medical treatments, clinical therapies, or health interventions. Membership in this Church is a voluntary spiritual commitment, entered freely by consenting adults.",
+    html: "All practices within Vital Kauaʻi Church are sacramental and ecclesiastical in nature. They are expressions of sincere religious belief—not medical treatments, clinical therapies, or health interventions. Membership in this Church is a voluntary spiritual commitment, entered freely by consenting adults.",
   },
   { kind: "h", html: "<em>Sacramental</em> Practice & Inherent Risk" },
   {
@@ -66,7 +66,7 @@ export const MEDICAL_DISCLAIMER: DisclaimerBlock[] = [
   { kind: "h", html: "The Iboga <em>Sacrament</em>" },
   {
     kind: "p",
-    html: "The Iboga Journey at Vital Kauaʻi Church is a sacramental ceremony rooted in sincere religious practice. Iboga — the root bark of <em>Tabernanthe iboga</em> — is a sacred plant sacrament used within our church as an act of worship, in accordance with our Statement of Belief and under the protections afforded to religious organizations by the First Amendment and the Religious Freedom Restoration Act.",
+    html: "The Iboga Journey at Vital Kauaʻi Church is a sacramental ceremony rooted in sincere religious practice. Iboga—the root bark of <em>Tabernanthe iboga</em> — is a sacred plant sacrament used within our church as an act of worship, in accordance with our Statement of Belief and under the protections afforded to religious organizations by the First Amendment and the Religious Freedom Restoration Act.",
   },
   {
     kind: "highlight",
@@ -87,7 +87,7 @@ export const MEDICAL_DISCLAIMER: DisclaimerBlock[] = [
   },
   {
     kind: "p",
-    html: "We are a private religious community — not a medical facility, retreat center, or clinical program. We are transparent about what we are and what we are not. We invite every member to enter sacramental work with full awareness, honest self-disclosure, clear consent, and the ongoing support of their own healthcare providers.",
+    html: "We are a private religious community—not a medical facility, retreat center, or clinical program. We are transparent about what we are and what we are not. We invite every member to enter sacramental work with full awareness, honest self-disclosure, clear consent, and the ongoing support of their own healthcare providers.",
   },
   { kind: "h", html: "Acknowledgment <em>& Signature</em>" },
   {

@@ -74,7 +74,7 @@ function AssessmentsPageInner() {
       const data = await getMemberAssessmentStatus(supabase, user.id);
       setCeremonies(data);
     } catch {
-      // Silent — timeline may be slightly stale but not broken
+      // Silent—timeline may be slightly stale but not broken
     }
   }
 
@@ -110,7 +110,7 @@ function AssessmentsPageInner() {
     return () => { cancelled = true; };
   }, [router]);
 
-  // Begin and Continue use the same handler — the RPC handles resume automatically
+  // Begin and Continue use the same handler—the RPC handles resume automatically
   async function handleBegin(timepoint: string, ceremonyId: string) {
     const key = `${timepoint}:${ceremonyId}`;
     if (inFlightRef.current.has(key)) return;
@@ -156,7 +156,7 @@ function AssessmentsPageInner() {
   // Keyframe animations
   const keyframes = `@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}`;
 
-  // Page wrapper — ensures cards render on the intended dark earth surface,
+  // Page wrapper—ensures cards render on the intended dark earth surface,
   // independent of the surrounding portal layout's background.
   const pageWrap: React.CSSProperties = { background: T.earth, minHeight: '100vh' };
 

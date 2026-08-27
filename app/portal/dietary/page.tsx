@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import LiverCleanseCard from "./LiverCleanseCard";
 
-export const metadata = { title: "Dietary Preparation — Vital Kauaʻi" };
+export const metadata = { title: "Dietary Preparation—Vital Kauaʻi" };
 
 export default async function DietaryPage() {
   const supabase = await createClient();

@@ -22,7 +22,7 @@ import {
 // isNativeIOS() short-circuit happens before any state is set, so
 // React commits a null render and never schedules further work).
 //
-// The interaction is two soft links — Enable and Not now — instead of
+// The interaction is two soft links—Enable and Not now—instead of
 // a modal, banner, or pulsing button. Enabling triggers a verification
 // authenticate() call so the user feels Face ID succeed once before
 // the flag is persisted. If verification is cancelled the flag stays

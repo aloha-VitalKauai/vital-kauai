@@ -1,4 +1,4 @@
-// Shared journal prompts — single source of truth for both
+// Shared journal prompts—single source of truth for both
 // the integration pages (pre/post ceremony) and the comprehensive journal.
 //
 // Storage keys used by both views:
@@ -54,7 +54,7 @@ export const PRE_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
   {
     teaching: 'A Polyvagal Neuroscience-Informed framework for understanding how your body moves between states of safety, protection, and rest, and how to support its natural return to balance.',
     practice: '',
-    reflection: 'Where do you go when you feel dysregulated? What is your dominant pattern — fight, flight, freeze, or fawn?',
+    reflection: 'Where do you go when you feel dysregulated? What is your dominant pattern—fight, flight, freeze, or fawn?',
     reflectionFollowUp: 'What situations tend to call these patterns forward most quickly in your life?',
   },
   {
@@ -91,7 +91,7 @@ export const POST_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
     teaching: 'A teaching from PsychoNeuroEnergetics: the binary lens people fall into during conflict, what being right protects, how the paradigm is inherited through families, and the inquiry that opens in its place.',
     practice: 'Trading a verdict for a need',
     reflection: 'Where in your life are you most committed to being right? What would you have to feel if you set that position down?',
-    reflectionFollowUp: 'What role were you cast in growing up — the responsible one, the hero, the scapegoat? What did that role protect the family from facing?',
+    reflectionFollowUp: 'What role were you cast in growing up—the responsible one, the hero, the scapegoat? What did that role protect the family from facing?',
     reflectionThird: 'Take one judgment you carry and rewrite it as a need. What changes in your body when you say the second version?',
   },
   {
@@ -164,7 +164,7 @@ export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
     theme: 'Sovereignty',
     title: 'Trust your preparation',
     prompts: [
-      { q: 'What are you ready to receive?', hint: 'Write from your body, your heart, your life — what you are ready to receive and live into.' },
+      { q: 'What are you ready to receive?', hint: 'Write from your body, your heart, your life—what you are ready to receive and live into.' },
       { q: 'What are you committed to after this ceremony? Be as concrete as possible.', hint: 'The medicine amplifies what you bring into ceremony.' },
     ],
   },
@@ -182,7 +182,7 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
       { key: 'w0-p3', q: 'Where did you feel the most resistance during the journey? What were you holding onto, and what happened when you let go?', hint: 'Resistance during ceremony is information.' },
       { key: 'w0-p4', q: 'What is one thing you are committed to begin? What are you committed to release?', hint: 'Trust the impulse. Write it before the mind catches up.' },
       { key: 'w1-p2', q: 'Name everything you are grateful for.', hint: 'Include the things that have challenged you, the difficult moments, even the unsavory ones. Gratitude can hold all of it.' },
-      { key: 'post-mahalo-daily', q: 'How will you incorporate gratitude into your daily living?', hint: 'Name something small and repeatable — a morning pause, a word said aloud, a moment of thanks at the table.' },
+      { key: 'post-mahalo-daily', q: 'How will you incorporate gratitude into your daily living?', hint: 'Name something small and repeatable—a morning pause, a word said aloud, a moment of thanks at the table.' },
     ],
   },
   {
@@ -190,15 +190,15 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     theme: 'Unity',
     title: 'The threads begin to weave',
     prompts: [
-      { key: 'post-lokahi-1', q: 'Where are you noticing connection this week — between what ceremony showed you and the life you have returned to, or between yourself and the people around you?', hint: 'Lōkahi is felt before it is understood. Notice where the threads touch.' },
+      { key: 'post-lokahi-1', q: 'Where are you noticing connection this week—between what ceremony showed you and the life you have returned to, or between yourself and the people around you?', hint: 'Lōkahi is felt before it is understood. Notice where the threads touch.' },
       { key: 'post-lokahi-2', q: 'What is beginning to feel more whole in you? What parts of yourself are weaving back together?', hint: 'Unity is the many becoming one.' },
-      { key: 'post-lokahi-3', q: 'How do you want to act in unity this week — with your body, your relationships, and the land around you?', hint: 'Connection becomes real in how you live it.' },
+      { key: 'post-lokahi-3', q: 'How do you want to act in unity this week—with your body, your relationships, and the land around you?', hint: 'Connection becomes real in how you live it.' },
     ],
   },
   {
     code: 'MĀLAMA',
     theme: 'Tending',
-    title: 'The insights are alive — now you tend them',
+    title: 'The insights are alive—now you tend them',
     prompts: [
       { key: 'w1-p2', q: 'Where are you meeting yourself differently in daily life? What have you noticed about the way you move through the world since returning home?', hint: 'Small shifts count. A changed reaction. A pause before responding. Name them.' },
       { key: 'w1-p3', q: 'How are you tending to yourself differently since ceremony?', hint: 'Notice the small shifts in how you eat, rest, move, listen. Name what is being cared for now that was not before.' },
@@ -208,16 +208,16 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
   {
     code: 'HAʻAHAʻA',
     theme: 'Humility',
-    title: 'The familiar is returning — meet it differently',
+    title: 'The familiar is returning—meet it differently',
     prompts: [
       { key: 'w2-p2', q: 'What old patterns, reactions, or beliefs have you noticed returning, and how are you choosing to meet them now?', hint: 'Return is part of the spiral. How you respond now is what matters.' },
-      { key: 'w2-p1', q: 'What do you want to say to your pre-ceremony self — the one who was afraid, uncertain, or carrying so much?', hint: 'Write them a letter if you wish.' },
+      { key: 'w2-p1', q: 'What do you want to say to your pre-ceremony self—the one who was afraid, uncertain, or carrying so much?', hint: 'Write them a letter if you wish.' },
     ],
   },
   {
     code: 'PONO',
     theme: 'Right Relationship',
-    title: 'You have changed — your relationships are noticing',
+    title: 'You have changed—your relationships are noticing',
     prompts: [
       { key: 'w5-p0', q: 'How has your sense of purpose shifted or clarified? What are you called to create, offer, or become in this next chapter?', hint: 'Write down at least 3 SMART goals: specific (what am I feeling called to create?), measurable (how will I know when it is accomplished?), achievable (how can I do this?), relevant (is this worthwhile, and why?), and time-bound (by when can I accomplish this calling?).' },
       { key: 'w5-p1', q: 'Who are you now? How would you describe the person who arrived, and the person standing here today?' },
@@ -228,7 +228,7 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
   {
     code: 'KULEANA',
     theme: 'Responsibility',
-    title: 'Six weeks in — the knowing is yours now',
+    title: 'Six weeks in—the knowing is yours now',
     prompts: [
       { key: 'w5-completion-1', q: 'What genuinely changed?', hint: 'Actual, lived change. How do you move through the world differently now? Name specific behaviors, responses, ways of being.' },
       { key: 'w5-connection', q: 'How did this experience change your connection with yourself, with others, and with Nature?', hint: 'Notice where each relationship feels different now than it did before.' },

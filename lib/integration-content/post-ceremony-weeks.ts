@@ -1,6 +1,6 @@
 // Post-ceremony Integration page content. Plain TS module so server code
 // (the journey-emails cron, the founder dashboard's auto-derived email
-// preview) can import the data — Next.js refuses to expose constants from
+// preview) can import the data—Next.js refuses to expose constants from
 // 'use client' modules to Server Components, so the data lives here and the
 // page imports from this file.
 

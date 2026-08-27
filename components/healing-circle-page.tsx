@@ -183,7 +183,7 @@ export function HealingCirclePage() {
         <Image
           className={styles.heroImg}
           src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1800&q=85"
-          alt="Healing Circle — Vital Kauaʻi"
+          alt="Healing Circle—Vital Kauaʻi"
           fill
           priority
           sizes="100vw"

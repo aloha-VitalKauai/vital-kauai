@@ -12,7 +12,7 @@ export type SectionIndexItem = {
 type Props = {
   sections: SectionIndexItem[]
   /**
-   * Optional — anchor (with or without leading "#") of the section that should
+   * Optional—anchor (with or without leading "#") of the section that should
    * render as active. When omitted, the component tracks scroll position and
    * highlights whichever section is currently in view.
    */
@@ -24,7 +24,7 @@ type Props = {
    */
   scrollOffset?: number
   /**
-   * Optional — when set, the index becomes `position: sticky` at this top
+   * Optional—when set, the index becomes `position: sticky` at this top
    * offset (in pixels). Use when stacking under another sticky bar so the
    * index stays in view while members scroll through sections.
    */

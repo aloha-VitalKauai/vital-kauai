@@ -97,7 +97,7 @@ export const INTAKE_SECTIONS: { title: string; fields: [string, string][] }[] = 
 
 export const MENTAL_HEALTH_LABELS: Record<string, string> = {
   stable: "Stable & resourced",
-  in_process: "In process — actively working",
+  in_process: "In process—actively working",
   significant: "Significant challenges right now",
   crisis: "In crisis",
 };
@@ -138,7 +138,7 @@ export function readIntakeValue(
 
 /**
  * Returns extra entries present in `responses` that aren't covered by any
- * INTAKE_SECTIONS field — keeps the review page forward-compatible if new
+ * INTAKE_SECTIONS field—keeps the review page forward-compatible if new
  * questions appear on the intake form before INTAKE_SECTIONS is updated.
  */
 export function collectExtraResponses(

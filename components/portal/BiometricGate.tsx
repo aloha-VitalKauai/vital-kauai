@@ -14,7 +14,7 @@ import { createClient } from "@/lib/supabase/client";
 // running Supabase session continues unchanged. On failure or cancel
 // the user is signed out and routed through the existing /login flow.
 //
-// Web, PWA, and any non-iOS shell never enter the locked state — the
+// Web, PWA, and any non-iOS shell never enter the locked state—the
 // useEffect short-circuits at isNativeIOS(), so the children render
 // exactly as they did before this wrapper existed. There is no
 // network call, no Capacitor bridge call, no overlay render.
@@ -53,7 +53,7 @@ export function BiometricGate({ children }: { children: ReactNode }) {
         const supabase = createClient();
         await supabase.auth.signOut();
       } catch {
-        // Silent — we redirect either way.
+        // Silent—we redirect either way.
       }
       window.location.replace("/login?error=biometric");
     }
