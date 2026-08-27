@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { PneGuidePrintButton, PneGuideFooter } from "@/components/portal/PneGuidePrint";
+import { WEEK_ONE_PRACTICES_HREF, WEEK_ONE_PRACTICES_TAGS } from "@/lib/pne-companions";
 
 export const metadata = { title: "The PsychoNeuroEnergetics (PNE) Guide · Week 4, Vital Kauaʻi" };
 
@@ -584,6 +585,9 @@ const PAGE_CSS = `
     color: #F4EDD6;
     margin-bottom: 10px;
   }
+  /* Opens the Week 1 guide's Internal Safety exercises in a new tab. */
+  .pne-companion-w4-page .hw-step-link { color: inherit; text-decoration: underline; text-decoration-color: rgba(143,166,138,.6); text-underline-offset: 4px; }
+  .pne-companion-w4-page .hw-step-link:hover { color: var(--accent-sage); text-decoration-color: var(--accent-sage); }
   .pne-companion-w4-page .hw-tags {
     font-family: var(--serif);
     font-style: italic;
@@ -994,8 +998,8 @@ export default async function SomaticCompanionWeek4Page() {
               <div className="hw-step">
                 <div className="hw-num">One</div>
                 <h3>Continue your regulation and sensation practices.</h3>
-                <div className="hw-tags">4 / 7 / 8 Breath &nbsp;·&nbsp; Grounding &nbsp;·&nbsp; Felt-Sense Tracking</div>
-                <p className="reflection">Return to the practices of Weeks One through Three. They are the soil in which emotional awareness can grow.</p>
+                <div className="hw-tags">{WEEK_ONE_PRACTICES_TAGS} &nbsp;·&nbsp; Felt-Sense Tracking</div>
+                <p className="reflection">Return to the practices of <a href={WEEK_ONE_PRACTICES_HREF} target="_blank" rel="noopener noreferrer" className="hw-step-link">Weeks One</a> through Three. They are the soil in which emotional awareness can grow.</p>
               </div>
 
               <div className="hw-step">
