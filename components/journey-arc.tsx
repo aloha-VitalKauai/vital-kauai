@@ -32,9 +32,9 @@ const PHASES: Phase[] = [
     essence: "Your commitment before you sit with the medicine.",
     items: [
       "Three or four 1:1 PNE Practitioner calls up front (six total across your journey)",
-      "Four coaching calls with Rachel & Josh — an onboarding call, two one-on-one, and one with your support circle",
+      "Four coaching calls with Rachel & Josh—an onboarding call, two one-on-one, and one with your support circle",
       "Weekly journal prompts and reflections in your member portal",
-      "The PsychoNeuroEnergetics (PNE) Guide — week-by-week teachings, reflections, and practices to expand your nervous-system capacity",
+      "The PsychoNeuroEnergetics (PNE) Guide—week-by-week teachings, reflections, and practices to expand your nervous-system capacity",
       "Medical screening, labs, and EKG with your physician",
       "Diet preparation and gathering your home support team",
       "Crafting your questions for the medicine",
@@ -81,7 +81,7 @@ const PHASES: Phase[] = [
       "Six weekly 1:1 integration coaching calls with Rachel & Josh",
       "Two to three 1:1 follow-up calls with your PNE Practitioner, in any weeks you choose",
       "Continued member-portal support to anchor what arose into new patterns",
-      "The PsychoNeuroEnergetics (PNE) Guide — week-by-week teachings, reflections, and practices to integrate your journey",
+      "The PsychoNeuroEnergetics (PNE) Guide—week-by-week teachings, reflections, and practices to integrate your journey",
       "Lifetime invitation into the Vital Kauaʻi community of those who’ve walked this path",
       "Monthly group calls and optional ongoing one-on-one support",
     ],
@@ -188,7 +188,7 @@ export function JourneyArc() {
                   </div>
                 </button>
               </li>
-              {/* Mobile inline panel — appears immediately under the active card */}
+              {/* Mobile inline panel—appears immediately under the active card */}
               {isActive && (
                 <li className={styles.mobilePanelWrap} aria-hidden={false}>
                   <PhasePanel phase={phase} />

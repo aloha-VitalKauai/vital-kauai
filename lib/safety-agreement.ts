@@ -8,7 +8,7 @@
 export type AgreementBullet = string;
 
 export type AgreementSection = {
-  id: string;       // stable key — used to store per-section initials
+  id: string;       // stable key—used to store per-section initials
   number: string;   // display label, e.g. "1"
   heading: string;
   body?: string[];  // paragraphs
@@ -51,7 +51,7 @@ export const SAFETY_AGREEMENT_SECTIONS: AgreementSection[] = [
     ],
     items: [
       "All current medications, supplements, and substances have been disclosed in full during medical screening and intake.",
-      "No unauthorized substances — pharmaceutical, recreational, or supplemental — are brought onto the ceremony land or consumed during the arc.",
+      "No unauthorized substances—pharmaceutical, recreational, or supplemental—are brought onto the ceremony land or consumed during the arc.",
       "Any change in medication or supplement use between intake and ceremony is communicated to a Vital Kauaʻi staff member before ceremony begins.",
       "Failure to disclose may result in dismissal from the ceremony arc, without refund.",
     ],
@@ -119,7 +119,7 @@ export const SAFETY_AGREEMENT_SECTIONS: AgreementSection[] = [
     number: "8",
     heading: "Post-Ceremony Stillness Day Protocols",
     body: [
-      "The day after the medicine ceremony is held as a stillness day — a recovery and integration day. The frame below allows the body and nervous system to land safely.",
+      "The day after the medicine ceremony is held as a stillness day—a recovery and integration day. The frame below allows the body and nervous system to land safely.",
     ],
     items: [
       "No unsupervised hikes, swims, or excursions on stillness day. Movement happens with a Vital Kauaʻi staff member.",
@@ -170,7 +170,7 @@ export const SAFETY_AGREEMENT_SECTIONS: AgreementSection[] = [
     number: "12",
     heading: "Psycho-Spiritual Journey Support",
     body: [
-      "Vital Kauaʻi offers the option of an additional facilitator present as a neutral witness during the medicine ceremony — a person whose role is to hold space, offer reflective questions when invited, and bear witness, without directing or interfering with the unfolding experience. This support is optional.",
+      "Vital Kauaʻi offers the option of an additional facilitator present as a neutral witness during the medicine ceremony—a person whose role is to hold space, offer reflective questions when invited, and bear witness, without directing or interfering with the unfolding experience. This support is optional.",
     ],
     preference: {
       intro: "Indicate your preferences:",

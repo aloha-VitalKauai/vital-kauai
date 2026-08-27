@@ -1,7 +1,7 @@
 // Shared vocabulary for the Team document vault.
 // Roles describe what a practitioner does; engagement types decide which
 // paperwork applies; doc types are the storable categories. The DB enforces
-// doc_type via a CHECK constraint — keep this list in sync with the
+// doc_type via a CHECK constraint—keep this list in sync with the
 // practitioner_documents migration.
 
 export const PRACTITIONER_ROLES = [

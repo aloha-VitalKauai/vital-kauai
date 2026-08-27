@@ -34,7 +34,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         .pn-out { font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,240,232,.35);background:none;border:1px solid rgba(245,240,232,.12);padding:6px 14px;cursor:pointer;font-family:inherit;transition:color .2s,border-color .2s; }
         .pn-out:hover { color:#F5F0E8;border-color:rgba(245,240,232,.3); }
 
-        /* Hamburger — hidden on desktop, visible on narrow screens */
+        /* Hamburger—hidden on desktop, visible on narrow screens */
         .pn-burger { display:none;background:none;border:none;padding:6px 8px;cursor:pointer;font-family:inherit; }
         .pn-burger span { display:block;width:22px;height:1.5px;background:rgba(245,240,232,.7);margin:5px 0;transition:background .2s; }
         .pn-burger:hover span { background:#F5F0E8; }
@@ -132,7 +132,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
           &#10005;
         </button>
         <a href="/portal" onClick={close}>Dashboard</a>
-        {/* Outcomes link hidden — restore alongside the desktop link. */}
+        {/* Outcomes link hidden—restore alongside the desktop link. */}
         {/* <a href="/portal/assessments" onClick={close}>Outcomes</a> */}
         <span className="pn-mobile-section-label">The Journey</span>
         <a href="/portal/integration/pre-ceremony" onClick={close}>Pre-Ceremony</a>
@@ -178,7 +178,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         </div>
         <a href="/portal/donate" onClick={close}>Contribution</a>
         <a href="/portal/contact" onClick={close}>Contact</a>
-        {/* Community link hidden — restore with the main nav link when the section is ready. */}
+        {/* Community link hidden—restore with the main nav link when the section is ready. */}
         <form action="/auth/logout" method="post">
           <button type="submit" onClick={close}>Sign Out</button>
         </form>

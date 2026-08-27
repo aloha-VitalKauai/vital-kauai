@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Iboga Journey Intake Form — Vital Kauaʻi</title>
+<title>Iboga Journey Intake Form—Vital Kauaʻi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -605,7 +605,7 @@ function getFormStateSnapshot() {
       value: el.getAttribute('data-value') || '',
     });
   });
-  // Only the 5 acknowledgment boxes — the journal-sharing #shareBox is tracked
+  // Only the 5 acknowledgment boxes—the journal-sharing #shareBox is tracked
   // via its hidden input, not this positional array.
   const acks = Array.from(document.querySelectorAll('.ack-item .ack-box')).map(a => a.classList.contains('checked'));
   return { inputs, choices, acks };
@@ -869,7 +869,7 @@ async function submitForm() {
     return;
   }
 
-  // Validate acknowledgments (the 5 required boxes only — journal sharing is
+  // Validate acknowledgments (the 5 required boxes only—journal sharing is
   // optional and must never block submission).
   const acks = document.querySelectorAll('.ack-item .ack-box');
   let allChecked = true;

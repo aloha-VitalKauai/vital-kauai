@@ -10,8 +10,8 @@ const SECTIONS = MEDICINE_QUESTION_SECTIONS;
 
 const STORAGE_KEY = "vk-questions-data";
 // localStorage payload shape: { memberId, savedAt, data }. Scoping the cache to
-// the signed-in member keeps one member's answers from showing up for — or
-// saving into — another member on a shared device. savedAt lets the loader pick
+// the signed-in member keeps one member's answers from showing up for—or
+// saving into—another member on a shared device. savedAt lets the loader pick
 // the most recently written copy (device vs. server).
 
 function AutoTextarea({ value, onChange, onBlur, placeholder }: { value: string; onChange: (v: string) => void; onBlur?: () => void; placeholder: string }) {
@@ -103,7 +103,7 @@ export default function QuestionsClient() {
 
   // Write whatever is pending immediately, cancelling the debounce. Called when
   // the field blurs, the tab is hidden, the page closes, or the component
-  // unmounts — so an edit is never lost to a navigation that beats the timer.
+  // unmounts—so an edit is never lost to a navigation that beats the timer.
   function flushNow() {
     if (!dirtyRef.current) return;
     if (saveTimerRef.current) { clearTimeout(saveTimerRef.current); saveTimerRef.current = null; }
@@ -132,7 +132,7 @@ export default function QuestionsClient() {
           localSavedAt = typeof raw.savedAt === "string" ? raw.savedAt : null;
           setValues(raw.data); valuesRef.current = raw.data;
         } else if (raw && typeof raw === "object" && raw.memberId && raw.memberId !== user.id) {
-          // A different member used this device — drop their cached answers.
+          // A different member used this device—drop their cached answers.
           localStorage.removeItem(STORAGE_KEY);
         }
       } catch {}

@@ -10,7 +10,7 @@ export const MEMBERSHIP_AGREEMENT = {
   terms: [
     "Vital Kauai’s purpose is furthering the awakening, transformation, and vitality of people throughout the world, the betterment of life on planet Earth, and other spiritual, humanitarian, and beneficent purposes.",
     "Vital Kauai is a creation of free men and women to associate with each other in the private domain according to their church and talents.",
-    "Vital Kauai is a platform on which members may, for Vital Kauai’s good purpose, conduct all manner of private speech and business with Vital Kauai, members, and other associations — keeping all business in the private domain and utilizing the protections thereof.",
+    "Vital Kauai is a platform on which members may, for Vital Kauai’s good purpose, conduct all manner of private speech and business with Vital Kauai, members, and other associations—keeping all business in the private domain and utilizing the protections thereof.",
     "Vital Kauai is a private, unincorporated Church that operates outside the jurisdiction of government entities, agencies, officers, agents, contractors, and other representatives, as protected by law.",
     "Vital Kauai lawfully stands on the authority our Creator gives to free men and women as revealed in the holy Scriptures, the Constitution of the United States of America, and the constitutions of the several states of the union.",
     "Members claim the right to freedom of religion, free speech, petition, assembly, and the right to gather in association to assert our rights protected by those Constitutions, Charter, and Statutes.",

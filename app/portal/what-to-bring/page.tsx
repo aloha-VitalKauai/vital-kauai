@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import WhatToBringClient from "./WhatToBringClient";
 
-export const metadata = { title: "What to Bring — Vital Kauaʻi" };
+export const metadata = { title: "What to Bring—Vital Kauaʻi" };
 
 export default async function WhatToBringPage() {
   const supabase = await createClient();

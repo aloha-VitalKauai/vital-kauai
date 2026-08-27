@@ -7,7 +7,7 @@
  * ceremony day; Week 6 begins 35 days after.
  *
  * Returns a phase tag and a short, plain-spoken label. Returns null
- * if the ceremony date is unknown — caller can render a fallback.
+ * if the ceremony date is unknown—caller can render a fallback.
  */
 
 export type WeekArc = "pre" | "post";
@@ -80,8 +80,8 @@ export function getWeekCountdown(
  * The (arc, week) a member is in right now, by the same week calendar the
  * weekly journey emails follow. The arc spans 42 days before ceremony
  * through 42 days after (six preparation weeks, then six integration
- * weeks). Returns null when today falls outside that window — before it
- * begins, after it ends, or when the ceremony date is unknown — so the
+ * weeks). Returns null when today falls outside that window—before it
+ * begins, after it ends, or when the ceremony date is unknown—so the
  * caller can fall back to resume-where-you-left-off instead of pinning
  * the member to Week 1 or the final week.
  */

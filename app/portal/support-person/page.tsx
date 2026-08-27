@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { PrintBar } from "./PrintBar";
 
-export const metadata = { title: "Support Person Guide — Vital Kauaʻi" };
+export const metadata = { title: "Support Person Guide—Vital Kauaʻi" };
 
 export default async function SupportPersonPage() {
   const supabase = await createClient();
@@ -131,9 +131,9 @@ export default async function SupportPersonPage() {
         </Callout>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 20, margin: "36px 0" }}>
           {[
-            { title: "Ground Yourself", body: "Nature, movement, breath \u2014 the practices that help you feel like yourself are essential right now." },
+            { title: "Ground Yourself", body: "Nature, movement, breath\u2014the practices that help you feel like yourself are essential right now." },
             { title: "Find Your People", body: "Let your own network hold your needs so they have somewhere to land." },
-            { title: "Reach Out to Us", body: "Our team is available to you too \u2014 for clarity, reassurance, or simply a conversation." },
+            { title: "Reach Out to Us", body: "Our team is available to you too\u2014for clarity, reassurance, or simply a conversation." },
           ].map((card) => (
             <div key={card.title} style={{ padding: 28, border: `1px solid ${border}`, borderRadius: 4, background: "rgba(247,243,238,0.6)" }}>
               <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 21, fontWeight: 500, marginBottom: 10 }}>{card.title}</h4>

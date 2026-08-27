@@ -173,7 +173,7 @@ const PAGE_CSS = `
     margin: 0;
   }
 
-  /* Belief grid — 6 suffering-based beliefs, 2 cols x 3 rows */
+  /* Belief grid—6 suffering-based beliefs, 2 cols x 3 rows */
   .pne-companion-w5-page .belief-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -211,7 +211,7 @@ const PAGE_CSS = `
     margin: 0;
   }
 
-  /* Pattern chain — for the trauma imprint example */
+  /* Pattern chain—for the trauma imprint example */
   .pne-companion-w5-page .pattern-chain {
     margin-top: 32px;
     padding: 32px 36px;
@@ -359,7 +359,7 @@ const PAGE_CSS = `
     font-size: 13px;
   }
 
-  /* Question panel — for the 4 exploration questions */
+  /* Question panel—for the 4 exploration questions */
   .pne-companion-w5-page .question-panel {
     margin-top: 36px;
     padding: 40px 44px;

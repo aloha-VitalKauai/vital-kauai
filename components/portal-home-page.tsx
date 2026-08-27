@@ -70,7 +70,7 @@ const PREP_ITEMS: { text: string; link?: string; external?: boolean; isLab?: boo
   { text: "Submit your Contribution/Donate", link: CONTRIBUTION_URL },
   { text: "Read Iboga Preparedness Guide", link: "/iboga-preparedness-guide.html" },
   { text: "Book your preparation calls with your PNE Practitioner", link: "/portal#integration-specialist" },
-  { text: "Discuss all medications and supplements with Rachel and Josh \u2014 confirm any required washout periods" },
+  { text: "Discuss all medications and supplements with Rachel and Josh\u2014confirm any required washout periods" },
   { text: "Confirm required lab work with your physician and submit results", isLab: true },
   { text: "Begin dietary preparation protocol", link: "/portal/dietary" },
   { text: "Begin journaling", link: "/portal/integration/pre-ceremony#journal-prompts" },
@@ -192,7 +192,7 @@ export function PortalHomePage({
   const checkPct = PREP_ITEMS.length > 0 ? Math.round((checkedCount / PREP_ITEMS.length) * 100) : 0;
 
   // Onboarding step status. The "Make your Contribution" step is hidden
-  // from the portal for now — onboarding gate doesn't require it.
+  // from the portal for now—onboarding gate doesn't require it.
   const agreementDone = profile?.membership_agreement_signed ?? false;
   const medicalDone = profile?.medical_disclaimer_signed ?? false;
   const intakeDone = profile?.intake_form_completed ?? false;
@@ -372,7 +372,7 @@ export function PortalHomePage({
           </div>
         </div>
 
-        {/* FOUR STEPS TO BEGIN \u2014 contribution step temporarily hidden */}
+        {/* FOUR STEPS TO BEGIN\u2014contribution step temporarily hidden */}
         <section className={styles.unlockBlock}>
           <div className={styles.sectionHead}>
             <span className={styles.sectionEyebrow}>Five Steps to Begin</span>
@@ -619,7 +619,7 @@ export function PortalHomePage({
               ) : null}
             </div>
 
-            {/* FUNCTIONAL MEDICINE — Dr. Matt Montee */}
+            {/* FUNCTIONAL MEDICINE—Dr. Matt Montee */}
             <div className={styles.teamCard}>
               <Image
                 src="/images/mattmontee.jpeg"

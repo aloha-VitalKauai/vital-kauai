@@ -33,8 +33,8 @@ const teamMembers: TeamMember[] = [
       {
         heading: "Postgraduate Study & Training",
         items: [
-          "Consciousness, Spirituality & Transpersonal Psychology — Alef Trust MSc program",
-          "Naturopathic Medicine — National University of Health Sciences",
+          "Consciousness, Spirituality & Transpersonal Psychology—Alef Trust MSc program",
+          "Naturopathic Medicine—National University of Health Sciences",
         ],
       },
       {
@@ -43,13 +43,13 @@ const teamMembers: TeamMember[] = [
           "Certified Life Coach (CPCC)",
           "Certified Eating Psychology Coach",
           "Certified Hypnotherapist",
-          "Certified Yoga Instructor — Rishikesh, India",
+          "Certified Yoga Instructor—Rishikesh, India",
         ],
       },
       {
         heading: "Education & Athletics",
         items: [
-          "Georgetown University — B.S. Business Administration (Leadership & Change)",
+          "Georgetown University—B.S. Business Administration (Leadership & Change)",
           "Division I volleyball on scholarship · Scholar-Athlete Award",
         ],
       },
@@ -78,25 +78,25 @@ const teamMembers: TeamMember[] = [
       {
         heading: "Leadership & Entrepreneurship",
         items: [
-          "Founder & Lead Educator — Trade With Traders / Financially Free Trading",
+          "Founder & Lead Educator—Trade With Traders / Financially Free Trading",
           "Built trading communities of 1,000+ members",
-          "TEDx Organizer — Hong Kong, 2015",
+          "TEDx Organizer—Hong Kong, 2015",
         ],
       },
       {
         heading: "Education & Professional Development",
         items: [
-          "Design Program — Stanford University",
-          "Finance — Salisbury University",
-          "Conscious Business — Best Life Ever",
+          "Design Program—Stanford University",
+          "Finance—Salisbury University",
+          "Conscious Business—Best Life Ever",
         ],
       },
       {
         heading: "Financial Experience",
         items: [
           "A decade+ as an independent trader, market analyst, and financial writer",
-          "Financial Analyst — Salisbury University Student-Managed Investment Fund",
-          "Financial Analyst Intern — U.S. Department of Homeland Security",
+          "Financial Analyst—Salisbury University Student-Managed Investment Fund",
+          "Financial Analyst Intern—U.S. Department of Homeland Security",
         ],
       },
     ],
@@ -474,7 +474,7 @@ export function HomePage() {
             <div className={styles.videoFrame}>
               <iframe
                 src="https://www.youtube.com/embed/cZwvxwemIag"
-                title="Dr. Chris Romig — Vital Kauaʻi"
+                title="Dr. Chris Romig—Vital Kauaʻi"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
@@ -930,7 +930,7 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Temporarily hidden — reciprocity section + "Stewards We Walk Alongside" link. */}
+      {/* Temporarily hidden—reciprocity section + "Stewards We Walk Alongside" link. */}
       <section id="reciprocity" className={styles.reciprocity} style={{ display: "none" }}>
         <div className={styles.reciprocityInner}>
           <p className={`${styles.sectionLabel} ${styles.reveal}`}>Rooted in Reciprocity & Regeneration</p>
@@ -1118,7 +1118,7 @@ function HomeLeadCard() {
     if (!name.trim() || !email.trim()) { setError("Please enter your name and email."); return; }
     setSubmitting(true);
     setError("");
-    // Fire and forget — never block redirect
+    // Fire and forget—never block redirect
     try {
       await fetch("/api/free-guide", {
         method: "POST",

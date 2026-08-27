@@ -8,7 +8,7 @@ import { BiometricGate } from "@/components/portal/BiometricGate";
 import { BiometricEnrollPrompt } from "@/components/portal/BiometricEnrollPrompt";
 import { NativeReminderScheduler } from "@/components/portal/NativeReminderScheduler";
 
-export const metadata = { title: "Member Portal — Vital Kauaʻi" };
+export const metadata = { title: "Member Portal—Vital Kauaʻi" };
 
 // viewport-fit:cover lets safe-area-inset-* env() vars pick up real
 // values on notched / rounded-corner devices (e.g. iPhone with
@@ -32,13 +32,13 @@ export default async function PortalLayout({ children }: { children: React.React
 
   return (
     // overflowX: clip prevents horizontal-overflow nightmares on small
-    // viewports without breaking the sticky portal nav (clip — unlike
-    // hidden — does not establish a new scroll container).
+    // viewports without breaking the sticky portal nav (clip—unlike
+    // hidden—does not establish a new scroll container).
     //
     // BiometricGate wraps the entire portal interior so that on a
     // native iOS cold launch with biometrics enrolled, a calm forest
     // overlay covers the rendered tree until Face ID / Touch ID
-    // resolves. Web and PWA never enter the locked state — the gate's
+    // resolves. Web and PWA never enter the locked state—the gate's
     // useEffect short-circuits at isNativeIOS() and renders children
     // directly. BiometricEnrollPrompt renders null off-native, so
     // browsers see the same layout they always have.

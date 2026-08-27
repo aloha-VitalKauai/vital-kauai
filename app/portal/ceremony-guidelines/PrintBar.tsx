@@ -1,11 +1,11 @@
 "use client";
 
 // Print / download bar for the Ceremony Guidelines page. Matches the
-// "Save for offline reading — Download / Print" bar on the static portal
+// "Save for offline reading—Download / Print" bar on the static portal
 // guides (e.g. ceremony-day-guide.html): right-aligned, cream-deep bar,
 // gold-outline button that fills gold on hover. The button is a client
 // affordance (window.print()); the guidelines page itself stays a server
-// component. The <style> block also carries the @media print rules — a
+// component. The <style> block also carries the @media print rules—a
 // plain <style> tag applies document-wide, so it can hide the portal nav
 // and mobile dock rendered by the portal layout.
 export function PrintBar() {

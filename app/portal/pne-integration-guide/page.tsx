@@ -182,7 +182,7 @@ const PAGE_CSS = `
     margin: 0;
   }
 
-  /* Practice grid — three-up cards (the binary frame, core dynamics, capacities) */
+  /* Practice grid—three-up cards (the binary frame, core dynamics, capacities) */
   .pne-companion-integration-w1-page .practice-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -220,7 +220,7 @@ const PAGE_CSS = `
     margin: 0;
   }
 
-  /* Phrase panels — the three paradigm shifts */
+  /* Phrase panels—the three paradigm shifts */
   .pne-companion-integration-w1-page .phrase-stack {
     display: grid;
     grid-template-columns: 1fr;
@@ -269,7 +269,7 @@ const PAGE_CSS = `
     padding: 10px 0 10px 18px;
     border-left: 2px solid var(--line);
   }
-  /* Paradigm shifts — the frame being set down vs the one picked up */
+  /* Paradigm shifts—the frame being set down vs the one picked up */
   .pne-companion-integration-w1-page .phrase-list li.shift-from { color: var(--ink-mute); }
   .pne-companion-integration-w1-page .phrase-list li.shift-to {
     color: var(--ink-dark);
@@ -321,7 +321,7 @@ const PAGE_CSS = `
     margin: 0 auto;
   }
 
-  /* Two-column panel — cost / repair */
+  /* Two-column panel—cost / repair */
   .pne-companion-integration-w1-page .body-panel {
     background: var(--bg-card);
     border-radius: 8px;
@@ -389,7 +389,7 @@ const PAGE_CSS = `
     font-size: 13px;
   }
 
-  /* Listening errors — numbered cards, two columns */
+  /* Listening errors—numbered cards, two columns */
   .pne-companion-integration-w1-page .error-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;

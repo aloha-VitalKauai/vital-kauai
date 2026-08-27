@@ -59,19 +59,19 @@ export default function PortalJourneyCard() {
   const isTBD    = !journey || display.displayDate === 'Date TBD'
 
   // Show scheduling form when date is TBD and not yet submitted.
-  // Renders even when no journey exists — submitSchedulingRequest will
+  // Renders even when no journey exists—submitSchedulingRequest will
   // work without a journey_id, and the founder assigns the date later.
   const showForm = isTBD &&
     (!journey || journey.status === 'approved' || journey.status === 'scheduling') &&
     !submitted
 
-  // Booking label — shown where "Iboga Journey" was
+  // Booking label—shown where "Iboga Journey" was
   const journeyLabel =
     !journey ? null
     : journey.booking_type === 'private' ? 'Private Journey'
     : journey.cohort?.title ?? 'Group Journey'
 
-  // Status text — shown where "Active Member" was
+  // Status text—shown where "Active Member" was
   const statusText =
     !journey ? null
     : {
@@ -158,7 +158,7 @@ export default function PortalJourneyCard() {
         </>
       )}
 
-      {/* Scheduling form — only when TBD and not yet submitted */}
+      {/* Scheduling form—only when TBD and not yet submitted */}
       {showForm && (
         <SchedulingRequestForm onSubmitted={() => setSubmitted(true)} />
       )}

@@ -147,7 +147,7 @@ export default function JournalClient() {
         </div>
       </div>
 
-      {/* Action bar — save status + print */}
+      {/* Action bar—save status + print */}
       <div className="cj-actionbar" style={{ position: "sticky", top: "calc(60px + env(safe-area-inset-top))", zIndex: 40, background: "white", borderBottom: "1px solid rgba(28,43,30,0.1)", padding: "0 clamp(20px, 6vw, 60px)", display: "flex", alignItems: "center", height: 52, gap: 16 }}>
         {saveStatus && (
           <span style={{ fontSize: 12, letterSpacing: "0.1em", color: saveStatus === "saved" ? "#4e7250" : saveStatus === "saving" ? "#8a7250" : "#c4846a", whiteSpace: "nowrap" }}>

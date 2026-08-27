@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { PrintBar } from "./PrintBar";
 
-export const metadata = { title: "Ceremony Guidelines — Vital Kauaʻi" };
+export const metadata = { title: "Ceremony Guidelines—Vital Kauaʻi" };
 
 export default async function CeremonyGuidelinesPage() {
   const supabase = await createClient();
@@ -34,7 +34,7 @@ export default async function CeremonyGuidelinesPage() {
 
   return (
     <div className="cg-page" style={{ minHeight: "100vh", background: cream, fontFamily: "'Jost', sans-serif", fontWeight: 300, lineHeight: 1.75, color: ink }}>
-      {/* Print / download bar — matches the static portal guides */}
+      {/* Print / download bar—matches the static portal guides */}
       <PrintBar />
 
       <div style={{ maxWidth: 820, margin: "0 auto", padding: "3rem 1.5rem 5rem" }}>
@@ -59,7 +59,7 @@ export default async function CeremonyGuidelinesPage() {
               "I keep ceremony and session spaces photo-free, video-free, and social-media-free.",
               "I respect all practices, protocols, and teachings as proprietary to Vital Kaua\u02BBi and hold them within this container.",
               "I take full responsibility for my own experience, using \u201CI\u201D statements and owning my own process.",
-              "I ask before offering support \u2014 making sure those around me are seeking help before extending it.",
+              "I ask before offering support\u2014making sure those around me are seeking help before extending it.",
               "I allow at least two weeks after ceremony before making major life decisions or shifts.",
               "I drive or travel home only when I feel fully grounded and safe to do so.",
               "I honor the purpose of this gathering and the trust it requires.",
@@ -78,9 +78,9 @@ export default async function CeremonyGuidelinesPage() {
           <ul style={{ listStyle: "none", padding: 0, margin: "0.5rem 0 0" }}>
             {[
               "Drink water, use the restroom freely, move your body, and have a snack as needed.",
-              "Stay attuned to your comfort \u2014 physical, emotional, and energetic.",
+              "Stay attuned to your comfort\u2014physical, emotional, and energetic.",
               "Know your yes\u2019s and your no\u2019s, and trust them. Everything offered is an invitation.",
-              "Notice the protective voice in your mind \u2014 the impulse toward fight, flight, freeze, numbing, or dissociation \u2014 and meet it with curiosity and breath.",
+              "Notice the protective voice in your mind\u2014the impulse toward fight, flight, freeze, numbing, or dissociation\u2014and meet it with curiosity and breath.",
               "When in doubt, do less. Less is always honored here.",
               "When difficult material arises, return to breath, sound, and movement as your anchors.",
               "Give your full 100% \u2014 understanding that everyone\u2019s 100% looks beautifully different.",
@@ -121,7 +121,7 @@ export default async function CeremonyGuidelinesPage() {
               { bold: "Facilitator as Mirror:", text: " Your facilitators are human. When personal material arises in us, we name it internally and return our full presence to you." },
               { bold: "Empathic Presence:", text: " We meet you in your experience—accompanying rather than absorbing, witnessing rather than fixing." },
               { bold: "Unconditional Love:", text: " There is nothing you can bring into this space that will be met with anything other than compassionate presence." },
-              { bold: "Trust & Sovereignty:", text: " We hold structure and safety \u2014 and within that, we honor your process fully." },
+              { bold: "Trust & Sovereignty:", text: " We hold structure and safety\u2014and within that, we honor your process fully." },
               { bold: "Ask before offering:", text: " Facilitators will always check in before extending physical support or energy work." },
             ].map((item) => (
               <li key={item.bold} style={listItem}>

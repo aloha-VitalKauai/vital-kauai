@@ -21,7 +21,7 @@ export function StayPage() {
       // the gold spotlight.
       const nextIdx = cohorts.findIndex(c => c && !isCohortFull(c));
 
-      // Hero "Next Group Ceremony" line — pulls from the same first
+      // Hero "Next Group Ceremony" line—pulls from the same first
       // non-Full cohort the cards spotlight as Next.
       const heroEl = document.getElementById("hero-next-ceremony");
       if (heroEl) {
@@ -1326,7 +1326,7 @@ const BODY_CONTENT = `
   </div>
 </section>
 
-<!-- EXPLORE THE LAND — temporarily hidden (Stewards We Walk Alongside) -->
+<!-- EXPLORE THE LAND—temporarily hidden (Stewards We Walk Alongside) -->
 <section id="explore-land" style="display:none;background:var(--cream);padding:60px 40px;overflow:hidden;">
   <div style="max-width:1100px;margin:0 auto;">
 

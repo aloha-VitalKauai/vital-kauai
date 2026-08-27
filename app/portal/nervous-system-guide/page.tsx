@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
-export const metadata = { title: "Vital Kauaʻi Nervous System Guide — Internal Reference" };
+export const metadata = { title: "Vital Kauaʻi Nervous System Guide—Internal Reference" };
 
 const PAGE_CSS = `
   :root {

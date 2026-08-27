@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { BookCover } from "./BookCover";
 
-export const metadata = { title: "Recommended Reading — Vital Kauaʻi" };
+export const metadata = { title: "Recommended Reading—Vital Kauaʻi" };
 
 const FOREST = "#0E1A10";
 const CREAM = "#F5F0E8";
@@ -219,7 +219,7 @@ export default async function ReadingListPage() {
                       padding: "22px 24px",
                     }}
                   >
-                    {/* Cover — the book's cover art, or a monogram placeholder */}
+                    {/* Cover—the book's cover art, or a monogram placeholder */}
                     <a
                       href={amazonUrl(b)}
                       target="_blank"

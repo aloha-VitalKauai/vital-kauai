@@ -6,7 +6,7 @@
  * countdown. Shows the member how many included sessions they have left and
  * lets them book one.
  *
- * The Sessions engine underneath is intricate — allowance ledger, atomic
+ * The Sessions engine underneath is intricate—allowance ledger, atomic
  * booking authorizations, Calendly webhooks. None of that surfaces here. The
  * member sees a session, a number, and a button.
  *
@@ -221,7 +221,7 @@ export function SessionCardView({
 
         /* Desktop: the button tucks inline on the right of each row, matching
            the reference. Below the hero's own 880px breakpoint the card goes
-           full width and the buttons stack — thumb-sized, not squeezed. */
+           full width and the buttons stack—thumb-sized, not squeezed. */
         @media (min-width: 881px) {
           .sbc-row {
             display: flex;
@@ -265,7 +265,7 @@ export default function SessionBookingCard() {
       if (!cancelled) setBalances(result)
     })().catch((err) => {
       // A balance we can't read is a card we don't show, never a broken hero.
-      // Members see nothing; the console keeps a SANITIZED reason — name,
+      // Members see nothing; the console keeps a SANITIZED reason—name,
       // code, message only, never the raw error object (which could carry
       // response payloads or session material).
       console.error('[sessions] balance load failed:', describeError(err))
@@ -285,7 +285,7 @@ export default function SessionBookingCard() {
         return
       }
       if (res.status === 409) {
-        // Nothing left after all — reflect that rather than explaining it.
+        // Nothing left after all—reflect that rather than explaining it.
         setBalances((b) => (b ? { ...b, [type]: { ...b[type], remaining: 0 } } : b))
         return
       }

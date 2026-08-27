@@ -6,7 +6,7 @@
  * Member-facing availability form. Rendered inside PortalJourneyCard
  * when journey status is 'approved' or 'scheduling' with no date set.
  *
- * Calls submitSchedulingRequest() server action — no direct DB writes.
+ * Calls submitSchedulingRequest() server action—no direct DB writes.
  * ─────────────────────────────────────────────────────────────
  */
 
@@ -171,7 +171,7 @@ export default function SchedulingRequestForm({ onSubmitted }: Props) {
         </select>
       </div>
 
-      {/* Date grid — only when no specific cohort is chosen */}
+      {/* Date grid—only when no specific cohort is chosen */}
       {needsDateRange && (
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
         <div>
