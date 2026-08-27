@@ -994,7 +994,7 @@ export default async function SomaticCompanionWeek4Page() {
               <div className="hw-step">
                 <div className="hw-num">One</div>
                 <h3>Continue your regulation and sensation practices.</h3>
-                <div className="hw-tags">Breathing &nbsp;·&nbsp; Grounding &nbsp;·&nbsp; Felt-Sense Tracking &nbsp;·&nbsp; The Six-Step Inner Practice</div>
+                <div className="hw-tags">4 / 7 / 8 Breath &nbsp;·&nbsp; Grounding &nbsp;·&nbsp; Felt-Sense Tracking</div>
                 <p className="reflection">Return to the practices of Weeks One through Three. They are the soil in which emotional awareness can grow.</p>
               </div>
 

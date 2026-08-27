@@ -963,9 +963,6 @@ function PreCeremonyPageInner() {
                   <p className="w1-body">
                     This week&apos;s PNE teaching explores sensation as the body&apos;s native language. The guide shares how unprocessed energy gets held in the body, and provides you with vocabulary that helps you describe what you feel.
                   </p>
-                  <p className="w1-body">
-                    From there, it walks you through a six-step practice you can use whenever your body signals for attention.
-                  </p>
                 </>
               )}
               {i === 3 && (
@@ -1067,19 +1064,13 @@ function PreCeremonyPageInner() {
                 </div>
               ) : i === 2 ? (
                 <div className="pne-detail pne-practice-rich">
-                  <div className="vp-label">This Week&apos;s PNE Practice: A Six-Step Inner Practice</div>
-                  <h4 className="pne-practice-title">A Six-Step Inner Practice</h4>
-                  <p className="pne-practice-tag">A progression for meeting any sensation that calls for attention</p>
-                  <p className="vp-text pne-practice-p">Choose any sensation that calls to you. Walk it gently through the six steps.</p>
-                  <div className="pne-practice-steps">
-                    <div className="pne-step"><span className="pne-step-time">I</span><span className="pne-step-text"><strong>Notice the Sensation.</strong> &ldquo;What am I feeling right now in my body?&rdquo;</span></div>
-                    <div className="pne-step"><span className="pne-step-time">II</span><span className="pne-step-text"><strong>Name It Without Judgment.</strong> &ldquo;Tightness.&rdquo; &ldquo;Heaviness.&rdquo; &ldquo;Warmth.&rdquo;</span></div>
-                    <div className="pne-step"><span className="pne-step-time">III</span><span className="pne-step-text"><strong>Make Space for It.</strong> &ldquo;Can I welcome it? Can I breathe into it?&rdquo;</span></div>
-                    <div className="pne-step"><span className="pne-step-time">IV</span><span className="pne-step-text"><strong>Follow Its Movement.</strong> &ldquo;Notice any shifts. Stay curious.&rdquo;</span></div>
-                    <div className="pne-step"><span className="pne-step-time">V</span><span className="pne-step-text"><strong>Ask Gently.</strong> &ldquo;What might this be about?&rdquo;</span></div>
-                    <div className="pne-step"><span className="pne-step-time">VI</span><span className="pne-step-text"><strong>Offer Compassion.</strong> &ldquo;I am here with you.&rdquo;</span></div>
-                  </div>
-                  <p className="vp-text pne-practice-closer">Notice what shifts, and what simply asks to be witnessed.</p>
+                  <div className="vp-label">This Week&apos;s PNE Practice: Continue Your Regulation Practices</div>
+                  <h4 className="pne-practice-title">
+                    <a href="/portal/pne-guide#internal-safety" target="_blank" rel="noopener noreferrer" className="pne-practice-link">
+                      Continue Your Regulation Practices
+                    </a>
+                  </h4>
+                  <p className="vp-text pne-practice-p">4 / 7 / 8 Breath, grounding, PNE Breath (Belly / Heart), orienting, and felt-sense regulation.</p>
                 </div>
               ) : i === 3 ? (
                 <div className="pne-detail pne-practice-rich">
