@@ -32,8 +32,7 @@ const PHASES: Phase[] = [
     essence: "Your commitment before you sit with the medicine.",
     items: [
       "Three or four 1:1 PNE Practitioner calls up front (six total across your journey)",
-      "Two 1:1 coaching calls with Rachel & Josh",
-      "A support-team call with Rachel & Josh, with your home circle invited",
+      "Four coaching calls with Rachel & Josh — an onboarding call, two one-on-one, and one with your support circle",
       "Weekly journal prompts and reflections in your member portal",
       "The PsychoNeuroEnergetics (PNE) Guide — week-by-week teachings, reflections, and practices to expand your nervous-system capacity",
       "Medical screening, labs, and EKG with your physician",
