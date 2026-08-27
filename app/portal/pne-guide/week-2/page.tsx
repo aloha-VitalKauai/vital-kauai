@@ -417,6 +417,9 @@ const PAGE_CSS = `
     color: var(--accent-gold);
     margin-bottom: 8px;
   }
+  /* Opens the Week 1 guide's Internal Safety exercises in a new tab. */
+  .pne-companion-w2-page .hw-step-link { color: inherit; text-decoration: underline; text-decoration-color: rgba(143,166,138,.6); text-underline-offset: 4px; }
+  .pne-companion-w2-page .hw-step-link:hover { color: var(--accent-sage); text-decoration-color: var(--accent-sage); }
   .pne-companion-w2-page .hw-step h3 {
     font-family: var(--serif);
     font-weight: 400;
@@ -760,7 +763,11 @@ export default async function SomaticCompanionWeek2Page() {
 
               <div className="hw-step">
                 <div className="hw-num">Practice</div>
-                <h3>Continue the regulation practices from Week One.</h3>
+                <h3>
+                  <a href="/portal/pne-guide#internal-safety" target="_blank" rel="noopener noreferrer" className="hw-step-link">
+                    Continue the regulation practices from Week One.
+                  </a>
+                </h3>
                 <p className="reflection">4 / 7 / 8 Breath, grounding, orienting, and felt-sense practices.</p>
               </div>
             </div>

@@ -531,6 +531,10 @@ function PreCeremonyPageInner() {
         .pne-practice-title { margin:10px 0 4px;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--cream);line-height:1.25; }
         .pne-practice-tag { margin:0 0 14px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--sage-lt); }
         .pne-practice-p { margin:0 0 12px; }
+        /* Opens the Week 1 guide's Internal Safety exercises in a new tab, so
+           the member keeps their place in this week's panel. */
+        .pne-practice-link { color:inherit;text-decoration:underline;text-decoration-color:rgba(200,169,110,.55);text-underline-offset:4px; }
+        .pne-practice-link:hover { color:var(--gold);text-decoration-color:var(--gold); }
         .pne-practice-steps { margin:8px 0 14px;border-top:1px solid rgba(168,197,172,.18); }
         .pne-step { display:flex;align-items:flex-start;gap:18px;padding:10px 0;border-bottom:1px solid rgba(168,197,172,.18); }
         .pne-step-time { flex-shrink:0;width:54px;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);padding-top:2px; }
@@ -1054,7 +1058,11 @@ function PreCeremonyPageInner() {
               ) : i === 1 ? (
                 <div className="pne-detail pne-practice-rich">
                   <div className="vp-label">This Week&apos;s PNE Practice: Continue the Regulation Practices from Week One</div>
-                  <h4 className="pne-practice-title">Continue the Regulation Practices from Week One</h4>
+                  <h4 className="pne-practice-title">
+                    <a href="/portal/pne-guide#internal-safety" target="_blank" rel="noopener noreferrer" className="pne-practice-link">
+                      Continue the Regulation Practices from Week One
+                    </a>
+                  </h4>
                   <p className="vp-text pne-practice-p">4 / 7 / 8 Breath, grounding, orienting, and felt-sense practices.</p>
                 </div>
               ) : i === 2 ? (

@@ -572,6 +572,7 @@ const PAGE_CSS = `
     color: var(--ink-mute);
   }
 
+  .pne-companion-page .vk-darkband { scroll-margin-top: 80px; }
   .pne-companion-page .vk-darkband {
     background: var(--bg-dark);
     color: var(--ink-light);
@@ -817,7 +818,7 @@ export default async function SomaticCompanionPage() {
           </div>
         </section>
 
-        <section className="vk-darkband">
+        <section className="vk-darkband" id="internal-safety">
           <div className="vk-narrow">
             <div className="vk-darkband-eyebrow">Working from the Inside Out</div>
             <h2 className="vk-darkband-title">Exercises for <em>Internal Safety</em></h2>
