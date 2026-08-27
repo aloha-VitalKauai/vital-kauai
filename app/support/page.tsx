@@ -35,7 +35,7 @@ export default async function SupportPage({
       <SupportPageView
         campaign={campaign}
         interactive={campaign.status === "active"}
-        previewLabel={campaign.status === "active" ? undefined : "Design preview — contributions are not open"}
+        previewLabel={campaign.status === "active" ? undefined : "Design preview—contributions are not open"}
       />
     );
   }

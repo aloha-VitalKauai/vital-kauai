@@ -83,7 +83,7 @@ export default function VerificationQueue({ exceptions }: { exceptions: Exceptio
   async function act(action: "resolve" | "dismiss" | "release", id: string) {
     const note = (notes[id] ?? "").trim();
     if (!note) {
-      setError("A note is required — it becomes the permanent record of this decision.");
+      setError("A note is required—it becomes the permanent record of this decision.");
       return;
     }
     setBusy(id);
@@ -102,7 +102,7 @@ export default function VerificationQueue({ exceptions }: { exceptions: Exceptio
       }
       setMessage(
         action === "release"
-          ? "Quarantine released — the object returns to normal processing."
+          ? "Quarantine released—the object returns to normal processing."
           : `Exception ${action === "resolve" ? "resolved" : "dismissed"}.`,
       );
       setNotes((n) => ({ ...n, [id]: "" }));
@@ -124,7 +124,7 @@ export default function VerificationQueue({ exceptions }: { exceptions: Exceptio
       </h2>
 
       <p style={{ fontSize: 13, color: "#6b6b60", marginTop: 0 }}>
-        <em>provider_without_ledger</em> is the expected shadow-phase signal — money the
+        <em>provider_without_ledger</em> is the expected shadow-phase signal—money the
         legacy system took, which V2 does not own. A LIVE{" "}
         <em>unattributable_payment</em> needs attention.
       </p>
@@ -244,7 +244,7 @@ export default function VerificationQueue({ exceptions }: { exceptions: Exceptio
                 <div style={{ marginTop: 8 }}>
                   <input
                     type="text"
-                    placeholder="Required note — why this judgement is correct"
+                    placeholder="Required note—why this judgement is correct"
                     value={notes[e.id] ?? ""}
                     onChange={(ev) => setNotes((n) => ({ ...n, [e.id]: ev.target.value }))}
                     style={{

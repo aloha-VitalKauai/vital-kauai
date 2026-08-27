@@ -20,7 +20,7 @@ import RecentExpensesTable from "@/components/dashboard/financials/RecentExpense
 import FounderFinancialCommandCenter from "./FounderFinancialCommandCenter";
 import type { PayoutCommitment, ExpenseEntry } from "@/lib/financials/types";
 
-export const metadata = { title: "Financials — Vital Kauaʻi" };
+export const metadata = { title: "Financials—Vital Kauaʻi" };
 export const dynamic = "force-dynamic";
 
 type Overview = {
@@ -137,7 +137,7 @@ export default async function FinancialsPage() {
   const journeyLabels = Object.fromEntries(
     [...journeyMeta.entries()].map(([id, j]) => {
       const nm = j.member_id ? (nameById.get(j.member_id)?.name ?? "Member") : "Member";
-      return [id, `${nm}${j.start_at ? ` — ${new Date(j.start_at).toLocaleDateString()}` : ""}`];
+      return [id, `${nm}${j.start_at ? `—${new Date(j.start_at).toLocaleDateString()}` : ""}`];
     }),
   );
   const journeyOptions = [...journeyMeta.keys()].map((id) => ({ id, label: journeyLabels[id] }));
@@ -189,7 +189,7 @@ export default async function FinancialsPage() {
       <div style={{ marginTop: 24 }}>
         <h2 style={{ fontFamily: "var(--font-display, serif)", fontWeight: 400, fontSize: 24, color: "#0D2A1D", margin: "0 0 4px" }}>Operations</h2>
         <p style={{ fontSize: 13, color: "#74786F", margin: "0 0 12px" }}>
-          Operational expense and payout records — separate from canonical member positions.
+          Operational expense and payout records—separate from canonical member positions.
         </p>
         <PendingPayoutsTable
           payouts={(pendingPayoutsRes.data ?? []) as PayoutCommitment[]}

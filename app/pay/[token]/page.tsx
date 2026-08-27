@@ -12,7 +12,7 @@
  * happened and lets the member choose.
  */
 
-export const metadata = { title: "Link retired — Vital Kauaʻi" };
+export const metadata = { title: "Link retired—Vital Kauaʻi" };
 
 const IVORY = "#f6f1e8", PAPER = "#fffdf8", FOREST = "#0d2118";
 const FOREST2 = "#173529", MUTED = "#687169", LINE = "#dedbd1";
@@ -56,7 +56,7 @@ export default function RetiredPaymentLinkPage() {
           </a>
         </div>
         <p style={{ fontSize: 13, color: MUTED, margin: "26px 0 0", lineHeight: 1.5 }}>
-          If you are not signed in, you will be asked to sign in first — your Contribution
+          If you are not signed in, you will be asked to sign in first—your Contribution
           is only ever shown to you.
         </p>
       </section>

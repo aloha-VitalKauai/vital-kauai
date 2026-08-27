@@ -105,7 +105,7 @@ export default function ReconciliationControls({
     if (json) {
       setMessage(
         json.already_approved
-          ? "This run was already approved — nothing changed."
+          ? "This run was already approved—nothing changed."
           : "Approved. You can now start the canary.",
       );
     }
@@ -132,7 +132,7 @@ export default function ReconciliationControls({
       )}
 
       <section style={box}>
-        <h2 style={{ marginTop: 0, fontSize: 17 }}>Step 1 — Review the dry run</h2>
+        <h2 style={{ marginTop: 0, fontSize: 17 }}>Step 1—Review the dry run</h2>
         {!awaitingApproval && !latestApproved && (
           <p style={{ color: "#6b6b60" }}>
             No completed dry run is waiting. A dry run must finish, exhaust its window and
@@ -177,7 +177,7 @@ export default function ReconciliationControls({
             <p style={{ fontSize: 13, color: "#6b6b60", marginBottom: 0 }}>
               A dry run writes nothing. These are the findings a writing run would record.
               <br />
-              <em>provider_without_ledger</em> is expected during the shadow phase — it is
+              <em>provider_without_ledger</em> is expected during the shadow phase—it is
               money the legacy system took, which V2 does not own.
             </p>
           </>
@@ -186,10 +186,10 @@ export default function ReconciliationControls({
 
       {awaitingApproval && (
         <section style={box}>
-          <h2 style={{ marginTop: 0, fontSize: 17 }}>Step 2 — Approve this run</h2>
+          <h2 style={{ marginTop: 0, fontSize: 17 }}>Step 2—Approve this run</h2>
           <p style={{ fontSize: 13, color: "#6b6b60" }}>
             Your note is stored with the approval as the record of your decision. Approving
-            authorises one canary against this exact run — nothing else.
+            authorises one canary against this exact run—nothing else.
           </p>
           <label htmlFor="approval-note" style={label}>
             Approval note (required)
@@ -232,7 +232,7 @@ export default function ReconciliationControls({
 
       {latestApproved && (
         <section style={box}>
-          <h2 style={{ marginTop: 0, fontSize: 17 }}>Step 3 — Start the canary</h2>
+          <h2 style={{ marginTop: 0, fontSize: 17 }}>Step 3—Start the canary</h2>
           <p style={{ margin: "0 0 0.5rem" }}>
             Approved {new Date(latestApproved.approved_at!).toLocaleString()}
           </p>
@@ -288,7 +288,7 @@ export default function ReconciliationControls({
                   <td style={{ padding: "6px 8px" }}>{r.livemode ? "LIVE" : "test"}</td>
                   <td style={{ padding: "6px 8px" }}>
                     {r.status}
-                    {r.error ? ` — ${r.error}` : ""}
+                    {r.error ? `—${r.error}` : ""}
                   </td>
                   <td style={{ padding: "6px 8px" }}>{r.objects_scanned}</td>
                 </tr>

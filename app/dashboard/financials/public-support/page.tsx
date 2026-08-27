@@ -15,7 +15,7 @@ import { quoteProcessingFee } from "@/lib/finance/public-support-fees";
 import { renderAcknowledgmentEmail } from "@/lib/finance/acknowledgment-email";
 import { usd } from "@/lib/finance/public-support-page";
 
-export const metadata = { title: "Public Support — Vital Kauaʻi" };
+export const metadata = { title: "Public Support—Vital Kauaʻi" };
 export const dynamic = "force-dynamic";
 
 type FounderCampaign = {
@@ -171,9 +171,9 @@ export default async function PublicSupportConsole() {
       </section>
 
       <section style={{ margin: "36px 0" }}>
-        <h2 style={{ fontFamily: "var(--font-display, serif)", fontWeight: 400, fontSize: 22, color: "#1E3A2C" }}>QR — permanent, reusable</h2>
+        <h2 style={{ fontFamily: "var(--font-display, serif)", fontWeight: 400, fontSize: 22, color: "#1E3A2C" }}>QR—permanent, reusable</h2>
         <p style={{ color: "#8A8A84", fontSize: 13, margin: "0 0 12px", maxWidth: 640 }}>
-          Encodes only <code>https://vitalkauai.com/support</code> — never a Stripe link — so every printed
+          Encodes only <code>https://vitalkauai.com/support</code>—never a Stripe link—so every printed
           copy stays valid if the payment implementation changes. Do not distribute before activation.
         </p>
         <div style={{ display: "flex", gap: 24, alignItems: "center", flexWrap: "wrap" }}>
@@ -197,8 +197,8 @@ export default async function PublicSupportConsole() {
         <section style={{ margin: "36px 0" }}>
           <h2 style={{ fontFamily: "var(--font-display, serif)", fontWeight: 400, fontSize: 22, color: "#1E3A2C" }}>Acknowledgment preview</h2>
           <p style={{ color: "#8a4b2f", fontSize: 14 }}>
-            Configure the legal name, acknowledgment wording, footer and bounds to unlock the preview
-            — activation is refused (VK428) until this is complete.
+            Configure the legal name, acknowledgment wording, footer and bounds to unlock the preview—activation
+            is refused (VK428) until this is complete.
           </p>
         </section>
       )}
@@ -233,7 +233,7 @@ export default async function PublicSupportConsole() {
               fee_policy_version: c.fee_policy_version,
             }}
             interactive={false}
-            previewLabel="Founder preview — not live"
+            previewLabel="Founder preview—not live"
           />
         </div>
       </section>

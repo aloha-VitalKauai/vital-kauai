@@ -92,17 +92,17 @@ export default function ContributionPortalClient({
       const j = (await res.json()) as { ok?: boolean; error?: string };
       if (j.ok || j.error === "nothing_to_cancel") {
         setGiftBlocked(false);
-        setNotice("Your previous gift checkout was canceled. Nothing was charged — you can start a new gift.");
+        setNotice("Your previous gift checkout was canceled. Nothing was charged—you can start a new gift.");
         router.refresh();
       } else if (j.error === "already_received") {
         setGiftBlocked(false);
         setNotice("That gift payment was already completed, so there was nothing to cancel. Thank you.");
         router.refresh();
       } else {
-        setNotice("We couldn't cancel the previous checkout. Nothing has been charged — please try again.");
+        setNotice("We couldn't cancel the previous checkout. Nothing has been charged—please try again.");
       }
     } catch {
-      setNotice("We couldn't cancel the previous checkout. Nothing has been charged — please try again.");
+      setNotice("We couldn't cancel the previous checkout. Nothing has been charged—please try again.");
     } finally {
       setCancelingGift(false);
     }
@@ -186,14 +186,14 @@ export default function ContributionPortalClient({
         setNotice("This Contribution has already been received. Thank you.");
       } else if (j.error === "gift_in_progress") {
         setGiftBlocked(true);
-        setNotice("A gift checkout is already in progress. You can cancel it below and start fresh — nothing has been charged.");
+        setNotice("A gift checkout is already in progress. You can cancel it below and start fresh—nothing has been charged.");
       } else if (res.status === 502) {
-        setNotice("Our payment provider could not be reached. Nothing has been charged — please try again in a moment.");
+        setNotice("Our payment provider could not be reached. Nothing has been charged—please try again in a moment.");
       } else {
-        setNotice("We couldn't start secure payment. Nothing has been charged — please try again.");
+        setNotice("We couldn't start secure payment. Nothing has been charged—please try again.");
       }
     } catch {
-      setNotice("We couldn't start secure payment. Nothing has been charged — please try again.");
+      setNotice("We couldn't start secure payment. Nothing has been charged—please try again.");
     } finally {
       setBusy(null);
     }
@@ -252,13 +252,13 @@ export default function ContributionPortalClient({
       {returned === "canceled" && (
         <section role="status" style={{ ...card, ...sectionGap, padding: "16px 22px", fontSize: 14, color: FOREST2 }}>
           Your secure payment session was closed before completing. You can continue
-          whenever you're ready — your figures below always reflect what has been received.
+          whenever you're ready—your figures below always reflect what has been received.
         </section>
       )}
       {(confirming || confirmDone) && (
         <section role="status" aria-live="polite" style={{ ...card, ...sectionGap, padding: "16px 22px", fontSize: 14, color: FOREST2, background: SAGE_SOFT }}>
           {confirmDone
-            ? "Thank you — your payment has been received and your Contribution is updated below."
+            ? "Thank you—your payment has been received and your Contribution is updated below."
             : "Confirming your payment… This can take a moment. Your figures will update once confirmed."}
         </section>
       )}
@@ -506,7 +506,7 @@ function AgreementCard({
 
         {isPaid ? (
           <p style={{ margin: 0, color: "#bfcac1", fontSize: 13, lineHeight: 1.5 }}>
-            Received in full. Thank you — no payment is needed.
+            Received in full. Thank you—no payment is needed.
           </p>
         ) : isRefunded ? (
           <p style={{ margin: 0, color: "#bfcac1", fontSize: 13, lineHeight: 1.5 }}>
@@ -531,7 +531,7 @@ function AgreementCard({
             <>
               <p style={{ margin: "0 0 14px", color: "#bfcac1", fontSize: 12, lineHeight: 1.5 }}>
                 A previous payment session didn't finish being prepared. Continuing will
-                resume it securely — nothing has been charged.
+                resume it securely—nothing has been charged.
               </p>
               <button type="button" onClick={onPay} disabled={busy} style={btnStyle(!busy)}>
                 {busy ? "Preparing secure payment…" : "Continue to secure payment"}

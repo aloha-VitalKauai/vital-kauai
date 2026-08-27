@@ -14,7 +14,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import ReconciliationControls from "./ReconciliationControls";
 
-export const metadata = { title: "Reconciliation — Vital Kauaʻi" };
+export const metadata = { title: "Reconciliation—Vital Kauaʻi" };
 
 // Approval state changes under the founder's hands; a cached page would show a
 // stale "awaiting approval" and invite a second, confusing attempt.

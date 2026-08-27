@@ -362,7 +362,7 @@ function AgreementCard({
                   {e.entry_type === "stripe_payment" && "Stripe payment"}
                   {e.entry_type === "refund" && "Refund"}
                   {e.entry_type === "reversal" && "Reversal"}
-                  {e.reason && <span style={{ color: MUTED }}> — {e.reason}</span>}
+                  {e.reason && <span style={{ color: MUTED }}>—{e.reason}</span>}
                   {reversed && <Chip color={DANGER}>reversed</Chip>}
                 </span>
                 <span style={{ fontVariantNumeric: "tabular-nums", color: e.amount_cents < 0 ? DANGER : INK }}>
@@ -388,7 +388,7 @@ function AgreementCard({
           <span style={{ minWidth: 86, color: MUTED, fontSize: 12 }}>{fmtDate(r.created_at)}</span>
           <span style={{ flex: 1 }}>
             {i === amounts.length - 1 ? "Contribution set" : "Amended"}
-            <span style={{ color: MUTED }}> — {r.reason}</span>
+            <span style={{ color: MUTED }}>—{r.reason}</span>
           </span>
           <span style={{ fontVariantNumeric: "tabular-nums" }}>{usd(r.amount_cents)}</span>
         </div>
@@ -399,7 +399,7 @@ function AgreementCard({
           <span style={{ minWidth: 86, color: MUTED, fontSize: 12 }}>{fmtDate(r.occurred_at)}</span>
           <span style={{ flex: 1 }}>
             {r.from_status ? `${LIFECYCLE_LABEL[r.from_status]} → ${LIFECYCLE_LABEL[r.to_status]}` : `Created as ${LIFECYCLE_LABEL[r.to_status]}`}
-            <span style={{ color: MUTED }}> — {r.reason}</span>
+            <span style={{ color: MUTED }}>—{r.reason}</span>
           </span>
         </div>
       ))}
@@ -452,7 +452,7 @@ function ActionDrawer({
   function preview(): string {
     switch (drawer.kind) {
       case "collect":
-        return `Create a secure, single-use Stripe link for ${usd(drawer.agreement.remaining_cents)} — the live Payable Remaining. The amount is calculated from the live V2 ledger when the link is created.`;
+        return `Create a secure, single-use Stripe link for ${usd(drawer.agreement.remaining_cents)}—the live Payable Remaining. The amount is calculated from the live V2 ledger when the link is created.`;
       case "create":
         return `Create a ${purpose.replace(/_/g, " ")} agreement for ${memberName ?? "this member"} with a Contribution of ${usd(cents)}.`;
       case "amend":
@@ -573,7 +573,7 @@ function ActionDrawer({
                 <p style={{ margin: 0, fontSize: 13, color: DANGER }}>
                   {issued.emailError
                     ? `The link is active, but the email was not sent (${issued.emailError}). Copy it now or revoke it and create another.`
-                    : "Copy the link now — it cannot be shown again after this drawer closes."}
+                    : "Copy the link now—it cannot be shown again after this drawer closes."}
                 </p>
               )}
               <button type="button" style={{ ...BTN_GHOST, marginTop: 10 }}
@@ -604,7 +604,7 @@ function ActionDrawer({
                       {journeys.map((j) => (
                         <option key={j.id} value={j.id}>
                           {(j.booking_type ?? "journey").replace(/_/g, " ")}
-                          {j.start_at ? ` — ${fmtDate(j.start_at)}` : ""}
+                          {j.start_at ? `—${fmtDate(j.start_at)}` : ""}
                         </option>
                       ))}
                     </select>
@@ -654,11 +654,11 @@ function ActionDrawer({
             {drawer.kind === "reverse" && (
               <p style={{ fontSize: 13, color: INK, background: "rgba(163,45,45,0.06)", border: `0.5px solid ${DANGER}`, borderRadius: 8, padding: "10px 12px" }}>
                 Reversing adds a negating entry of {usd(-drawer.entry.amount_cents)}. The original
-                entry is never edited or deleted — both remain in the permanent history.
+                entry is never edited or deleted—both remain in the permanent history.
               </p>
             )}
 
-            <Field label="Reason (required — becomes the permanent record)">
+            <Field label="Reason (required—becomes the permanent record)">
               <textarea rows={3} value={reason} onChange={(e) => setReason(e.target.value)}
                 style={{ ...INPUT, resize: "vertical" }}
                 placeholder={

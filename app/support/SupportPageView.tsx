@@ -87,7 +87,7 @@ export default function SupportPageView({
             Secure payment powered by Stripe
           </p>
           <p style={{ color: MUTED, fontSize: 12, marginTop: 18, borderTop: "1px solid #e2e4e0", paddingTop: 14 }}>
-            Card details are entered only on Stripe&rsquo;s secure payment page — never on this site.
+            Card details are entered only on Stripe&rsquo;s secure payment page—never on this site.
             A written acknowledgment for your full contribution will be emailed to you.
           </p>
           <p style={{ marginTop: 14, fontSize: 13 }}>

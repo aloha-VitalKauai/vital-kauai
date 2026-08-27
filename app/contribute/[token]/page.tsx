@@ -6,7 +6,7 @@
 import { resolveTokenState } from "@/lib/finance/checkout";
 import ContinueButton from "./ContinueButton";
 
-export const metadata = { title: "Your Contribution — Vital Kauaʻi" };
+export const metadata = { title: "Your Contribution—Vital Kauaʻi" };
 export const dynamic = "force-dynamic";
 
 const IVORY = "#FBFAF6", FOREST = "#1E3A2C", MUTED = "#8A8A84", COPPER = "#B8683D";
