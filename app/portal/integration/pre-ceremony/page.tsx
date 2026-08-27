@@ -1055,7 +1055,7 @@ function PreCeremonyPageInner() {
                 <div className="pne-detail pne-practice-rich">
                   <div className="vp-label">This Week&apos;s PNE Practice: Continue the Regulation Practices from Week One</div>
                   <h4 className="pne-practice-title">Continue the Regulation Practices from Week One</h4>
-                  <p className="vp-text pne-practice-p">Breath, grounding, orienting, and felt-sense practices. Visit the Resources section under PNE for the full Regulation Practices guide, with practices tailored to each nervous system state.</p>
+                  <p className="vp-text pne-practice-p">4 / 7 / 8 Breath, grounding, orienting, and felt-sense practices.</p>
                 </div>
               ) : i === 2 ? (
                 <div className="pne-detail pne-practice-rich">
