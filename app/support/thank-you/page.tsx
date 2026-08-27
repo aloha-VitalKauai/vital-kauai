@@ -11,7 +11,7 @@ import { financeServiceClient, v2StripeClient } from "@/lib/finance/checkout";
 import { FOREST, HEADER, IVORY, MUTED, COPPER } from "../SupportPageView";
 import { usd } from "@/lib/finance/public-support-page";
 
-export const metadata = { title: "Mahalo — Vital Kauaʻi" };
+export const metadata = { title: "Mahalo—Vital Kauaʻi" };
 export const dynamic = "force-dynamic";
 
 const SESSION_RE = /^cs_[A-Za-z0-9_]{8,200}$/;

@@ -102,7 +102,7 @@ export default function SupportCheckout({
         const q = body.quote as Quote;
         if (q.totalCents !== quote.totalCents) {
           setQuote(q);
-          setSubmitError("The figures were refreshed — please review and continue again.");
+          setSubmitError("The figures were refreshed—please review and continue again.");
           requestIdRef.current = crypto.randomUUID();
           return;
         }
@@ -111,7 +111,7 @@ export default function SupportCheckout({
       }
       if (body.error === "request_conflict" || body.error === "stale_attempt") {
         requestIdRef.current = crypto.randomUUID();
-        setSubmitError("Please try again — your secure checkout was refreshed.");
+        setSubmitError("Please try again—your secure checkout was refreshed.");
       } else if (body.error === "invalid_amount") {
         setSubmitError(`Contributions can be between ${usd(minCents)} and ${usd(maxCents)}.`);
       } else if (body.error === "unavailable") {
@@ -202,7 +202,7 @@ export default function SupportCheckout({
           cursor: !interactive || !quote || submitting ? "default" : "pointer",
         }}
       >
-        {submitting ? "Opening secure payment…" : quote ? `Continue to secure payment — ${usd(quote.totalCents)}` : "Continue to secure payment"}
+        {submitting ? "Opening secure payment…" : quote ? `Continue to secure payment—${usd(quote.totalCents)}` : "Continue to secure payment"}
       </button>
       {submitError ? (
         <p style={{ color: "#8a4b2f", fontSize: 13, margin: "10px 0 0" }}>{submitError}</p>

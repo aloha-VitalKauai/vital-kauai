@@ -22,7 +22,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import VerificationQueue from "./VerificationQueue";
 
-export const metadata = { title: "Financial Verification — Vital Kauaʻi" };
+export const metadata = { title: "Financial Verification—Vital Kauaʻi" };
 export const dynamic = "force-dynamic";
 
 type MemberPosition = {
@@ -324,7 +324,7 @@ export default async function VerificationPage() {
                   <td style={{ padding: "6px 8px" }}>{r.livemode ? "LIVE" : "test"}</td>
                   <td style={{ padding: "6px 8px" }}>
                     {r.status}
-                    {r.error ? ` — ${r.error}` : ""}
+                    {r.error ? `—${r.error}` : ""}
                   </td>
                   <td style={{ padding: "6px 8px", textAlign: "right" }}>{r.objects_scanned}</td>
                   <td style={{ padding: "6px 8px", textAlign: "right" }}>{r.exceptions_created}</td>

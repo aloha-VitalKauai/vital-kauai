@@ -121,7 +121,7 @@ async function sendLinkEmail(
     body: JSON.stringify({
       from: "Vital Kauaʻi <notifications@vitalkauai.com>",
       to: [to],
-      subject: "Your secure contribution link — Vital Kauaʻi",
+      subject: "Your secure contribution link—Vital Kauaʻi",
       html: `<p>Aloha${prof?.[0]?.full_name ? ` ${prof[0].full_name}` : ""},</p>
 <p>Here is your secure, single-use link to complete your contribution of <strong>${amount}</strong>:</p>
 <p><a href="${url}">${url}</a></p>

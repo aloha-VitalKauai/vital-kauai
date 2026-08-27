@@ -4,7 +4,7 @@
  */
 import { confirmBySessionId } from "@/lib/finance/checkout";
 
-export const metadata = { title: "Mahalo — Vital Kauaʻi" };
+export const metadata = { title: "Mahalo—Vital Kauaʻi" };
 export const dynamic = "force-dynamic";
 
 const FOREST = "#1E3A2C";
@@ -35,8 +35,8 @@ export default async function ThankYouPage({
             <>
               <h1 style={{ fontFamily: "var(--font-display, serif)", fontWeight: 400, fontSize: 30, color: FOREST, margin: "0 0 10px" }}>We’re confirming your contribution</h1>
               <p style={{ color: "#46564e", fontSize: 15, lineHeight: 1.6 }}>
-                Your payment is being confirmed with Stripe. This usually takes a moment —
-                please do not submit another payment.
+                Your payment is being confirmed with Stripe. This usually takes a moment—please
+                do not submit another payment.
               </p>
               <a href="" style={{ display: "inline-block", marginTop: 14, color: FOREST, fontSize: 14, border: "1px solid rgba(30,58,44,0.3)", borderRadius: 7, padding: "9px 16px", textDecoration: "none" }}>Refresh</a>
             </>

@@ -14,7 +14,7 @@
 import { createClient } from "@/lib/supabase/server";
 import ContributionPortalClient from "./ContributionPortalClient";
 
-export const metadata = { title: "Your Contribution — Vital Kauaʻi" };
+export const metadata = { title: "Your Contribution—Vital Kauaʻi" };
 export const dynamic = "force-dynamic";
 
 export type MemberOverview = {

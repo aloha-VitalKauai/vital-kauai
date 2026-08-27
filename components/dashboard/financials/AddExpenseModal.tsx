@@ -124,9 +124,9 @@ export default function AddExpenseModal({
           }}
         >
           {lockedJourney
-            ? `Add Expense — ${lockedJourney.label}`
+            ? `Add Expense—${lockedJourney.label}`
             : lockedCohort
-              ? `Add Expense — ${lockedCohort.title}`
+              ? `Add Expense—${lockedCohort.title}`
               : "Add Expense"}
         </h2>
 

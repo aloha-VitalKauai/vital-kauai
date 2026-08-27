@@ -177,7 +177,7 @@ export default function PublicSupportControls({
         <h2 style={{ fontFamily: "var(--font-display, serif)", fontWeight: 400, fontSize: 20, color: FOREST, margin: 0 }}>Activation</h2>
         <p style={{ fontSize: 13, color: "#8A8A84", margin: "8px 0 0" }}>
           {configured
-            ? "Configuration is complete. Activation opens /support to the public — complete the mandatory-fee compliance review first."
+            ? "Configuration is complete. Activation opens /support to the public—complete the mandatory-fee compliance review first."
             : "Activation is refused (VK428) until the receipt identity, wording and bounds above are complete."}
         </p>
         <label style={label}>Reason (recorded permanently)</label>
@@ -187,7 +187,7 @@ export default function PublicSupportControls({
             Retire campaign
           </button>
         ) : (
-          <button style={btn()} disabled={busy || !reason.trim()} onClick={() => run({ action: "activate", campaignId, reason }, "Campaign ACTIVATED — /support is live.")}>
+          <button style={btn()} disabled={busy || !reason.trim()} onClick={() => run({ action: "activate", campaignId, reason }, "Campaign ACTIVATED—/support is live.")}>
             Activate campaign
           </button>
         )}

@@ -4,7 +4,7 @@
  * Founder-only route (dashboard); print with the browser's print dialog.
  */
 
-export const metadata = { title: "Support QR Card — Vital Kauaʻi" };
+export const metadata = { title: "Support QR Card—Vital Kauaʻi" };
 
 export default function QrCardPage() {
   return (

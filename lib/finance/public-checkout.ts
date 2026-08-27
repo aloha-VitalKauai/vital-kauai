@@ -154,7 +154,7 @@ export async function startPublicCheckout(
         price_data: {
           currency: "usd",
           unit_amount: begun.requested_contribution_cents,
-          product_data: { name: "Vital Kauaʻi — General Support" },
+          product_data: { name: "Vital Kauaʻi—General Support" },
         },
       },
     ];

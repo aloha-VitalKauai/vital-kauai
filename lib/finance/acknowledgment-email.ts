@@ -76,7 +76,7 @@ export function renderAcknowledgmentEmail(a: AcknowledgmentSnapshot): {
   </div>`;
 
   return {
-    subject: `Your contribution acknowledgment — ${a.receipt_number}`,
+    subject: `Your contribution acknowledgment—${a.receipt_number}`,
     html,
   };
 }
