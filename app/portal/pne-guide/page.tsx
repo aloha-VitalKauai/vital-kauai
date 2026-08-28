@@ -874,20 +874,6 @@ export default async function SomaticCompanionPage() {
 
         <section className="vk-section">
           <div className="vk-narrow">
-            <div className="vk-eyebrow">Working from the Outside In</div>
-            <h2 className="vk-title">External Safety: <em>People &amp; Place</em></h2>
-            <p className="vk-lede">As internal safety deepens, you naturally seek external structures that reflect this newfound calm. A robust support system means consciously choosing both your people and your places.</p>
-            <div className="practices-grid">
-              <div className="practice-card"><h3>Your Chosen People</h3><p>Identify two or three individuals who help you feel authentically yourself, honor your boundaries fully, and leave you feeling steadier after connection. These are your anchors during difficult moments.</p></div>
-              <div className="practice-card"><h3>A Sacred Place in Nature</h3><p>Find one specific, accessible place near you&mdash;a park bench, a quiet trail, a riverbank, or a stretch of beach. This personal sanctuary becomes a reliable anchor for grounding your nervous system regularly.</p></div>
-              <div className="practice-card"><h3>A Resilient Web</h3><p>By weaving together safe people and nurturing natural spaces, you create a living support network that sustains you far beyond any one professional relationship. The web itself becomes the medicine.</p></div>
-              <div className="practice-card"><h3>An Organized Life</h3><p>Reduce clutter where you can. Create devoted places for your belongings. An organized home reduces cognitive load and offers the nervous system a calm, predictable environment to soften into.</p></div>
-            </div>
-          </div>
-        </section>
-
-        <section className="vk-section">
-          <div className="vk-narrow">
             <div className="breath-panel" id="four-seven-eight">
               <div className="label">This Week&apos;s PNE Practice: The 4 / 7 / 8 Breath</div>
               <h3>The 4 / 7 / 8 Breath</h3>
@@ -898,6 +884,20 @@ export default async function SomaticCompanionPage() {
               <div className="breath-step"><span className="pill">7 sec</span><p>Hold. Rest at the top.</p></div>
               <div className="breath-step"><span className="pill">8 sec</span><p>Exhale through the mouth. Slow, soft, complete.</p></div>
               <p className="closer">Repeat for four cycles.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="vk-section">
+          <div className="vk-narrow">
+            <div className="vk-eyebrow">Working from the Outside In</div>
+            <h2 className="vk-title">External Safety: <em>People &amp; Place</em></h2>
+            <p className="vk-lede">As internal safety deepens, you naturally seek external structures that reflect this newfound calm. A robust support system means consciously choosing both your people and your places.</p>
+            <div className="practices-grid">
+              <div className="practice-card"><h3>Your Chosen People</h3><p>Identify two or three individuals who help you feel authentically yourself, honor your boundaries fully, and leave you feeling steadier after connection. These are your anchors during difficult moments.</p></div>
+              <div className="practice-card"><h3>A Sacred Place in Nature</h3><p>Find one specific, accessible place near you&mdash;a park bench, a quiet trail, a riverbank, or a stretch of beach. This personal sanctuary becomes a reliable anchor for grounding your nervous system regularly.</p></div>
+              <div className="practice-card"><h3>A Resilient Web</h3><p>By weaving together safe people and nurturing natural spaces, you create a living support network that sustains you far beyond any one professional relationship. The web itself becomes the medicine.</p></div>
+              <div className="practice-card"><h3>An Organized Life</h3><p>Reduce clutter where you can. Create devoted places for your belongings. An organized home reduces cognitive load and offers the nervous system a calm, predictable environment to soften into.</p></div>
             </div>
           </div>
         </section>
