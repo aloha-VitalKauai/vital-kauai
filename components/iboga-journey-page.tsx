@@ -141,7 +141,7 @@ export function IbogaJourneyPage() {
       <section className={styles.intro} id="intro">
         <div className={styles.introGrid}>
           <div className={styles.introLead}>
-            <p>&ldquo;The medicine shows you the door. We walk through it with you.&rdquo;</p>
+            <p>&ldquo;The root shows you the door. We walk through it with you.&rdquo;</p>
             <p style={{ marginTop: 12, fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(245,240,232,0.45)", fontStyle: "normal" }}>
               — Vital Kaua&#699;i
             </p>
@@ -160,7 +160,7 @@ export function IbogaJourneyPage() {
             </p>
             <p>
               This is a deeply held container, guided with love, rigor, and decades of
-              combined experience in plant medicine, somatic healing, and consciousness work.
+              combined experience in plant ally work, somatic healing, and consciousness work.
             </p>
           </div>
         </div>
@@ -465,10 +465,10 @@ export function IbogaJourneyPage() {
         </div>
       </section>
 
-      {/* ── Understanding the Medicine (cream) ── */}
+      {/* ── Understanding the Root (cream) ── */}
       <section className={styles.comparisonSection}>
         <div className={styles.medicineComparison}>
-          <span className={styles.comparisonEyebrowMain}>Understanding the Medicine</span>
+          <span className={styles.comparisonEyebrowMain}>Understanding the Root</span>
           <h3 className={styles.medicineComparisonTitle}>
             Iboga Root Bark, <em className={styles.medicineComparisonAnd}>Total Alkaloid</em>{" "}
             &amp; Ibogaine

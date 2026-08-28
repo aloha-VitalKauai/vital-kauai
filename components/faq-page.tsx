@@ -11,7 +11,7 @@ type FaqSection = { eyebrow: string; title: string; items: FaqItem[] };
 const FAQ_SECTIONS: FaqSection[] = [
   {
     eyebrow: "The Iboga Journey",
-    title: "Working with the Medicine",
+    title: "Working with the Root",
     items: [
       {
         question: "Is Iboga legal?",

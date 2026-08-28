@@ -102,11 +102,11 @@ function DietaryContent() {
               <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 400, letterSpacing: "0.03em", marginBottom: 16, color: clay }}>Step Away From</h3>
               <div style={{ display: "grid", gap: 9 }}>
                 {[
-                  { text: "Fasting or skipping meals", note: "Arrive well-nourished, like fueling for an athletic event. The medicine can quiet your appetite for 24–36 hours, so build reserves now." },
+                  { text: "Fasting or skipping meals", note: "Arrive well-nourished, like fueling for an athletic event. The root can quiet your appetite for 24–36 hours, so build reserves now." },
                   { text: "Refined sugar and sweetened beverages", note: "This includes fruit juice, sodas, sweetened coffees and teas" },
                   { text: "Processed and packaged foods", note: "Anything with artificial ingredients, preservatives, or seed oils" },
                   { text: "Alcohol" },
-                  { text: "Coffee, caffeinated beverages, and energy drinks", note: ["Taper early and eliminate in the final two weeks; a sudden detox can bring headaches.", "Strong stimulants can affect cardiac rhythms, so avoid or greatly limit cacao/chocolate, coffee, and caffeine in the two weeks or more before the medicine.", "Consider matcha, chicory coffee, guayusa, or functional-mushroom coffee alternatives."] },
+                  { text: "Coffee, caffeinated beverages, and energy drinks", note: ["Taper early and eliminate in the final two weeks; a sudden detox can bring headaches.", "Strong stimulants can affect cardiac rhythms, so avoid or greatly limit cacao/chocolate, coffee, and caffeine in the two weeks or more before ceremony.", "Consider matcha, chicory coffee, guayusa, or functional-mushroom coffee alternatives."] },
                   { text: "Conventional dairy", note: "Particularly inflammatory for most; opt for fermented or skip entirely" },
                   { text: "Gluten" },
                   { text: "Factory-farmed meats" },
@@ -150,7 +150,7 @@ function DietaryContent() {
             <p style={{ fontSize: 9.5, letterSpacing: "0.26em", textTransform: "uppercase", color: gold, fontWeight: 600, marginBottom: 12 }}>Required</p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 28 }}>
               {[
-                { name: "Magnesium Glycinate", purpose: "Heart and nervous system support. Helps your heart move smoothly with the medicine and supports deeper sleep.", timing: "Begin 4 weeks before" },
+                { name: "Magnesium Glycinate", purpose: "Heart and nervous system support. Helps your heart move smoothly with the root and supports deeper sleep.", timing: "Begin 4 weeks before" },
               ].map((s) => (
                 <div key={s.name} style={{ background: "white", border: `1px solid rgba(222,201,138,0.5)`, borderRadius: 7, padding: "16px 18px" }}>
                   <p style={{ fontSize: 13.5, fontWeight: 500, marginBottom: 4, letterSpacing: "0.01em" }}>{s.name}</p>

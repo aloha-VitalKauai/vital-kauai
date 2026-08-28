@@ -158,7 +158,7 @@ export function AboutPage() {
             </h2>
             <p className={`${styles.meetingPara} ${styles.reveal}`}>
               We came together on Kaua&#699;i after years of independent study and practice,
-              somatics, plant medicine, detoxification, indigenous ceremony, and the long work
+              somatics, plant allies, detoxification, indigenous ceremony, and the long work
               of tending to our own hearts.
             </p>
             <p className={`${styles.meetingPara} ${styles.reveal} ${styles.d1}`}>
@@ -208,7 +208,7 @@ export function AboutPage() {
             I came into the world with a spirit too large and too alive for the systems around me. As a young boy I was diagnosed with ODD and put on medication. I felt unloved in my primary relationship bonds, and found ways to quiet the ache: the numbing comforts of substances, distraction, and pleasure without presence.
           </p>
           <p className={styles.storyPara}>
-            At the age of ten, I found myself dreaming about African tribes and studying Amazonian plant medicines. I had no idea why at the time, but something greater was calling me toward my path.
+            At the age of ten, I found myself dreaming about African tribes and studying Amazonian plant allies. I had no idea why at the time, but something greater was calling me toward my path.
           </p>
           <p className={styles.storyPara}>
             In my twenties, I was day trading and living a life of excess. The escapes eventually stopped working; I either was going to die or move through the pain and find my true self again. That knowing sent me searching.
@@ -217,7 +217,7 @@ export function AboutPage() {
             I found myself in the Stanford Design School program to prototype one of my soul-led businesses, Best Life Ever, and built conscious communities and transformational networks, The Mycelium Network and Trade with Traders.
           </p>
           <p className={styles.storyPara}>
-            I arrived at my first iboga retreat freshly off a detox, physically clean, emotionally open, and extraordinarily receptive. The experience lacked preparation, safety, and proper integration, and I left more fragmented than I arrived. That experience clarified everything that would shape my work: the medicine itself is only as whole as the people and ceremony that hold it.
+            I arrived at my first iboga retreat freshly off a detox, physically clean, emotionally open, and extraordinarily receptive. The experience lacked preparation, safety, and proper integration, and I left more fragmented than I arrived. That experience clarified everything that would shape my work: the root itself is only as whole as the people and ceremony that hold it.
           </p>
           <div className={styles.pullPlaceholder}>
             <p>&ldquo;Working with Josh was life-changing. This level of mastery is rare, and I do not say that lightly. Josh is truly a master of his craft, and I cannot recommend his work highly enough.&rdquo;</p>
@@ -287,7 +287,7 @@ export function AboutPage() {
             What I love most is helping couples come home to themselves, then to each other&mdash;meeting with fresh eyes and feeling genuinely safe, loved, and seen. I know what it is to lose that thread, and I know what it takes to find it again.
           </p>
           <p className={styles.storyPara}>
-            I&apos;ve learned so much from my own surrender, to Spirit, to the unknown, to the medicine, and to love. That&apos;s what I bring into every space I hold. The ceremonies I&apos;m blessed to guide are known to be powerful, trustworthy, and radically transformative, weaving intention, play, and grounded spirituality into an experience that meets each person exactly where they are. I am so grateful to be of service to others&apos; awakening and homecoming, in this place, with the people I love, doing the work I was born for.
+            I&apos;ve learned so much from my own surrender, to Spirit, to the unknown, to the root, and to love. That&apos;s what I bring into every space I hold. The ceremonies I&apos;m blessed to guide are known to be powerful, trustworthy, and radically transformative, weaving intention, play, and grounded spirituality into an experience that meets each person exactly where they are. I am so grateful to be of service to others&apos; awakening and homecoming, in this place, with the people I love, doing the work I was born for.
           </p>
           <div className={styles.pullPlaceholder}>
             <p>&ldquo;I carried an ancestral wound for decades, never quite finding the courage to face it. It was in the space you facilitated that something finally shifted. I was able to free myself! I am forever grateful for all the teachings you shared. Rachel, you have a magic that unlocked something deep in me.&rdquo;</p>

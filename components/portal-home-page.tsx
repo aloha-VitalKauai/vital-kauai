@@ -75,7 +75,7 @@ const PREP_ITEMS: { text: string; link?: string; external?: boolean; isLab?: boo
   { text: "Confirm required lab work with your physician and submit results", isLab: true },
   { text: "Begin dietary preparation protocol", link: "/portal/dietary" },
   { text: "Begin journaling", link: "/portal/integration/pre-ceremony#journal-prompts" },
-  { text: "Prepare your questions for the medicine", link: "/portal/questions" },
+  { text: "Prepare your questions for the root", link: "/portal/questions" },
   { text: "Begin nervous system preparation practices (breathwork, somatic self-regulation)", link: "/portal/pne-guide" },
   { text: "Share the Support Person Guide with your home circle", link: "/portal/support-person" },
   { text: "Confirm travel arrangements and send arrival details to aloha@vitalkauai.com" },
@@ -466,7 +466,7 @@ export function PortalHomePage({
                 Medical Disclaimer <em>&amp; Risk Acknowledgment</em>
               </div>
               <div className={styles.docDesc}>
-                A clear acknowledgment of the nature of plant medicine work and your informed
+                A clear acknowledgment of the nature of plant ally work and your informed
                 consent.
               </div>
               <div className={styles.docFooter}>

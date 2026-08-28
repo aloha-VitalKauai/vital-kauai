@@ -132,7 +132,15 @@ rollback plan. See `.github/pull_request_template.md`.
 
 - Use Hawaiian orthography: `Kauaʻi` (with ʻokina), `Kauaʻi`-based, etc.
 - Do not use "shaman" or "trip" — prefer guide / holder / practitioner
-  and journey / medicine.
+  and journey / ceremony.
+- **Iboga is a "plant ally" or "the root", used interchangeably as the
+  sentence wants — not "the medicine".** Prefer "root" where the plant is
+  physical or ingested ("metabolize the root", "the root meets you in the
+  dark"), and "plant ally" where the relationship is the point ("a powerful
+  and intelligent plant ally"). The word "medicine" still stands where it
+  means something else: the medical field ("naturopathic medicine", "what
+  medicine believes is possible"), a journal or company name, healing in the
+  broad sense ("joy is medicine, too"), and Paul Heffernan's title below.
 - **Affirmative voice only.** Describe what something *is*, not what it
   isn't. Avoid "not X" constructions, hedging negations, and defensive
   disclaimers. Prefer "offered with care" over "not instruction";

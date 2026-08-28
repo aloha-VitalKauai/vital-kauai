@@ -38,7 +38,7 @@ const tenets = [
   {
     numeral: "VII",
     title: "Reciprocity & Right Relationship",
-    body: "We hold that what we receive, we are called to return. Our practice lives in right relationship with the lineages, lands, and peoples who carry this medicine, met with humility, acknowledgment, and tangible support.",
+    body: "We hold that what we receive, we are called to return. Our practice lives in right relationship with the lineages, lands, and peoples who carry this plant ally, met with humility, acknowledgment, and tangible support.",
   },
   {
     numeral: "VIII",

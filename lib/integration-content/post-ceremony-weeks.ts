@@ -51,7 +51,7 @@ export const WEEKS = [
     theme: 'Gratitude',
     eyebrow: 'Week 1 · MAHALO · Gratitude',
     title: 'Begin in gratitude.',
-    subtitle: 'The medicine is still moving in you.',
+    subtitle: 'The root is still moving in you.',
     intro: 'Mahalo means gratitude, the open-hearted thanks for what you have just received. This first week asks almost nothing of you except presence and gratitude. Rest after ceremony is active integration. Your nervous system is processing. Let gratitude be the first thing you reach for, and trust it.',
     safetyNote: {
       type: 'gold',
@@ -142,8 +142,8 @@ export const WEEKS = [
     title: 'The insights are alive.',
     subtitle: 'Now you tend them.',
     carryForward: 'You began in gratitude, and you let the threads of ceremony weave into one. This week the work moves from receiving and weaving into tending, the slow, deliberate act of bringing what was shown into how you actually live.',
-    intro: 'Mālama means to care for, to tend, or to preserve. The medicine opened a door. This week the work is repetition, the small daily practices that turn what was shown into how you actually live. What you practice consistently in this early window becomes your new baseline.',
-    video: { label: 'A Message from Rachel & Josh · Week 3', text: 'In this week’s video, Rachel and Josh share what Mālama has meant in their own lives and how tending the small daily practices has shaped what they have been able to keep from the medicine.' },
+    intro: 'Mālama means to care for, to tend, or to preserve. The root opened a door. This week the work is repetition, the small daily practices that turn what was shown into how you actually live. What you practice consistently in this early window becomes your new baseline.',
+    video: { label: 'A Message from Rachel & Josh · Week 3', text: 'In this week’s video, Rachel and Josh share what Mālama has meant in their own lives and how tending the small daily practices has shaped what they have been able to keep from the root.' },
     actionLabel: 'This week, 4 things',
     actions: [
       {
@@ -161,10 +161,10 @@ export const WEEKS = [
       },
       { key: 'a2', color: 'green', text: "Complete this week's PNE Practice" },
       { key: 'a3', color: 'green', text: "Complete this week's PNE Reflection" },
-      { key: 'a4', color: 'gold', text: 'Establish one morning practice, and do it every day. Write it down below', note: 'Coherent Heart Breath. Journaling. Movement. Prayer. One thing. Done every morning. The medicine opened the door. Repetition is how you walk through it.' },
+      { key: 'a4', color: 'gold', text: 'Establish one morning practice, and do it every day. Write it down below', note: 'Coherent Heart Breath. Journaling. Movement. Prayer. One thing. Done every morning. The root opened the door. Repetition is how you walk through it.' },
     ],
     prompts: POST_CEREMONY_WEEKS[2].prompts,
-    thread: 'The practice you establish this week has a disproportionate impact on everything that follows. The medicine opened the door. This week you decide what you\'re building.',
+    thread: 'The practice you establish this week has a disproportionate impact on everything that follows. The root opened the door. This week you decide what you\'re building.',
   },
   {
     id: 3,
@@ -214,10 +214,10 @@ export const WEEKS = [
     title: 'Do what is right.',
     subtitle: 'With what you know now.',
     carryForward: 'You met the return of the familiar with humility. You kept your practice. You forgave what you have been carrying. This week the work becomes a choice, the daily, deliberate act of doing what is right with what you have seen.',
-    intro: 'Pono is righteousness, balance, harmony, and goodness. It is a way of living that is morally upright, fair, and respectful toward yourself, others, and the environment. To live in pono is to do things the right way and to bring harmony into every part of your life. The medicine showed you something. You have been tending it and meeting what returns. By week five, the question becomes how you act on it, in the small daily decisions that build a life of pono.',
+    intro: 'Pono is righteousness, balance, harmony, and goodness. It is a way of living that is morally upright, fair, and respectful toward yourself, others, and the environment. To live in pono is to do things the right way and to bring harmony into every part of your life. The root showed you something. You have been tending it and meeting what returns. By week five, the question becomes how you act on it, in the small daily decisions that build a life of pono.',
     reentry: {
       strong: 'When you catch yourself defaulting to who you used to be, do this:',
-      text: ' Pause. Name it: "This is the old habit." Bring to mind one thing the medicine showed you. Choose from there, even once, even imperfectly. Pono is not arrived at. It is practiced. The next right thing is the work.',
+      text: ' Pause. Name it: "This is the old habit." Bring to mind one thing the root showed you. Choose from there, even once, even imperfectly. Pono is not arrived at. It is practiced. The next right thing is the work.',
     },
     video: { label: 'A Message from Rachel & Josh · Week 5', text: 'In this week’s video, Rachel and Josh share what Pono has meant in their own lives and how doing what is right, in the small daily decisions, has shaped the way they live.' },
     actionLabel: 'This week, 4 things',
@@ -253,7 +253,7 @@ export const WEEKS = [
     title: 'Six weeks in.',
     subtitle: 'The kuleana is yours now.',
     carryForward: 'You have moved through the full arc, from the raw tenderness of emergence to the practice of choosing pono. This final week is a transition from active integration into sustained living.',
-    intro: 'Kuleana is responsibility. It is sacred accountability to yourself, your family, your community, your practices, and to the new stories and beliefs you continue to live and reinforce. Six weeks in, the medicine\'s most dramatic effects have passed and you\'re living it through the new rhythms of your life.',
+    intro: 'Kuleana is responsibility. It is sacred accountability to yourself, your family, your community, your practices, and to the new stories and beliefs you continue to live and reinforce. Six weeks in, the root\'s most dramatic effects have passed and you\'re living it through the new rhythms of your life.',
     video: { label: 'A Message from Rachel & Josh · Week 6', text: 'In this week’s video, Rachel and Josh share what Kuleana has meant in their own lives and how owning what they were shown has shaped the work and the way they live.' },
     actionLabel: 'This week, 4 completions',
     actions: [
@@ -274,7 +274,7 @@ export const WEEKS = [
       { key: 'a3', color: 'green', text: "Complete this week's PNE Reflection" },
     ],
     prompts: POST_CEREMONY_WEEKS[5].prompts,
-    thread: 'Kuleana is an honor, the recognition that you have been shown something real and that you are capable of living it. The medicine opened a window. You chose to walk through it, week by week, practice by practice, honest conversation by honest conversation. What you have built is a foundation. The work continues. We continue with you.',
+    thread: 'Kuleana is an honor, the recognition that you have been shown something real and that you are capable of living it. The root opened a window. You chose to walk through it, week by week, practice by practice, honest conversation by honest conversation. What you have built is a foundation. The work continues. We continue with you.',
     monthlyArc: true,
   },
 ]

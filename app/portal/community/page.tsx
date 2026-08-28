@@ -387,7 +387,7 @@ const BODY_CONTENT = `
       </div>
     </div>
     <div class="yp-note">
-      You are three weeks into preparation. The medicine is already listening. This is the time when patterns begin to surface, from your own awareness that something is arriving. <strong>What you are noticing right now is real preparation.</strong> Trust what is rising.
+      You are three weeks into preparation. The root is already listening. This is the time when patterns begin to surface, from your own awareness that something is arriving. <strong>What you are noticing right now is real preparation.</strong> Trust what is rising.
     </div>
     <div class="yp-callout">
       The community theme below belongs to everyone, regardless of where each person is in their own journey. Others here are in Week 1 of integration, Week 6 of preparation, or anywhere in between. The shared theme transcends week numbers, it is what the community is sitting with together right now.
@@ -413,7 +413,7 @@ const BODY_CONTENT = `
       <div class="lens-grid">
         <div class="lens">
           <p class="lens-tag">If you are preparing</p>
-          <p class="lens-txt">Old patterns are returning as inventory, as information. The medicine asks you to know them. Notice what keeps showing up this week, simply observing.</p>
+          <p class="lens-txt">Old patterns are returning as inventory, as information. The root asks you to know them. Notice what keeps showing up this week, simply observing.</p>
         </div>
         <div class="lens">
           <p class="lens-tag">If you are integrating</p>
@@ -488,7 +488,7 @@ const BODY_CONTENT = `
         <p class="ref-meta">Integrating · <span class="ref-theme">HAʻAHAʻA</span></p>
       </div>
       <div class="ref-card">
-        <p class="ref-q">More emotion than I expected. The medicine keeps showing me the same door. I am beginning to understand it is not asking me to break it down, it wants me to learn to stand in front of it differently.</p>
+        <p class="ref-q">More emotion than I expected. The root keeps showing me the same door. I am beginning to understand it is not asking me to break it down, it wants me to learn to stand in front of it differently.</p>
         <p class="ref-meta">Integrating · <span class="ref-theme">HAʻAHAʻA</span></p>
       </div>
     </div>

@@ -87,7 +87,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
                 <a href="/portal/vital-kauai-guides" className="pn-dropdown-item pn-dropdown-parent">Vital Kauaʻi Guides</a>
                 <a href="/intake-form-legacy.html" className="pn-dropdown-subitem">Member Intake &amp; Readiness Form</a>
                 <a href="/iboga-preparedness-guide.html" className="pn-dropdown-subitem">Iboga Preparedness Guide</a>
-                <a href="/portal/questions" className="pn-dropdown-subitem">Questions for the Medicine</a>
+                <a href="/portal/questions" className="pn-dropdown-subitem">Questions for the Root</a>
                 <a href="/portal/physician-guide" className="pn-dropdown-subitem">Physician Reference Guide</a>
                 <a href="/portal/dietary" className="pn-dropdown-subitem">Dietary Guide</a>
                 <a href="/portal/support-person" className="pn-dropdown-subitem">Support Person Guide</a>
@@ -167,7 +167,7 @@ export function PortalNav({ email, currentPage }: { email?: string; currentPage?
         <div className="pn-mobile-week-row">
           <a href="/intake-form-legacy.html" className="pn-mobile-week" onClick={close}>Member Intake &amp; Readiness Form</a>
           <a href="/iboga-preparedness-guide.html" className="pn-mobile-week" onClick={close}>Iboga Preparedness Guide</a>
-          <a href="/portal/questions" className="pn-mobile-week" onClick={close}>Questions for the Medicine</a>
+          <a href="/portal/questions" className="pn-mobile-week" onClick={close}>Questions for the Root</a>
           <a href="/portal/physician-guide" className="pn-mobile-week" onClick={close}>Physician Reference Guide</a>
           <a href="/portal/dietary" className="pn-mobile-week" onClick={close}>Dietary Guide</a>
           <a href="/portal/support-person" className="pn-mobile-week" onClick={close}>Support Person Guide</a>

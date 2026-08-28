@@ -38,7 +38,7 @@ function monogram(title: string): string {
 
 const READING_LIST: Category[] = [
   {
-    name: "Iboga & Plant Medicine",
+    name: "Iboga & Plant Allies",
     accent: "#9c4423",
     books: [
       {
@@ -183,7 +183,7 @@ export default async function ReadingListPage() {
           </h1>
           <p style={{ fontSize: 15, lineHeight: 1.8, color: "rgba(245,240,232,0.78)", maxWidth: 640 }}>
             These books support the inner work of the Vital Kauaʻi path. They span iboga and
-            plant medicine, the science of the mind, the great spiritual and philosophical
+            plant allies, the science of the mind, the great spiritual and philosophical
             traditions, and honest reckonings with death and the unknown. Read them for
             reflection and context, taking what serves you and letting the rest go.
           </p>
