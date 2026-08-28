@@ -487,13 +487,11 @@ export function HomePage() {
                 there’s something untouched and unchanged.
               </p>
               <p className={styles.storyBody}>
-                We birthed Vital Kauaʻi from a spiritual calling to help people live clear, joyful
-                and free.
+                What we offer is an in-depth program and a path we’ve walked ourselves:
               </p>
               <p className={styles.storyBody}>
-                What we offer is an in-depth program and a path we’ve walked ourselves: preparation,
-                an eight-day ceremonial container on Kauaʻi with Iboga, and integration across
-                several months of support.
+                We birthed Vital Kauaʻi from a spiritual calling to help people live clear, joyful
+                and free.
               </p>
               <p className={styles.storyBody}>
                 Iboga has profoundly shaped our own lives, and we’ve watched it carry people through
