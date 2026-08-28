@@ -491,11 +491,9 @@ export function HomePage() {
                 there’s something untouched and unchanged.
               </p>
               <p className={styles.storyBody}>
-                What we offer is an in-depth program and a path we’ve walked ourselves.
-              </p>
-              <p className={styles.storyBody}>
-                Iboga has profoundly shaped our own lives, and we’ve watched it carry people through
-                real suffering and return them Home.
+                What we offer is an in-depth program and a path we’ve walked ourselves. Iboga has
+                profoundly shaped our own lives, and we’ve watched it carry people through real
+                suffering and return them Home.
               </p>
               <p className={styles.storyBody}>
                 We bring great care, safety, and integrity to everything we do. Every branch of
