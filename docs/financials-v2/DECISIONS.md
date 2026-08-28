@@ -1326,5 +1326,14 @@ still pins every approved sentence verbatim; its list is updated to the new
 text, and both sentences are kept unbroken on one source line so the verbatim
 assertion keeps meaning what it says.
 
-No figure, formula, ledger path, checkout path or state label changes. The
-gift's own integrity sentence is preserved word for word.
+The gift section's former supporting line, "An additional gift is separate
+from your Contribution and never changes what remains.", is **removed** by the
+same founder decision. Noted plainly: that sentence was the member-facing
+statement of a real guarantee, and members no longer read it. The guarantee
+itself is structural and unchanged — a gift is its own `additional_gift`
+agreement carrying `contribution_applies = false`, and gift receipts are summed
+separately from Contribution, so a gift still cannot move Remaining. What is
+lost is the reassurance, not the behaviour. `PR8_BUILD_SPEC.md` §4.5 records
+the removal.
+
+No figure, formula, ledger path, checkout path or state label changes.

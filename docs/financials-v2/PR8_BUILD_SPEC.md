@@ -145,8 +145,14 @@ Primary action matrix:
 This is visually separated after the Contribution facts.
 
 - Heading: **Make an additional gift.**
-- Supporting line: “An additional gift is separate from your Contribution and
-  never changes what remains.”
+- Supporting line: “Your gift helps us provide scholarships for members in
+  need, particularly for our first responders and essential workers.”
+  (D-089. The former supporting line, “An additional gift is separate from
+  your Contribution and never changes what remains.”, was removed by founder
+  decision. The guarantee it stated is structural and unaffected: a gift is
+  its own `additional_gift` agreement carrying `contribution_applies = false`,
+  and `finance` sums gift receipts separately from Contribution. It is simply
+  no longer stated to the member.)
 - Presets: $50, $100, $250, $500, Custom.
 - Custom amount: whole dollars in the UI, converted to cents at the server
   boundary; minimum $5, maximum $25,000 per checkout.

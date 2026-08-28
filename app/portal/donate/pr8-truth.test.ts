@@ -45,7 +45,6 @@ test("the approved Contribution language is verbatim", () => {
     // scholarships are funded by gifts, not by a member's own Contribution.
     "Your membership contribution goes toward your entire journey—six weeks of preparation, eight days on Kauaʻi, and six weeks of integration.",
     "Your gift helps us provide scholarships for members in need, particularly for our first responders and essential workers.",
-    "An additional gift is separate from your Contribution and never changes what remains.",
   ]) {
     assert.ok(src.includes(line), `approved copy missing: ${line}`);
   }

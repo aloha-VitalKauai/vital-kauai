@@ -207,6 +207,11 @@ sentence had been sitting above the wrong figures. `PR8_BUILD_SPEC.md`'s D-086
 production-copy amendment is updated, and the PR 8 truth test still pins every
 approved sentence verbatim against the new text.
 
+The gift section's "An additional gift is separate from your Contribution and
+never changes what remains." was also removed by founder decision. The
+guarantee is structural (`contribution_applies = false`, gift receipts summed
+separately) and unchanged; only the member-facing statement of it is gone.
+
 No figure, formula, ledger path, checkout path or state label was touched.
 
 ## Next action
