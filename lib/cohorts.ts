@@ -84,6 +84,17 @@ export function groupCohortsByDate(cohorts: PublicCohort[]): PublicCohort[] {
 const FORCED_FULL_START_DATES = new Set<string>([
   // Add a cohort's UTC start date (YYYY-MM-DD) here to display it as Full
   // publicly before names are entered in the backend.
+  '2026-10-02', // October 2–9
+])
+
+/**
+ * Cohorts to display as 'Filling Now': open to bookings, and close enough to
+ * capacity to say so. Keyed by the UTC YYYY-MM-DD of start_at, like the set
+ * above. Checked after the Full rules, so a ceremony that actually sells out
+ * reads Full even if it is listed here.
+ */
+const FILLING_START_DATES = new Set<string>([
+  '2026-11-03', // November 3–10
 ])
 
 function utcDateKey(iso: string): string {
@@ -96,15 +107,15 @@ function utcDateKey(iso: string): string {
 
 /**
  * Public status label. Returns 'Full' when a ceremony is sold out (or forced
- * full), otherwise null so the card shows 'Open'. We don't broadcast remaining
- * spot counts publicly.
+ * full), 'Filling Now' when it is listed as filling, otherwise null so the
+ * card shows 'Open'. We don't broadcast remaining spot counts publicly.
  */
 export function spotsLeftLabel(cohort: PublicCohort): string | null {
-  if (FORCED_FULL_START_DATES.has(utcDateKey(cohort.start_at))) return 'Full'
-  if (cohort.capacity == null) return null
+  const key = utcDateKey(cohort.start_at)
+  if (FORCED_FULL_START_DATES.has(key)) return 'Full'
   const assigned = cohort.assigned_count ?? 0
-  const left = cohort.capacity - assigned
-  if (left <= 0) return 'Full'
+  if (cohort.capacity != null && cohort.capacity - assigned <= 0) return 'Full'
+  if (FILLING_START_DATES.has(key)) return 'Filling Now'
   return null
 }
 
