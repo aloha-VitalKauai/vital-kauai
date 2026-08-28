@@ -381,10 +381,7 @@ export default function ContributionPortalClient({
               style={{ width: 200, minHeight: 48, border: `1px solid ${LINE}`, borderRadius: 10, padding: "10px 14px", fontSize: 16, background: "#fff" }} />
           </div>
         )}
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 14, marginTop: 18 }}>
-          <p style={{ margin: 0, color: MUTED, fontSize: 13, lineHeight: 1.45, maxWidth: 520 }}>
-            Your gift supports access, the ʻāina, nonprofit partners, and the life of Vital Kauaʻi.
-          </p>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14, marginTop: 18 }}>
           {checkoutReady ? (
             <button type="button" disabled={!giftCents || busy?.startsWith("gift:")}
               onClick={() => giftCents && beginCheckout(`gift:${giftCents}`, { kind: "additional_gift", amountCents: giftCents })}

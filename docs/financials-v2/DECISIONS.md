@@ -1336,4 +1336,10 @@ separately from Contribution, so a gift still cannot move Remaining. What is
 lost is the reassurance, not the behaviour. `PR8_BUILD_SPEC.md` §4.5 records
 the removal.
 
+A second gift line, "Your gift supports access, the ʻāina, nonprofit
+partners, and the life of Vital Kauaʻi.", which sat beside the Continue with
+gift button, is also removed by founder decision (2026-08-28). It was never in
+§3's approved copy and carried no ledger guarantee; the scholarship line now
+states what a gift does, once.
+
 No figure, formula, ledger path, checkout path or state label changes.

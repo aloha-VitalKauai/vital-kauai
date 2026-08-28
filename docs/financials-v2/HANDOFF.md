@@ -212,6 +212,10 @@ never changes what remains." was also removed by founder decision. The
 guarantee is structural (`contribution_applies = false`, gift receipts summed
 separately) and unchanged; only the member-facing statement of it is gone.
 
+The gift row's "Your gift supports access, the ʻāina, nonprofit partners, and
+the life of Vital Kauaʻi." is removed as well. It was never part of §3's
+approved copy and stated no guarantee.
+
 No figure, formula, ledger path, checkout path or state label was touched.
 
 ## Next action
