@@ -476,14 +476,21 @@ The approved language in §3 and the presets in §4.5 were amended in production
 after PR 8 shipped. The **live** text and policy, which PR 9 preserves and must
 not reopen, are:
 
-**Hero copy** (GitHub #910):
+**Hero copy** (GitHub #910, amended by D-089):
 
 > YOUR CONTRIBUTION
 >
 > Mahalo for your contribution.
 >
-> Your support helps us provide scholarships for members in need, particularly
-> for our first responders and essential workers.
+> ~~Your support helps us provide scholarships for members in need, particularly
+> for our first responders and essential workers.~~
+>
+> Your membership contribution goes toward your entire journey—six weeks of
+> preparation, eight days on Kauaʻi, and six weeks of integration.
+
+The scholarship sentence moved to the additional-gift section under D-089,
+reworded to "Your gift", because scholarships are funded by gifts rather than
+by a member's own Contribution.
 
 **Gift presets** (GitHub #911): **$500, $2,500, $5,000, $15,000**, plus Custom.
 

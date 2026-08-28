@@ -194,6 +194,21 @@ cancelled and amended to $0, so it contributes nothing. It could not be deleted 
 `FINANCE_V2_CHECKOUT_READY` is **true** in Vercel Production. One live $100
 payment has been taken and reconciled to exactly one ledger entry.
 
+## Copy amendment (2026-08-28) — D-089
+
+Founder-requested copy change to the member Contribution portal, no behaviour.
+The hero's scholarship sentence moved to the additional-gift section and was
+reworded from "Your support" to "Your gift"; the hero now states what the
+Contribution covers (six weeks of preparation, eight days on Kauaʻi, six weeks
+of integration).
+
+Scholarships are funded by gifts, not by a member's own Contribution, so the
+sentence had been sitting above the wrong figures. `PR8_BUILD_SPEC.md`'s D-086
+production-copy amendment is updated, and the PR 8 truth test still pins every
+approved sentence verbatim against the new text.
+
+No figure, formula, ledger path, checkout path or state label was touched.
+
 ## Next action
 
 PR 6 closeout (controlled live-mode exercise, two remaining sweeper drivers,

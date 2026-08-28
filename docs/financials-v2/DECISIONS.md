@@ -1300,3 +1300,31 @@ tax status.
 anon's entire finance_api surface is exactly one SECURITY DEFINER function
 returning campaign-safe status fields, asserted in-transaction along with RLS,
 grants, invoker/barrier properties and the append-only discipline.
+
+## D-089 — the scholarship line belongs to gifts, not to a member's Contribution (2026-08-28)
+
+The member Contribution portal's hero read "Your support helps us provide
+scholarships for members in need, particularly for our first responders and
+essential workers." That sentence sat above a member's own Contribution
+figures, where it said the wrong thing: a member's Contribution funds their own
+journey. Scholarships are funded by **additional gifts**, which the same page
+already defines as separate from the Contribution and unable to change what
+remains.
+
+Founder-requested (2026-08-28). Two copy changes, no behaviour:
+
+- **Hero** now states what the Contribution covers: "Your membership
+  contribution goes toward your entire journey—six weeks of preparation, eight
+  days on Kauaʻi, and six weeks of integration."
+- **Additional gift section** now opens with the scholarship line, reworded
+  from "Your support" to "Your gift", ahead of the existing sentence about a
+  gift being separate from the Contribution.
+
+This amends the approved production copy recorded in `PR8_BUILD_SPEC.md`
+§"Amendment — production copy and gift policy (D-086)". The PR 8 truth test
+still pins every approved sentence verbatim; its list is updated to the new
+text, and both sentences are kept unbroken on one source line so the verbatim
+assertion keeps meaning what it says.
+
+No figure, formula, ledger path, checkout path or state label changes. The
+gift's own integrity sentence is preserved word for word.
