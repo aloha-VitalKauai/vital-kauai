@@ -520,7 +520,7 @@ export default async function SomaticCompanionWeek6Page() {
           <div className="vk-wrap">
             <h1>Week Six <em>PNE Guide</em></h1>
             <p className="hero-subtitle">Spirit and the Sacred</p>
-            <p className="hero-lede">Spirituality is the ongoing process of living what the medicine reveals. The work of this week is to begin cultivating the connection that will hold you in ceremony and become the daily ground of your life beyond it.</p>
+            <p className="hero-lede">Spirituality is the ongoing process of living what the root reveals. The work of this week is to begin cultivating the connection that will hold you in ceremony and become the daily ground of your life beyond it.</p>
           </div>
         </header>
 
@@ -528,7 +528,7 @@ export default async function SomaticCompanionWeek6Page() {
           <div className="vk-narrow">
             <div className="vk-eyebrow">Why This Matters</div>
             <h2 className="vk-title">A Spiritual <em>Encounter</em></h2>
-            <p className="vk-lede">Iboga is a profound encounter that reveals the deeper roots of suffering, identity, purpose, and your spiritual nature. The medicine can temporarily soften the conditioned belief systems and survival patterns that have shaped your life, allowing you to see beyond addiction, trauma, and pain.</p>
+            <p className="vk-lede">Iboga is a profound encounter that reveals the deeper roots of suffering, identity, purpose, and your spiritual nature. The root can temporarily soften the conditioned belief systems and survival patterns that have shaped your life, allowing you to see beyond addiction, trauma, and pain.</p>
             <p className="vk-body">In this expanded state of awareness, old beliefs like unworthiness, fear, or the need to suffer may become visible, creating an opportunity to witness and gently question the &ldquo;false self&rdquo; built from past wounds.</p>
 
             <div className="gentle-pull">Iboga may open the door to the soul. Spirituality is the ongoing process of living what that door reveals.</div>
@@ -542,7 +542,7 @@ export default async function SomaticCompanionWeek6Page() {
             <p className="vk-lede">Many who journey with iboga describe an intense life review, where memories, relationships, choices, and unresolved trauma surface with remarkable clarity. This process can resemble a spiritual reckoning, bringing remorse, forgiveness, compassion, and sometimes a renewed sense of life purpose.</p>
 
             <div className="iboga-panel">
-              <div className="label">In the Medicine</div>
+              <div className="label">In the Root</div>
               <h3>Iboga as <em>Sacred Teacher</em></h3>
               <p className="intro">In traditional indigenous Bwiti practice, Iboga is regarded as a sacred spiritual teacher that supports healing, initiation, and connection to ancestors and divine intelligence. Modern participants describe similar experiences in their own language and tradition.</p>
 

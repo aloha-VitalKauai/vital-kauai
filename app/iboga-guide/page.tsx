@@ -273,7 +273,7 @@ const BODY_CONTENT = `
         <p>"Iboga gives you what you need, not what you want."</p>
         <cite>Bwiti saying · Gabon</cite>
       </div>
-      <p class="body-text" style="margin-top:20px;">The Pygmy tribes of Gabon and Cameroon are widely recognized as the original discoverers of iboga's healing and visionary properties, passing this knowledge to the Bwiti across countless generations. The Bwiti understand the plant as a being, a teacher with intelligence and the capacity to perceive exactly what each person needs. The medicine shows you the truth of your life. The clearer you arrive, the deeper it goes.</p>
+      <p class="body-text" style="margin-top:20px;">The Pygmy tribes of Gabon and Cameroon are widely recognized as the original discoverers of iboga's healing and visionary properties, passing this knowledge to the Bwiti across countless generations. The Bwiti understand the plant as a being, a teacher with intelligence and the capacity to perceive exactly what each person needs. The root shows you the truth of your life. The clearer you arrive, the deeper it goes.</p>
     </div>
   </div>
 
@@ -301,10 +301,10 @@ const BODY_CONTENT = `
     <div>
       <p class="body-text">The Bwiti is practiced primarily by the Fang, Mitsogo, and Punu peoples of Gabon and Cameroon. Iboga ceremonies are serious, structured, and held within a rich container of music, ritual, community, and the guidance of trained healers called Ngangas, who spend years or decades working with the plant before guiding others.</p>
       <p class="body-text">Gabon is the only country in the world where iboga is legally protected as national heritage and cultural treasure. The Gabonese government recognizes the Bwiti tradition and iboga's sacred status in law.</p>
-      <p class="body-text">Perhaps the most essential thing to understand: the Bwiti experience iboga as a being, a plant teacher with intelligence and intention. It shows the truth of your life. The clearer you arrive, the deeper it goes. The more open your hands, the more the medicine can place in them.</p>
+      <p class="body-text">Perhaps the most essential thing to understand: the Bwiti experience iboga as a being, a plant teacher with intelligence and intention. It shows the truth of your life. The clearer you arrive, the deeper it goes. The more open your hands, the more the root can place in them.</p>
     </div>
     <div>
-      <p class="body-text">We bring reverence into our work on the North Shore of Kauaʻi, grounded in our own ceremonial path. The ceremony opens around the fire. The medicine meets you in the dark. And the land and spirit of Kauaʻi holds everything.</p>
+      <p class="body-text">We bring reverence into our work on the North Shore of Kauaʻi, grounded in our own ceremonial path. The ceremony opens around the fire. The root meets you in the dark. And the land and spirit of Kauaʻi holds everything.</p>
       <div class="pull-quote" style="border-left-color:var(--sage-light);">
         <p>"Six weeks of deep preparation carries you into ceremony—illuminating what is ready to be released and calling in what wants to arrive."</p>
         <cite>Vital Kauaʻi · The Iboga Journey</cite>
@@ -339,7 +339,7 @@ const BODY_CONTENT = `
     <div class="works-card">
       <span class="works-card-eyebrow">Creativity &amp; Purpose</span>
       <h3 class="works-card-title">The Source Reopened</h3>
-      <p class="works-card-body">Artists, entrepreneurs, and visionaries consistently report that iboga restored access to a creative source they had lost contact with. The medicine dissolves the stories we tell ourselves about what is possible, and in the space that opens, genuine vision returns. Many people describe reconnecting with the self they always were.</p>
+      <p class="works-card-body">Artists, entrepreneurs, and visionaries consistently report that iboga restored access to a creative source they had lost contact with. The root dissolves the stories we tell ourselves about what is possible, and in the space that opens, genuine vision returns. Many people describe reconnecting with the self they always were.</p>
     </div>
     <div class="works-card">
       <span class="works-card-eyebrow">Somatic Healing</span>
@@ -349,7 +349,7 @@ const BODY_CONTENT = `
     <div class="works-card">
       <span class="works-card-eyebrow">Alignment &amp; Clarity</span>
       <h3 class="works-card-title">Coming Home to Yourself</h3>
-      <p class="works-card-body">Perhaps the most universal report from iboga participants: a felt sense of return. A reconnection, to self, to others, to life itself, that those living below their potential describe as profoundly reorienting. The medicine restores the thread back to who you actually are.</p>
+      <p class="works-card-body">Perhaps the most universal report from iboga participants: a felt sense of return. A reconnection, to self, to others, to life itself, that those living below their potential describe as profoundly reorienting. The root restores the thread back to who you actually are.</p>
     </div>
   </div>
 </section>
@@ -360,7 +360,7 @@ const BODY_CONTENT = `
   <h2 class="section-heading">What the Research <em>Shows</em></h2>
   <p class="section-intro">Iboga has attracted serious scientific attention in recent years, and the results emerging from clinical research represent paradigm shifts. What follows is some of the most significant data in the history of plant medicine science, signaling a fundamental change in how medicine understands what is possible for the human brain and nervous system.</p>
 
-  <p class="body-text" style="max-width:760px;">The clinical research on iboga stands apart in modern psychiatry, remarkable for the magnitude of its results. These are fundamental shifts in how human beings experience themselves. The study below, led by Stanford neuropsychiatrist Dr. Nolan Williams, has become a landmark in the emerging science of plant medicine.</p>
+  <p class="body-text" style="max-width:760px;">The clinical research on iboga stands apart in modern psychiatry, remarkable for the magnitude of its results. These are fundamental shifts in how human beings experience themselves. The study below, led by Stanford neuropsychiatrist Dr. Nolan Williams, has become a landmark in the emerging science of plant ally.</p>
 
   <div class="research-block reveal" style="page-break-after:always;">
     <span class="research-label">Stanford University · Nature Medicine · 2023</span>
@@ -388,8 +388,8 @@ const BODY_CONTENT = `
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px;">
     <div style="background:var(--warm-white);border:1px solid var(--border);border-top:2px solid var(--sage);padding:52px 22px;">
       <span style="font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;">Noribogaine</span>
-      <h4 style="font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:400;color:var(--text-dark);margin-bottom:10px;line-height:1.2;">The Medicine That Keeps Working</h4>
-      <p style="font-size:12.5px;color:var(--stone);line-height:1.8;">Iboga's primary metabolite, noribogaine, remains detectable in body tissue for 2–3 months post-ceremony, continuing its neurological repair and mood-stabilizing work throughout. It stands singular among plant medicines and psychedelics in this sustained residual mechanism of duration and depth.</p>
+      <h4 style="font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:400;color:var(--text-dark);margin-bottom:10px;line-height:1.2;">The Root That Keeps Working</h4>
+      <p style="font-size:12.5px;color:var(--stone);line-height:1.8;">Iboga's primary metabolite, noribogaine, remains detectable in body tissue for 2–3 months post-ceremony, continuing its neurological repair and mood-stabilizing work throughout. It stands singular among plant allies and psychedelics in this sustained residual mechanism of duration and depth.</p>
     </div>
     <div style="background:var(--warm-white);border:1px solid var(--border);border-top:2px solid var(--sage);padding:52px 22px;">
       <span style="font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px;">Brain States</span>
@@ -408,7 +408,7 @@ const BODY_CONTENT = `
 <section class="section section-cream" style="page-break-before:always;">
   <span class="eyebrow">How Iboga Differs</span>
   <h2 class="section-heading">Iboga, Ayahuasca, Psilocybin<br>&amp; <em>Ketamine</em></h2>
-  <p class="section-intro">Interest in plant medicine and expanded states of consciousness is growing rapidly. People often arrive curious about how iboga compares to other medicines they've heard of, and the differences are significant. Understanding them helps you know whether iboga is the right threshold for you.</p>
+  <p class="section-intro">Interest in plant allies and expanded states of consciousness is growing rapidly. People often arrive curious about how iboga compares to other plant allies they've heard of, and the differences are significant. Understanding them helps you know whether iboga is the right threshold for you.</p>
 
   <div style="overflow-x:auto;margin-bottom:36px;">
     <table style="width:100%;border-collapse:collapse;font-family:'Jost',sans-serif;font-size:12.5px;">
@@ -446,7 +446,7 @@ const BODY_CONTENT = `
         <tr style="border-bottom:1px solid rgba(28,43,30,0.06);background:rgba(28,43,30,0.02);">
           <td style="padding:12px 16px;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--stone);">Consciousness</td>
           <td style="padding:12px 16px;color:var(--text-dark);font-weight:400;">Fully awake and present, you remain yourself throughout</td>
-          <td style="padding:12px 16px;color:var(--text-mid);">The medicine takes you where it chooses, often intense and surrendered</td>
+          <td style="padding:12px 16px;color:var(--text-mid);">The root takes you where it chooses, often intense and surrendered</td>
           <td style="padding:12px 16px;color:var(--text-mid);">Ego boundaries dissolve, reality reshapes around you</td>
           <td style="padding:12px 16px;color:var(--text-mid);">Dissociative, you leave ordinary awareness entirely</td>
         </tr>
@@ -485,7 +485,7 @@ const BODY_CONTENT = `
   <div style="background:var(--forest);padding:40px 44px;max-width:860px;page-break-inside:avoid;">
     <span style="font-size:8.5px;letter-spacing:0.38em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:14px;">The Most Important Distinction</span>
     <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--cream);line-height:1.15;margin-bottom:14px;">With iboga, <em style="font-style:italic;color:var(--sage-light);">you remain yourself.</em></h3>
-    <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;margin-bottom:12px;">Ayahuasca, psilocybin, and ketamine each, in their own way, move you away from ordinary consciousness. They dissolve the ego, reshape perception, or carry you somewhere else entirely. The medicine decides where you go.</p>
+    <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;margin-bottom:12px;">Ayahuasca, psilocybin, and ketamine each, in their own way, move you away from ordinary consciousness. They dissolve the ego, reshape perception, or carry you somewhere else entirely. The root decides where you go.</p>
     <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;margin-bottom:12px;">Iboga is classified by researchers as an <strong style="color:var(--sage-light);font-weight:400;">oneirogen</strong>, a substance that produces dream-like states while the person remains fully awake. EEG studies confirm that iboga generates REM-sleep brainwave signatures in waking participants, a neurological phenomenon found in no other known medicine. Psychiatrist Claudio Naranjo coined the term <em style="color:rgba(245,240,232,0.82);">oneirophrenic state</em> to describe it: a conscious dreamy state where individuals remain fully open, remember everything, and possess heightened capacity for self-reflection.</p>
     <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;">Memories surface with extraordinary clarity. You witness your own life as if watching it unfold, alongside archetypal visitations and meetings beyond the self. But throughout all of it, you remain lucid, coherent, and present. Your identity stays intact. You are the observer, clear-eyed, awake, and very much yourself. This is what makes iboga unlike anything else available.</p>
     <p style="font-size:14px;color:rgba(245,240,232,0.68);line-height:1.95;margin-top:12px;">What makes iboga singular is precisely this quality of retained selfhood. You do not lose yourself in the experience, you find yourself in it. The visions and insights feel sovereign and wholly owned.</p>
@@ -494,11 +494,11 @@ const BODY_CONTENT = `
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:28px;">
     <div style="background:white;border:1px solid rgba(28,43,30,0.08);border-top:2px solid var(--sage);padding:28px 30px;">
       <span style="font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:10px;">What Sets Iboga Apart</span>
-      <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">The physical demands of iboga, the stillness required, the body's effort to metabolize the medicine, the long hours of sustained awareness, are precisely what make it transformative. It is a medicine you meet with your full presence, and one that meets you with equal precision in return.</p>
+      <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">The physical demands of iboga, the stillness required, the body's effort to metabolize the root, the long hours of sustained awareness, are precisely what make it transformative. It is a plant ally you meet with your full presence, and one that meets you with equal precision in return.</p>
     </div>
     <div style="background:white;border:1px solid rgba(28,43,30,0.08);border-top:2px solid var(--sage);padding:28px 30px;">
       <span style="font-size:8px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:10px;">Who It Calls To</span>
-      <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">People who have done the inner work, therapy, meditation, plant medicine, and sense that something deeper remains untouched. People ready to see themselves clearly. People willing to be still for a long time, and to meet what arises with honesty and courage.</p>
+      <p style="font-size:13px;color:var(--text-mid);line-height:1.85;">People who have done the inner work, therapy, meditation, plant ally work, and sense that something deeper remains untouched. People ready to see themselves clearly. People willing to be still for a long time, and to meet what arises with honesty and courage.</p>
     </div>
   </div>
 </section>
@@ -507,12 +507,12 @@ const BODY_CONTENT = `
 <section class="section section-forest">
   <span class="eyebrow">How We Work</span>
   <h2 class="section-heading">The Vital Kauaʻi <em>Approach</em></h2>
-  <p class="section-intro">The medicine shows you the door. We walk through it with you.</p>
+  <p class="section-intro">The root shows you the door. We walk through it with you.</p>
 
   <div class="two-col">
     <div>
       <p class="body-text">The Vital Kauaʻi Iboga Journey begins with six weeks of dedicated preparation for the body, nervous system, and inner landscape, and is followed by your ceremony in week seven. Integration support continues for months afterward. Every phase is held with full guidance and care. You are in ongoing relationship with your care team from the moment you say yes through the full arc of your integration.</p>
-      <p class="body-text">Your ceremony is held on the sacred North Shore of Kauaʻi, in living relationship with the mana of the land, the water, and the forest. The medicine we offer is whole-plant iboga root bark, dosed according to your particular constitution and titrated as a slow build in your system rather than a steep onset. Sacred fire, water, music, and ancestral honoring open and hold the container, drawing on the wisdom traditions that have carried this plant for thousands of years.</p>
+      <p class="body-text">Your ceremony is held on the sacred North Shore of Kauaʻi, in living relationship with the mana of the land, the water, and the forest. The plant ally we offer is whole-plant iboga root bark, dosed according to your particular constitution and titrated as a slow build in your system rather than a steep onset. Sacred fire, water, music, and ancestral honoring open and hold the container, drawing on the wisdom traditions that have carried this plant for thousands of years.</p>
       <p class="body-text">This work is nature-based, somatic, and psycho-spiritual. We offer a living ceremonial container, held by people who have walked this path themselves, in a place that is itself a healer.</p>
     </div>
     <div>
@@ -590,7 +590,7 @@ const BODY_CONTENT = `
         </div>
         <div class="resource-item" style="padding:7px 0;">
           <span class="resource-label">Documentary · 2022</span>
-          <div><p class="resource-title">Dosed 2: The Trip of a Lifetime</p><p class="resource-desc" style="font-size:10.5px;">Real individuals through iboga and other plant medicines. Profoundly human and honest.</p></div>
+          <div><p class="resource-title">Dosed 2: The Trip of a Lifetime</p><p class="resource-desc" style="font-size:10.5px;">Real individuals through iboga and other plant allies. Profoundly human and honest.</p></div>
         </div>
         <div class="resource-item" style="padding:7px 0;">
           <span class="resource-label">Documentary · 2018</span>
@@ -607,7 +607,7 @@ const BODY_CONTENT = `
 <section class="section section-warm">
   <span class="eyebrow">Safety &amp; Screening</span>
   <h2 class="section-heading">Iboga Asks for <em>Preparation</em></h2>
-  <p class="section-intro">Iboga is a powerful and intelligent plant medicine. It asks to be approached with full preparation, thorough screening, and qualified guidance. This is part of what makes it so effective, and what we take the most seriously.</p>
+  <p class="section-intro">Iboga is a powerful and intelligent plant ally. It asks to be approached with full preparation, thorough screening, and qualified guidance. This is part of what makes it so effective, and what we take the most seriously.</p>
 
   <div class="two-col">
     <div>
@@ -635,7 +635,7 @@ const BODY_CONTENT = `
 <section class="section section-cream choosing-section" style="page-break-inside:avoid;">
   <span class="eyebrow">Discernment</span>
   <h2 class="section-heading">Choosing the <em>Right Space</em></h2>
-  <p class="section-intro">Iboga is a profound and powerful medicine. The container it is held in matters enormously. As interest in iboga grows, so does the range of people offering to hold this work. Some are deeply trained and genuinely called, others are not. Asking clear questions before you commit is an act of self-care and personal integrity.</p>
+  <p class="section-intro">Iboga is a profound and powerful plant ally. The container it is held in matters enormously. As interest in iboga grows, so does the range of people offering to hold this work. Some are deeply trained and genuinely called, others are not. Asking clear questions before you commit is an act of self-care and personal integrity.</p>
 
   <div class="two-col" style="gap:48px;">
     <div class="choosing-col">
@@ -645,7 +645,7 @@ const BODY_CONTENT = `
       </div>
       <div style="margin-bottom:28px;">
         <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text-dark);margin-bottom:10px;">Experience &amp; Lineage</h3>
-        <p class="body-text">Ask how long they have worked with iboga specifically, not ibogaine, not other medicines, but this plant. Ask about their training, their lineage, their relationship with the tradition. Ask whether they work with whole-plant root bark or isolated ibogaine. A provider rooted in genuine relationship with this medicine will welcome these questions.</p>
+        <p class="body-text">Ask how long they have worked with iboga specifically, not ibogaine, not other plant allies, but this plant. Ask about their training, their lineage, their relationship with the tradition. Ask whether they work with whole-plant root bark or isolated ibogaine. A provider rooted in genuine relationship with this plant ally will welcome these questions.</p>
       </div>
       <div>
         <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text-dark);margin-bottom:10px;">Preparation &amp; Integration</h3>
@@ -686,7 +686,7 @@ const BODY_CONTENT = `
 <section class="section section-deep" style="text-align:center;border-bottom:none;">
   <div class="cta-block reveal">
     <span class="eyebrow" style="display:block;text-align:center;margin-bottom:24px;">Kauaʻi, Hawaiʻi</span>
-    <h2 class="cta-heading">The Medicine Shows<br>You the Door.<br><em>We Walk Through It With You.</em></h2>
+    <h2 class="cta-heading">The Root Shows<br>You the Door.<br><em>We Walk Through It With You.</em></h2>
     <p class="cta-body">If you feel called, we encourage you to book a discovery session with us through our website.</p>
     <span class="cta-sub"><a href="https://vitalkauai.com/begin-your-journey" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(245,240,232,0.25);">vitalkauai.com</a> · <a href="mailto:aloha&#64;vitalkauai.com" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(245,240,232,0.25);">aloha&#64;vitalkauai.com</a></span>
   </div>
@@ -700,5 +700,5 @@ const BODY_CONTENT = `
 </footer>
 
 <div class="disclaimer">
-  <p>This guide is for educational and informational purposes only. It does not constitute medical, legal, or therapeutic advice. Iboga is a powerful plant medicine that requires careful screening and qualified facilitation. Consult a qualified healthcare professional before making any health decisions. Vital Kauaʻi operates as a legally established church, holding medicine work within a sacred and protected religious context.</p>
+  <p>This guide is for educational and informational purposes only. It does not constitute medical, legal, or therapeutic advice. Iboga is a powerful plant ally that requires careful screening and qualified facilitation. Consult a qualified healthcare professional before making any health decisions. Vital Kauaʻi operates as a legally established church, holding medicine work within a sacred and protected religious context.</p>
 `;

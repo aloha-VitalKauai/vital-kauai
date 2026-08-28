@@ -165,7 +165,7 @@ export const PRE_CEREMONY_WEEKS: JournalWeek[] = [
     title: 'Trust your preparation',
     prompts: [
       { q: 'What are you ready to receive?', hint: 'Write from your body, your heart, your life—what you are ready to receive and live into.' },
-      { q: 'What are you committed to after this ceremony? Be as concrete as possible.', hint: 'The medicine amplifies what you bring into ceremony.' },
+      { q: 'What are you committed to after this ceremony? Be as concrete as possible.', hint: 'The root amplifies what you bring into ceremony.' },
     ],
   },
 ]
@@ -176,8 +176,8 @@ export const POST_CEREMONY_WEEKS: JournalWeek[] = [
     theme: 'Gratitude',
     title: 'Begin in gratitude',
     prompts: [
-      { key: 'w0-p0', q: 'What did the medicine show you?', hint: 'What was revealed about yourself, your nature, your life.' },
-      { key: 'w0-p1', q: 'What did the ceremony reveal that surprised you, or that you did not know before receiving the medicine?', hint: 'Stay with what was unexpected.' },
+      { key: 'w0-p0', q: 'What did the root show you?', hint: 'What was revealed about yourself, your nature, your life.' },
+      { key: 'w0-p1', q: 'What did the ceremony reveal that surprised you, or that you did not know before receiving the root?', hint: 'Stay with what was unexpected.' },
       { key: 'w0-p2', q: 'What images, impressions, or moments from ceremony keep returning? What feels most alive or most unresolved?', hint: 'Record them. The meaning arrives in its own time.' },
       { key: 'w0-p3', q: 'Where did you feel the most resistance during the journey? What were you holding onto, and what happened when you let go?', hint: 'Resistance during ceremony is information.' },
       { key: 'w0-p4', q: 'What is one thing you are committed to begin? What are you committed to release?', hint: 'Trust the impulse. Write it before the mind catches up.' },

@@ -517,7 +517,7 @@ export function HomePage() {
             &quot;Every journey here is a one-of-a-kind creation. We learn who you are, what you carry,
             what you are moving toward, and what this moment in your life is asking of you. We shape
             your experience through evidence-informed preparation, ceremony, and
-            integration. This depth of holding is what we felt was missing from medicine spaces, and
+            integration. This depth of holding is what we felt was missing from plant ally spaces, and
             it is what we bring to every member.&quot;
           </p>
           <p className={styles.medicineIntroByline}>— Vital Kauaʻi</p>
@@ -542,7 +542,7 @@ export function HomePage() {
             <p className={styles.medicineBody}>
               Iboga (considered a teacher plant, also known as the &ldquo;Tree of Life&rdquo;) is a sacred root bark from the forests of West and Central Africa, used for
               millennia by the Bwiti people of Gabon (whose name translates as &ldquo;the study of life&rdquo;) as a sacrament of initiation, healing, and
-              spiritual revelation. Unlike any other plant medicine, Iboga works at the level of
+              spiritual revelation. Unlike any other plant ally, Iboga works at the level of
               the deepest self, interrupting patterns of addiction, trauma, and unconscious
               conditioning at their root.
             </p>

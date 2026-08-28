@@ -230,10 +230,10 @@ export default function QuestionsClient() {
         <div style={{ borderBottom: "1px solid #C8A96E", paddingBottom: 40, marginBottom: 48 }}>
           <p style={{ fontSize: 12, letterSpacing: "0.32em", textTransform: "uppercase", color: "#7A9E7E", marginBottom: 18, fontWeight: 500 }}>Iboga Ceremony Preparation</p>
           <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 56, fontWeight: 300, color: "#1C2B1E", lineHeight: 1.1, marginBottom: 24 }}>
-            Questions for<br /><em style={{ fontStyle: "italic", color: "#8B8070" }}>the Medicine</em>
+            Questions for<br /><em style={{ fontStyle: "italic", color: "#8B8070" }}>the Root</em>
           </h1>
           <p style={{ fontSize: 16.5, lineHeight: 1.75, color: "#3D3D38", maxWidth: 660 }}>
-            Iboga listens. Before you arrive, take time to clarify what you are truly asking, both what you hope to resolve and what you are willing to see, feel, and be shown. These questions are seeds. Write them with sincerity and as much specificity as you can. The medicine will meet you exactly where you are.
+            Iboga listens. Before you arrive, take time to clarify what you are truly asking, both what you hope to resolve and what you are willing to see, feel, and be shown. These questions are seeds. Write them with sincerity and as much specificity as you can. The root will meet you exactly where you are.
           </p>
           <p style={{ fontSize: 12.5, fontStyle: "italic", color: "#8B8070", marginTop: 16 }}>
             {saveStatus === "saving" && "Saving…"}
@@ -298,7 +298,7 @@ export default function QuestionsClient() {
           <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, color: "#C8A96E", marginBottom: 16 }}>&#10022;</div>
           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 19, fontStyle: "italic", lineHeight: 1.75, color: "#8B8070", maxWidth: 520, margin: "0 auto" }}>
             Bring these questions with you, written, held, and felt in your body.<br />
-            The medicine already knows. You are simply learning to ask.
+            The root already knows. You are simply learning to ask.
           </p>
         </div>
       </div>
@@ -306,7 +306,7 @@ export default function QuestionsClient() {
 
       {/* Print-only view: just the prompts and the full answers */}
       <div className="qftm-print" style={{ padding: "0.25in 0", color: "#111", fontFamily: "'Jost', sans-serif" }}>
-        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 30, fontWeight: 400, color: "#1C2B1E", marginBottom: 2 }}>Questions for the Medicine</h1>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 30, fontWeight: 400, color: "#1C2B1E", marginBottom: 2 }}>Questions for the Root</h1>
         <p style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "#7A7466", marginBottom: 28 }}>Iboga Ceremony Preparation</p>
         {SECTIONS.map((section, si) => {
           const answers = Array.from({ length: section.count }, (_, qi) => (values[`s${si}-q${qi}`] ?? "").trim()).filter(Boolean);

@@ -16,7 +16,7 @@ import {
 import styles from "./iboga-journey-page.module.css";
 
 const GALLERY: { src: string; alt: string; caption: string }[] = [
-  { src: "/images/ibogaroot.jpeg", alt: "Iboga root bark", caption: "Iboga root, the heart of the medicine." },
+  { src: "/images/ibogaroot.jpeg", alt: "Iboga root bark", caption: "Iboga root, the heart of the ceremony." },
   { src: "/images/ibogafruit.jpg", alt: "Iboga fruit", caption: "The fruit of the Tabernanthe iboga shrub." },
   { src: "/images/hanalei3.jpg", alt: "Hanalei Bay, Kauaʻi", caption: "Hanalei Bay, where ceremonies are held." },
   { src: "/images/napali.jpeg", alt: "Nā Pali Coast, Kauaʻi", caption: "Nā Pali Coast, the island that holds the work." },
@@ -244,7 +244,7 @@ export function UpcomingCeremoniesPage() {
         <div style={{ maxWidth: 1180, margin: "0 auto" }}>
           <div style={{ width: 36, height: 1, background: "var(--gold, #C8A96E)", margin: "0 auto 20px", opacity: 0.6 }} />
           <p style={{ display: "block", textAlign: "center", marginBottom: 14, color: "var(--gold, #C8A96E)", fontSize: 13, fontWeight: 500, letterSpacing: "0.32em" }}>
-            The Medicine and the Land
+            The Root and the Land
           </p>
           <h2 style={{ textAlign: "center", fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 300, color: "var(--ink, #1A1A18)", lineHeight: 1.1, marginBottom: 56 }}>
             Iboga, <em style={{ fontStyle: "italic", color: "var(--sage, #7A9E7E)" }}>and Kaua&#699;i</em>

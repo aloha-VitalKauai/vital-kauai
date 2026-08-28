@@ -29,7 +29,7 @@ const PHASES: Phase[] = [
     numberLabel: "01",
     title: "Preparation",
     week: "6+ Weeks",
-    essence: "Your commitment before you sit with the medicine.",
+    essence: "Your commitment before you sit with the root.",
     items: [
       "Three or four 1:1 PNE Practitioner calls up front (six total across your journey)",
       "Four coaching calls with Rachel & Josh—an onboarding call, two one-on-one, and one with your support circle",
@@ -37,7 +37,7 @@ const PHASES: Phase[] = [
       "The PsychoNeuroEnergetics (PNE) Guide—week-by-week teachings, reflections, and practices to expand your nervous-system capacity",
       "Medical screening, labs, and EKG with your physician",
       "Diet preparation and gathering your home support team",
-      "Crafting your questions for the medicine",
+      "Crafting your questions for the root",
     ],
     image: "/images/kauaiwaterfall.jpeg",
     imageAlt: "Kauaʻi waterfall",

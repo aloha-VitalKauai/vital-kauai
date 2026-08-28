@@ -79,7 +79,7 @@ export const WEEKS = [
     sub: 'You are the creator of your life. This first week is an invitation to honestly look at the reality you have created for yourself. It’s an opportunity to notice the patterns, environments, relationships, thoughts, and beliefs that have shaped your current experience, and from that awareness begin creating in a way that is more aligned with who you truly are.',
     italic: 'This week calls for presence. Just begin.',
     video: { label: 'A Message from Rachel & Josh · Week 1', text: 'In this opening session of the Vital Kauaʻi series, we explore ʻIke—the Hawaiian principle of seeing, knowing, and perceiving—and how your awareness shapes the reality you experience. We move from the science of the mind and body as one system, through epigenetics and neuroplasticity, to what it means to live beyond the senses.', url: 'https://www.youtube.com/embed/_qdr02dq_NU' },
-    box: { type: 'info', label: 'The most important safety factor is your honesty.', text: 'Your labs, your diet, and your supplement plan all matter—but it\'s your willingness to see yourself clearly that shapes how the medicine meets you. Iboga brings truth to the surface. When you arrive having already begun that process with yourself, the experience becomes something you can move through with awareness. This is how the medicine meets you.' },
+    box: { type: 'info', label: 'The most important safety factor is your honesty.', text: 'Your labs, your diet, and your supplement plan all matter—but it\'s your willingness to see yourself clearly that shapes how the root meets you. Iboga brings truth to the surface. When you arrive having already begun that process with yourself, the experience becomes something you can move through with awareness. This is how the root meets you.' },
     actionLabel: 'Actions this week, 4 only',
     actions: [
       {
@@ -116,7 +116,7 @@ export const WEEKS = [
       },
     ],
     prompts: PRE_CEREMONY_WEEKS[0].prompts,
-    thread: 'Your answers here are the raw material of your Questions for the Medicine, the specific questions you\'ll bring into ceremony. Write honestly. Over the coming weeks, these words will sharpen into something you can carry in. This is where that conversation begins.',
+    thread: 'Your answers here are the raw material of your Questions for the Root, the specific questions you\'ll bring into ceremony. Write honestly. Over the coming weeks, these words will sharpen into something you can carry in. This is where that conversation begins.',
   },
   {
     id: 1,
@@ -192,7 +192,7 @@ export const WEEKS = [
       },
     ],
     prompts: PRE_CEREMONY_WEEKS[1].prompts,
-    thread: '"What must change" becomes the spine of your Week 4 shadow work and your Week 6 ceremony questions. Start a running list anywhere, the specific questions you want to bring to the medicine will take shape over the next four weeks. You\'ll draft them formally in Week 4.',
+    thread: '"What must change" becomes the spine of your Week 4 shadow work and your Week 6 ceremony questions. Start a running list anywhere, the specific questions you want to bring to the root will take shape over the next four weeks. You\'ll draft them formally in Week 4.',
   },
   {
     id: 2,
@@ -243,10 +243,10 @@ export const WEEKS = [
       {
         key: 'a5',
         color: 'blue',
-        text: 'Begin writing your questions for the medicine',
+        text: 'Begin writing your questions for the root',
         note: 'Open the questions document and let the first lines arrive. You\'ll keep adding to it as the weeks unfold; Week 4 is when you draft the first version, and Week 6 is when you finalize.',
         links: [
-          { text: 'Begin writing your questions for the medicine', href: '/portal/questions-for-the-medicine' },
+          { text: 'Begin writing your questions for the root', href: '/portal/questions-for-the-medicine' },
         ],
       },
       {
@@ -267,9 +267,9 @@ export const WEEKS = [
         ],
       },
     ],
-    safetyBox: { label: 'Physiological preparation, a note on magnesium', text: 'Magnesium supports your heart through ceremony. Healthy magnesium and potassium levels help your heart move smoothly with the medicine. We confirm both with bloodwork before you arrive, and a four-week magnesium glycinate ramp is one of the gentlest ways to arrive well-resourced. If you have any cardiac history, confirm dosing with your physician and let the Vital Kauaʻi team know.' },
+    safetyBox: { label: 'Physiological preparation, a note on magnesium', text: 'Magnesium supports your heart through ceremony. Healthy magnesium and potassium levels help your heart move smoothly with the root. We confirm both with bloodwork before you arrive, and a four-week magnesium glycinate ramp is one of the gentlest ways to arrive well-resourced. If you have any cardiac history, confirm dosing with your physician and let the Vital Kauaʻi team know.' },
     prompts: PRE_CEREMONY_WEEKS[2].prompts,
-    thread: 'The body awareness you\'re building this week is what carries you through ceremony. When the medicine is at its most intense, your capacity to track sensation without being consumed by it is the skill that matters most. You are practicing it now.',
+    thread: 'The body awareness you\'re building this week is what carries you through ceremony. When the root is at its most intense, your capacity to track sensation without being consumed by it is the skill that matters most. You are practicing it now.',
   },
   {
     id: 3,
@@ -393,7 +393,7 @@ export const WEEKS = [
         key: 'a8',
         color: 'amber',
         text: 'Complete the Iboga Liver Cleanse',
-        note: 'A four-day liver flush that assists the medicine by preparing the body. Complete it at least 7 days before arrival, following the daily instructions in your Dietary Preparation guide.',
+        note: 'A four-day liver flush that assists the root by preparing the body. Complete it at least 7 days before arrival, following the daily instructions in your Dietary Preparation guide.',
         links: [
           { text: 'Complete the Iboga Liver Cleanse', href: '/portal/dietary#liver-cleanse' },
         ],
@@ -417,7 +417,7 @@ export const WEEKS = [
       },
     ],
     prompts: PRE_CEREMONY_WEEKS[4].prompts,
-    thread: 'The forgiveness work you begin here continues in ceremony and for months afterward. Begin it this week, the medicine will carry it forward from wherever you start. One week remains.',
+    thread: 'The forgiveness work you begin here continues in ceremony and for months afterward. Begin it this week, the root will carry it forward from wherever you start. One week remains.',
   },
   {
     id: 5,
@@ -430,7 +430,7 @@ export const WEEKS = [
     carryForward: 'You have opened to your people. You have begun the forgiveness work. You have tended your home. This final week calls for completion, alignment, and the willingness to arrive.',
     sub: 'Mana is life force. It is the energy that moves through all things, the current that connects you to the land, to the people around you, and to something greater than yourself. To live with mana is to remember that you are guided, sourced, and held, and that your own authority arises from that alignment.',
     video: { label: 'A Message from Rachel & Josh · Week 6', text: 'Mana is life force, the sacred energy moving through every person, animal, mountain, and river. This week we explore how to tend it through the Three P’s: Protect, Preserve, and Plenish. We look at how we touch the sacred, how our healing honors those who came before, and close with an invitation to surrender and trust that you have everything you need.', url: 'https://www.youtube.com/embed/SsCH4qFMirQ' },
-    box: { type: 'close', label: 'Emotional closure, the arc completes here', text: 'Five weeks ago this process asked you to see clearly. Then to commit. Then to tend your body. Then to meet your shadow. Then to open to your people. You have done all of that. Whatever remains unresolved, the medicine will meet it. Your job this week is to arrive with openness, trust your team, and let yourself be held. That is enough. That is everything.\n\nIf you feel uncertain right now, more unsettled than you expected to feel at the end of six weeks of preparation, that feeling often means you have done real work. Uncertainty is a form of readiness.' },
+    box: { type: 'close', label: 'Emotional closure, the arc completes here', text: 'Five weeks ago this process asked you to see clearly. Then to commit. Then to tend your body. Then to meet your shadow. Then to open to your people. You have done all of that. Whatever remains unresolved, the root will meet it. Your job this week is to arrive with openness, trust your team, and let yourself be held. That is enough. That is everything.\n\nIf you feel uncertain right now, more unsettled than you expected to feel at the end of six weeks of preparation, that feeling often means you have done real work. Uncertainty is a form of readiness.' },
     actionLabel: 'Actions this week, 5 operational completions',
     actions: [
       {
@@ -477,10 +477,10 @@ export const WEEKS = [
       {
         key: 'a6',
         color: 'green',
-        text: 'Finalize your Questions for the Medicine',
+        text: 'Finalize your Questions for the Root',
         note: 'The truest question, that is the one. Hold it with open hands.',
         links: [
-          { text: 'Finalize your Questions for the Medicine', href: '/portal/questions' },
+          { text: 'Finalize your Questions for the Root', href: '/portal/questions' },
         ],
       },
       {
@@ -513,7 +513,7 @@ export const WEEKS = [
         key: 'a10',
         color: 'blue',
         text: 'Connect with Rachel & Josh',
-        note: 'Bring your finalized Questions for the Medicine. Bring anything still alive. Speak everything that is ready to be said.',
+        note: 'Bring your finalized Questions for the Root. Bring anything still alive. Speak everything that is ready to be said.',
         links: [
           { text: 'Connect with Rachel & Josh', href: COACHING_CALL_URL, external: true, session: 'coaching' as const },
         ],

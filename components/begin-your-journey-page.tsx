@@ -99,7 +99,7 @@ export function BeginYourJourneyPage() {
         <div className={styles.heroGlow} />
         <span className={styles.heroEyebrow}>Begin the Journey</span>
         <h1 className={styles.heroTitle}>
-          The Medicine Shows You the Door.
+          The Root Shows You the Door.
           <em>We Walk Through It With You.</em>
         </h1>
       </section>
