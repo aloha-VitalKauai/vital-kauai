@@ -9,6 +9,13 @@ import type { SupabaseClient } from '@supabase/supabase-js'
  */
 export const PUBLIC_CEREMONY_DATES_VISIBLE = true
 
+/**
+ * The founder-set public label for a ceremony. 'auto' derives it from
+ * capacity; the rest are deliberate overrides. Mirrors the CHECK constraint on
+ * cohorts.public_status.
+ */
+export type CohortPublicStatus = 'auto' | 'open' | 'filling' | 'full'
+
 export type PublicCohort = {
   id: string
   title: string
@@ -16,6 +23,8 @@ export type PublicCohort = {
   end_at: string | null
   capacity: number | null
   assigned_count?: number
+  /** Absent on a client that has not yet picked up the column; treated as 'auto'. */
+  public_status?: CohortPublicStatus | string | null
 }
 
 export async function fetchPublicCohorts(
@@ -46,6 +55,20 @@ function combineTitles(titles: string[]): string {
 }
 
 /**
+ * The merged card shows one status for the week, so the most closed of the
+ * group wins: a week with one journey full and one open is not open. Without
+ * this the merged row would drop the override entirely and advertise the week
+ * as open.
+ */
+function mergePublicStatus(group: PublicCohort[]): CohortPublicStatus {
+  const statuses = group.map(g => g.public_status ?? 'auto')
+  if (statuses.includes('full')) return 'full'
+  if (statuses.includes('filling')) return 'filling'
+  if (statuses.every(s => s === 'open')) return 'open'
+  return 'auto'
+}
+
+/**
  * Merges cohorts that share the same start/end dates into a single display row
  * (e.g. a Men's + Women's journey on the same week become one card titled
  * "Men's / Women's Iboga Journeys"). Capacity and assigned_count are summed.
@@ -70,6 +93,7 @@ export function groupCohortsByDate(cohorts: PublicCohort[]): PublicCohort[] {
       end_at: group[0].end_at,
       capacity: totalCap > 0 ? totalCap : null,
       assigned_count: group.reduce((n, g) => n + (g.assigned_count ?? 0), 0),
+      public_status: mergePublicStatus(group),
     })
   }
   out.sort((a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime())
@@ -77,45 +101,24 @@ export function groupCohortsByDate(cohorts: PublicCohort[]): PublicCohort[] {
 }
 
 /**
- * Cohorts to display as 'Full' publicly regardless of assigned_count.
- * Keyed by the UTC YYYY-MM-DD of start_at. Use when a ceremony is closed to
- * new bookings but names haven't been entered in the backend yet.
- */
-const FORCED_FULL_START_DATES = new Set<string>([
-  // Add a cohort's UTC start date (YYYY-MM-DD) here to display it as Full
-  // publicly before names are entered in the backend.
-  '2026-10-02', // October 2–9
-])
-
-/**
- * Cohorts to display as 'Filling Now': open to bookings, and close enough to
- * capacity to say so. Keyed by the UTC YYYY-MM-DD of start_at, like the set
- * above. Checked after the Full rules, so a ceremony that actually sells out
- * reads Full even if it is listed here.
- */
-const FILLING_START_DATES = new Set<string>([
-  '2026-11-03', // November 3–10
-])
-
-function utcDateKey(iso: string): string {
-  const d = new Date(iso)
-  const y = d.getUTCFullYear()
-  const m = String(d.getUTCMonth() + 1).padStart(2, '0')
-  const day = String(d.getUTCDate()).padStart(2, '0')
-  return `${y}-${m}-${day}`
-}
-
-/**
- * Public status label. Returns 'Full' when a ceremony is sold out (or forced
- * full), 'Filling Now' when it is listed as filling, otherwise null so the
- * card shows 'Open'. We don't broadcast remaining spot counts publicly.
+ * Public status label, from cohorts.public_status. Returns 'Full', 'Filling
+ * Now', or null so the card shows 'Open'. We don't broadcast remaining spot
+ * counts publicly.
+ *
+ * Selling out wins over an 'open' or 'filling' override: a ceremony at
+ * capacity reads Full whatever the founder set, so a status left behind can
+ * never advertise spots that do not exist. An unrecognised value — including
+ * the column being absent, before the migration lands — falls back to 'auto'.
  */
 export function spotsLeftLabel(cohort: PublicCohort): string | null {
-  const key = utcDateKey(cohort.start_at)
-  if (FORCED_FULL_START_DATES.has(key)) return 'Full'
+  const status = cohort.public_status ?? 'auto'
+  if (status === 'full') return 'Full'
+
   const assigned = cohort.assigned_count ?? 0
-  if (cohort.capacity != null && cohort.capacity - assigned <= 0) return 'Full'
-  if (FILLING_START_DATES.has(key)) return 'Filling Now'
+  const soldOut = cohort.capacity != null && cohort.capacity - assigned <= 0
+  if (soldOut) return 'Full'
+
+  if (status === 'filling') return 'Filling Now'
   return null
 }
 
