@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
+    PostgrestVersion: "14.17"
   }
   public: {
     Tables: {
@@ -666,26 +666,29 @@ export type Database = {
       calendly_event_mappings: {
         Row: {
           active: boolean
-          calendly_event_type_uri: string
+          calendly_event_type_uri: string | null
           created_at: string
           id: string
           label: string | null
+          scheduling_url: string | null
           session_type: string
         }
         Insert: {
           active?: boolean
-          calendly_event_type_uri: string
+          calendly_event_type_uri?: string | null
           created_at?: string
           id?: string
           label?: string | null
+          scheduling_url?: string | null
           session_type: string
         }
         Update: {
           active?: boolean
-          calendly_event_type_uri?: string
+          calendly_event_type_uri?: string | null
           created_at?: string
           id?: string
           label?: string | null
+          scheduling_url?: string | null
           session_type?: string
         }
         Relationships: []
@@ -994,6 +997,7 @@ export type Database = {
           id: string
           is_public: boolean
           location_id: string | null
+          public_status: string
           start_at: string
           status: string
           suggested_price_cents: number | null
@@ -1007,6 +1011,7 @@ export type Database = {
           id?: string
           is_public?: boolean
           location_id?: string | null
+          public_status?: string
           start_at: string
           status?: string
           suggested_price_cents?: number | null
@@ -1020,6 +1025,7 @@ export type Database = {
           id?: string
           is_public?: boolean
           location_id?: string | null
+          public_status?: string
           start_at?: string
           status?: string
           suggested_price_cents?: number | null
@@ -4815,6 +4821,68 @@ export type Database = {
           },
         ]
       }
+      session_booking_holds: {
+        Row: {
+          booking_url: string | null
+          consumed_at: string | null
+          consumed_by_booking_id: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          member_id: string
+          session_type: string
+        }
+        Insert: {
+          booking_url?: string | null
+          consumed_at?: string | null
+          consumed_by_booking_id?: string | null
+          created_at?: string
+          expires_at: string
+          id?: string
+          member_id: string
+          session_type: string
+        }
+        Update: {
+          booking_url?: string | null
+          consumed_at?: string | null
+          consumed_by_booking_id?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          member_id?: string
+          session_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_booking_holds_consumed_by_booking_id_fkey"
+            columns: ["consumed_by_booking_id"]
+            isOneToOne: false
+            referencedRelation: "session_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_booking_holds_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "member_donation_summary"
+            referencedColumns: ["member_id"]
+          },
+          {
+            foreignKeyName: "session_booking_holds_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "member_financial_overview"
+            referencedColumns: ["member_id"]
+          },
+          {
+            foreignKeyName: "session_booking_holds_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "member_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       session_bookings: {
         Row: {
           calendly_event_uri: string | null
@@ -7565,6 +7633,17 @@ export type Database = {
     }
     Functions: {
       _refresh_ops_alerts_internal: { Args: never; Returns: number }
+      acquire_session_hold: {
+        Args: {
+          p_member: string
+          p_session_type: string
+          p_ttl_minutes?: number
+        }
+        Returns: {
+          hold_expires_at: string
+          hold_id: string
+        }[]
+      }
       assessment_window: {
         Args: { p_ceremony_date: string; p_timepoint: string }
         Returns: {
@@ -7618,9 +7697,14 @@ export type Database = {
           capacity: number
           end_at: string
           id: string
+          public_status: string
           start_at: string
           title: string
         }[]
+      }
+      grant_default_session_allowances: {
+        Args: { p_profile: string }
+        Returns: undefined
       }
       is_assigned_guide: { Args: { member_uuid: string }; Returns: boolean }
       is_assigned_nurse: { Args: { member_uuid: string }; Returns: boolean }
