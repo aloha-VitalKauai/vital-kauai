@@ -910,8 +910,8 @@ export function HomePage() {
             Welcome <em>Home</em>
           </h2>
           <p className={`${styles.sectionSub} ${styles.centerSub} ${styles.reveal}`}>
-            Your membership agreement, intake form, preparation guides, and care team access, all
-            in one place.
+            Weekly teachings, journal prompts, scheduling, your member forms, and access to our
+            member community, all in one place.
           </p>
 
           <div className={`${styles.portalCardWrap} ${styles.reveal}`}>
@@ -921,8 +921,7 @@ export function HomePage() {
                 Access Your <em>Member Portal</em>
               </h3>
               <p className={styles.gatewayCardBody}>
-                Enter with your access code, sent to you after enrollment. Your guides, journals,
-                resources, and care team access are waiting inside.
+                Enter with your access code, sent to you after enrollment.
               </p>
               <span className={styles.gatewayCardCta}>Enter the Portal →</span>
             </Link>
