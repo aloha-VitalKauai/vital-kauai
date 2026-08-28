@@ -242,8 +242,7 @@ export default function ContributionPortalClient({
         </h1>
         <div style={{ maxWidth: 790, color: "#415047", fontSize: 17, lineHeight: 1.65 }}>
           <p style={{ margin: 0 }}>
-            Your support helps us provide scholarships for members in need,
-            particularly for our first responders and essential workers.
+            Your membership contribution goes toward your entire journey—six weeks of preparation, eight days on Kauaʻi, and six weeks of integration.
           </p>
         </div>
       </section>
@@ -356,7 +355,7 @@ export default function ContributionPortalClient({
         <p style={{ margin: "0 0 6px", color: COPPER, fontSize: 12, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase" }}>Optional</p>
         <h2 id="gift-title" style={{ ...h2, marginBottom: 7 }}>Make an additional gift</h2>
         <p style={{ margin: 0, color: MUTED, fontSize: 14, lineHeight: 1.55 }}>
-          An additional gift is separate from your Contribution and never changes what remains.
+          Your gift helps us provide scholarships for members in need, particularly for our first responders and essential workers.
         </p>
         <div role="group" aria-label="Gift amount" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))", gap: 10, marginTop: 22 }}>
           {GIFT_PRESETS.map((cents) => (

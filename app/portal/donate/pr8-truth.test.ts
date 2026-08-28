@@ -41,9 +41,10 @@ test("the approved Contribution language is verbatim", () => {
   const src = readFileSync(CLIENT, "utf8");
   for (const line of [
     "Mahalo for your contribution.",
-    "Your support helps us provide scholarships for members in need,",
-    "particularly for our first responders and essential workers.",
-    "An additional gift is separate from your Contribution and never changes what remains.",
+    // D-089 moved the scholarship line to the gift section, where it belongs:
+    // scholarships are funded by gifts, not by a member's own Contribution.
+    "Your membership contribution goes toward your entire journey—six weeks of preparation, eight days on Kauaʻi, and six weeks of integration.",
+    "Your gift helps us provide scholarships for members in need, particularly for our first responders and essential workers.",
   ]) {
     assert.ok(src.includes(line), `approved copy missing: ${line}`);
   }

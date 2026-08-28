@@ -1300,3 +1300,40 @@ tax status.
 anon's entire finance_api surface is exactly one SECURITY DEFINER function
 returning campaign-safe status fields, asserted in-transaction along with RLS,
 grants, invoker/barrier properties and the append-only discipline.
+
+## D-089 — the scholarship line belongs to gifts, not to a member's Contribution (2026-08-28)
+
+The member Contribution portal's hero read "Your support helps us provide
+scholarships for members in need, particularly for our first responders and
+essential workers." That sentence sat above a member's own Contribution
+figures, where it said the wrong thing: a member's Contribution funds their own
+journey. Scholarships are funded by **additional gifts**, which the same page
+already defines as separate from the Contribution and unable to change what
+remains.
+
+Founder-requested (2026-08-28). Two copy changes, no behaviour:
+
+- **Hero** now states what the Contribution covers: "Your membership
+  contribution goes toward your entire journey—six weeks of preparation, eight
+  days on Kauaʻi, and six weeks of integration."
+- **Additional gift section** now opens with the scholarship line, reworded
+  from "Your support" to "Your gift", ahead of the existing sentence about a
+  gift being separate from the Contribution.
+
+This amends the approved production copy recorded in `PR8_BUILD_SPEC.md`
+§"Amendment — production copy and gift policy (D-086)". The PR 8 truth test
+still pins every approved sentence verbatim; its list is updated to the new
+text, and both sentences are kept unbroken on one source line so the verbatim
+assertion keeps meaning what it says.
+
+The gift section's former supporting line, "An additional gift is separate
+from your Contribution and never changes what remains.", is **removed** by the
+same founder decision. Noted plainly: that sentence was the member-facing
+statement of a real guarantee, and members no longer read it. The guarantee
+itself is structural and unchanged — a gift is its own `additional_gift`
+agreement carrying `contribution_applies = false`, and gift receipts are summed
+separately from Contribution, so a gift still cannot move Remaining. What is
+lost is the reassurance, not the behaviour. `PR8_BUILD_SPEC.md` §4.5 records
+the removal.
+
+No figure, formula, ledger path, checkout path or state label changes.
