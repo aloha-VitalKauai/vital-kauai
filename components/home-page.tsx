@@ -483,15 +483,15 @@ export function HomePage() {
             <div>
               <span className={styles.storyEyebrow}>Why Iboga</span>
               <p className={styles.storyBody}>
+                We birthed Vital Kauaʻi from a spiritual calling to help people live clear, joyful
+                and free.
+              </p>
+              <p className={styles.storyBody}>
                 Most people who find us have done the work—therapy, books, and healers. Still,
                 there’s something untouched and unchanged.
               </p>
               <p className={styles.storyBody}>
                 What we offer is an in-depth program and a path we’ve walked ourselves.
-              </p>
-              <p className={styles.storyBody}>
-                We birthed Vital Kauaʻi from a spiritual calling to help people live clear, joyful
-                and free.
               </p>
               <p className={styles.storyBody}>
                 Iboga has profoundly shaped our own lives, and we’ve watched it carry people through
