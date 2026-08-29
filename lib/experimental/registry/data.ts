@@ -216,4 +216,41 @@ export const REGISTRY: readonly ExperimentalPilot[] = deepFreeze<ExperimentalPil
     created_at: "2026-06-25T00:00:00.000Z",
     updated_at: "2026-06-25T00:00:00.000Z",
   },
+  {
+    id: "experiment-006",
+    name: "Human Record Sandbox",
+    status: "active",
+    production_impact: "internal_only",
+    hypothesis:
+      "Can the lab observe one real member through existing production data — " +
+      "as a calm, read-only human journey that accompanies the existing Vital " +
+      "Kauaʻi curriculum without replacing it?",
+    safety_boundary:
+      "Reads production data only; never writes (no insert/update/delete/upsert/" +
+      "rpc), no migrations, no external API or AI/LLM calls. Founder-gated, " +
+      "internal, never in navigation. Surfaces only safe operational/identity " +
+      "fields — no medical, screening, contraindication, dosing, assessment, or " +
+      "Level-4 / PHI data. Production stays the single source of truth.",
+    removability:
+      "Deleting app/dashboard/lab/human-record/ (and this registry entry) leaves " +
+      "the rest of production behaving exactly as before; nothing else imports " +
+      "the sandbox.",
+    success_criteria: [
+      "An authenticated internal sandbox renders a member as a human journey.",
+      "The existing Week One (ʻIke) curriculum is displayed unchanged.",
+      "Observations, relationships, and lenses render via the lab capabilities.",
+      "The page is completely read-only; no production data is modified.",
+      "No migrations, no external services, no AI are involved.",
+      "TypeScript passes.",
+      "ESLint passes.",
+      "Verification passes.",
+    ],
+    future_unlocks: [
+      "A Context Engine that personalizes which existing artifacts surface per week.",
+      "Multi-member sandbox selection beyond the first sample profile.",
+    ],
+    decision: "undecided",
+    created_at: "2026-06-25T00:00:00.000Z",
+    updated_at: "2026-06-25T00:00:00.000Z",
+  },
 ]);

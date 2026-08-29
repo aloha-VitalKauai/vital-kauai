@@ -51,6 +51,23 @@ real, reviewed PR against the production system.
 - [`lenses/`](./lenses) — the Experimental Lens Framework: a catalogue of
   optional interpretive frameworks as metadata only. A standalone leaf that keeps
   evidence (observation) separate from interpretation; no lens is authoritative.
+- [`human-record-sandbox/`](./human-record-sandbox) — the first **visible**
+  capability (experiment-006): a founder-gated, read-only page at
+  `app/dashboard/lab/human-record/` that observes one real member through
+  existing production data, presented as a calm human journey. This directory
+  holds its verification and docs; the experience lives in `app/`. It reads
+  production only, surfaces safe operational fields only, and accompanies the
+  existing curriculum rather than replacing it.
+
+## A note on visibility
+
+Capabilities 001–005 are inert: nothing in `app/` imports them, and deleting
+`lib/experimental/` would leave production building identically. Capability 006
+deliberately crosses that line — the sandbox page in `app/` imports the lab
+APIs and reads production read-only. The isolation that still holds: nothing
+*else* imports the sandbox, it is founder-gated and absent from navigation, and
+deleting `app/dashboard/lab/human-record/` leaves the rest of production exactly
+as before.
 
 ## Pilot Registry
 
