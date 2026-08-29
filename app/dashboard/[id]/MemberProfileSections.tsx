@@ -1,6 +1,7 @@
 "use client";
 
 import type { TimelineEvent, TimelineCategory } from "./memberTimeline";
+import type { JournalSharingConsent } from "@/lib/journal-sharing";
 
 /* ──────────────────────────────────────────────────────────────────
    Reusable, read-only Member Profile sections.
@@ -366,10 +367,38 @@ export function CeremonyRecordsCard({ ceremonies }: { ceremonies: CeremonyRecord
 }
 
 /* ── Intake form summary ───────────────────────────────────────── */
-export function IntakeCard({ intake, memberId }: { intake: IntakeData; memberId: string }) {
+export function IntakeCard({
+  intake,
+  memberId,
+  consent,
+}: {
+  intake: IntakeData;
+  memberId: string;
+  consent?: JournalSharingConsent;
+}) {
   return (
     <div style={CARD}>
       <p style={{ ...LABEL, marginBottom: 12 }}>Intake form</p>
+      {/* Sharing consent sits above the intake details, and renders even with
+          no intake on file, because it governs whether the care team may read
+          this member's reflections at all. */}
+      {consent && (
+        <div
+          style={{
+            marginBottom: 14,
+            padding: "10px 12px",
+            background: consent.consented ? "rgba(61,90,46,0.06)" : "rgba(0,0,0,0.03)",
+            borderLeft: `2px solid ${consent.consented ? "#3D5A2E" : "#C8A96E"}`,
+          }}
+        >
+          <p style={{ fontSize: 11, color: "#6B6B67", margin: "0 0 3px" }}>
+            Journal &amp; reflection sharing
+          </p>
+          <p style={{ fontSize: 13, color: "#1A1A18", margin: 0, fontWeight: 500 }}>
+            {consent.label}
+          </p>
+        </div>
+      )}
       {!intake ? (
         <p style={{ fontSize: 13, color: "#9E9E9A" }}>No intake form submitted</p>
       ) : (
