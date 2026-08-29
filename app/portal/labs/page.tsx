@@ -3,6 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import {
+  getLatestLabDocument,
+  uploadLabDocumentFile,
+  deleteLabDocument,
+  insertLabDocument,
+} from "@/lib/api/labs";
 
 type LabDoc = {
   id: string;
@@ -31,12 +37,7 @@ export default function PortalLabsPage() {
       const mid = member?.id ?? user.id;
       setMemberId(mid);
 
-      const { data: labs } = await supabase
-        .from("lab_documents")
-        .select("id, file_name, status, uploaded_at")
-        .eq("member_id", mid)
-        .order("uploaded_at", { ascending: false })
-        .limit(1);
+      const { data: labs } = await getLatestLabDocument(supabase, mid);
       if (labs && labs.length > 0) setLabDoc(labs[0] as LabDoc);
     })();
   }, [supabase]);
@@ -46,25 +47,21 @@ export default function PortalLabsPage() {
     setLabUploading(true);
     setError(null);
     const path = `${memberId}/${Date.now()}-${file.name}`;
-    const { error: upErr } = await supabase.storage.from("lab-documents").upload(path, file);
+    const { error: upErr } = await uploadLabDocumentFile(supabase, path, file);
     if (upErr) {
       setError(upErr.message);
       setLabUploading(false);
       return;
     }
     if (labDoc) {
-      await supabase.from("lab_documents").delete().eq("id", labDoc.id);
+      await deleteLabDocument(supabase, labDoc.id);
     }
-    const { data: row, error: insErr } = await supabase
-      .from("lab_documents")
-      .insert({
-        member_id: memberId,
-        file_name: file.name,
-        storage_path: path,
-        status: "pending_review",
-      })
-      .select("id, file_name, status, uploaded_at")
-      .single();
+    const { data: row, error: insErr } = await insertLabDocument(supabase, {
+      member_id: memberId,
+      file_name: file.name,
+      storage_path: path,
+      status: "pending_review",
+    });
     if (insErr) {
       setError(insErr.message);
     } else if (row) {
