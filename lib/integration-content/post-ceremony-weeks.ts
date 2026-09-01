@@ -109,7 +109,7 @@ export const WEEKS = [
     subtitle: 'Now they become whole.',
     carryForward: 'You began in gratitude. You rested and gave thanks for what was received. This week the many threads of what was shown begin to weave into the whole of who you are.',
     intro: 'Lōkahi means unity, the integration of all that was shown into the whole of who you are. This week the separate moments of ceremony, the images, the feelings, the knowings, begin to settle into one connected whole. Your work is to notice the threads as they weave together, and to let them.',
-    video: { label: 'A Message from Rachel & Josh · Week 2', text: 'In this week’s video, Rachel and Josh share what Lōkahi has meant in their own lives and how letting the threads of ceremony weave into one has shaped how they live what they were shown.', url: 'https://www.youtube.com/embed/fFJuRURB-9I' },
+    video: { label: 'A Message from Rachel & Josh · Week 2', text: 'Week Two explores Lōkahi—harmony with spirit, land, and one another. This teaching examines why the post-iboga integration window remains open, how anchoring practices support lasting transformation, and what the Sacred Three, David Bohm’s vision of wholeness, healthy ego, and authentic community can teach us about healing. The invitation is to remain curious, embrace paradox, and allow what has opened to settle into a sustainable rhythm.', url: 'https://www.youtube.com/embed/fFJuRURB-9I' },
     actionLabel: 'This week, 4 things',
     actions: [
       {
