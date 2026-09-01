@@ -756,7 +756,7 @@ function PostCeremonyPageInner() {
             <p className="pc-hero-desc">Integration is how you build from what the medicine opened. As with your preparation, each week draws on a Hawaiian principle, paired with a teaching from psychoneuroenergetics (PNE) to support the body, mind, and spirit. You&apos;ll find journal prompts, action items, and voices from the Vital Kauaʻi community to support your homecoming.</p>
           </div>
           <div className="pc-hero-aside">
-            <SessionBookingCard />
+            <SessionBookingCard phase="post" />
           </div>
         </div>
       </div>

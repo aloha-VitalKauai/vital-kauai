@@ -21,12 +21,12 @@ export type BookingRequest =
   /** Anything else, including a network failure. */
   | { status: "error" };
 
-export async function requestSessionBooking(
-  type: SessionType,
-  fetchImpl: typeof fetch = fetch,
+async function requestBookingLink(
+  path: string,
+  fetchImpl: typeof fetch,
 ): Promise<BookingRequest> {
   try {
-    const res = await fetchImpl(`/api/sessions/${type}/book`, { method: "POST" });
+    const res = await fetchImpl(path, { method: "POST" });
     if (res.status === 503) return { status: "unavailable" };
     if (res.status === 409) return { status: "none_remaining" };
     if (!res.ok) return { status: "error" };
@@ -36,6 +36,24 @@ export async function requestSessionBooking(
   } catch {
     return { status: "error" };
   }
+}
+
+export async function requestSessionBooking(
+  type: SessionType,
+  fetchImpl: typeof fetch = fetch,
+): Promise<BookingRequest> {
+  return requestBookingLink(`/api/sessions/${type}/book`, fetchImpl);
+}
+
+/**
+ * "Set My Weekly Time" — the same gated flow with the hold marked
+ * series_anchor, so the session booked through the returned link becomes the
+ * anchor of the member's recurring post-integration series.
+ */
+export async function requestWeeklyScheduling(
+  fetchImpl: typeof fetch = fetch,
+): Promise<BookingRequest> {
+  return requestBookingLink("/api/sessions/coaching/schedule-weekly", fetchImpl);
 }
 
 /** Shown wherever a booking attempt fails. One sentence, no engine detail. */

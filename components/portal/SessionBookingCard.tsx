@@ -23,8 +23,18 @@ import {
   type SessionBalance,
   type SessionType,
 } from '@/lib/sessions/balance'
-import { BOOKING_UNAVAILABLE_NOTICE, requestSessionBooking } from '@/lib/sessions/book-client'
+import {
+  BOOKING_UNAVAILABLE_NOTICE,
+  requestSessionBooking,
+  requestWeeklyScheduling,
+  type BookingRequest,
+} from '@/lib/sessions/book-client'
 import { describeError, sessionRowState, shouldShowRow } from './sessionCardState'
+import {
+  seriesPanelState,
+  type SeriesOccurrence,
+  type SeriesPanelState,
+} from './sessionSeriesState'
 
 const LABELS: Record<SessionType, { name: string; detail: string }> = {
   coaching: { name: 'Coaching', detail: '1 Hour Coaching Call' },
@@ -64,23 +74,47 @@ export type SessionCardRow = {
  * Pure presentation. Split from the container so the card can be rendered
  * without a Supabase session, which is what makes it reviewable in isolation.
  */
+const SCHEDULE_STATE_LABELS: Record<string, string> = {
+  done: 'Complete',
+  next: 'Next',
+  upcoming: 'Scheduled',
+  needs_scheduling: 'Needs a time',
+  canceled: 'Canceled',
+}
+
 export function SessionCardView({
   rows,
+  coachingPanel = null,
   busy = null,
   notice = null,
+  scheduleOpen = false,
   onBook,
+  onSetWeekly,
+  onToggleSchedule,
 }: {
   rows: SessionCardRow[]
-  busy?: SessionType | null
+  coachingPanel?: SeriesPanelState | null
+  busy?: SessionType | 'weekly' | null
   notice?: string | null
+  scheduleOpen?: boolean
   onBook?: (type: SessionType) => void
+  onSetWeekly?: () => void
+  onToggleSchedule?: () => void
 }) {
-  if (rows.length === 0) return null
+  const panel = coachingPanel && coachingPanel.kind !== 'book' ? coachingPanel : null
+  if (rows.length === 0 && !panel) return null
+
+  const eyebrow =
+    panel?.kind === 'series'
+      ? 'Next Integration Session'
+      : panel?.kind === 'set_weekly'
+        ? 'Post-Integration Coaching'
+        : 'Book Your Session'
 
   return (
     <aside className="sbc">
       <div className="sbc-head">
-        <span className="sbc-eyebrow">Book Your Session</span>
+        <span className="sbc-eyebrow">{eyebrow}</span>
         <svg className="sbc-mark" viewBox="0 0 24 24" width="18" height="18" fill="none"
              stroke="currentColor" strokeWidth="1" strokeLinecap="round"
              strokeLinejoin="round" aria-hidden="true">
@@ -90,10 +124,87 @@ export function SessionCardView({
         </svg>
       </div>
 
+      {panel?.kind === 'set_weekly' && (
+        <div className="sbc-panel">
+          <div className="sbc-lead">
+            <SessionIcon type="coaching" />
+            <span className="sbc-names">
+              <span className="sbc-name">Integration Coaching</span>
+              <span className="sbc-detail">Weekly · 1 Hour Coaching Call</span>
+            </span>
+            <span className="sbc-count">
+              {panel.remaining} session{panel.remaining === 1 ? '' : 's'} remaining
+            </span>
+          </div>
+          <p className="sbc-weekly-copy">
+            Choose the weekly time you&rsquo;ll meet with us throughout integration.
+          </p>
+          <button
+            type="button"
+            className="sbc-book"
+            disabled={busy === 'weekly'}
+            onClick={() => onSetWeekly?.()}
+          >
+            {busy === 'weekly' ? 'Opening…' : 'Set My Weekly Time'}
+            {busy !== 'weekly' && <span className="sbc-arrow" aria-hidden="true">→</span>}
+          </button>
+        </div>
+      )}
+
+      {panel?.kind === 'series' && (
+        <div className="sbc-panel">
+          {panel.nextDate ? (
+            <>
+              <p className="sbc-next-date">{panel.nextDate}</p>
+              <p className="sbc-next-time">{panel.nextTime}</p>
+            </>
+          ) : (
+            <p className="sbc-next-date">Your next time is being scheduled</p>
+          )}
+          <p className="sbc-rhythm">
+            {panel.rhythm}
+            <span className="sbc-rhythm-sep" aria-hidden="true">·</span>
+            {panel.remaining} session{panel.remaining === 1 ? '' : 's'} remaining
+          </p>
+          <div className="sbc-actions">
+            {panel.meetingUrl && (
+              <a className="sbc-book sbc-join" href={panel.meetingUrl} target="_blank" rel="noreferrer">
+                Join Call
+              </a>
+            )}
+            <button type="button" className="sbc-book sbc-ghost" onClick={() => onToggleSchedule?.()}>
+              {scheduleOpen ? 'Hide Schedule' : 'View Schedule'}
+            </button>
+          </div>
+          {scheduleOpen && (
+            <ul className="sbc-slist">
+              {panel.schedule.map((entry, i) => (
+                <li key={i} className={`sbc-slist-row sbc-s-${entry.state}`}>
+                  <span className="sbc-slist-when">
+                    {entry.date} · {entry.time}
+                  </span>
+                  <span className="sbc-slist-state">{SCHEDULE_STATE_LABELS[entry.state]}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {panel.unscheduled > 0 && (
+            <p className="sbc-notice">
+              {panel.unscheduled} session{panel.unscheduled === 1 ? '' : 's'} await
+              {panel.unscheduled === 1 ? 's' : ''} a new time — message us and
+              we&rsquo;ll find one together.
+            </p>
+          )}
+        </div>
+      )}
+
       {rows.map((row, i) => {
         const isBusy = busy === row.type
         return (
-          <div className={`sbc-row${i > 0 ? ' sbc-row-divided' : ''}`} key={row.type}>
+          <div
+            className={`sbc-row${i > 0 || panel ? ' sbc-row-divided' : ''}`}
+            key={row.type}
+          >
             <div className="sbc-lead">
               <SessionIcon type={row.type} />
               <span className="sbc-names">
@@ -220,6 +331,80 @@ export function SessionCardView({
           color: rgba(245, 240, 232, 0.55);
         }
 
+        /* ── post-integration coaching panel (set_weekly / series states) ── */
+        .sbc-panel { padding: 18px 0 0; }
+        .sbc-weekly-copy {
+          margin: 14px 0 0;
+          font-size: 12.5px;
+          line-height: 1.65;
+          color: rgba(245, 240, 232, 0.65);
+        }
+        .sbc-next-date {
+          margin: 0;
+          font-family: 'Cormorant Garamond', Georgia, serif;
+          font-size: 27px;
+          font-weight: 400;
+          color: #f0ebe0;
+          line-height: 1.15;
+          letter-spacing: -0.005em;
+        }
+        .sbc-next-time {
+          margin: 4px 0 0;
+          font-size: 14px;
+          color: rgba(168, 197, 172, 0.95);
+          letter-spacing: 0.04em;
+        }
+        .sbc-rhythm {
+          margin: 12px 0 0;
+          font-size: 11.5px;
+          color: rgba(245, 240, 232, 0.55);
+          letter-spacing: 0.03em;
+        }
+        .sbc-rhythm-sep { margin: 0 7px; color: rgba(196, 166, 97, 0.6); }
+        .sbc-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          margin-top: 16px;
+        }
+        .sbc-actions .sbc-book { margin-top: 0; flex: 1 1 140px; }
+        a.sbc-book { text-decoration: none; }
+        .sbc-ghost {
+          background: transparent;
+          border: 1px solid rgba(168, 197, 172, 0.4);
+          color: rgba(168, 197, 172, 0.95);
+        }
+        .sbc-ghost:hover:not(:disabled) { background: rgba(122, 158, 126, 0.15); }
+        .sbc-slist {
+          list-style: none;
+          margin: 16px 0 0;
+          padding: 0;
+          border-top: 1px solid rgba(255, 255, 255, 0.07);
+        }
+        .sbc-slist-row {
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+          gap: 12px;
+          padding: 9px 0;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          font-size: 12px;
+          color: rgba(245, 240, 232, 0.75);
+        }
+        .sbc-slist-when { min-width: 0; }
+        .sbc-slist-state {
+          flex: none;
+          font-size: 10px;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: rgba(168, 197, 172, 0.85);
+        }
+        .sbc-s-done { color: rgba(245, 240, 232, 0.4); }
+        .sbc-s-done .sbc-slist-state { color: rgba(245, 240, 232, 0.35); }
+        .sbc-s-next .sbc-slist-state { color: rgba(196, 166, 97, 0.9); }
+        .sbc-s-needs_scheduling .sbc-slist-state,
+        .sbc-s-canceled .sbc-slist-state { color: rgba(224, 178, 133, 0.85); }
+
         /* Desktop: the button tucks inline on the right of each row, matching
            the reference. Below the hero's own 880px breakpoint the card goes
            full width and the buttons stack—thumb-sized, not squeezed. */
@@ -250,11 +435,22 @@ export function SessionCardView({
 
 type Balances = Record<SessionType, SessionBalance>
 
-export default function SessionBookingCard() {
+type ActiveSeries = {
+  id: string
+  first_session_at: string
+  timezone: string
+  planned_sessions: number
+  status: string
+}
+
+export default function SessionBookingCard({ phase = 'pre' }: { phase?: 'pre' | 'post' }) {
   const [balances, setBalances] = useState<Balances | null>(null)
-  const [busy, setBusy] = useState<SessionType | null>(null)
+  const [series, setSeries] = useState<ActiveSeries | null>(null)
+  const [occurrences, setOccurrences] = useState<SeriesOccurrence[]>([])
+  const [busy, setBusy] = useState<SessionType | 'weekly' | null>(null)
   const [unavailable, setUnavailable] = useState<Partial<Record<SessionType, boolean>>>({})
   const [notice, setNotice] = useState<string | null>(null)
+  const [scheduleOpen, setScheduleOpen] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -263,7 +459,32 @@ export default function SessionBookingCard() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
       const result = await getSessionBalances(supabase, user.id)
-      if (!cancelled) setBalances(result)
+      if (cancelled) return
+      setBalances(result)
+
+      // Post-ceremony, the coaching row is series-aware: read the member's
+      // active series and its occurrences under their own session (RLS).
+      if (phase === 'post') {
+        const { data: activeSeries, error: seriesErr } = await supabase
+          .from('session_series')
+          .select('id, first_session_at, timezone, planned_sessions, status')
+          .eq('member_id', user.id)
+          .eq('session_type', 'coaching')
+          .eq('status', 'active')
+          .maybeSingle()
+        if (seriesErr) throw new Error(`session_series read failed: ${seriesErr.message}`)
+        if (cancelled) return
+        if (activeSeries) {
+          const { data: occ, error: occErr } = await supabase
+            .from('session_bookings')
+            .select('scheduled_at, status, meeting_url')
+            .eq('series_id', activeSeries.id)
+          if (occErr) throw new Error(`series occurrences read failed: ${occErr.message}`)
+          if (cancelled) return
+          setSeries(activeSeries as ActiveSeries)
+          setOccurrences((occ ?? []) as SeriesOccurrence[])
+        }
+      }
     })().catch((err) => {
       // A balance we can't read is a card we don't show, never a broken hero.
       // Members see nothing; the console keeps a SANITIZED reason—name,
@@ -273,9 +494,13 @@ export default function SessionBookingCard() {
       if (!cancelled) setBalances(null)
     })
     return () => { cancelled = true }
-  }, [])
+  }, [phase])
 
-  const book = useCallback(async (type: SessionType) => {
+  const openScheduler = useCallback(async (
+    key: SessionType | 'weekly',
+    request: () => Promise<BookingRequest>,
+    balanceType: SessionType,
+  ) => {
     // The scheduler opens in its own tab so the member keeps their place in
     // the portal. The tab has to be opened HERE, synchronously inside the
     // click: browsers only permit window.open while a user gesture is still
@@ -305,20 +530,22 @@ export default function SessionBookingCard() {
       }
     }
 
-    setBusy(type)
+    setBusy(key)
     setNotice(null)
     try {
-      const result = await requestSessionBooking(type)
+      const result = await request()
 
       if (result.status === 'unavailable') {
         abandonTab()
-        setUnavailable((u) => ({ ...u, [type]: true }))
+        setUnavailable((u) => ({ ...u, [balanceType]: true }))
         return
       }
       if (result.status === 'none_remaining') {
         // Nothing left after all—reflect that rather than explaining it.
         abandonTab()
-        setBalances((b) => (b ? { ...b, [type]: { ...b[type], remaining: 0 } } : b))
+        setBalances((b) =>
+          b ? { ...b, [balanceType]: { ...b[balanceType], remaining: 0 } } : b,
+        )
         return
       }
       if (result.status === 'error') {
@@ -338,13 +565,31 @@ export default function SessionBookingCard() {
       abandonTab()
       setNotice(BOOKING_UNAVAILABLE_NOTICE)
     } finally {
-      setBusy((current) => (current === type ? null : current))
+      setBusy((current) => (current === key ? null : current))
     }
   }, [])
 
+  const book = useCallback(
+    (type: SessionType) => openScheduler(type, () => requestSessionBooking(type), type),
+    [openScheduler],
+  )
+  const setWeekly = useCallback(
+    () => openScheduler('weekly', () => requestWeeklyScheduling(), 'coaching'),
+    [openScheduler],
+  )
+
   if (!balances) return null
 
+  const coachingPanel = seriesPanelState({
+    postCeremony: phase === 'post',
+    balanceRemaining: balances.coaching.remaining,
+    series,
+    occurrences,
+  })
+
   const rows: SessionCardRow[] = SESSION_TYPES
+    // The coaching row is replaced by its panel while one is active.
+    .filter((type) => !(type === 'coaching' && coachingPanel.kind !== 'book'))
     .filter((type) => shouldShowRow(balances[type].granted))
     .map((type) => ({
       type,
@@ -354,5 +599,16 @@ export default function SessionBookingCard() {
       }),
     }))
 
-  return <SessionCardView rows={rows} busy={busy} notice={notice} onBook={book} />
+  return (
+    <SessionCardView
+      rows={rows}
+      coachingPanel={coachingPanel}
+      busy={busy}
+      notice={notice}
+      scheduleOpen={scheduleOpen}
+      onBook={book}
+      onSetWeekly={setWeekly}
+      onToggleSchedule={() => setScheduleOpen((open) => !open)}
+    />
+  )
 }
