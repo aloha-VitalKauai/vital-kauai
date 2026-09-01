@@ -4965,6 +4965,7 @@ export type Database = {
           expires_at: string
           id: string
           member_id: string
+          purpose: string
           session_type: string
         }
         Insert: {
@@ -4975,6 +4976,7 @@ export type Database = {
           expires_at: string
           id?: string
           member_id: string
+          purpose?: string
           session_type: string
         }
         Update: {
@@ -4985,6 +4987,7 @@ export type Database = {
           expires_at?: string
           id?: string
           member_id?: string
+          purpose?: string
           session_type?: string
         }
         Relationships: [
@@ -5029,9 +5032,12 @@ export type Database = {
           invitee_email: string | null
           invitee_name: string | null
           journey_id: string | null
+          meeting_url: string | null
           member_id: string | null
           needs_review: boolean
+          reminder_sent_at: string | null
           scheduled_at: string | null
+          series_id: string | null
           session_type: string
           status: string
           updated_at: string
@@ -5046,9 +5052,12 @@ export type Database = {
           invitee_email?: string | null
           invitee_name?: string | null
           journey_id?: string | null
+          meeting_url?: string | null
           member_id?: string | null
           needs_review?: boolean
+          reminder_sent_at?: string | null
           scheduled_at?: string | null
+          series_id?: string | null
           session_type: string
           status?: string
           updated_at?: string
@@ -5063,9 +5072,12 @@ export type Database = {
           invitee_email?: string | null
           invitee_name?: string | null
           journey_id?: string | null
+          meeting_url?: string | null
           member_id?: string | null
           needs_review?: boolean
+          reminder_sent_at?: string | null
           scheduled_at?: string | null
+          series_id?: string | null
           session_type?: string
           status?: string
           updated_at?: string
@@ -5115,6 +5127,112 @@ export type Database = {
           },
           {
             foreignKeyName: "session_bookings_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "member_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_bookings_series_id_fkey"
+            columns: ["series_id"]
+            isOneToOne: false
+            referencedRelation: "session_series"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      session_series: {
+        Row: {
+          anchor_booking_id: string | null
+          created_at: string
+          first_session_at: string
+          id: string
+          journey_id: string | null
+          member_id: string
+          planned_sessions: number
+          session_type: string
+          status: string
+          timezone: string
+          updated_at: string
+        }
+        Insert: {
+          anchor_booking_id?: string | null
+          created_at?: string
+          first_session_at: string
+          id?: string
+          journey_id?: string | null
+          member_id: string
+          planned_sessions: number
+          session_type: string
+          status?: string
+          timezone?: string
+          updated_at?: string
+        }
+        Update: {
+          anchor_booking_id?: string | null
+          created_at?: string
+          first_session_at?: string
+          id?: string
+          journey_id?: string | null
+          member_id?: string
+          planned_sessions?: number
+          session_type?: string
+          status?: string
+          timezone?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_series_anchor_booking_id_fkey"
+            columns: ["anchor_booking_id"]
+            isOneToOne: false
+            referencedRelation: "session_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_series_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journey_financial_summary"
+            referencedColumns: ["journey_id"]
+          },
+          {
+            foreignKeyName: "session_series_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journey_summary_view"
+            referencedColumns: ["journey_id"]
+          },
+          {
+            foreignKeyName: "session_series_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journeys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_series_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "member_financial_overview"
+            referencedColumns: ["active_journey_id"]
+          },
+          {
+            foreignKeyName: "session_series_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "member_donation_summary"
+            referencedColumns: ["member_id"]
+          },
+          {
+            foreignKeyName: "session_series_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "member_financial_overview"
+            referencedColumns: ["member_id"]
+          },
+          {
+            foreignKeyName: "session_series_member_id_fkey"
             columns: ["member_id"]
             isOneToOne: false
             referencedRelation: "member_profiles"
