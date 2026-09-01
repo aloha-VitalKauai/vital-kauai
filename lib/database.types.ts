@@ -858,6 +858,36 @@ export type Database = {
           },
         ]
       }
+      checkin_templates: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          questions: Json
+          updated_at: string
+          version: number
+          week_number: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          questions?: Json
+          updated_at?: string
+          version?: number
+          week_number: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          questions?: Json
+          updated_at?: string
+          version?: number
+          week_number?: number
+        }
+        Relationships: []
+      }
       client_journeys: {
         Row: {
           client_id: string | null
@@ -2595,6 +2625,111 @@ export type Database = {
           voacangine_pct?: number | null
         }
         Relationships: []
+      }
+      member_checkins: {
+        Row: {
+          created_at: string
+          id: string
+          journey_id: string
+          member_id: string
+          questions_snapshot: Json
+          responses: Json
+          scheduled_at: string
+          sent_at: string | null
+          status: string
+          submitted_at: string | null
+          template_id: string
+          updated_at: string
+          week_number: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          journey_id: string
+          member_id: string
+          questions_snapshot: Json
+          responses?: Json
+          scheduled_at: string
+          sent_at?: string | null
+          status?: string
+          submitted_at?: string | null
+          template_id: string
+          updated_at?: string
+          week_number: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          journey_id?: string
+          member_id?: string
+          questions_snapshot?: Json
+          responses?: Json
+          scheduled_at?: string
+          sent_at?: string | null
+          status?: string
+          submitted_at?: string | null
+          template_id?: string
+          updated_at?: string
+          week_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_checkins_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journey_financial_summary"
+            referencedColumns: ["journey_id"]
+          },
+          {
+            foreignKeyName: "member_checkins_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journey_summary_view"
+            referencedColumns: ["journey_id"]
+          },
+          {
+            foreignKeyName: "member_checkins_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journeys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_checkins_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "member_financial_overview"
+            referencedColumns: ["active_journey_id"]
+          },
+          {
+            foreignKeyName: "member_checkins_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "member_donation_summary"
+            referencedColumns: ["member_id"]
+          },
+          {
+            foreignKeyName: "member_checkins_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "member_financial_overview"
+            referencedColumns: ["member_id"]
+          },
+          {
+            foreignKeyName: "member_checkins_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "member_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_checkins_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "checkin_templates"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       member_checklist: {
         Row: {
