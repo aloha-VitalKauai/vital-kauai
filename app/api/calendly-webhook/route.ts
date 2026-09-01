@@ -1,7 +1,11 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
-import { randomBytes, createHmac } from 'crypto'
+import { randomBytes, createHmac, timingSafeEqual } from 'crypto'
 import { processSessionWebhook } from '@/lib/sessions/webhook'
+
+// The series fan-out books up to nine Calendly sessions inside one delivery;
+// the default serverless budget is too tight for that worst case.
+export const maxDuration = 60
 
 function esc(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
@@ -64,7 +68,15 @@ function extractInviteeData(body: any): {
 // ---------------------------------------------------------------------------
 // SIGNATURE, optional Calendly webhook signature verification
 // ---------------------------------------------------------------------------
-function verifySignature(req: NextRequest, rawBody: string): boolean {
+// verified is true only when the signature was actually checked against a
+// configured key and matched — the series system (sessions Build 2+) fails
+// closed on anything less. valid keeps the endpoint's long-standing
+// compatibility behavior: with no key configured, ordinary processing
+// continues (and logs the gap) so legacy reconciliation never breaks.
+function verifySignature(
+  req: NextRequest,
+  rawBody: string,
+): { valid: boolean; verified: boolean } {
   // Two Calendly organizations deliver to this endpoint (Vital team +
   // PNE team), each with its own signing key. A signature is valid if it
   // matches ANY configured key.
@@ -74,13 +86,13 @@ function verifySignature(req: NextRequest, rawBody: string): boolean {
   ].filter((k): k is string => Boolean(k))
   if (signingKeys.length === 0) {
     console.warn('[webhook] STEP:signature, no CALENDLY_WEBHOOK_SIGNING_KEY configured, skipping verification')
-    return true // TODO: set CALENDLY_WEBHOOK_SIGNING_KEY in production to enforce
+    return { valid: true, verified: false } // TODO: set CALENDLY_WEBHOOK_SIGNING_KEY in production to enforce
   }
 
   const signature = req.headers.get('calendly-webhook-signature')
   if (!signature) {
     console.warn('[webhook] STEP:signature, no header but signing key is set')
-    return false
+    return { valid: false, verified: false }
   }
 
   const parts = Object.fromEntries(
@@ -89,13 +101,17 @@ function verifySignature(req: NextRequest, rawBody: string): boolean {
       return [k, v]
     })
   )
-  if (!parts.t || !parts.v1) return false
+  if (!parts.t || !parts.v1) return { valid: false, verified: false }
 
-  return signingKeys.some(key =>
-    createHmac('sha256', key)
-      .update(`${parts.t}.${rawBody}`)
-      .digest('hex') === parts.v1
-  )
+  const provided = Buffer.from(String(parts.v1), 'utf8')
+  const matched = signingKeys.some(key => {
+    const expected = Buffer.from(
+      createHmac('sha256', key).update(`${parts.t}.${rawBody}`).digest('hex'),
+      'utf8',
+    )
+    return expected.length === provided.length && timingSafeEqual(expected, provided)
+  })
+  return { valid: matched, verified: matched }
 }
 
 // ---------------------------------------------------------------------------
@@ -144,7 +160,8 @@ export async function POST(req: NextRequest) {
   console.log(`[webhook] STEP:receipt, saved id: ${receiptId}`)
 
   // === STEP 4: Signature verification ===
-  if (!verifySignature(req, rawBody)) {
+  const signature = verifySignature(req, rawBody)
+  if (!signature.valid) {
     console.error('[webhook] STEP:signature, FAILED verification')
     await updateReceipt(supabase, receiptId, 'failed', 'Signature verification failed')
     return NextResponse.json({ ok: false, reason: 'invalid_signature' }, { status: 200 })
@@ -155,7 +172,11 @@ export async function POST(req: NextRequest) {
   // An event whose Calendly event type is mapped in calendly_event_mappings
   // belongs to the sessions system (including invitee.canceled, which the
   // lead flow below ignores). Everything unmapped falls through untouched.
-  const sessionOutcome = await processSessionWebhook(supabase, body, receiptId)
+  // Series creation inside requires signature.verified — an unverified
+  // payload records bookings as before but can never spawn a series.
+  const sessionOutcome = await processSessionWebhook(supabase, body, receiptId, {
+    verified: signature.verified,
+  })
   if (sessionOutcome.handled) {
     console.log(`[webhook] STEP:sessions, handled: ${JSON.stringify(sessionOutcome.response)}`)
     return NextResponse.json(sessionOutcome.response)

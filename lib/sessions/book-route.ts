@@ -15,7 +15,10 @@ function getServiceSupabase() {
   );
 }
 
-export async function handleBookRequest(sessionType: SessionType) {
+export async function handleBookRequest(
+  sessionType: SessionType,
+  options: { purpose?: "single" | "series_anchor" } = {},
+) {
   // Who is asking — the member's own cookie session, nothing client-supplied.
   const authClient = await createClient();
   const {
@@ -39,6 +42,7 @@ export async function handleBookRequest(sessionType: SessionType) {
     memberEmail: user.email ?? null,
     memberName: member?.full_name ?? null,
     sessionType,
+    purpose: options.purpose,
   });
 
   if (result.ok) {
