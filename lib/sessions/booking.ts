@@ -42,16 +42,24 @@ export async function createSessionBookingLink(
     memberEmail: string | null;
     memberName: string | null;
     sessionType: SessionType;
+    // What the booking made through this link becomes: an ordinary single
+    // session (default), or the anchor of a recurring post-integration
+    // series ("Set My Weekly Time"). Recorded on the hold so the webhook
+    // knows which one arrived.
+    purpose?: "single" | "series_anchor";
   },
   fetchImpl: typeof fetch = fetch,
 ): Promise<BookingLinkResult> {
   const { memberId, sessionType } = args;
+  const purpose = args.purpose ?? "single";
 
   // 0. One outstanding authorization per member + type: a still-valid issued
-  //    link is returned as-is instead of minting another.
+  //    link is returned as-is instead of minting another. The member's most
+  //    recent intent wins: re-requesting under a different purpose re-labels
+  //    the outstanding hold rather than minting a second entitlement.
   const { data: outstanding } = await supabase
     .from("session_booking_holds")
-    .select("id, booking_url, expires_at")
+    .select("id, booking_url, expires_at, purpose")
     .eq("member_id", memberId)
     .eq("session_type", sessionType)
     .is("consumed_at", null)
@@ -61,6 +69,13 @@ export async function createSessionBookingLink(
     .limit(1)
     .maybeSingle();
   if (outstanding?.booking_url) {
+    if (outstanding.purpose !== purpose) {
+      await supabase
+        .from("session_booking_holds")
+        .update({ purpose })
+        .eq("id", outstanding.id)
+        .is("consumed_at", null);
+    }
     return {
       ok: true,
       bookingUrl: outstanding.booking_url,
@@ -153,7 +168,7 @@ export async function createSessionBookingLink(
   ).toISOString();
   const { error: attachErr } = await supabase
     .from("session_booking_holds")
-    .update({ booking_url: finalUrl, expires_at: linkExpiresAt })
+    .update({ booking_url: finalUrl, expires_at: linkExpiresAt, purpose })
     .eq("id", hold.hold_id)
     .is("consumed_at", null);
   if (attachErr) {

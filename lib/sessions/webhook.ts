@@ -26,8 +26,27 @@
 //   unknown email    → row parked with needs_review = true, member_id null,
 //                      counts_against_allowance = false. No balance impact,
 //                      no guessing.
+//
+// Build 2 of the recurring series adds, on top of the contract above:
+//   series anchor    → a booking that consumes a hold whose purpose is
+//                      'series_anchor' converts into a session_series and
+//                      fans out the member's remaining weekly sessions
+//                      (fanout.ts) — but ONLY on a signature-verified
+//                      delivery. An unverified payload records the booking
+//                      exactly as before and never creates a series.
+//   meeting_url      → captured from the payload's scheduled_event.location
+//                      join URL on insert; a duplicate delivery backfills it
+//                      onto an existing row that is still missing one (Zoom
+//                      provisions the link asynchronously, so the fan-out's
+//                      own insert may predate it).
+//   reschedule       → the replacement booking inherits series_id from the
+//                      booking it replaces: one occurrence moves, the series
+//                      rhythm never shifts.
 
 import type { SupabaseClient } from "@supabase/supabase-js";
+// Alias import (not "./fanout"): the node test loader resolves runtime-local
+// imports through the @/ alias only.
+import { convertAnchorToSeries } from "@/lib/sessions/fanout";
 
 export type SessionWebhookOutcome =
   | { handled: false }
@@ -43,6 +62,19 @@ export type SessionEvent = {
   startTime: string | null;
   oldInviteeUri: string | null;
   isReschedule: boolean;
+  meetingUrl: string | null;
+  inviteeTimezone: string | null;
+};
+
+export type SessionWebhookOptions = {
+  /**
+   * True only when the delivery's Calendly signature was checked against a
+   * configured signing key and matched. Series creation fails closed on
+   * anything less; ordinary booking reconciliation keeps its existing
+   * compatibility behavior either way.
+   */
+  verified?: boolean;
+  fetchImpl?: typeof fetch;
 };
 
 // Calendly has shipped more than one payload shape (V1 objects, V2 URI
@@ -79,6 +111,8 @@ export function extractSessionEvent(body: any): SessionEvent | null {
       null,
     oldInviteeUri,
     isReschedule: oldInviteeUri != null,
+    meetingUrl: p.scheduled_event?.location?.join_url || null,
+    inviteeTimezone: p.timezone || p.invitee?.timezone || null,
   };
 }
 
@@ -103,6 +137,7 @@ export async function processSessionWebhook(
   supabase: SupabaseClient,
   body: any,
   receiptId: string | null,
+  options: SessionWebhookOptions = {},
 ): Promise<SessionWebhookOutcome> {
   const event = extractSessionEvent(body);
   if (!event || !event.eventTypeUri) return { handled: false };
@@ -139,7 +174,7 @@ export async function processSessionWebhook(
     }
 
     if (event.eventType === "invitee.created") {
-      return await recordBooking(supabase, event, sessionType, receiptId);
+      return await recordBooking(supabase, event, sessionType, receiptId, options);
     }
     return await recordCancellation(supabase, event, sessionType, receiptId);
   } catch (err: any) {
@@ -153,6 +188,7 @@ async function recordBooking(
   event: SessionEvent,
   sessionType: string,
   receiptId: string | null,
+  options: SessionWebhookOptions,
 ): Promise<SessionWebhookOutcome> {
   // Match strictly on the member's account email. No guessing: anything else
   // parks as needs_review with zero balance impact.
@@ -173,6 +209,8 @@ async function recordBooking(
   // unauthorized needs_review booking cannot launder into a counted one by
   // being rescheduled.
   let candidateHoldId: string | null = null;
+  let candidateHoldPurpose: string | null = null;
+  let seriesId: string | null = null;
   let counts = false;
   if (matched && event.isReschedule) {
     // The canceled half of the pair has usually already flipped the old
@@ -182,17 +220,20 @@ async function recordBooking(
     // cancellation never touches. Unknown old booking → fail closed.
     const { data: previous } = await supabase
       .from("session_bookings")
-      .select("id, needs_review")
+      .select("id, needs_review, series_id")
       .eq("calendly_invitee_uri", event.oldInviteeUri)
       .maybeSingle();
     counts = previous != null && previous.needs_review === false;
+    // A rescheduled series occurrence keeps its place in the series: only
+    // this occurrence moves, the recurring rhythm never shifts.
+    seriesId = previous?.series_id ?? null;
   } else if (matched) {
     // Find the oldest candidate hold; the claim itself is atomic further
     // down. A reschedule never reaches this branch — eating an unrelated
     // hold would strand a different in-flight booking attempt.
     const { data: hold } = await supabase
       .from("session_booking_holds")
-      .select("id")
+      .select("id, purpose")
       .eq("member_id", profileId)
       .eq("session_type", sessionType)
       .is("consumed_at", null)
@@ -201,6 +242,7 @@ async function recordBooking(
       .limit(1)
       .maybeSingle();
     candidateHoldId = hold?.id ?? null;
+    candidateHoldPurpose = hold?.purpose ?? null;
     counts = candidateHoldId != null;
   }
 
@@ -219,12 +261,25 @@ async function recordBooking(
       status: "scheduled",
       counts_against_allowance: counts,
       needs_review: !counts,
+      series_id: seriesId,
+      meeting_url: event.meetingUrl,
     })
     .select("id")
     .single();
 
   if (insertErr) {
     if (insertErr.code === "23505") {
+      // A row for this invitee already exists — a replayed delivery, or the
+      // webhook echo of a booking the series fan-out created via the API.
+      // Zoom provisions its join URL asynchronously, so this delivery may be
+      // the first one that actually carries it: backfill, never overwrite.
+      if (event.meetingUrl) {
+        await supabase
+          .from("session_bookings")
+          .update({ meeting_url: event.meetingUrl })
+          .eq("calendly_invitee_uri", event.inviteeUri)
+          .is("meeting_url", null);
+      }
       await setReceipt(supabase, receiptId, "ignored", `Duplicate booking: ${event.inviteeUri}`);
       return { handled: true, response: { ok: true, deduplicated: true } };
     }
@@ -235,6 +290,7 @@ async function recordBooking(
   // wins the authorization. If a concurrent booking claimed it first, this
   // booking is downgraded to needs_review — one entitlement can never
   // produce two counted bookings, no matter how webhooks interleave.
+  let consumedAnchorHold = false;
   if (candidateHoldId) {
     const { data: claimed } = await supabase
       .from("session_booking_holds")
@@ -248,6 +304,35 @@ async function recordBooking(
         .from("session_bookings")
         .update({ counts_against_allowance: false, needs_review: true })
         .eq("id", inserted.id);
+    } else {
+      consumedAnchorHold = candidateHoldPurpose === "series_anchor";
+    }
+  }
+
+  // "Set My Weekly Time": a counted booking that consumed a series_anchor
+  // hold converts into a recurring series and fans out the member's
+  // remaining weekly sessions. Fails closed on an unverified delivery — a
+  // payload nobody signed can never generate a series — and a conversion
+  // failure never un-records the booking itself.
+  let series: Record<string, unknown> | null = null;
+  if (counts && consumedAnchorHold && profileId && event.startTime) {
+    if (options.verified === true) {
+      try {
+        series = await convertAnchorToSeries(supabase, {
+          profileId,
+          sessionType,
+          anchorBookingId: inserted.id,
+          anchorStartTime: event.startTime,
+          inviteeTimezone: event.inviteeTimezone,
+          inviteeEmail: event.email,
+          inviteeName: event.fullName,
+          fetchImpl: options.fetchImpl ?? fetch,
+        });
+      } catch (err: any) {
+        series = { ok: false, reason: `series_conversion_error: ${err?.message ?? String(err)}` };
+      }
+    } else {
+      series = { ok: false, reason: "series_requires_verified_signature" };
     }
   }
 
@@ -260,6 +345,7 @@ async function recordBooking(
       recorded: "booked",
       needsReview: !counts,
       bookingId: inserted.id,
+      ...(series ? { series } : {}),
     },
   };
 }

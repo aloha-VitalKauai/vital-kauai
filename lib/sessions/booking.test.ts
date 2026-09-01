@@ -357,6 +357,43 @@ test("a mapping with neither a mintable link nor a URL stays not_configured", as
   });
 });
 
+// ── series-anchor purpose ("Set My Weekly Time") ────────────────────────────
+
+test("a series_anchor request records its purpose on the hold", async () => {
+  await withToken("tok", async () => {
+    const state = makeState();
+    const result = await createSessionBookingLink(
+      fakeSupabase(state),
+      { ...MEMBER, purpose: "series_anchor" },
+      fakeFetch([]),
+    );
+    assert.equal(result.ok, true);
+    assert.equal(state.holds.length, 1);
+    assert.equal((state.holds[0] as any).purpose, "series_anchor");
+  });
+});
+
+test("re-requesting under a different purpose relabels the outstanding hold instead of minting a second", async () => {
+  await withToken("tok", async () => {
+    const state = makeState();
+    const first = await createSessionBookingLink(fakeSupabase(state), MEMBER, fakeFetch([]));
+    assert.equal(first.ok, true);
+    assert.equal((state.holds[0] as any).purpose, "single");
+
+    const second = await createSessionBookingLink(
+      fakeSupabase(state),
+      { ...MEMBER, purpose: "series_anchor" },
+      fakeFetch([]),
+    );
+    assert.equal(second.ok, true);
+    if (!first.ok || !second.ok) return;
+    assert.equal(second.bookingUrl, first.bookingUrl, "still the same single authorization");
+    assert.equal(state.holds.length, 1);
+    assert.equal((state.holds[0] as any).purpose, "series_anchor", "the member's latest intent wins");
+    assert.equal(state.rpcCalls.length, 1);
+  });
+});
+
 test("attach failure → link withheld, hold released — fail closed", async () => {
   await withToken("tok", async () => {
     const state = makeState({ attachError: true });
