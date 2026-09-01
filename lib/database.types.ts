@@ -7845,6 +7845,10 @@ export type Database = {
       is_assigned_nurse: { Args: { member_uuid: string }; Returns: boolean }
       is_founder: { Args: never; Returns: boolean }
       is_nurse: { Args: never; Returns: boolean }
+      publish_checkin_template: {
+        Args: { p_questions: Json; p_week_number: number }
+        Returns: string
+      }
       recompute_commitment_status_for: {
         Args: { p_commitment_id: string }
         Returns: undefined
