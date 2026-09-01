@@ -52,6 +52,7 @@ const MEMBER_TABS: string[] = [
   "Intake",
   "Medical",
   "Integration",
+  "Outcomes",
   "Financials",
   "Documents",
   "Timeline",
@@ -1130,9 +1131,6 @@ export default function MemberProfileEditor({
             </div>
           </div>
           <SessionsTrackerCard memberId={member.id} />
-          {/* Weekly Check-Ins — submitted 13-week check-ins, newest first.
-              Read-only; each renders from its own questions_snapshot. */}
-          <MemberWeeklyCheckins checkins={weeklyCheckins} />
           {/* Always render both progress cards, even with no progress rows —
               missing data normalizes to 0/6 and every week stays clickable so
               founders can view the read-only journal for any member. */}
@@ -1189,6 +1187,21 @@ export default function MemberProfileEditor({
               </div>
             </div>
           </div>
+        </div>
+      ) : activeTab === "Outcomes" ? (
+        /* Outcomes — the long-term home for progress across the member
+           journey. Build 2 seats only Weekly Check-Ins here; longitudinal
+           measures arrive in later PRs. */
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div>
+            <p style={{ fontFamily: "var(--font-display, serif)", fontSize: 22, fontWeight: 400, color: "#1A1A18", margin: "0 0 4px" }}>
+              Outcomes
+            </p>
+            <p style={{ fontSize: 13, color: "#6B6B67", margin: 0 }}>
+              Weekly reflections and progress across the member journey.
+            </p>
+          </div>
+          <MemberWeeklyCheckins checkins={weeklyCheckins} />
         </div>
       ) : activeTab === "Documents" ? (
         <DocumentsCard documents={documents as SignedDocument[]} profile={profile} />

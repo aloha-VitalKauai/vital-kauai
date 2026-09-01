@@ -1,7 +1,7 @@
 "use client";
 
 /* Weekly Check-Ins — compact read-only card on the member profile
-   (Integration tab). Submitted check-ins newest first; each renders its
+   (Outcomes tab). Submitted check-ins newest first; each renders its
    question/answer pairs from that check-in's own questions_snapshot, so the
    card always shows the wording the member actually answered, even after a
    template changes. No graphs, trends, or scores — this is a reading
@@ -48,7 +48,7 @@ export default function MemberWeeklyCheckins({ checkins }: { checkins: WeeklyChe
 
       {checkins.length === 0 ? (
         <p style={{ fontSize: 13, color: "#9E9E9A", margin: 0 }}>
-          Submitted weekly check-ins will appear here.
+          No weekly check-ins have been submitted yet.
         </p>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>

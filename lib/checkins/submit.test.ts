@@ -28,25 +28,36 @@ type FakeState = {
   beforeUpdate?: () => void;
 };
 
+type QueryOutcome = { data: unknown; error: { message: string } | null };
+
+type Chain = {
+  select: (columns?: string) => Chain;
+  update: (patch: Partial<CheckinRow>) => Chain;
+  eq: (col: keyof CheckinRow, v: unknown) => Chain;
+  neq: (col: keyof CheckinRow, v: unknown) => Chain;
+  maybeSingle: () => Promise<QueryOutcome>;
+  then: (resolve: (v: QueryOutcome) => void) => void;
+};
+
 function fakeSupabase(state: FakeState) {
-  const builder = () => {
+  const builder = (): Chain => {
     const s = {
       op: "select" as "select" | "update",
-      patch: null as Record<string, any> | null,
+      patch: null as Partial<CheckinRow> | null,
       filters: [] as ((r: CheckinRow) => boolean)[],
     };
     const rows = () => state.rows.filter((r) => s.filters.every((f) => f(r)));
-    const chain: any = {
+    const chain: Chain = {
       select: () => chain,
-      update: (patch: Record<string, any>) => ((s.op = "update"), (s.patch = patch), chain),
-      eq: (col: string, v: any) => (s.filters.push((r: any) => r[col] === v), chain),
-      neq: (col: string, v: any) => (s.filters.push((r: any) => r[col] !== v), chain),
+      update: (patch) => ((s.op = "update"), (s.patch = patch), chain),
+      eq: (col, v) => (s.filters.push((r) => r[col] === v), chain),
+      neq: (col, v) => (s.filters.push((r) => r[col] !== v), chain),
       maybeSingle: async () => {
         if (state.readError) return { data: null, error: { message: "read failed" } };
         const found = rows();
         return { data: found[0] ?? null, error: null };
       },
-      then: (resolve: (v: any) => void) => {
+      then: (resolve) => {
         // Awaiting the chain without maybeSingle() executes the update.
         if (s.op === "update") {
           state.beforeUpdate?.();
