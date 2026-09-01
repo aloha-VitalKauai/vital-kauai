@@ -20,6 +20,7 @@ import {
 } from "./MemberProfileSections";
 import MemberJournalViewer, { type JournalPhase } from "./MemberJournalViewer";
 import MemberMedicineQuestions from "./MemberMedicineQuestions";
+import MemberWeeklyCheckins, { type WeeklyCheckinRow } from "./MemberWeeklyCheckins";
 import { type JournalSharingState } from "@/lib/journal-sharing";
 import { type MedicineQuestionGroup } from "@/lib/medicine-questions";
 import { buildMemberTimeline } from "./memberTimeline";
@@ -147,6 +148,7 @@ export default function MemberProfileEditor({
   labs = [],
   dosing = [],
   financeEvents = [],
+  weeklyCheckins = [],
 }: {
   member: Member;
   profile: Profile;
@@ -169,6 +171,8 @@ export default function MemberProfileEditor({
   dosing?: DosingRecord[];
   /** Display-safe Financials V2 timeline events, projected by the server. */
   financeEvents?: Array<{ id: string; at: string | null; label: string; detail?: string }>;
+  /** Submitted weekly check-ins, newest first, loaded by the server page. */
+  weeklyCheckins?: WeeklyCheckinRow[];
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -1126,6 +1130,9 @@ export default function MemberProfileEditor({
             </div>
           </div>
           <SessionsTrackerCard memberId={member.id} />
+          {/* Weekly Check-Ins — submitted 13-week check-ins, newest first.
+              Read-only; each renders from its own questions_snapshot. */}
+          <MemberWeeklyCheckins checkins={weeklyCheckins} />
           {/* Always render both progress cards, even with no progress rows —
               missing data normalizes to 0/6 and every week stays clickable so
               founders can view the read-only journal for any member. */}
