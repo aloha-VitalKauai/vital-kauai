@@ -20,6 +20,7 @@ import {
 } from "./MemberProfileSections";
 import MemberJournalViewer, { type JournalPhase } from "./MemberJournalViewer";
 import MemberMedicineQuestions from "./MemberMedicineQuestions";
+import MemberWeeklyCheckins, { type WeeklyCheckinRow } from "./MemberWeeklyCheckins";
 import { type JournalSharingState } from "@/lib/journal-sharing";
 import { type MedicineQuestionGroup } from "@/lib/medicine-questions";
 import { buildMemberTimeline } from "./memberTimeline";
@@ -51,6 +52,7 @@ const MEMBER_TABS: string[] = [
   "Intake",
   "Medical",
   "Integration",
+  "Outcomes",
   "Financials",
   "Documents",
   "Timeline",
@@ -147,6 +149,7 @@ export default function MemberProfileEditor({
   labs = [],
   dosing = [],
   financeEvents = [],
+  weeklyCheckins = [],
 }: {
   member: Member;
   profile: Profile;
@@ -169,6 +172,8 @@ export default function MemberProfileEditor({
   dosing?: DosingRecord[];
   /** Display-safe Financials V2 timeline events, projected by the server. */
   financeEvents?: Array<{ id: string; at: string | null; label: string; detail?: string }>;
+  /** Submitted weekly check-ins, newest first, loaded by the server page. */
+  weeklyCheckins?: WeeklyCheckinRow[];
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -1182,6 +1187,21 @@ export default function MemberProfileEditor({
               </div>
             </div>
           </div>
+        </div>
+      ) : activeTab === "Outcomes" ? (
+        /* Outcomes — the long-term home for progress across the member
+           journey. Build 2 seats only Weekly Check-Ins here; longitudinal
+           measures arrive in later PRs. */
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div>
+            <p style={{ fontFamily: "var(--font-display, serif)", fontSize: 22, fontWeight: 400, color: "#1A1A18", margin: "0 0 4px" }}>
+              Outcomes
+            </p>
+            <p style={{ fontSize: 13, color: "#6B6B67", margin: 0 }}>
+              Weekly reflections and progress across the member journey.
+            </p>
+          </div>
+          <MemberWeeklyCheckins checkins={weeklyCheckins} />
         </div>
       ) : activeTab === "Documents" ? (
         <DocumentsCard documents={documents as SignedDocument[]} profile={profile} />
