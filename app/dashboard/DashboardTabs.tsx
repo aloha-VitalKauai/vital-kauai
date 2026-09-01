@@ -23,6 +23,7 @@ const TABS = [
   // { label: "Dosing", href: "/dashboard/dosing" },
   { label: "Financials", href: "/dashboard/financials" },
   { label: "Automatic Emails", href: "/dashboard/automatic-emails" },
+  { label: "Check-Ins", href: "/dashboard/checkin-questions" },
   { label: "Team", href: "/dashboard/team" },
   { label: "SOPs", href: "/dashboard/sops" },
 ];
