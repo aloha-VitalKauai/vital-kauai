@@ -96,11 +96,12 @@ export async function middleware(request: NextRequest) {
     // Hardcoded alongside FOUNDER_IDS for the same reason: the check runs on
     // every request, so it stays query-free.
     //
-    // Matt Montee is on the team and keeps his credentials, but the medical
-    // section he will eventually work in is not mapped out yet, so until it
-    // is he lands on the public site instead of the member portal.
+    // These accounts keep their credentials while the access they should
+    // hold is still being worked out, so until it is settled they land on
+    // the public site instead of the member portal.
     const PORTAL_RESTRICTED_IDS = [
       "88859822-90be-41fb-b003-4d6a0a8b1c38", // mattmontee@mac.com
+      "1ba49fa4-35f2-469b-a3c7-21e121437734", // martin.vivien@gmail.com
     ];
 
     // Restricted accounts keep the public marketing site and /login only;
