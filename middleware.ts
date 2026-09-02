@@ -92,6 +92,27 @@ export async function middleware(request: NextRequest) {
 
     const isFounder = FOUNDER_IDS.includes(user.id);
 
+    // Accounts whose sign-in still works but which hold no portal access.
+    // Hardcoded alongside FOUNDER_IDS for the same reason: the check runs on
+    // every request, so it stays query-free.
+    //
+    // Matt Montee is on the team and keeps his credentials, but the medical
+    // section he will eventually work in is not mapped out yet, so until it
+    // is he lands on the public site instead of the member portal.
+    const PORTAL_RESTRICTED_IDS = [
+      "88859822-90be-41fb-b003-4d6a0a8b1c38", // mattmontee@mac.com
+    ];
+
+    // Restricted accounts keep the public marketing site and /login only;
+    // every members-only route sends them back to the homepage. Any session
+    // already open is cut off at the next request.
+    if (PORTAL_RESTRICTED_IDS.includes(user.id)) {
+      if (isPublicFrontendPath(path) || isStaticAssetPath(path) || isPublicPath) {
+        return supabaseResponse;
+      }
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+
     // Protect /dashboard, /ops, /founders — founders only
     if ((path.startsWith("/dashboard") || path.startsWith("/ops") || path.startsWith("/founders")) && !isFounder) {
       return NextResponse.redirect(new URL("/portal", request.url));
