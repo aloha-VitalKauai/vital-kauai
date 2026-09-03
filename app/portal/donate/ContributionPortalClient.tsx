@@ -475,8 +475,8 @@ function AgreementCard({
   const processing = live !== null && live.status === "creating";
 
   return (
-    <section style={{ ...card, marginTop: 44, display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(260px, 320px)", gap: 30, padding: 32 }} aria-label={label}>
-      <div style={{ minWidth: 0 }}>
+    <section style={{ ...card, marginTop: 44, display: "flex", flexWrap: "wrap", alignItems: "stretch", gap: 30, padding: 32 }} aria-label={label}>
+      <div style={{ flex: "1 1 300px", minWidth: 0 }}>
         <p style={{ margin: "0 0 6px", color: COPPER, fontSize: 12, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase" }}>{label}</p>
         <h2 style={{ ...h2, fontSize: 26, marginBottom: 8 }}>
           {journeyLine ? `Journey · ${journeyLine}` : label}
@@ -499,7 +499,7 @@ function AgreementCard({
         )}
       </div>
 
-      <aside style={{ alignSelf: "stretch", padding: 24, borderRadius: 14, color: "#f5f0e6", background: FOREST }}>
+      <aside style={{ flex: "0 1 320px", minWidth: 0, padding: 24, borderRadius: 14, color: "#f5f0e6", background: FOREST }}>
         <div style={{ color: "#aebcb1", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>Remaining</div>
         <div style={{ margin: "8px 0 5px", fontFamily: DISPLAY, fontWeight: 400, fontSize: "clamp(30px, 5vw, 38px)", fontVariantNumeric: "tabular-nums" }}>{usd(a.remaining_cents)}</div>
 
