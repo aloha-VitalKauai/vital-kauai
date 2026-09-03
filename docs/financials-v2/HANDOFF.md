@@ -17,11 +17,16 @@
 | 3 | Stripe shadow ingestion + §10a reconciliation | **Merged and DEPLOYED** — 3A `bcda54c`, 3B `76112ba`, 3C `92d0486`, canary fix `0724a7c` |
 | 4 | Founder-only verification workspace | **Preflight done** — `PR4_PREFLIGHT.md` |
 | 5–9 | See [PR_PLAN.md](PR_PLAN.md) | Not started |
-| 10B | Founder-chosen collection amount (D-090) | **Implemented, reviewed (APPROVE), proven in production (rolled back). PR open, awaiting founder review — financial PRs are reviewed before merge.** See §"PR 10B" below |
+| 10B | Founder-chosen collection amount (D-090) | **MERGED AND DEPLOYED** — #978 squashed as `b4c6668`; migration `20260904010000` applied and stamped 2026-09-03; PostgREST reloaded. See §"PR 10B" below |
 
 ## PR 10B — founder-chosen collection amount (D-090)
 
-**State: implemented, reviewed, proven; PR open for founder review.** Branch `claude/shawn-onboarding-invoice-cen35q`.
+**State: MERGED AND DEPLOYED.** PR #978 squashed to `main` as `b4c6668` on the founder's
+explicit merge instruction after the review below. Migration `20260904010000` applied to
+production verbatim (md5 `b4bf4938ef5ca8d7eb85bfc792538e24`, identical to the merged file)
+and stamped `finance_pr10b_chosen_amount`; both assertion blocks silent; `notify pgrst`
+issued. Post-apply catalog: one defaulted `issue_payment_link` per schema, `amount_cents`
+present, 0 rows carrying an amount. Rollout steps 3–4 below remain the founder's live drill.
 
 ### Evidence (2026-09-03)
 
