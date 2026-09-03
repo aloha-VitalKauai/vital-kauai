@@ -62,6 +62,12 @@ type Specialist = {
   calendly_url: string | null;
 };
 
+// The welcome video is still being produced. Until it exists, the block
+// renders as an empty player over "Coming Soon" with copy describing a
+// video the member cannot watch, so it stays out of the portal. Flip to
+// true once the video is in place — nothing else needs to change.
+const SHOW_WELCOME_VIDEO = false;
+
 const CONTRIBUTION_URL = "/portal/donate";
 const ONBOARDING_CALL_URL = "https://calendly.com/aloha-vitalkauai/onboarding";
 
@@ -352,7 +358,8 @@ export function PortalHomePage({
 
       {/* ── MAIN PORTAL BODY ── */}
       <main className={styles.portalBody}>
-        {/* WELCOME VIDEO */}
+        {/* WELCOME VIDEO — hidden until the video is finished */}
+        {SHOW_WELCOME_VIDEO && (
         <div className={styles.videoBlock}>
           <div className={styles.videoWrap}>
             <div className={styles.videoPlay}>&#9654;</div>
@@ -372,6 +379,7 @@ export function PortalHomePage({
             <p className={styles.videoSignature}>&mdash; Rachel &amp; Josh</p>
           </div>
         </div>
+        )}
 
         {/* FOUR STEPS TO BEGIN\u2014contribution step temporarily hidden */}
         <section className={styles.unlockBlock}>
