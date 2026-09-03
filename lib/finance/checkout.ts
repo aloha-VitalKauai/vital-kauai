@@ -9,6 +9,9 @@
  *
  * The amount is computed inside `issue_payment_link` from the canonical view and
  * re-validated here before Stripe creation. The browser never supplies it.
+ * PR 10B (D-090): the founder may issue a link for a chosen amount, bounded by
+ * the payable remaining; the link carries that figure and the database
+ * re-checks it at Session creation. The member browser still supplies nothing.
  */
 
 import { createHash, randomBytes } from "node:crypto";
@@ -47,11 +50,49 @@ export function checkoutIdempotencyKey(attemptId: string): string {
   return `vk2_checkout_${attemptId}`;
 }
 
+/**
+ * The founder's chosen collection amount, as the route receives it (D-090).
+ * Absent means "the full payable remaining" and is passed through as `null` so
+ * the database default applies. Anything present must be a safe positive
+ * integer number of cents: a fraction, a string, NaN, Infinity or 2^53 is
+ * refused here, before any RPC, so the founder gets a clear message rather
+ * than a bigint coercion error. The cap against the live balance is the
+ * database's decision, not this function's.
+ */
+export function parseCollectionAmountCents(
+  input: unknown,
+): { ok: true; amountCents: number | null } | { ok: false; reason: "invalid_amount" } {
+  if (input === undefined || input === null) return { ok: true, amountCents: null };
+  if (typeof input !== "number" || !Number.isSafeInteger(input) || input <= 0) {
+    return { ok: false, reason: "invalid_amount" };
+  }
+  return { ok: true, amountCents: input };
+}
+
+/**
+ * The amount an attempt may be created for: the link's own figure where it has
+ * one, otherwise the full payable remaining — and refused, never clamped, when
+ * the link's figure exceeds what is now owed (D-090, brief answer C). Pure; the
+ * database applies the identical rule inside begin_checkout_attempt.
+ */
+export function attemptAmountFor(
+  linkAmountCents: number | null,
+  payableRemainingCents: number | null,
+): { ok: true; amountCents: number } | { ok: false; reason: "nothing_payable" | "exceeds_remaining" } {
+  if (payableRemainingCents === null || payableRemainingCents <= 0) {
+    return { ok: false, reason: "nothing_payable" };
+  }
+  if (linkAmountCents === null) return { ok: true, amountCents: payableRemainingCents };
+  if (linkAmountCents > payableRemainingCents) return { ok: false, reason: "exceeds_remaining" };
+  return { ok: true, amountCents: linkAmountCents };
+}
+
 type PeekRow = {
   link_id: string; agreement_id: string; link_status: string;
   link_expires_at: string; session_id: string | null; session_status: string | null;
   stripe_session_id: string | null; session_amount_cents: number | null;
   payable_remaining_cents: number | null; payment_state: string | null;
+  link_amount_cents: number | null;
 };
 
 export type TokenState =
@@ -110,9 +151,12 @@ export async function resolveTokenState(token: string): Promise<TokenState> {
 
   if (new Date(row.link_expires_at).getTime() <= Date.now()) return { state: "expired" };
 
-  const payable = row.payable_remaining_cents ?? 0;
-  if (payable <= 0) return { state: "paid" };
-  return { state: "ready", amountCents: payable };
+  // The link's figure against the LIVE payable remaining. A balance that moved
+  // below the figure the member was sent is refused, never clamped: the
+  // founder revokes and reissues (D-090).
+  const amount = attemptAmountFor(row.link_amount_cents, row.payable_remaining_cents);
+  if (!amount.ok) return amount.reason === "nothing_payable" ? { state: "paid" } : { state: "review" };
+  return { state: "ready", amountCents: amount.amountCents };
 }
 
 /**
@@ -144,22 +188,21 @@ export async function startCheckout(token: string, origin: string): Promise<
   if (claimErr || !claim) return { ok: false, reason: "conflict" };
   const { link_id, agreement_id } = claim;
 
-  // The amount, re-read from the canonical view AFTER the claim.
-  const { data: bal } = await fin
-    .from("agreement_balances")
-    .select("payable_remaining_cents")
-    .eq("agreement_id", agreement_id)
-    .returns<{ payable_remaining_cents: number }[]>();
-  const amount = bal?.[0]?.payable_remaining_cents ?? 0;
-  if (amount <= 0) return { ok: false, reason: "not_ready" };
+  // The amount, re-read from the canonical view AFTER the claim, beside the
+  // link's own figure: one read, the same rule the database applies in phase 2.
+  const { data: peekData } = await fin.rpc("peek_payment_link", { p_token_hash: hash });
+  const post = (peekData as unknown as PeekRow[] | null)?.[0];
+  const amount = attemptAmountFor(post?.link_amount_cents ?? null, post?.payable_remaining_cents ?? null);
+  if (!amount.ok) return { ok: false, reason: "not_ready" };
 
   // Phase 2: durable attempt BEFORE any Stripe call. The single-flight index
-  // refuses a second payable attempt for this agreement+mode.
+  // refuses a second payable attempt for this agreement+mode, and the function
+  // refuses an amount over the live payable remaining or off the link's figure.
   const livemode = (process.env.STRIPE_SECRET_KEY ?? "").startsWith("sk_live_");
   const { data: attemptData, error: attErr } = await fin.rpc("begin_checkout_attempt", {
     p_link_id: link_id,
     p_agreement_id: agreement_id,
-    p_amount_cents: amount,
+    p_amount_cents: amount.amountCents,
     p_livemode: livemode,
   });
   const attempt = (attemptData as unknown as { attempt_id: string; idempotency_key: string }[] | null)?.[0];
@@ -180,7 +223,7 @@ export async function startCheckout(token: string, origin: string): Promise<
             quantity: 1,
             price_data: {
               currency: "usd",
-              unit_amount: amount,
+              unit_amount: amount.amountCents,
               product_data: { name: "Vital Kauaʻi Journey Contribution" },
             },
           },

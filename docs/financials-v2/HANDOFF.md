@@ -1,6 +1,6 @@
 # Financials V2 — Handoff
 
-**Updated:** 2026-08-21 · **Updated by:** PR 4 preflight
+**Updated:** 2026-09-03 · **Updated by:** PR 10B brief (D-090)
 **Protocol:** every Financials V2 PR updates this file as its final commit. It is the first document read when picking the work back up.
 
 ---
@@ -17,6 +17,300 @@
 | 3 | Stripe shadow ingestion + §10a reconciliation | **Merged and DEPLOYED** — 3A `bcda54c`, 3B `76112ba`, 3C `92d0486`, canary fix `0724a7c` |
 | 4 | Founder-only verification workspace | **Preflight done** — `PR4_PREFLIGHT.md` |
 | 5–9 | See [PR_PLAN.md](PR_PLAN.md) | Not started |
+| 10B | Founder-chosen collection amount (D-090) | **Implemented, reviewed (APPROVE), proven in production (rolled back). PR open, awaiting founder review — financial PRs are reviewed before merge.** See §"PR 10B" below |
+
+## PR 10B — founder-chosen collection amount (D-090)
+
+**State: implemented, reviewed, proven; PR open for founder review.** Branch `claude/shawn-onboarding-invoice-cen35q`.
+
+### Evidence (2026-09-03)
+
+**Review.** Fresh-context adversarial review of the staged diff (attack surfaces a–o):
+no blocking code defect. Two non-blocking findings taken before the migration ever
+touched production — `begin_checkout_attempt` now requires the link to belong to the
+agreement (a foreign link is `VK404`, indistinguishable from a missing one), and the
+founder link strip flags a live link whose figure exceeds current Remaining
+("revoke and reissue", DANGER tone, display-only). Re-review of the delta: **APPROVE**.
+Two further non-blocking notes stand as Future items below (text-pin strength;
+single-shot migration, consistent with the D-088-era convention).
+
+**Gates.** `tsc --noEmit` clean. `npm test` 468/468 (447 + 21 in
+`lib/finance/checkout.test.ts`). Production build clean (137 pages;
+`/api/finance/payment-links` and `/contribute/[token]` compile).
+`git diff -- supabase/migrations/20260821140000_finance_pr6_checkout.sql` empty; its
+sha256 is pinned in the test.
+
+**Production proof — migration + proof in ONE transaction, terminated by an exception
+so it could only roll back.** No `COMMIT` existed in the script. Run 2026-09-03 via the
+Supabase management connection against `cbxogagxxnhzqfudxuxb`. The migration's
+`ALTER TABLE`, both `DROP FUNCTION`s, all `CREATE`s, grants and both assertion `DO`
+blocks ran silently (any raise would have surfaced instead of the results). The
+results block then read the catalog and raised:
+
+```
+migration: column_exists=t  rows_with_amount=4  issue_payment_link overloads finance=1 finance_api=1
+summary: 46 passed, 0 failed
+```
+
+(`rows_with_amount=4` are the proof's own links; criterion 16 read **0** pre-existing
+rows carrying an amount before the proof issued any — no backfill, `ALTER TABLE`
+affected 0 rows.) Every criterion the script covers printed PASS: 1, 2, 3, 4, 5, 7,
+8, 9 (including `23505` on `checkout_sessions_live_uq` and its PR 1 definition
+verbatim), 10, 11, 12 (non-founder `authenticated` → `founder role required`;
+`service_role` no EXECUTE on `finance_api.issue_payment_link(uuid,text,text,bigint)`;
+`authenticated` no EXECUTE on `peek`; zero anon/PUBLIC grants; zero `finance_api`
+SECURITY DEFINER beyond the D-088 carve-out), 13, 14 (one overload per schema,
+`pronargdefaults = 1`, three-argument named call resolves), 15, 16, and F3.
+
+**Downstream untouched — both halves.** Before apply, production reads
+`v_agreement_balances` md5 `6c202e145139bc34598b4e188b1e85bb` and
+`f_balances(boolean)` md5 `de6d509ad5c65021f91bd11be29871f3`. Criterion 10, inside
+the applied transaction, printed the identical pair.
+
+**Rollback held.** Immediately after: production shows one `finance.issue_payment_link`
+overload (the original three-argument one) and no `amount_cents` column on
+`finance.payment_links`.
+
+### Rollout verification still to do (post-merge, founder)
+
+1. Apply `20260904010000_finance_pr10b_chosen_amount.sql` to production and stamp it;
+   confirm the apply output shows no `ERROR`/`WARNING` and both `DO` blocks silent.
+2. Reload the PostgREST schema cache, then from the founder panel issue a link with
+   the amount left at the full Remaining — a three-argument `.rpc("issue_payment_link")`
+   resolving (or its `VK409 a live link already exists` refusal) proves resolution.
+3. Live drill on Shawn Coullahan's $12,500 agreement when the deposit figure is known:
+   issue the chosen amount, open `/contribute/<token>`, confirm the Stripe page shows
+   exactly that figure, pay, confirm one `stripe_payment` for that amount, Remaining =
+   Contribution − paid, state `partial`, then issue the remainder.
+4. Retire the stale full-amount Session `cs_live_a1eYrN…` (expires 2026-09-04 21:38 UTC,
+   or expire it in the Stripe dashboard) before issuing the first partial — single-flight
+   refuses a second live Session.
+Label note: `PR10_PREFLIGHT.md` used "10B" for the public-support provider
+sub-PR; this section is the D-090 commission and carries the label the
+commission gave it. D-090 is settled; this brief implements it, it does not
+reopen it.
+
+### Outcome
+
+The founder can issue a payment link for a chosen amount — integer cents,
+`> 0`, `<= payable_remaining_cents` — validated in Postgres at issuance and
+again at Session creation, with an omitted amount behaving exactly as today.
+
+### Design answers
+
+**A. Where the chosen amount lives.** A nullable column on the link:
+`finance.payment_links.amount_cents bigint NULL` with
+`CHECK (amount_cents IS NULL OR amount_cents > 0)`. `NULL` means "the full
+payable remaining at Session time", which is byte-for-byte today's semantics,
+so every existing row and every existing call keeps its meaning. This is an
+instruction the founder gave, in the same class as `reason` — it is not a
+derived financial value (Remaining stays only in `v_agreement_balances`), and
+it is never summed into any figure. Between issuance and Session creation the
+link carries the figure; at creation the figure is re-checked against the
+**live** view, so a moved balance is caught, never assumed. No new table,
+enum, view or flag.
+
+**B. Validation and error codes** (existing `VK4xx` convention):
+
+| Where | Rule | Code / message |
+|---|---|---|
+| `issue_payment_link` | `p_amount_cents IS NOT NULL AND p_amount_cents <= 0` | `VK400` `issue_payment_link: amount must be a positive number of cents` |
+| `issue_payment_link` | `p_amount_cents > payable_remaining_cents` | `VK409` `issue_payment_link: amount % exceeds payable remaining %` |
+| `issue_payment_link` | unchanged: not founder, blank reason, not active, nothing payable, live link exists | unchanged |
+| `begin_checkout_attempt` | `p_amount_cents <= 0` (existing) | `VK400` unchanged |
+| `begin_checkout_attempt` | agreement `payable_remaining_cents` `NULL` or `<= 0` | `VK409` `begin_checkout_attempt: nothing remains to collect` |
+| `begin_checkout_attempt` | `p_amount_cents > payable_remaining_cents` | `VK409` `begin_checkout_attempt: amount % exceeds payable remaining %` |
+| `begin_checkout_attempt` | `p_link_id IS NOT NULL` and `p_amount_cents <> COALESCE(link.amount_cents, payable_remaining_cents)` | `VK409` `begin_checkout_attempt: amount % does not match the link` |
+| route `POST /api/finance/payment-links` | `amountCents` present but not a safe positive integer | HTTP `400` `invalid_amount`, no RPC made |
+
+`bigint` parameters make a fractional amount unrepresentable at the database;
+the route refuses it first so the founder gets a clear message. The route
+passes `p_amount_cents` **only when the founder supplied one**; otherwise the
+argument is omitted and the default applies.
+
+**C. Balance moved down after issuance.** Refuse, never clamp. The founder
+issued a figure and the email stated that figure; a member is never charged
+a different amount than the one they were sent (the same principle as D-034's
+"a Session is never returned unconditionally"). Clamping would also decide,
+silently, that the founder still wants the smaller remainder collected — that
+is the founder's call. Behaviour: `resolveTokenState` returns `review` when
+`link_amount_cents > payable_remaining_cents` (the existing copy "We're
+reviewing this checkout… do not submit another payment" — no new state, no
+new copy), so `startCheckout` refuses `not_ready` **before phase 1** and the
+link is never claimed; `begin_checkout_attempt` enforces the same cap as the
+authoritative backstop. The founder revokes and reissues — one click.
+
+**D. Overload vs default.** One function, defaulted fourth parameter
+`p_amount_cents bigint DEFAULT NULL`, and the **three-argument signature is
+dropped in the same migration** in both `finance` and `finance_api`.
+`CREATE OR REPLACE` with a new parameter list creates a second overload; with
+`f(uuid,text,text)` and `f(uuid,text,text,bigint DEFAULT NULL)` both present,
+a three-argument call raises `function is not unique` and PostgREST's
+named-argument resolution is likewise ambiguous. The PR 6 assertion block
+counts nothing by number — it asserts zero `SECURITY DEFINER` in
+`finance_api`, zero `PUBLIC`/`anon` `EXECUTE`, no `service_role` `EXECUTE` on
+the founder link functions, no `authenticated` `EXECUTE` on the machine
+functions, and no `UPDATE`/`DELETE` grant on `finance` — and it lives in an
+already-applied migration that is not edited or re-run. What matters is that
+a **newly created** function defaults to `PUBLIC EXECUTE`, so the new
+migration must `REVOKE ALL … FROM public` and re-grant on the new signature,
+then run its own copy of that block plus the 10B-specific assertions below.
+
+**E. `begin_checkout_attempt`.** Today it validates only `> 0` and does not
+consult the view; the "amount recalculated server-side" guarantee currently
+rests on `startCheckout` alone. The cap check moves into the function
+(signature unchanged): lock the agreement `FOR UPDATE`, read
+`v_agreement_balances`, apply the three `VK409` rules in B. The member-portal
+functions (`begin_member_contribution_checkout`, `begin_member_gift_checkout`)
+insert directly and never call it, so they are untouched.
+
+**F. UI.** In the Collect drawer, the read-only "Amount to collect" box
+becomes a dollar input prefilled with the full Payable Remaining, helper text
+"Up to {Remaining}. Leave as is to collect the full balance." The client
+checks integer cents `> 0` and `<= remaining` for feedback only; the route and
+the database decide. The preview sentence states the entered figure. The
+issued box and the email already print `row.amount_cents` from the response,
+so they show the chosen figure without change. The link strip gains the
+amount where present (one line; the founder must see what a live link is
+for before revoking it). `/contribute/[token]` renders `s.amountCents` from
+`resolveTokenState`, which now returns the link's figure — **no page change**.
+
+**G. `lib/database.types.ts`.** `finance_api` is not generated (zero
+occurrences in the file) and the `public` schema is untouched, so **no
+regeneration** and no typed-call change; the `.schema("finance_api")` calls
+stay untyped as today.
+
+### In scope
+
+- `supabase/migrations/20260904010000_finance_pr10b_chosen_amount.sql` — the one migration (below).
+- `lib/finance/checkout.ts` — `PeekRow` gains `link_amount_cents`; two pure exported helpers, `parseCollectionAmountCents(input: unknown)` and `attemptAmountFor(linkAmountCents, payableRemainingCents)`; `resolveTokenState` returns the link figure in `ready` and `review` when it exceeds payable; `startCheckout` passes `attemptAmountFor(...)` to `begin_checkout_attempt`.
+- `app/api/finance/payment-links/route.ts` — `Body` issue variant gains `amountCents?: number`; validate with `parseCollectionAmountCents`; pass `p_amount_cents` only when supplied. Email sentence becomes "Here is your secure, single-use link for your contribution payment of **{amount}**:" (founder may veto the wording).
+- `app/components/dashboard/financials/V2FinancialPanel.tsx` — Collect drawer input, preview text, link-strip amount.
+- `lib/finance/checkout.test.ts` (new, added to the `npm test` list in `package.json`).
+- `supabase/tests/proofs/pr10b_partial_collection.sql` (new; outside the `supabase/tests/finance/*.sql` pgTAP glob, whose harness stops at the PR 1 series) — the rolled-back production proof script, output pasted into the PR.
+- `docs/financials-v2/HANDOFF.md` final commit.
+
+### Explicitly out of scope
+
+- Concurrent partial links or Sessions; `checkout_sessions_live_uq` and the one-live-link rule are untouched.
+- Member-initiated partials: `/api/finance/member-checkout` and `begin_member_*` stay full-remaining only.
+- Amend, or any change to `agreement_amounts`, the lifecycle, or the Contribution.
+- Any change to `v_agreement_balances`, `v_member_financials`, `v_journey_financials`, or the founder/member overview views.
+- Reconciliation, the worker, the sweepers, `checkout-recovery.ts`, `record_v2_stripe_payment`, the webhook.
+- Gifts, public support, processing fees, receipts.
+- Payment schedules, reminders, "remaining after this link" projections, or storing any derived figure.
+- Retiring the pre-existing D-034 gap on founder-link resume (see Future items).
+
+### Acceptance criteria
+
+1. **Omitted amount is unchanged.** `finance_api.issue_payment_link(agreement, hash, reason)` with no fourth argument returns `amount_cents = payable_remaining_cents`; the row has `amount_cents IS NULL`; `startCheckout` creates the Session for the payable remaining read at attempt time.
+2. **Partial issuance and Session.** Contribution 1,250,000; `p_amount_cents = 500000` → row `amount_cents = 500000`, returned `amount_cents = 500000`; `resolveTokenState` → `ready` with `amountCents = 500000`; `begin_checkout_attempt` row `amount_cents = 500000`; Stripe `unit_amount = 500000`; the email and the issued box print $5,000.00.
+3. **Zero rejected.** `p_amount_cents = 0` → `VK400`; zero rows inserted.
+4. **Negative rejected.** `p_amount_cents = -1` → `VK400`; zero rows inserted.
+5. **Over-cap rejected at issuance.** `p_amount_cents = payable_remaining_cents + 1` → `VK409`; zero rows inserted. `p_amount_cents = payable_remaining_cents` succeeds.
+6. **Non-integer refused at the route.** `amountCents` of `50.5`, `"5000"`, `NaN` or `2^53` → HTTP `400 invalid_amount`; no RPC call.
+7. **Moved balance is refused, not clamped.** Issue 500,000 on payable 1,250,000; record an external payment of 800,000 (payable now 450,000). `resolveTokenState` → `review`; `POST /api/contribute` → `409`; the link is still `active` (never claimed); no `checkout_sessions` row exists. Calling `begin_checkout_attempt(link, agreement, 500000, true)` directly raises `VK409 … exceeds payable remaining`.
+8. **Link–attempt consistency.** For a link with `amount_cents = 500000`, `begin_checkout_attempt(link, agreement, 400000, true)` raises `VK409 … does not match the link`; for a link with `amount_cents IS NULL`, an amount other than the current payable remaining raises the same.
+9. **Single-flight unchanged.** With a live link, a second `issue_payment_link` — with or without an amount — raises `VK409 … a live link already exists`. A second `creating`/`open` Session for the same `(agreement_id, livemode)` raises `23505` on `checkout_sessions_live_uq`, and `pg_get_indexdef('finance.checkout_sessions_live_uq'::regclass)` is identical before and after the migration.
+10. **Downstream is untouched.** After `record_v2_stripe_payment(agreement, 500000, …, livemode = true)`: `v_agreement_balances` reports `gross_received_cents = 500000`, `remaining_cents = 750000`, `payment_state = 'partial'`; the view definition (`pg_get_viewdef`) is unchanged. A second link — omitted amount → 750,000, or `p_amount_cents = 750000` — then issues successfully.
+11. **Paid agreement still refuses.** With `payable_remaining_cents = 0`, `issue_payment_link` with or without an amount raises `VK409 nothing remains to collect`.
+12. **Role boundary.** As a non-founder `authenticated` user, `finance_api.issue_payment_link(…, 500000)` raises `founder role required` and inserts nothing. `has_function_privilege('service_role', 'finance_api.issue_payment_link(uuid,text,text,bigint)', 'EXECUTE')` is false; `anon` and `PUBLIC` hold no `EXECUTE` on any function created by the migration; `finance_api` still has zero `SECURITY DEFINER` functions.
+13. **Member path cannot supply an amount.** `POST /api/finance/member-checkout` with `kind: "contribution"` and any of `amountCents`/`amount`/`amount_cents` still returns `400 amount_not_accepted`; `finance.begin_member_contribution_checkout(uuid, uuid)` remains the only signature and has no amount parameter.
+14. **Exactly one overload.** After migration, `finance.issue_payment_link` and `finance_api.issue_payment_link` each have exactly one `pg_proc` row, with `pronargdefaults = 1`; a three-argument call through PostgREST (`.rpc("issue_payment_link", { p_agreement_id, p_token_hash, p_reason })`) resolves without ambiguity.
+15. **Assertion block passes.** The migration's closing `DO` block (PR 6 block verbatim plus 12 and 14 and the column/CHECK existence) raises nothing on apply; the PR 6 file is byte-unchanged (`git diff --stat` shows no change to `20260821140000_finance_pr6_checkout.sql`).
+16. **Fresh database.** The migration applies after the existing series on an empty database with `rows affected = 0` for the `ALTER TABLE`.
+17. **Gates.** `npm test` green including `lib/finance/checkout.test.ts`; `npm run typecheck` clean; production build clean; `scripts/retirement-gate.mjs` clean.
+
+### Migration plan — `20260904010000_finance_pr10b_chosen_amount.sql`
+
+Additive only; one file; apply **before** the code deploys (the old code
+omits the argument and keeps working against the defaulted function; the
+new code must not run against the old function). Rows affected: 0.
+
+1. `ALTER TABLE finance.payment_links ADD COLUMN amount_cents bigint NULL CONSTRAINT payment_links_amount_cents_positive CHECK (amount_cents IS NULL OR amount_cents > 0);` — no backfill; `NULL` is the correct meaning for every existing row.
+2. `DROP FUNCTION finance_api.issue_payment_link(uuid, text, text); DROP FUNCTION finance.issue_payment_link(uuid, text, text);`
+3. `CREATE FUNCTION finance.issue_payment_link(p_agreement_id uuid, p_token_hash text, p_reason text, p_amount_cents bigint DEFAULT NULL) RETURNS TABLE (link_id uuid, amount_cents bigint, expires_at timestamptz)` — PR 6 body verbatim with three additions after the "nothing remains" check: the `VK400` and `VK409` rules from B; `INSERT … (…, amount_cents) VALUES (…, p_amount_cents)`; `RETURN QUERY SELECT v_id, COALESCE(p_amount_cents, v_bal.payable_remaining_cents), v_exp`. Same `SECURITY DEFINER`, same `search_path`, same lock order (agreement `FOR UPDATE` first).
+4. `CREATE OR REPLACE FUNCTION finance.begin_checkout_attempt(uuid, uuid, bigint, boolean)` — same signature; body adds `PERFORM 1 FROM finance.agreements WHERE id = p_agreement_id FOR UPDATE`, the view read, and the three `VK409` rules from B/E before the `INSERT`.
+5. `DROP FUNCTION finance_api.peek_payment_link(text); DROP FUNCTION finance.peek_payment_link(text);` then recreate both with one added trailing column `link_amount_cents bigint` (`l.amount_cents`). Return-type changes require drop; both are `service_role`-only and read-only.
+6. `CREATE OR REPLACE VIEW finance_api.payment_links` — same column list plus `amount_cents` appended (adding a trailing column is permitted by `CREATE OR REPLACE VIEW`).
+7. `CREATE FUNCTION finance_api.issue_payment_link(p_agreement_id uuid, p_token_hash text, p_reason text, p_amount_cents bigint DEFAULT NULL)` — `SECURITY INVOKER`, one-line `SELECT * FROM finance.issue_payment_link(...)`.
+8. Grants, on every new signature: `REVOKE ALL … FROM public`; `GRANT EXECUTE` on both `issue_payment_link` to `authenticated` only; on both `peek_payment_link` to `service_role` only; `begin_checkout_attempt` grants are unchanged because its signature is unchanged. `GRANT SELECT ON finance_api.payment_links TO authenticated, service_role` re-stated.
+9. Closing `DO $chk$` block: the PR 6 block verbatim, plus: column exists with the named CHECK; exactly one `issue_payment_link` in each schema with `pronargdefaults = 1`; `pg_get_indexdef` of `checkout_sessions_live_uq` equals its PR 1 text; no `PUBLIC`/`anon` `EXECUTE` on the two new signatures.
+
+The PR 6 migration is not edited. The `supabase/tests/migrations_manifest.txt`
+series is frozen at PR 1 and does not list this file (it lists none since).
+
+### Test plan
+
+**Proven by SQL in a rolled-back production transaction** (`BEGIN; … ROLLBACK;`
+as founder `request.jwt.claim.sub`, then as a member, then as `service_role`;
+script committed at `supabase/tests/proofs/pr10b_partial_collection.sql`,
+output pasted into the PR): criteria 1, 3, 4, 5 (issuance half), 7 (the
+direct `begin_checkout_attempt` call), 8, 9, 10, 11, 12, 14, 15, 16. The
+`payment_links` and `checkout_sessions` rows created inside the transaction
+are discarded with it; `ledger_entries` is written only via
+`record_v2_stripe_payment` inside the same rolled-back transaction, so no
+production fact row is created.
+
+**Proven by `node:test` over the TS logic** (`lib/finance/checkout.test.ts`,
+no database, no Stripe — the same shape as `app/api/support/checkout/route.test.ts`
+and the source-pinning style of `app/portal/donate/pr8-truth.test.ts`):
+- `parseCollectionAmountCents`: `undefined`/`null` → `null` (full); `500000` → `500000`; `0`, `-1`, `50.5`, `"5000"`, `NaN`, `Infinity`, `2**53` → refused (criterion 6).
+- `attemptAmountFor`: `(null, 1250000)` → `1250000`; `(500000, 1250000)` → `500000`; `(500000, 500000)` → `500000`; `(500000, 450000)` → refused `exceeds_remaining`; `(null, 0)`, `(500000, 0)`, `(null, null)` → refused `nothing_payable` (criteria 1, 2, 7).
+- Source pins: `startCheckout` calls `attemptAmountFor` and the `ready` check before `claim_payment_link`; the founder route forwards `p_amount_cents` only inside an `if (amountCents !== null)`; `app/api/finance/member-checkout/route.ts` still contains `amount_not_accepted` and never mentions `p_amount_cents` (criterion 13); `lib/finance/member-checkout.ts` calls no `begin_checkout_attempt`.
+- `pr7-truth`/`pr9-truth` pins are unaffected (none pin the Collect drawer copy — verified by grep).
+
+**Proven by the founder in production after deploy** (test-mode key is not
+configured for founder links, so this is the live drill, as PR 6's was): issue
+a $1.00 partial on a real agreement, confirm the bridge page shows $1.00, pay
+it, confirm exactly one `stripe_payment` of 100 cents and `payment_state =
+partial`; then issue the remainder. Criteria 2 (Stripe half) and 10 (end to
+end).
+
+### Rollout and rollback
+
+**Rollout.** No new flag. Issuance stays behind the existing
+`FINANCE_V2_CHECKOUT_READY` (currently `true`). Order: (1) apply the migration
+and stamp it; (2) confirm through Supabase that a three-argument
+`.rpc("issue_payment_link", …)` still resolves (PostgREST reloads its schema
+cache on DDL); (3) merge and let Vercel deploy; (4) the founder runs the $1.00
+drill above; (5) `HANDOFF.md` records the drill output.
+
+**Rollback.** Code: revert the squash commit — the old route omits the
+argument and works against the defaulted function. Database, only if the
+function bodies must also go back: first revoke every live link that carries
+an amount (`SELECT id FROM finance.payment_links WHERE amount_cents IS NOT NULL
+AND status IN ('active','creating')` → `revoke_payment_link` each), because a
+pre-10B `startCheckout` would charge such a link the **full** remaining;
+then `DROP` the four-argument functions and recreate the PR 6 bodies and
+grants for `issue_payment_link`, `begin_checkout_attempt` and
+`peek_payment_link`, and the view without the column. The column stays —
+nullable, unreferenced, harmless. Rollback is clean; the only residue is
+`amount_cents` values on historical rows, which are audit facts and correct.
+
+### Security review (PR template answers)
+
+- **Authorization.** Issuance: `authenticated` may `EXECUTE`, and `public.is_founder()` inside the `SECURITY DEFINER` body is the gate, exactly as PR 6. `begin_checkout_attempt` and `peek_payment_link`: `service_role` only, unchanged. `anon`/`PUBLIC`: nothing. Asserted in-migration.
+- **RLS.** No table policy changes. `finance.payment_links` remains `SELECT`-only to API roles; the only write paths are the `SECURITY DEFINER` functions.
+- **Secrets.** None added.
+- **Input validation and amounts.** The founder's amount is an instruction, validated three times: route (`Number.isSafeInteger`, `> 0`), `issue_payment_link` (`> 0`, `<= payable_remaining` under agreement lock), `begin_checkout_attempt` (`> 0`, `<= payable_remaining`, equals the link's figure, under agreement lock). The member browser cannot supply any amount on any path. Integer cents throughout; the only figure sent to Stripe is `checkout_sessions.amount_cents`, which is `> 0` by `CHECK` and bounded by `payable_remaining_cents = GREATEST(remaining, 0)` — never negative, never `NULL`.
+- **PII.** Nothing new stored; `amount_cents` is not PII. Retention unchanged.
+
+### Risks
+
+1. **Overload ambiguity** (`function is not unique` / PostgREST "could not choose the best candidate"). Mitigation: the three-argument signatures are dropped in the same migration; criterion 14 asserts one `pg_proc` row per schema and a three-argument PostgREST call.
+2. **New function created with `PUBLIC EXECUTE`.** Mitigation: `REVOKE ALL … FROM public` on each new signature, and the closing block asserts zero `anon`/`PUBLIC` `EXECUTE` (criterion 12).
+3. **A partial Session is paid after the balance moves under it** (external payment recorded while a $5,000 Session is open, so the member overpays). This is the pre-existing D-034 gap on the founder-link **resume** path (`open_session` resumes without re-checking the amount), not introduced here, and a partial does not make it more likely. Mitigation in this PR: refusal before claim (criterion 7) and the cap in `begin_checkout_attempt` close the window before a Session exists; the resume path is recorded as a Future item, not folded in.
+4. **Old code against the new function / new code against the old function.** Mitigation: apply the migration first; the old code passes three arguments and the default covers it; the new route passes the fourth only when supplied.
+5. **Email says "complete your contribution of $5,000" for a partial.** Mitigation: the one-sentence wording change in scope; founder reviews the sentence in the PR.
+6. **Dollar-to-cents rounding in the drawer** (`Math.round(parseFloat(x) * 100)`, the existing pattern for external payments). Mitigation: the route refuses anything that is not a safe integer; the database receives `bigint` only; the founder sees the exact cents figure in the preview before creating.
+7. **PostgREST schema cache stale after the function signature changes.** Mitigation: rollout step 2 verifies a live call before the code deploys; Supabase reloads on DDL, and `NOTIFY pgrst, 'reload schema'` is the fallback.
+
+### Implementer: first action
+
+Write the migration first, then run the rolled-back production proof script
+against it before touching any TypeScript. Database foundation precedes
+interface.
 
 ## PR 2 was rescoped — PR_PLAN is stale on this point
 
@@ -426,6 +720,10 @@ V2 figures will differ from currently displayed figures wherever a legacy `adjus
 
 Noticed during audit or design, deliberately not folded into any current PR.
 
+- **Founder-link resume does not re-check the amount (D-034 gap).** `resolveTokenState` returns `open_session` and `startCheckout` resumes it without comparing `checkout_sessions.amount_cents` to the current `payable_remaining_cents`; the member-portal path (`lib/finance/member-checkout.ts`) does compare and expires-then-recreates. Pre-existing before PR 10B; noticed while briefing it. Fix is its own PR: apply the D-034 reuse table to the founder-link path.
+- **The PR 6 assertion block is no longer verbatim-reusable.** D-088 (`20260823020000`) made `finance_api.public_campaign_status` the one `SECURITY DEFINER` function anon may execute and carved it out of its own assertions by name; the PR 6 counts ("zero `finance_api` SECURITY DEFINER", "zero anon/PUBLIC EXECUTE") now fail on that function alone. PR 10B's migration carries the PR 6 block with the same named carve-out. Any future brief that says "PR 6 block verbatim" should say "PR 6 block with the D-088 carve-out". Noticed while applying PR 10B to a local build of the series.
+- **The retirement gate's scope audit flags a build output.** With `.next/` present (after `npm run build`), `retirement-gate.test.ts`'s null control and restoration tests fail on "source file exists but was never scanned: .next/…" even though `.next` is in `PRUNED_DIRS`; the suite is green once `.next` is removed. Run `npm test` before `npm run build`, or align the scope audit's walk with the prune list. Noticed while running the PR 10B gates.
+- **`supabase/tests/migrations_manifest.txt` is stale.** It lists eight `20260730…` filenames that no longer exist on disk (the PR 1 files were renamed to `20260814…`) and nothing after PR 1, so `run_all.sh` and the pgTAP harness cannot build a database from the current series. Noticed while deciding where PR 10B's SQL proof could live. Not PR 10B's to fix.
 - **`journey_email_log` identity mismatch.** Its `member_id` references `members(id)` while its member RLS policy compares `member_id = auth.uid()` — the same defect two migrations already repaired elsewhere. It works only while `members.id` happens to equal `auth.uid()`. Not owned by Financials V2.
 - **`app/portal/labs/page.tsx` references `members.auth_user_id`**, a column appearing nowhere else in the repository, silently falling back to `user.id`.
 - **`lib/auth/founder-check.ts` uses a hardcoded `FOUNDER_IDS` array** while the database has `public.is_founder()`. V2 uses the database predicate; the application path is not V2's to fix but is the same drift risk.

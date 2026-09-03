@@ -2,14 +2,17 @@
  * PR 6: founder link issuance, status and revocation.
  *
  * Founder session only; the amount is computed inside issue_payment_link from
- * the canonical view. The raw token exists only in this response — the database
- * holds its hash. Issuance sits behind FINANCE_V2_CHECKOUT_READY (fail closed)
- * per the rollout sequence; revocation and status are always available.
+ * the canonical view. PR 10B (D-090): the founder may name a chosen amount —
+ * checked here for shape only, then capped by the database against the live
+ * payable remaining under lock; omitted means the full remaining, as before.
+ * The raw token exists only in this response — the database holds its hash.
+ * Issuance sits behind FINANCE_V2_CHECKOUT_READY (fail closed) per the rollout
+ * sequence; revocation and status are always available.
  */
 
 import { NextResponse } from "next/server";
 import { createClient as createServerSupabase } from "@/lib/supabase/server";
-import { generateLinkToken, hashLinkToken } from "@/lib/finance/checkout";
+import { generateLinkToken, hashLinkToken, parseCollectionAmountCents } from "@/lib/finance/checkout";
 
 export const runtime = "nodejs";
 
@@ -39,7 +42,7 @@ export async function GET(req: Request) {
 }
 
 type Body =
-  | { action: "issue"; agreementId: string; reason: string; email: boolean }
+  | { action: "issue"; agreementId: string; reason: string; email: boolean; amountCents?: number }
   | { action: "revoke"; linkId: string };
 
 export async function POST(req: Request) {
@@ -65,14 +68,23 @@ export async function POST(req: Request) {
   }
   const reason = body.reason?.trim();
   if (!reason) return NextResponse.json({ error: "reason_required" }, { status: 400 });
+  // A chosen amount is refused for shape here, before any RPC (D-090). Whether
+  // it is within the live payable remaining is the database's decision.
+  const chosen = parseCollectionAmountCents(body.amountCents);
+  if (!chosen.ok) return NextResponse.json({ error: chosen.reason }, { status: 400 });
+  const amountCents = chosen.amountCents;
 
   // The raw token is generated here, hashed for storage, returned exactly once.
+  // p_amount_cents is forwarded only when the founder supplied one; omitted, the
+  // database default (NULL = the full payable remaining) applies.
   const token = generateLinkToken();
-  const { data, error } = await fin.rpc("issue_payment_link", {
+  const args: Record<string, unknown> = {
     p_agreement_id: body.agreementId,
     p_token_hash: hashLinkToken(token),
     p_reason: reason,
-  });
+  };
+  if (amountCents !== null) args.p_amount_cents = amountCents;
+  const { data, error } = await fin.rpc("issue_payment_link", args);
   if (error) return NextResponse.json({ error: "refused", detail: error.message }, { status: 409 });
   const row = (data as unknown as { link_id: string; amount_cents: number; expires_at: string }[] | null)?.[0];
   if (!row) return NextResponse.json({ error: "issue_failed" }, { status: 500 });
@@ -123,7 +135,7 @@ async function sendLinkEmail(
       to: [to],
       subject: "Your secure contribution link—Vital Kauaʻi",
       html: `<p>Aloha${prof?.[0]?.full_name ? ` ${prof[0].full_name}` : ""},</p>
-<p>Here is your secure, single-use link to complete your contribution of <strong>${amount}</strong>:</p>
+<p>Here is your secure, single-use link for your contribution payment of <strong>${amount}</strong>:</p>
 <p><a href="${url}">${url}</a></p>
 <p>This link expires on ${expires}. Payment is processed securely by Stripe; Vital Kauaʻi never sees your card details.</p>
 <p>With aloha,<br/>Vital Kauaʻi</p>`,
