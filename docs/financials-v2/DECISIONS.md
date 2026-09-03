@@ -1337,3 +1337,53 @@ lost is the reassurance, not the behaviour. `PR8_BUILD_SPEC.md` §4.5 records
 the removal.
 
 No figure, formula, ledger path, checkout path or state label changes.
+
+## D-090 — a Contribution is collected in founder-chosen amounts; the Contribution itself never moves (2026-09-03)
+
+Founder-commissioned. `PR10_PLUS_ROADMAP.md` places installments out of
+scope "unless separately commissioned"; this entry is that commission, recorded
+before any code is written, as the scope-expansion rule requires.
+
+**The situation.** A member's Contribution is $12,500. The founder wants to
+take a $5,000 deposit now and $7,500 later, through the platform, as two Stripe
+links. Today that is impossible in two independent ways: every collection path
+derives its amount as the *entire* `payable_remaining_cents` and accepts no
+input (ARCHITECTURE §12, behavioural proof #1), and the single-flight index
+`checkout_sessions_live_uq` permits one live Session per (agreement, livemode).
+The only workaround was to amend the Contribution to $5,000 and open a second
+$7,500 agreement — which records that the member agreed to $5,000, shows `paid`
+at $0 remaining while $7,500 is still owed, and leaves one journey split across
+two agreements. That misstates the agreement to describe a payment plan.
+
+**The decision.**
+
+1. **The Contribution is the agreement and does not change because of how it
+   is paid.** Amend stays reserved for a genuine change to the agreed figure.
+2. **The founder may issue a payment link for a chosen amount.** The amount is
+   an integer number of cents, strictly positive, and **no greater than the
+   agreement's current `payable_remaining_cents`**, checked inside the
+   `SECURITY DEFINER` function at issuance and re-checked by
+   `begin_checkout_attempt` at Session creation, against the live view, never
+   trusted from the client. Omitting the amount keeps today's behaviour: the
+   full payable remaining.
+3. **Sequential, not concurrent.** One live link and one live Session per
+   agreement remain the rule; `checkout_sessions_live_uq` is untouched. A
+   second amount is issued after the first is paid, expired or revoked.
+   Concurrent partial links would require a "sum of open Sessions plus
+   received may not exceed Contribution" invariant that is not designed here
+   and is not needed for the stated case.
+4. **Nothing downstream changes.** `v_agreement_balances` already sums
+   multiple receipts and yields `partial`; reconciliation already matches each
+   PaymentIntent to one `stripe_payment`; the member portal already renders
+   Received and Remaining from the view. No new state, no new table, no new
+   derived value.
+
+**What this is not.** Not recurring billing, not a schedule, not a promise the
+member can pay in parts from their own portal (the member checkout path keeps
+collecting the full remaining), not a change to gifts or public support.
+
+**Why the partial figure is safe to send to Stripe.** It is bounded above by
+`payable_remaining_cents`, which is `GREATEST(remaining_cents, 0)` and already
+the only figure permitted to reach a charge request (ARCHITECTURE §11). A
+partial amount is therefore never negative, never `NULL`, and never more than
+what is owed.
