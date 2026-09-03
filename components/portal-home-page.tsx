@@ -376,7 +376,7 @@ export function PortalHomePage({
               <em>Welcome</em> to the Portal
             </h2>
             <p className={styles.videoText}>
-              We are glad you are here. In this video we share a map of what this portal holds,
+              We are glad you are here. Here we share a map of what this portal holds,
               and how to move through it. If you have questions, know our door is always open,
               and so are our hearts.
             </p>
