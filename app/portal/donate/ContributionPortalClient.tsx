@@ -424,14 +424,14 @@ export default function ContributionPortalClient({
         ) : (
           <div role="table" aria-label="Payment activity">
             {activity.map((row) => (
-              <div key={row.entry_id} role="row" style={{ display: "grid", gridTemplateColumns: "130px 1fr 170px 110px", alignItems: "center", gap: 16, padding: "16px 32px", borderTop: `1px solid ${LINE}`, fontSize: 14 }}>
-                <span role="cell" style={{ color: MUTED }}>
+              <div key={row.entry_id} role="row" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px 16px", padding: "16px 32px", borderTop: `1px solid ${LINE}`, fontSize: 14 }}>
+                <span role="cell" style={{ flex: "0 0 auto", color: MUTED }}>
                   {new Date(row.occurred_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                 </span>
-                <strong role="cell">{PURPOSE_LABEL[row.purpose] ?? "Contribution"}</strong>
-                <span role="cell" style={{ color: MUTED }}>{METHOD_LABEL[row.entry_type] ?? row.entry_type}</span>
+                <strong role="cell" style={{ flex: "1 1 120px", minWidth: 0 }}>{PURPOSE_LABEL[row.purpose] ?? "Contribution"}</strong>
+                <span role="cell" style={{ flex: "0 0 auto", color: MUTED }}>{METHOD_LABEL[row.entry_type] ?? row.entry_type}</span>
                 <span role="cell" aria-label={`${row.amount_cents < 0 ? "minus " : ""}${usd(Math.abs(row.amount_cents))}`}
-                  style={{ textAlign: "right", fontWeight: 750, fontVariantNumeric: "tabular-nums", color: row.amount_cents < 0 ? "#8d4c3b" : INK }}>
+                  style={{ flex: "0 0 auto", marginLeft: "auto", textAlign: "right", fontWeight: 750, fontVariantNumeric: "tabular-nums", color: row.amount_cents < 0 ? "#8d4c3b" : INK }}>
                   {row.amount_cents < 0 ? `−${usd(Math.abs(row.amount_cents))}` : `+${usd(row.amount_cents)}`}
                 </span>
               </div>
