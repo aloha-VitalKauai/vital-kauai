@@ -84,6 +84,22 @@ function usd(cents: number): string {
 function fmtDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
+/**
+ * Dollars typed by the founder → integer cents with no floating point (D-090):
+ * the string is split on the decimal point and each side is read as an integer.
+ * Blank, malformed, or more than two decimal digits → null.
+ */
+function dollarsToCents(input: string): number | null {
+  const m = /^\s*(\d{1,13})(?:\.(\d{1,2}))?\s*$/.exec(input);
+  if (!m) return null;
+  const cents = Number(m[1]) * 100 + Number((m[2] ?? "").padEnd(2, "0"));
+  return Number.isSafeInteger(cents) ? cents : null;
+}
+/** Integer cents → the "1234.56" a dollar input holds. Integer arithmetic only. */
+function centsToDollarsInput(cents: number): string {
+  const whole = (cents - (cents % 100)) / 100;
+  return `${whole}.${String(cents % 100).padStart(2, "0")}`;
+}
 
 const PAYMENT_STATE_LABEL: Record<string, { label: string; tone: string }> = {
   unpaid: { label: "Unpaid", tone: MUTED },
@@ -319,7 +335,7 @@ function AgreementCard({
             ))}
         </div>
       )}
-      {a.lifecycle_status === "active" && <LinkStrip agreementId={a.agreement_id} />}
+      {a.lifecycle_status === "active" && <LinkStrip agreementId={a.agreement_id} remainingCents={a.remaining_cents} />}
 
       {terminal && transitions.length === 0 && (
         <p style={{ fontSize: 12, color: MUTED, marginBottom: 14 }}>
@@ -434,8 +450,20 @@ function ActionDrawer({
     return Number.isFinite(v) ? v : NaN;
   }, [amount]);
 
+  // Collect (D-090): the chosen amount, prefilled with the full Payable
+  // Remaining so leaving it as is keeps today's behaviour. The check here is
+  // feedback only; the route and the database decide.
+  const [collectAmount, setCollectAmount] = useState(() =>
+    drawer.kind === "collect" ? centsToDollarsInput(drawer.agreement.remaining_cents) : "",
+  );
+  const collectCents = useMemo(() => dollarsToCents(collectAmount), [collectAmount]);
+  const collectValid =
+    drawer.kind === "collect" && collectCents !== null && collectCents > 0 &&
+    collectCents <= drawer.agreement.remaining_cents;
+  const collectReady = collectValid && reason.trim().length > 0;
+
   const needsAmount = drawer.kind === "create" || drawer.kind === "amend" || drawer.kind === "payment";
-  // collect: amount is server-derived; only the reason gates the buttons.
+  // collect: the chosen amount and the reason gate its own buttons below.
   const valid =
     reason.trim().length > 0 &&
     (!needsAmount || (Number.isInteger(cents) && (drawer.kind === "payment" ? cents > 0 : cents >= 0)));
@@ -452,7 +480,7 @@ function ActionDrawer({
   function preview(): string {
     switch (drawer.kind) {
       case "collect":
-        return `Create a secure, single-use Stripe link for ${usd(drawer.agreement.remaining_cents)}—the live Payable Remaining. The amount is calculated from the live V2 ledger when the link is created.`;
+        return `Create a secure, single-use Stripe link for ${collectCents === null ? "the entered amount" : usd(collectCents)}. The database confirms it is within the live Payable Remaining when the link is created.`;
       case "create":
         return `Create a ${purpose.replace(/_/g, " ")} agreement for ${memberName ?? "this member"} with a Contribution of ${usd(cents)}.`;
       case "amend":
@@ -471,13 +499,20 @@ function ActionDrawer({
   } | null>(null);
 
   async function executeCollect(email: boolean) {
-    if (drawer.kind !== "collect") return;
+    if (drawer.kind !== "collect" || collectCents === null) return;
     setBusy(true);
     try {
+      // The full Payable Remaining is sent as no amount, so the link keeps
+      // today's meaning (the full remaining, read at Session time). Any other
+      // figure is the founder's chosen amount, capped again by the database.
+      const body: Record<string, unknown> = {
+        action: "issue", agreementId: drawer.agreement.agreement_id, reason: reason.trim(), email,
+      };
+      if (collectCents !== drawer.agreement.remaining_cents) body.amountCents = collectCents;
       const res = await fetch("/api/finance/payment-links", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ action: "issue", agreementId: drawer.agreement.agreement_id, reason: reason.trim(), email }),
+        body: JSON.stringify(body),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -615,12 +650,14 @@ function ActionDrawer({
 
             {drawer.kind === "collect" && (
               <div style={{ background: "#f3f7f2", border: "0.5px solid #9fbea8", borderRadius: 12, padding: "14px 16px", marginBottom: 12 }}>
-                <p style={{ ...SECTION_LABEL, color: "#57906e", marginBottom: 4 }}>Amount to collect</p>
-                <p style={{ margin: 0, fontFamily: "var(--font-display, serif)", fontSize: 30, color: FOREST, fontVariantNumeric: "tabular-nums" }}>
-                  {usd(drawer.agreement.remaining_cents)}
-                </p>
-                <p style={{ margin: "6px 0 0", fontSize: 12, color: MUTED }}>
-                  Calculated from the live V2 ledger when the link is created. This amount cannot be edited here.
+                <p style={{ ...SECTION_LABEL, color: "#57906e", marginBottom: 4 }}>Amount to collect ($)</p>
+                <input type="number" min="0.01" step="0.01" value={collectAmount}
+                  onChange={(e) => setCollectAmount(e.target.value)}
+                  style={{ ...INPUT, fontFamily: "var(--font-display, serif)", fontSize: 26, color: FOREST, fontVariantNumeric: "tabular-nums" }} />
+                <p style={{ margin: "6px 0 0", fontSize: 12, color: collectValid ? MUTED : DANGER }}>
+                  {collectValid
+                    ? `Up to ${usd(drawer.agreement.remaining_cents)}. Leave as is to collect the full balance.`
+                    : `Enter an amount from $0.01 up to ${usd(drawer.agreement.remaining_cents)}, in whole cents.`}
                 </p>
               </div>
             )}
@@ -670,13 +707,13 @@ function ActionDrawer({
 
             {drawer.kind === "collect" ? (
               <div style={{ display: "grid", gap: 9, marginTop: 18 }}>
-                <button type="button" disabled={busy || reason.trim().length === 0}
-                  style={{ ...BTN_COPPER, minHeight: 46, opacity: reason.trim() ? 1 : 0.45 }}
+                <button type="button" disabled={busy || !collectReady}
+                  style={{ ...BTN_COPPER, minHeight: 46, opacity: collectReady ? 1 : 0.45 }}
                   onClick={() => void executeCollect(true)}>
                   {busy ? "Creating secure link…" : "Create and email secure link"}
                 </button>
-                <button type="button" disabled={busy || reason.trim().length === 0}
-                  style={{ ...BTN_GHOST, minHeight: 46, opacity: reason.trim() ? 1 : 0.45 }}
+                <button type="button" disabled={busy || !collectReady}
+                  style={{ ...BTN_GHOST, minHeight: 46, opacity: collectReady ? 1 : 0.45 }}
                   onClick={() => void executeCollect(false)}>
                   Create link only
                 </button>
@@ -721,10 +758,10 @@ function ActionDrawer({
 
 // ── Link/session status strip (member-safe labels; spec §4.4) ────────────────
 
-function LinkStrip({ agreementId }: { agreementId: string }) {
+function LinkStrip({ agreementId, remainingCents }: { agreementId: string; remainingCents: number }) {
   const router = useRouter();
   const [data, setData] = useState<{
-    links: { id: string; status: string; expires_at: string; consumed_by_session_id: string | null }[];
+    links: { id: string; status: string; expires_at: string; consumed_by_session_id: string | null; amount_cents: number | null }[];
     sessions: { id: string; status: string; expires_at: string; stripe_session_id: string | null }[];
   } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -743,12 +780,19 @@ function LinkStrip({ agreementId }: { agreementId: string }) {
   const session = data.sessions.find((s) => s.status === "open" || s.status === "creating") ?? data.sessions[0];
   if (!link && !session) return null;
 
-  let label = ""; let canRevoke = false;
+  // A link issued for a chosen amount (D-090) says so: the founder sees what a
+  // live link is for before revoking it. No amount means the full remaining.
+  const linkAmount = link?.amount_cents != null ? ` for ${usd(link.amount_cents)}` : "";
+  // Display-only: the link's figure against the canonical Remaining the card
+  // already shows. Such a link is refused at checkout; the founder reissues.
+  const exceeds = link?.amount_cents != null && link.amount_cents > remainingCents;
+  let label = ""; let canRevoke = false; let tone = FOREST;
   if (session?.status === "open") { label = `Stripe checkout open · expires ${new Date(session.expires_at).toLocaleDateString()}`; }
   else if (session?.status === "completed") { label = "Payment confirmed"; }
   else if (session?.status === "expired") { label = "Checkout expired"; }
-  else if (link?.status === "active") { label = `Link ready · expires ${new Date(link.expires_at).toLocaleDateString()}`; canRevoke = true; }
-  else if (link?.status === "creating") { label = "Creating secure checkout…"; }
+  else if (link?.status === "active" && exceeds) { label = `Link${linkAmount} exceeds current Remaining — revoke and reissue`; canRevoke = true; tone = DANGER; }
+  else if (link?.status === "active") { label = `Link ready${linkAmount} · expires ${new Date(link.expires_at).toLocaleDateString()}`; canRevoke = true; }
+  else if (link?.status === "creating") { label = `Creating secure checkout${linkAmount}…`; }
   else if (link?.status === "consumed") { label = session ? "Link used · checkout still available" : "Link used"; }
   else if (link?.status === "revoked") { label = "Link revoked"; }
   if (!label) return null;
@@ -767,8 +811,8 @@ function LinkStrip({ agreementId }: { agreementId: string }) {
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10, borderTop: `0.5px solid ${LINE}`, paddingTop: 12, marginBottom: 14, fontSize: 12, color: MUTED }}>
-      <span style={{ width: 8, height: 8, borderRadius: "50%", background: SAGE, display: "inline-block" }} />
-      <strong style={{ color: FOREST, fontWeight: 650 }}>{label}</strong>
+      <span style={{ width: 8, height: 8, borderRadius: "50%", background: tone === DANGER ? DANGER : SAGE, display: "inline-block" }} />
+      <strong style={{ color: tone, fontWeight: 650 }}>{label}</strong>
       <span style={{ flex: 1 }} />
       {canRevoke && (
         <button type="button" disabled={busy} onClick={() => void revoke()}

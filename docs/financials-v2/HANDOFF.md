@@ -17,11 +17,74 @@
 | 3 | Stripe shadow ingestion + §10a reconciliation | **Merged and DEPLOYED** — 3A `bcda54c`, 3B `76112ba`, 3C `92d0486`, canary fix `0724a7c` |
 | 4 | Founder-only verification workspace | **Preflight done** — `PR4_PREFLIGHT.md` |
 | 5–9 | See [PR_PLAN.md](PR_PLAN.md) | Not started |
-| 10B | Founder-chosen collection amount (D-090) | **Brief written — not started.** See §"PR 10B" below |
+| 10B | Founder-chosen collection amount (D-090) | **Implemented, reviewed (APPROVE), proven in production (rolled back). PR open, awaiting founder review — financial PRs are reviewed before merge.** See §"PR 10B" below |
 
 ## PR 10B — founder-chosen collection amount (D-090)
 
-**State: brief written — not started.** Branch `claude/shawn-onboarding-invoice-cen35q`.
+**State: implemented, reviewed, proven; PR open for founder review.** Branch `claude/shawn-onboarding-invoice-cen35q`.
+
+### Evidence (2026-09-03)
+
+**Review.** Fresh-context adversarial review of the staged diff (attack surfaces a–o):
+no blocking code defect. Two non-blocking findings taken before the migration ever
+touched production — `begin_checkout_attempt` now requires the link to belong to the
+agreement (a foreign link is `VK404`, indistinguishable from a missing one), and the
+founder link strip flags a live link whose figure exceeds current Remaining
+("revoke and reissue", DANGER tone, display-only). Re-review of the delta: **APPROVE**.
+Two further non-blocking notes stand as Future items below (text-pin strength;
+single-shot migration, consistent with the D-088-era convention).
+
+**Gates.** `tsc --noEmit` clean. `npm test` 468/468 (447 + 21 in
+`lib/finance/checkout.test.ts`). Production build clean (137 pages;
+`/api/finance/payment-links` and `/contribute/[token]` compile).
+`git diff -- supabase/migrations/20260821140000_finance_pr6_checkout.sql` empty; its
+sha256 is pinned in the test.
+
+**Production proof — migration + proof in ONE transaction, terminated by an exception
+so it could only roll back.** No `COMMIT` existed in the script. Run 2026-09-03 via the
+Supabase management connection against `cbxogagxxnhzqfudxuxb`. The migration's
+`ALTER TABLE`, both `DROP FUNCTION`s, all `CREATE`s, grants and both assertion `DO`
+blocks ran silently (any raise would have surfaced instead of the results). The
+results block then read the catalog and raised:
+
+```
+migration: column_exists=t  rows_with_amount=4  issue_payment_link overloads finance=1 finance_api=1
+summary: 46 passed, 0 failed
+```
+
+(`rows_with_amount=4` are the proof's own links; criterion 16 read **0** pre-existing
+rows carrying an amount before the proof issued any — no backfill, `ALTER TABLE`
+affected 0 rows.) Every criterion the script covers printed PASS: 1, 2, 3, 4, 5, 7,
+8, 9 (including `23505` on `checkout_sessions_live_uq` and its PR 1 definition
+verbatim), 10, 11, 12 (non-founder `authenticated` → `founder role required`;
+`service_role` no EXECUTE on `finance_api.issue_payment_link(uuid,text,text,bigint)`;
+`authenticated` no EXECUTE on `peek`; zero anon/PUBLIC grants; zero `finance_api`
+SECURITY DEFINER beyond the D-088 carve-out), 13, 14 (one overload per schema,
+`pronargdefaults = 1`, three-argument named call resolves), 15, 16, and F3.
+
+**Downstream untouched — both halves.** Before apply, production reads
+`v_agreement_balances` md5 `6c202e145139bc34598b4e188b1e85bb` and
+`f_balances(boolean)` md5 `de6d509ad5c65021f91bd11be29871f3`. Criterion 10, inside
+the applied transaction, printed the identical pair.
+
+**Rollback held.** Immediately after: production shows one `finance.issue_payment_link`
+overload (the original three-argument one) and no `amount_cents` column on
+`finance.payment_links`.
+
+### Rollout verification still to do (post-merge, founder)
+
+1. Apply `20260904010000_finance_pr10b_chosen_amount.sql` to production and stamp it;
+   confirm the apply output shows no `ERROR`/`WARNING` and both `DO` blocks silent.
+2. Reload the PostgREST schema cache, then from the founder panel issue a link with
+   the amount left at the full Remaining — a three-argument `.rpc("issue_payment_link")`
+   resolving (or its `VK409 a live link already exists` refusal) proves resolution.
+3. Live drill on Shawn Coullahan's $12,500 agreement when the deposit figure is known:
+   issue the chosen amount, open `/contribute/<token>`, confirm the Stripe page shows
+   exactly that figure, pay, confirm one `stripe_payment` for that amount, Remaining =
+   Contribution − paid, state `partial`, then issue the remainder.
+4. Retire the stale full-amount Session `cs_live_a1eYrN…` (expires 2026-09-04 21:38 UTC,
+   or expire it in the Stripe dashboard) before issuing the first partial — single-flight
+   refuses a second live Session.
 Label note: `PR10_PREFLIGHT.md` used "10B" for the public-support provider
 sub-PR; this section is the D-090 commission and carries the label the
 commission gave it. D-090 is settled; this brief implements it, it does not
@@ -658,6 +721,8 @@ V2 figures will differ from currently displayed figures wherever a legacy `adjus
 Noticed during audit or design, deliberately not folded into any current PR.
 
 - **Founder-link resume does not re-check the amount (D-034 gap).** `resolveTokenState` returns `open_session` and `startCheckout` resumes it without comparing `checkout_sessions.amount_cents` to the current `payable_remaining_cents`; the member-portal path (`lib/finance/member-checkout.ts`) does compare and expires-then-recreates. Pre-existing before PR 10B; noticed while briefing it. Fix is its own PR: apply the D-034 reuse table to the founder-link path.
+- **The PR 6 assertion block is no longer verbatim-reusable.** D-088 (`20260823020000`) made `finance_api.public_campaign_status` the one `SECURITY DEFINER` function anon may execute and carved it out of its own assertions by name; the PR 6 counts ("zero `finance_api` SECURITY DEFINER", "zero anon/PUBLIC EXECUTE") now fail on that function alone. PR 10B's migration carries the PR 6 block with the same named carve-out. Any future brief that says "PR 6 block verbatim" should say "PR 6 block with the D-088 carve-out". Noticed while applying PR 10B to a local build of the series.
+- **The retirement gate's scope audit flags a build output.** With `.next/` present (after `npm run build`), `retirement-gate.test.ts`'s null control and restoration tests fail on "source file exists but was never scanned: .next/…" even though `.next` is in `PRUNED_DIRS`; the suite is green once `.next` is removed. Run `npm test` before `npm run build`, or align the scope audit's walk with the prune list. Noticed while running the PR 10B gates.
 - **`supabase/tests/migrations_manifest.txt` is stale.** It lists eight `20260730…` filenames that no longer exist on disk (the PR 1 files were renamed to `20260814…`) and nothing after PR 1, so `run_all.sh` and the pgTAP harness cannot build a database from the current series. Noticed while deciding where PR 10B's SQL proof could live. Not PR 10B's to fix.
 - **`journey_email_log` identity mismatch.** Its `member_id` references `members(id)` while its member RLS policy compares `member_id = auth.uid()` — the same defect two migrations already repaired elsewhere. It works only while `members.id` happens to equal `auth.uid()`. Not owned by Financials V2.
 - **`app/portal/labs/page.tsx` references `members.auth_user_id`**, a column appearing nowhere else in the repository, silently falling back to `user.id`.
