@@ -62,10 +62,9 @@ type Specialist = {
   calendly_url: string | null;
 };
 
-// The welcome video is still being produced. Until it exists, the block
-// renders as an empty player over "Coming Soon" with copy describing a
-// video the member cannot watch, so it stays out of the portal. Flip to
-// true once the video is in place — nothing else needs to change.
+// The welcome video is still being produced, so the player is held back
+// while the welcome copy beside it stays. Flip to true once the video is
+// in place — the block returns to its two-column layout on its own.
 const SHOW_WELCOME_VIDEO = false;
 
 const CONTRIBUTION_URL = "/portal/donate";
@@ -358,14 +357,19 @@ export function PortalHomePage({
 
       {/* ── MAIN PORTAL BODY ── */}
       <main className={styles.portalBody}>
-        {/* WELCOME VIDEO — hidden until the video is finished */}
-        {SHOW_WELCOME_VIDEO && (
-        <div className={styles.videoBlock}>
-          <div className={styles.videoWrap}>
-            <div className={styles.videoPlay}>&#9654;</div>
-            <span className={styles.videoComingSoon}>Coming Soon</span>
-            <span className={styles.videoLabel}>A Message from Rachel &amp; Josh</span>
-          </div>
+        {/* WELCOME VIDEO — the player is held back until the video is finished;
+            the welcome copy stays, and the block collapses to one column. */}
+        <div
+          className={styles.videoBlock}
+          style={SHOW_WELCOME_VIDEO ? undefined : { gridTemplateColumns: "1fr" }}
+        >
+          {SHOW_WELCOME_VIDEO && (
+            <div className={styles.videoWrap}>
+              <div className={styles.videoPlay}>&#9654;</div>
+              <span className={styles.videoComingSoon}>Coming Soon</span>
+              <span className={styles.videoLabel}>A Message from Rachel &amp; Josh</span>
+            </div>
+          )}
           <div className={styles.videoContent}>
             <p className={styles.videoEyebrow}>Aloha</p>
             <h2 className={styles.videoTitle}>
@@ -379,7 +383,6 @@ export function PortalHomePage({
             <p className={styles.videoSignature}>&mdash; Rachel &amp; Josh</p>
           </div>
         </div>
-        )}
 
         {/* FOUR STEPS TO BEGIN\u2014contribution step temporarily hidden */}
         <section className={styles.unlockBlock}>
