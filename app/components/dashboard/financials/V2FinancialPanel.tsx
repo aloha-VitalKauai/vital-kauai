@@ -143,6 +143,9 @@ export default function V2FinancialPanel({
   const [loadError, setLoadError] = useState<string | null>(null);
   const [drawer, setDrawer] = useState<DrawerState>(null);
   const [flash, setFlash] = useState<{ text: string; err?: boolean } | null>(null);
+  // Canceled and waived agreements keep their history but no longer describe
+  // what is owed, so they sit collapsed beneath the live ones.
+  const [showClosed, setShowClosed] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -169,6 +172,10 @@ export default function V2FinancialPanel({
   }
 
   const agreements = data?.agreements ?? [];
+  const isClosed = (a: { lifecycle_status: string }) =>
+    a.lifecycle_status === "canceled" || a.lifecycle_status === "waived";
+  const liveAgreements = agreements.filter((a) => !isClosed(a));
+  const closedAgreements = agreements.filter(isClosed);
 
   return (
     <div style={PANEL}>
@@ -218,8 +225,17 @@ export default function V2FinancialPanel({
         </div>
       )}
 
+      {data && liveAgreements.length === 0 && closedAgreements.length > 0 && (
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", padding: "4px 0 14px" }}>
+          <p style={{ margin: 0, fontSize: 13, color: MUTED }}>No live Contribution agreement.</p>
+          <button type="button" style={BTN_COPPER} onClick={() => setDrawer({ kind: "create" })}>
+            Create Contribution agreement
+          </button>
+        </div>
+      )}
+
       {data &&
-        agreements.map((a) => (
+        liveAgreements.map((a) => (
           <AgreementCard
             key={a.agreement_id}
             a={a}
@@ -229,6 +245,32 @@ export default function V2FinancialPanel({
             openDrawer={setDrawer}
           />
         ))}
+
+      {data && closedAgreements.length > 0 && (
+        <div style={{ marginTop: liveAgreements.length > 0 ? 8 : 0, borderTop: `0.5px solid ${LINE}`, paddingTop: 12 }}>
+          <button
+            type="button"
+            onClick={() => setShowClosed((v) => !v)}
+            aria-expanded={showClosed}
+            style={{ ...BTN_GHOST, display: "inline-flex", alignItems: "center", gap: 8, color: MUTED }}
+          >
+            <span aria-hidden style={{ display: "inline-block", transition: "transform 0.15s", transform: showClosed ? "rotate(90deg)" : "none" }}>▸</span>
+            Canceled &amp; waived ({closedAgreements.length})
+            <span style={{ fontWeight: 400 }}>{showClosed ? "· hide" : "· show history"}</span>
+          </button>
+          {showClosed &&
+            closedAgreements.map((a) => (
+              <AgreementCard
+                key={a.agreement_id}
+                a={a}
+                amounts={data.amounts.filter((x) => x.agreement_id === a.agreement_id)}
+                lifecycle={data.lifecycle.filter((x) => x.agreement_id === a.agreement_id)}
+                ledger={data.ledger.filter((x) => x.agreement_id === a.agreement_id)}
+                openDrawer={setDrawer}
+              />
+            ))}
+        </div>
+      )}
 
       {drawer && (
         <ActionDrawer
