@@ -48,6 +48,11 @@ export async function middleware(request: NextRequest) {
   // QR points here, so it must work for anyone with no session at all. The
   // page itself is fail-closed: with no ACTIVE campaign it renders a quiet
   // notice and the checkout API refuses in the database before any Stripe call.
+  //
+  // /contribute/<token> (PR 6) is the V2 member payment bridge that replaced
+  // /pay/*, and /contribute/thank-you is where Stripe returns the payer. Both
+  // are public by necessity: the member being asked to pay usually has no
+  // session yet, and the high-entropy hashed token is the credential (spec §5).
   const isPublicPath =
     path === "/login" ||
     path.startsWith("/auth/") ||
@@ -56,6 +61,8 @@ export async function middleware(request: NextRequest) {
     path === "/setup-account" ||
     path === "/pay" ||
     path.startsWith("/pay/") ||
+    path === "/contribute" ||
+    path.startsWith("/contribute/") ||
     path === "/support" ||
     path.startsWith("/support/");
 
