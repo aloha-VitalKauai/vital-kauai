@@ -416,10 +416,11 @@ function PreCeremonyPageInner() {
         /* WEEK NAV */
         .pc-week-nav { position:sticky;top:calc(60px + env(safe-area-inset-top));z-index:90;background:rgba(253,251,247,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;display:flex;overflow-x:auto; }
         .pc-week-nav::-webkit-scrollbar { display:none; }
-        .wbtn { font-family:inherit;font-size:9px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;padding:0 20px;height:52px;border:none;border-bottom:2px solid transparent;cursor:pointer;color:var(--stone);background:transparent;white-space:nowrap;transition:all .2s; }
+        .wbtn { font-family:inherit;font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:0 24px;height:62px;border:none;border-bottom:3px solid transparent;cursor:pointer;color:var(--ink-mid);background:transparent;white-space:nowrap;transition:all .2s; }
         .wbtn:hover { color:var(--ink); }
-        .wbtn.active { color:var(--forest);border-bottom-color:var(--sage);font-weight:500; }
-        .wbtn.done::after { content:' ✓';font-size:8px;color:var(--sage);margin-left:4px; }
+        .wbtn.active { color:var(--forest);border-bottom-color:var(--sage);font-weight:600; }
+        .wbtn.done::after { content:' ✓';font-size:11px;color:var(--sage);margin-left:5px; }
+        @media (max-width:640px) { .wbtn { font-size:12px;padding:0 16px;height:56px;letter-spacing:.1em; } }
 
         /* MAIN */
         .pc-main { max-width:860px;margin:0 auto;padding:0 48px 100px; }
@@ -461,11 +462,11 @@ function PreCeremonyPageInner() {
         @media (max-width:640px) { .principle-card { padding:40px 28px; } .pcard-name { font-size:clamp(56px,18vw,80px); margin-bottom:26px; } .pcard-quote { font-size:20px; } }
 
         /* SECTION */
-        .section { margin-bottom:44px;scroll-margin-top:130px; }
+        .section { margin-bottom:44px;scroll-margin-top:146px; }
         .section-label { font-size:14px;letter-spacing:.28em;text-transform:uppercase;color:var(--sage);margin-bottom:16px;display:block; }
 
         /* WEEK 1, custom layout */
-        .w1-section { margin-bottom:52px;scroll-margin-top:130px; }
+        .w1-section { margin-bottom:52px;scroll-margin-top:146px; }
         .w1-eyebrow { font-size:9px;letter-spacing:.38em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:14px; }
         .w1-h2 { font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3.5vw,42px);font-weight:300;line-height:1.12;color:var(--ink);margin-bottom:14px; }
         .w1-h2 em { font-style:italic;color:var(--sage); }
@@ -551,9 +552,20 @@ function PreCeremonyPageInner() {
         .pne-reflection .pne-reflection-textarea { margin-top:16px;background:rgba(245,240,232,0.96);border:1px solid rgba(168,197,172,0.35);border-left:2px solid var(--sage-lt);color:var(--ink); }
         .pne-reflection .pne-reflection-textarea:focus { background:#fff;border-color:var(--sage-lt); }
         .pne-reflection-pending { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--sage-lt);margin:6px 0 0; }
-        .pne-companion-read { display:inline-flex;align-items:center;gap:8px;margin:14px 0 4px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:var(--sage);text-decoration:none;border-bottom:1px solid rgba(122,158,126,0.35);padding-bottom:2px;transition:color .15s,border-color .15s; }
-        .pne-companion-read:hover { color:var(--ink);border-color:var(--sage); }
-        .pne-companion-read-static { color:var(--stone);border-bottom:1px dashed rgba(122,158,126,0.25);cursor:default; }
+
+        .pne-guide-cta { display:flex;align-items:center;gap:20px;justify-content:space-between;margin:0 0 22px;padding:22px 26px;background:var(--cream);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:3px;text-decoration:none;color:inherit;transition:border-color .18s,background .18s,transform .18s; }
+        .pne-guide-cta:hover { border-color:var(--gold);background:#fff;transform:translateX(2px); }
+        .pgc-body { display:flex;flex-direction:column;gap:8px;min-width:0; }
+        .pgc-eyebrow { font-size:10px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--gold); }
+        .pgc-title { font-family:'Cormorant Garamond',serif;font-size:clamp(21px,2.4vw,27px);font-weight:400;font-style:italic;line-height:1.2;color:var(--ink); }
+        .pne-guide-cta:hover .pgc-title { color:var(--sage); }
+        .pgc-arrow { font-size:22px;color:var(--gold);flex-shrink:0;transition:transform .18s; }
+        .pne-guide-cta:hover .pgc-arrow { transform:translateX(4px); }
+        .pne-guide-cta-static { border-left-color:var(--sage-lt);cursor:default;opacity:.72; }
+        .pne-guide-cta-static:hover { transform:none;background:var(--cream);border-color:var(--border);border-left-color:var(--sage-lt); }
+        .pne-guide-cta-static .pgc-arrow { display:none; }
+        .pgc-soon { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--sage);flex-shrink:0; }
+        @media (max-width:640px) { .pne-guide-cta { padding:18px 20px;gap:14px; } }
 
         /* BOXES */
         .box { margin-top:14px;border-radius:2px;padding:16px 20px; }
@@ -695,7 +707,7 @@ function PreCeremonyPageInner() {
           ~52 = 112) so it stays in view as members scroll through sections.
           Weeks 2+ stay on the week-tabs alone until each week's content is
           restyled to match. */}
-      <SectionIndex sections={sectionsForWeek(activeWeek)} stickyTop={112} scrollOffset={170} />
+      <SectionIndex sections={sectionsForWeek(activeWeek)} stickyTop={122} scrollOffset={186} />
 
       {/* MAIN */}
       <main className="pc-main">
@@ -940,6 +952,59 @@ function PreCeremonyPageInner() {
                   <>PNE (PsychoNeuroEnergetics) Guide: <em>Spirit and the Sacred</em></>
                 ) : 'PNE (PsychoNeuroEnergetics) Guide'}
               </h3>
+              {(() => {
+                const c = PRE_PNE_COMPANION[i]
+                const inner = (
+                  <>
+                    <span className="pgc-body">
+                      <span className="pgc-eyebrow">The PsychoNeuroEnergetics (PNE) Guide{c?.theme ? ` · ${c.theme}` : ''}</span>
+                      <span className="pgc-title">Read Week {i + 1}</span>
+                    </span>
+                    <span className="pgc-arrow" aria-hidden>&rarr;</span>
+                  </>
+                )
+                return c?.url ? (
+                  <Link href={c.url} target="_blank" rel="noopener noreferrer" className="pne-guide-cta">
+                    {inner}
+                  </Link>
+                ) : (
+                  <div className="pne-guide-cta pne-guide-cta-static">
+                    {inner}
+                    <span className="pgc-soon">Coming Soon</span>
+                  </div>
+                )
+              })()}
+              {PRE_PNE_COMPANION[i]?.videoUrl ? (
+                <div className="video-frame" style={{ marginTop: 18 }}>
+                  <div className="video-embed">
+                    <iframe
+                      src={PRE_PNE_COMPANION[i].videoUrl}
+                      title={`PNE Guide: ${PRE_PNE_COMPANION[i].theme}`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
+                  </div>
+                  {i === 0 && (
+                    <div className="vp-text" style={{ background: 'var(--forest)', padding: '18px 22px' }}>
+                      In our Week 1 call, our team shares why this work matters and why PsychoNeuroEnergetics sits at the heart of Vital Kauaʻi. We walk through some of this week&apos;s teachings, answer questions from members, and offer the 4 / 7 / 8 Breath for regulation. Judith Johnson, the founder of PNE, also shares some of her own story.
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="video-frame" style={{ marginTop: 18 }}>
+                  <div className="video-primer">
+                    <div className="vp-play"><span className="vp-play-icon">▶</span></div>
+                    <div>
+                      <div className="vp-label">PNE Teaching · Week {i + 1}</div>
+                      <div className="vp-text">
+                        {PRE_PNE_DETAILS[i]?.teaching
+                          ?? 'A teaching from PsychoNeuroEnergetics paired with this week’s principle and the body’s lived response to it.'}
+                      </div>
+                      <div className="vp-coming-soon">Coming Soon</div>
+                    </div>
+                  </div>
+                </div>
+              )}
               {i === 0 && (
                 <>
                   <p className="w1-body">
@@ -1000,48 +1065,6 @@ function PreCeremonyPageInner() {
                     From there, it offers practices for discerning the voice of the Divine from inherited programming, two prayers to carry, and a framing of integration as the spiritual practice of living what the medicine reveals.
                   </p>
                 </>
-              )}
-              {(() => {
-                const c = PRE_PNE_COMPANION[i]
-                const label = `Read Week ${i + 1} in The PsychoNeuroEnergetics (PNE) Guide${c?.theme ? `: ${c.theme}` : ''}`
-                return c?.url ? (
-                  <Link href={c.url} target="_blank" rel="noopener noreferrer" className="pne-companion-read">
-                    {label} <span aria-hidden>→</span>
-                  </Link>
-                ) : (
-                  <p className="pne-companion-read pne-companion-read-static">{label}</p>
-                )
-              })()}
-              {PRE_PNE_COMPANION[i]?.videoUrl ? (
-                <div className="video-frame" style={{ marginTop: 18 }}>
-                  <div className="video-embed">
-                    <iframe
-                      src={PRE_PNE_COMPANION[i].videoUrl}
-                      title={`PNE Guide: ${PRE_PNE_COMPANION[i].theme}`}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                    />
-                  </div>
-                  {i === 0 && (
-                    <div className="vp-text" style={{ background: 'var(--forest)', padding: '18px 22px' }}>
-                      In our Week 1 call, our team shares why this work matters and why PsychoNeuroEnergetics sits at the heart of Vital Kauaʻi. We walk through some of this week&apos;s teachings, answer questions from members, and offer the 4 / 7 / 8 Breath for regulation. Judith Johnson, the founder of PNE, also shares some of her own story.
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="video-frame" style={{ marginTop: 18 }}>
-                  <div className="video-primer">
-                    <div className="vp-play"><span className="vp-play-icon">▶</span></div>
-                    <div>
-                      <div className="vp-label">PNE Teaching · Week {i + 1}</div>
-                      <div className="vp-text">
-                        {PRE_PNE_DETAILS[i]?.teaching
-                          ?? 'A teaching from PsychoNeuroEnergetics paired with this week’s principle and the body’s lived response to it.'}
-                      </div>
-                      <div className="vp-coming-soon">Coming Soon</div>
-                    </div>
-                  </div>
-                </div>
               )}
               {i === 0 ? (
                 <div className="pne-detail pne-practice-rich">

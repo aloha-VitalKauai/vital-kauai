@@ -19,7 +19,7 @@ type Props = {
   activeSection?: string
   /**
    * Pixels of sticky-header height to offset clicks + the IntersectionObserver
-   * by. Defaults to 130 to match the PortalNav (60) + week-tabs (~52) stack
+   * by. Defaults to 146 to match the PortalNav (60) + week-tabs (~62) stack
    * used on the pre-ceremony page.
    */
   scrollOffset?: number
@@ -49,7 +49,7 @@ const findVisibleById = (id: string): HTMLElement | null => {
 export default function SectionIndex({
   sections,
   activeSection,
-  scrollOffset = 130,
+  scrollOffset = 146,
   stickyTop,
 }: Props) {
   const [observed, setObserved] = useState<string | null>(null)
@@ -110,16 +110,16 @@ export default function SectionIndex({
   return (
     <>
       <style>{`
-        .si-wrap { border-top: .5px solid rgba(28,43,30,.12); background: rgba(253,251,247,.97); }
+        .si-wrap { border-top: .5px solid rgba(28,43,30,.12); background: rgba(247,244,238,.98); }
         .si-inner { display: flex; gap: 0; overflow-x: auto; padding: 0 48px; scrollbar-width: none; }
         .si-inner::-webkit-scrollbar { display: none; }
-        .si-link { font-family: inherit; font-size: 9.5px; font-weight: 400; letter-spacing: .26em; text-transform: uppercase; color: rgba(139,128,112,.7); text-decoration: none; padding: 16px 22px; border: none; background: none; cursor: pointer; white-space: nowrap; transition: color .2s; position: relative; }
+        .si-link { font-family: inherit; font-size: 11.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: rgba(90,84,74,.85); text-decoration: none; padding: 16px 22px; border: none; background: none; cursor: pointer; white-space: nowrap; transition: color .2s; position: relative; }
         .si-link:hover { color: #1A1A18; }
         .si-link.active { color: #1C2B1E; font-weight: 500; }
         .si-link.active::after { content: ''; position: absolute; left: 22px; right: 22px; bottom: 8px; height: 1px; background: #C8A96E; }
         @media (max-width: 640px) {
           .si-inner { padding: 0 16px; }
-          .si-link { padding: 12px 14px; font-size: 9px; letter-spacing: .2em; }
+          .si-link { padding: 13px 15px; font-size: 11px; letter-spacing: .12em; }
           .si-link.active::after { left: 14px; right: 14px; bottom: 6px; }
         }
       `}</style>

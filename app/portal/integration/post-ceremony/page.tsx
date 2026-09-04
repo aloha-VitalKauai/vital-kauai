@@ -645,12 +645,12 @@ function PostCeremonyPageInner() {
         .pc-hero{background:linear-gradient(135deg,#1C2B1E 0%,#2E4231 60%,#1a3020 100%);padding:80px 60px 72px;position:relative;overflow:hidden}.pc-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 60%,rgba(200,169,110,.07) 0%,transparent 65%);pointer-events:none}
         .pc-hero-inner{position:relative;z-index:1;max-width:1140px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:56px;align-items:start}.pc-hero-text{min-width:0}.pc-hero-aside{justify-self:end}@media(max-width:880px){.pc-hero-inner{grid-template-columns:1fr;gap:32px}.pc-hero-aside{justify-self:start}}.pc-hero-eyebrow{font-size:9px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:18px}.pc-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5vw,62px);font-weight:300;color:var(--cream);line-height:1.06;margin-bottom:22px}.pc-hero h1 em{font-style:italic;color:var(--gold)}.pc-hero-desc{font-size:14.5px;color:rgba(245,240,232,.55);line-height:1.95;max-width:600px;margin-bottom:32px}.pc-hero-meta{display:flex;gap:32px;flex-wrap:wrap}.hm-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--cream);line-height:1}.hm-lbl{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.35);margin-top:4px}
         .pc-week-nav{position:sticky;top:calc(60px + env(safe-area-inset-top));z-index:90;background:rgba(253,251,247,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;display:flex;overflow-x:auto}.pc-week-nav::-webkit-scrollbar{display:none}
-        .wbtn{font-family:inherit;font-size:9px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;padding:0 20px;height:52px;border:none;border-bottom:2px solid transparent;cursor:pointer;color:var(--stone);background:transparent;white-space:nowrap;transition:all .2s}.wbtn:hover{color:var(--ink)}.wbtn.active{color:var(--forest);border-bottom-color:var(--gold);font-weight:500}.wbtn.done::after{content:' ✓';font-size:8px;color:var(--gold);margin-left:4px}
+        .wbtn{font-family:inherit;font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:0 24px;height:62px;border:none;border-bottom:3px solid transparent;cursor:pointer;color:var(--ink-mid);background:transparent;white-space:nowrap;transition:all .2s}.wbtn:hover{color:var(--ink)}.wbtn.active{color:var(--forest);border-bottom-color:var(--gold);font-weight:600}.wbtn.done::after{content:' ✓';font-size:11px;color:var(--gold);margin-left:5px}@media (max-width:640px){.wbtn{font-size:12px;padding:0 16px;height:56px;letter-spacing:.1em}}
         .pc-main{max-width:860px;margin:0 auto;padding:0 48px 100px}.pc-panel{display:none;padding-top:56px}.pc-panel.active{display:block}
         .continuity{display:flex;gap:12px;align-items:flex-start;background:rgba(122,158,126,.06);border-left:2px solid var(--sage-lt);padding:14px 18px;margin-bottom:32px}.ct-arrow{font-size:13px;color:var(--sage);flex-shrink:0;margin-top:1px}.ct-text{font-size:12.5px;color:var(--stone);line-height:1.75}.ct-text strong{color:var(--ink-mid);font-weight:500}
         .wh-eyebrow{font-size:9px;letter-spacing:.38em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:14px}.wh-title{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,4vw,46px);font-weight:300;line-height:1.1;margin-bottom:16px;color:var(--ink);white-space:pre-line}.wh-title em{font-style:italic;color:var(--gold)}.wh-sub{font-size:14px;color:var(--stone);line-height:1.9;max-width:640px;padding-bottom:32px;border-bottom:1px solid var(--border);margin-bottom:36px}
         /* Week 1 shared layout (matched to pre-ceremony so the 12-week arc reads as one piece) */
-        .w1-section { margin-bottom:52px;scroll-margin-top:130px; }
+        .w1-section { margin-bottom:52px;scroll-margin-top:146px; }
         .w1-h3 { font-family:'Cormorant Garamond',serif;font-size:clamp(22px,2.6vw,30px);font-weight:300;line-height:1.2;color:var(--ink);margin-bottom:16px; }
         .w1-h3 em { font-style:italic;color:var(--gold); }
         .w1-body { font-size:14px;color:var(--ink-mid);line-height:1.9;max-width:640px; }
@@ -709,7 +709,20 @@ function PostCeremonyPageInner() {
         .btn-save-exit:hover { background:rgba(200,169,110,.08); }
         .wc-actions { display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end; }
         .section{margin-bottom:44px}.section-label{font-size:14px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:block}
-        .video-frame{border:.5px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:14px}.video-embed{position:relative;width:100%;padding-bottom:56.25%;background:var(--forest)}.video-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}.video-primer{background:var(--forest);padding:24px 28px;display:flex;align-items:center;gap:20px}.vp-play{width:44px;height:44px;border-radius:50%;border:1px solid rgba(200,169,110,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}.vp-play-icon{color:var(--gold);font-size:14px;margin-left:3px}.vp-label{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}.vp-text{font-size:13.5px;color:rgba(245,240,232,.75);line-height:1.7}.vp-coming-soon{margin-top:12px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.04em;color:var(--gold)}.pne-detail{margin-top:10px;background:var(--forest);border:.5px solid var(--border);border-radius:4px;padding:18px 24px}.pne-detail .vp-coming-soon{margin-top:6px}.pne-reflection{margin-top:18px;padding:26px 28px;background:var(--forest);border:.5px solid var(--border);border-left:3px solid var(--sage);border-radius:4px}.pne-reflection-label{font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--sage-lt);display:block;margin-bottom:12px}.pne-reflection-q{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--cream);line-height:1.4;margin:0}.pne-reflection .pne-reflection-textarea{margin-top:16px;background:rgba(245,240,232,0.96);border:1px solid rgba(168,197,172,0.35);border-left:2px solid var(--sage-lt);color:var(--ink)}.pne-reflection .pne-reflection-textarea:focus{background:#fff;border-color:var(--sage-lt)}.pne-reflection-pending{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--sage-lt);margin:6px 0 0}.pne-companion-read{display:inline-flex;align-items:center;gap:8px;margin:14px 0 4px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:var(--sage);text-decoration:none;border-bottom:1px solid rgba(122,158,126,0.35);padding-bottom:2px;transition:color .15s,border-color .15s}.pne-companion-read:hover{color:var(--ink);border-color:var(--sage)}.pne-companion-read-static{color:var(--stone);border-bottom:1px dashed rgba(122,158,126,0.25);cursor:default}
+        .video-frame{border:.5px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:14px}.video-embed{position:relative;width:100%;padding-bottom:56.25%;background:var(--forest)}.video-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}.video-primer{background:var(--forest);padding:24px 28px;display:flex;align-items:center;gap:20px}.vp-play{width:44px;height:44px;border-radius:50%;border:1px solid rgba(200,169,110,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}.vp-play-icon{color:var(--gold);font-size:14px;margin-left:3px}.vp-label{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}.vp-text{font-size:13.5px;color:rgba(245,240,232,.75);line-height:1.7}.vp-coming-soon{margin-top:12px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;letter-spacing:.04em;color:var(--gold)}.pne-detail{margin-top:10px;background:var(--forest);border:.5px solid var(--border);border-radius:4px;padding:18px 24px}.pne-detail .vp-coming-soon{margin-top:6px}.pne-reflection{margin-top:18px;padding:26px 28px;background:var(--forest);border:.5px solid var(--border);border-left:3px solid var(--sage);border-radius:4px}.pne-reflection-label{font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--sage-lt);display:block;margin-bottom:12px}.pne-reflection-q{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--cream);line-height:1.4;margin:0}.pne-reflection .pne-reflection-textarea{margin-top:16px;background:rgba(245,240,232,0.96);border:1px solid rgba(168,197,172,0.35);border-left:2px solid var(--sage-lt);color:var(--ink)}.pne-reflection .pne-reflection-textarea:focus{background:#fff;border-color:var(--sage-lt)}.pne-reflection-pending{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--sage-lt);margin:6px 0 0}
+        .pne-guide-cta { display:flex;align-items:center;gap:20px;justify-content:space-between;margin:0 0 22px;padding:22px 26px;background:var(--cream);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:3px;text-decoration:none;color:inherit;transition:border-color .18s,background .18s,transform .18s; }
+        .pne-guide-cta:hover { border-color:var(--gold);background:#fff;transform:translateX(2px); }
+        .pgc-body { display:flex;flex-direction:column;gap:8px;min-width:0; }
+        .pgc-eyebrow { font-size:10px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--gold); }
+        .pgc-title { font-family:'Cormorant Garamond',serif;font-size:clamp(21px,2.4vw,27px);font-weight:400;font-style:italic;line-height:1.2;color:var(--ink); }
+        .pne-guide-cta:hover .pgc-title { color:var(--sage); }
+        .pgc-arrow { font-size:22px;color:var(--gold);flex-shrink:0;transition:transform .18s; }
+        .pne-guide-cta:hover .pgc-arrow { transform:translateX(4px); }
+        .pne-guide-cta-static { border-left-color:var(--sage-lt);cursor:default;opacity:.72; }
+        .pne-guide-cta-static:hover { transform:none;background:var(--cream);border-color:var(--border);border-left-color:var(--sage-lt); }
+        .pne-guide-cta-static .pgc-arrow { display:none; }
+        .pgc-soon { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--sage);flex-shrink:0; }
+        @media (max-width:640px) { .pne-guide-cta { padding:18px 20px;gap:14px; } }
         .box{margin-top:0;border-radius:2px;padding:16px 20px;margin-bottom:28px}.box-label{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:8px;font-weight:500}.box-text{font-size:13px;line-height:1.8;color:var(--ink-mid)}.box-gold{background:rgba(200,169,110,.08);border:.5px solid rgba(200,169,110,.28)}.box-gold .box-label{color:var(--gold)}.box-sage{background:rgba(122,158,126,.07);border:.5px solid rgba(122,158,126,.25)}.box-sage .box-label{color:var(--sage)}
         .reentry{background:rgba(200,169,110,.05);border:.5px solid rgba(200,169,110,.2);border-radius:2px;padding:14px 20px;margin-bottom:24px;display:flex;gap:14px;align-items:flex-start}.reentry-icon{font-size:13px;color:var(--gold);flex-shrink:0;margin-top:1px}.reentry-text{font-size:12.5px;color:var(--stone);line-height:1.75}
         .dataset-note{background:rgba(200,169,110,.07);border:1px solid rgba(200,169,110,.32);border-left:3px solid var(--gold);border-radius:3px;padding:18px 22px;margin-top:18px;font-size:13px;color:var(--ink-mid);line-height:1.75}
@@ -773,7 +786,7 @@ function PostCeremonyPageInner() {
       {/* SECTION INDEX, sticky under the week-tabs so members can jump between
           Principle / Video / Actions / PNE / Journal / Community (+ Completion
           on Week 6) while they scroll. */}
-      <SectionIndex sections={sectionsForWeek(activeWeek)} stickyTop={112} scrollOffset={170} />
+      <SectionIndex sections={sectionsForWeek(activeWeek)} stickyTop={122} scrollOffset={186} />
 
       <main className="pc-main">
         {WEEKS.map((w, i) => (
@@ -969,13 +982,24 @@ function PostCeremonyPageInner() {
               <h3 className="w1-h3">PNE (PsychoNeuroEnergetics) Guide</h3>
               {(() => {
                 const c = POST_PNE_COMPANION[i]
-                const label = `Read Week ${i + 1} in The PsychoNeuroEnergetics (PNE) Integration Guide${c?.theme ? `: ${c.theme}` : ''}`
+                const inner = (
+                  <>
+                    <span className="pgc-body">
+                      <span className="pgc-eyebrow">The PsychoNeuroEnergetics (PNE) Integration Guide{c?.theme ? ` · ${c.theme}` : ''}</span>
+                      <span className="pgc-title">Read Week {i + 1}</span>
+                    </span>
+                    <span className="pgc-arrow" aria-hidden>&rarr;</span>
+                  </>
+                )
                 return c?.url ? (
-                  <Link href={c.url} target="_blank" rel="noopener noreferrer" className="pne-companion-read">
-                    {label} <span aria-hidden>→</span>
+                  <Link href={c.url} target="_blank" rel="noopener noreferrer" className="pne-guide-cta">
+                    {inner}
                   </Link>
                 ) : (
-                  <p className="pne-companion-read pne-companion-read-static">{label}</p>
+                  <div className="pne-guide-cta pne-guide-cta-static">
+                    {inner}
+                    <span className="pgc-soon">Coming Soon</span>
+                  </div>
                 )
               })()}
               {POST_PNE_COMPANION[i]?.videoUrl ? (
