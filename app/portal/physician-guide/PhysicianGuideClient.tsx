@@ -236,6 +236,7 @@ export default function PhysicianGuideClient() {
                 {[
                   { item: "Stimulants", note: "Methamphetamine, cocaine, MDMA, prescription stimulants. Full cessation with a physician-confirmed clearance window before ceremony." },
                   { item: "Opioids", note: "Prescription or recreational. Medical taper under physician supervision; clearance window confirmed before ceremony." },
+                  { item: "Alcohol", note: "Full cessation at least three weeks before ceremony; four weeks or more preferred. Alcohol competes with ibogaine for hepatic metabolism, independently prolongs QT, and depletes magnesium and potassium. Confirm normal LFTs and electrolyte panel before clearance. Patients with physical dependence require medically supervised detox before ceremony consideration." },
                   { item: "Cannabis", note: "Clear fully 1–4 weeks before ceremony" },
                   { item: "Grapefruit and turmeric", note: "Clear 1–2 weeks before ceremony" },
                   { item: "Antifungals", note: "Ketoconazole, itraconazole, discuss timeline" },
