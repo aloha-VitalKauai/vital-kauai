@@ -1500,7 +1500,7 @@ const BODY_CONTENT = `
           <span class="faq-icon" aria-hidden="true"></span>
         </summary>
         <div class="faq-answer">
-          <p>We understand that life moves and plans shift. Cancellations made within 30 days of arrival are eligible for a full transfer. Reach out to us directly and we will find a path forward together.</p>
+          <p>We understand that life moves and plans shift. Your Journey Contribution is due in full 30 days before ceremony. Up to that point, your contribution transfers to a future journey at any time. Within the final 30 days, half of everything paid transfers forward. Reach out to us directly and we will find a path forward together.</p>
         </div>
       </div>
 

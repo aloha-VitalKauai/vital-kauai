@@ -26,6 +26,7 @@ export const MEMBERSHIP_AGREEMENT = {
     "I do not, and will not while a member, represent any Local, State or Federal agency whose purpose is to regulate and approve products or services or to conduct any mission of enforcement, entrapment, or investigation.",
     "I may, by written notice to Vital Kauai, withdraw from this agreement and terminate membership at any time. I will not misrepresent myself as being a member beyond the term of my membership.",
     "Vital Kauai may revoke my membership if I engage in abusive, violent, menacing, destructive or harassing behavior towards any other member of Vital Kauai.",
+    "I understand my Journey Contribution is due in full 30 days before ceremony. Up to that point my contribution transfers to a future journey at any time, and within the final 30 days half of everything paid transfers forward.",
     "These pages consist of the entire agreement for membership in Vital Kauai.",
     "I enter into this agreement freely, without duress or coercion.",
     "I hereby exercise my right of “freedom of association” as guaranteed by the Universal Declaration of Human Rights (UDHR), the U.S. Constitution, and equivalent provisions of the various State Constitutions.",

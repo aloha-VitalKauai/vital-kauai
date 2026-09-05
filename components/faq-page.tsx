@@ -102,7 +102,7 @@ const FAQ_SECTIONS: FaqSection[] = [
       {
         question: "What is your cancellation policy?",
         answer:
-          "We understand that life moves and plans shift. Our cancellation terms are shared in full at the time of booking. Cancellations made within 30 days of arrival are eligible for a full transfer. Reach out to us directly and we will find a path forward together.",
+          "We understand that life moves and plans shift. Your Journey Contribution is due in full 30 days before ceremony. Up to that point, your contribution transfers to a future journey at any time. Within the final 30 days, half of everything paid transfers forward. Reach out to us directly and we will find a path forward together.",
       },
     ],
   },
