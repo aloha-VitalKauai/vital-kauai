@@ -134,9 +134,10 @@ export const PNE_COMPANIONS: ReadonlyArray<PneCompanion> = [
     code: "MĀLAMA",
     theme: "Tending",
     title: "Tending What Was Revealed",
-    href: "/portal/pne",
-    status: "coming-soon",
-    videoSummary: "Coming Soon.",
+    href: "/portal/pne-integration-guide/week-3",
+    status: "live",
+    videoSummary:
+      "Beliefs as embodied patterns held in sensation, emotion, and nervous system memory, the survival truths that organize suffering, and how a belief unwinds when the body feels safe enough to know something new.",
   },
   {
     phase: "post",
