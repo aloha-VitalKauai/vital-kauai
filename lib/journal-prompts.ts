@@ -104,7 +104,10 @@ export const POST_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
   {
     teaching: 'A teaching from PsychoNeuroEnergetics: beliefs as embodied patterns held in sensation, emotion, and nervous system memory, the intelligent adaptations that once organized survival, and how bringing gentle awareness to where a belief lives in the body lets what has held a person in place begin to unwind.',
     practice: '',
-    reflection: '',
+    reflection: 'What belief did ceremony show you, and where do you feel it now in your body?',
+    reflectionFollowUp: 'What identity have you protected through suffering, and what would safety, joy, or peace require you to believe instead?',
+    reflectionThird: 'As the old belief begins to soften, what new truth is asking to be lived?',
+    reflectionFourth: 'Where do you notice the belief unwinding this week? Watch for shifts in sensation, in reaction, and in the way you meet a familiar situation.',
   },
   { practice: '', reflection: '' },
   { practice: '', reflection: '' },
