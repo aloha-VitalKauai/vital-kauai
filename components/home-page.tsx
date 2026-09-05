@@ -628,8 +628,9 @@ export function HomePage() {
               <p>We offer support at every level.</p>
               <h3 className={styles.supportHeader}>Preparation &amp; Integration</h3>
               <p>
-                Full preparation and integration support across months. Medical review and
-                physician presence.
+                Full preparation and integration support across months. Full access to our member
+                portal with weekly prompts, videos, readings, and in-depth preparation materials.
+                Medical review and physician presence.
               </p>
               <h3 className={styles.supportHeader}>Coaching &amp; Psychoneuroenergetics (PNE)</h3>
               <p>
