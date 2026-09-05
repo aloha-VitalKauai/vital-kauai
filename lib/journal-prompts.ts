@@ -58,6 +58,7 @@ export const PRE_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
     reflectionFollowUp: 'What situations tend to call these patterns forward most quickly in your life?',
   },
   {
+    teaching: 'A teaching from PsychoNeuroEnergetics: beliefs as embodied patterns held in sensation, emotion, and nervous system memory, the intelligent adaptations that once organized survival, and how bringing gentle awareness to where a belief lives in the body lets what has held a person in place begin to unwind.',
     practice: '',
     reflection: 'How easily can you feel sensation in your body?',
     reflectionFollowUp: 'When sensation arrives, do you tend to feel it in one place, or in many?',
