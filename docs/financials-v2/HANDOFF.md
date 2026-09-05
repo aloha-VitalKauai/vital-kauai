@@ -1,6 +1,6 @@
 # Financials V2 — Handoff
 
-**Updated:** 2026-09-03 · **Updated by:** PR 10B brief (D-090)
+**Updated:** 2026-09-05 · **Updated by:** PR 10D implementation (D-091)
 **Protocol:** every Financials V2 PR updates this file as its final commit. It is the first document read when picking the work back up.
 
 ---
@@ -18,6 +18,7 @@
 | 4 | Founder-only verification workspace | **Preflight done** — `PR4_PREFLIGHT.md` |
 | 5–9 | See [PR_PLAN.md](PR_PLAN.md) | Not started |
 | 10B | Founder-chosen collection amount (D-090) | **MERGED AND DEPLOYED** — #978 squashed as `b4c6668`; migration `20260904010000` applied and stamped 2026-09-03; PostgREST reloaded. See §"PR 10B" below |
+| 10D | Founder payment notice — email + SMS when live Stripe money posts (D-091) | **Implemented, awaiting review** — migration `20260905200000` not yet applied. See §"PR 10D" below |
 
 ## PR 10B — founder-chosen collection amount (D-090)
 
@@ -316,6 +317,106 @@ nullable, unreferenced, harmless. Rollback is clean; the only residue is
 Write the migration first, then run the rolled-back production proof script
 against it before touching any TypeScript. Database foundation precedes
 interface.
+
+## PR 10D — founder payment notice (D-091)
+
+**State: implemented on the working branch, awaiting review.** Migration
+`20260905200000_founder_payment_notice_dedup.sql` is NOT yet applied to production.
+
+**Outcome.** After the event worker records a **live** V2 `stripe_payment`, the founders
+receive one email each (`joshuaperdue2@gmail.com`, `aloha@vitalkauai.com`) and one SMS
+(`+16233308017`) stating who paid, how much, and — read from
+`finance_api.agreement_balances` after the write — Contribution, Received, Remaining and
+state. The notice is a side effect of the money fact, never a condition of it: it runs
+after `record_v2_stripe_payment` succeeds, inside its own catch-all, and never throws to
+the event loop. Test-mode payments notify no one. One notice per (payment intent,
+livemode), enforced by a partial unique index on `public.notification_log` — the insert
+is made FIRST and the send happens only when it won, so duplicate Stripe deliveries and
+worker re-runs send nothing.
+
+### In scope (files)
+
+- `supabase/migrations/20260905200000_founder_payment_notice_dedup.sql` — one partial
+  unique index `notification_log_founder_payment_posted_uq` on
+  `((payload->>'payment_intent_id'), (payload->>'livemode')) where notification_type =
+  'founder_payment_posted'`, with an assertion block. Additive only; no `finance` object
+  touched.
+- `lib/finance/founder-payment-notice.ts` — recipient constants, the pure renderer
+  (`renderFounderPaymentNotice`) and `notifyFoundersOfPayment` (skip → dedup insert →
+  read view + member name → render → send email ×2 and SMS ×1 → close the row
+  `sent`/`partial`/`failed` with `failure_reason`). Integer cents; `/ 100` for display only.
+- `lib/finance/reconciliation/worker.ts` — the V2 payment branch awaits the notice
+  immediately after `must(record_v2_stripe_payment …)`; new optional `siteUrl` and
+  `notifyFounders` (test seam) on `runEventWorker` opts. Cron route unchanged.
+- `lib/finance/founder-payment-notice.test.ts` (17 tests), five PR 10D tests appended to
+  `lib/finance/reconciliation/worker.test.ts`, `package.json` test list.
+- This section.
+
+### Out of scope (deliberately)
+
+- Twilio credentials / the `send-notification` edge function's `TWILIO_ACCOUNT_SID`.
+- Any money path: no `finance` schema object, view, ledger function, or the
+  `record_v2_stripe_payment` call itself changed.
+- The member acknowledgment flow (PR 10C) and the public-support branch — untouched.
+- Regenerating `lib/database.types.ts` — the migration adds an index only; no column
+  or table shape changed.
+
+### How verified
+
+`tsc --noEmit` clean. `npm test` 490/490 (468 prior + 22 new). Worker tests prove, via
+the recorded call list, that the notice is called exactly once and only AFTER
+`record_v2_stripe_payment`, that a failed ledger write never triggers it, that a
+test-mode event yields `skipped` from the real function, and that a notice failure —
+including the real function running against a client with no table access — leaves the
+event `processed`. Notice tests prove: test mode touches nothing; `23505` → `duplicate`
+with zero sends and zero reads; any other insert error → `failed` with zero sends; happy
+path → one insert first, then view and member reads, 2 emails + 1 SMS, row `sent`; SMS
+failure → `partial` with the SMS error in `failure_reason`; a throwing email sender never
+propagates; a view read failure still sends the amount to "a member" and records the
+enrichment failure; the default SMS sender calls `send-notification` with the checkins
+cron's body shape.
+
+### Rollout
+
+1. Apply `20260905200000` (index only; safe before or after the code deploys — before
+   the migration lands, the insert simply has no unique constraint, so a duplicate
+   delivery in that window could send twice; apply first).
+2. Deploy. Nothing to flag; the notice runs on the next live V2 `payment_intent.succeeded`.
+3. **SMS will log `failed`** (row status `partial`, `failure_reason` "sms +16233308017:
+   Authentication Error…") until the edge function's `TWILIO_ACCOUNT_SID` is corrected
+   (D-091 "Known at commission time"). Email lands regardless. Once the secret is fixed
+   the SMS starts working with no code change.
+4. Rollback: revert the code; `drop index if exists
+   public.notification_log_founder_payment_posted_uq` if desired. No data is lost either
+   way.
+
+### Future items noted during this PR
+
+- `notification_log` `status` for this type uses `sent`/`partial`/`failed`; the Calendly
+  notice uses only `sent`/`failed`. If a dashboard ever lists founder notices it should
+  expect `partial`.
+
+### Review record (2026-09-05)
+
+Fresh-context adversarial review of the staged diff: **APPROVE**, no blocking
+finding. Confirmed sound: the notice cannot throw into the event loop (every
+await sits inside the outermost try; a real `TypeError` still yields
+`processed`); it runs only after `record_v2_stripe_payment` succeeds; the dedup
+insert precedes any send and `23505` is the only path to `duplicate`; the index
+predicate and keys match the code's payload exactly; test mode returns before any
+client access; the only money arithmetic is `/ 100` for display; recipients are
+constants. Production proof: the index creates cleanly beside 48 existing
+`notification_log` rows (rolled back). Two notes recorded here rather than fixed:
+
+- **Crash between dedup insert and send loses that one notice.** The row stays
+  `queued`, `sent_at` null, and the retry is `duplicate` by design (D-091 rule 2
+  chose duplicate-safety over delivery). Future item: a bounded sweep that
+  re-drives `founder_payment_posted` rows still `queued` after N minutes, keyed
+  on the row id — the row is the single-flight guard, so the retry is safe.
+- **`status = 'partial'` is a new value on `notification_log`**, whose DDL is not
+  in the repo. Verified on production before apply: no CHECK constraint on the
+  table (result recorded in the apply notes below). Had one existed, the close-out
+  UPDATE would fail, be logged, and leave the row `queued` — still dedup-safe.
 
 ## PR 2 was rescoped — PR_PLAN is stale on this point
 
