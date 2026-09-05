@@ -322,9 +322,9 @@ const BODY_CONTENT = `
 
   <div class="works-grid reveal">
     <div class="works-card">
-      <span class="works-card-eyebrow">Depression &amp; Anxiety</span>
+      <span class="works-card-eyebrow">Depression, Anxiety &amp; PTSD</span>
       <h3 class="works-card-title">Going to the Root</h3>
-      <p class="works-card-body">Participants frequently describe emerging from ceremony with a sense that heavy emotional weight has genuinely lifted, resolved at the root. Many people report a fundamental shift in how they relate to longstanding patterns of heaviness, worry, or disconnection.</p>
+      <p class="works-card-body">Participants frequently describe emerging from ceremony with a sense that heavy emotional weight has genuinely lifted, resolved at the root. Many people report a fundamental shift in how they relate to longstanding patterns of heaviness, worry, and the residue of trauma.</p>
     </div>
     <div class="works-card">
       <span class="works-card-eyebrow">Neuroplasticity &amp; Rewiring</span>
@@ -360,15 +360,17 @@ const BODY_CONTENT = `
   <h2 class="section-heading">What the Research <em>Shows</em></h2>
   <p class="section-intro">Iboga has attracted serious scientific attention in recent years, and the results emerging from clinical research represent paradigm shifts. What follows is some of the most significant data in the history of plant medicine science, signaling a fundamental change in how medicine understands what is possible for the human brain and nervous system.</p>
 
-  <p class="body-text" style="max-width:760px;">The clinical research on iboga stands apart in modern psychiatry, remarkable for the magnitude of its results. These are fundamental shifts in how human beings experience themselves. The study below, led by Stanford neuropsychiatrist Dr. Nolan Williams, has become a landmark in the emerging science of plant ally.</p>
+  <p class="body-text" style="max-width:760px;">The clinical research on iboga stands apart in modern psychiatry, remarkable for the magnitude of its results. These are fundamental shifts in how human beings experience themselves. The research below, led by Stanford neuropsychiatrist Dr. Nolan Williams, has become a landmark in the emerging science of plant ally.</p>
 
   <div class="research-block reveal" style="page-break-after:always;">
-    <span class="research-label">Stanford University · Nature Medicine · 2023</span>
+    <span class="research-label">Stanford University · Nature Medicine · 2024</span>
     <h3 class="research-title">Special Operations Forces Veterans · Treatment-Resistant PTSD &amp; TBI</h3>
-    <p class="body-text" style="margin-bottom:20px;max-width:100%;">In a landmark 2023 study published in <em>Nature Medicine</em>, Special Operations Forces veterans with treatment-resistant PTSD, traumatic brain injury, or both received iboga-assisted treatment. The outcomes were extraordinary, and the lead researcher's response said everything.</p>
+    <p class="body-text" style="margin-bottom:20px;max-width:100%;">In a landmark 2024 study published in <em>Nature Medicine</em>, Special Operations Forces veterans with treatment-resistant PTSD, traumatic brain injury, or both received iboga-assisted treatment. The outcomes were extraordinary, and the lead researcher's response said everything.</p>
     <div class="research-stat"><span class="research-stat-num">88%</span><span class="research-stat-label">average reduction in PTSD symptom severity at one-month follow-up</span></div>
-    <div class="research-stat"><span class="research-stat-num">80%</span><span class="research-stat-label">reduction in depression scores across the participant group</span></div>
+    <div class="research-stat"><span class="research-stat-num">87%</span><span class="research-stat-label">reduction in depression scores across the participant group</span></div>
+    <div class="research-stat"><span class="research-stat-num">81%</span><span class="research-stat-label">reduction in anxiety symptoms at one-month follow-up</span></div>
     <div class="research-stat"><span class="research-stat-num">↑</span><span class="research-stat-label">Measurable improvement in cognitive performance, suggesting genuine neurological restoration, alongside psychological effects</span></div>
+    <div class="research-stat"><span class="research-stat-num">84%</span><span class="research-stat-label">sustained PTSD remission at twelve months in a 2026 follow-up, with 66% for depression and 61% for anxiety, from a single session</span></div>
     <div class="research-stat"><span class="research-stat-num" style="font-size:22px;">"</span><span class="research-stat-label" style="font-style:italic;">This is the most dramatic thing I have ever seen in a clinical trial.<br><span style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--stone);font-style:normal;">— Dr. Nolan Williams, Stanford University School of Medicine</span></span></div>
     <p style="font-size:12px;color:var(--stone);line-height:1.8;margin-top:18px;font-style:italic;">Dr. Nolan Williams, triple board-certified neuropsychiatrist, Director of the Stanford Brain Stimulation Lab, and the pioneering force behind ibogaine's most significant clinical research, passed away in 2025. His work changed what medicine believes is possible. We honor him here.</p>
   </div>
