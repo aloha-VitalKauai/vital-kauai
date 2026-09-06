@@ -98,7 +98,6 @@ export const POST_PNE_DETAILS: ReadonlyArray<PneWeekDetails> = [
     teaching: 'A teaching from PsychoNeuroEnergetics: how inner experience is received, what the body learns in the moments it is overridden, and the listening practices that return a person to their own authority.',
     practice: 'Reparative listening practice',
     reflection: 'Where in your life did you learn that your inner experience was better kept quiet? Who was in the room?',
-    reflectionFollowUp: 'Of the ten listening errors, which one is most yours? What does reaching for it protect you from?',
     reflectionThird: 'What moved in your body the first time you asked someone, "Would you like me to just listen, or would ideas help?"',
   },
   {
