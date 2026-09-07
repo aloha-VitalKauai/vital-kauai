@@ -31,7 +31,12 @@ create table if not exists public.member_profiles (
 create table if not exists public.members (
   id         uuid primary key default gen_random_uuid(),
   profile_id uuid null references public.member_profiles(id) on delete set null,
-  email      text unique
+  email      text unique,
+  -- Portal-wide journal sharing consent, already in production via
+  -- 20260723221025_member_journal_sharing.sql. Present here because the
+  -- member-signals consent function reads it.
+  journal_sharing_enabled       boolean not null default false,
+  legacy_journal_access_enabled boolean not null default false
 );
 create unique index if not exists uq_members_profile_id
   on public.members (profile_id) where profile_id is not null;
