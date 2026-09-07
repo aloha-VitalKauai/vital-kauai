@@ -19,7 +19,7 @@ type Props = {
   activeSection?: string
   /**
    * Pixels of sticky-header height to offset clicks + the IntersectionObserver
-   * by. Defaults to 146 to match the PortalNav (60) + week-tabs (~62) stack
+   * by. Defaults to 136 to match the PortalNav (60) + week-tabs (52) stack
    * used on the pre-ceremony page.
    */
   scrollOffset?: number
@@ -49,7 +49,7 @@ const findVisibleById = (id: string): HTMLElement | null => {
 export default function SectionIndex({
   sections,
   activeSection,
-  scrollOffset = 146,
+  scrollOffset = 136,
   stickyTop,
 }: Props) {
   const [observed, setObserved] = useState<string | null>(null)
@@ -110,17 +110,21 @@ export default function SectionIndex({
   return (
     <>
       <style>{`
-        .si-wrap { border-top: .5px solid rgba(28,43,30,.12); background: rgba(247,244,238,.98); }
+        /* Shares the week-tabs surface (rgba(253,251,247,.97)) rather than the
+           darker panel it used to carry, so the two sticky rows read as one
+           continuous bar instead of two stacked slabs. It stays opaque because
+           it is position:sticky and content scrolls beneath it. Active state is
+           weight + ink only, leaving the sage underline on the week tabs as the
+           single underline in the header. */
+        .si-wrap { border-top: .5px solid rgba(28,43,30,.10); background: rgba(253,251,247,.97); backdrop-filter: blur(12px); }
         .si-inner { display: flex; gap: 0; overflow-x: auto; padding: 0 48px; scrollbar-width: none; }
         .si-inner::-webkit-scrollbar { display: none; }
-        .si-link { font-family: inherit; font-size: 11.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: rgba(90,84,74,.85); text-decoration: none; padding: 16px 22px; border: none; background: none; cursor: pointer; white-space: nowrap; transition: color .2s; position: relative; }
+        .si-link { font-family: inherit; font-size: 10.5px; font-weight: 400; letter-spacing: .18em; text-transform: uppercase; color: rgba(90,84,74,.72); text-decoration: none; padding: 12px 22px; border: none; background: none; cursor: pointer; white-space: nowrap; transition: color .2s; }
         .si-link:hover { color: #1A1A18; }
         .si-link.active { color: #1C2B1E; font-weight: 500; }
-        .si-link.active::after { content: ''; position: absolute; left: 22px; right: 22px; bottom: 8px; height: 1px; background: #C8A96E; }
         @media (max-width: 640px) {
           .si-inner { padding: 0 16px; }
-          .si-link { padding: 13px 15px; font-size: 11px; letter-spacing: .12em; }
-          .si-link.active::after { left: 14px; right: 14px; bottom: 6px; }
+          .si-link { padding: 10px 14px; font-size: 10px; letter-spacing: .14em; }
         }
       `}</style>
       <nav
