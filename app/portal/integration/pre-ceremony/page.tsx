@@ -416,11 +416,11 @@ function PreCeremonyPageInner() {
         /* WEEK NAV */
         .pc-week-nav { position:sticky;top:calc(60px + env(safe-area-inset-top));z-index:90;background:rgba(253,251,247,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 48px;display:flex;overflow-x:auto; }
         .pc-week-nav::-webkit-scrollbar { display:none; }
-        .wbtn { font-family:inherit;font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:0 24px;height:62px;border:none;border-bottom:3px solid transparent;cursor:pointer;color:var(--ink-mid);background:transparent;white-space:nowrap;transition:all .2s; }
+        .wbtn { font-family:inherit;font-size:11px;font-weight:400;letter-spacing:.16em;text-transform:uppercase;padding:0 22px;height:52px;border:none;border-bottom:2px solid transparent;cursor:pointer;color:var(--ink-mid);background:transparent;white-space:nowrap;transition:all .2s; }
         .wbtn:hover { color:var(--ink); }
-        .wbtn.active { color:var(--forest);border-bottom-color:var(--sage);font-weight:600; }
+        .wbtn.active { color:var(--forest);border-bottom-color:var(--sage);font-weight:500; }
         .wbtn.done::after { content:' ✓';font-size:11px;color:var(--sage);margin-left:5px; }
-        @media (max-width:640px) { .wbtn { font-size:12px;padding:0 16px;height:56px;letter-spacing:.1em; } }
+        @media (max-width:640px) { .wbtn { font-size:10.5px;padding:0 15px;height:46px;letter-spacing:.14em; } }
 
         /* MAIN */
         .pc-main { max-width:860px;margin:0 auto;padding:0 48px 100px; }
@@ -553,19 +553,20 @@ function PreCeremonyPageInner() {
         .pne-reflection .pne-reflection-textarea:focus { background:#fff;border-color:var(--sage-lt); }
         .pne-reflection-pending { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--sage-lt);margin:6px 0 0; }
 
-        .pne-guide-cta { display:flex;align-items:center;gap:20px;justify-content:space-between;margin:0 0 22px;padding:22px 26px;background:var(--cream);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:3px;text-decoration:none;color:inherit;transition:border-color .18s,background .18s,transform .18s; }
-        .pne-guide-cta:hover { border-color:var(--gold);background:#fff;transform:translateX(2px); }
-        .pgc-body { display:flex;flex-direction:column;gap:8px;min-width:0; }
-        .pgc-eyebrow { font-size:10px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--gold); }
-        .pgc-title { font-family:'Cormorant Garamond',serif;font-size:clamp(21px,2.4vw,27px);font-weight:400;font-style:italic;line-height:1.2;color:var(--ink); }
-        .pne-guide-cta:hover .pgc-title { color:var(--sage); }
-        .pgc-arrow { font-size:22px;color:var(--gold);flex-shrink:0;transition:transform .18s; }
-        .pne-guide-cta:hover .pgc-arrow { transform:translateX(4px); }
-        .pne-guide-cta-static { border-left-color:var(--sage-lt);cursor:default;opacity:.72; }
-        .pne-guide-cta-static:hover { transform:none;background:var(--cream);border-color:var(--border);border-left-color:var(--sage-lt); }
+        /* An italic sage text link with a hairline rule, rather than a filled
+           card. The h3 directly above already names the guide and its theme, so
+           the card's eyebrow was restating that line verbatim inside a box. */
+        .pne-guide-cta { display:inline-flex;align-items:baseline;gap:9px;margin:0 0 22px;text-decoration:none;color:var(--sage);border-bottom:1px solid rgba(122,158,126,.32);padding-bottom:3px;transition:color .18s,border-color .18s; }
+        .pne-guide-cta:hover { color:var(--ink);border-bottom-color:var(--sage); }
+        .pgc-body { display:inline; min-width:0; }
+        .pgc-title { font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;font-style:italic;line-height:1.35; }
+        .pgc-arrow { font-size:14px;flex-shrink:0;transition:transform .18s; }
+        .pne-guide-cta:hover .pgc-arrow { transform:translateX(3px); }
+        .pne-guide-cta-static { color:var(--stone);border-bottom-style:dashed;border-bottom-color:rgba(122,158,126,.24);cursor:default; }
+        .pne-guide-cta-static:hover { color:var(--stone);border-bottom-color:rgba(122,158,126,.24); }
         .pne-guide-cta-static .pgc-arrow { display:none; }
-        .pgc-soon { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--sage);flex-shrink:0; }
-        @media (max-width:640px) { .pne-guide-cta { padding:18px 20px;gap:14px; } }
+        .pgc-soon { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--gold);flex-shrink:0;margin-left:9px; }
+        @media (max-width:640px) { .pgc-title { font-size:16px; } }
 
         /* BOXES */
         .box { margin-top:14px;border-radius:2px;padding:16px 20px; }
@@ -707,7 +708,7 @@ function PreCeremonyPageInner() {
           ~52 = 112) so it stays in view as members scroll through sections.
           Weeks 2+ stay on the week-tabs alone until each week's content is
           restyled to match. */}
-      <SectionIndex sections={sectionsForWeek(activeWeek)} stickyTop={122} scrollOffset={186} />
+      <SectionIndex sections={sectionsForWeek(activeWeek)} stickyTop={112} scrollOffset={166} />
 
       {/* MAIN */}
       <main className="pc-main">
@@ -957,7 +958,6 @@ function PreCeremonyPageInner() {
                 const inner = (
                   <>
                     <span className="pgc-body">
-                      <span className="pgc-eyebrow">The PsychoNeuroEnergetics (PNE) Guide{c?.theme ? ` · ${c.theme}` : ''}</span>
                       <span className="pgc-title">Read Week {i + 1}</span>
                     </span>
                     <span className="pgc-arrow" aria-hidden>&rarr;</span>
