@@ -22,6 +22,7 @@ import {
   type AcknowledgmentSnapshot,
 } from "@/lib/finance/acknowledgment-email";
 import { sendJourneyEmail } from "@/lib/journey-emails";
+import { notifyFoundersOfPayment } from "@/lib/finance/founder-payment-notice";
 
 export const DEFAULT_CLAIM_BATCH = 50;
 export const DEFAULT_STALE_AFTER = "15 minutes";
@@ -60,10 +61,20 @@ function must<T>(res: { data: T; error: { message: string } | null }, what: stri
  */
 export async function runEventWorker(
   client: SupabaseClient,
-  opts: { livemode: boolean; batch?: number; staleAfter?: string } = { livemode: false },
+  opts: {
+    livemode: boolean;
+    batch?: number;
+    staleAfter?: string;
+    /** Base URL for dashboard links in the founder notice (PR 10D). */
+    siteUrl?: string;
+    /** Injection seam for tests; the real notice never throws (D-091 rule 1). */
+    notifyFounders?: typeof notifyFoundersOfPayment;
+  } = { livemode: false },
 ): Promise<WorkerResult> {
   const fin = () => client.schema("finance_api");
   const batch = opts.batch ?? DEFAULT_CLAIM_BATCH;
+  const siteUrl = opts.siteUrl ?? (process.env.NEXT_PUBLIC_APP_URL || "https://vitalkauai.com");
+  const notifyFounders = opts.notifyFounders ?? notifyFoundersOfPayment;
 
   const claimed = must(
     await fin().rpc("claim_stripe_events", {
@@ -110,6 +121,20 @@ export async function runEventWorker(
               }),
               "record_v2_stripe_payment",
             );
+            // PR 10D (D-091 rule 1): the founder notice is a side effect of the
+            // money fact, never a condition of it. The ledger write above has
+            // committed; the notice runs after it, deduplicated by identity,
+            // live mode only, and NEVER throws — a dead Resend or Twilio leaves
+            // this event `processed` and the ledger correct. Awaited so the
+            // cron does not exit before the send; the outcome is bookkeeping.
+            await notifyFounders(client, {
+              paymentIntentId: pi.id,
+              agreementId: meta.agreement_id,
+              amountCents: amount,
+              livemode: ev.livemode,
+              occurredAt: pi.created ? new Date(pi.created * 1000).toISOString() : null,
+              siteUrl,
+            });
           }
         } else if (
           // PR 10B: a verified public-support payment records the FULL charged

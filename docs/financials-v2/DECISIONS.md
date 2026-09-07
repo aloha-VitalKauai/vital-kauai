@@ -1387,3 +1387,37 @@ collecting the full remaining), not a change to gifts or public support.
 the only figure permitted to reach a charge request (ARCHITECTURE §11). A
 partial amount is therefore never negative, never `NULL`, and never more than
 what is owed.
+
+## D-091 — founders are told when Stripe money posts; the notice never touches the money fact (2026-09-05)
+
+Founder-commissioned after the first real member payment ($6,000 deposit, PR 10B)
+posted at 09:00 HST with nobody told. The event worker already issues the
+member's acknowledgment after `record_v2_stripe_payment`; founders had no
+equivalent.
+
+**Decision.** After the worker records a **live** V2 `stripe_payment`, it sends
+the founders one email and one SMS stating who paid, how much, and what remains,
+read from `v_agreement_balances` after the write. Rules:
+
+1. **Notification is a side effect of the money fact, never a condition of it.**
+   The ledger write completes first; the notice runs after, inside its own
+   try/catch, and NOTHING in it can throw to the event loop. A dead Resend or a
+   dead Twilio leaves the event `processed` and the ledger correct.
+2. **Deduplicated by identity, not by check-then-insert.** One notice per
+   (payment intent, livemode): a partial unique index on
+   `public.notification_log` under `notification_type = 'founder_payment_posted'`
+   makes a second insert a no-op, and the send happens only when the insert
+   won. Duplicate Stripe deliveries and worker re-runs therefore send nothing.
+3. **Live mode only.** Test-mode payments record as before and notify no one.
+4. **Recipients are the existing founder set** — the email pair the Calendly
+   founder notice already uses, and the founder number given in the commission
+   — held in one constant, not read from event metadata.
+5. **No figure is computed in the notice.** Received, Remaining and state are
+   read from `finance_api.agreement_balances`; the email formats, it never sums.
+
+**Known at commission time.** Every SMS this system has ever attempted has
+failed with Twilio "Authentication Error - invalid username" (30 of 30 in
+`sms_logs`, latest 2026-09-05). The `send-notification` edge function's
+`TWILIO_ACCOUNT_SID` secret is wrong. The SMS path is wired anyway, logged
+truthfully as `failed` until the secret is corrected, at which point it starts
+working with no code change.

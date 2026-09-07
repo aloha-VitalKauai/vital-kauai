@@ -17,6 +17,7 @@ import {
   PAYLOAD_RETENTION_MONTHS,
   type ClaimedEvent,
 } from "./worker.ts";
+import { notifyFoundersOfPayment } from "../founder-payment-notice.ts";
 
 type RpcCall = { fn: string; args: Record<string, unknown> };
 
@@ -631,4 +632,131 @@ test("a real refund-recording failure fails the event with the reason", async ()
   const done = calls.filter((c) => c.fn === "complete_stripe_event").at(-1);
   assert.equal(done?.args.p_status, "failed");
   assert.match(String(done?.args.p_error), /refund exceeds remaining/);
+});
+
+// ─── PR 10D (D-091): the founder notice is a side effect of the money fact ───
+
+const memberPi = (over: Record<string, unknown> = {}, evOver: Partial<ClaimedEvent> = {}) => ev({
+  event_id: "evt_member_pi",
+  object_id: "pi_member",
+  livemode: true,
+  payload: { data: { object: {
+    id: "pi_member", status: "succeeded", amount_received: 600000, created: 1_766_000_000,
+    metadata: { financial_version: "v2", agreement_id: "agr_member" },
+    ...over,
+  } } },
+  ...evOver,
+});
+
+/** Records the notice call in the same list as the rpc calls, so ORDER is provable. */
+function noticeSpy(calls: RpcCall[], behave: () => Promise<"sent" | "partial" | "failed" | "duplicate" | "skipped">) {
+  return async (_c: unknown, args: Record<string, unknown>) => {
+    calls.push({ fn: "notifyFoundersOfPayment", args });
+    return behave();
+  };
+}
+
+test("PR10D: a live V2 payment triggers exactly one founder notice AFTER record_v2_stripe_payment", async () => {
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [memberPi()],
+    record_v2_stripe_payment: () => "row_1",
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, {
+    livemode: true,
+    siteUrl: "https://example.test",
+    notifyFounders: noticeSpy(calls, async () => "sent"),
+  });
+
+  const names = calls.map((c) => c.fn);
+  const recordAt = names.indexOf("record_v2_stripe_payment");
+  const noticeAt = names.indexOf("notifyFoundersOfPayment");
+  const completeAt = names.indexOf("complete_stripe_event");
+  assert.equal(calls.filter((c) => c.fn === "notifyFoundersOfPayment").length, 1);
+  assert.ok(recordAt >= 0 && noticeAt > recordAt, `notice must follow the ledger write: ${names.join(",")}`);
+  assert.ok(completeAt > noticeAt, "the event completes after the notice is awaited");
+  const n = calls[noticeAt]!.args;
+  assert.equal(n.paymentIntentId, "pi_member");
+  assert.equal(n.agreementId, "agr_member");
+  assert.equal(n.amountCents, 600000);
+  assert.equal(n.livemode, true);
+  assert.equal(n.siteUrl, "https://example.test");
+  assert.equal(n.occurredAt, new Date(1_766_000_000 * 1000).toISOString());
+  assert.equal(r.processed, 1);
+});
+
+test("PR10D: the notice is only called when the ledger write succeeded", async () => {
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [memberPi()],
+    record_v2_stripe_payment: () => vkErr("VK409", "agreement is closed"),
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, {
+    livemode: true,
+    notifyFounders: noticeSpy(calls, async () => "sent"),
+  });
+
+  assert.equal(calls.filter((c) => c.fn === "notifyFoundersOfPayment").length, 0);
+  assert.equal(r.failed, 1);
+});
+
+test("PR10D: a test-mode payment records the ledger entry and the notice reports skipped", async () => {
+  // The worker passes livemode through; the notice itself refuses test mode
+  // (D-091 rule 3). Here the real notice is exercised against a fake client
+  // that has no `.from` at all, proving nothing is touched before the mode check.
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [memberPi({}, { livemode: false })],
+    record_v2_stripe_payment: () => "row_1",
+    complete_stripe_event: () => null,
+  });
+  const outcomes: string[] = [];
+  const r = await runEventWorker(client, {
+    livemode: false,
+    notifyFounders: async (c, args) => {
+      calls.push({ fn: "notifyFoundersOfPayment", args: args as unknown as Record<string, unknown> });
+      const o = await notifyFoundersOfPayment(c, args);
+      outcomes.push(o);
+      return o;
+    },
+  });
+
+  assert.equal(calls.filter((c) => c.fn === "record_v2_stripe_payment").length, 1);
+  assert.deepEqual(outcomes, ["skipped"]);
+  assert.equal(r.processed, 1);
+});
+
+test("PR10D: a founder-notice failure never fails the event", async () => {
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [memberPi()],
+    record_v2_stripe_payment: () => "row_1",
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, {
+    livemode: true,
+    notifyFounders: noticeSpy(calls, async () => "failed"),
+  });
+
+  assert.equal(r.processed, 1);
+  assert.equal(r.failed, 0);
+  assert.equal(calls.filter((c) => c.fn === "complete_stripe_event")[0]!.args.p_status, "processed");
+});
+
+test("PR10D: the default notice cannot throw into the worker even against a client with no table access", async () => {
+  // No injection: the real notifyFoundersOfPayment runs against a fake that
+  // has only `.schema().rpc()`. Its `.from` access throws inside the notice's
+  // catch-all, and the event still completes `processed`.
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [memberPi()],
+    record_v2_stripe_payment: () => "row_1",
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, { livemode: true });
+
+  assert.equal(r.processed, 1);
+  assert.equal(r.failed, 0);
+  assert.equal(calls.filter((c) => c.fn === "complete_stripe_event")[0]!.args.p_status, "processed");
 });
