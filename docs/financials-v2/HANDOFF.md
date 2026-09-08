@@ -1,6 +1,6 @@
 # Financials V2 — Handoff
 
-**Updated:** 2026-09-08 · **Updated by:** PR 10E brief (D-092)
+**Updated:** 2026-09-08 · **Updated by:** PR 10E implementation (D-092)
 **Protocol:** every Financials V2 PR updates this file as its final commit. It is the first document read when picking the work back up.
 
 ---
@@ -19,11 +19,16 @@
 | 5–9 | See [PR_PLAN.md](PR_PLAN.md) | Not started |
 | 10B | Founder-chosen collection amount (D-090) | **MERGED AND DEPLOYED** — #978 squashed as `b4c6668`; migration `20260904010000` applied and stamped 2026-09-03; PostgREST reloaded. See §"PR 10B" below |
 | 10D | Founder payment notice — email + SMS when live Stripe money posts (D-091) | **Implemented, awaiting review** — migration `20260905200000` not yet applied. See §"PR 10D" below |
-| 10E | Card processing fee on founder-issued contribution links (D-092) | **Brief only — not started.** See §"Current PR brief" |
+| 10E | Card processing fee on founder-issued contribution links (D-092) | **Implemented, awaiting review** — branch `claude/stripe-invoice-fee-13x9r9`, commits `7fab176` (migration + fixture + proof), `e28b759` (surfaces), `ca60e27` (tests). Migration `20260908010000` NOT yet applied; the rolled-back production proof is the coordinator's step. See §"Current PR brief" and §"Implementation evidence (2026-09-08)" |
 
 ## Current PR brief — PR 10E: the processing fee on founder-issued contribution links (D-092)
 
-**State: BRIEF ONLY. No code written. Branch `claude/stripe-invoice-fee-13x9r9`.**
+**State: IMPLEMENTED, AWAITING REVIEW. Branch `claude/stripe-invoice-fee-13x9r9`**
+(commits `7fab176`, `e28b759`, `ca60e27`; not pushed, no PR opened). Migration
+`20260908010000` is NOT applied to production; the rolled-back production proof
+(`supabase/tests/proofs/pr10e_link_processing_fee.sql`) is the coordinator's step.
+Evidence, deviations and the local proof output are in §"Implementation
+evidence (2026-09-08)" at the end of this brief.
 Commissioned by the founder 2026-09-08; approval recorded as **D-092**.
 
 **Where this sits relative to `PR_PLAN.md`.** Nowhere in it. `PR_PLAN.md` ends
@@ -494,6 +499,254 @@ function does not reproduce `begin_public_checkout` byte-for-byte across every
 vector, stop and report — the "exactly one formula" requirement is the load
 bearing part of this PR, and everything else depends on it. Database foundation
 precedes interface.
+
+### Implementation evidence (2026-09-08)
+
+**Order of work followed.** The migration was written first, starting with
+`finance.quote_processing_fee` and the `begin_public_checkout` rewire; the fixture
+was generated from `quoteProcessingFee`; criteria 7 and 8 were proven against a
+local build of the series (14 of 14 vectors identical in SQL; `begin_public_checkout`
+byte-identical before and after for every vector) before any TypeScript was written.
+The stop condition in "Implementer: first action" was not triggered.
+
+**What shipped** (three commits, plus this file):
+
+- `7fab176` — `supabase/migrations/20260908010000_finance_pr10e_link_processing_fee.sql`
+  (the thirteen plan steps, in order), `supabase/tests/fixtures/fee_vectors.json`
+  (14 vectors), `supabase/tests/proofs/pr10e_link_processing_fee.sql` (migration body
+  embedded verbatim + proof, one transaction, ends by raising, no `COMMIT` anywhere).
+- `e28b759` — `lib/finance/checkout.ts`, `app/contribute/[token]/page.tsx`,
+  `app/api/finance/payment-links/route.ts`,
+  `app/components/dashboard/financials/V2FinancialPanel.tsx`,
+  `lib/finance/reconciliation/{diff,supabase-db,worker}.ts`.
+- `ca60e27` — `lib/finance/fee-parity.test.ts` (new, in the `test` list),
+  additions to `lib/finance/checkout.test.ts`, `diff.test.ts`, `worker.test.ts`.
+
+Untouched, as required: every existing migration (PR 6 sha256
+`c010d68a…` and D-090 sha256 `690d9f6d…` are now both pinned in
+`checkout.test.ts`), `lib/database.types.ts` (N), `lib/finance/public-support-fees.ts`,
+`app/api/support/checkout/route.test.ts`, `v_agreement_balances`, `f_balances`,
+every other view, the member-initiated paths, `checkout_sessions_live_uq`.
+
+**Gates (real output).**
+
+```
+$ npm run typecheck
+> tsc --noEmit
+(clean)
+
+$ npm test
+# tests 532
+# pass 532
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+```
+
+490 before → 532: `fee-parity.test.ts` 8 (new), `checkout.test.ts` 21 → 48,
+`diff.test.ts` 36 → 40, `worker.test.ts` 38 → 41.
+
+```
+$ npm run build
+✓ Compiled successfully in 16.0s
+✓ Generating static pages using 3 workers (138/138)
+├ ƒ /api/finance/payment-links
+├ ƒ /contribute/[token]
+
+$ node scripts/retirement-gate.mjs
+retirement gate clean: no legacy financial runtime reachable
+```
+
+(The gate was run after `rm -rf .next`: with the build output present it reports
+`SCOPE: source file exists but was never scanned: .next/…` — the pre-existing
+scope-audit quirk already listed under Future items.)
+
+**Local database.** No production access and no Supabase CLI in this environment. A
+PostgreSQL 16.13 cluster was initialised under the `postgres` OS user
+(`/var/lib/postgresql/vk-pr10e`, port 54329, unix socket; the scratchpad path
+could not be traversed by that user) and the committed series was applied in order
+on top of the repo's `supabase/tests/_local_bootstrap.sql`. Local-only stubs, kept
+outside the repo: the four retired legacy tables plus `public.expense_entries`,
+`public.payout_commitments` (empty, for the freeze and PR 7 view),
+`public.notification_log`, `public.intake_forms`, `public.billing_config`,
+`public.members.full_name`, one founder and six members in `auth.users` /
+`user_roles` / `member_profiles` / `members`, and — just before
+`20260823010000` — the two rows its assertion block expects (a cancelled agreement
+with the production drill id and one paid agreement; see Future items). Every finance
+migration through `20260905200000` applied cleanly (both D-087 and 10B assertion
+blocks silent). Four non-finance copy/cohort migrations were skipped because they
+need un-versioned baseline tables (`protocol_template_items`,
+`journey_email_templates`, `cohorts`); none references a `finance` object.
+Local `v_agreement_balances` md5 `6c202e145139bc34598b4e188b1e85bb` equals the
+production figure recorded for 10B.
+
+**Local run of the committed proof** (`psql -v ON_ERROR_STOP=1 -f
+supabase/tests/proofs/pr10e_link_processing_fee.sql` against the pre-migration
+local database; psql exit 3 is the deliberate closing raise; afterwards
+`finance.fee_settings` and `quote_processing_fee` do not exist and the ledger row
+count is unchanged — the rollback held):
+
+```
+setup: founder 00000000-0000-4000-8000-000000000001, agreements off b4b42372-… / pre 04478369-… / fee c2125a66-…
+PASS  criterion 18: before apply: none of the seven new columns exists (0)
+PASS  criterion 18: before apply: fee_settings and quote_processing_fee do not exist
+baseline: 1 pre-existing ledger row(s) sampled for xmin/ctid
+PASS  criterion 2: pre-migration link issued for 1000000 (D-090 three-argument call)
+setup: general-support campaign is draft (activated for this transaction only if needed)
+PASS  criterion 18: the migration applied inside this transaction; both assertion blocks were silent
+PASS  criterion 4: v_agreement_balances definition md5 before 6c202e145139bc34598b4e188b1e85bb / after 6c202e145139bc34598b4e188b1e85bb
+PASS  criterion 4: f_balances(boolean) md5 before b56376cb2e8623b24bbb3d690190c2ae / after b56376cb2e8623b24bbb3d690190c2ae
+PASS  criterion 14: ALTER TABLE ledger_entries touched 0 of 1 pre-existing row(s): xmin and ctid unchanged on every one
+PASS  criterion 14: pre-existing ledger rows with processing_fee_cents <> 0: 0 (no backfill)
+PASS  criterion 14: ledger_entries.processing_fee_cents is NOT NULL DEFAULT 0
+PASS  criterion 18: payment_links rows carrying a snapshot on apply: 0
+PASS  criterion 18: checkout_sessions rows carrying a composition on apply: 0
+PASS  criterion 7: 14 of 14 fixture vectors identical in SQL
+PASS  criterion 7: contribution 0 refused [VK400: quote_processing_fee: contribution must be positive]
+PASS  criterion 7: bps 10000 refused [VK400: quote_processing_fee: fee bps 10000 out of range]
+PASS  criterion 7: bps -1 refused [VK400: quote_processing_fee: fee bps -1 out of range]
+PASS  criterion 7: fixed -1 refused [VK400: quote_processing_fee: fixed fee -1 out of range]
+PASS  criterion 7: quote_processing_fee is IMMUTABLE
+PASS  criterion 8: begin_public_checkout: 14 of 14 vectors identical before and after the rewire
+PASS  criterion 8: 14 of 14 post-rewire public totals equal the fixture
+      (one "vector … (before = after = fixture)" line per vector follows)
+PASS  criterion 17: exactly one pg_proc row per schema for each recreated function
+PASS  criterion 17: anon/PUBLIC EXECUTE grants on the migration's functions: 0
+PASS  criterion 17: finance_api SECURITY DEFINER functions beyond the D-088 carve-out: 0
+PASS  criterion 17: anon holds no USAGE on schema finance
+PASS  criterion 17: issue_payment_link and record_v2_stripe_payment carry one defaulted parameter in both schemas (4 of 4)
+PASS  criterion 17: the seven-argument record_v2_stripe_payment is gone
+PASS  criterion 17: checkout_sessions_live_uq is the PR 1 definition
+PASS  criterion 16: fee_settings holds exactly 1 row, fee_enabled = false
+PASS  criterion 16: a second row with id = true is rejected [23505: duplicate key value violates unique constraint "fee_settings_pkey"]
+PASS  criterion 16: a second row with id = false is rejected [23514: new row for relation "fee_settings" violates check constraint "fee_settings_singleton"]
+PASS  criterion 16: anon/PUBLIC privileges on finance.fee_settings: 0
+PASS  criterion 16: anon cannot read finance_api.fee_settings
+PASS  criterion 16: anon/PUBLIC EXECUTE on set_fee_settings: 0
+PASS  criterion 16: write grants on finance.fee_settings to application roles: 0
+PASS  criterion 16: non-founder authenticated caller: P0001: set_fee_settings: founder role required
+PASS  criterion 16: service_role caller refused at the grant boundary, no EXECUTE in either schema: 42501: permission denied for function set_fee_settings
+PASS  criterion 16: fee_enabled still false after both refusals
+PASS  criterion 16: founder: bps 10000 refused [VK400: set_fee_settings: fee bps 10000 out of range]
+PASS  criterion 16: founder: fixed -1 refused [VK400: set_fee_settings: fixed fee -1 out of range]
+PASS  criterion 16: founder: blank policy version refused [VK400: set_fee_settings: a non-blank policy version is required]
+PASS  criterion 1: issue_payment_link with fee_enabled = false writes fee_bps, fee_fixed_cents, fee_policy_version all NULL
+PASS  criterion 1: returned amount 1000000, processing_fee_cents 0, total_cents 1000000
+PASS  criterion 1: Session amount_cents 1000000, processing_fee_cents 0, contribution_cents 1000000
+PASS  criterion 1: begin_checkout_attempt returned charge 1000000 = contribution (Stripe unit_amount = charge_amount_cents is pinned in checkout.test.ts)
+PASS  criterion 1: ledger stripe_payment amount_cents 1000000, processing_fee_cents 0
+PASS  criterion 14: external_payment (source external) with a fee is rejected [23514: … "ledger_fee_only_on_stripe_payment"]
+PASS  criterion 14: refund with a fee is rejected [23514: … "ledger_fee_only_on_stripe_payment"]
+PASS  criterion 14: reversal with a fee is rejected [23514: … "ledger_fee_only_on_stripe_payment"]
+PASS  criterion 14: a negative processing_fee_cents is rejected [23514: … "ledger_fee_nonnegative"]
+PASS  criterion 14: zero rows inserted by the four refusals
+PASS  criterion 14: service_role UPDATE of processing_fee_cents refused: 42501: permission denied for table ledger_entries
+PASS  criterion 14: service_role DELETE refused: 42501: permission denied for table ledger_entries
+PASS  criterion 14: authenticated UPDATE refused: 42501: permission denied for table ledger_entries
+PASS  criterion 14: authenticated DELETE refused: 42501: permission denied for table ledger_entries
+PASS  criterion 16: founder set_fee_settings(true, 290, 30, stripe-standard-v1): applied, updated_by = auth.uid()
+PASS  criterion 2: links carrying a snapshot after the flip and before the first post-flip issuance: 0 (no repricing, no backfill)
+PASS  criterion 2: peek of the pre-migration link: snapshot NULL, link_amount_cents NULL (full remaining), payable 1000000
+PASS  criterion 2: pre-migration link redeemed with fee_enabled = true charges exactly 1000000, processing_fee_cents 0
+PASS  criterion 2: its ledger entry: amount_cents 1000000, processing_fee_cents 0
+PASS  criterion 2: the pre-migration link row's figure and snapshot columns were never written (only its claim status moved, as in any checkout)
+PASS  criterion 5: p_amount_cents = 1000001 on payable 1000000 [VK409: issue_payment_link: amount 1000001 exceeds payable remaining 1000000]
+PASS  criterion 5: zero rows inserted
+PASS  criterion 3: link carries (290, 30, stripe-standard-v1)
+PASS  criterion 3: issue_payment_link returned amount 1000000, processing_fee_cents 29898, total_cents 1029898
+PASS  criterion 3: begin_checkout_attempt returned charge_amount_cents 1029898, contribution_cents 1000000, processing_fee_cents 29898
+PASS  criterion 5: p_amount_cents = 1000000 on payable 1000000 produced a Session of 1029898 (contribution 1000000 + fee 29898)
+PASS  criterion 5: the TOTAL offered as the contribution is refused by the cap (the cap never sees a total) [VK409: … amount 1029898 exceeds payable remaining 1000000]
+PASS  criterion 13: fee-bearing open Session: session_amount_cents 1029898 > payable 1000000 but session_contribution_cents 1000000 = payable
+PASS  criterion 12: peek returns the link snapshot for the bridge's three-line summary (markup pinned in checkout.test.ts)
+PASS  criterion 9: session.amount_cents <> p_amount_cents [VK409: record_v2_stripe_payment: provider amount 1029897 does not equal the attempt charge 1029898]
+PASS  criterion 9: session of another agreement [VK409: record_v2_stripe_payment: attempt … belongs to another agreement]
+PASS  criterion 9: unknown attempt id [VK404: record_v2_stripe_payment: attempt … does not exist]
+PASS  criterion 9: nothing written by the three refusals
+PASS  criterion 9: no record_v2_stripe_payment parameter names a fee: a forged processing_fee_cents cannot be supplied
+PASS  criterion 3: exactly 1 stripe_payment: amount_cents 1000000, processing_fee_cents 29898
+PASS  criterion 4: contribution 1000000, gross_received 1000000, remaining 0, payable_remaining 0, payment_state paid
+PASS  criterion 10: duplicate payment_intent.succeeded: same ledger id, 1 row(s), total fee recorded 29898
+PASS  criterion 9: p_attempt_id omitted: whole amount is contribution (555), fee 0 (test mode, outside the live balance)
+PASS  criterion 15: refund of the full charged 1029898 raises the L7 headroom error [P0001: L7: cumulative refunds 1029898 exceed settled amount 1000000 on entry …]
+PASS  criterion 15: nothing written (the worker records the failure as a failed event; reconciliation raises the exception)
+PASS  criterion 15: refund of the contribution 1000000 succeeds: net_received 0, refunded 1000000, payment_state refunded — no balance misstated
+────────────────────────────────────────────────────────────
+PR 10E proof: 80 checks passed, 0 failed
+Rolling back: the migration DDL and every row this script created are discarded.
+ERROR:  PR 10E proof complete — summary: 80 passed, 0 failed. This exception is deliberate: it rolls the migration and the proof back.
+```
+
+**Criteria.** 1, 2, 3 (database half), 4, 5 (with the exception below), 7, 8, 9,
+10, 13, 14, 15, 16, 17, 18: proven locally by the script above; the same script is
+the production proof. 6, 11 (the diff half), 12 (markup), 13 (TypeScript half):
+`node:test`. 19: the gates above. 3 (Stripe half), 11 (hourly run), 12 (rendered
+page), 20: the founder's live drill after deploy. **Criterion 5's "no path anywhere
+… compares the total against Payable Remaining" is not fully true**: the
+pre-existing stranded-attempt sweeper (`checkout-recovery.ts`, outside this PR's
+in-scope list) compares `attempt.amount_cents` — now the total — to the payable
+remaining, so a fee-bearing attempt stranded between phases 2 and 3 is cancelled
+rather than replayed. Fail-closed and recorded under Future items; it needs a brief
+amendment, not a silent edit. Every checkout path in scope compares the contribution.
+
+**Decisions taken while implementing (none re-opens A–N).**
+
+1. **`finance_api.fee_settings` read-only view** (security_invoker; SELECT to
+   `authenticated` and `service_role`; the base table's `founder_reads_fee_settings`
+   policy decides). The founder-gated quote endpoint must read the policy in force and
+   `finance` is not exposed to PostgREST; step 1's SELECT grants imply exactly this read
+   path. "Exposing `fee_settings` outside the founder function" in the out-of-scope
+   list is read as *no settings UI, no per-agreement overrides* — the view exposes
+   the five config columns, nothing else, to founders only. The preview is computed
+   on the server by the display-only twin from that row (the public-support GET does
+   the same with `public_campaign_status`), never in the browser.
+2. **`record_v2_stripe_payment` refuses two more disagreements** inside J: an unknown
+   attempt id (`VK404`) and an attempt whose `livemode` differs (`VK409`). Both write
+   nothing.
+3. **Criterion 16 for `service_role`**: `set_fee_settings` is granted to
+   `authenticated` only (step 12), so a `service_role` caller is refused at the grant
+   boundary — `42501 permission denied for function set_fee_settings` — before the
+   founder gate can say "founder role required". The proof shows the refusal and
+   `has_function_privilege` false in both schemas. Founder-only holds; the message
+   differs for that one caller.
+4. **Grants tightened on `finance.issue_payment_link` and `finance.set_fee_settings`**:
+   `finance`'s PR 1 default privilege hands `service_role` EXECUTE on every new
+   function; D-090 left it in place on `finance.issue_payment_link`. Both are now
+   revoked from `service_role` explicitly (the façade never had it). `service_role`
+   never called either.
+5. **Design answer M's premise was inaccurate; criterion 13 is implemented as written.**
+   Before this PR, `resolveTokenState` made no amount comparison at all on the
+   `open_session` branch (the D-034 resume gap already in Future items). Criterion
+   13's second half requires `review` once Payable Remaining drops below the Session's
+   contribution, so `tokenStateFor` now compares `session_contribution_cents`
+   (`COALESCE(contribution, amount)` from `peek`) to the live payable remaining and
+   refuses with `review`. It never expires the Stripe Session; that remains the
+   Future item.
+6. **The quote endpoint and the link strip figures** come from the server: the route
+   quotes with `quoteProcessingFee` from `finance_api.fee_settings` (preview) and, for
+   the link list, from each link's own snapshot and the agreement's live payable
+   remaining. A pending or failed read is shown as "unavailable", never as a zero fee;
+   the issued box and the email show the database's three figures from
+   `issue_payment_link`'s reply, which the route also checks (`amount + fee = total`).
+7. **The proof activates the `general-support` campaign inside the rolled-back
+   transaction when it is not active** (temporarily satisfying the activation guard's
+   legal-entity fields and widening the bounds) so criterion 8 can call
+   `begin_public_checkout` for every vector before and after the migration. Nothing
+   of it survives the raise. On production the campaign's state is printed first.
+8. **The 2^40 fixture vector uses the default policy** and is exact in both engines;
+   the TypeScript engine's double-precision boundary (see Future items) is documented
+   rather than papered over, and the fixture is pinned to exact integer arithmetic so
+   an inexact figure can never enter it.
+
+**For the coordinator's production run.** The proof expects the series through
+`20260905200000` applied and `20260908010000` not applied; it picks the first
+founder in `user_roles` and three members with no `membership`/`journey_contribution`
+agreement (null journey); it prints the campaign's state and the pre-existing ledger
+row count it sampled. Exit code 3 with `PR 10E proof complete — summary: 80 passed,
+0 failed` is the expected end. After the real apply: the verification queries in the
+brief, plus `select count(*) from finance_api.fee_settings` = 1 as the founder and
+`notify pgrst, 'reload schema'`.
 
 ## PR 10B — founder-chosen collection amount (D-090)
 
@@ -1302,6 +1555,12 @@ V2 figures will differ from currently displayed figures wherever a legacy `adjus
 
 Noticed during audit or design, deliberately not folded into any current PR.
 
+- **The stranded-attempt sweeper compares the attempt's total to Payable Remaining (noticed implementing PR 10E).** `lib/finance/checkout-recovery.ts` decides whether a replayable attempt is "still current" with `balance.payable_remaining_cents === attempt.amount_cents`. After 10E, `checkout_sessions.amount_cents` is the charged total on a fee-bearing attempt, so that comparison is false by exactly the fee and the sweeper falls through to **cancel** a fee-bearing attempt stranded between phase 2 and phase 3 inside the 23-hour window instead of replaying it. Fail-closed — nothing is charged, the slot is freed, the founder reissues — but a lost replay, and the one site left that compares a total to the cap. The fix is one line (`COALESCE(contribution_cents, amount_cents)`) plus exposing `contribution_cents` on `finance_api.machine_checkout_attempts`; the file is outside 10E's in-scope list, so it needs a brief amendment rather than a silent edit.
+- **`quoteProcessingFee` is double-precision, not exact, above ~$9.0 billion.** `(c + fixed) * 10000` exceeds 2^53 once the contribution passes 900,719,925,474 cents, and the ceiling can then land one cent high: `c = 2^40, bps = 0, fixed = 0` gives 1099511627777 in TypeScript against the exact (and SQL) 1099511627776; with the default policy the first divergence is at `c = 2^47`. Every fixture vector, including 2^40 under the default policy, is exact and pinned against exact integer arithmetic; the divergent combination is deliberately not in the fixture. Irrelevant at any real amount (public support caps at $5,000,000; a founder link is bounded by Payable Remaining), and the SQL function is the authority on every charge. The fix is BigInt arithmetic inside `lib/finance/public-support-fees.ts` — the D-088 engine, outside 10E's scope.
+- **Founder-link resume still does not retire an obsolete Session.** PR 10E's `tokenStateFor` now refuses (`review`) an open Session whose *contribution* exceeds the live Payable Remaining (criterion 13), so a member is never resumed into an overpaying Session; but the Stripe Session stays payable at Stripe until it expires, and the single-flight slot stays held. The full D-034 reuse rule (expire through Stripe, confirm, recreate) for the founder-link path remains its own PR.
+- **`20260823010000_finance_cancelled_agreement_totals.sql` cannot apply to an empty database.** Its closing assertion reads a production drill agreement by id (`72aa064a-…`) and expects one `paid` agreement with `net_received_cents = 10000`; on a fresh database it raises `D-087 assert: cancelled agreement still owes <NULL> / <NULL>`. Building the series locally for PR 10E needed two seeded rows in that shape (local stub, not committed). The `migrations_manifest.txt` staleness above is the same class of problem.
+- **The thank-you page and `confirmBySessionId` report the charged total as "received".** `finance_api.checkout_sessions.amount_cents` is now the total, so `/contribute/thank-you` says "$10,298.98 has been received" for a $10,000 contribution with a $298.98 fee. True from the member's side (that is what the card was charged) but not itemized; the founder views `founder_checkout_sessions` and `checkout_sessions` likewise expose `amount_cents` without the new composition columns. Itemizing them is a small follow-up, deliberately not folded into 10E.
+- **The PR 10E proof needs three members with no agreement of its purposes.** It picks them from `public.members` as the 10B proof did; production has 17 members, a fresh local database needed stubs.
 - **A refund of a fee-bearing payment cannot cover the fee (D-092 known limitation).** `ledger_entries.amount_cents` on a fee-bearing `stripe_payment` is the contribution only, so the L7 headroom check refuses a refund of the full charged amount. It fails closed and visibly (an exception, never a misstated balance), and the founder can refund up to the contribution. Modelling a refund that returns the processing fee needs its own PR and a decision about whether L7 should measure gross.
 - **The PR 10D founder payment notice does not itemize the fee.** It states the charged total while the balances it quotes are contribution-only, which reads as a discrepancy once fees are on. One-line fix in its renderer once the ledger split exists; deliberately not folded into PR 10E.
 - **Founder-link resume does not re-check the amount (D-034 gap).** `resolveTokenState` returns `open_session` and `startCheckout` resumes it without comparing `checkout_sessions.amount_cents` to the current `payable_remaining_cents`; the member-portal path (`lib/finance/member-checkout.ts`) does compare and expires-then-recreates. Pre-existing before PR 10B; noticed while briefing it. Fix is its own PR: apply the D-034 reuse table to the founder-link path.
