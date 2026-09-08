@@ -1304,6 +1304,66 @@ begin
   perform pg_temp.expect('16', 'select * from finance_api.set_fee_settings(true, 290, 30, ''  '')', 'VK400', '%policy version%', 'founder: blank policy version refused');
 end $$;
 
+-- ── 16 (amended 2026-09-08): the read-only façade view finance_api.fee_settings ──
+
+do $$
+declare c pr10e_ctx%rowtype; n int; got text; refused int := 0; attempted int := 0; stmt text; r text; detail text := '';
+begin
+  select * into c from pr10e_ctx;
+  -- A non-founder authenticated caller sees nothing: the base table's founder
+  -- policy decides under security_invoker.
+  perform set_config('request.jwt.claim.sub', gen_random_uuid()::text, true);
+  execute 'set local role authenticated';
+  execute 'select count(*) from finance_api.fee_settings' into n;
+  execute 'reset role';
+  perform set_config('request.jwt.claim.sub', c.founder_id::text, true);
+  perform pg_temp.check('16', n = 0, 'non-founder authenticated SELECT through finance_api.fee_settings returns ' || n || ' row(s)');
+  -- The founder reads exactly one.
+  execute 'set local role authenticated';
+  execute 'select count(*) from finance_api.fee_settings' into n;
+  execute 'reset role';
+  perform pg_temp.check('16', n = 1, 'founder authenticated SELECT through finance_api.fee_settings returns ' || n || ' row(s)');
+  -- The machine may read the policy in force (SELECT granted, service_all policy).
+  execute 'set local role service_role';
+  execute 'select count(*) from finance_api.fee_settings' into n;
+  execute 'reset role';
+  perform pg_temp.check('16', n = 1, 'service_role SELECT through finance_api.fee_settings returns ' || n || ' row(s)');
+  -- anon holds no grant on the view.
+  perform pg_temp.check('16', not has_table_privilege('anon', 'finance_api.fee_settings', 'SELECT')
+      and not has_table_privilege('anon', 'finance.fee_settings', 'SELECT'),
+    'anon holds no SELECT on finance_api.fee_settings or on the base table');
+  -- No application role holds any write privilege through the view …
+  select count(*) into n
+    from (values ('anon'), ('authenticated'), ('service_role')) roles(role)
+    cross join (values ('INSERT'), ('UPDATE'), ('DELETE')) privs(priv)
+   where has_table_privilege(roles.role, 'finance_api.fee_settings', privs.priv);
+  perform pg_temp.check('16', n = 0, 'INSERT/UPDATE/DELETE privileges on finance_api.fee_settings across anon, authenticated, service_role: ' || n);
+  -- … and every live attempt is refused (founder session and machine alike).
+  foreach r in array array['authenticated', 'service_role'] loop
+    foreach stmt in array array[
+      'update finance_api.fee_settings set fee_enabled = true',
+      'insert into finance_api.fee_settings (fee_enabled, fee_bps, fee_fixed_cents, fee_policy_version) values (true, 290, 30, ''x'')',
+      'delete from finance_api.fee_settings'] loop
+      attempted := attempted + 1;
+      begin
+        execute 'set local role ' || r;
+        execute stmt;
+        got := 'succeeded';
+      exception when others then
+        got := sqlstate;
+      end;
+      execute 'reset role';
+      if got <> 'succeeded' then refused := refused + 1; end if;
+      detail := detail || ' ' || r || '/' || split_part(stmt, ' ', 1) || '=' || got;
+    end loop;
+  end loop;
+  perform set_config('request.jwt.claim.sub', c.founder_id::text, true);
+  perform pg_temp.check('16', refused = attempted and attempted = 6,
+    'writes through finance_api.fee_settings refused ' || refused || ' of ' || attempted || ':' || detail);
+  perform pg_temp.check('16', (select count(*) from finance.fee_settings where fee_enabled = false) = 1,
+    'the one row is untouched by the six refused writes (fee_enabled still false)');
+end $$;
+
 -- ── 1: fee OFF is byte-for-byte today ────────────────────────────────────────
 
 do $$

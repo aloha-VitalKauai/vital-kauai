@@ -590,6 +590,39 @@ test("PR10E: the D-090 migration is byte-identical", () => {
   assert.equal(digest, "690d9f6d26c0057f092bbf9464ae1d76652566c3979971fcaa27aea252399cc7");
 });
 
+// ── Criterion 5b (architect ruling 2026-09-08): the recovery comparison is unreachable for a fee-bearing attempt ──
+
+test("PR10E criterion 5b: stillCurrent compares attempt.amount_cents only inside if (replayable), and replayable requires payment_link_id === null", () => {
+  // lib/finance/checkout-recovery.ts is deliberately NOT changed by PR 10E. Its
+  // `stillCurrent` reads attempt.amount_cents — the charged TOTAL after 10E —
+  // but only for a replayable attempt, and a replayable attempt has no payment
+  // link: a member-portal attempt, which carries no fee, so amount_cents IS its
+  // contribution. If either fact ever changes (a member path gaining a fee, or
+  // founder-link replay being enabled), this pin fails and the Future item
+  // says what to do: compare COALESCE(contribution_cents, amount_cents).
+  const src = readFileSync("lib/finance/checkout-recovery.ts", "utf8");
+  const declStart = src.indexOf("const replayable =");
+  assert.ok(declStart > -1, "replayable is declared");
+  const declEnd = src.indexOf(";", declStart);
+  const replayableStmt = src.slice(declStart, declEnd);
+  assert.ok(replayableStmt.includes("attempt.payment_link_id === null"), "replayable requires a member-portal attempt (no payment link)");
+  assert.ok(replayableStmt.includes("ageHours < IDEMPOTENCY_WINDOW_HOURS"), "replayable is bounded by the idempotency window");
+
+  const ifIdx = src.indexOf("if (replayable) {");
+  assert.ok(ifIdx > declEnd, "the replay branch follows the declaration");
+  // The branch is at two-space indentation; its closing brace is the first
+  // newline + exactly two spaces + brace after it (inner blocks close deeper).
+  const closeIdx = src.indexOf("\n  }", ifIdx);
+  assert.ok(closeIdx > ifIdx, "the replay branch closes");
+  const stillIdx = src.indexOf("const stillCurrent =");
+  const cmpIdx = src.indexOf("balance.payable_remaining_cents === attempt.amount_cents");
+  assert.ok(stillIdx > ifIdx && stillIdx < closeIdx, "stillCurrent is declared inside if (replayable)");
+  assert.ok(cmpIdx > ifIdx && cmpIdx < closeIdx, "the total-vs-payable comparison sits inside if (replayable)");
+  assert.equal(src.indexOf("stillCurrent"), stillIdx + "const ".length, "stillCurrent is not referenced before the replay branch");
+  assert.equal((src.match(/=== attempt\.amount_cents/g) ?? []).length, 1, "exactly one comparison against attempt.amount_cents exists");
+  assert.equal((src.match(/attempt\.contribution_cents|processing_fee_cents/g) ?? []).length, 0, "the file knows nothing of the split — it is unchanged by PR 10E");
+});
+
 test("PR10E: the proof is the migration plus the proof in one transaction that ends by raising", () => {
   const proof = readFileSync(PR10E_PROOF, "utf8");
   assert.ok(proof.includes(">>> migration body (verbatim from supabase/migrations/20260908010000_finance_pr10e_link_processing_fee.sql) >>>"));

@@ -602,15 +602,16 @@ $ npm run typecheck
 (clean)
 
 $ npm test
-# tests 532
-# pass 532
+# tests 533
+# pass 533
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
 ```
 
-490 before → 532: `fee-parity.test.ts` 8 (new), `checkout.test.ts` 21 → 48,
+490 before → 533: `fee-parity.test.ts` 8 (new), `checkout.test.ts` 21 → 49
+(including the criterion-5b source pin added after the architect ruling),
 `diff.test.ts` 36 → 40, `worker.test.ts` 38 → 41.
 
 ```
@@ -697,6 +698,13 @@ PASS  criterion 16: fee_enabled still false after both refusals
 PASS  criterion 16: founder: bps 10000 refused [VK400: set_fee_settings: fee bps 10000 out of range]
 PASS  criterion 16: founder: fixed -1 refused [VK400: set_fee_settings: fixed fee -1 out of range]
 PASS  criterion 16: founder: blank policy version refused [VK400: set_fee_settings: a non-blank policy version is required]
+PASS  criterion 16: non-founder authenticated SELECT through finance_api.fee_settings returns 0 row(s)
+PASS  criterion 16: founder authenticated SELECT through finance_api.fee_settings returns 1 row(s)
+PASS  criterion 16: service_role SELECT through finance_api.fee_settings returns 1 row(s)
+PASS  criterion 16: anon holds no SELECT on finance_api.fee_settings or on the base table
+PASS  criterion 16: INSERT/UPDATE/DELETE privileges on finance_api.fee_settings across anon, authenticated, service_role: 0
+PASS  criterion 16: writes through finance_api.fee_settings refused 6 of 6: authenticated/update=42501 authenticated/insert=42501 authenticated/delete=42501 service_role/update=42501 service_role/insert=42501 service_role/delete=42501
+PASS  criterion 16: the one row is untouched by the six refused writes (fee_enabled still false)
 PASS  criterion 1: issue_payment_link with fee_enabled = false writes fee_bps, fee_fixed_cents, fee_policy_version all NULL
 PASS  criterion 1: returned amount 1000000, processing_fee_cents 0, total_cents 1000000
 PASS  criterion 1: Session amount_cents 1000000, processing_fee_cents 0, contribution_cents 1000000
@@ -739,22 +747,27 @@ PASS  criterion 15: refund of the full charged 1029898 raises the L7 headroom er
 PASS  criterion 15: nothing written (the worker records the failure as a failed event; reconciliation raises the exception)
 PASS  criterion 15: refund of the contribution 1000000 succeeds: net_received 0, refunded 1000000, payment_state refunded — no balance misstated
 ────────────────────────────────────────────────────────────
-PR 10E proof: 80 checks passed, 0 failed
+PR 10E proof: 87 checks passed, 0 failed
 Rolling back: the migration DDL and every row this script created are discarded.
-ERROR:  PR 10E proof complete — summary: 80 passed, 0 failed. This exception is deliberate: it rolls the migration and the proof back.
+ERROR:  PR 10E proof complete — summary: 87 passed, 0 failed. This exception is deliberate: it rolls the migration and the proof back.
 ```
 
-**Criteria.** 1, 2, 3 (database half), 4, 5 (with the exception below), 7, 8, 9,
-10, 13, 14, 15, 16, 17, 18: proven locally by the script above; the same script is
-the production proof. 6, 11 (the diff half), 12 (markup), 13 (TypeScript half):
-`node:test`. 19: the gates above. 3 (Stripe half), 11 (hourly run), 12 (rendered
-page), 20: the founder's live drill after deploy. **Criterion 5's "no path anywhere
-… compares the total against Payable Remaining" is not fully true**: the
-pre-existing stranded-attempt sweeper (`checkout-recovery.ts`, outside this PR's
-in-scope list) compares `attempt.amount_cents` — now the total — to the payable
-remaining, so a fee-bearing attempt stranded between phases 2 and 3 is cancelled
-rather than replayed. Fail-closed and recorded under Future items; it needs a brief
-amendment, not a silent edit. Every checkout path in scope compares the contribution.
+(80 checks in the first run; 87 after the architect ruling added the seven
+`finance_api.fee_settings` checks to criterion 16. The embedded migration body is
+unchanged and still pinned byte-identical to the migration file by
+`fee-parity.test.ts`.)
+
+**Criteria.** 1, 2, 3 (database half), 4, 5 (as reworded 2026-09-08), 7, 8, 9, 10,
+13, 14, 15, 16 (including the view checks added by the ruling), 17, 18: proven
+locally by the script above; the same script is the production proof. 5b (the
+`checkout-recovery.ts` source pin: `replayable` requires
+`attempt.payment_link_id === null`, and the `stillCurrent` comparison sits inside
+`if (replayable)`; the file is unchanged), 6, 11 (the diff half), 12 (markup), 13
+(TypeScript half): `node:test`. 19: the gates above. 3 (Stripe half), 11 (hourly
+run), 12 (rendered page), 20: the founder's live drill after deploy. Every path
+that decides a checkout — issuance, the bridge, `begin_checkout_attempt`, resume —
+compares the contribution; the recovery sweeper's total comparison is unreachable
+for a fee-bearing attempt, per the ruling, and pinned by 5b.
 
 **Decisions taken while implementing (none re-opens A–N).**
 
