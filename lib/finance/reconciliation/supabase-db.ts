@@ -179,10 +179,13 @@ export function createSupabaseFinanceDb(client?: SupabaseClient): FinanceDb {
       // The window is widened by nothing here: matching is by identity, so a row
       // outside the window simply is not a candidate. Widening would invite the
       // heuristic matching acceptance 21 forbids.
+      // PR 10E (D-092 K): processing_fee_cents rides beside amount_cents so the
+      // diff can compare the provider gross to contribution + fee. A row that
+      // came back without it is refused, never read as a zero fee.
       const res = await fin()
         .from("ledger_entries")
         .select(
-          "id, agreement_id, entry_type, amount_cents, provider_object_id, provider_payment_intent_id, livemode",
+          "id, agreement_id, entry_type, amount_cents, processing_fee_cents, provider_object_id, provider_payment_intent_id, livemode",
         )
         .eq("livemode", a.livemode)
         .gte("occurred_at", a.windowStart.toISOString())
@@ -193,20 +196,27 @@ export function createSupabaseFinanceDb(client?: SupabaseClient): FinanceDb {
             agreement_id: string;
             entry_type: LedgerRow["entryType"];
             amount_cents: number;
+            processing_fee_cents: number | null;
             provider_object_id: string | null;
             provider_payment_intent_id: string | null;
             livemode: boolean;
           }[]
         >();
-      return (must(res, "ledgerForWindow") ?? []).map((r) => ({
-        id: r.id,
-        agreementId: r.agreement_id,
-        entryType: r.entry_type,
-        amountCents: r.amount_cents,
-        providerObjectId: r.provider_object_id,
-        providerPaymentIntentId: r.provider_payment_intent_id,
-        livemode: r.livemode,
-      }));
+      return (must(res, "ledgerForWindow") ?? []).map((r) => {
+        if (typeof r.processing_fee_cents !== "number") {
+          throw new Error(`ledgerForWindow: processing_fee_cents missing on ledger entry ${r.id}`);
+        }
+        return {
+          id: r.id,
+          agreementId: r.agreement_id,
+          entryType: r.entry_type,
+          amountCents: r.amount_cents,
+          processingFeeCents: r.processing_fee_cents,
+          providerObjectId: r.provider_object_id,
+          providerPaymentIntentId: r.provider_payment_intent_id,
+          livemode: r.livemode,
+        };
+      });
     },
 
     async publicEntriesForWindow(a) {

@@ -118,6 +118,13 @@ export async function runEventWorker(
                 p_occurred_at: pi.created ? new Date(pi.created * 1000).toISOString() : null,
                 p_livemode: ev.livemode,
                 p_origin_event_id: ev.event_id,
+                // PR 10E (D-092 J): the attempt id written to the PaymentIntent
+                // at Session creation (D-033). It supplies IDENTITY only — the
+                // database splits the provider gross into contribution and fee
+                // from OUR attempt row, and refuses when the gross is not what
+                // that attempt asked Stripe to charge. Absent means no split:
+                // the whole amount is contribution, exactly as before.
+                p_attempt_id: meta.attempt_id ?? null,
               }),
               "record_v2_stripe_payment",
             );

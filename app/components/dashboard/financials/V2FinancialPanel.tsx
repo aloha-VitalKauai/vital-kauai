@@ -504,6 +504,34 @@ function ActionDrawer({
     collectCents <= drawer.agreement.remaining_cents;
   const collectReady = collectValid && reason.trim().length > 0;
 
+  // PR 10E (D-092): the processing-fee preview is the SERVER's quote from the
+  // policy in force — never browser math. A pending or failed read is shown as
+  // unavailable, never as a zero fee; the issued box below shows the figures
+  // the database actually wrote.
+  type FeeQuote = {
+    feeEnabled: boolean;
+    quote: { contributionCents: number; processingFeeCents: number; totalCents: number };
+  };
+  const [feeQuote, setFeeQuote] = useState<
+    { status: "idle" | "loading" | "unavailable" } | { status: "ready"; data: FeeQuote }
+  >({ status: "idle" });
+  useEffect(() => {
+    if (drawer.kind !== "collect" || !collectValid || collectCents === null) {
+      setFeeQuote({ status: "idle" });
+      return;
+    }
+    let alive = true;
+    setFeeQuote({ status: "loading" });
+    void fetch(`/api/finance/payment-links?quoteContributionCents=${collectCents}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => {
+        if (!alive) return;
+        setFeeQuote(j && j.ok && j.quote ? { status: "ready", data: j as FeeQuote } : { status: "unavailable" });
+      })
+      .catch(() => { if (alive) setFeeQuote({ status: "unavailable" }); });
+    return () => { alive = false; };
+  }, [drawer.kind, collectValid, collectCents]);
+
   const needsAmount = drawer.kind === "create" || drawer.kind === "amend" || drawer.kind === "payment";
   // collect: the chosen amount and the reason gate its own buttons below.
   const valid =
@@ -537,7 +565,8 @@ function ActionDrawer({
   }
 
   const [issued, setIssued] = useState<{
-    url: string; amountCents: number; expiresAt: string; emailed: boolean; emailError: string | null;
+    url: string; amountCents: number; processingFeeCents: number | null; totalCents: number | null;
+    expiresAt: string; emailed: boolean; emailError: string | null;
   } | null>(null);
 
   async function executeCollect(email: boolean) {
@@ -562,7 +591,12 @@ function ActionDrawer({
         return;
       }
       // The raw token exists only in this response (proof #24): show it once.
-      setIssued({ url: json.url, amountCents: json.amountCents, expiresAt: json.expiresAt, emailed: json.emailed, emailError: json.emailError });
+      setIssued({
+        url: json.url, amountCents: json.amountCents,
+        processingFeeCents: typeof json.processingFeeCents === "number" ? json.processingFeeCents : null,
+        totalCents: typeof json.totalCents === "number" ? json.totalCents : null,
+        expiresAt: json.expiresAt, emailed: json.emailed, emailError: json.emailError,
+      });
     } finally {
       setBusy(false);
     }
@@ -644,6 +678,11 @@ function ActionDrawer({
               <p style={{ margin: "0 0 8px", fontFamily: "var(--font-display, serif)", fontSize: 22, color: FOREST }}>
                 {usd(issued.amountCents)} <span style={{ fontSize: 13, color: MUTED, fontFamily: "var(--font-body, sans-serif)" }}>· expires {fmtDate(issued.expiresAt)}</span>
               </p>
+              {issued.processingFeeCents !== null && issued.totalCents !== null && issued.processingFeeCents > 0 && (
+                <p style={{ margin: "0 0 8px", fontSize: 13, color: FOREST }}>
+                  Member pays {usd(issued.totalCents)} ({usd(issued.amountCents)} + {usd(issued.processingFeeCents)} card processing fee).
+                </p>
+              )}
               {issued.emailed ? (
                 <p style={{ margin: 0, fontSize: 13, color: "#3d6b47" }}>Sent by email.</p>
               ) : (
@@ -701,6 +740,17 @@ function ActionDrawer({
                     ? `Up to ${usd(drawer.agreement.remaining_cents)}. Leave as is to collect the full balance.`
                     : `Enter an amount from $0.01 up to ${usd(drawer.agreement.remaining_cents)}, in whole cents.`}
                 </p>
+                {collectValid && (
+                  <p style={{ margin: "6px 0 0", fontSize: 12, color: feeQuote.status === "ready" ? FOREST : MUTED }}>
+                    {feeQuote.status === "ready"
+                      ? (feeQuote.data.feeEnabled
+                          ? `Member pays ${usd(feeQuote.data.quote.totalCents)} (${usd(feeQuote.data.quote.contributionCents)} + ${usd(feeQuote.data.quote.processingFeeCents)} processing).`
+                          : `Member pays ${usd(feeQuote.data.quote.contributionCents)}. The card processing fee is off.`)
+                      : feeQuote.status === "unavailable"
+                        ? "Processing fee preview unavailable. The database quotes the fee when the link is created; the issued figures show it."
+                        : "Quoting the card processing fee…"}
+                  </p>
+                )}
               </div>
             )}
 
@@ -803,7 +853,11 @@ function ActionDrawer({
 function LinkStrip({ agreementId, remainingCents }: { agreementId: string; remainingCents: number }) {
   const router = useRouter();
   const [data, setData] = useState<{
-    links: { id: string; status: string; expires_at: string; consumed_by_session_id: string | null; amount_cents: number | null }[];
+    links: {
+      id: string; status: string; expires_at: string; consumed_by_session_id: string | null; amount_cents: number | null;
+      // PR 10E: the link's fee snapshot and the server-quoted figures it implies.
+      fee_policy_version?: string | null; processing_fee_cents?: number | null; total_cents?: number | null;
+    }[];
     sessions: { id: string; status: string; expires_at: string; stripe_session_id: string | null }[];
   } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -825,6 +879,13 @@ function LinkStrip({ agreementId, remainingCents }: { agreementId: string; remai
   // A link issued for a chosen amount (D-090) says so: the founder sees what a
   // live link is for before revoking it. No amount means the full remaining.
   const linkAmount = link?.amount_cents != null ? ` for ${usd(link.amount_cents)}` : "";
+  // PR 10E (D-092): a link issued under a fee policy says so, with both figures
+  // when the server could quote them. Unknown figures read as unknown, never 0.
+  const linkFee = link?.fee_policy_version
+    ? (link.processing_fee_cents != null && link.total_cents != null
+        ? ` (+ ${usd(link.processing_fee_cents)} processing = ${usd(link.total_cents)} charged)`
+        : " (+ card processing fee)")
+    : "";
   // Display-only: the link's figure against the canonical Remaining the card
   // already shows. Such a link is refused at checkout; the founder reissues.
   const exceeds = link?.amount_cents != null && link.amount_cents > remainingCents;
@@ -833,8 +894,8 @@ function LinkStrip({ agreementId, remainingCents }: { agreementId: string; remai
   else if (session?.status === "completed") { label = "Payment confirmed"; }
   else if (session?.status === "expired") { label = "Checkout expired"; }
   else if (link?.status === "active" && exceeds) { label = `Link${linkAmount} exceeds current Remaining — revoke and reissue`; canRevoke = true; tone = DANGER; }
-  else if (link?.status === "active") { label = `Link ready${linkAmount} · expires ${new Date(link.expires_at).toLocaleDateString()}`; canRevoke = true; }
-  else if (link?.status === "creating") { label = `Creating secure checkout${linkAmount}…`; }
+  else if (link?.status === "active") { label = `Link ready${linkAmount}${linkFee} · expires ${new Date(link.expires_at).toLocaleDateString()}`; canRevoke = true; }
+  else if (link?.status === "creating") { label = `Creating secure checkout${linkAmount}${linkFee}…`; }
   else if (link?.status === "consumed") { label = session ? "Link used · checkout still available" : "Link used"; }
   else if (link?.status === "revoked") { label = "Link revoked"; }
   if (!label) return null;

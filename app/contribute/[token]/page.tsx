@@ -2,6 +2,10 @@
  * PR 6: the controlled contribution bridge. Token possession is the credential;
  * the page shows no member identity, agreement ids or history. Amount comes
  * from the canonical view via resolveTokenState — never from the client.
+ * PR 10E (D-092): a fee-bearing link itemizes Contribution, Card processing
+ * fee and Total charged, from figures the server derived (the link's own
+ * snapshot before a Session exists, the Session's recorded composition once
+ * one does). A link with no fee renders the single figure exactly as before.
  */
 import { resolveTokenState } from "@/lib/finance/checkout";
 import ContinueButton from "./ContinueButton";
@@ -13,6 +17,15 @@ const IVORY = "#FBFAF6", FOREST = "#1E3A2C", MUTED = "#8A8A84", COPPER = "#B8683
 
 function usd(cents: number) {
   return (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
+}
+
+function Row({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
+  return (
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "6px 0", borderTop: strong ? "1px solid #8fb29b" : "none" }}>
+      <span style={{ color: strong ? FOREST : MUTED, fontSize: strong ? 13 : 12, fontWeight: strong ? 650 : 400 }}>{label}</span>
+      <span style={{ fontFamily: "var(--font-display, serif)", fontWeight: 400, fontSize: strong ? 29 : 18, color: FOREST, fontVariantNumeric: "tabular-nums" }}>{value}</span>
+    </div>
+  );
 }
 
 export default async function ContributePage({ params }: { params: Promise<{ token: string }> }) {
@@ -52,12 +65,23 @@ export default async function ContributePage({ params }: { params: Promise<{ tok
                 {s.state === "open_session" ? "Your secure checkout is ready" : "Continue your contribution"}
               </h2>
               <p style={{ color: MUTED, margin: "0 0 22px", fontSize: 14 }}>Your secure payment amount is calculated from your current agreement.</p>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", border: "1px solid #8fb29b", background: "#f7fbf7", borderRadius: 12, padding: "18px 20px", marginBottom: 16 }}>
-                <div>
-                  <span style={{ display: "block", color: MUTED, fontSize: 11, marginBottom: 4 }}>Amount due today</span>
-                  <strong style={{ fontFamily: "var(--font-display, serif)", fontWeight: 400, fontSize: 29, color: FOREST, fontVariantNumeric: "tabular-nums" }}>{usd(s.amountCents)}</strong>
+              {s.processingFeeCents > 0 ? (
+                <div style={{ border: "1px solid #8fb29b", background: "#f7fbf7", borderRadius: 12, padding: "14px 20px", marginBottom: 16 }}>
+                  <Row label="Contribution" value={usd(s.contributionCents)} />
+                  <Row label="Card processing fee" value={usd(s.processingFeeCents)} />
+                  <Row label="Total charged" value={usd(s.totalCents)} strong />
+                  <p style={{ color: MUTED, fontSize: 12, margin: "8px 0 0" }}>
+                    The card processing fee is added so your full contribution reaches Vital Kauaʻi.
+                  </p>
                 </div>
-              </div>
+              ) : (
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", border: "1px solid #8fb29b", background: "#f7fbf7", borderRadius: 12, padding: "18px 20px", marginBottom: 16 }}>
+                  <div>
+                    <span style={{ display: "block", color: MUTED, fontSize: 11, marginBottom: 4 }}>Amount due today</span>
+                    <strong style={{ fontFamily: "var(--font-display, serif)", fontWeight: 400, fontSize: 29, color: FOREST, fontVariantNumeric: "tabular-nums" }}>{usd(s.amountCents)}</strong>
+                  </div>
+                </div>
+              )}
               <ContinueButton token={token} resume={s.state === "open_session"} />
               <p style={{ textAlign: "center", color: MUTED, fontSize: 12, margin: "12px 0 0" }}>Secure payment powered by Stripe</p>
               <p style={{ color: MUTED, fontSize: 12, marginTop: 18, borderTop: "1px solid #e2e4e0", paddingTop: 14 }}>

@@ -58,7 +58,17 @@ export type LedgerRow = {
   id: string;
   agreementId: string;
   entryType: "stripe_payment" | "external_payment" | "refund" | "reversal";
+  /** The contribution portion — the only figure any balance formula sums. */
   amountCents: number;
+  /**
+   * PR 10E (D-092 K): the card processing fee charged beside the contribution
+   * on a fee-bearing `stripe_payment`; 0 on every other row. The provider's
+   * gross is `amountCents + processingFeeCents`, and THAT sum is what is
+   * compared to Stripe — comparing `amountCents` alone would raise
+   * `amount_mismatch` on every fee-bearing payment, and a mis-split in either
+   * direction is caught here as an exception rather than a silent balance.
+   */
+  processingFeeCents: number;
   providerObjectId: string | null;
   providerPaymentIntentId: string | null;
   livemode: boolean;
@@ -238,7 +248,11 @@ export function diffWindow(input: DiffInput): DiffResult {
 
     if (existing) {
       objectsMatched += 1;
-      if (existing.amountCents !== p.amountCents) {
+      // D-092 K: Stripe reports the gross it charged. The ledger holds the
+      // contribution and the fee separately; their sum is the gross, and only
+      // that sum may be compared. Integer cents throughout.
+      const ledgerGrossCents = existing.amountCents + existing.processingFeeCents;
+      if (ledgerGrossCents !== p.amountCents) {
         exceptions.push({
           kind: "amount_mismatch",
           livemode,
@@ -250,6 +264,8 @@ export function diffWindow(input: DiffInput): DiffResult {
           detail: {
             provider_amount_cents: p.amountCents,
             ledger_amount_cents: existing.amountCents,
+            ledger_processing_fee_cents: existing.processingFeeCents,
+            ledger_gross_cents: ledgerGrossCents,
           },
         });
       }

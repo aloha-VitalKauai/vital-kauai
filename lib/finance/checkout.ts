@@ -12,11 +12,19 @@
  * PR 10B (D-090): the founder may issue a link for a chosen amount, bounded by
  * the payable remaining; the link carries that figure and the database
  * re-checks it at Session creation. The member browser still supplies nothing.
+ * PR 10E (D-092): a link issued with a fee-policy snapshot charges the
+ * contribution PLUS a card processing fee. The charge is derived by
+ * `begin_checkout_attempt` under the agreement lock and returned as
+ * `charge_amount_cents`; this module sends exactly that figure to Stripe and
+ * never computes it. The fee shown on the bridge before a Session exists comes
+ * from the display-only TypeScript twin of the one formula, fed with the
+ * link's own snapshot — the same figures the database will derive.
  */
 
 import { createHash, randomBytes } from "node:crypto";
 import Stripe from "stripe";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { quoteProcessingFee } from "@/lib/finance/public-support-fees";
 
 /** One V2 Stripe version everywhere; matches the live Workbench destination. */
 export const STRIPE_V2_API_VERSION = "2026-03-25.dahlia";
@@ -87,12 +95,54 @@ export function attemptAmountFor(
   return { ok: true, amountCents: linkAmountCents };
 }
 
+/** The three figures the member sees: contribution, card processing fee, total charged. */
+export type ChargeBreakdown = {
+  contributionCents: number;
+  processingFeeCents: number;
+  totalCents: number;
+};
+
+/** The policy a link was issued under (D-092 F). All three set, or all NULL = no fee. */
+export type LinkFeeSnapshot = {
+  link_fee_bps: number | null;
+  link_fee_fixed_cents: number | null;
+  link_fee_policy_version: string | null;
+};
+
+/**
+ * What a link will charge for a given contribution, from the link's own
+ * snapshot (D-092 F, G). A link with no snapshot charges exactly the
+ * contribution — byte-for-byte today's figure. A link with one is quoted by
+ * the display-only twin of the one fee formula, which the database derives
+ * identically at Session creation (pinned by supabase/tests/fixtures/
+ * fee_vectors.json). A snapshot that is only partly present is corrupt and
+ * throws, so the bridge fails closed rather than under-quoting.
+ */
+export function linkChargeFor(contributionCents: number, link: LinkFeeSnapshot): ChargeBreakdown {
+  const { link_fee_bps: bps, link_fee_fixed_cents: fixed, link_fee_policy_version: version } = link;
+  if (bps === null && fixed === null && version === null) {
+    return { contributionCents, processingFeeCents: 0, totalCents: contributionCents };
+  }
+  if (bps === null || fixed === null || version === null) {
+    throw new Error("link fee snapshot is incomplete");
+  }
+  const q = quoteProcessingFee(contributionCents, { feeBps: bps, feeFixedCents: fixed, feePolicyVersion: version });
+  return { contributionCents, processingFeeCents: q.processingFeeCents, totalCents: q.totalCents };
+}
+
 type PeekRow = {
   link_id: string; agreement_id: string; link_status: string;
   link_expires_at: string; session_id: string | null; session_status: string | null;
   stripe_session_id: string | null; session_amount_cents: number | null;
   payable_remaining_cents: number | null; payment_state: string | null;
   link_amount_cents: number | null;
+  link_fee_bps: number | null; link_fee_fixed_cents: number | null; link_fee_policy_version: string | null;
+  session_contribution_cents: number | null; session_processing_fee_cents: number | null;
+};
+
+type AttemptRow = {
+  attempt_id: string; idempotency_key: string;
+  charge_amount_cents: number; contribution_cents: number; processing_fee_cents: number;
 };
 
 export type TokenState =
@@ -100,25 +150,19 @@ export type TokenState =
   | { state: "expired" }
   | { state: "revoked" }
   | { state: "paid" }
-  | { state: "open_session"; sessionId: string; stripeSessionId: string; amountCents: number }
+  | ({ state: "open_session"; sessionId: string; stripeSessionId: string; amountCents: number } & ChargeBreakdown)
   | { state: "processing" }
   | { state: "confirmed"; amountCents: number }
-  | { state: "ready"; amountCents: number }
+  | ({ state: "ready"; amountCents: number } & ChargeBreakdown)
   | { state: "review" };
 
 /**
- * What should this token holder see? Read-only: zero mutations and zero Stripe
- * calls for every terminal state (behavioral proof #21).
+ * The pure state rule over a peek row. Exported so the reuse comparison (D-092
+ * M) is executed by tests: the Session's CONTRIBUTION is compared to the live
+ * payable remaining — never its total, which exceeds the payable remaining by
+ * exactly the fee on every fee-bearing Session.
  */
-export async function resolveTokenState(token: string): Promise<TokenState> {
-  const fin = financeServiceClient().schema("finance_api");
-  const { data, error } = await fin.rpc("peek_payment_link", {
-    p_token_hash: hashLinkToken(token),
-  });
-  if (error) throw new Error(`peek failed: ${error.message}`);
-  const row = (data as unknown as PeekRow[] | null)?.[0];
-  if (!row) return { state: "unknown" };
-
+export function tokenStateFor(row: PeekRow, now: number = Date.now()): TokenState {
   // Money already settled? The canonical state outranks every link state.
   if (row.payment_state === "paid" || row.payment_state === "overpaid") {
     if (row.session_status === "completed") {
@@ -131,11 +175,23 @@ export async function resolveTokenState(token: string): Promise<TokenState> {
 
   if (row.link_status === "consumed") {
     if (row.session_status === "open" && row.stripe_session_id && row.session_id) {
+      // The Session's own composition, as the database recorded it. A Session
+      // whose CONTRIBUTION no longer fits the live payable remaining is refused
+      // (review), never resumed at a figure that would overpay (D-034, D-092 M).
+      const contributionCents = row.session_contribution_cents ?? row.session_amount_cents ?? 0;
+      const processingFeeCents = row.session_processing_fee_cents ?? 0;
+      const totalCents = row.session_amount_cents ?? 0;
+      if (row.payable_remaining_cents === null || contributionCents > row.payable_remaining_cents) {
+        return { state: "review" };
+      }
       return {
         state: "open_session",
         sessionId: row.session_id,
         stripeSessionId: row.stripe_session_id,
-        amountCents: row.session_amount_cents ?? 0,
+        amountCents: totalCents,
+        contributionCents,
+        processingFeeCents,
+        totalCents,
       };
     }
     if (row.session_status === "completed") return { state: "processing" };
@@ -149,14 +205,31 @@ export async function resolveTokenState(token: string): Promise<TokenState> {
     return { state: "review" };
   }
 
-  if (new Date(row.link_expires_at).getTime() <= Date.now()) return { state: "expired" };
+  if (new Date(row.link_expires_at).getTime() <= now) return { state: "expired" };
 
   // The link's figure against the LIVE payable remaining. A balance that moved
   // below the figure the member was sent is refused, never clamped: the
-  // founder revokes and reissues (D-090).
+  // founder revokes and reissues (D-090). The cap is on the contribution; the
+  // fee rides on top of whatever the cap permits (D-092 H).
   const amount = attemptAmountFor(row.link_amount_cents, row.payable_remaining_cents);
   if (!amount.ok) return amount.reason === "nothing_payable" ? { state: "paid" } : { state: "review" };
-  return { state: "ready", amountCents: amount.amountCents };
+  const charge = linkChargeFor(amount.amountCents, row);
+  return { state: "ready", amountCents: amount.amountCents, ...charge };
+}
+
+/**
+ * What should this token holder see? Read-only: zero mutations and zero Stripe
+ * calls for every terminal state (behavioral proof #21).
+ */
+export async function resolveTokenState(token: string): Promise<TokenState> {
+  const fin = financeServiceClient().schema("finance_api");
+  const { data, error } = await fin.rpc("peek_payment_link", {
+    p_token_hash: hashLinkToken(token),
+  });
+  if (error) throw new Error(`peek failed: ${error.message}`);
+  const row = (data as unknown as PeekRow[] | null)?.[0];
+  if (!row) return { state: "unknown" };
+  return tokenStateFor(row);
 }
 
 /**
@@ -198,6 +271,8 @@ export async function startCheckout(token: string, origin: string): Promise<
   // Phase 2: durable attempt BEFORE any Stripe call. The single-flight index
   // refuses a second payable attempt for this agreement+mode, and the function
   // refuses an amount over the live payable remaining or off the link's figure.
+  // The fee is derived there, under the agreement lock, from the link's own
+  // snapshot (D-092 H); what comes back is the charge.
   const livemode = (process.env.STRIPE_SECRET_KEY ?? "").startsWith("sk_live_");
   const { data: attemptData, error: attErr } = await fin.rpc("begin_checkout_attempt", {
     p_link_id: link_id,
@@ -205,9 +280,22 @@ export async function startCheckout(token: string, origin: string): Promise<
     p_amount_cents: amount.amountCents,
     p_livemode: livemode,
   });
-  const attempt = (attemptData as unknown as { attempt_id: string; idempotency_key: string }[] | null)?.[0];
+  const attempt = (attemptData as unknown as AttemptRow[] | null)?.[0];
   if (attErr || !attempt) return { ok: false, reason: "conflict" };
   const attemptId = attempt.attempt_id;
+  // The charge is the database's figure, whole and positive, or nothing goes
+  // to Stripe: a missing or malformed reply is a conflict, never a guess.
+  const charge = attempt.charge_amount_cents;
+  const contribution = attempt.contribution_cents;
+  const fee = attempt.processing_fee_cents;
+  if (
+    !Number.isSafeInteger(charge) || charge <= 0 ||
+    !Number.isSafeInteger(contribution) || contribution <= 0 ||
+    !Number.isSafeInteger(fee) || fee < 0 || contribution + fee !== charge
+  ) {
+    console.error("checkout: attempt returned an unusable charge", attemptId);
+    return { ok: false, reason: "conflict" };
+  }
 
   // Phase 3: create the Session with the deterministic key, then finalise.
   try {
@@ -223,8 +311,12 @@ export async function startCheckout(token: string, origin: string): Promise<
             quantity: 1,
             price_data: {
               currency: "usd",
-              unit_amount: amount.amountCents,
-              product_data: { name: "Vital Kauaʻi Journey Contribution" },
+              unit_amount: charge,
+              product_data: {
+                name: "Vital Kauaʻi Journey Contribution",
+                // The Stripe page states the same split the bridge showed (D-092 L).
+                ...(fee > 0 ? { description: lineItemDescription({ contributionCents: contribution, processingFeeCents: fee, totalCents: charge }) } : {}),
+              },
             },
           },
         ],
@@ -256,6 +348,16 @@ export async function startCheckout(token: string, origin: string): Promise<
     // stays consumed-or-creating so no duplicate payable path opens.
     return { ok: false, reason: "provider_unavailable" };
   }
+}
+
+/** Integer cents → dollars for copy only; never a financial computation. */
+function usdText(cents: number): string {
+  return (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
+}
+
+/** The Stripe line item's description for a fee-bearing charge (D-092 L). */
+export function lineItemDescription(b: ChargeBreakdown): string {
+  return `Contribution ${usdText(b.contributionCents)} + card processing fee ${usdText(b.processingFeeCents)} = ${usdText(b.totalCents)} charged`;
 }
 
 export function v2Metadata(agreementId: string, attemptId: string): Record<string, string> {
