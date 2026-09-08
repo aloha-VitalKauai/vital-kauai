@@ -656,6 +656,67 @@ function noticeSpy(calls: RpcCall[], behave: () => Promise<"sent" | "partial" | 
   };
 }
 
+// ─── PR 10E (D-092 J): the split comes from OUR attempt row, by identity ────
+
+test("PR10E: the attempt id in PaymentIntent metadata is forwarded as p_attempt_id — identity, never arithmetic", async () => {
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [memberPi({
+      amount_received: 1029898,
+      metadata: { financial_version: "v2", agreement_id: "agr_member", attempt_id: "att_fee" },
+    })],
+    record_v2_stripe_payment: () => "row_fee",
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, { livemode: true, notifyFounders: noticeSpy(calls, async () => "sent") });
+
+  const rec = calls.filter((c) => c.fn === "record_v2_stripe_payment");
+  assert.equal(rec.length, 1);
+  assert.equal(rec[0]!.args.p_attempt_id, "att_fee");
+  // The worker passes the provider gross and NOTHING about the fee: no
+  // parameter of the call names a fee, a contribution or a total.
+  assert.equal(rec[0]!.args.p_amount_cents, 1029898);
+  assert.deepEqual(
+    Object.keys(rec[0]!.args).filter((k) => /fee|contribution|total/i.test(k)),
+    [],
+  );
+  assert.equal(r.processed, 1);
+});
+
+test("PR10E: a PaymentIntent without an attempt id passes p_attempt_id null — today's behaviour exactly", async () => {
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [memberPi()],
+    record_v2_stripe_payment: () => "row_1",
+    complete_stripe_event: () => null,
+  });
+
+  await runEventWorker(client, { livemode: true, notifyFounders: noticeSpy(calls, async () => "sent") });
+
+  const rec = calls.filter((c) => c.fn === "record_v2_stripe_payment");
+  assert.equal(rec.length, 1);
+  assert.equal("p_attempt_id" in rec[0]!.args, true);
+  assert.equal(rec[0]!.args.p_attempt_id, null);
+});
+
+test("PR10E: a database refusal of the split (VK409) fails the event and writes no notice", async () => {
+  const { client, calls } = fakeClient({
+    claim_stripe_events: () => [memberPi({
+      amount_received: 1029897,
+      metadata: { financial_version: "v2", agreement_id: "agr_member", attempt_id: "att_fee" },
+    })],
+    record_v2_stripe_payment: () => vkErr("VK409", "provider amount 1029897 does not equal the attempt charge 1029898"),
+    complete_stripe_event: () => null,
+  });
+
+  const r = await runEventWorker(client, { livemode: true, notifyFounders: noticeSpy(calls, async () => "sent") });
+
+  assert.equal(r.failed, 1);
+  assert.equal(calls.filter((c) => c.fn === "notifyFoundersOfPayment").length, 0);
+  const done = calls.filter((c) => c.fn === "complete_stripe_event").at(-1);
+  assert.equal(done?.args.p_status, "failed");
+  assert.match(String(done?.args.p_error), /does not equal the attempt charge/);
+});
+
 test("PR10D: a live V2 payment triggers exactly one founder notice AFTER record_v2_stripe_payment", async () => {
   const { client, calls } = fakeClient({
     claim_stripe_events: () => [memberPi()],

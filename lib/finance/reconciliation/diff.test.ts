@@ -52,12 +52,66 @@ function ledgerRow(o: Partial<LedgerRow> = {}): LedgerRow {
     agreementId: AGREEMENT,
     entryType: "stripe_payment",
     amountCents: 5000,
+    processingFeeCents: 0,
     providerObjectId: "ch_1",
     providerPaymentIntentId: "pi_1",
     livemode: true,
     ...o,
   };
 }
+
+// ── PR 10E (D-092 K) — the gross comparison ──────────────────────────────────
+
+test("PR10E: a fee-bearing payment matches when the provider gross equals contribution + fee", () => {
+  // Criterion 11: the $10,000 contribution charged at $10,298.98. The ledger
+  // holds 1000000 + 29898; Stripe reports 1029898. No exception.
+  const r = diffWindow({
+    ...base,
+    payments: [payment({ amountCents: 1029898 })],
+    ledger: [ledgerRow({ amountCents: 1000000, processingFeeCents: 29898 })],
+  });
+  assert.equal(r.objectsScanned, 1);
+  assert.equal(r.objectsMatched, 1);
+  assert.deepEqual(r.exceptions, []);
+  assert.deepEqual(r.entries, []);
+});
+
+test("PR10E: comparing the contribution alone would raise amount_mismatch — the sum is load-bearing", () => {
+  // The same payment recorded WITHOUT the fee split (fee 0) disagrees with the
+  // provider by exactly the fee, and is reported, never silently balanced.
+  const r = diffWindow({
+    ...base,
+    payments: [payment({ amountCents: 1029898 })],
+    ledger: [ledgerRow({ amountCents: 1000000, processingFeeCents: 0 })],
+  });
+  assert.equal(r.exceptions.length, 1);
+  assert.equal(r.exceptions[0].kind, "amount_mismatch");
+  assert.deepEqual(r.exceptions[0].detail, {
+    provider_amount_cents: 1029898,
+    ledger_amount_cents: 1000000,
+    ledger_processing_fee_cents: 0,
+    ledger_gross_cents: 1000000,
+  });
+});
+
+test("PR10E: a mis-split in the other direction (fee too large) is also an amount_mismatch", () => {
+  const r = diffWindow({
+    ...base,
+    payments: [payment({ amountCents: 1029898 })],
+    ledger: [ledgerRow({ amountCents: 1000000, processingFeeCents: 29899 })],
+  });
+  assert.equal(r.exceptions.length, 1);
+  assert.equal(r.exceptions[0].kind, "amount_mismatch");
+  assert.equal(r.exceptions[0].detail.ledger_gross_cents, 1029899);
+});
+
+test("PR10E: a fee-free payment compares exactly as before (fee 0 adds nothing)", () => {
+  const ok = diffWindow({ ...base, payments: [payment({ amountCents: 5000 })], ledger: [ledgerRow()] });
+  assert.deepEqual(ok.exceptions, []);
+  const bad = diffWindow({ ...base, payments: [payment({ amountCents: 5001 })], ledger: [ledgerRow()] });
+  assert.equal(bad.exceptions.length, 1);
+  assert.equal(bad.exceptions[0].kind, "amount_mismatch");
+});
 
 const base = { payments: [], refunds: [], ledger: [], livemode: true };
 
