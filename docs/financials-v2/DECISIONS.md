@@ -1421,3 +1421,106 @@ failed with Twilio "Authentication Error - invalid username" (30 of 30 in
 `TWILIO_ACCOUNT_SID` secret is wrong. The SMS path is wired anyway, logged
 truthfully as `failed` until the secret is corrected, at which point it starts
 working with no code change.
+
+## D-092 — a founder-issued contribution link charges the processing fee on top; the fee is never contribution (2026-09-08)
+
+Founder-commissioned (Rachel, 2026-09-08), recorded **before any code is
+written**, as the scope-expansion rule requires. This work is **not in
+`PR_PLAN.md`** — the plan ends at PR 9, and `PR10_PLUS_ROADMAP.md` does not
+carry it. This entry is the approval; it does not reopen D-088 or D-090.
+
+**The situation.** When the founder sends a member a contribution link (the
+"invoice" of `/dashboard/financials` → Collect), the member is charged exactly
+the agreement figure and Vital Kauaʻi absorbs Stripe's cut — roughly 2.9% + 30¢
+of every dollar collected. Public support (D-088, amended 2026-08-24) already
+passes that cost to the payer; founder-issued links do not. The same dollar
+therefore nets a different amount depending on which door it came through.
+
+**The decision.**
+
+1. **The member is charged contribution + processing fee.** The fee is
+   mandatory on founder-issued links, never optional, and always added — the
+   D-088 posture, applied to the second path.
+
+2. **The fee math is the existing gross-up, and there is exactly one of it.**
+   `total = ceil((contribution + fee_fixed_cents) * 10000 / (10000 - fee_bps))`,
+   defaults 290 bps and 30¢. Not a flat 2.9%. The formula exists today twice —
+   in TypeScript at `lib/finance/public-support-fees.ts` and inline inside
+   `finance.begin_public_checkout`. Writing a third is forbidden, so this PR
+   **extracts** the SQL arithmetic into one `IMMUTABLE`
+   `finance.quote_processing_fee(...)` and rewires `begin_public_checkout` to
+   call it, leaving exactly two expressions of one formula: the authoritative
+   database function, and the TypeScript one used only for display. They are
+   pinned equal by a committed vector fixture that both are tested against. No
+   route, component, or view computes a fee.
+
+3. **The processing fee is not a contribution, and never enters an agreement
+   balance.** `finance.ledger_entries.amount_cents` keeps its exact present
+   meaning — the contribution portion, the only figure any balance formula
+   sums. A new first-class column `processing_fee_cents` carries the fee
+   portion of the same provider charge. Consequently `v_agreement_balances` is
+   **not modified at all**: Contribution, Received, Remaining, Payable
+   Remaining and `payment_state` keep their single existing definitions, and
+   Payable Remaining cannot be inflated by a fee. `amount_cents +
+   processing_fee_cents` is the provider gross, and reconciliation compares
+   against that sum.
+
+4. **The fee is derived in Postgres, under the same lock as the amount.** The
+   browser submits no fee, no total, and no policy; a request carrying any of
+   them is rejected outright, mirroring the D-088 `FORBIDDEN_KEYS` guard. The
+   cap check that D-090 put in `begin_checkout_attempt` continues to apply to
+   the **contribution**, not to the charged total — a member may be charged
+   more than Payable Remaining (by exactly the fee) and this is the intended,
+   and the only, case in which the charge exceeds it.
+
+5. **The fee is global, not per agreement.** One founder-configurable row,
+   `finance.fee_settings` (`fee_bps`, `fee_fixed_cents`, `fee_policy_version`,
+   `fee_enabled`), set through a founder-only function. Per-agreement fee
+   parameters would create a second place for a member's price to be decided
+   and a second thing to explain; there is no case for it. Public support keeps
+   its own per-campaign parameters (D-088) — the two paths share the formula,
+   not the configuration.
+
+6. **The policy in force is snapshotted onto the link at issuance.** The link
+   stores `fee_bps`, `fee_fixed_cents` and `fee_policy_version` — the inputs
+   the founder issued under, in the same class as D-090's `amount_cents`, not
+   a derived value. The fee itself is computed from them at Session creation
+   and stored nowhere as an agreement figure. A configuration change between
+   issuance and payment therefore cannot move the total a member was sent.
+
+7. **Links already issued are honoured at the figure they were issued with.**
+   *(Founder decision, Rachel, 2026-09-08.)* Every link that exists when this
+   ships has a `NULL` policy snapshot, and `NULL` means no fee — byte-for-byte
+   today's behaviour. Nothing is repriced, no reissue is prompted, and no
+   founder action is required for the outstanding links. This follows D-034's
+   principle that a member is never charged a different amount from the one
+   they were sent. The fee applies only to links issued after the fee is
+   enabled.
+
+8. **The member sees the split.** The payment page itemizes contribution +
+   card processing fee = total, matching the public support presentation, from
+   server-derived figures.
+
+**What this is not.** Not a change to the Contribution: the agreement figure,
+Received, Remaining and Payable Remaining are untouched by the fee. Not a
+change to the member-portal contribution or gift paths, which continue to
+charge the contribution with no fee. Not a change to public support behaviour —
+its arithmetic is re-expressed, not altered. Not an attempt to record Stripe's
+*actual* fee, which remains a PR 11 accounting fact (D-088); what is stored
+here is what we charged, from configuration.
+
+**Amends ARCHITECTURE §11 and §12.** The statement that
+`payable_remaining_cents` is the only figure permitted to reach a charge
+request now reads: the charge is `payable_remaining_cents`-bounded
+**contribution**, plus a server-derived processing fee computed from the link's
+policy snapshot. `finance.checkout_sessions.amount_cents` remains the amount
+sent to Stripe and is now the total; the new `contribution_cents` and
+`processing_fee_cents` columns state its composition, with
+`contribution_cents + processing_fee_cents = amount_cents` enforced by `CHECK`.
+
+**Known limitation, accepted at commission time.** A Stripe refund of the full
+*charged* amount against a fee-bearing payment exceeds the L7 headroom of its
+parent (whose `amount_cents` is the contribution only) and is **refused** — the
+event fails visibly and raises an exception rather than misstating a balance.
+Refund-of-fee modelling is deliberately not designed here and is recorded as a
+future item.

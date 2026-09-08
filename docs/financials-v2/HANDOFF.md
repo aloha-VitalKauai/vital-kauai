@@ -1,6 +1,6 @@
 # Financials V2 — Handoff
 
-**Updated:** 2026-09-05 · **Updated by:** PR 10D implementation (D-091)
+**Updated:** 2026-09-08 · **Updated by:** PR 10E brief (D-092)
 **Protocol:** every Financials V2 PR updates this file as its final commit. It is the first document read when picking the work back up.
 
 ---
@@ -19,6 +19,481 @@
 | 5–9 | See [PR_PLAN.md](PR_PLAN.md) | Not started |
 | 10B | Founder-chosen collection amount (D-090) | **MERGED AND DEPLOYED** — #978 squashed as `b4c6668`; migration `20260904010000` applied and stamped 2026-09-03; PostgREST reloaded. See §"PR 10B" below |
 | 10D | Founder payment notice — email + SMS when live Stripe money posts (D-091) | **Implemented, awaiting review** — migration `20260905200000` not yet applied. See §"PR 10D" below |
+| 10E | Card processing fee on founder-issued contribution links (D-092) | **Brief only — not started.** See §"Current PR brief" |
+
+## Current PR brief — PR 10E: the processing fee on founder-issued contribution links (D-092)
+
+**State: BRIEF ONLY. No code written. Branch `claude/stripe-invoice-fee-13x9r9`.**
+Commissioned by the founder 2026-09-08; approval recorded as **D-092**.
+
+**Where this sits relative to `PR_PLAN.md`.** Nowhere in it. `PR_PLAN.md` ends
+at PR 9, and `PR10_PLUS_ROADMAP.md` does not carry a fee on founder links. This
+is a founder-commissioned scope expansion, approved in advance by D-092, and it
+takes the next free label in the 10-series: **PR 10E**. It follows 10B (D-090,
+merged and deployed) and is independent of 10D (D-091, awaiting review) — the
+two touch different files except for one read in the worker, noted below.
+
+### Outcome
+
+A founder-issued contribution link charges the member the agreement amount plus
+a server-derived card processing fee, so Vital Kauaʻi nets the intended
+contribution.
+
+### Design answers (settled before implementation)
+
+**A. Where the fee lives in the ledger.** One new first-class column on
+`finance.ledger_entries`:
+
+```
+processing_fee_cents bigint NOT NULL DEFAULT 0
+  CHECK (processing_fee_cents >= 0)
+  CHECK (processing_fee_cents = 0
+         OR (entry_type = 'stripe_payment' AND source = 'stripe'))
+```
+
+`amount_cents` keeps its exact present meaning — **the contribution portion**,
+and the only figure any balance formula sums. `amount_cents +
+processing_fee_cents` is the provider gross. Every existing row defaults to `0`,
+which is the truth about every payment taken so far. Not `metadata`, not a
+convention, not a second entry type, not a second ledger row.
+
+**B. Why `v_agreement_balances` is not touched.** Because of A, it does not need
+to be: `f_balances` sums `amount_cents`, so Contribution, Received, Remaining,
+Payable Remaining and `payment_state` keep their single existing definitions and
+their existing values. **The view definition must be byte-identical before and
+after this PR**, and an acceptance criterion asserts it. Payable Remaining
+therefore cannot be inflated by a fee, and a fee-bearing payment of $10,290
+against a $10,000 contribution leaves Remaining at $0, not −$290.
+
+**C. One fee formula.** `finance.quote_processing_fee(p_contribution_cents
+bigint, p_fee_bps integer, p_fee_fixed_cents integer) RETURNS bigint` —
+`IMMUTABLE`, returns the **total**, integer arithmetic only:
+`((c + fixed) * 10000 + (10000 - bps) - 1) / (10000 - bps)`; raises on a policy
+outside `0 <= bps < 10000` or `fixed < 0`, and on a non-positive contribution.
+`finance.begin_public_checkout` is rewired to call it in place of its two inline
+arithmetic lines — **no behaviour change**, proven by vector. After this PR the
+formula is expressed exactly twice, by necessity: the authoritative SQL
+function, and `quoteProcessingFee` in `lib/finance/public-support-fees.ts` used
+for display only. A committed fixture
+(`supabase/tests/fixtures/fee_vectors.json`) pins them equal. No route, no
+component, no view, and no second SQL site computes a fee.
+
+**D. Configuration is global, not per agreement.** One row:
+
+```
+finance.fee_settings (
+  id boolean PRIMARY KEY DEFAULT true CHECK (id),
+  fee_enabled       boolean NOT NULL DEFAULT false,
+  fee_bps           integer NOT NULL DEFAULT 290   CHECK (fee_bps >= 0 AND fee_bps < 10000),
+  fee_fixed_cents   integer NOT NULL DEFAULT 30    CHECK (fee_fixed_cents >= 0),
+  fee_policy_version text   NOT NULL DEFAULT 'stripe-standard-v1',
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by uuid NULL REFERENCES auth.users(id) ON DELETE RESTRICT
+)
+```
+
+Config, not financial truth — bounded updates by design, in the same class as
+`finance.campaigns`. Written only through founder-only
+`finance.set_fee_settings(...)` / `finance_api.set_fee_settings(...)`. Public
+support keeps its own per-campaign parameters (D-088): the two paths share the
+formula, not the configuration.
+
+**E. `fee_enabled` is the rollout switch, and it is in the database.** Not an
+env var. With `fee_enabled = false` — the seeded state — `issue_payment_link`
+writes a `NULL` policy snapshot and every figure on every path is identical to
+today. Flipping it is one founder-authenticated function call; so is rolling
+back. No redeploy, no flag drift between Vercel environments.
+
+**F. The link carries the policy it was issued under.** Three nullable columns
+on `finance.payment_links`: `fee_bps`, `fee_fixed_cents`, `fee_policy_version`,
+with `CHECK` that all three are set or all three are `NULL`, plus the same range
+checks. These are the *inputs* the founder issued under — the same class as
+D-090's `amount_cents` — not a derived value; the fee is computed from them at
+Session creation and stored as an agreement figure nowhere. A configuration
+change between issuance and payment cannot move a total a member was already
+sent.
+
+**G. Links already issued and unredeemed. Founder decision (Rachel,
+2026-09-08): they keep the figure they were issued with.** Every link that
+exists when this ships has `fee_policy_version IS NULL`, and `NULL` means no
+fee — byte-for-byte today's behaviour, all the way through
+`begin_checkout_attempt`, Stripe and the ledger. **No repricing, no reissue
+prompt, no founder action, no backfill.** This is settled; it is not an open
+question for the implementer. The fee applies only to links issued after
+`fee_enabled` is turned on.
+
+**H. What the member is charged, and the cap.** `begin_checkout_attempt` keeps
+D-090's contribution cap unchanged — `p_amount_cents > payable_remaining_cents`
+is still `VK409`, and the cap is still read from the live view under the
+agreement lock. Under that same lock it then computes
+`v_total := finance.quote_processing_fee(contribution, link.fee_bps,
+link.fee_fixed_cents)` when the link carries a snapshot, `v_total :=
+contribution` when it does not, and inserts the Session with `amount_cents =
+v_total`, `contribution_cents = contribution`, `processing_fee_cents = v_total -
+contribution`, `fee_policy_version = link.fee_policy_version`. The charge
+exceeding Payable Remaining by exactly the fee is the intended and only such
+case (D-092 rule 4).
+
+**I. `finance.checkout_sessions` composition.** Additive:
+`contribution_cents bigint NULL CHECK (contribution_cents IS NULL OR
+contribution_cents > 0)`, `processing_fee_cents bigint NOT NULL DEFAULT 0 CHECK
+(processing_fee_cents >= 0)`, `fee_policy_version text NULL`, and
+`CHECK (COALESCE(contribution_cents, amount_cents) + processing_fee_cents =
+amount_cents)`, `CHECK (processing_fee_cents = 0 OR fee_policy_version IS NOT
+NULL)`. `amount_cents` remains what is sent to Stripe and is now the total;
+existing rows (`contribution_cents NULL`, fee `0`) still say exactly what they
+always said.
+
+**J. Splitting the payment is done in Postgres, from our own attempt row.**
+`finance.record_v2_stripe_payment` gains `p_attempt_id uuid DEFAULT NULL`
+(signature change → drop and recreate both schemas, grants restated). When it is
+supplied, the function reads that `checkout_sessions` row `FOR SHARE`, requires
+`session.agreement_id = p_agreement_id`, requires `session.amount_cents =
+p_amount_cents` (the provider gross must equal what we asked Stripe to charge —
+otherwise `VK409`, nothing written), and inserts `amount_cents =
+COALESCE(session.contribution_cents, session.amount_cents)` and
+`processing_fee_cents = session.processing_fee_cents`. When it is `NULL` the
+behaviour is exactly today's: the whole amount is contribution, fee `0`. The
+worker passes the `attempt_id` already present in
+`payment_intent_data.metadata` (D-033) — it supplies identity, never arithmetic,
+which is the same posture as `record_public_support_payment`. Idempotency on
+`(payment_intent, livemode)` is unchanged.
+
+**K. Reconciliation.** `lib/finance/reconciliation/supabase-db.ts` selects the
+new column and `diff.ts` compares the provider amount to
+`amount_cents + processing_fee_cents`. Without this every fee-bearing payment
+would raise `amount_mismatch` on the next hourly run. This is the backstop that
+catches a mis-split: if the ledger sum ever disagrees with Stripe, it is an
+exception, not a silent balance.
+
+**L. Member-facing display.** `/contribute/[token]` itemizes
+`Contribution · Card processing fee · Total charged`, from figures returned by
+`peek_payment_link` / `begin_checkout_attempt` — server-derived, never computed
+in the browser, matching the public support presentation. The Stripe line item
+description states the same split.
+
+**M. The D-034 reuse comparison compares contributions.** `resolveTokenState`
+today compares `session_amount_cents` to `payable_remaining_cents`; with a fee
+the total always exceeds it, so every fee-bearing session would be wrongly
+flagged `review`. `peek_payment_link` returns `session_contribution_cents` and
+`link_amount_cents` (contribution), and the comparison uses contribution on both
+sides. This is a correctness requirement, not a nicety.
+
+**N. `lib/database.types.ts`.** `finance` and `finance_api` are not generated
+and the `public` schema is untouched — **no regeneration**.
+
+### In scope
+
+- `supabase/migrations/20260908010000_finance_pr10e_link_processing_fee.sql` —
+  the one migration (below).
+- `lib/finance/checkout.ts` — `PeekRow` and `resolveTokenState` gain
+  `contributionCents` / `processingFeeCents` / `totalCents`; the payable
+  comparison uses contribution (M); `startCheckout` sends `unit_amount =
+  totalCents` returned by `begin_checkout_attempt` and never computes it.
+- `app/contribute/[token]/page.tsx` — the itemized three-line summary (L).
+- `app/api/finance/payment-links/route.ts` — founder-gated `GET
+  ?quoteContributionCents=<n>` returning the server quote for the drawer
+  preview; a `FORBIDDEN_KEYS` guard on the issue body rejecting
+  `feeCents`/`feeBps`/`totalCents`/`processingFeeCents`/`feePolicyVersion` and
+  their snake_case forms with `400 amount_math_not_accepted`; the email states
+  contribution, fee and total.
+- `app/components/dashboard/financials/V2FinancialPanel.tsx` — the Collect
+  drawer preview shows "member pays {total} ({contribution} + {fee} processing)"
+  from the quote endpoint; the link strip shows both figures.
+- `lib/finance/reconciliation/supabase-db.ts`, `lib/finance/reconciliation/diff.ts`
+  — gross comparison (K).
+- `lib/finance/reconciliation/worker.ts` — pass `p_attempt_id` from PI metadata
+  on the V2 branch only.
+- `supabase/tests/fixtures/fee_vectors.json` (new), `lib/finance/fee-parity.test.ts`
+  (new), additions to `lib/finance/checkout.test.ts`, `package.json` test list.
+- `supabase/tests/proofs/pr10e_link_processing_fee.sql` (new) — the rolled-back
+  production proof, output pasted into the PR.
+- `docs/financials-v2/HANDOFF.md` final commit.
+
+### Explicitly out of scope
+
+An implementer could reasonably add each of these. None of them belongs here.
+
+- **Any change to `finance.v_agreement_balances`, `f_balances`,
+  `v_member_financials`, `v_journey_financials`, `v_agreement_lifecycle`, the
+  founder overview or the member portal views.** The view definitions are
+  asserted unchanged.
+- **Storing the fee, the total, or the gross anywhere as an agreement figure.**
+  No column on `agreements`, `agreement_amounts` or any view.
+- **A fee on the member-initiated paths** — `begin_member_contribution_checkout`
+  and `begin_member_gift_checkout` are untouched and charge no fee.
+- **A fee on public support** — its behaviour is unchanged; only the arithmetic
+  is re-expressed through the shared function.
+- **Recording Stripe's *actual* fee** (balance transactions, `application_fee`,
+  net settlement). That is a PR 11 accounting fact (D-088). What is stored here
+  is what we charged, from configuration.
+- **Refund-of-fee modelling**, and any change to the L7 headroom trigger or any
+  other PR 1 invariant. See "Known limitation" below.
+- **Retroactive fees**: no backfill of any kind, and no repricing of existing
+  links (G).
+- **Per-agreement or per-member fee overrides**, a fee UI settings page, or
+  exposing `fee_settings` outside the founder function.
+- **Itemizing the PR 10D founder payment notice** (Future items).
+- **A second fee formula anywhere**, including a "quick" TypeScript
+  recomputation for a preview.
+- **Changing `checkout_sessions_live_uq`, the one-live-link rule, or anything
+  about D-090's cap and refusal semantics.**
+
+### Acceptance criteria
+
+Each is pass/fail and individually verifiable.
+
+1. **Fee off is byte-for-byte today.** With `fee_settings.fee_enabled = false`:
+   `issue_payment_link` writes `fee_bps`, `fee_fixed_cents` and
+   `fee_policy_version` all `NULL`; `begin_checkout_attempt` inserts
+   `amount_cents = contribution`, `processing_fee_cents = 0`,
+   `contribution_cents = contribution`; Stripe `unit_amount` equals the
+   contribution; the ledger entry has `processing_fee_cents = 0`.
+2. **A pre-existing link is never repriced (G).** A link issued before the
+   migration (policy columns `NULL`) redeemed after `fee_enabled = true` charges
+   exactly its `amount_cents`, `processing_fee_cents = 0`, and the bridge page
+   shows no fee line. No founder action was required and no link row was
+   updated (`payment_links` rows carrying a snapshot before the first post-flip
+   issuance: **0**).
+3. **Fee on, end to end.** `fee_enabled = true`, defaults 290/30, contribution
+   `1000000`: the link carries `(290, 30, 'stripe-standard-v1')`;
+   `begin_checkout_attempt` returns `charge_amount_cents = 1029898`,
+   `contribution_cents = 1000000`, `processing_fee_cents = 29898`; Stripe
+   `unit_amount = 1029898`; after the webhook, exactly one `stripe_payment` with
+   `amount_cents = 1000000` and `processing_fee_cents = 29898`.
+   *(`ceil(1000030 * 10000 / 9710) = 1029898`; the implementer verifies the
+   arithmetic against the fixture rather than against this sentence.)*
+4. **Balances are untouched by the fee.** After criterion 3 on a $10,000
+   agreement: `contribution_cents = 1000000`, `gross_received_cents = 1000000`,
+   `remaining_cents = 0`, `payable_remaining_cents = 0`, `payment_state =
+   'paid'`. `pg_get_viewdef('finance.v_agreement_balances')` and the md5 of
+   `finance.f_balances(boolean)` are **identical before and after the
+   migration**.
+5. **The cap applies to the contribution, not the total.** With
+   `payable_remaining_cents = 1000000`, issuing `p_amount_cents = 1000000`
+   succeeds and produces a Session of `1029898`; `p_amount_cents = 1000001`
+   raises `VK409`. No path anywhere caps, clamps or compares the total against
+   Payable Remaining.
+6. **The browser cannot do fee math.** `POST /api/finance/payment-links`
+   carrying any of `feeCents`, `fee_cents`, `feeBps`, `fee_bps`, `totalCents`,
+   `total_cents`, `processingFeeCents`, `processing_fee_cents`,
+   `feePolicyVersion`, `fee_policy_version` returns `400
+   amount_math_not_accepted` with no RPC made. `POST /api/contribute` accepts no
+   amount or fee field at all.
+7. **One formula, proven equal.** Every vector in
+   `supabase/tests/fixtures/fee_vectors.json` (including `contribution = 1`,
+   `bps = 0`, `fixed = 0`, a value where the ceiling rounds up and one where it
+   divides exactly, and `contribution = 2^40`) yields the identical total from
+   `quoteProcessingFee` in `node:test` and from `finance.quote_processing_fee`
+   in the SQL proof. A repository grep finds the gross-up expression in exactly
+   two places: `lib/finance/public-support-fees.ts` and the body of
+   `finance.quote_processing_fee`.
+8. **Public support is unchanged.** For every vector,
+   `finance.begin_public_checkout` produces the same
+   `requested_contribution_cents`, `processing_fee_cents`, `total_charge_cents`
+   and `fee_policy_version` as before the migration, and
+   `app/api/support/checkout/route.test.ts` passes untouched.
+9. **The split is derived from our attempt row, not from the event.**
+   `record_v2_stripe_payment` with `p_attempt_id` naming a session whose
+   `amount_cents <> p_amount_cents` raises `VK409` and writes nothing; with a
+   session belonging to another agreement, likewise; with `p_attempt_id NULL` it
+   behaves exactly as today (whole amount contribution, fee `0`). A forged
+   `processing_fee_cents` cannot be supplied by any caller — the parameter does
+   not exist.
+10. **Idempotency survives.** A duplicate delivery of the same
+    `payment_intent.succeeded` returns the same ledger id and creates no second
+    entry and no second fee.
+11. **Reconciliation matches the gross.** For the criterion-3 payment, an hourly
+    dry run reports `scanned>=1 matched>=1 exceptions=0`; with `diff.ts` reverted
+    to compare `amount_cents` alone, the same run raises exactly one
+    `amount_mismatch` — proving the comparison is load-bearing.
+12. **The member sees the split.** `/contribute/<token>` for a fee-bearing link
+    renders three lines — contribution, card processing fee, total charged — with
+    figures equal to the database's, and the Stripe page shows the total. For a
+    `NULL`-snapshot link it renders exactly today's single figure.
+13. **Reuse comparison uses contribution (M).** With a fee-bearing open Session
+    and unchanged Payable Remaining, `resolveTokenState` returns `open_session`,
+    **not** `review`; after an external payment moves Payable Remaining below the
+    link's contribution, it returns `review`.
+14. **Ledger column integrity.** `processing_fee_cents` on a `refund`,
+    `reversal`, `external_payment` or `source = 'external'` row is rejected when
+    non-zero; a negative value is rejected; the column is `NOT NULL DEFAULT 0`
+    and the `ALTER TABLE` affects `0` rows. `ledger_entries` remains append-only:
+    `UPDATE` and `DELETE` still raise for `authenticated` and `service_role`.
+15. **Known limitation is fail-closed and visible.** A Stripe refund of the full
+    charged `1029898` against the criterion-3 payment raises the existing L7
+    headroom error, writes nothing, and surfaces as a failed event plus an
+    exception; a refund of `1000000` or less succeeds and reduces Received
+    normally. No balance is misstated in either case.
+16. **Configuration is founder-only.** `finance_api.set_fee_settings(...)` raises
+    `founder role required` for a non-founder `authenticated` caller and for
+    `service_role`; `anon` and `PUBLIC` hold no `EXECUTE` on it and no `SELECT`
+    on `finance.fee_settings`; the table holds exactly one row and a second
+    insert is rejected.
+17. **Role boundary and assertions.** The migration's closing `DO` block (the PR
+    6 block **with the D-088 `public_campaign_status` carve-out**, plus the
+    10E-specific assertions) raises nothing; each recreated function has exactly
+    one `pg_proc` row per schema; no `PUBLIC`/`anon` `EXECUTE` on anything the
+    migration creates; `finance` remains unexposed to PostgREST.
+18. **Fresh database.** The migration applies after the existing series on an
+    empty database; every `ALTER TABLE` reports `0` rows; both assertion blocks
+    are silent.
+19. **Gates.** `npm run typecheck` clean; `npm test` green including the new
+    files; production build clean; `scripts/retirement-gate.mjs` clean.
+20. **Live drill.** The founder issues a $1.00 fee-bearing link, confirms the
+    page shows $1.00 + $0.34 = $1.34 (defaults), pays it, and confirms exactly
+    one `stripe_payment` with `amount_cents = 100`, `processing_fee_cents = 34`,
+    Remaining reduced by $1.00, and one founder notice sent.
+
+### Migration plan — `20260908010000_finance_pr10e_link_processing_fee.sql`
+
+Additive only; one file; **applied before the code deploys**, with
+`fee_enabled = false` so the applied database behaves exactly as today until the
+founder flips it. Rows affected by every `ALTER TABLE`: 0. No backfill anywhere.
+
+1. `CREATE TABLE finance.fee_settings` (D) and `INSERT` the single row
+   (`fee_enabled = false`, 290, 30, `'stripe-standard-v1'`). RLS enabled, no
+   policy for `anon`; `SELECT` to `authenticated` and `service_role`; no
+   `INSERT`/`UPDATE`/`DELETE` grant to any application role.
+2. `CREATE FUNCTION finance.quote_processing_fee(bigint, integer, integer)
+   RETURNS bigint IMMUTABLE` (C), and `finance.set_fee_settings(boolean,
+   integer, integer, text)` `SECURITY DEFINER`, founder-gated by
+   `public.is_founder()`, writing `updated_by = auth.uid()`; `finance_api`
+   `SECURITY INVOKER` wrapper for the setter only.
+3. `CREATE OR REPLACE FUNCTION finance.begin_public_checkout(...)` — identical
+   body except the two inline arithmetic lines call `quote_processing_fee`.
+4. `ALTER TABLE finance.payment_links ADD COLUMN fee_bps integer NULL, ADD
+   COLUMN fee_fixed_cents integer NULL, ADD COLUMN fee_policy_version text NULL`
+   + the all-or-none and range `CHECK`s (F).
+5. `ALTER TABLE finance.checkout_sessions ADD COLUMN contribution_cents bigint
+   NULL, ADD COLUMN processing_fee_cents bigint NOT NULL DEFAULT 0, ADD COLUMN
+   fee_policy_version text NULL` + the composition `CHECK`s (I).
+6. `ALTER TABLE finance.ledger_entries ADD COLUMN processing_fee_cents bigint
+   NOT NULL DEFAULT 0` + both `CHECK`s (A). Non-volatile default, so no table
+   rewrite and no row is touched — append-only is not violated by DDL, and this
+   is asserted by comparing `xmin` on a sample of pre-existing rows before and
+   after.
+7. `DROP` and `CREATE` `finance.issue_payment_link(uuid,text,text,bigint)` and
+   its `finance_api` wrapper — D-090 body verbatim plus: read `fee_settings`;
+   when `fee_enabled`, stamp the three snapshot columns and return
+   `processing_fee_cents` and `total_cents` alongside `amount_cents`; when not,
+   write `NULL`s and return fee `0`. (Return type changes, so `CREATE OR
+   REPLACE` is not available; the defaulted 4th parameter and the one-overload
+   rule of D-090 criterion 14 are preserved.)
+8. `DROP` and `CREATE` `finance.begin_checkout_attempt(uuid,uuid,bigint,boolean)`
+   and its wrapper — D-090 body verbatim (lock, live-view read, three `VK409`
+   rules on the **contribution**) plus the fee derivation and the three new
+   Session columns; returns `(attempt_id, idempotency_key, charge_amount_cents,
+   contribution_cents, processing_fee_cents)`.
+9. `DROP` and `CREATE` `finance.peek_payment_link(text)` and its wrapper — add
+   `link_fee_bps`, `link_fee_fixed_cents`, `link_fee_policy_version`,
+   `session_contribution_cents`, `session_processing_fee_cents`.
+10. `DROP` and `CREATE` `finance.record_v2_stripe_payment(...)` with the added
+    `p_attempt_id uuid DEFAULT NULL` and its wrapper (J).
+11. `CREATE OR REPLACE VIEW finance_api.payment_links` — trailing columns
+    appended.
+12. Grants restated on **every** new signature: `REVOKE ALL … FROM public`;
+    `issue_payment_link` and `set_fee_settings` to `authenticated` only;
+    `begin_checkout_attempt`, `peek_payment_link`, `record_v2_stripe_payment` to
+    `service_role` only.
+13. Closing `DO $chk$` assertion block (criterion 17).
+
+**Verification after apply, before the code deploys:** the three `pg_get_viewdef`
+/ function-md5 pins of criterion 4; `SELECT count(*) FROM finance.payment_links
+WHERE fee_policy_version IS NOT NULL` = 0; `SELECT count(*) FROM
+finance.ledger_entries WHERE processing_fee_cents <> 0` = 0; `SELECT fee_enabled
+FROM finance.fee_settings` = `false`; a three-argument and a four-argument
+`.rpc("issue_payment_link")` both resolve through PostgREST.
+
+### Test plan
+
+- **Rolled-back production transaction** (`BEGIN; … ROLLBACK;`, script committed
+  at `supabase/tests/proofs/pr10e_link_processing_fee.sql`, output pasted into
+  the PR): criteria 1, 2, 3 (database half), 4, 5, 7 (SQL half), 8, 9, 10, 14,
+  15, 16, 17, 18.
+- **`node:test`, no database, no Stripe**: criteria 6, 7 (TS half), 12 (source
+  pins on the itemized markup), 13; plus `quoteProcessingFee` against every
+  fixture vector.
+- **Founder in production after deploy**: criteria 3 (Stripe half), 11, 12, 20.
+
+### Rollout and rollback
+
+**Rollout.** Flag default: `finance.fee_settings.fee_enabled = false` — fees
+off, fail-closed, on apply. `FINANCE_V2_CHECKOUT_READY` is untouched and remains
+`true`.
+
+1. Apply the migration and stamp it; run the verification queries above.
+2. Deploy the code. **Nothing changes for anyone yet**: every link, old and new,
+   is fee-free while `fee_enabled = false`.
+3. Founder calls `finance_api.set_fee_settings(true, 290, 30,
+   'stripe-standard-v1')` from her own session.
+4. Founder runs the $1.00 drill (criterion 20).
+5. Outstanding pre-flip links stay fee-free by construction (G) — nothing to do.
+6. `HANDOFF.md` records the drill output.
+
+**Rollback.** In order of increasing cost:
+- *Instant, no deploy:* `set_fee_settings(false, …)`. New links are fee-free
+  again; links already issued with a snapshot keep their snapshot and would
+  still charge a fee, so revoke them if the intent is to stop all fees:
+  `SELECT id FROM finance.payment_links WHERE fee_policy_version IS NOT NULL AND
+  status IN ('active','creating')` → `revoke_payment_link` each.
+- *Code:* revert the squash commit. The reverted code omits `p_attempt_id` and
+  reads no new column; the defaulted parameter keeps every call resolving. Any
+  fee-bearing Session created before the revert would be split wrongly on
+  arrival — so revoke live fee-bearing links first, as above.
+- *Database:* drop the recreated functions and restore the D-090 / PR 6 bodies
+  and grants. The columns and `fee_settings` stay — nullable or defaulted,
+  unreferenced, harmless. Rows already carrying a fee are audit facts and are
+  correct.
+
+### Risks
+
+1. **The fee is counted as contribution and Remaining is understated.** The
+   whole point of A. Proof: criterion 4 (balances) and criterion 11
+   (reconciliation raises `amount_mismatch` if the split is wrong in either
+   direction). The view is asserted byte-identical, so no formula moved.
+2. **A member is charged more than the figure they were sent.** Proof:
+   criterion 2 and G — a pre-existing link cannot acquire a snapshot, and the
+   snapshot pins the policy for links that have one, so a config change mid-life
+   cannot move a quoted total.
+3. **A second fee formula creeps in** — a preview computing 2.9% in the drawer,
+   or a route re-deriving the total. Proof: criterion 7's two-site grep, and the
+   quote endpoint being the only preview source.
+4. **`amount_mismatch` storm on the hourly reconciliation** if K ships after the
+   first fee-bearing payment. Mitigation: K is in the same deploy as the fee,
+   and `fee_enabled` is flipped only after that deploy is live.
+5. **Refund of a fee-bearing payment is refused** (Known limitation). Proof:
+   criterion 15 — it fails closed and visibly, and no balance is misstated. The
+   founder's operational note: refund at most the contribution portion through
+   Stripe, or expect an exception to adjudicate.
+6. **`begin_public_checkout` regression while extracting the formula.** Proof:
+   criterion 8 — vector-for-vector identical output, plus the existing public
+   support tests untouched.
+7. **Overload ambiguity / stale PostgREST cache** after four functions change
+   signature (the D-090 lesson). Mitigation: every old signature is dropped in
+   the same migration; criterion 17 asserts one `pg_proc` row per schema; the
+   rollout step 1 verification resolves both `issue_payment_link` arities
+   through PostgREST before the code deploys.
+8. **A new function is created with `PUBLIC EXECUTE`.** Mitigation: step 12's
+   `REVOKE ALL … FROM public` on every new signature and the closing assertions.
+9. **The founder payment notice (PR 10D) states the charged total while the same
+   email's Received states the contribution**, which looks like a discrepancy.
+   Accepted for this PR; recorded as a Future item, deliberately not folded in.
+10. **10D is unmerged.** If 10D merges after this, its worker call site must
+    carry the `p_attempt_id` addition. Whoever merges second rebases and re-runs
+    the worker tests.
+
+### Implementer: first action
+
+**Write the migration first — nothing else.** Start with
+`finance.quote_processing_fee` and the rewire of `finance.begin_public_checkout`
+to call it, then generate `supabase/tests/fixtures/fee_vectors.json` from
+`quoteProcessingFee` and prove criteria 7 and 8 in a rolled-back production
+transaction **before writing a single line of TypeScript**. If the extracted
+function does not reproduce `begin_public_checkout` byte-for-byte across every
+vector, stop and report — the "exactly one formula" requirement is the load
+bearing part of this PR, and everything else depends on it. Database foundation
+precedes interface.
 
 ## PR 10B — founder-chosen collection amount (D-090)
 
@@ -616,6 +1091,7 @@ No figure, formula, ledger path, checkout path or state label was touched.
 
 ## Next action
 
+**PR 10E — implement the brief in §"Current PR brief" (D-092), migration first.** Then
 PR 6 closeout (controlled live-mode exercise, two remaining sweeper drivers,
 bounded review, then FINANCE_V2_CHECKOUT_READY=true). Then PR 8.
 
@@ -826,6 +1302,8 @@ V2 figures will differ from currently displayed figures wherever a legacy `adjus
 
 Noticed during audit or design, deliberately not folded into any current PR.
 
+- **A refund of a fee-bearing payment cannot cover the fee (D-092 known limitation).** `ledger_entries.amount_cents` on a fee-bearing `stripe_payment` is the contribution only, so the L7 headroom check refuses a refund of the full charged amount. It fails closed and visibly (an exception, never a misstated balance), and the founder can refund up to the contribution. Modelling a refund that returns the processing fee needs its own PR and a decision about whether L7 should measure gross.
+- **The PR 10D founder payment notice does not itemize the fee.** It states the charged total while the balances it quotes are contribution-only, which reads as a discrepancy once fees are on. One-line fix in its renderer once the ledger split exists; deliberately not folded into PR 10E.
 - **Founder-link resume does not re-check the amount (D-034 gap).** `resolveTokenState` returns `open_session` and `startCheckout` resumes it without comparing `checkout_sessions.amount_cents` to the current `payable_remaining_cents`; the member-portal path (`lib/finance/member-checkout.ts`) does compare and expires-then-recreates. Pre-existing before PR 10B; noticed while briefing it. Fix is its own PR: apply the D-034 reuse table to the founder-link path.
 - **The PR 6 assertion block is no longer verbatim-reusable.** D-088 (`20260823020000`) made `finance_api.public_campaign_status` the one `SECURITY DEFINER` function anon may execute and carved it out of its own assertions by name; the PR 6 counts ("zero `finance_api` SECURITY DEFINER", "zero anon/PUBLIC EXECUTE") now fail on that function alone. PR 10B's migration carries the PR 6 block with the same named carve-out. Any future brief that says "PR 6 block verbatim" should say "PR 6 block with the D-088 carve-out". Noticed while applying PR 10B to a local build of the series.
 - **The retirement gate's scope audit flags a build output.** With `.next/` present (after `npm run build`), `retirement-gate.test.ts`'s null control and restoration tests fail on "source file exists but was never scanned: .next/…" even though `.next` is in `PRUNED_DIRS`; the suite is green once `.next` is removed. Run `npm test` before `npm run build`, or align the scope audit's walk with the prune list. Noticed while running the PR 10B gates.
