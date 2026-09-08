@@ -177,12 +177,18 @@ exception, not a silent balance.
 in the browser, matching the public support presentation. The Stripe line item
 description states the same split.
 
-**M. The D-034 reuse comparison compares contributions.** `resolveTokenState`
-today compares `session_amount_cents` to `payable_remaining_cents`; with a fee
-the total always exceeds it, so every fee-bearing session would be wrongly
-flagged `review`. `peek_payment_link` returns `session_contribution_cents` and
-`link_amount_cents` (contribution), and the comparison uses contribution on both
-sides. This is a correctness requirement, not a nicety.
+**M. Any comparison on the resume path is in contribution-space.** *(Premise
+corrected by the architect ruling of 2026-09-08 — see "Architect rulings" below.)*
+Before this PR the `open_session` branch of `resolveTokenState` made **no**
+amount comparison at all (the D-034 founder-link gap in Future items); the
+`ready` branch compared `link_amount_cents` — already the contribution — through
+`attemptAmountFor`. The original wording of this answer said the resume branch
+compared `session_amount_cents`; it did not. What stands: `peek_payment_link`
+returns `session_contribution_cents` and `link_amount_cents`, and every
+comparison against Payable Remaining on this path uses the contribution — never
+`session_amount_cents`, which is now the total and exceeds Payable Remaining by
+exactly the fee on every fee-bearing Session. Criterion 13 therefore adds the
+missing resume-branch comparison, bounded as stated there.
 
 **N. `lib/database.types.ts`.** `finance` and `finance_api` are not generated
 and the `public` schema is untouched — **no regeneration**.
@@ -237,7 +243,8 @@ An implementer could reasonably add each of these. None of them belongs here.
 - **Retroactive fees**: no backfill of any kind, and no repricing of existing
   links (G).
 - **Per-agreement or per-member fee overrides**, a fee UI settings page, or
-  exposing `fee_settings` outside the founder function.
+  any **write** to `fee_settings` outside the founder function. *(Reworded
+  2026-09-08: a founder-only read view is in scope — migration step 11.)*
 - **Itemizing the PR 10D founder payment notice** (Future items).
 - **A second fee formula anywhere**, including a "quick" TypeScript
   recomputation for a preview.
@@ -277,8 +284,24 @@ Each is pass/fail and individually verifiable.
 5. **The cap applies to the contribution, not the total.** With
    `payable_remaining_cents = 1000000`, issuing `p_amount_cents = 1000000`
    succeeds and produces a Session of `1029898`; `p_amount_cents = 1000001`
-   raises `VK409`. No path anywhere caps, clamps or compares the total against
-   Payable Remaining.
+   raises `VK409`. No path that **decides a checkout** — issuance, the bridge,
+   `begin_checkout_attempt`, resume — caps, clamps or compares the total against
+   Payable Remaining. *(Reworded 2026-09-08.)* The one remaining total-vs-payable
+   comparison, `stillCurrent` in `lib/finance/checkout-recovery.ts`, is evaluated
+   only inside `if (replayable)`, and `replayable` requires
+   `attempt.payment_link_id === null` — a member-portal attempt, which carries no
+   fee, so `amount_cents` *is* its contribution. Founder-link attempts are
+   excluded from replay upstream for a pre-existing, amount-independent reason
+   (the raw token in `cancel_url` is unrecoverable, so a rebuilt request could
+   never match the idempotency key) and are cancelled-not-replayed exactly as
+   before this PR. The file is **not** changed.
+5b. **The recovery comparison is provably unreachable for a fee-bearing
+   attempt.** A `node:test` source pin on `lib/finance/checkout-recovery.ts`
+   asserts that `replayable` contains `attempt.payment_link_id === null` and that
+   the `stillCurrent` comparison sits inside `if (replayable)`. If either ever
+   changes — member paths gaining a fee, or founder-link replay being enabled —
+   the pin fails and the Future item says what to do (compare
+   `COALESCE(contribution_cents, amount_cents)`).
 6. **The browser cannot do fee math.** `POST /api/finance/payment-links`
    carrying any of `feeCents`, `fee_cents`, `feeBps`, `fee_bps`, `totalCents`,
    `total_cents`, `processingFeeCents`, `processing_fee_cents`,
@@ -316,10 +339,21 @@ Each is pass/fail and individually verifiable.
     renders three lines — contribution, card processing fee, total charged — with
     figures equal to the database's, and the Stripe page shows the total. For a
     `NULL`-snapshot link it renders exactly today's single figure.
-13. **Reuse comparison uses contribution (M).** With a fee-bearing open Session
-    and unchanged Payable Remaining, `resolveTokenState` returns `open_session`,
-    **not** `review`; after an external payment moves Payable Remaining below the
-    link's contribution, it returns `review`.
+13. **Resume compares the Session's contribution, and only refuses (M).** With a
+    fee-bearing open Session and unchanged Payable Remaining, `resolveTokenState`
+    returns `open_session`, **not** `review`; after an external payment moves
+    Payable Remaining below the Session's **contribution**
+    (`session_contribution_cents`, never `session_amount_cents`), it returns
+    `review`. *(Reworded 2026-09-08.)* This is a deliberate, bounded, bridge-side
+    closure of the D-034 founder-link gap: the branch previously compared
+    nothing and would have resumed an overpaying Session. The refusal makes
+    **no Stripe call, expires nothing, creates nothing, and frees no slot** — the
+    Stripe Session stays payable until it expires and the founder's remedy is
+    the pre-existing one (expire it at Stripe; `checkout.session.expired` closes
+    the row). Retiring the obsolete Session (expire-then-recreate, as the
+    member-portal path does) remains a Future item. The PR description must
+    name this as a brief-required partial closure so the reviewer reads it as
+    intended, not as creep.
 14. **Ledger column integrity.** `processing_fee_cents` on a `refund`,
     `reversal`, `external_payment` or `source = 'external'` row is rejected when
     non-zero; a negative value is rejected; the column is `NOT NULL DEFAULT 0`
@@ -331,10 +365,17 @@ Each is pass/fail and individually verifiable.
     exception; a refund of `1000000` or less succeeds and reduces Received
     normally. No balance is misstated in either case.
 16. **Configuration is founder-only.** `finance_api.set_fee_settings(...)` raises
-    `founder role required` for a non-founder `authenticated` caller and for
-    `service_role`; `anon` and `PUBLIC` hold no `EXECUTE` on it and no `SELECT`
-    on `finance.fee_settings`; the table holds exactly one row and a second
-    insert is rejected.
+    `founder role required` for a non-founder `authenticated` caller and is
+    refused for `service_role` (at the grant boundary — `42501` — since it holds
+    no `EXECUTE` in either schema; the message differs, the boundary holds);
+    `anon` and `PUBLIC` hold no `EXECUTE` on it and no `SELECT` on
+    `finance.fee_settings`; the table holds exactly one row and a second insert
+    is rejected. *(Added 2026-09-08 for the accepted `finance_api.fee_settings`
+    view:)* a **non-founder `authenticated`** `SELECT` through
+    `finance_api.fee_settings` returns **zero rows** (the base table's
+    `founder_reads_fee_settings` policy decides under `security_invoker`); a
+    founder reads exactly one; `anon` has no grant; no role can `INSERT`,
+    `UPDATE` or `DELETE` through the view.
 17. **Role boundary and assertions.** The migration's closing `DO` block (the PR
     6 block **with the D-088 `public_campaign_status` carve-out**, plus the
     10E-specific assertions) raises nothing; each recreated function has exactly
@@ -396,7 +437,12 @@ founder flips it. Rows affected by every `ALTER TABLE`: 0. No backfill anywhere.
 10. `DROP` and `CREATE` `finance.record_v2_stripe_payment(...)` with the added
     `p_attempt_id uuid DEFAULT NULL` and its wrapper (J).
 11. `CREATE OR REPLACE VIEW finance_api.payment_links` — trailing columns
-    appended.
+    appended. *(Accepted 2026-09-08:)* `CREATE VIEW finance_api.fee_settings
+    (security_invoker)` exposing the five config columns, `SELECT` to
+    `authenticated` and `service_role`, the base table's founder policy deciding
+    — the only way the founder-gated quote endpoint can read the policy in
+    force, since `finance` is unexposed. Step 1's base-table `SELECT` grants
+    always implied exactly this read path.
 12. Grants restated on **every** new signature: `REVOKE ALL … FROM public`;
     `issue_payment_link` and `set_fee_settings` to `authenticated` only;
     `begin_checkout_attempt`, `peek_payment_link`, `record_v2_stripe_payment` to
@@ -499,6 +545,26 @@ function does not reproduce `begin_public_checkout` byte-for-byte across every
 vector, stop and report — the "exactly one formula" requirement is the load
 bearing part of this PR, and everything else depends on it. Database foundation
 precedes interface.
+
+### Architect rulings on the implementation deviations (2026-09-08)
+
+Ruled after reading the evidence below and `git diff 41667c0..HEAD`. Brief
+passages M, criterion 5/5b/13/16, migration step 11 and one out-of-scope bullet
+are amended in place above and marked with the date.
+
+| # | Deviation | Ruling | Implementer action |
+|---|---|---|---|
+| 1 | `finance_api.fee_settings` read-only view added beyond the enumerated plan | **Accepted into scope.** `security_invoker`, five config columns, `SELECT`-only, base-table RLS founder-only; carries no financial truth. The brief granted base-table `SELECT` to `authenticated` with no way to exercise it — the view is that way, not a widening. The quote endpoint reading it on the server through the display-only twin is within design answer C. | Proof adds the criterion-16 check: non-founder `authenticated` reads **0 rows** through the view, a founder reads 1. No code change. |
+| 2 | M's premise was wrong; the `open_session` branch compared nothing, and the implementer added a contribution-vs-payable comparison returning `review` (no Stripe expiry) | **Accepted as implemented.** The premise was wrong; the conclusion and criterion 13 were right. The addition only ever narrows — a Session the old code would have resumed into an overpayment is now refused with existing copy, and nothing is called, expired, created or freed. It is a bounded, bridge-side partial closure of the D-034 gap that the brief itself demanded. Narrowing criterion 13 would mean removing a correct, tested refusal to preserve a known defect. | None in code. The PR description must name it as a brief-required partial closure of the D-034 gap; the Stripe-side expire-then-recreate stays a Future item. |
+| 3 | `checkout-recovery.ts` compares `attempt.amount_cents` (now the total) to Payable Remaining; left untouched | **(b) — accept, no code change; criterion 5 reworded, 5b added.** The comparison is inside `if (replayable)`, and `replayable` requires `payment_link_id === null`: it is evaluated only for member-portal attempts, which carry no fee. Founder-link attempts were cancelled-not-replayed **before** 10E, for a reason that has nothing to do with amounts (the raw token in `cancel_url` is unrecoverable, so the rebuilt request could never match the idempotency key). 10E changes nothing reachable there. Option (a) would add a view column and a code path for a branch no fee-bearing attempt can enter, and would also have to decide whether D-090 partials should replay under `===` — a D-034 question that belongs to the founder-link reuse PR, not here. | Add the criterion-5b source pin (one `node:test`) so the unreachability is proven, not asserted. Rewrite the Future item (done below). |
+| — | `quoteProcessingFee` (TS) is inexact above `(c + fixed) * 10000 > 2^53` (~$9.0 B; first divergence under the default policy at `c = 2^47`) | **Future item confirmed; not brought in.** The TypeScript twin is display-only by design answer C; every charge is `finance.quote_processing_fee`'s figure, returned by `issue_payment_link` and `begin_checkout_attempt`. Both real domains sit far inside the exact range — public support hard-caps at $5,000,000 and a founder link is bounded by Payable Remaining. The fixture pins only exact vectors, so an inexact figure cannot enter it. `lib/finance/public-support-fees.ts` is the D-088 engine and outside 10E's outcome. | None. |
+| — | Decisions 2 and 4 in the evidence (`record_v2_stripe_payment` also refuses an unknown attempt and a `livemode` mismatch; `service_role` `EXECUTE` revoked from `finance.issue_payment_link` and `finance.set_fee_settings`) | Within J and step 12; accepted. Nothing calls either function as `service_role`. | None. |
+
+Deliberately not folded in, and already under Future items: the thank-you page
+and the PR 10D founder notice both state the charged **total** where a member or
+founder might read "contribution". True from the card's side, not itemized, and
+the same fix belongs to one follow-up that itemizes every post-payment surface
+at once rather than one of three here.
 
 ### Implementation evidence (2026-09-08)
 
@@ -1555,7 +1621,7 @@ V2 figures will differ from currently displayed figures wherever a legacy `adjus
 
 Noticed during audit or design, deliberately not folded into any current PR.
 
-- **The stranded-attempt sweeper compares the attempt's total to Payable Remaining (noticed implementing PR 10E).** `lib/finance/checkout-recovery.ts` decides whether a replayable attempt is "still current" with `balance.payable_remaining_cents === attempt.amount_cents`. After 10E, `checkout_sessions.amount_cents` is the charged total on a fee-bearing attempt, so that comparison is false by exactly the fee and the sweeper falls through to **cancel** a fee-bearing attempt stranded between phase 2 and phase 3 inside the 23-hour window instead of replaying it. Fail-closed — nothing is charged, the slot is freed, the founder reissues — but a lost replay, and the one site left that compares a total to the cap. The fix is one line (`COALESCE(contribution_cents, amount_cents)`) plus exposing `contribution_cents` on `finance_api.machine_checkout_attempts`; the file is outside 10E's in-scope list, so it needs a brief amendment rather than a silent edit.
+- **The stranded-attempt sweeper's `stillCurrent` reads `attempt.amount_cents`, which is the charged total after PR 10E (ruled 2026-09-08, no change made).** `lib/finance/checkout-recovery.ts` compares `balance.payable_remaining_cents === attempt.amount_cents` only inside `if (replayable)`, and `replayable` requires `payment_link_id === null` — a member-portal attempt, which carries no fee, so the comparison is correct for everything it can see today. Founder-link attempts are cancelled-not-replayed upstream for an amount-independent reason (unrecoverable raw token in `cancel_url`), before and after 10E. Criterion 5b pins this. It becomes a real defect only if a member path ever carries a fee or founder-link replay is ever enabled; the fix then is `COALESCE(contribution_cents, amount_cents)` plus exposing `contribution_cents` on `finance_api.machine_checkout_attempts`, and it belongs to whichever PR makes the branch reachable.
 - **`quoteProcessingFee` is double-precision, not exact, above ~$9.0 billion.** `(c + fixed) * 10000` exceeds 2^53 once the contribution passes 900,719,925,474 cents, and the ceiling can then land one cent high: `c = 2^40, bps = 0, fixed = 0` gives 1099511627777 in TypeScript against the exact (and SQL) 1099511627776; with the default policy the first divergence is at `c = 2^47`. Every fixture vector, including 2^40 under the default policy, is exact and pinned against exact integer arithmetic; the divergent combination is deliberately not in the fixture. Irrelevant at any real amount (public support caps at $5,000,000; a founder link is bounded by Payable Remaining), and the SQL function is the authority on every charge. The fix is BigInt arithmetic inside `lib/finance/public-support-fees.ts` — the D-088 engine, outside 10E's scope.
 - **Founder-link resume still does not retire an obsolete Session.** PR 10E's `tokenStateFor` now refuses (`review`) an open Session whose *contribution* exceeds the live Payable Remaining (criterion 13), so a member is never resumed into an overpaying Session; but the Stripe Session stays payable at Stripe until it expires, and the single-flight slot stays held. The full D-034 reuse rule (expire through Stripe, confirm, recreate) for the founder-link path remains its own PR.
 - **`20260823010000_finance_cancelled_agreement_totals.sql` cannot apply to an empty database.** Its closing assertion reads a production drill agreement by id (`72aa064a-…`) and expects one `paid` agreement with `net_received_cents = 10000`; on a fresh database it raises `D-087 assert: cancelled agreement still owes <NULL> / <NULL>`. Building the series locally for PR 10E needed two seeded rows in that shape (local stub, not committed). The `migrations_manifest.txt` staleness above is the same class of problem.
@@ -1563,7 +1629,7 @@ Noticed during audit or design, deliberately not folded into any current PR.
 - **The PR 10E proof needs three members with no agreement of its purposes.** It picks them from `public.members` as the 10B proof did; production has 17 members, a fresh local database needed stubs.
 - **A refund of a fee-bearing payment cannot cover the fee (D-092 known limitation).** `ledger_entries.amount_cents` on a fee-bearing `stripe_payment` is the contribution only, so the L7 headroom check refuses a refund of the full charged amount. It fails closed and visibly (an exception, never a misstated balance), and the founder can refund up to the contribution. Modelling a refund that returns the processing fee needs its own PR and a decision about whether L7 should measure gross.
 - **The PR 10D founder payment notice does not itemize the fee.** It states the charged total while the balances it quotes are contribution-only, which reads as a discrepancy once fees are on. One-line fix in its renderer once the ledger split exists; deliberately not folded into PR 10E.
-- **Founder-link resume does not re-check the amount (D-034 gap).** `resolveTokenState` returns `open_session` and `startCheckout` resumes it without comparing `checkout_sessions.amount_cents` to the current `payable_remaining_cents`; the member-portal path (`lib/finance/member-checkout.ts`) does compare and expires-then-recreates. Pre-existing before PR 10B; noticed while briefing it. Fix is its own PR: apply the D-034 reuse table to the founder-link path.
+- **Founder-link resume does not re-check the amount (D-034 gap) — bridge half closed by PR 10E, Stripe half open.** Before 10E, `resolveTokenState` returned `open_session` and `startCheckout` resumed it without any comparison to the current `payable_remaining_cents`. PR 10E's `tokenStateFor` (criterion 13) now refuses with `review` when the Session's contribution exceeds live Payable Remaining, so a member is never resumed into an overpayment; the Stripe Session itself stays payable until expiry and the single-flight slot stays held (see the item above on retiring an obsolete Session). The member-portal path (`lib/finance/member-checkout.ts`) expires-then-recreates. The remaining fix is its own PR: apply the D-034 reuse table, including expiry, to the founder-link path.
 - **The PR 6 assertion block is no longer verbatim-reusable.** D-088 (`20260823020000`) made `finance_api.public_campaign_status` the one `SECURITY DEFINER` function anon may execute and carved it out of its own assertions by name; the PR 6 counts ("zero `finance_api` SECURITY DEFINER", "zero anon/PUBLIC EXECUTE") now fail on that function alone. PR 10B's migration carries the PR 6 block with the same named carve-out. Any future brief that says "PR 6 block verbatim" should say "PR 6 block with the D-088 carve-out". Noticed while applying PR 10B to a local build of the series.
 - **The retirement gate's scope audit flags a build output.** With `.next/` present (after `npm run build`), `retirement-gate.test.ts`'s null control and restoration tests fail on "source file exists but was never scanned: .next/…" even though `.next` is in `PRUNED_DIRS`; the suite is green once `.next` is removed. Run `npm test` before `npm run build`, or align the scope audit's walk with the prune list. Noticed while running the PR 10B gates.
 - **`supabase/tests/migrations_manifest.txt` is stale.** It lists eight `20260730…` filenames that no longer exist on disk (the PR 1 files were renamed to `20260814…`) and nothing after PR 1, so `run_all.sh` and the pgTAP harness cannot build a database from the current series. Noticed while deciding where PR 10B's SQL proof could live. Not PR 10B's to fix.
