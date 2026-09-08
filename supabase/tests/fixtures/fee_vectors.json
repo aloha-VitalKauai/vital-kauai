@@ -1,0 +1,132 @@
+{
+  "$comment": "Financials V2 PR 10E (D-092) fee parity fixture. Generated from quoteProcessingFee in lib/finance/public-support-fees.ts and verified against exact integer arithmetic; finance.quote_processing_fee must yield total_cents for every vector (supabase/tests/proofs/pr10e_link_processing_fee.sql). Regenerate only by re-running the generator against quoteProcessingFee; never edit a figure by hand.",
+  "formula": "total_cents = ceil((contribution_cents + fee_fixed_cents) * 10000 / (10000 - fee_bps)); processing_fee_cents = total_cents - contribution_cents",
+  "vectors": [
+    {
+      "name": "one_cent_default_policy",
+      "note": "contribution = 1 (rounds up: fee 31)",
+      "contribution_cents": 1,
+      "fee_bps": 290,
+      "fee_fixed_cents": 30,
+      "processing_fee_cents": 31,
+      "total_cents": 32
+    },
+    {
+      "name": "founder_drill_one_dollar",
+      "note": "criterion 20: $1.00 + $0.34 = $1.34",
+      "contribution_cents": 100,
+      "fee_bps": 290,
+      "fee_fixed_cents": 30,
+      "processing_fee_cents": 34,
+      "total_cents": 134
+    },
+    {
+      "name": "d088_example_five_dollars",
+      "note": "public support minimum",
+      "contribution_cents": 500,
+      "fee_bps": 290,
+      "fee_fixed_cents": 30,
+      "processing_fee_cents": 46,
+      "total_cents": 546
+    },
+    {
+      "name": "d088_example_twenty_five_dollars",
+      "note": "public support preset",
+      "contribution_cents": 2500,
+      "fee_bps": 290,
+      "fee_fixed_cents": 30,
+      "processing_fee_cents": 106,
+      "total_cents": 2606
+    },
+    {
+      "name": "d088_example_one_hundred_dollars",
+      "note": "the founder's $100 -> $103.30 example",
+      "contribution_cents": 10000,
+      "fee_bps": 290,
+      "fee_fixed_cents": 30,
+      "processing_fee_cents": 330,
+      "total_cents": 10330
+    },
+    {
+      "name": "d088_example_one_thousand_dollars",
+      "note": "$1,000 -> $1,030.18",
+      "contribution_cents": 100000,
+      "fee_bps": 290,
+      "fee_fixed_cents": 30,
+      "processing_fee_cents": 3018,
+      "total_cents": 103018
+    },
+    {
+      "name": "criterion_3_ten_thousand_dollars",
+      "note": "rounds up: 1029897.01 -> 1029898",
+      "contribution_cents": 1000000,
+      "fee_bps": 290,
+      "fee_fixed_cents": 30,
+      "processing_fee_cents": 29898,
+      "total_cents": 1029898
+    },
+    {
+      "name": "divides_exactly_default_policy",
+      "note": "(941 + 30) * 10000 / 9710 = 1000 exactly",
+      "contribution_cents": 941,
+      "fee_bps": 290,
+      "fee_fixed_cents": 30,
+      "processing_fee_cents": 59,
+      "total_cents": 1000
+    },
+    {
+      "name": "zero_bps",
+      "note": "bps = 0: only the fixed fee",
+      "contribution_cents": 10000,
+      "fee_bps": 0,
+      "fee_fixed_cents": 30,
+      "processing_fee_cents": 30,
+      "total_cents": 10030
+    },
+    {
+      "name": "zero_fixed",
+      "note": "fixed = 0: only the percentage",
+      "contribution_cents": 10000,
+      "fee_bps": 290,
+      "fee_fixed_cents": 0,
+      "processing_fee_cents": 299,
+      "total_cents": 10299
+    },
+    {
+      "name": "zero_policy_divides_exactly",
+      "note": "bps = 0 and fixed = 0: total = contribution, fee 0",
+      "contribution_cents": 10000,
+      "fee_bps": 0,
+      "fee_fixed_cents": 0,
+      "processing_fee_cents": 0,
+      "total_cents": 10000
+    },
+    {
+      "name": "max_bps",
+      "note": "the largest permitted bps: denominator 1",
+      "contribution_cents": 1,
+      "fee_bps": 9999,
+      "fee_fixed_cents": 0,
+      "processing_fee_cents": 9999,
+      "total_cents": 10000
+    },
+    {
+      "name": "divides_exactly_alt_policy",
+      "note": "8 * 10000 / 8000 = 10 exactly",
+      "contribution_cents": 8,
+      "fee_bps": 2000,
+      "fee_fixed_cents": 0,
+      "processing_fee_cents": 2,
+      "total_cents": 10
+    },
+    {
+      "name": "two_to_the_forty",
+      "note": "contribution = 2^40: bigint on both sides",
+      "contribution_cents": 1099511627776,
+      "fee_bps": 290,
+      "fee_fixed_cents": 30,
+      "processing_fee_cents": 32838143394,
+      "total_cents": 1132349771170
+    }
+  ]
+}
