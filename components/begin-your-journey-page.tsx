@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import styles from "./begin-your-journey-page.module.css";
 
 export function BeginYourJourneyPage() {
@@ -218,6 +219,7 @@ export function BeginYourJourneyPage() {
 
 function LeadForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [failed, setFailed] = useState(false);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -228,19 +230,24 @@ function LeadForm() {
     const firstName = (form.elements.namedItem("first-name") as HTMLInputElement).value.trim();
     const email = (form.elements.namedItem("email") as HTMLInputElement).value.trim();
 
-    try {
-      await fetch("/.netlify/functions/lead-capture", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fullName: firstName,
-          email,
-          source: "Begin the Journey",
-          submittedAt: new Date().toISOString(),
-        }),
-      });
-    } catch (err) {
-      console.error("Lead capture error:", err);
+    // Same path as the homepage contact form: a direct `leads` insert under the
+    // anon insert policy. A duplicate email (23505) still counts as received.
+    const supabase = createClient();
+    const { error } = await supabase.from("leads").insert({
+      full_name: firstName,
+      email: email.toLowerCase(),
+      source: "Begin the Journey",
+      lead_date: new Date().toISOString(),
+      welcome_video_sent: false,
+      discovery_call_booked: false,
+      converted_to_member: false,
+    });
+
+    if (error && error.code !== "23505") {
+      console.error("Lead capture error:", error);
+      setFailed(true);
+      setLoading(false);
+      return;
     }
 
     setSubmitted(true);
@@ -248,6 +255,15 @@ function LeadForm() {
 
   if (submitted) {
     return <p className={styles.leadSuccess}>&#10003; We&apos;ll be in touch, check your inbox.</p>;
+  }
+
+  if (failed) {
+    return (
+      <p className={styles.leadSuccess}>
+        Something went wrong on our side. Please email us at{" "}
+        <a href="mailto:aloha@vitalkauai.com">aloha@vitalkauai.com</a>.
+      </p>
+    );
   }
 
   return (
