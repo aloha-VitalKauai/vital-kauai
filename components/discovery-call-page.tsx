@@ -180,10 +180,9 @@ export function DiscoveryCallPage() {
               Rachel Nelson brings two decades of devotion to embodied
               awakening, with graduate study in naturopathic medicine and
               transpersonal psychology. Josh Perdue came from Stanford Design
-              School into conscious business and somatic healing. Together with
-              Judith Johnson, founder of PsychoNeuroEnergetics, and a team of
-              physicians and practitioners, they hold every member from the
-              first call through integration.
+              School into conscious business and somatic healing. With the team
+              below, they hold every member from the first call through
+              integration.
             </p>
           </div>
           <div className={styles.foundersPhoto}>
@@ -193,6 +192,49 @@ export function DiscoveryCallPage() {
               fill
               sizes="(max-width: 900px) 100vw, 45vw"
             />
+          </div>
+        </div>
+      </section>
+
+      {/* The Team */}
+      <section className={styles.team}>
+        <div className={styles.teamInner}>
+          <div className={styles.person}>
+            <div className={styles.personPhoto}>
+              <Image src="/images/judithjohnson.jpeg" alt="Judith Johnson" fill sizes="160px" />
+            </div>
+            <div>
+              <h3>Judith Johnson</h3>
+              <span className={styles.personRole}>
+                Founder, PsychoNeuroEnergetics &middot; Somatic Integration Director
+              </span>
+              <p>
+                For more than four decades, Judith has dedicated her life to
+                understanding human suffering and helping people heal from
+                trauma. Founder of the PNE approach, with decades of practice
+                across Somatic Experiencing, Polyvagal Theory, and body
+                electronics, she brings an extraordinary depth of wisdom to
+                Vital Kaua&#699;i.
+              </p>
+            </div>
+          </div>
+          <div className={styles.person}>
+            <div className={styles.personPhoto}>
+              <Image src="/images/mattmontee.jpeg" alt="Dr. Matt Montee" fill sizes="160px" />
+            </div>
+            <div>
+              <h3>Dr. Matt Montee</h3>
+              <span className={styles.personRole}>
+                Functional Medicine &middot; Founder, Intelligent Medicines
+              </span>
+              <p>
+                A Certified Functional Medicine Practitioner whose foundation
+                was built in orthopedics and sports medicine at Cornell and the
+                Hospital for Special Surgery. Founder of Intelligent Medicines,
+                he pairs precision, root-cause care with advanced biologics to
+                accelerate healing and extend healthspan.
+              </p>
+            </div>
           </div>
         </div>
       </section>
