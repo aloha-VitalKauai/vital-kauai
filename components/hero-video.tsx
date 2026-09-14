@@ -6,10 +6,12 @@ import { useEffect, useRef } from "react";
 // allows autoplay. A server-rendered <video muted> drops the muted attribute
 // from the HTML, which makes browsers block autoplay. We also force-mute and
 // call play() defensively, and loop the first 5 seconds to match the marketing
-// homepage hero. An optional poster shows a still until the first frame
-// arrives, and stays when a device refuses autoplay (low-power mode, data
-// saver), so the hero is never a blank block.
-export function HeroVideo({ className, poster }: { className?: string; poster?: string }) {
+// homepage hero.
+//
+// Some phones refuse autoplay outright (iOS Low Power Mode, data saver) and
+// show the first frame instead. The first touch or click anywhere on the page
+// retries play(), which those devices allow once the person has interacted.
+export function HeroVideo({ className }: { className?: string }) {
   const ref = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
@@ -23,7 +25,19 @@ export function HeroVideo({ className, poster }: { className?: string; poster?: 
       }
     };
     v.addEventListener("timeupdate", onTime);
-    return () => v.removeEventListener("timeupdate", onTime);
+
+    const retry = () => {
+      if (v.paused) v.play().catch(() => {});
+    };
+    const opts: AddEventListenerOptions = { once: true, passive: true };
+    window.addEventListener("touchstart", retry, opts);
+    window.addEventListener("click", retry, opts);
+
+    return () => {
+      v.removeEventListener("timeupdate", onTime);
+      window.removeEventListener("touchstart", retry);
+      window.removeEventListener("click", retry);
+    };
   }, []);
 
   return (
@@ -35,7 +49,6 @@ export function HeroVideo({ className, poster }: { className?: string; poster?: 
       loop
       playsInline
       preload="auto"
-      poster={poster}
     >
       <source src="/videos/hero-loop.webm" type="video/webm" />
       <source src="/videos/hero-loop.mp4" type="video/mp4" />
