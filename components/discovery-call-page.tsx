@@ -39,7 +39,7 @@ export function DiscoveryCallPage() {
 
       {/* Hero */}
       <section className={styles.hero}>
-        <HeroVideo className={styles.heroVideo} poster="/images/hanaleipier2.jpg" />
+        <HeroVideo className={styles.heroVideo} />
         <div className={styles.heroOverlay} />
         <div className={styles.heroContent}>
           <p className={styles.heroEyebrow}>A Living Sanctuary</p>
