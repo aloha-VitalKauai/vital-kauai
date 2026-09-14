@@ -134,7 +134,7 @@ export const FOLLOWUP_DEFAULTS: Record<FollowupStep["key"], ResolvedFields> = {
     closing_html: SIGNOFF,
   },
   day5: {
-    subject: "What the call is, and what it is not",
+    subject: "What the call is",
     eyebrow: "Vital Kauaʻi",
     heading: "Aloha {{firstName}},",
     lead_html:
