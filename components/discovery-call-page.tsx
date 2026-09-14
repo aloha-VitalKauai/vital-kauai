@@ -167,43 +167,21 @@ export function DiscoveryCallPage() {
         </div>
       </section>
 
-      {/* Rachel & Josh */}
-      <section className={styles.founders}>
-        <div className={styles.foundersInner}>
-          <div>
-            <span className={styles.eyebrow}>Rachel &amp; Josh</span>
-            <h2 className={styles.h2}>
-              We have walked
-              <em>this road ourselves.</em>
-            </h2>
-            <p className={styles.foundersBody}>
-              Rachel Nelson brings two decades of devotion to embodied
-              awakening, with graduate study in naturopathic medicine and
-              transpersonal psychology. Josh Perdue came from Stanford Design
-              School into conscious business and somatic healing. With the team
-              below, they hold every member from the first call through
-              integration.
-            </p>
-          </div>
-          <div className={styles.foundersPhoto}>
-            <Image
-              src="/images/about/rachel-josh.jpg"
-              alt="Rachel Nelson and Josh Perdue at Hanalei Bay"
-              fill
-              sizes="(max-width: 900px) 100vw, 45vw"
-            />
-          </div>
-        </div>
-      </section>
-
       {/* The Team */}
       <section className={styles.team}>
         <div className={styles.teamInner}>
-          <div className={styles.person}>
-            <div className={styles.personPhoto}>
-              <Image src="/images/judithjohnson.jpeg" alt="Judith Johnson" fill sizes="160px" />
-            </div>
-            <div>
+          <div className={styles.teamHead}>
+            <span className={styles.eyebrow}>The Team</span>
+            <h2 className={styles.h2}>
+              Held by people who have
+              <em>walked this road themselves.</em>
+            </h2>
+          </div>
+          <div className={styles.people}>
+            <div className={styles.person}>
+              <div className={styles.personPhoto}>
+                <Image src="/images/judithjohnson.jpeg" alt="Judith Johnson" fill sizes="140px" />
+              </div>
               <h3>Judith Johnson</h3>
               <span className={styles.personRole}>
                 Founder, PsychoNeuroEnergetics &middot; Somatic Integration Director
@@ -217,12 +195,10 @@ export function DiscoveryCallPage() {
                 Vital Kaua&#699;i.
               </p>
             </div>
-          </div>
-          <div className={styles.person}>
-            <div className={styles.personPhoto}>
-              <Image src="/images/mattmontee.jpeg" alt="Dr. Matt Montee" fill sizes="160px" />
-            </div>
-            <div>
+            <div className={styles.person}>
+              <div className={styles.personPhoto}>
+                <Image src="/images/mattmontee.jpeg" alt="Dr. Matt Montee" fill sizes="140px" />
+              </div>
               <h3>Dr. Matt Montee</h3>
               <span className={styles.personRole}>
                 Functional Medicine &middot; Founder, Intelligent Medicines
@@ -233,6 +209,21 @@ export function DiscoveryCallPage() {
                 Hospital for Special Surgery. Founder of Intelligent Medicines,
                 he pairs precision, root-cause care with advanced biologics to
                 accelerate healing and extend healthspan.
+              </p>
+            </div>
+            <div className={styles.person}>
+              <div className={styles.personPhoto}>
+                <Image src="/images/about/rachel-nelson.jpg" alt="Rachel Nelson" fill sizes="140px" />
+              </div>
+              <h3>Rachel Nelson</h3>
+              <span className={styles.personRole}>Co-Founder &middot; Guide and Facilitator</span>
+              <p>
+                Rachel weaves over two decades of devotion to embodied
+                awakening, bridging Eastern philosophy with Western science.
+                Her foundation includes graduate-level study in naturopathic
+                medicine and transpersonal psychology, along with
+                certifications in life coaching, mind-body nutrition, and
+                hypnotherapy.
               </p>
             </div>
           </div>
