@@ -138,7 +138,7 @@ export const FOLLOWUP_DEFAULTS: Record<FollowupStep["key"], ResolvedFields> = {
     eyebrow: "Vital Kauaʻi",
     heading: "Aloha {{firstName}},",
     lead_html:
-      "<p>A discovery call is thirty minutes on Zoom. We get to meet you, hear what is calling you, and answer your questions about safety, preparation, timing, and membership.</p><p>You leave knowing whether this path is yours. That is the whole call. There is no pitch on the other side of it, and membership is by application, so the conversation is where we both find out.</p>",
+      "<p>A discovery call is thirty minutes on Zoom. We get to meet you, hear what is calling you, and answer your questions about safety, preparation, timing, and membership.</p><p>You leave knowing whether this path is yours. That is the whole call. Membership is by application, so the conversation is where we both find out.</p>",
     body_html: "<p>If you have been circling it, this is the door.</p>",
     cta_label: "Book a discovery call",
     closing_html: SIGNOFF,
@@ -158,7 +158,7 @@ export const FOLLOWUP_DEFAULTS: Record<FollowupStep["key"], ResolvedFields> = {
     eyebrow: "Vital Kauaʻi",
     heading: "Aloha {{firstName}},",
     lead_html:
-      "<p>This is the last note from me for a while. The invitation stays open: when the time is right, a 30-minute conversation is how every journey with us begins.</p><p>Until then, be gentle with yourself. The work you have already done is not wasted; it is the ground the root meets you on.</p>",
+      "<p>This is the last note from me for a while. The invitation stays open: when the time is right, a 30-minute conversation is how every journey with us begins.</p><p>Until then, be gentle with yourself. The work you have already done is the ground the root meets you on.</p>",
     body_html: "<p>The link below will be here whenever you are.</p>",
     cta_label: "Book a discovery call",
     closing_html: SIGNOFF,
