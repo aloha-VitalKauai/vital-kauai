@@ -133,7 +133,7 @@ async function sendFreeGuideEmail(input: {
   const firstName    = esc(fullName.split(" ")[0] || "Friend");
   const guideUrl     = `${siteUrl}/iboga-guide`;
   const pdfUrl       = `${siteUrl}/iboga-guide-free.pdf`;
-  const discoveryUrl = `${siteUrl}/discovery-call`;
+  const discoveryUrl = `${siteUrl}/begin-your-journey`;
 
   // Read the PDF off disk and base64-encode for Resend's attachments field
   const pdfPath  = path.join(process.cwd(), "public", "iboga-guide-free.pdf");
