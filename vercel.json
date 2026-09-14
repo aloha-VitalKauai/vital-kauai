@@ -16,6 +16,10 @@
     {
       "path": "/api/cron/checkins",
       "schedule": "0 18 * * *"
+    },
+    {
+      "path": "/api/cron/lead-followups",
+      "schedule": "0 17 * * *"
     }
   ]
 }
