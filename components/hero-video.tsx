@@ -6,8 +6,10 @@ import { useEffect, useRef } from "react";
 // allows autoplay. A server-rendered <video muted> drops the muted attribute
 // from the HTML, which makes browsers block autoplay. We also force-mute and
 // call play() defensively, and loop the first 5 seconds to match the marketing
-// homepage hero.
-export function HeroVideo({ className }: { className?: string }) {
+// homepage hero. An optional poster shows a still until the first frame
+// arrives, and stays when a device refuses autoplay (low-power mode, data
+// saver), so the hero is never a blank block.
+export function HeroVideo({ className, poster }: { className?: string; poster?: string }) {
   const ref = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
@@ -33,6 +35,7 @@ export function HeroVideo({ className }: { className?: string }) {
       loop
       playsInline
       preload="auto"
+      poster={poster}
     >
       <source src="/videos/hero-loop.webm" type="video/webm" />
       <source src="/videos/hero-loop.mp4" type="video/mp4" />
