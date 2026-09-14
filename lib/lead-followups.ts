@@ -128,7 +128,7 @@ export const FOLLOWUP_DEFAULTS: Record<FollowupStep["key"], ResolvedFields> = {
     eyebrow: "Vital Kauaʻi",
     heading: "Aloha {{firstName}},",
     lead_html:
-      "<p>You reached out to Vital Kauaʻi recently, and I wanted to write to you personally.</p><p>People find their way to us at their own pace. Some read the guide and sit with it for months. Some know the moment they land on the page. Wherever you are with it, the next step is the same and it is simple: a 30-minute conversation with me or Josh. We hear what is calling you, walk you through how the program works, and answer whatever questions are alive in you.</p>",
+      "<p>You reached out to Vital Kauaʻi recently, and I wanted to write to you personally.</p><p>People find their way to us at their own pace. Some read the guide and sit with it for months. Some know the moment they land on the page. Wherever you are with it, the next step is the same and it is simple: a 30-minute conversation with us. We hear what is calling you, walk you through how the program works, and answer whatever questions are alive in you.</p>",
     body_html: "<p>If that feels right, choose a time below. And if you would rather just write back, I read every reply.</p>",
     cta_label: "Choose a time",
     closing_html: SIGNOFF,
