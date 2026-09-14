@@ -53,8 +53,19 @@ export async function middleware(request: NextRequest) {
   // /pay/*, and /contribute/thank-you is where Stripe returns the payer. Both
   // are public by necessity: the member being asked to pay usually has no
   // session yet, and the high-entropy hashed token is the credential (spec §5).
+  //
+  // /discovery-call is the ad landing page: unlinked from the rest of the
+  // site, reachable only by people who arrive from an ad, a post or a
+  // directory. Its Open Graph image is served under the same prefix. The
+  // three legal pages are public with it, since the page links to them and
+  // collects a visitor's email, which ad platforms require.
   const isPublicPath =
     path === "/login" ||
+    path === "/discovery-call" ||
+    path.startsWith("/discovery-call/") ||
+    path === "/privacy-policy" ||
+    path === "/terms-of-use" ||
+    path === "/medical-disclaimer" ||
     path.startsWith("/auth/") ||
     path === "/auth" ||
     path === "/preview-logout" ||
