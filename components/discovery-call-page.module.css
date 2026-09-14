@@ -363,6 +363,65 @@
   object-fit: cover;
 }
 
+/* ── The Team ── */
+.team {
+  background: var(--forest);
+  padding: 96px 60px;
+}
+
+.teamInner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+}
+
+.person {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.personPhoto {
+  position: relative;
+  width: 120px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--deep);
+}
+
+.personPhoto img {
+  object-fit: cover;
+}
+
+.person h3 {
+  font-family: var(--font-display), serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--cream);
+  margin: 0 0 6px;
+}
+
+.personRole {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  line-height: 1.7;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+.person p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: rgb(245 240 232 / 0.68);
+  margin: 0;
+}
+
 /* ── Book ── */
 .bookGrid {
   display: grid;
@@ -674,6 +733,15 @@
     gap: 32px;
   }
 
+  .teamInner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .team {
+    padding: 80px 24px;
+  }
+
   .rootImage {
     aspect-ratio: 4 / 3;
   }
@@ -719,8 +787,18 @@
   .root,
   .journey,
   .founders,
+  .team,
   .guide {
     padding: 64px 20px;
+  }
+
+  .person {
+    grid-template-columns: 88px 1fr;
+    gap: 18px;
+  }
+
+  .personPhoto {
+    width: 88px;
   }
 
   .bookSide {
