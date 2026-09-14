@@ -148,7 +148,7 @@ export const FOLLOWUP_DEFAULTS: Record<FollowupStep["key"], ResolvedFields> = {
     eyebrow: "Vital Kauaʻi",
     heading: "Aloha {{firstName}},",
     lead_html:
-      "<p>Every ceremony here is a gathering of up to three members. Three, so that every person is fully seen and fully held. The ceremony is one night; the journey around it is months: medical review, somatic and nervous-system preparation, and structured integration with our team of guides, practitioners, and physicians.</p><p>This depth of holding is what we felt was missing from plant ally spaces, and it is what we bring to every member.</p>",
+      "<p>Every ceremony here is a gathering of up to three members. Three, so that every person is fully seen and fully held. The ceremony is two nights; the journey around it is months: medical review, somatic and nervous-system preparation, and structured integration with our team of guides, practitioners, and physicians.</p><p>This depth of holding is what we felt was missing from plant ally spaces, and it is what we bring to every member.</p>",
     body_html: "<p>If you want to understand how it would work for you, the conversation is where that begins.</p>",
     cta_label: "Book a discovery call",
     closing_html: SIGNOFF,
