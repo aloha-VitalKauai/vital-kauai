@@ -21,6 +21,10 @@ export type TransactionalEmailKey =
   | 'discovery_call_notification'
   | 'stripe_refund_notification'
   | 'reconciliation_failure'
+  | 'lead_followup_day2'
+  | 'lead_followup_day5'
+  | 'lead_followup_day10'
+  | 'lead_followup_day21'
 
 export interface TransactionalEmailTemplate {
   key: TransactionalEmailKey | string

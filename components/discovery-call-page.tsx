@@ -131,7 +131,7 @@ export function DiscoveryCallPage() {
         <div className={styles.journeyInner}>
           <span className={styles.eyebrow}>The Iboga Journey</span>
           <h2 className={styles.h2}>
-            One night in ceremony.
+            Two nights in ceremony.
             <em>Months of holding around it.</em>
           </h2>
           <p className={styles.journeyLead}>
@@ -150,9 +150,9 @@ export function DiscoveryCallPage() {
             <div className={styles.phase}>
               <h3>Ceremony</h3>
               <p>
-                A fully held night with the root, with experienced guides and
-                medical oversight, in a sanctuary where the land itself holds
-                you.
+                Two fully held nights with the root, with experienced guides
+                and medical oversight, in a sanctuary where the land itself
+                holds you.
               </p>
             </div>
             <div className={styles.phase}>
@@ -239,11 +239,9 @@ export function DiscoveryCallPage() {
             <em>We walk through it with you.</em>
           </h2>
           <p>
-            Thirty minutes on Zoom with Rachel or Josh. We get to meet you,
-            hear what is calling you, and answer whatever questions are alive
-            in you.
+            Thirty minutes on Zoom with us. We get to meet you, hear what is
+            calling you, and answer whatever questions are alive in you.
           </p>
-          <p>No pressure. Just a genuine conversation.</p>
         </div>
         <div className={styles.calendlySide}>
           <Suspense fallback={null}>
@@ -256,8 +254,7 @@ export function DiscoveryCallPage() {
       <section className={styles.guide}>
         <div className={styles.guideInner}>
           <div>
-            <span className={styles.eyebrow}>Free Guide</span>
-            <h2 className={styles.guideTitle}>Read before you decide.</h2>
+            <h2 className={styles.guideTitle}>Free Guide</h2>
             <p className={styles.guideBody}>
               The history of iboga, what to expect in ceremony, how we prepare
               body and nervous system, and how to choose a safe, qualified
