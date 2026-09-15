@@ -33,7 +33,7 @@ const EMBED_PARAMS: Record<string, string> = {
  * `search` is the page's `location.search` (with or without the leading `?`).
  * Empty and non-utm parameters are left out.
  */
-export function buildDiscoveryCallEmbedUrl(search: string = ""): string {
+export function buildDiscoveryCallEmbedUrl(search: string = "", extra: Partial<Record<(typeof UTM_KEYS)[number], string>> = {}): string {
   const url = new URL(DISCOVERY_CALL_CALENDLY_URL);
   for (const [key, value] of Object.entries(EMBED_PARAMS)) {
     url.searchParams.set(key, value);
@@ -44,6 +44,9 @@ export function buildDiscoveryCallEmbedUrl(search: string = ""): string {
   for (const key of UTM_KEYS) {
     const value = incoming.get(key)?.trim();
     if (value) url.searchParams.set(key, value.slice(0, 200));
+  }
+  for (const [key, value] of Object.entries(extra)) {
+    if (value && !url.searchParams.has(key)) url.searchParams.set(key, String(value).slice(0, 200));
   }
   return url.toString();
 }

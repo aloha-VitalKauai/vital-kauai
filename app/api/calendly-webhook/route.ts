@@ -2,6 +2,8 @@ import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { randomBytes, createHmac, timingSafeEqual } from 'crypto'
 import { processSessionWebhook } from '@/lib/sessions/webhook'
+import { REBOOK_TYPE, isDiscoveryCallEvent, renderRebookEmail, shouldSendRebook } from '@/lib/lead-rebook'
+import { sendFollowupEmail } from '@/lib/lead-followups'
 
 // The series fan-out books up to nine Calendly sessions inside one delivery;
 // the default serverless budget is too tight for that worst case.
@@ -180,6 +182,14 @@ export async function POST(req: NextRequest) {
   if (sessionOutcome.handled) {
     console.log(`[webhook] STEP:sessions, handled: ${JSON.stringify(sessionOutcome.response)}`)
     return NextResponse.json(sessionOutcome.response)
+  }
+
+  // === STEP 4c: A cancelled discovery call earns one re-book note ===
+  if (eventType === 'invitee.canceled') {
+    const outcome = await handleDiscoveryCancellation(supabase, body)
+    console.log(`[webhook] STEP:cancel, ${outcome}`)
+    await updateReceipt(supabase, receiptId, 'processed', `Cancellation: ${outcome}`)
+    return NextResponse.json({ ok: true, cancellation: outcome })
   }
 
   // === STEP 5: Filter event type ===
@@ -742,5 +752,60 @@ export async function sendExistingMemberBookedNotice({
   if (!res.ok) {
     const errorText = await res.text()
     throw new Error(`Resend ${res.status}: ${errorText}`)
+  }
+}
+
+// A true cancellation of a discovery call (Calendly also sends
+// invitee.canceled as the first half of a reschedule, flagged by
+// payload.rescheduled) sends one gentle re-book note and reopens the lead so
+// the follow-up notes can resume. Dedup and record through notification_log.
+async function handleDiscoveryCancellation(
+  supabase: ReturnType<typeof getSupabase>,
+  body: Parameters<typeof extractInviteeData>[0],
+): Promise<string> {
+  const { email, fullName, eventName } = extractInviteeData(body)
+  if (!email) return 'no_email'
+  if (!isDiscoveryCallEvent(eventName)) return 'not_discovery'
+  const rescheduled = Boolean(body?.payload?.rescheduled)
+  if (rescheduled) return 'rescheduled'
+  const { data: lead } = await supabase
+    .from('leads')
+    .select('id, full_name, discovery_call_booked')
+    .eq('email', email)
+    .maybeSingle()
+  if (!lead) return 'no_lead'
+  await supabase
+    .from('leads')
+    .update({ discovery_call_booked: false, discovery_call_date: null })
+    .eq('id', lead.id)
+  const { data: prior } = await supabase
+    .from('notification_log')
+    .select('id')
+    .eq('lead_id', lead.id)
+    .eq('notification_type', REBOOK_TYPE)
+    .limit(1)
+  const send = shouldSendRebook({
+    eventType: 'invitee.canceled',
+    eventName,
+    rescheduled,
+    alreadySent: Boolean(prior && prior.length),
+  })
+  if (!send) return 'already_sent'
+  const resendKey = process.env.RESEND_API_KEY
+  if (!resendKey) return 'email_not_configured'
+  const { data: logRow } = await supabase
+    .from('notification_log')
+    .insert({ lead_id: lead.id, notification_type: REBOOK_TYPE, recipient: [email], status: 'queued', payload: { event: eventName } })
+    .select('id')
+    .single()
+  try {
+    const { subject, html } = await renderRebookEmail(lead.full_name || fullName)
+    await sendFollowupEmail({ toEmail: email, subject, html, resendKey })
+    if (logRow) await supabase.from('notification_log').update({ status: 'sent', sent_at: new Date().toISOString() }).eq('id', logRow.id)
+    return 'rebook_sent'
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    if (logRow) await supabase.from('notification_log').update({ status: 'failed', failure_reason: msg }).eq('id', logRow.id)
+    return `rebook_failed: ${msg}`
   }
 }

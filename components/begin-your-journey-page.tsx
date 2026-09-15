@@ -250,6 +250,23 @@ function LeadForm() {
       return;
     }
 
+    // Founders hear about it, as with the homepage contact form.
+    const note = `New lead from the booking page\nName: ${firstName}\nEmail: ${email}`;
+    supabase.functions
+      .invoke("send-notification", {
+        body: {
+          channel: "email",
+          to: "aloha@vitalkauai.com",
+          subject: `New lead · ${firstName} · Begin the Journey`,
+          message: note,
+          notify_founders: true,
+          founder_subject: `New lead · ${firstName} · Begin the Journey`,
+          founder_message: note,
+          to_name: firstName,
+        },
+      })
+      .catch((err) => console.error("Notification error:", err));
+
     setSubmitted(true);
   }
 
