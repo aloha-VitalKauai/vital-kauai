@@ -25,6 +25,9 @@ export type TransactionalEmailKey =
   | 'lead_followup_day5'
   | 'lead_followup_day10'
   | 'lead_followup_day21'
+  | 'discovery_call_rebook'
+  | 'lead_invite_nudge_1'
+  | 'lead_invite_nudge_2'
 
 export interface TransactionalEmailTemplate {
   key: TransactionalEmailKey | string

@@ -29,6 +29,13 @@ describe("buildDiscoveryCallEmbedUrl", () => {
     assert.equal(url.searchParams.get("utm_medium"), "email");
   });
 
+  it("adds extra parameters only where the page gave none", () => {
+    const a = new URL(buildDiscoveryCallEmbedUrl("", { utm_term: "vb" }));
+    assert.equal(a.searchParams.get("utm_term"), "vb");
+    const b = new URL(buildDiscoveryCallEmbedUrl("?utm_term=ad", { utm_term: "vb" }));
+    assert.equal(b.searchParams.get("utm_term"), "ad");
+  });
+
   it("bounds an oversized parameter", () => {
     const url = new URL(buildDiscoveryCallEmbedUrl(`?utm_content=${"x".repeat(500)}`));
     assert.equal(url.searchParams.get("utm_content")?.length, 200);

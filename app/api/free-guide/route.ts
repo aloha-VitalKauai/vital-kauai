@@ -3,6 +3,7 @@ import { createClient as createServiceSupabase } from "@supabase/supabase-js";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { resolveTemplate } from "@/lib/transactional-emails";
+import { sendFounderLeadAlert } from "@/lib/founder-alerts";
 
 export const runtime = "nodejs";
 
@@ -70,6 +71,9 @@ export async function POST(req: Request) {
     })
     .select("id")
     .single();
+
+  // Founders hear about every new lead the moment it arrives. Never fatal.
+  void sendFounderLeadAlert({ fullName, email, source: "Free Guide" });
 
   // Log to notification_log (queued)
   const { data: notifRow } = await service

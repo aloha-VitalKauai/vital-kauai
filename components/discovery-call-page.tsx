@@ -2,15 +2,55 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { useSearchParams } from "next/navigation";
 import { sendGAEvent } from "@next/third-parties/google";
 import { HeroVideo } from "@/components/hero-video";
+import { MetaPixel, trackMeta } from "@/components/meta-pixel";
+import { VARIANTS, resolveVariant, type VariantKey } from "@/lib/landing-variants";
 import {
   buildDiscoveryCallEmbedUrl,
   isCalendlyBookingMessage,
 } from "@/lib/discovery-call";
 import styles from "./discovery-call-page.module.css";
+
+// From the site's FAQ, unchanged: the questions an ad visitor arrives with.
+const FAQ: { q: string; a: string }[] = [
+  {
+    q: "Is Iboga legal?",
+    a: "Vital Kauaʻi operates as a legally established church. Our plant sacrament work is held within a protected religious context. We are happy to speak with you directly about our legal structure.",
+  },
+  {
+    q: "Is Iboga safe?",
+    a: "Iboga has an excellent safety record. The rare serious risks are primarily cardiac, and are most closely associated with ibogaine, the isolated and concentrated alkaloid. We work only with whole-plant iboga root bark, titrated slowly and in continuous dialogue with your body. We seek to meet the clinical standard of care wherever we can: thorough screening, required lab work, EKG, and medical clearance before ceremony, a doctor present overnight at every ceremony, and attentive medical presence throughout.",
+  },
+  {
+    q: "Who is Iboga right for?",
+    a: "Those who are genuinely ready for deep inner work, whether that means lasting change, spiritual awakening, or a profound reset. We screen carefully and honestly. If it is right for you, we will know together.",
+  },
+  {
+    q: "What is whole-plant Iboga and why does it matter?",
+    a: "Most providers use isolated ibogaine, a single alkaloid. We work with the whole root bark, honoring the ancient wisdom in which this plant has been used for millennia. The full plant carries an intelligence that no single compound can replicate.",
+  },
+  {
+    q: "What is the contribution?",
+    a: "The contribution is discussed privately with each member, so we can meet you where you are.",
+  },
+  {
+    q: "What does the discovery call look like?",
+    a: "Thirty minutes on Zoom with us. We want to understand what brings you here, what you are carrying, your health history, and what support will serve you best. This is how we begin to know you, so that the container we hold for you is built for who you actually are.",
+  },
+];
+
+function subscribeNever() {
+  return () => {};
+}
+
+function readVariant(): VariantKey {
+  let storage: Storage | null = null;
+  try { storage = window.localStorage; } catch {}
+  return resolveVariant(window.location.search, storage);
+}
 
 // The ad landing page. Everything else on vitalkauai.com is members-only,
 // so this one page carries the whole story for someone arriving cold, then
@@ -18,6 +58,16 @@ import styles from "./discovery-call-page.module.css";
 // reach.
 export function DiscoveryCallPage() {
   const [isScrolled, setIsScrolled] = useState(false);
+  // Landing variant: assigned once per visitor (the server renders "a";
+  // the browser resolves the stored or coin-flipped one), reported once.
+  const variant = useSyncExternalStore(subscribeNever, readVariant, () => "a" as VariantKey);
+  const reported = useRef(false);
+  useEffect(() => {
+    if (reported.current) return;
+    reported.current = true;
+    sendGAEvent("event", "landing_variant", { page: "discovery-call", variant: readVariant() });
+  }, []);
+  const copy = VARIANTS[variant];
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 40);
@@ -27,7 +77,8 @@ export function DiscoveryCallPage() {
   }, []);
 
   return (
-    <main className={styles.page} id="top">
+    <main className={styles.page} id="top" data-variant={variant}>
+      <MetaPixel />
       <nav className={`${styles.nav} ${isScrolled ? styles.navScrolled : ""}`}>
         <a href="#top" className={styles.navLogo}>
           Vital Kaua&#699;i
@@ -48,10 +99,7 @@ export function DiscoveryCallPage() {
             <br />
             <em>Kaua&#699;i</em>
           </h1>
-          <p className={styles.heroSub}>
-            In service of whole-being transformation. Every journey begins with
-            a conversation.
-          </p>
+          <p className={styles.heroSub}>{copy.heroSub}</p>
           <a href="#book" className={styles.btnPrimary}>
             Book a Discovery Call
           </a>
@@ -235,8 +283,8 @@ export function DiscoveryCallPage() {
         <div className={styles.bookSide}>
           <span className={styles.eyebrow}>Begin the Journey</span>
           <h2 className={styles.bookTitle}>
-            The root shows you the door.
-            <em>We walk through it with you.</em>
+            {copy.bookTitle[0]}
+            <em>{copy.bookTitle[1]}</em>
           </h2>
           <p>
             Thirty minutes on Zoom with us. We get to meet you, hear what is
@@ -245,8 +293,27 @@ export function DiscoveryCallPage() {
         </div>
         <div className={styles.calendlySide}>
           <Suspense fallback={null}>
-            <BookingEmbed />
+            <BookingEmbed variant={variant} />
           </Suspense>
+        </div>
+      </section>
+
+      {/* Questions people bring to the call */}
+      <section className={styles.faq}>
+        <div className={styles.faqInner}>
+          <span className={styles.eyebrow}>Before You Book</span>
+          <h2 className={styles.h2}>
+            The questions people bring
+            <em>to the first call.</em>
+          </h2>
+          <div className={styles.faqList}>
+            {FAQ.map((item) => (
+              <details key={item.q} className={styles.faqItem}>
+                <summary>{item.q}</summary>
+                <p>{item.a}</p>
+              </details>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -261,7 +328,7 @@ export function DiscoveryCallPage() {
               provider. Sent to your inbox as a PDF.
             </p>
           </div>
-          <GuideForm />
+          <GuideForm variant={variant} />
         </div>
       </section>
 
@@ -287,7 +354,7 @@ export function DiscoveryCallPage() {
 // parameters on this page's URL ride along into the booking, and a completed
 // booking is reported to GA4 as `discovery_call_booked`. The booking itself
 // reaches the leads table through the existing Calendly webhook.
-function BookingEmbed() {
+function BookingEmbed({ variant }: { variant: VariantKey }) {
   const search = useSearchParams().toString();
   const [booked, setBooked] = useState(false);
 
@@ -295,13 +362,14 @@ function BookingEmbed() {
     function onMessage(e: MessageEvent) {
       if (!isCalendlyBookingMessage(e.origin, e.data)) return;
       setBooked(true);
-      sendGAEvent("event", "discovery_call_booked", { page: "discovery-call" });
+      sendGAEvent("event", "discovery_call_booked", { page: "discovery-call", variant });
+      trackMeta("Schedule", { content_name: "discovery_call", variant });
     }
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
-  }, []);
+  }, [variant]);
 
-  const embedUrl = useMemo(() => buildDiscoveryCallEmbedUrl(search), [search]);
+  const embedUrl = useMemo(() => buildDiscoveryCallEmbedUrl(search, { utm_term: `v${variant}` }), [search, variant]);
 
   return (
     <>
@@ -329,7 +397,7 @@ function BookingEmbed() {
 
 // Free guide request. Posts to the same endpoint as the homepage form, which
 // records the lead and emails the PDF.
-function GuideForm() {
+function GuideForm({ variant }: { variant: VariantKey }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
@@ -348,7 +416,8 @@ function GuideForm() {
         }),
       });
       if (!res.ok) throw new Error(`free-guide ${res.status}`);
-      sendGAEvent("event", "guide_requested", { page: "discovery-call" });
+      sendGAEvent("event", "guide_requested", { page: "discovery-call", variant });
+      trackMeta("Lead", { content_name: "free_guide", variant });
       setStatus("sent");
     } catch (err) {
       console.error("Free guide request error:", err);
