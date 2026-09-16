@@ -10,7 +10,7 @@ import {
 } from "./lead-followups.ts";
 
 const DAY = 24 * 60 * 60 * 1000;
-const T0 = new Date("2026-09-01T17:00:00Z");
+const T0 = new Date("2026-10-01T17:00:00Z");
 const at = (days: number) => new Date(T0.getTime() + days * DAY);
 
 function lead(over: Partial<FollowupLead> = {}): FollowupLead {
@@ -44,6 +44,10 @@ describe("isEligible", () => {
     assert.equal(isEligible(lead({ approval_status: "declined" }), []), false);
     assert.equal(isEligible(lead({ email: "nope" }), []), false);
   });
+  it("ignores leads that existed before the sequence started", () => {
+    assert.equal(isEligible(lead({ created_at: "2026-09-10T12:00:00Z" }), []), false);
+    assert.equal(isEligible(lead({ created_at: "2026-09-16T00:00:00Z" }), []), true);
+  });
   it("honours a stop request", () => {
     const stop: SentRecord = { notification_type: "lead_followup_stopped", sent_at: null, created_at: T0.toISOString() };
     assert.equal(isEligible(lead(), [stop]), false);
@@ -61,7 +65,7 @@ describe("dueStep", () => {
     assert.equal(dueStep(lead(), after2, at(5))?.key, "day5");
   });
   it("spaces the series out for an old lead who never received anything", () => {
-    const old = lead({ created_at: at(-60).toISOString() });
+    const old = lead({ created_at: at(-10).toISOString() });
     assert.equal(dueStep(old, [], at(0))?.key, "day2");
     const s2 = [sent("day2", at(0))];
     assert.equal(dueStep(old, s2, at(2)), null);

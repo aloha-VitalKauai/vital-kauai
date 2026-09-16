@@ -1,4 +1,5 @@
 import { resolveTemplate, type ResolvedFields } from "@/lib/transactional-emails";
+import { SEQUENCE_START_AT } from "@/lib/lead-followups";
 
 /**
  * Post-call nudges.
@@ -37,6 +38,7 @@ export function dueNudge(lead: NudgeLead, sent: NudgeSent[], now: Date): NudgeKe
   if (lead.approval_status !== "approved") return null;
   if (lead.converted_to_member) return null;
   if (!lead.member_id || !lead.invite_sent_at) return null;
+  if (new Date(lead.invite_sent_at).getTime() < SEQUENCE_START_AT.getTime()) return null;
   if (sent.some((s) => s.notification_type === "lead_followup_stopped")) return null;
   const at = (key: string) => {
     const r = sent.find((s) => s.notification_type === `${NUDGE_TYPE_PREFIX}${key}`);

@@ -50,9 +50,17 @@ export type SentRecord = { notification_type: string; sent_at: string | null; cr
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
+/**
+ * The sequences are forward-only. Leads created before this moment (and
+ * invitations sent before it) are never written to; the list that existed
+ * when the system was built is not treated as a live pipeline.
+ */
+export const SEQUENCE_START_AT = new Date("2026-09-16T00:00:00Z");
+
 /** True when this lead is still in the sequence at all. */
 export function isEligible(lead: FollowupLead, sent: SentRecord[]): boolean {
   if (!lead.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email)) return false;
+  if (new Date(lead.created_at).getTime() < SEQUENCE_START_AT.getTime()) return false;
   if (lead.discovery_call_booked || lead.converted_to_member) return false;
   if (lead.source && BOOKED_SOURCES.has(lead.source)) return false;
   if (lead.approval_status === "declined") return false;
