@@ -345,8 +345,10 @@
 
 .people {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 48px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 64px;
+  max-width: 760px;
+  margin: 0 auto;
 }
 
 .personPhoto {

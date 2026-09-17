@@ -259,21 +259,6 @@ export function DiscoveryCallPage() {
                 accelerate healing and extend healthspan.
               </p>
             </div>
-            <div className={styles.person}>
-              <div className={styles.personPhoto}>
-                <Image src="/images/about/rachel-nelson.jpg" alt="Rachel Nelson" fill sizes="140px" />
-              </div>
-              <h3>Rachel Nelson</h3>
-              <span className={styles.personRole}>Co-Founder &middot; Guide and Facilitator</span>
-              <p>
-                Rachel weaves over two decades of devotion to embodied
-                awakening, bridging Eastern philosophy with Western science.
-                Her foundation includes graduate-level study in naturopathic
-                medicine and transpersonal psychology, along with
-                certifications in life coaching, mind-body nutrition, and
-                hypnotherapy.
-              </p>
-            </div>
           </div>
         </div>
       </section>
