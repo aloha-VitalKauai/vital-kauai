@@ -5,7 +5,7 @@ import { resolveTemplate, type ResolvedFields } from "@/lib/transactional-emails
  * Lead follow-up sequence.
  *
  * Every lead who reached out and has not booked a discovery call receives a
- * short series of personal notes from Rachel, each ending at the booking
+ * short series of personal notes from Vital Kauaʻi, each ending at the booking
  * link. The sequence stops the moment a call is booked, the lead becomes a
  * member, or the person asks to stop.
  *
@@ -128,7 +128,7 @@ export function stopUrl(siteUrl: string, leadId: string): string {
 export const BOOKING_URL =
   "https://calendly.com/aloha-vitalkauai/30min?utm_source=email&utm_medium=followup&utm_campaign=dc60";
 
-const SIGNOFF = `<p>With aloha,<br>Rachel<br>Vital Kauaʻi · Hanalei, Kauaʻi</p>`;
+const SIGNOFF = `<p>With aloha,<br>Vital Kauaʻi<br>Hanalei, Kauaʻi</p>`;
 
 export const FOLLOWUP_DEFAULTS: Record<FollowupStep["key"], ResolvedFields> = {
   day2: {
@@ -136,8 +136,8 @@ export const FOLLOWUP_DEFAULTS: Record<FollowupStep["key"], ResolvedFields> = {
     eyebrow: "Vital Kauaʻi",
     heading: "Aloha {{firstName}},",
     lead_html:
-      "<p>You reached out to Vital Kauaʻi recently, and I wanted to write to you personally.</p><p>People find their way to us at their own pace. Some read the guide and sit with it for months. Some know the moment they land on the page. Wherever you are with it, the next step is the same and it is simple: a 30-minute conversation with us. We hear what is calling you, walk you through how the program works, and answer whatever questions are alive in you.</p>",
-    body_html: "<p>If that feels right, choose a time below. And if you would rather just write back, I read every reply.</p>",
+      "<p>You reached out to Vital Kauaʻi recently, and we wanted to write to you personally.</p><p>People find their way to us at their own pace. Some read the guide and sit with it for months. Some know the moment they land on the page. Wherever you are with it, the next step is the same and it is simple: a 30-minute conversation with us. We hear what is calling you, walk you through how the program works, and answer whatever questions are alive in you.</p>",
+    body_html: "<p>If that feels right, choose a time below. And if you would rather just write back, we read every reply.</p>",
     cta_label: "Choose a time",
     closing_html: SIGNOFF,
   },
@@ -166,7 +166,7 @@ export const FOLLOWUP_DEFAULTS: Record<FollowupStep["key"], ResolvedFields> = {
     eyebrow: "Vital Kauaʻi",
     heading: "Aloha {{firstName}},",
     lead_html:
-      "<p>This is the last note from me for a while. The invitation stays open: when the time is right, a 30-minute conversation is how every journey with us begins.</p><p>Until then, be gentle with yourself. The work you have already done is the ground the root meets you on.</p>",
+      "<p>This is the last note from us for a while. The invitation stays open: when the time is right, a 30-minute conversation is how every journey with us begins.</p><p>Until then, be gentle with yourself. The work you have already done is the ground the root meets you on.</p>",
     body_html: "<p>The link below will be here whenever you are.</p>",
     cta_label: "Book a discovery call",
     closing_html: SIGNOFF,

@@ -204,7 +204,7 @@ async function sendFreeGuideEmail(input: {
       </div>
       <hr>
       ${fields.closing_html}
-      <div class="footer">With care,<br>Rachel, Josh &amp; the Vital Kauaʻi team<br><br>© 2026 Vital Kauaʻi Church · PO Box 932, Hanalei, HI 96714</div>
+      <div class="footer">With care,<br>Vital Kauaʻi<br><br>© 2026 Vital Kauaʻi Church · PO Box 932, Hanalei, HI 96714</div>
     </div>
   </div></div>
 </body>

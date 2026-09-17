@@ -39,7 +39,7 @@ export const REBOOK_DEFAULTS: ResolvedFields = {
     "<p>We saw the call had to move. Life does that, and there is no hurry on our side.</p><p>Whenever a new time works, the door is open: thirty minutes on Zoom with us, to hear what is calling you and answer whatever is alive in you.</p>",
   body_html: "<p>Pick a time below, or simply write back and we will find one together.</p>",
   cta_label: "Choose a new time",
-  closing_html: "<p>With aloha,<br>Rachel<br>Vital Kauaʻi · Hanalei, Kauaʻi</p>",
+  closing_html: "<p>With aloha,<br>Vital Kauaʻi<br>Hanalei, Kauaʻi</p>",
 };
 
 function esc(s: string): string {

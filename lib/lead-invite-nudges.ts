@@ -62,7 +62,7 @@ export const NUDGE_DEFAULTS: Record<NudgeKey, ResolvedFields> = {
       "<p>It was good to talk with you. Your invitation to membership is open, and the next step is a short one: set up your member account, and the preparation begins.</p>",
     body_html: "<p>The link below is fresh and good for thirty days. If anything is in the way, reply here and we will sort it together.</p>",
     cta_label: "Set up my account",
-    closing_html: "<p>With aloha,<br>Rachel<br>Vital Kauaʻi · Hanalei, Kauaʻi</p>",
+    closing_html: "<p>With aloha,<br>Vital Kauaʻi<br>Hanalei, Kauaʻi</p>",
   },
   invite_nudge_2: {
     subject: "Still here, whenever you are",
@@ -72,7 +72,7 @@ export const NUDGE_DEFAULTS: Record<NudgeKey, ResolvedFields> = {
       "<p>A gentle note: your invitation is still open. Some people move quickly; some sit with it for a while. Both are right.</p>",
     body_html: "<p>When you are ready, the link below takes you straight in. And if the timing has changed, tell us; the door stays open.</p>",
     cta_label: "Set up my account",
-    closing_html: "<p>With aloha,<br>Rachel<br>Vital Kauaʻi · Hanalei, Kauaʻi</p>",
+    closing_html: "<p>With aloha,<br>Vital Kauaʻi<br>Hanalei, Kauaʻi</p>",
   },
 };
 
