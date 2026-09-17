@@ -26,7 +26,7 @@ export const VARIANTS: Record<VariantKey, LandingVariant> = {
   },
   b: {
     key: "b",
-    heroSub: "A held path with the root on Kauaʻi's North Shore. It begins with thirty minutes on Zoom with us.",
+    heroSub: "Iboga ceremony on Kauaʻi. Two nights with the root, held within months of care.",
     bookTitle: ["Begin with a conversation.", "Thirty minutes. Every question answered."],
   },
 };
