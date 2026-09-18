@@ -320,7 +320,6 @@ export function DiscoveryCallPage() {
       <footer className={styles.footer}>
         <p className={styles.footerBrand}>Vital Kaua&#699;i</p>
         <p className={styles.footerAddress}>
-          Vital Kaua&#699;i Church &middot; PO Box 932, Hanalei, HI 96714 &middot;{" "}
           <a href="mailto:aloha@vitalkauai.com">aloha@vitalkauai.com</a>
         </p>
         <p className={styles.footerNote}>
