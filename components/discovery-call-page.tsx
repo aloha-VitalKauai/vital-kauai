@@ -323,6 +323,11 @@ export function DiscoveryCallPage() {
           Vital Kaua&#699;i Church &middot; PO Box 932, Hanalei, HI 96714 &middot;{" "}
           <a href="mailto:aloha@vitalkauai.com">aloha@vitalkauai.com</a>
         </p>
+        <p className={styles.footerNote}>
+          Vital Kaua&#699;i Church is a sincerely held religious organization. Ceremony is
+          sacramental practice, offered to members after medical review and preparation.
+          For decisions about your health, speak with your physician.
+        </p>
         <ul className={styles.footerLinks}>
           <li><Link href="/login">Member Sign In</Link></li>
           <li><Link href="/privacy-policy">Privacy Policy</Link></li>
