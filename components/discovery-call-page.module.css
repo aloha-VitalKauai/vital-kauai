@@ -704,6 +704,14 @@
   text-decoration: none;
 }
 
+.footerNote {
+  max-width: 62ch;
+  margin: 0 auto 22px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: rgba(245, 240, 232, 0.6);
+}
+
 .footerLinks {
   display: flex;
   justify-content: center;
