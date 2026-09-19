@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Jost } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { Analytics } from "@vercel/analytics/next";
 import { RecoveryRedirect } from "@/components/recovery-redirect";
 import "./globals.css";
 
@@ -86,6 +87,8 @@ export default function RootLayout({
             plant sacrament within a sacred and protected religious context.
           </p>
         </footer>
+        {/* Vercel Web Analytics — page views and visitors in the Vercel dashboard. */}
+        <Analytics />
       </body>
       <GoogleAnalytics gaId="G-VFF127QR7J" />
     </html>
